@@ -1,0 +1,220 @@
+schema_version: 2
+band_id: ogre-hunting-party-web
+profiles:
+- id: ogre-hunter
+  name: Ogre Hunter
+  type: hero
+  cost: 145
+  experience: 20
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 3
+    I: 3
+    A: 2
+    Ld: 8
+  equipment_lists:
+  - ogre-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Unlike other models Ogres don't have free daggers, even though they might carry one reserved for eating,
+    the most sacred activity in their life. Ogres never fight with daggers in close combat.
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Ogre Hunter
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  source_path:
+  - heroes
+  - 1 Ogre Hunter
+  name_i18n:
+    es: Ogro Cazador
+  rule_ids:
+  - ogre-hunter--leader
+  - ogre-hunter--dont-fight-with-eating-knives
+  - ogre-hunter--lazy
+  - ogre-hunter--central-figure
+  - ogre-hunter--sabre-trainer
+  combat_traits: {}
+- id: trappers
+  name: Trappers
+  type: hero
+  cost: 30
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 4
+    S: 2
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - gnoblar-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-3 Trappers
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  source_path:
+  - heroes
+  - 0-3 Trappers
+  name_i18n:
+    es: Tramperos
+  rule_ids:
+  - trappers--veteran-tracker
+  combat_traits: {}
+- id: sabre-baiter
+  name: Sabre-Baiter
+  type: hero
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 2
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - gnoblar-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Sabre-Baiter
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  source_path:
+  - heroes
+  - 0-1 Sabre-Baiter
+  name_i18n:
+    es: Cebo de Sabretusk
+  rule_ids:
+  - sabre-baiter--bait
+  combat_traits: {}
+- id: gnoblar-fighters
+  name: Gnoblar Fighters
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 2
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - gnoblar-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0+ Gnoblar Fighters
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  source_path:
+  - henchmen
+  - 0+ Gnoblar Fighters
+  name_i18n:
+    es: Luchadores Gnoblar
+  rule_ids: []
+  combat_traits: {}
+- id: flingers
+  name: Flingers
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 2
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - gnoblar-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-7 Flingers
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  source_path:
+  - henchmen
+  - 0-7 Flingers
+  name_i18n:
+    es: Lanzadores
+  rule_ids:
+  - flingers--scrap-slinger
+  combat_traits: {}
+- id: sabretusks
+  name: Sabretusk Cubs
+  type: henchman
+  cost: 50
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 0
+    S: 4
+    T: 4
+    W: 1
+    I: 4
+    A: 1
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Tusks and primal ferocity!
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-3 Sabretusk Cubs
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  source_path:
+  - henchmen
+  - 0-3 Sabretusk Cubs
+  name_i18n:
+    es: Cachorros Sabretusk
+  rule_ids:
+  - sabretusks--fear
+  - sabretusks--animals
+  - sabretusks--untamed
+  - sabretusks--charge
+  - sabretusks--tough-hide
+  combat_traits: {}

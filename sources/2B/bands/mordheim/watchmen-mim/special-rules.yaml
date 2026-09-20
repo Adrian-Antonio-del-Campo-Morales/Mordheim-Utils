@@ -1,0 +1,421 @@
+schema_version: 2
+band_id: watchmen-mim
+rules:
+- id: band--black-caps
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.watchmen-mim.band.black-caps
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Black Caps
+  effect: City Watch patrols may requisition one Watch Carriage with two horses before every battle.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Black Caps
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  name_i18n:
+    es: Gorras Negras
+  effect_i18n:
+    es: >-
+      Las patrullas de la Guardia Urbana pueden requisar un Carruaje de Guardia con dos caballos
+      antes de cada batalla.
+  applies_to:
+    band: true
+- id: band--secretariat
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.watchmen-mim.band.secretariat
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Secretariat
+  effect: River Watch patrols may commandeer a River Boat before the start of every battle.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: River Watch / Secretariat
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  name_i18n:
+    es: Secretaría
+  effect_i18n:
+    es: >-
+      Las patrullas de la Guardia Fluvial pueden requisar un Barco Fluvial antes del inicio de cada
+      batalla.
+  applies_to:
+    band: true
+- id: band--whistling
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.watchmen-mim.band.whistling
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Whistling
+  effect: >-
+    Watch patrols can summon assistance in the recovery phase by blowing their whistles: D3+1 Watch
+    Officers arrive in D3 turns, armed with a club and deployed within 6 inches of a randomly
+    determined table edge after compulsory moves and charges resolve. Further whistling brings more
+    help. Reinforcements do not count for the purpose of rout tests.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Special rules / Whistling
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  name_i18n:
+    es: Silbidos
+  effect_i18n:
+    es: >-
+      Las patrullas de la Guardia pueden pedir refuerzos en la fase de recuperación silbando: llegan
+      D3+1 Agentes de la Guardia en D3 turnos, armados con garrote y desplegados a 6 pulgadas de un
+      borde de mesa aleatorio tras resolver los movimientos obligatorios y las cargas. Silbar de
+      nuevo trae más ayuda. Los refuerzos no cuentan para las tiradas de huida.
+  applies_to:
+    band: true
+- id: band--jurisdiction
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.watchmen-mim.band.jurisdiction
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Jurisdiction
+  effect: >-
+    Instead of rolling on the Serious Injury Chart, warriors taken out of action in close combat are
+    placed under arrest whenever an Injury Chart result rolled is a natural 6 (unless the warband
+    following this plot routed). Equipment of arrested warriors cannot be kept, sold or traded
+    unless impounded in accordance with campaign objectives; confiscated items cannot be sold or
+    traded.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Special rules / Jurisdiction
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  name_i18n:
+    es: Jurisdicción
+  effect_i18n:
+    es: >-
+      En lugar de tirar en la Tabla de Heridas Graves, los guerreros puestos Fuera de combate en
+      combate cuerpo a cuerpo son arrestados siempre que el resultado de la tabla de Heridas sea un
+      6 natural (salvo que la banda siguiendo esta trama huya). El equipo de los guerreros
+      arrestados no puede conservarse, venderse ni intercambiarse salvo que haya sido decomisado
+      según los objetivos de campaña; los objetos confiscados no pueden venderse ni intercambiarse.
+  applies_to:
+    band: true
+- id: band--interrogation
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.watchmen-mim.band.interrogation
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Interrogation
+  effect: >-
+    Instead of searching for a rare item, the leader of the Watch may interrogate a suspect Hero
+    held under arrest. On a successful Leadership test the Watch patrol gains 1 extra Campaign Point
+    and the captured Hero's warband loses 1 Campaign Point. Suspects may only be interrogated once.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Special rules / Interrogation
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  name_i18n:
+    es: Interrogatorio
+  effect_i18n:
+    es: >-
+      En lugar de buscar un objeto raro, el líder de la Guardia puede interrogar a un héroe
+      sospechoso bajo arresto. Con un chequeo de Liderazgo superado, la patrulla gana 1 punto de
+      Campaña extra y la banda del héroe capturado pierde 1 punto de Campaña. Los sospechosos solo
+      pueden ser interrogados una vez.
+  applies_to:
+    band: true
+- id: band--fanatical
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.watchmen-mim.band.fanatical
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Fanatical
+  effect: >-
+    Knights of Purity are vigilante crusaders hell-bent on the destruction of Chaos. Any Hero of the
+    Watch with 30 experience points becomes a crusader of Law; Knights of Purity automatically pass
+    all Leadership-based tests they are required to take.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Special rules / Fanatical
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  name_i18n:
+    es: Fanáticos
+  effect_i18n:
+    es: >-
+      Los Caballeros de la Pureza son cruzados vigilantes empeñados en la destrucción del Caos.
+      Cualquier héroe de la Guardia con 30 puntos de experiencia se convierte en cruzado de la Ley;
+      los Caballeros de la Pureza superan automáticamente todos los chequeos basados en Liderazgo
+      que deban realizar.
+  applies_to:
+    band: true
+- id: band--fenland-striders
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.watchmen-mim.band.fenland-striders
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Fenland Striders (Marsh Watch)
+  effect: Marsh-watch Heroes and Officers re-roll any failed Initiative tests.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: The Fen-Guard / Fenland Striders
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  name_i18n:
+    es: Zancudos de las Ciénagas (Guardia del Pantano)
+  effect_i18n:
+    es: >-
+      Los héroes y Agentes de la Guardia del Pantano repiten cualquier chequeo de Iniciativa
+      fallido.
+  applies_to:
+    band: true
+- id: watch-captain--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.watchmen-mim.watch-captain.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Leader
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Watch captain / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - watch-captain
+  rule_ref: shared-rule.leader
+- id: sergeants--falconer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.watchmen-mim.sergeants.falconer
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Falconer
+  effect: >-
+    Hunting birds may only be used by a Hero with the animal handling skill 'Falconer'. The falcon
+    has a 24 inch range as a missile weapon and strikes first in close combat with a single Strength
+    3 attack; it cannot be attacked or slain.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Hunting bird / Special Rules / Falconer
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  name_i18n:
+    es: Halconero
+  effect_i18n:
+    es: >-
+      Las aves de caza solo pueden usarlas héroes con la habilidad de manejo de animales
+      'Falconero'. El halcón tiene un alcance de 24 pulgadas como arma de misil y golpea primero en
+      combate cuerpo a cuerpo con un único ataque de Fuerza 3; no puede ser atacado ni muerto.
+  applies_to:
+    profile_ids:
+    - sergeants
+- id: private-sleuth--scryer
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.re-roll-melee
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred: blanket re-roll of all close combat rolls needs a generic re-roll binding not yet
+        exposed.
+  name: Scryer
+  effect: >-
+    A Sleuth can re-roll any rolls in close combat (the second result must be accepted). In
+    addition, if the Sleuth is not put out of action, you may roll two dice for her in the
+    exploration phase and pick either dice as the result.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Private sleuth / Special Rules / Scryer
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  name_i18n:
+    es: Vidente
+  effect_i18n:
+    es: >-
+      Una detective puede repetir cualquier tirada en combate cuerpo a cuerpo (debe aceptarse el
+      segundo resultado). Además, si la detective no queda Fuera de combate, puedes tirar dos dados
+      en la fase de exploración y elegir cualquiera de los dos como resultado.
+  applies_to:
+    profile_ids:
+    - private-sleuth
+- id: private-sleuth--hypnotist
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.watchmen-mim.private-sleuth.hypnotist
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Hypnotist
+  effect: >-
+    At the beginning of the combat phase the Sleuth may hypnotise any living warrior in base contact
+    that is not Immune to Psychology. The suspect must pass a Leadership test or be entranced: an
+    entranced warrior may not attack in close combat and is treated as knocked down for the purpose
+    of being attacked. The trance ends when the entranced warrior or the Sleuth has been attacked,
+    or when the Sleuth chooses to end it.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Private sleuth / Special Rules / Hypnotist
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  name_i18n:
+    es: Hipnotista
+  effect_i18n:
+    es: >-
+      Al inicio de la fase de combate, la detective puede hipnotizar a cualquier guerrero vivo en
+      contacto de base que no sea Inmune a la Psicología. El sospechoso debe superar un chequeo de
+      Liderazgo o quedará embelesado: un guerrero embelesado no puede atacar en combate cuerpo a
+      cuerpo y se trata como derribado a efectos de ser atacado. El trance termina cuando el
+      guerrero embelesado o la detective sean atacados, o cuando la detective decida finalizarlo.
+  applies_to:
+    profile_ids:
+    - private-sleuth
+- id: turnkeys--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-2 Turnkeys / Special Rules / Immune to Poison
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  name_i18n:
+    es: Inmune al Veneno
+  applies_to:
+    profile_ids:
+    - turnkeys
+  rule_ref: shared-rule.immune-to-poison
+- id: sewer-jacks--immune-to-disease
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.watchmen-mim.sewer-jacks.immune-to-disease
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Immune to Disease
+  effect: >-
+    A Sewer Jack is able to shrug off the effects of almost any malady; they are not affected by any
+    disease.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-4 Sewer Jacks / Special Rules / Immune to Disease
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  name_i18n:
+    es: Inmune a las Enfermedades
+  effect_i18n:
+    es: >-
+      Un Chacal de las Cloacas es capaz de superar los efectos de casi cualquier dolencia; no se ve
+      afectado por ninguna enfermedad.
+  applies_to:
+    profile_ids:
+    - sewer-jacks
+- id: sewer-jacks--tunnel-rat
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.watchmen-mim.sewer-jacks.tunnel-rat
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Tunnel Rat
+  effect: >-
+    Any characteristic-based tests taken for scenarios set in sewers or elsewhere underground can be
+    re-rolled.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-4 Sewer Jacks / Special Rules / Tunnel Rat
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  name_i18n:
+    es: Rata de Túnel
+  effect_i18n:
+    es: >-
+      Cualquier chequeo basado en características realizado en escenarios situados en cloacas u
+      otros lugares subterráneos puede repetirse.
+  applies_to:
+    profile_ids:
+    - sewer-jacks

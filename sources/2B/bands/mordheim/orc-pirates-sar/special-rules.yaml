@@ -1,0 +1,592 @@
+schema_version: 2
+band_id: orc-pirates-sar
+rules:
+- id: band--da-mob-rules
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.orc-pirates-sar.band.da-mob-rules
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Base Rules (Da Mob)
+  effect: >-
+    The Orc Pirates use the exact same rules as the Da Mob Warband with the changes listed in this
+    document.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Reglas base (La Horda)
+  effect_i18n:
+    es: >-
+      Los Piratas Orcos usan exactamente las mismas reglas que la banda de La Horda con los cambios
+      listados en este documento.
+  applies_to:
+    band: true
+- id: band--pressganging-orc
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.orc-pirates-sar.band.pressganging-orc
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Pressganging (Orc Pirates)
+  effect: >-
+    The Orc may attempt to pressgang enemies they capture following the normal rules for
+    Pressganging. Willing models lose their race and stats and join the Orc Crew. Unwilling models
+    become Swabbies, keeping their race and stats and gaining the rules Never Gain Experience,
+    Rabble, 'Blimey, they got away!', and 'Don't mind them mates, they ain't true pirates!'.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Rules / Pressganging
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Reclutamiento Forzado (Piratas Orcos)
+  effect_i18n:
+    es: >-
+      Los orcos pueden intentar reclutar por la fuerza a los enemigos capturados siguiendo las
+      reglas normales de Reclutamiento Forzado. Los modelos voluntarios pierden su raza y
+      estadísticas y se unen a la Tripulación Orca. Los que no se convierten en Fregones,
+      conservando su raza y estadísticas y ganando las reglas Nunca Ganarán Experiencia, Chusma,
+      '¡Maldición, se han escapado!' y 'No les hagas caso, ¡no son piratas de verdad!'.
+  applies_to:
+    band: true
+- id: band--booma-pistol
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.orc-pirates-sar.item.booma-pistol
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Booma Pistol
+  effect: >-
+    Cost 20 gc (40 gc for a brace), Common, Greenskins Only. Maximum Range: Special; Strength: 5;
+    Special Rules: Volatile, Prepare shot, Hand-to-hand, Varying Range, Never Superior. Volatile:
+    when firing the Booma Pistol in hand-to-hand combat, it suffers a Blackpowder Misfire on a
+    natural roll of 1; when firing it in the shooting phase, it will misfire on a roll of 'Misfire'
+    on the Artillery Dice (see Varying Range); if a Booma Pistol explodes, it deals a S5 attack to
+    the firer instead of a Strength 4. Prepare shot: a pistol takes a whole turn to reload, so you
+    may only fire every other turn; if you have a brace of pistols (ie, two) you may fire every
+    turn. Hand-to-hand: pistols can be used in hand-to-hand combat as well as for shooting; a model
+    armed with a pistol and another close combat weapon gains +1 Attack, resolved at Strength 5,
+    once per combat; with a brace, the model fights with 2 Attacks in the first turn of close
+    combat, resolved with the model's Weapon Skill like any normal close combat attack and likewise
+    may be parried; successful hits are resolved at Strength 5, regardless of the firer's Strength.
+    Varying Range: when shooting the gun in the Shooting phase, the range of the weapon is randomly
+    determined each shot; the player declares his shot, then rolls an artillery dice: that is the
+    range of the weapon for this shot; on the roll of 'Misfire', roll on the misfire table; if the
+    target is within range, roll to hit as normal; if you roll a 1 to hit when shooting in the
+    shooting phase, do not roll for a misfire (you already risked misfire once this Shooting
+    phase!). Never Superior: Booma Pistols are barely able to handle the crudest gunpowder, let
+    alone more powerful kinds; it may never use Superior Gunpowder; it may use Refined Gunpowder as
+    normal.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: New Equipment / Booma Pistol
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Pistola Booma
+  effect_i18n:
+    es: >-
+      Coste: 20 coronas (40 por pareja), Común, solo Pieles Verdes. Alcance máximo: especial;
+      Fuerza: 5; Reglas especiales: Volátil, Prepara el disparo, Cuerpo a cuerpo, Alcance variable,
+      Nunca superior. Volátil: al disparar la Pistola Booma en combate cuerpo a cuerpo sufre un
+      Fallo de Pólvora con un 1 natural; al dispararla en la fase de disparo, falla con el resultado
+      'Fallo' en el Dado de Artillería (ver Alcance variable); si una Pistola Booma explota, causa
+      un ataque de F5 al tirador en lugar de Fuerza 4. Prepara el disparo: una pistola tarda un
+      turno entero en recargarse, así que solo puedes disparar en turnos alternos; con una pareja
+      puedes disparar cada turno. Cuerpo a cuerpo: las pistolas pueden usarse en combate además de
+      para disparar; un modelo con pistola y otra arma de combate gana +1 Ataque, resuelto a Fuerza
+      5, una vez por combate; con una pareja, el modelo pelea con 2 Ataques en el primer turno,
+      resueltos con la Habilidad de Armas como un ataque normal y pueden ser detenidos; los impactos
+      se resuelven a Fuerza 5, sin importar la Fuerza del tirador. Alcance variable: al disparar en
+      la fase de disparo, el alcance del arma se determina aleatoriamente en cada disparo; el
+      jugador declara su disparo y luego tira un dado de artillería: ese es el alcance del arma para
+      este disparo; con resultado 'Fallo', tira en la tabla de fallos; si el objetivo está al
+      alcance, tira para golpear con normalidad; si sacas un 1 para golpear en la fase de disparo,
+      no tires de nuevo por fallo (¡ya arriesgaste un fallo en esta fase!). Nunca superior: las
+      Pistolas Booma apenas soportan la pólvora más cruda, ya no digamos tipos más potentes; nunca
+      puede usar Pólvora Superior; puede usar Pólvora Refinada con normalidad.
+  applies_to:
+    band: true
+- id: goblin-enjuneer--glass-ceiling
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.orc-pirates-sar.goblin-enjuneer.glass-ceiling
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Glass Ceiling
+  effect: While the goblin is respected enough to be a hero, he can never be warband Leader.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-1 Goblin Enjuneer / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Techo de Cristal
+  effect_i18n:
+    es: >-
+      Aunque el goblin es lo bastante respetado para ser un héroe, nunca puede ser el Líder de la
+      banda.
+  applies_to:
+    profile_ids:
+    - goblin-enjuneer
+- id: goblin-enjuneer--booma-tweaker
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.orc-pirates-sar.goblin-enjuneer.booma-tweaker
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Booma Tweaker
+  effect: >-
+    During any game that includes your Enjuneer, you may improve Booma Pistol shots. Any time you
+    roll for the range of a Booma Pistol and do NOT roll a Misfire result, you may reroll the result
+    once. The second result is final, and may not be rerolled (especially if it's a Misfire!).
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-1 Goblin Enjuneer / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Afinador de Boomas
+  effect_i18n:
+    es: >-
+      En cualquier partida que incluya a tu Ingeniero, puedes mejorar los disparos de la Pistola
+      Booma. Cada vez que tires por el alcance de una Pistola Booma y NO saques un resultado de
+      Fallo, puedes repetir el resultado una vez. El segundo resultado es definitivo y no puede
+      repetirse (¡especialmente si es un Fallo!).
+  applies_to:
+    profile_ids:
+    - goblin-enjuneer
+- id: goblin-enjuneer--mad-bomba
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.orc-pirates-sar.goblin-enjuneer.mad-bomba
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Mad Bomba
+  effect: >-
+    If the Enjuneer uses his Rarity roll in the Postgame phase to look for a Firebomb, he treats it
+    as Rarity 5. This bonus applies only when the Enjuneer searches, and not other heroes.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-1 Goblin Enjuneer / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Bomba Loca
+  effect_i18n:
+    es: >-
+      Si el Ingeniero usa su tirada de Rareza en la fase posterior a la partida para buscar una
+      Bomba de Fuego, la trata como Rareza 5. Esta bonificación solo se aplica cuando busca el
+      Ingeniero, y no otros héroes.
+  applies_to:
+    profile_ids:
+    - goblin-enjuneer
+- id: goblin-swabbies--under-der-thumb
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.orc-pirates-sar.goblin-swabbies.under-der-thumb
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Under der Thumb
+  effect: >-
+    Unlike most Goblins, the Swabbies DON'T suffer Animosity - they are far too oppressed to do
+    that!
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0+ Goblin Swabbies / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Bajo el Pulgar
+  effect_i18n:
+    es: >-
+      A diferencia de la mayoría de los Goblins, los Fregones NO sufren Rencor: ¡están demasiado
+      oprimidos para eso!
+  applies_to:
+    profile_ids:
+    - goblin-swabbies
+- id: goblin-swabbies--spendible
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.orc-pirates-sar.goblin-swabbies.spendible
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Spendible
+  effect: >-
+    The Orcs don't consider the Swabbies as equals, and have no problem shooting into a combat that
+    involves only the Swabbie and enemy models. Shots are distributed randomly.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0+ Goblin Swabbies / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Prescindibles
+  effect_i18n:
+    es: >-
+      Los orcos no consideran iguales a los Fregones y no tienen problema en disparar a un combate
+      en el que solo estén el Fregón y modelos enemigos. Los disparos se reparten aleatoriamente.
+  applies_to:
+    profile_ids:
+    - goblin-swabbies
+- id: goblin-swabbies--never-gain-experience
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.orc-pirates-sar.goblin-swabbies.never-gain-experience
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Never Gain Experience (Goblin Swabbies)
+  effect: >-
+    Swabbies generally aren't interested in proving their worth to the crew; they are interested in
+    survival and hopefully escape! Swabbies never gain experience in games.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0+ Goblin Swabbies / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Nunca Ganarán Experiencia (Fregones Goblins)
+  effect_i18n:
+    es: >-
+      Los Fregones no están interesados en demostrar su valor a la tripulación; ¡les interesa
+      sobrevivir y escapar si pueden! Los Fregones nunca ganan experiencia en las partidas.
+  applies_to:
+    profile_ids:
+    - goblin-swabbies
+- id: goblin-swabbies--rabble
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.orc-pirates-sar.goblin-swabbies.rabble
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Rabble (Goblin Swabbies)
+  effect: >-
+    Swabbies do not need to be armed all the same. Each may be given different equipment, but only
+    items listed in the Swabbie equipment list. Swabbies can never use magic, or cast spells of any
+    sort, no matter their original background or abilities.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0+ Goblin Swabbies / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Chusma (Fregones Goblins)
+  effect_i18n:
+    es: >-
+      Los Fregones no necesitan ir armados todos igual. Cada uno puede recibir equipo distinto, pero
+      solo objetos de la lista de equipo de Fregones. Los Fregones nunca pueden usar magia ni lanzar
+      hechizos de ningún tipo, sin importar su origen o habilidades previas.
+  applies_to:
+    profile_ids:
+    - goblin-swabbies
+- id: goblin-swabbies--blimey-they-got-away
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.orc-pirates-sar.goblin-swabbies.blimey-they-got-away
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Blimey, they got away! (Goblin Swabbies)
+  effect: >-
+    If the Pirate Warband itself Routs, any Swabbies who have already left the table in previous
+    turns are presumed to have made a successful escape, and are never seen from again. Remove them
+    from your warband roster as if they had been killed.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0+ Goblin Swabbies / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: ¡Maldición, se han escapado! (Fregones Goblins)
+  effect_i18n:
+    es: >-
+      Si la Banda Pirata Huye, cualquier Fregón que ya haya abandonado la mesa en turnos anteriores
+      se da por escapado con éxito, y nunca más se le verá. Retíralos de la lista de la banda como
+      si hubieran muerto.
+  applies_to:
+    profile_ids:
+    - goblin-swabbies
+- id: goblin-swabbies--dont-mind-them-mates
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.orc-pirates-sar.goblin-swabbies.dont-mind-them-mates
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Don't mind them mates, they ain't true pirates! (Goblin Swabbies)
+  effect: >-
+    The rest of the crew barely notice if any Swabbies run away or go Out of Action - they know
+    they'll find them later on and give them 30 lashes if they're lucky! Any Swabbies who are
+    running away or have been taken out of action do not count towards the need to take a Rout test
+    for the warband.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0+ Goblin Swabbies / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: No les hagas caso, ¡no son piratas de verdad! (Fregones Goblins)
+  effect_i18n:
+    es: >-
+      El resto de la tripulación apenas nota si algún Fregón huye o queda Fuera de Combate: ¡saben
+      que los encontrarán más tarde y les darán 30 latigazos si tienen suerte! Cualquier Fregón que
+      esté huyendo o haya sido dejado fuera de combate no cuenta para la necesidad de hacer un
+      chequeo de Huida de la banda.
+  applies_to:
+    profile_ids:
+    - goblin-swabbies
+- id: sea-squigs--stats-like-da-mob
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.orc-pirates-sar.sea-squigs.stats-like-da-mob
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Sea Squigs (Base Profile)
+  effect: >-
+    Sea Squigs use the Cave Squig profile from the Da Mob warband. While not drastically different
+    than normal Squigs, Sea Squigs are flippered cousins to the Cave Squig.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 Sea Squigs
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Squigs Marinos (perfil base)
+  effect_i18n:
+    es: >-
+      Los Squigs Marinos usan el perfil del Squig de Cueva de la banda de La Horda. Aunque no son
+      drásticamente distintos de los Squigs normales, los Squigs Marinos son primos con aletas del
+      Squig de Cueva.
+  applies_to:
+    profile_ids:
+    - sea-squigs
+- id: sea-squigs--movement
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.orc-pirates-sar.sea-squigs.movement
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Sea Squig Movement
+  effect: >-
+    They move 2D6-1" each turn on land. However, when in water, they are able to swim 2D6" each
+    movement phase, which is not reduced by penalties for water. They do NOT, however, count as
+    Aquatic.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 Sea Squigs
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Movimiento de los Squigs Marinos
+  effect_i18n:
+    es: >-
+      Se mueven 2D6-1" cada turno en tierra. Sin embargo, en el agua pueden nadar 2D6" cada fase de
+      movimiento, sin verse reducido por las penalizaciones del agua. NO cuentan, no obstante, como
+      Acuáticos.
+  applies_to:
+    profile_ids:
+    - sea-squigs
+- id: sea-squigs--cats-of-nine-tails
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.orc-pirates-sar.sea-squigs.cats-of-nine-tails
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Sea Squigs and Cats of Nine Tails
+  effect: >-
+    On a Pirate Ship, Cats of Nine Tails are far more common than prodders - Sea Squigs will not go
+    wild within 12" of a Goblin with a Cat, as if it was a Squig Prodder.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 Sea Squigs
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Squigs Marinos y Gatos de Nueve Colas
+  effect_i18n:
+    es: >-
+      En un barco pirata, los Gatos de Nueve Colas son mucho más comunes que los puntazos: los
+      Squigs Marinos no se embravecerán a 12" o menos de un Goblin con un Gato, como si fuera un
+      Pinche de Squig.
+  applies_to:
+    profile_ids:
+    - sea-squigs
+- id: sea-troll--aquatic
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.orc-pirates-sar.sea-troll.aquatic
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Aquatic (Sea Troll)
+  effect: The Sea Troll does not suffer penalty for moving through water. It counts as 'Aquatic'.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-1 Sea Troll
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Acuático (Troll Marino)
+  effect_i18n:
+    es: El Troll Marino no sufre penalización por moverse por el agua. Cuenta como 'Acuático'.
+  applies_to:
+    profile_ids:
+    - sea-troll
+- id: sea-troll--slimy
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.orc-pirates-sar.sea-troll.slimy
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Slimy
+  effect: >-
+    All models attempting to hit the Sea Troll in hand-to-hand combat are at -1 to hit. A natural
+    roll of 6 to hit will always hit the target.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-1 Sea Troll
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Baboso
+  effect_i18n:
+    es: >-
+      Todos los modelos que intenten golpear al Troll Marino en combate cuerpo a cuerpo lo hacen con
+      -1. Un 6 natural siempre golpea al objetivo.
+  applies_to:
+    profile_ids:
+    - sea-troll
+- id: sea-troll--loses-vomit
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.orc-pirates-sar.sea-troll.loses-vomit
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Sea Troll (Base Rules)
+  effect: >-
+    Orc Pirates often find it easiest to pick up a Sea Troll or a River Troll over a Troll of the
+    normal variety. It costs the normal amount, and gains the rules 'Aquatic' & 'Slimy'. However, it
+    loses the 'Vomit' Attack ability.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-1 Sea Troll
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Troll Marino (reglas base)
+  effect_i18n:
+    es: >-
+      Los Piratas Orcos suelen encontrar más fácil conseguir un Troll Marino o un Troll de Río que
+      un Troll de la variedad normal. Cuesta lo normal y gana las reglas 'Acuático' y 'Baboso'. Sin
+      embargo, pierde la habilidad de Ataque 'Vómito'.
+  applies_to:
+    profile_ids:
+    - sea-troll

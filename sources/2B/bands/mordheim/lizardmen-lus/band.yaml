@@ -1,0 +1,56 @@
+schema_version: 2
+id: lizardmen-lus
+canonical_family: lizardmen-lus
+name: Lizardmen
+name_i18n:
+  es: Hombres Lagarto (Lustria)
+original_locale: en
+ruleset: mordheim
+categories:
+- 2b
+grade: 2b
+setting: Lustria
+publication: Lustria Supplement
+status: staging
+sources:
+- manual: Broheim
+  printed_page: 1
+  section: Lizardmen Warband
+  url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+roster:
+  minimum_models: 3
+  maximum_models: 20
+  starting_gold: 500
+  members:
+  - profile_id: skink-priest
+    minimum: 1
+    maximum: 1
+  - profile_id: saurus-totem-warriors
+    minimum: 0
+    maximum: 1
+  - profile_id: skink-great-crests
+    minimum: 0
+    maximum: 2
+  - profile_id: skink-braves
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: saurus-braves
+    minimum: 0
+    maximum: 4
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: kroxigor
+    minimum: 0
+    maximum: 1
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--scaly-skin
+- band--armour-cost
+- band--cold-blooded
+- band--saurus-rarity

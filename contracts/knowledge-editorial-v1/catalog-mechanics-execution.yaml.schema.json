@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/catalog-mechanics-execution.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/mechanics/execution.yaml",
+  "description": "The execution contract: every mechanic id maps to a handler plus the effect parameters the engines apply, with its trigger, application and stacking rule. The parameter keys are the fields of `mordheim_core.models.EffectSet`; `mordheim_construction.contracts.effect_index` rejects anything else and validates the trigger/application/stacking combination.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "scope", "mechanics"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 2 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "scope": { "$ref": "defs.schema.json#/$defs/runtime_scope" },
+    "mechanics": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/mechanic" }
+    }
+  },
+  "$defs": {
+    "mechanic": {
+      "type": "object",
+      "required": ["id", "handler", "trigger", "application", "stacking", "parameters"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "handler": {
+          "description": "How the effect is applied. `effect-set` builds an effect set with the declared parameters.",
+          "enum": ["effect-set"]
+        },
+        "trigger": {
+          "description": "When the effect applies: always (`passive`), once at the start of a duel (`duel_start`) or while attacking (`attack`).",
+          "enum": ["passive", "duel_start", "attack"]
+        },
+        "application": {
+          "description": "Who carries the effect. It is derived from the trigger: `fighter` for passive and duel-start effects, `attack` for attack effects.",
+          "enum": ["fighter", "attack"]
+        },
+        "stacking": {
+          "description": "How several sources of the same mechanic combine: add up (`stack`), keep the best (`best`) or apply once (`once`).",
+          "enum": ["stack", "best", "once"]
+        },
+        "parameters": {
+          "description": "Effect parameters, keyed by the fields of `mordheim_core.models.EffectSet`: `tags` is the rule-tag list and every other key is a numeric or boolean field of that type. The vocabulary is closed — `mordheim_construction.contracts.effect_index` rejects a key the effect set does not declare, and the guardian test compares this list with `fields(EffectSet)` field by field.",
+          "type": "object",
+          "required": ["tags"],
+          "additionalProperties": false,
+          "properties": {
+            "tags": { "type": "array", "items": { "$ref": "defs.schema.json#/$defs/id" } },
+            "strength_bonus": { "type": "integer" },
+            "first_round_strength_bonus": { "type": "integer" },
+            "charge_strength_bonus": { "type": "integer" },
+            "toughness_bonus": { "type": "integer" },
+            "initiative_bonus": { "type": "integer" },
+            "fixed_strength": { "type": "integer" },
+            "armour_penetration": { "type": "integer" },
+            "target_armour_bonus": { "type": "integer" },
+            "hit_modifier": { "type": "integer" },
+            "wound_modifier": { "type": "integer" },
+            "injury_modifier": { "type": "integer" },
+            "attacks_bonus": { "type": "integer" },
+            "charge_attacks_bonus": { "type": "integer" },
+            "first_round_charge_attacks_bonus": { "type": "integer" },
+            "charge_ws_bonus": { "type": "integer" },
+            "first_round_attacks_bonus": { "type": "integer" },
+            "incoming_strength_modifier": { "type": "integer" },
+            "armour_strength_modifier": { "type": "integer" },
+            "weapon_skill_bonus": { "type": "integer" },
+            "critical_injury_bonus": { "type": "integer" },
+            "energy_focus_attacks": { "type": "integer" },
+            "incoming_attacks_modifier": { "type": "integer" },
+            "incoming_hit_modifier": { "type": "integer" },
+            "armour_save_bonus": { "type": "integer" },
+            "ward_save": { "type": "integer" },
+            "priority": { "type": "integer" },
+            "damage": { "type": "integer" },
+            "regeneration_save": { "type": "integer" },
+            "out_of_action_threshold": { "type": "integer" },
+            "damage_die_sides": { "type": "integer" },
+            "maximum_wound_target": { "type": "integer" },
+            "armour_save_floor": { "type": "integer" },
+            "ignition_threshold": { "type": "integer" },
+            "caught_fire_threshold": { "type": "integer" },
+            "parry": { "type": "boolean" },
+            "concussion": { "type": "boolean" },
+            "two_handed": { "type": "boolean" },
+            "paired": { "type": "boolean" },
+            "reroll_hits": { "type": "boolean" },
+            "reroll_wounds": { "type": "boolean" },
+            "strongman": { "type": "boolean" },
+            "charge_reroll_hits": { "type": "boolean" },
+            "step_aside": { "type": "boolean" },
+            "thick_skull": { "type": "boolean" },
+            "ignore_armour": { "type": "boolean" },
+            "automatic_hit": { "type": "boolean" },
+            "cannot_be_parried": { "type": "boolean" },
+            "bear_hug": { "type": "boolean" },
+            "poison_immunity": { "type": "boolean" },
+            "frenzy": { "type": "boolean" },
+            "armour_cannot_be_ignored": { "type": "boolean" },
+            "ward_save_mundane_only": { "type": "boolean" },
+            "natural_armour_negated_by_magic": { "type": "boolean" },
+            "regeneration_blocked_by_fire": { "type": "boolean" },
+            "regeneration_blocked_by_blessed": { "type": "boolean" }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "description": "Only attack effects travel with an attack; a passive or duel-start effect is carried by the fighter.",
+          "if": {
+            "properties": { "trigger": { "const": "attack" } },
+            "required": ["trigger"]
+          },
+          "then": { "properties": { "application": { "const": "attack" } } },
+          "else": { "properties": { "application": { "const": "fighter" } } }
+        }
+      ]
+    }
+  }
+}

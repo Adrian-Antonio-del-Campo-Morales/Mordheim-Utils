@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/hirelings-traits.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/hirelings/traits.yaml",
+  "description": "The trait registry of the hireling catalogue: the race, alignment, nature and ability facts the hiring eligibility rules reason about, declared once here and read by the application through `KnowledgePort.hireling_traits()` instead of being curated inside the application. Each row pins the profile it describes and lists its traits; `tests/knowledge/test_campaign_catalogs.py` checks that every `profile_id` exists in the hireling catalogues.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "catalog", "status", "traits"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 2 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "catalog": { "$ref": "defs.schema.json#/$defs/id" },
+    "status": { "$ref": "defs.schema.json#/$defs/catalog_status" },
+    "traits": {
+      "description": "One row per profile that declares traits. A profile without traits has no row.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/profile_traits" }
+    }
+  },
+  "$defs": {
+    "profile_traits": {
+      "description": "The traits of one hireling profile.",
+      "type": "object",
+      "required": ["profile_id", "traits"],
+      "additionalProperties": false,
+      "properties": {
+        "profile_id": {
+          "description": "Profile the traits describe: `hireling.hired-sword.<slug>` or `hireling.dramatis.<slug>`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "traits": {
+          "description": "The facts the hiring rules evaluate. The vocabulary is closed: a new trait is a new ability the eligibility rules may reason about, so it is added here and to the application together.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "dwarf",
+              "elf",
+              "evil",
+              "fear-causing",
+              "human",
+              "ogre",
+              "priest",
+              "spellcaster",
+              "undead"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+schema_version: 2
+id: fen-guard-mim
+canonical_family: fen-guard-mim
+name: Fen Guard
+name_i18n:
+  es: Guardia del Ciénaga
+original_locale: en
+ruleset: mordheim
+categories:
+- 2b
+grade: 2b
+setting: Mutiny in Marienburg
+publication: Mutiny in Marienburg Supplement
+status: staging
+sources:
+- manual: Broheim
+  printed_page: 1
+  section: Fen Guard
+  url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+roster:
+  minimum_models: 3
+  maximum_models: 12
+  starting_gold: 500
+  members:
+  - profile_id: branchwych
+    minimum: 1
+    maximum: 1
+  - profile_id: branchnymph
+    minimum: 0
+    maximum: 1
+  - profile_id: spiteborn
+    minimum: 0
+    maximum: 2
+  - profile_id: dryads
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: treekin
+    minimum: 0
+    maximum: 2
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--immune-to-drugs-and-poison
+- band--fear-of-fire
+- band--hired-swords
+- band--bark-skin
+- band--hard-to-kill
+- band--hard-to-rattle
+- band--forest-and-swamp-walk
+- band--grown-weapons
+- band--regrowth
+- band--natural-state
+- band--untainted
+- band--variation

@@ -1,0 +1,271 @@
+schema_version: 2
+band_id: savage-orcs-sar
+rules:
+- id: band--da-mob-rules
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.savage-orcs-sar.band.da-mob-rules
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Base Rules (Da Mob)
+  effect: >-
+    The Savage Orcs use the exact same rules as the Da Mob Warband with the changes listed in this
+    document.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Savage Orc Variation
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Reglas base (La Horda)
+  effect_i18n:
+    es: >-
+      Los Orcos Salvajes usan exactamente las mismas reglas que La Horda con los cambios listados en
+      este documento.
+  applies_to:
+    band: true
+- id: band--roster
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.savage-orcs-sar.band.roster
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Structural data: the composition and hire costs live in band.yaml and profiles.yaml; the
+        rule records that the source inherits them from the Da Mob list.
+  name: Roster (Da Mob Composition)
+  effect: >-
+    The Savage Orcs field the same warband composition as the Da Mob list: 1 Orc Boss, 0-1 Orc
+    Shaman, 0-2 Big 'Uns, Orc Boyz and Goblin Warriors (0+ each, groups of 1-5), 0-5 Cave Squigs and
+    0-1 Troll. A warband numbers 3-20 models and starts with 500 gold crowns. The goblin henchmen of
+    a Savage Orc warband are Forest Goblins: they use the Da Mob Goblin Warrior profile and the
+    Forest Goblin equipment list.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Savage Orc Variation
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Composición de la banda (La Horda)
+  effect_i18n:
+    es: >-
+      Los Orcos Salvajes despliegan la misma composición de banda que la lista de La Horda: 1 Jefe
+      Orco, 0-1 Chamán Orco, 0-2 Orcos Grandes, Chicos Orcos y Guerreros Goblin (0+ cada uno, en
+      grupos de 1-5), 0-5 Squigs de Cueva y 0-1 Trol. Una banda cuenta con 3-20 miniaturas y empieza
+      con 500 coronas de oro. Los secuaces goblin de una banda de Orcos Salvajes son Goblins del
+      Bosque: usan el perfil de Guerrero Goblin de La Horda y la lista de equipo de Goblins del
+      Bosque.
+  applies_to:
+    band: true
+- id: band--savage-orc-rules
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.savage-orcs-sar.band.savage-orc-rules
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Savage Orc Variation
+  effect: >-
+    The Savage Orcs use the exact same rules as the Da Mob Warband with the following changes.
+    Talismans galore: all orcs and goblins in the warband have a 6+ armor save that may not be
+    reduced below 6+ and may not be ignored, even by critical hits; they may never use armour (apart
+    from a shield) nor make use of the parry rule. Fear fire: all warband members fear any model
+    with flaming attacks, carrying a lit item (lantern, torch, brazier), or any flame item;
+    likewise, any caster that performs a fiery spell within line of sight of a member of a Savage
+    orc warband, or is maintaining a fire based spell (ex. Flaming Sword spell) causes fear for the
+    entire game. Primitive: Savage Orcs shun any type of advanced weapons, and may never use them at
+    any time; they may never take Weapons Master and Weapons Expert skills; likewise, the warband
+    members cannot use the following miscellaneous items: Halfling cookbook (they can't read, nor
+    cook), Mordheim Map (they can't read), Tome of Magic (ditto), Lantern (they don't know the
+    secret of fire).
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Savage Orc Variation
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Variación de Orcos Salvajes
+  effect_i18n:
+    es: >-
+      Los Orcos Salvajes usan exactamente las mismas reglas que La Horda con los siguientes cambios.
+      Amuletos por doquier: todos los orcos y goblins de la banda tienen una salvación por armadura
+      de 6+ que no puede reducirse por debajo de 6+ ni ignorarse, ni siquiera por impactos críticos;
+      nunca pueden usar armadura (aparte de un escudo) ni hacer uso de la regla de parada. Miedo al
+      fuego: todos los miembros de la banda temen a cualquier modelo con ataques flamígeros, que
+      lleve un objeto encendido (farol, antorcha, brasero) o cualquier objeto de llama; asimismo,
+      cualquier lanzador que haga un hechizo de fuego a la vista de un miembro de una banda de Orcos
+      Salvajes, o que mantenga un hechizo de fuego (p. ej. Espada Flamígera), causa miedo durante
+      toda la partida. Primitivos: los Orcos Salvajes desdeñan cualquier tipo de arma avanzada y
+      nunca pueden usarlas; nunca pueden elegir las habilidades Maestro de Armas ni Experto en
+      Armas; asimismo, los miembros de la banda no pueden usar los siguientes objetos varios: Libro
+      de cocina del Mediano (no saben leer ni cocinar), Mapa de Mordheim (no saben leer), Tomo de
+      Magia (ídem), Farol (no conocen el secreto del fuego).
+  applies_to:
+    band: true
+- id: band--wild-animosity
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.savage-orcs-sar.band.wild-animosity
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Wild Animosity
+  effect: >-
+    Cave orcs are even more ill-disciplined than their more advanced cousins, and are almost
+    guaranteed to spend as much time fighting each other as the enemy. Even their so-called leaders
+    are not above impetuous charges and animated grunting. At the start of the turn, roll a D6 for
+    every standing warrior in the warband that's not in combat, INCLUDING your troll (trolls need
+    not test if they failed their stupidity test). Consult the chart below to see what they get
+    (note: unlike the normal Orcs, they do not roll if they get a 1 - they ALWAYS roll to see how
+    crazy they are, including the heroes!): 1 Squabble: if the squabbling model is a henchman, he
+    must immediately charge the nearest friendly model (henchman or hero) and fight a round of
+    combat; after this, neither may do anything else this turn (although they will fight back if
+    attacked in combat); if no friendly model is in charge range he must use his missile weapon (if
+    he has one) against the nearest friendly model before doing nothing; otherwise, he will simply
+    do nothing (except scream 'Ug! Ug! Ug!' of course); a Forest Goblin affected in this way will
+    never attack a hero; if the squabbling model is a hero, he will not attack anyone, but must
+    still do nothing else. 2-5 Uggg: the model behaves 'normally'. 6 Waaaagh!: the model immediately
+    makes a full move towards the nearest enemy model, charging it if possible; in its subsequent
+    movement phase, if it is in charge range of an enemy model, it must charge; these charges ignore
+    fear and any other psychology that would prevent the savage orc from charging.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Savage Orc Variation / Wild Animosity
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Rencor Salvaje
+  effect_i18n:
+    es: >-
+      Los orcos de cueva son aún más indisciplinados que sus primos más avanzados, y es casi seguro
+      que pasarán tanto tiempo peleándose entre ellos como con el enemigo. Hasta sus supuesto
+      líderes no están por encima de cargas impetuosas y gruñidos animados. Al comienzo del turno,
+      tira 1D6 por cada guerrero de pie de la banda que no esté en combate, INCLUIDO tu troll (los
+      trolls no necesitan tirar si fallaron su tirada de estupidez). Consulta la tabla siguiente
+      para ver qué hacen (nota: a diferencia de los orcos normales, no se libran con un 1 - SIEMPRE
+      tiran para ver lo locos que están, ¡incluidos los héroes!): 1 Riña: si el modelo que riñe es
+      un bracero, debe cargar inmediatamente contra el modelo amigo más cercano (bracero o héroe) y
+      pelear una ronda de combate; después, ninguno de los dos puede hacer nada más este turno
+      (aunque se defenderán si son atacados); si no hay modelo amigo al alcance de carga, debe usar
+      su arma de proyectil (si tiene) contra el modelo amigo más cercano antes de no hacer nada; de
+      lo contrario, simplemente no hará nada (salvo gritar '¡Ug! ¡Ug! ¡Ug!', por supuesto); un
+      Goblin del Bosque afectado de este modo nunca atacará a un héroe; si el modelo que riñe es un
+      héroe, no atacará a nadie, pero tampoco hará nada más. 2-5 Uggg: el modelo se comporta 'con
+      normalidad'. 6 ¡Waaaagh!: el modelo hace de inmediato un movimiento completo hacia el modelo
+      enemigo más cercano, cargándolo si es posible; en su siguiente fase de movimiento, si está a
+      distancia de carga de un modelo enemigo, debe cargar; estas cargas ignoran el miedo y
+      cualquier otra psicología que impida cargar al orco salvaje.
+  applies_to:
+    band: true
+- id: band--savage-orc-special-skills
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.savage-orcs-sar.band.savage-orc-special-skills
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Savage Orc Special Skills
+  effect: >-
+    Savage Orcs have access to the following extra special skills, in addition to their normal Orc
+    skills. Surge!: the leader of the warband may employ this skill once per game; when testing for
+    animosity in that turn, all models treat a roll of 5 or 6 as a 'Waagh' instead of just a roll of
+    6; the leader automatically counts as having rolled a 6; any models that roll a 1 will still
+    squabble, and for this turn only, any heroes that roll a 1 will attack their fellow warband
+    members. Wardance: once per game, at the start of the turn, the hero may perform his wardance
+    (he cannot dance if already engaged in combat); every warrior in the warband is frenzied until
+    the start of the next orc turn; a Savage Orc Warband may only be affected by one Wardance in any
+    game, regardless of how many models have the skill. Savage Frenzy: the warrior is subject to
+    frenzy; he cannot lose his frenzy, but if knocked down or stunned he will also become stupid for
+    the rest of the game; the model tests for Stupidity first - a failed Stupidity test means he
+    cannot charge this turn. The Power of Man's Red Flower: the warrior has discovered the secret of
+    fire; he no longer fears fire and may use a lantern or torch.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Savage Orc Variation / Special Skills
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Habilidades Especiales de los Orcos Salvajes
+  effect_i18n:
+    es: >-
+      Los Orcos Salvajes tienen acceso a las siguientes habilidades especiales adicionales, además
+      de sus habilidades orcas normales. ¡Al Calle!: el líder de la banda puede emplear esta
+      habilidad una vez por partida; al hacer las tiradas de rencor en ese turno, todos los modelos
+      tratan un 5 o un 6 como un 'Waagh' en lugar de solo un 6; el líder cuenta automáticamente como
+      si hubiera sacado un 6; los modelos que saquen un 1 seguirán riñendo, y solo en este turno,
+      los héroes que saquen un 1 atacarán a sus compañeros de banda. Danza de Guerra: una vez por
+      partida, al comienzo del turno, el héroe puede realizar su danza de guerra (no puede danzar si
+      ya está en combate); todos los guerreros de la banda entran en frenesí hasta el comienzo del
+      siguiente turno orco; una banda de Orcos Salvajes solo puede verse afectada por una Danza de
+      Guerra por partida, sin importar cuántos modelos tengan la habilidad. Frenesí Salvaje: el
+      guerrero está sujeto a frenesí; no puede perder su frenesí, pero si es derribado o aturdido
+      también se volverá estúpido durante el resto de la partida; el modelo hace primero la tirada
+      de Estupidez - si la falla, no puede cargar este turno. La flor roja del hombre: el guerrero
+      ha descubierto el secreto del fuego; ya no teme al fuego y puede usar un farol o una antorcha.
+  applies_to:
+    band: true
+- id: band--throwing-axe
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.savage-orcs-sar.item.throwing-axe
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Throwing Axe
+  effect: >-
+    15 gold crowns, Rare 5. A smaller axe specially weighted for hurling from dangerous distances.
+    Range: 6"; Strength: As User; Special Rules: Thrown Weapon, Axe Thrower. Thrown Weapon: throwing
+    axes suffer no penalty for throwing over half range, or for moving and shooting. Axe Thrower:
+    all heroes armed with Throwing Axes and with access to Shooting Skills may learn the following
+    skill, Axe Thrower: 'If the thrower did not move this turn, he may throw two axes per shooting
+    phase, each at +1 Strength. Cannot be combined with Quickshot or Knife Thrower.' The skill Knife
+    Thrower does not allow the user to throw multiple Throwing Axes.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: New Equipment / Throwing Axe
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  name_i18n:
+    es: Hacha de Lanzamiento
+  effect_i18n:
+    es: >-
+      15 coronas de oro, Rara 5. Un hacha más pequeña, equilibrada para lanzarse desde distancias
+      peligrosas. Alcance: 6"; Fuerza: la del usuario; Reglas especiales: Arma arrojadiza, Lanzador
+      de Hachas. Arma arrojadiza: las hachas de lanzamiento no sufren penalización por lanzar a más
+      de medio alcance, ni por moverse y disparar. Lanzador de Hachas: todos los héroes armados con
+      Hachas de Lanzamiento y con acceso a Habilidades de Disparo pueden aprender la siguiente
+      habilidad, Lanzador de Hachas: 'Si el lanzador no se movió este turno, puede lanzar dos hachas
+      por fase de disparo, cada una con +1 de Fuerza. No puede combinarse con Disparo Rápido ni
+      Lanzador de Cuchillos.' La habilidad Lanzador de Cuchillos no permite lanzar múltiples Hachas
+      de Lanzamiento.
+  applies_to:
+    band: true

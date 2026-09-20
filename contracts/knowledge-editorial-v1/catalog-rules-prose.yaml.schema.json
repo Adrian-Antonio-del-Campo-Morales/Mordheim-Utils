@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/catalog-rules-prose.yaml.schema.json",
+  "title": "Mordheim KB catalogue — prose rules of catalog/rules",
+  "description": "The two catalogues that hold rule text and no runtime classification: `core-combat.yaml` (canonical combat rules as editorial text) and `special-rules.yaml` (cross-band rule text, kept empty of band-specific rules and promoted here only after an equivalence review). Band rules reuse these texts through `rule_ref` instead of repeating prose.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "rules"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 2 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "note": {
+      "description": "Editorial note about the catalogue as a whole.",
+      "type": "string",
+      "minLength": 1
+    },
+    "note2": {
+      "description": "Second editorial note; kept for the catalogues that carry two.",
+      "type": "string",
+      "minLength": 1
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/rule" }
+    }
+  },
+  "$defs": {
+    "rule": {
+      "description": "One rule of text. Its id is the target of the `rule_ref` of band rules.",
+      "type": "object",
+      "required": ["id", "name", "name_i18n", "effect", "effect_i18n"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" }
+      }
+    }
+  }
+}

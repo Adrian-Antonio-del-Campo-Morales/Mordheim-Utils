@@ -1,0 +1,661 @@
+schema_version: 2
+band_id: halflings-mic
+rules:
+- id: band--pretty-much-human
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.halflings-mic.band.pretty-much-human
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hiring rules are campaign mechanics outside the duel scope.
+  name: Pretty much human
+  effect: >-
+    Halflings are pretty much human and therefore may hire any hired sword available to human
+    mercenaries.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Special Rules / Pretty much human
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Prácticamente humanos
+  effect_i18n:
+    es: >-
+      Los Medianos son prácticamente humanos y por tanto pueden contratar cualquier Espada a Sueldo
+      disponible para los mercenarios humanos.
+  applies_to:
+    band: true
+- id: band--too-big
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.halflings-mic.band.too-big
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: equipment restrictions on advancement are roster-construction mechanics
+        outside the duel scope.
+  name: Too Big
+  effect: >-
+    Halflings may never use Long bows, Elf Bows, Handguns, Long Rifles or Blunderbusses even if they
+    gain an advance roll that would allow them to do so. Such big weapons aren't built for such tiny
+    hands!
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Special Rules / Too Big
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Demasiado Grandes
+  effect_i18n:
+    es: >-
+      Los Medianos nunca pueden usar Arcos Largos, Arcos Elfos, Pistolas de Fuego, Fusiles de
+      Francotirador ni Tronaderas, incluso si obtienen una tirada de mejora que se lo permita. ¡Esas
+      armas tan grandes no están hechas para unas manos tan pequeñas!
+  applies_to:
+    band: true
+- id: band--halfling-items
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.halflings-mic.band.halfling-items
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: item-bonus interactions are campaign mechanics outside the duel scope.
+  name: Halfling Items
+  effect: >-
+    Halflings do not gain any bonuses from having Halfling items (such as the Halfling Cookbook)
+    because they already know all the knowledge that can be obtained from such things.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Special Rules / Halfling Items
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Objetos Medianos
+  effect_i18n:
+    es: >-
+      Los Medianos no obtienen ningún bonificador por poseer objetos medianos (como el Libro de
+      Cocina Mediano), porque ya conocen todo el conocimiento que se puede obtener de tales cosas.
+  applies_to:
+    band: true
+- id: halfling-elder--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.halfling-elder.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
+        psychology/rout mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 1 Halfling Elder / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - halfling-elder
+  rule_ref: shared-rule.leader
+- id: halfling-cook--master-chef
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.halfling-cook.master-chef
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: post-battle treasure/wyrdstone selling is a campaign resolution
+        mechanic.
+  name: Master Chef
+  effect: >-
+    Halfling Cooks have a vast range of knowledge when and it comes to culinary matters, and their
+    food is often more filling and favorable then that of hapless no-talent human chef! To represent
+    his masterful cooking talent role one D6. On a 5+ the cook has managed to make a little food go
+    a long way and when selling Treasure or Wyrdstone the warband is considered to be one size
+    lower. Any role below a 5+ does not represent the chef's inability to conjure up some delicious
+    food, it just means he ate all the excess food before his other companions got there!
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-1 Halfling Cook / Special Rules / Master Chef
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Gran Chef
+  effect_i18n:
+    es: >-
+      Los Cocineros Medianos tienen un vasto conocimiento en lo que a asuntos culinarios se refiere,
+      ¡y su comida suele ser más sustanciosa y sabrosa que la del desdichado cocinero humano sin
+      talento! Para representar su talentosa cocina, tira un D6. Con un 5+ el cocinero ha logrado
+      que un poco de comida rinda mucho, y al vender Tesoros o Piedrahechiceira la banda se
+      considera de un tamaño menos. Cualquier tirada por debajo de 5+ no representa la incapacidad
+      del chef para conjurar comida deliciosa, ¡solo significa que se comió toda la comida sobrante
+      antes de que llegaran sus demás compañeros!
+  applies_to:
+    profile_ids:
+    - halfling-cook
+- id: halfling-thief--infiltrator
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.halfling-thief.infiltrator
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: pre-battle deployment (Infiltrate) is outside the current engine scope.
+  name: Infiltrator
+  effect: >-
+    He may always be placed on the battlefield after enemy warband(s), and can be placed anywheres
+    on the table as long as it is out of sight of the opposing warband and at least 12" away from
+    any enemy model. If more than one model has infiltrate, roll-off to see who places first.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-1 Halfling Thief / Special Rules / Infiltrator
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Infiltrado
+  effect_i18n:
+    es: >-
+      Siempre puede colocarse en el campo de batalla después de la(s) banda(s) enemiga(s), y puede
+      colocarse en cualquier parte de la mesa siempre que esté fuera de la vista de la banda
+      contraria y al menos a 12" de cualquier modelo enemigo. Si más de un modelo tiene
+      infiltración, se tira un dado para ver quién coloca primero.
+  applies_to:
+    profile_ids:
+    - halfling-thief
+- id: halfling-thief--pick-locks
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.halfling-thief.pick-locks
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: locked doors and exploration actions are outside the current engine
+        scope.
+  name: Pick Locks
+  effect: >-
+    When testing to open a locked door, a Halfling Thief needs only make a successful Initiative
+    test.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-1 Halfling Thief / Special Rules / Pick Locks
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Forzar Cerraduras
+  effect_i18n:
+    es: >-
+      Al hacer la prueba para abrir una puerta cerrada con llave, un Ladrón Mediano solo necesita
+      superar una prueba de Iniciativa.
+  applies_to:
+    profile_ids:
+    - halfling-thief
+- id: halfling-thief--cutpurse
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.halfling-thief.cutpurse
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: post-battle treasure counts are campaign resolution mechanics.
+  name: Cutpurse
+  effect: >-
+    A Halfling Thief makes a living of "finding" things others have "lost". If the Halfling Thief
+    took part in a battle, and was not taken OOA, then the warband gains +1 Treasure on top of what
+    they would normally find.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-1 Halfling Thief / Special Rules / Cutpurse
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Ratero
+  effect_i18n:
+    es: >-
+      Un Ladrón Mediano se gana la vida "encontrando" cosas que otros han "perdido". Si el Ladrón
+      Mediano participó en una batalla y no quedó Fuera de Combate, la banda gana +1 Tesoro además
+      de lo que normalmente encontraría.
+  applies_to:
+    profile_ids:
+    - halfling-thief
+- id: piggies--animals
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.piggies.animals
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: experience gain rules are post-duel/campaign progression mechanics.
+  name: Animals
+  effect: Piggies are animals and never gain experience.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-4 Piggies / Special Rules / Animals
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Animales
+  effect_i18n:
+    es: Los cerditos son animales y nunca ganan experiencia.
+  applies_to:
+    profile_ids:
+    - piggies
+- id: village-ogre--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.village-ogre.fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Fear
+  effect: Ogre-kin are large and brutish creatures that cause Fear.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-1 Village Ogre / Special Rules / Fear
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Los parientes de los ogros son criaturas grandes y brutales que causan Miedo.
+  applies_to:
+    profile_ids:
+    - village-ogre
+- id: village-ogre--large
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.village-ogre.large
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Large-target targeting rules are outside the current engine scope.
+  name: Large
+  effect: >-
+    Ogre-kin are huge, lumbering creatures and therefor make tempting targets for archers. Any
+    target may shoot at an Ogre, even if he is not the closest model.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-1 Village Ogre / Special Rules / Large
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Grande
+  effect_i18n:
+    es: >-
+      Los parientes de los ogros son criaturas enormes y torpes que por tanto constituyen objetivos
+      tentadores para los arqueros. Cualquiera puede disparar a un Ogro, aunque no sea el modelo más
+      cercano.
+  applies_to:
+    profile_ids:
+    - village-ogre
+- id: village-ogre--skills
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.village-ogre.skills
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: promotion to Hero and skill selection are post-duel/campaign progression
+        mechanics.
+  name: Skills
+  effect: An Ogre-kin who becomes a Hero may only choose from Combat and Strength skill-lists.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-1 Village Ogre / Special Rules / Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Habilidades
+  effect_i18n:
+    es: >-
+      Un pariente de ogro que se convierta en Héroe solo puede elegir de las listas de habilidades
+      Combate y Fuerza.
+  applies_to:
+    profile_ids:
+    - village-ogre
+- id: village-ogre--slow-witted
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.village-ogre.slow-witted
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: experience gain rules are post-duel/campaign progression mechanics.
+  name: Slow Witted
+  effect: Ogre-kin are not the brightest creatures about. They earn experience at half-rate.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-1 Village Ogre / Special Rules / Slow Witted
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Torpe Entendimiento
+  effect_i18n:
+    es: >-
+      Los parientes de los ogros no son las criaturas más luminosas que existen. Ganan experiencia a
+      la mitad de ritmo.
+  applies_to:
+    profile_ids:
+    - village-ogre
+- id: village-ogre--protective
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.village-ogre.protective
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hiring rules are campaign mechanics outside the duel scope.
+  name: Protective
+  effect: >-
+    The Ogre is content with his pay and more importantly, his meals. He will therefor scare off any
+    other Ogre that may attempt to join the warband. Once a Village Ogre is purchased, Ogre
+    Bodyguards will not join the warband, and should one have been hired prior to the Village Ogres
+    arrival, he will move on.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-1 Village Ogre / Special Rules / Protective
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Protector
+  effect_i18n:
+    es: >-
+      El Ogro está contento con su paga y, lo que es más importante, con sus comidas. Por tanto,
+      ahuyentará a cualquier otro Ogro que intente unirse a la banda. Una vez comprado un Ogro de la
+      Aldea, los Guardaespaldas Ogros no se unirán a la banda, y si se hubiera contratado uno antes
+      de la llegada del Ogro de la Aldea, este seguirá su camino.
+  applies_to:
+    profile_ids:
+    - village-ogre
+- id: halfling-elder--quiet-as-a-mouse
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.special.quiet-as-a-mouse
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hidden-movement detection (Initiative-based Spotting) is outside the
+        current engine scope.
+  name: Quiet as a Mouse
+  effect: >-
+    The halfling as adept at staying as quiet as a mouse whilst hiding. Enemy warriors must use half
+    their initiative value in inches (rounded down) when trying to detect this hidden halfling.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Halfling Special Skills / Quiet as a Mouse
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Silencioso como un Ratón
+  effect_i18n:
+    es: >-
+      El mediano es diestro en permanecer tan silencioso como un ratón mientras está oculto. Los
+      guerreros enemigos deben usar la mitad de su valor de Iniciativa en pulgadas (redondeando
+      hacia abajo) al intentar detectar a este mediano oculto.
+  applies_to:
+    profile_ids:
+    - halfling-elder
+    - halfling-cook
+    - halfling-thief
+    - halfling-youths
+- id: halfling-elder--crude-belch
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.special.crude-belch
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leadership-test-based combat penalties are not covered by the current
+        engine scope.
+  name: Crude Belch
+  effect: >-
+    Having eaten a meal or six, this halfling may release a withering belch to distract his enemies.
+    During the first round of hand to hand combat the halfling can release his noxious fumes upon
+    all enemies within base contact. All enemies effected must take a leadership test. If the
+    leadership test is failed then the putrid odor has severely affected the warrior's fighting
+    ability and he must miss his first attack (regardless of whether he has only one attack or not).
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Halfling Special Skills / Crude Belch
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Eructo Grosero
+  effect_i18n:
+    es: >-
+      Después de haber comido una comida o seis, este mediano puede soltar un eructo demoledor para
+      distraer a sus enemigos. Durante la primera ronda de combate cuerpo a cuerpo, el mediano puede
+      liberar sus vapores nocivos sobre todos los enemigos en contacto base. Todos los enemigos
+      afectados deben superar una prueba de liderazgo. Si la prueba de liderazgo falla, el hedor
+      pútrido ha afectado gravemente a la capacidad de lucha del guerrero y debe perder su primer
+      ataque (independientemente de si solo tiene un ataque o no).
+  applies_to:
+    profile_ids:
+    - halfling-elder
+    - halfling-cook
+    - halfling-thief
+    - halfling-youths
+- id: halfling-elder--wizened-halfling
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.special.wizened-halfling
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leadership-test rerolls are not covered by the current engine scope.
+  name: Wizened Halfling (Leaders only)
+  effect: >-
+    This old halfling is greatly respected by the other members of the warband and they never
+    question his word. All halflings may also re-roll any failed leadership test when within 6" of
+    the leader as well as using his leadership for both tests.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Halfling Special Skills / Wizened Halfling
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Mediano Arrugado (solo líderes)
+  effect_i18n:
+    es: >-
+      Este viejo mediano es muy respetado por los demás miembros de la banda y nunca cuestionan su
+      palabra. Todos los medianos también pueden repetir cualquier prueba de liderazgo fallida
+      cuando estén a 6" del líder, además de usar su liderazgo para ambas pruebas.
+  applies_to:
+    profile_ids:
+    - halfling-elder
+- id: halfling-elder--stealthy
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.special.stealthy
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hidden-movement rules are outside the current engine scope.
+  name: Stealthy (Halfling Thieves only)
+  effect: >-
+    The Halfling Thief can hide even after running, and can run while within 8" of enemy models if
+    he starts and ends his move hidden.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Halfling Special Skills / Stealthy
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Furtivo (solo Ladrones Medianos)
+  effect_i18n:
+    es: >-
+      El Ladrón Mediano puede ocultarse incluso después de correr, y puede correr estando a 8" de
+      modelos enemigos si comienza y termina su movimiento oculto.
+  applies_to:
+    profile_ids:
+    - halfling-thief
+- id: halfling-elder--skilled-huntsman
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.special.skilled-huntsman
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: shooting-from-hiding is outside the current engine scope.
+  name: Skilled Huntsman
+  effect: >-
+    The halfling has been hunting things ever since he was young (the more food he has, the better!)
+    and has become well adapted to firing as silently and discreetly as possible. To represent this
+    a Halfling may try and fire a ranged weapon and remain hidden. When shooting from hiding roll
+    D6. On a 3+ the Halfling has managed to keep his actions inconspicuous to the eye of the enemy
+    and may remain hidden that turn. Note this skill may not be combined with black powder weapons,
+    they are just too noisy!
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Halfling Special Skills / Skilled Huntsman
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Cazador Hábil
+  effect_i18n:
+    es: >-
+      El mediano ha estado cazando cosas desde que era joven (¡cuanta más comida tiene, mejor!) y se
+      ha adaptado bien a disparar de la manera más silenciosa y discreta posible. Para representar
+      esto, un Mediano puede intentar disparar un arma a distancia y permanecer oculto. Al disparar
+      desde la ocultación, tira un D6. Con un 3+ el Mediano ha logrado mantener sus acciones
+      imperceptibles a los ojos del enemigo y puede permanecer oculto ese turno. Ten en cuenta que
+      esta habilidad no puede combinarse con armas de pólvora negra, ¡son simplemente demasiado
+      ruidosas!
+  applies_to:
+    profile_ids:
+    - halfling-elder
+    - halfling-cook
+    - halfling-thief
+    - halfling-youths
+- id: halfling-elder--layers-of-fat
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 6
+  name: Layers of Fat
+  effect: >-
+    The Halfling has gained mountains of flab during his vast experience of eating fine foods and
+    his thick bulk could swallow a sword whole! The Halfling always has a basic saving throw of 6
+    regardless of the enemy warrior's strength and on top of any armour he already wears.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Halfling Special Skills / Layers of Fat
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Capas de Grasa
+  effect_i18n:
+    es: >-
+      El Mediano ha ganado montañas de grasa durante su amplia experiencia comiendo manjares y ¡su
+      corpulencia gruesa podría tragarse una espada entera! El Mediano siempre tiene una tirada de
+      salvación básica de 6 sin importar la fuerza del guerrero enemigo y además de cualquier
+      armadura que ya lleve puesta.
+  applies_to:
+    profile_ids:
+    - halfling-elder
+    - halfling-cook
+    - halfling-thief
+    - halfling-youths
+- id: halfling-elder--shifty
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.halflings-mic.special.shifty
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: charge-response bonus attacks are outside the current engine scope.
+  name: Shifty
+  effect: >-
+    The halfling has long-been skirting in the shadows, avoiding unwanted attention. So nimble is he
+    that he may surprise even those who believe they've got them dead-to-rights. The halfling gains
+    a bonus attack when charged that strikes first.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Halfling Special Skills / Shifty
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Escurridizo
+  effect_i18n:
+    es: >-
+      El mediano lleva mucho tiempo moviéndose entre las sombras, evitando la atención no deseada.
+      Es tan ágil que puede sorprender incluso a aquellos que creen tenerlo en un aprieto. El
+      mediano gana un ataque adicional cuando es cargado, que golpea primero.
+  applies_to:
+    profile_ids:
+    - halfling-elder
+    - halfling-cook
+    - halfling-thief
+    - halfling-youths

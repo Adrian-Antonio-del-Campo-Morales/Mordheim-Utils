@@ -142,6 +142,18 @@ Restless Dead or The Battle At Koleshire Keep): in those cases the absence is
 documented in `progression.notes`. Point doubts about a source are documented
 in the `progression.notes` of the entry.
 
+## Format contract
+
+Each document of this directory has a JSON Schema in
+`contracts/knowledge-editorial-v1/` (`campaign-<document>.yaml.schema.json`)
+describing its envelope, its typed effects and the vocabularies it branches on.
+`mordheim_knowledge.editorial_schemas` validates the whole directory in the
+`validate` gate and in `tests/knowledge/test_editorial_schemas.py`, before the
+semantic check of `mordheim_knowledge/campaign.py`; adding a key without
+extending the schema fails the gate. The schemas are the contract for shape and
+vocabulary — this README and [MODELING-CONVENTIONS.md](MODELING-CONVENTIONS.md)
+remain the guide for what belongs here and why.
+
 ## Runtime read path
 
 No YAML of this catalogue is loaded as duel-rule implementation: the runtime

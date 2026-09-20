@@ -1,0 +1,283 @@
+schema_version: 2
+band_id: woodsmen-de-artois-mou
+profiles:
+- id: chief
+  name: Chief
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - woodsmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Chief
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  source_path:
+  - heroes
+  - 1 Chief
+  name_i18n:
+    es: Jefe
+  rule_ids:
+  - chief--leader
+  combat_traits: {}
+- id: hunter
+  name: Hunter
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - woodsmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-1 Hunter
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  source_path:
+  - heroes
+  - 0-1 Hunter
+  name_i18n:
+    es: Cazador
+  rule_ids: []
+  combat_traits: {}
+- id: friar
+  name: Friar
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - woodsmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-1 Friar
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  source_path:
+  - heroes
+  - 0-1 Friar
+  name_i18n:
+    es: Fraile
+  rule_ids:
+  - friar--wizard
+  combat_traits: {}
+- id: cub
+  name: Cub
+  type: hero
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - woodsmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - special
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Heroes / 0-2 Cubs
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  source_path:
+  - heroes
+  - 0-2 Cubs
+  name_i18n:
+    es: Cachorro
+  rule_ids: []
+  combat_traits: {}
+- id: woodsman
+  name: Woodsmen
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - woodsmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / Woodsmen
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  source_path:
+  - henchmen
+  - Woodsmen
+  name_i18n:
+    es: Leñadores
+  rule_ids: []
+  combat_traits: {}
+- id: bowman
+  name: Bowman
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - woodsmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / 0-7 Bowmen
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  source_path:
+  - henchmen
+  - 0-7 Bowmen
+  name_i18n:
+    es: Arqueros
+  rule_ids:
+  - bowman--expert-shot
+  combat_traits: {}
+- id: trapper
+  name: Trapper
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - woodsmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / 0-5 Trappers
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  source_path:
+  - henchmen
+  - 0-5 Trappers
+  name_i18n:
+    es: Tramperos
+  rule_ids:
+  - trapper--set-traps
+  combat_traits: {}
+- id: hunting-hound
+  name: Hunting Hound
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Hunting Hounds do not use any equipment or weapons.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Hunting Hounds
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  source_path:
+  - henchmen
+  - 0-5 Hunting Hounds
+  name_i18n:
+    es: Sabuesos de Caza
+  rule_ids:
+  - hunting-hound--animals
+  - hunting-hound--dog-handler
+  combat_traits: {}

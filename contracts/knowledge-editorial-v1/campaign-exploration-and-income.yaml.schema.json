@@ -1,0 +1,638 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/campaign-exploration-and-income.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/campaign/exploration-and-income.yaml",
+  "description": "The exploration phase and the income it produces: how many dice are rolled, the shards chart, the results chart and, for every result, a `follow_up` procedure that says what happens. `follow_up` is a tree — `sequence`, `roll_table`, `characteristic_test`, `choose_one`, `choose_option`, `conditional` and the `grant` family — and every node is typed, so an outcome that changes a warband is data the applications execute, not prose they parse. Dice rolled, findings, crowns and wyrdstone obtained are campaign state and stay outside the KB.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "catalog", "status", "exploration", "income", "magical_artefacts", "effect_ids"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "catalog": { "$ref": "defs.schema.json#/$defs/id" },
+    "status": { "$ref": "defs.schema.json#/$defs/catalog_status" },
+    "exploration": { "$ref": "#/$defs/exploration" },
+    "income": { "$ref": "#/$defs/income" },
+    "magical_artefacts": { "$ref": "#/$defs/magical_artefacts" },
+    "effect_ids": {
+      "description": "Effects of this catalogue a warband's own special rules may modify.",
+      "$ref": "defs.schema.json#/$defs/id_list"
+    }
+  },
+  "$defs": {
+    "exploration": {
+      "description": "The exploration phase.",
+      "type": "object",
+      "required": ["dice_allocation", "max_dice", "shards_chart", "results"],
+      "additionalProperties": false,
+      "properties": {
+        "dice_allocation": {
+          "description": "How the exploration dice are earned.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/dice_allocation" }
+        },
+        "max_dice": {
+          "description": "The cap on how many dice the chart is rolled with.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "shards_chart": { "$ref": "#/$defs/shards_chart" },
+        "results": {
+          "description": "The exploration results, one per dice pattern.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/exploration_result" }
+        }
+      }
+    },
+    "dice_allocation": {
+      "description": "One way of earning an exploration die.",
+      "type": "object",
+      "required": ["id", "eligible_warrior", "dice", "condition", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "eligible_warrior": {
+          "description": "Who earns the die: a kind of warrior, or the warband as a whole.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "dice": {
+          "description": "How many dice the condition adds.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "condition": {
+          "description": "What earns them, e.g. having survived the battle or having won it.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "shards_chart": {
+      "description": "The chart that turns the total of the exploration dice into a number of wyrdstone shards. The last cell is open-ended and declares `min` only.",
+      "type": "object",
+      "required": ["id", "cells", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "cells": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["when", "shards"],
+            "additionalProperties": false,
+            "properties": {
+              "when": {
+                "type": "object",
+                "required": ["dice_total"],
+                "additionalProperties": false,
+                "properties": {
+                  "dice_total": { "$ref": "defs.schema.json#/$defs/interval" }
+                }
+              },
+              "shards": {
+                "description": "Wyrdstone shards found.",
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "exploration_result": {
+      "description": "One result of the exploration chart.",
+      "type": "object",
+      "required": ["id", "dice_pattern", "outcome", "description", "description_i18n", "follow_up", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable result id of the `campaign.exploration.result.*` family; the semantic outcome is kept and the roll is never the only identifier.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "dice_pattern": {
+          "description": "The dice that reach this result, as printed: `1,1` for a double, `4,5` for a non-double row.",
+          "type": "string",
+          "pattern": "^[0-9]+(,[0-9]+)+$"
+        },
+        "outcome": {
+          "description": "Name of the result.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "outcome_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "description": {
+          "description": "The result as the source prints it.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "description_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "follow_up": { "$ref": "#/$defs/procedure" },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "income": {
+      "description": "The income the post-battle sequence produces.",
+      "type": "object",
+      "required": ["wyrdstone_sale"],
+      "additionalProperties": false,
+      "properties": {
+        "wyrdstone_sale": { "$ref": "#/$defs/wyrdstone_sale" }
+      }
+    },
+    "wyrdstone_sale": {
+      "description": "What a warband is paid for the wyrdstone it sells. The table is indexed by two inputs: how many fragments are sold and how large the warband is.",
+      "type": "object",
+      "required": ["id", "inputs", "cells", "restrictions", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "inputs": {
+          "description": "The inputs the table is indexed by, in the order the source reads them.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "kind"],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "description": "Input key, e.g. `fragments_sold` or `warband_size`; the cells use the same key.",
+                "$ref": "defs.schema.json#/$defs/id"
+              },
+              "kind": {
+                "description": "Type of the input. Both inputs of the source are whole numbers.",
+                "const": "integer"
+              }
+            }
+          }
+        },
+        "cells": {
+          "description": "The cells of the table. A cell is open-ended in an input when its interval declares `min` only.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["when", "profit_gc"],
+            "additionalProperties": false,
+            "properties": {
+              "when": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": {
+                  "$ref": "defs.schema.json#/$defs/interval"
+                }
+              },
+              "profit_gc": {
+                "description": "Gold crowns the sale yields.",
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "restrictions": {
+          "description": "The restrictions on selling, e.g. that it happens once per post-battle sequence.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "magical_artefacts": {
+      "description": "The magical artefact chart a result can send the warband to.",
+      "type": "object",
+      "required": ["id", "dice", "note", "results", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "dice": { "$ref": "defs.schema.json#/$defs/dice" },
+        "note": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "results": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "roll", "result", "effect", "effect_i18n"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "$ref": "defs.schema.json#/$defs/id" },
+              "roll": {
+                "description": "The dice result that reaches this artefact.",
+                "type": "string",
+                "pattern": "^[0-9]+$"
+              },
+              "result": {
+                "description": "Name of the artefact.",
+                "$ref": "defs.schema.json#/$defs/display_text"
+              },
+              "result_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+              "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+              "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" }
+            }
+          }
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "procedure_list": {
+      "description": "An ordered list of procedures.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/procedure" }
+    },
+    "procedure": {
+      "description": "One node of an exploration procedure. `type` is the discriminator and every form is closed, so a node cannot carry a key no application reads.",
+      "oneOf": [
+        { "$ref": "#/$defs/sequence" },
+        { "$ref": "#/$defs/roll_table" },
+        { "$ref": "#/$defs/characteristic_test" },
+        { "$ref": "#/$defs/choose_one" },
+        { "$ref": "#/$defs/choose_option" },
+        { "$ref": "#/$defs/conditional" },
+        { "$ref": "#/$defs/grant" },
+        { "$ref": "#/$defs/reward" },
+        { "$ref": "#/$defs/grant_rule" },
+        { "$ref": "#/$defs/grant_free_profile" },
+        { "$ref": "#/$defs/grant_compound_item" },
+        { "$ref": "#/$defs/choose_equipment" },
+        { "$ref": "#/$defs/choose_warriors" },
+        { "$ref": "#/$defs/choose_henchman_group" },
+        { "$ref": "#/$defs/choose_hireling" },
+        { "$ref": "#/$defs/magical_artefact_table" },
+        { "$ref": "#/$defs/miss_games" },
+        { "$ref": "#/$defs/remove_warrior" }
+      ]
+    },
+    "sequence": {
+      "description": "Runs its steps in order.",
+      "type": "object",
+      "required": ["type", "steps"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "sequence" },
+        "steps": { "$ref": "#/$defs/procedure_list" }
+      }
+    },
+    "roll_table": {
+      "description": "Rolls on the dice and runs the `then` of the branch the result falls in; `default` runs when no branch matches.",
+      "type": "object",
+      "required": ["type", "dice", "branches"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "roll_table" },
+        "dice": { "$ref": "defs.schema.json#/$defs/dice" },
+        "branches": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["when", "then"],
+            "additionalProperties": false,
+            "properties": {
+              "when": { "$ref": "defs.schema.json#/$defs/interval" },
+              "then": { "$ref": "#/$defs/procedure_list" }
+            }
+          }
+        },
+        "default": { "$ref": "#/$defs/procedure_list" }
+      }
+    },
+    "characteristic_test": {
+      "description": "A characteristic test whose outcome chooses which list runs.",
+      "type": "object",
+      "required": ["type", "actor", "characteristic", "dice", "success_when", "on_success", "on_failure"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "characteristic_test" },
+        "actor": {
+          "description": "Who takes the test: a bound variable, or a selector such as an eligible Hero.",
+          "$ref": "defs.schema.json#/$defs/id_or_parameter"
+        },
+        "characteristic": { "$ref": "#/$defs/characteristic" },
+        "dice": { "$ref": "defs.schema.json#/$defs/dice" },
+        "success_when": {
+          "description": "How the roll is compared with the characteristic.",
+          "enum": ["roll_less_than_characteristic", "roll_less_than_or_equal_to_characteristic"]
+        },
+        "on_success": { "$ref": "#/$defs/procedure_list" },
+        "on_failure": { "$ref": "#/$defs/procedure_list" }
+      }
+    },
+    "choose_one": {
+      "description": "Binds a local variable of the procedure to one of a set of eligible warriors. The binding is local to this procedure: rolls, choices and applied rewards are saved only in the external campaign state.",
+      "type": "object",
+      "required": ["type", "bind", "from"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "choose_one" },
+        "bind": {
+          "description": "Name of the variable later nodes refer to as `$<bind>`, e.g. `searching_hero`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "from": {
+          "description": "The set picked from, e.g. `eligible_heroes`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        }
+      }
+    },
+    "choose_option": {
+      "description": "Offers the player a set of outcomes to choose from.",
+      "type": "object",
+      "required": ["type", "label", "options"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "choose_option" },
+        "label": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "label", "then"],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "description": "Stable option key, so a saved choice stays readable.",
+                "$ref": "defs.schema.json#/$defs/id"
+              },
+              "label": { "$ref": "defs.schema.json#/$defs/display_text" },
+              "then": { "$ref": "#/$defs/procedure_list" }
+            }
+          }
+        }
+      }
+    },
+    "conditional": {
+      "description": "Runs the `then` of the first case whose condition holds, and `default` when none does. Per-warband branches use this node; they never duplicate the outcome.",
+      "type": "object",
+      "required": ["type", "cases", "default"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "conditional" },
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["when", "then"],
+            "additionalProperties": false,
+            "properties": {
+              "when": { "$ref": "#/$defs/condition" },
+              "then": { "$ref": "#/$defs/procedure_list" }
+            }
+          }
+        },
+        "default": { "$ref": "#/$defs/procedure_list" }
+      }
+    },
+    "condition": {
+      "description": "The test of a case: a field the procedure can read, compared with a value.",
+      "type": "object",
+      "required": ["field", "operator"],
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "description": "What is read: `roll` for the roll being resolved, `context.<name>` for a value of the calling context such as the warband id.",
+          "type": "string",
+          "pattern": "^[a-z_]+(\\.[a-z_]+)*$"
+        },
+        "operator": {
+          "description": "`equals` compares with one value; `in` tests membership in the list of `value`.",
+          "enum": ["equals", "in"]
+        },
+        "value": {
+          "description": "The value compared with, or the list of values for `in`.",
+          "oneOf": [
+            { "$ref": "defs.schema.json#/$defs/id" },
+            { "$ref": "defs.schema.json#/$defs/id_list" },
+            { "type": "integer" }
+          ]
+        }
+      }
+    },
+    "grant": {
+      "description": "Grants resources or items to a recipient.",
+      "type": "object",
+      "required": ["type", "recipient"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "grant" },
+        "recipient": { "$ref": "#/$defs/recipient" },
+        "resources": { "$ref": "#/$defs/resources" },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["item_id", "quantity"],
+            "additionalProperties": false,
+            "properties": {
+              "item_id": {
+                "description": "Canonical `item_id` of `catalog/items/`. A reward the catalogue does not have is not invented here: the ingestion stops until the canonical record exists.",
+                "$ref": "defs.schema.json#/$defs/id"
+              },
+              "quantity": { "$ref": "defs.schema.json#/$defs/amount" }
+            }
+          }
+        },
+        "note": { "$ref": "defs.schema.json#/$defs/display_text" }
+      },
+      "anyOf": [
+        { "required": ["items"] },
+        { "required": ["resources"] },
+        { "required": ["note"] }
+      ]
+    },
+    "resources": {
+      "description": "The resources a grant gives. Each one is a fixed or rolled amount.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "gold_crowns": { "$ref": "defs.schema.json#/$defs/amount" },
+        "experience": { "$ref": "defs.schema.json#/$defs/amount" },
+        "wyrdstone_fragments": { "$ref": "defs.schema.json#/$defs/amount" }
+      }
+    },
+    "reward": {
+      "description": "Grants a reward to a recipient. It differs from `grant` in who it names: a `reward.grant` is written the way the scenario tables state it, and is kept as its own node so a scenario reward can be traced to the row it came from instead of being flattened into a grant the source does not state.",
+      "type": "object",
+      "required": ["type", "recipient", "resources"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "reward.grant" },
+        "recipient": { "$ref": "#/$defs/recipient" },
+        "resources": { "$ref": "#/$defs/resources" },
+        "note": { "$ref": "defs.schema.json#/$defs/display_text" }
+      }
+    },
+    "grant_rule": {
+      "description": "Grants a written rule that holds for the warband, e.g. a bonus on the next exploration roll. The text is the source's, because no engine evaluates it, and it is kept next to the recipient so the applications can show it.",
+      "type": "object",
+      "required": ["type", "recipient", "text", "text_i18n"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "grant_rule" },
+        "recipient": { "$ref": "#/$defs/recipient" },
+        "label": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "text": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "text_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "expires_after_battles": {
+          "description": "How many battles the rule holds for, when the source expires it.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "consume_when_opponent_contains": {
+          "description": "The rule is spent when the opposing warband is one of these, as the source names them.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "defs.schema.json#/$defs/display_text" }
+        }
+      }
+    },
+    "grant_free_profile": {
+      "description": "The warband gains a warrior of a profile it does not pay for. The profile is named as the source names it; it is not given a profile id the catalogue does not have.",
+      "type": "object",
+      "required": ["type", "profile_name"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "grant_free_profile" },
+        "profile_name": { "$ref": "defs.schema.json#/$defs/display_text" }
+      }
+    },
+    "grant_compound_item": {
+      "description": "The warband gains an item built from a base item, which the chat reduces the source often does not define as a catalogue item. It is therefore named and identified as a reward, keeping the base item it is built from.",
+      "type": "object",
+      "required": ["type", "reward_id", "base_item_id", "name", "category", "rules"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "grant_compound_item" },
+        "reward_id": { "$ref": "defs.schema.json#/$defs/id" },
+        "base_item_id": {
+          "description": "Canonical item the reward is built from.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "category": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "rules": {
+          "description": "The rules the reward adds to its base item, as the source states them.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "defs.schema.json#/$defs/display_text" }
+        }
+      }
+    },
+    "choose_equipment": {
+      "description": "The player chooses a piece of the warband's equipment for a temporary effect. The text is the source's, with `{item}` where the choice is interpolated.",
+      "type": "object",
+      "required": ["type", "label", "text", "text_i18n"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "choose_equipment" },
+        "label": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "text": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "text_i18n": { "$ref": "defs.schema.json#/$defs/i18n" }
+      }
+    },
+    "choose_warriors": {
+      "description": "The player chooses up to a maximum number of models for a temporary effect, with the profiles the source excludes. The text is the source's, with `{warriors}` where the choice is interpolated.",
+      "type": "object",
+      "required": ["type", "label", "maximum", "text", "text_i18n"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "choose_warriors" },
+        "label": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "maximum": {
+          "description": "How many models may be chosen.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "text": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "text_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "exclude_profiles": {
+          "description": "Profiles the source excludes from the choice, named as the source names them.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "defs.schema.json#/$defs/display_text" }
+        },
+        "expires_after_battles": {
+          "description": "How many battles the choice holds for, when the source expires it.",
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "choose_henchman_group": {
+      "description": "The player chooses one of his henchman groups.",
+      "type": "object",
+      "required": ["type", "label", "allow_decline"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "choose_henchman_group" },
+        "label": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "allow_decline": {
+          "description": "Whether the player may decline the grant instead of choosing a group.",
+          "type": "boolean"
+        }
+      }
+    },
+    "choose_hireling": {
+      "description": "The player chooses one of his Hired Swords.",
+      "type": "object",
+      "required": ["type", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "choose_hireling" },
+        "label": { "$ref": "defs.schema.json#/$defs/display_text" }
+      }
+    },
+    "magical_artefact_table": {
+      "description": "Sends the warband to the magical artefact chart of this document. It carries no data of its own: the chart is declared once under `magical_artefacts`.",
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "magical_artefact_table" }
+      }
+    },
+    "miss_games": {
+      "description": "The subject misses games.",
+      "type": "object",
+      "required": ["type", "subject", "games"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "warrior.miss_games" },
+        "subject": { "$ref": "defs.schema.json#/$defs/id_or_parameter" },
+        "games": { "$ref": "defs.schema.json#/$defs/amount" }
+      }
+    },
+    "remove_warrior": {
+      "description": "Removes the subject from the roster.",
+      "type": "object",
+      "required": ["type", "subject"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "roster.remove_warrior" },
+        "subject": { "$ref": "defs.schema.json#/$defs/id_or_parameter" },
+        "note": { "$ref": "defs.schema.json#/$defs/display_text" }
+      }
+    },
+    "recipient": {
+      "description": "Who receives what a node grants.",
+      "enum": ["hero", "hero_and_henchman_group", "heroes", "leader", "subject", "warband"]
+    },
+    "characteristic": {
+      "description": "Characteristic a test rolls against, named in full instead of by the profile abbreviation.",
+      "enum": [
+        "attacks",
+        "ballistic_skill",
+        "initiative",
+        "leadership",
+        "movement",
+        "strength",
+        "toughness",
+        "weapon_skill",
+        "wounds"
+      ]
+    }
+  }
+}

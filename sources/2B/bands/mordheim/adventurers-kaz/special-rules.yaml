@@ -1,0 +1,525 @@
+schema_version: 2
+band_id: adventurers-kaz
+rules:
+- id: band--no-fixed-leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.adventurers-kaz.band.no-fixed-leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: pre-battle random leader election and inter-hero rivalry
+        (Leadership-benefit restrictions between Dwarf/Elf/Wizard/Barbarian pairs).
+  name: No Fixed Leader
+  effect: >-
+    The Adventurers warband has no fixed leader. The adventurers argue and squabble all the time
+    with each other about all kinds of minor things like food and gold, let alone that they can
+    decide on their leader. When creating a warband mark each Hero (except the Imperial Captain)
+    on the roster sheet with a number between 1 and 5. As the Imperial Captain can never become
+    the Leader there is always the chance that the warband will not have a leader for the next
+    battle. Roll a D6 before each battle. Dwarf: if the Dwarf is the Leader of the warband then
+    the Elf is so insulted by this that he won't stay within 6\" of the Dwarf at any time and
+    therefore cannot benefit from his Leadership. Elf: if the Elf is the Leader then the Dwarf
+    is so insulted that he won't stay within 6\" of the Elf and cannot benefit from his
+    Leadership. Wizard: if the Wizard is the Leader then the Barbarian becomes so confused by
+    the difficult commands of the Wizard that he won't stay within 6\" of the Wizard and cannot
+    benefit from his Leadership. Barbarian: if the Barbarian is the Leader then the Wizard
+    becomes so annoyed and irritated by his stupid commands that he won't stay within 6\" of the
+    Barbarian and cannot benefit from his Leadership (see also the Barbarian's \"Dim-witted\"
+    rule). Imperial Noble: as the Imperial Noble is a natural born leader nobody suffers from
+    any negative effects towards any other adventurer in the warband.
+  source:
+    manual: broheim.net
+    printed_page: 19
+    section: Leader
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Sin Líder Fijo
+  effect_i18n:
+    es: >-
+      La banda de Aventureros no tiene un líder fijo. Los aventureros discuten y reñían
+      constantemente entre ellos por todo tipo de cosas menores, como la comida y el oro, ya no
+      digamos ponerse de acuerdo sobre su líder. Al crear la banda, marca en la hoja de banda a cada
+      Héroe (excepto al Capitán Imperial) con un número entre 1 y 5. Como el Capitán Imperial nunca
+      puede convertirse en el Líder, siempre existe la posibilidad de que la banda no tenga líder
+      para la siguiente batalla. Tira 1D6 antes de cada batalla. Enano: si el Enano es el Líder de
+      la banda, el Elfo se siente tan insultado por ello que no permanecerá a 6" del Enano en ningún
+      momento y por tanto no podrá beneficiarse de su Liderazgo. Elfo: si el Elfo es el Líder, el
+      Enano se siente tan insultado que no permanecerá a 6" del Elfo y no podrá beneficiarse de su
+      Liderazgo. Hechicero: si el Hechicero es el Líder, el Bárbaro se confunde tanto con las
+      difíciles órdenes del Hechicero que no permanecerá a 6" del Hechicero y no podrá beneficiarse
+      de su Liderazgo. Bárbaro: si el Bárbaro es el Líder, el Hechicero se irrita y molesta tanto
+      por sus estúpidas órdenes que no permanecerá a 6" del Bárbaro y no podrá beneficiarse de su
+      Liderazgo (ver también la regla «Cabezacuadrado» del Bárbaro). Noble Imperial: como el Noble
+      Imperial es un líder nato, nadie sufre efectos negativos hacia ningún otro aventurero de la
+      banda.
+  applies_to:
+    band: true
+- id: wizard--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.adventurers-kaz.wizard.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem.
+  name: Wizard
+  effect: >-
+    Wizards are magicians and start with two random spells from the Lesser Magic spell list.
+    See the magic section of your rulebook for details.
+  source:
+    manual: broheim.net
+    printed_page: 21
+    section: heroes / 0-1 Wizard / Special Rules / Wizard
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Hechicero
+  effect_i18n:
+    es: >-
+      Los hechiceros son magos y comienzan con dos hechizos aleatorios de la lista de hechizos de
+      Magia Menor. Consulta la sección de magia de tu libro de reglas para más detalles.
+  applies_to:
+    profile_ids:
+    - wizard
+- id: elf--hatred
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.adventurers-kaz.elf.hatred
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Hatred
+  effect: The Elf hates Dark Elfs.
+  source:
+    manual: broheim.net
+    printed_page: 21
+    section: heroes / 0-1 Elf / Special Rules / Hatred
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Odio
+  effect_i18n:
+    es: >-
+      El Elfo odia a los Elfos Oscuros.
+  applies_to:
+    profile_ids:
+    - elf
+- id: elf--seeker
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.adventurers-kaz.elf.seeker
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: exploration sequence is a campaign mechanic.
+  name: Seeker
+  effect: >-
+    A Ranger helps its warband when they are searching the dungeons for treasure. If the Ranger
+    is not put out of action in the battle, you may modify one dice in the exploration sequence
+    by +1/-1.
+  source:
+    manual: broheim.net
+    printed_page: 21
+    section: heroes / 0-1 Elf / Special Rules / Seeker
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Buscador
+  effect_i18n:
+    es: >-
+      Un Buscador ayuda a su banda cuando esta busca tesoros en las mazmorras. Si el Buscador no
+      queda Fuera de Combate en la batalla, puedes modificar un dado en la secuencia de exploración
+      en +1/-1.
+  applies_to:
+    profile_ids:
+    - elf
+- id: barbarian--frenzy
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.adventurers-kaz.barbarian.frenzy
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (frenzy).
+  name: Frenzy
+  effect: The Barbarian is subject to Frenzy.
+  source:
+    manual: broheim.net
+    printed_page: 22
+    section: heroes / 0-1 Barbarian / Special Rules / Frenzy
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Frenesí
+  effect_i18n:
+    es: >-
+      El Bárbaro está sujeto a Frenesí.
+  applies_to:
+    profile_ids:
+    - barbarian
+- id: barbarian--dim-witted
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.adventurers-kaz.barbarian.dim-witted
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology and leader election.
+  name: Dim-witted
+  effect: >-
+    If the Barbarian is the warband's leader then he has an effective Leadership of 7 for
+    warband members within 6\" and Rout tests.
+  source:
+    manual: broheim.net
+    printed_page: 22
+    section: heroes / 0-1 Barbarian / Special Rules / Dim-witted
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Cabezacuadrado
+  effect_i18n:
+    es: >-
+      Si el Bárbaro es el líder de la banda, tiene un Liderazgo efectivo de 7 para los miembros de
+      la banda a 6" y para las tiradas de Huida.
+  applies_to:
+    profile_ids:
+    - barbarian
+- id: imperial-noble--honorable
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.adventurers-kaz.imperial-noble.honorable
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: attack targeting restrictions against knocked down or stunned
+        opponents.
+  name: Honorable
+  effect: The Imperial Noble will never attack an opponent that is Knocked Down or Stunned.
+  source:
+    manual: broheim.net
+    printed_page: 23
+    section: heroes / 0-1 Imperial Noble / Special Rules / Honorable
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Honrado
+  effect_i18n:
+    es: >-
+      El Noble Imperial nunca atacará a un oponente que esté Derribado o Aturdido.
+  applies_to:
+    profile_ids:
+    - imperial-noble
+- id: imperial-noble--family-heirloom
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.adventurers-kaz.imperial-noble.family-heirloom
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: warband-creation roll and campaign-level effects.
+  name: Family Heirloom
+  effect: >-
+    The Family Heirloom is a special sword or pistol that has been in the family for a long
+    time. When creating the warband roll a D6 to see what its power is: 1-2 the Noble may
+    re-roll the first failed Psychology test during a battle; 3-4 the Noble causes Fear in Orcs
+    & Goblins and Skaven; 5-6 the Noble may re-roll one die during a battle.
+  source:
+    manual: broheim.net
+    printed_page: 23
+    section: heroes / 0-1 Imperial Noble / Special Rules / Family Heirloom
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Reliquia Familiar
+  effect_i18n:
+    es: >-
+      La Reliquia Familiar es una espada o pistola especial que ha pertenecido a la familia durante
+      mucho tiempo. Al crear la banda, tira 1D6 para ver cuál es su poder: 1-2 el Noble puede
+      repetir el primer chequeo de Psicología fallido durante una batalla; 3-4 el Noble causa Miedo
+      a Orcos y Goblins y Skaven; 5-6 el Noble puede repetir un dado durante una batalla.
+  applies_to:
+    profile_ids:
+    - imperial-noble
+- id: dwarf--hard-to-kill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.hard-to-kill
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
+  name: Hard to Kill
+  effect: See Mordheim rulebook page 151.
+  source:
+    manual: broheim.net
+    printed_page: 23
+    section: heroes / 0-1 Dwarf / Special Rules / Hard to Kill
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Difícil de Matar
+  effect_i18n:
+    es: >-
+      Ver la página 151 del libro de reglas de Mordheim.
+  applies_to:
+    profile_ids:
+    - dwarf
+- id: dwarf--hard-head
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.concussion-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.concussion-immune
+  name: Hard Head
+  effect: See Mordheim rulebook page 151.
+  source:
+    manual: broheim.net
+    printed_page: 23
+    section: heroes / 0-1 Dwarf / Special Rules / Hard Head
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Cabeza Dura
+  effect_i18n:
+    es: >-
+      Ver la página 151 del libro de reglas de Mordheim.
+  applies_to:
+    profile_ids:
+    - dwarf
+- id: band--elf-special-skills
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+  name: Elf Special Skill Table
+  effect: >-
+    Elf Heroes may use the following Skill table instead of any of the standard Skill tables.
+    Fey: any effect from a magical spell or a scroll will not affect the model on a D6 roll of
+    4+. Chosen of the White Tower: the Elf has been trained in the martial art of the White
+    Tower; this allows him to parry even if he is not armed with a buckler or sword, and it can
+    re-roll the parry if it is already armed in this way. Fey Quickness: same as TC12.
+  source:
+    manual: broheim.net
+    printed_page: 21
+    section: Elf Special Skill Table
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Tabla de Habilidades Especiales de Elfos
+  effect_i18n:
+    es: >-
+      Los Héroes Elfos pueden usar la siguiente Tabla de Habilidades en lugar de cualquiera de las
+      tablas de habilidades estándar. Feérico: cualquier efecto de un hechizo mágico o un pergamino
+      no afectará al modelo con una tirada de 4+ en 1D6. Elegido de la Torre Blanca: el Elfo ha sido
+      entrenado en el arte marcial de la Torre Blanca; esto le permite parar aunque no esté armado
+      con broquel ni espada, y puede repetir la parada si ya está armado de esta forma. Ligereza
+      Feérica: igual que TC12.
+  applies_to:
+    band: true
+- id: band--barbarian-special-skills
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+  name: Barbarian Special Skills
+  effect: >-
+    Barbarians may use the following skill list instead of the standard skill lists. Hard to
+    Kill: barbarians are tough, resilient warriors; when rolling on the injury chart, treat a
+    roll of 5 as stunned; the Barbarian will only be taken out of action on a roll of 6.
+    Ferocious Charge: the Barbarian may double his attacks on the turn in which he charges; he
+    will suffer a -1 to hit that turn. Instinctive Warrior: the Barbarian is so used to his own
+    Double Handed Weapon that he is able to parry with this weapon; use the Parry rules as
+    normally with one sword, as described in your Rulebook.
+  source:
+    manual: broheim.net
+    printed_page: 22
+    section: Barbarian Special Skills
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Habilidades Especiales de Bárbaros
+  effect_i18n:
+    es: >-
+      Los Bárbaros pueden usar la siguiente lista de habilidades en lugar de las listas de
+      habilidades estándar. Difícil de Matar: los bárbaros son guerreros duros y resistentes; al
+      tirar en la tabla de heridas, trata un resultado de 5 como aturdido; el Bárbaro solo quedará
+      Fuera de Combate con un resultado de 6. Carga Feroz: el Bárbaro puede doblar sus ataques en el
+      turno en el que carga; sufrirá un -1 por impactar ese turno. Guerrero Instintivo: el Bárbaro
+      está tan acostumbrado a su Arma a Dos Manos que es capaz de parar con ella; usa las reglas de
+      Parada normalmente, como con una espada, tal y como se describen en tu Libro de Reglas.
+  applies_to:
+    band: true
+- id: band--noble-special-skills
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+  name: Noble Special Skill Table
+  effect: >-
+    The Noble may use the following Skill table instead of any of the standard Skill tables.
+    Trading Flair: the Noble can re-roll one die when searching for rare goods; in addition,
+    the Imperial Noble gets a -2D6 gc discount on a single item he buys on a roll of 5+ on a D6
+    after each battle. Taunt: the Noble can taunt one opponent within 10\"; that opponent must
+    pass a Leadership test or he must charge the Noble, even if he is out of his charge range.
+  source:
+    manual: broheim.net
+    printed_page: 23
+    section: Noble Special Skill Table
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Tabla de Habilidades Especiales de Nobles
+  effect_i18n:
+    es: >-
+      El Noble puede usar la siguiente Tabla de Habilidades en lugar de cualquiera de las tablas de
+      habilidades estándar. Talento para el Comercio: el Noble puede repetir un dado al buscar
+      objetos raros; además, el Noble Imperial obtiene un descuento de -2D6 coronas en un único
+      objeto que compre con una tirada de 5+ en 1D6 después de cada batalla. Provocar: el Noble
+      puede provocar a un oponente a 10"; ese oponente debe superar un chequeo de Liderazgo o deberá
+      cargar contra el Noble, incluso si está fuera de su alcance de carga.
+  applies_to:
+    band: true
+- id: band--dwarf-special-skills
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+  name: Dwarf Special Skill Table
+  effect: >-
+    Dwarf may use the following Skill table instead of any of the standard Skill tables. Magic
+    Resistant: I don't believe in magic! Any effect from a magical spell or a scroll will not
+    affect the Dwarf on a D6 roll of 4+. Ferocious Charge: see Mordheim rulebook page 151.
+    Monster Slayer: see Mordheim rulebook page 151. Berserker: see Mordheim rulebook page 151.
+  source:
+    manual: broheim.net
+    printed_page: 23
+    section: Dwarf Special Skill Table
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Tabla de Habilidades Especiales de Enanos
+  effect_i18n:
+    es: >-
+      Los Enanos pueden usar la siguiente Tabla de Habilidades en lugar de cualquiera de las tablas
+      de habilidades estándar. Resistente a la Magia: ¡yo no creo en la magia! Cualquier efecto de
+      un hechizo mágico o un pergamino no afectará al Enano con una tirada de 4+ en 1D6. Carga
+      Feroz: ver la página 151 del libro de reglas de Mordheim. Matamostro: ver la página 151 del
+      libro de reglas de Mordheim. Berserker: ver la página 151 del libro de reglas de Mordheim.
+  applies_to:
+    band: true
+- id: cannon-fodder--mixed-bunch
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.adventurers-kaz.cannon-fodder.mixed-bunch
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: campaign promotion mechanics.
+  name: Mixed Bunch
+  effect: >-
+    When one of the Cannon Fodder gets the \"Lad's got Talent\" result then he will become an
+    Imperial Captain. He can pick two skills from any of the Adventurers skill tables but not
+    the special ones. The Imperial Captain uses the Cannon Fodder equipment list.
+  source:
+    manual: broheim.net
+    printed_page: 24
+    section: henchmen / Cannon Fodder / Special Rules / Mixed Bunch
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Panda Mixta
+  effect_i18n:
+    es: >-
+      Cuando uno de los Carne de Cañón obtiene el resultado de «el chaval tiene talento», se
+      convertirá en un Capitán Imperial. Puede escoger dos habilidades de cualquiera de las tablas
+      de habilidades de los Aventureros, pero no de las especiales. El Capitán Imperial usa la lista
+      de equipo de Carne de Cañón.
+  applies_to:
+    profile_ids:
+    - cannon-fodder
+- id: band--hired-swords
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.adventurers-kaz.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Hired Swords
+  effect: >-
+    The warband has access to the following Hired Swords: Dwarf Trollslayer, Freelancer (no horse),
+    Warlock, Duellist, Elf Ranger, Halfling Scout, Pitfighter, Tilean Marksman and Imperial
+    Assassin.
+  source:
+    manual: broheim.net
+    printed_page: 20
+    section: Hired Swords
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Espadas a Sueldo
+  effect_i18n:
+    es: >-
+      La banda tiene acceso a las siguientes Espadas a Sueldo: Matatrolles Enano, Mercenario Libre
+      (sin montura), Hechicero, Duelista, Guardabosques Élfico, Explorador Halfling, Luchador de
+      Foso, Tirador Tileano y Asesino Imperial.
+  applies_to:
+    band: true

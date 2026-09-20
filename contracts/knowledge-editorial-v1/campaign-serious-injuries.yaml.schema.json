@@ -1,0 +1,377 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/campaign-serious-injuries.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/campaign/serious-injuries.yaml",
+  "description": "The serious injury tables: what can happen to a Hero or a henchman after a battle. Its `effects` are typed operations, not free text or campaign state — `roster.remove_warrior` retires a warrior, `warrior.add_condition` applies a condition that already exists in `catalog/rules/conditions.yaml`, and a table inside a result declares `resolution.type: roll_table` with its own branches. The injuries suffered by a concrete warrior are campaign state and stay outside the KB.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "catalog", "status", "tables", "effect_ids"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "catalog": { "$ref": "defs.schema.json#/$defs/id" },
+    "status": { "$ref": "defs.schema.json#/$defs/catalog_status" },
+    "tables": {
+      "description": "One table per kind of warrior.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/table" }
+    },
+    "effect_ids": {
+      "description": "Effects of this catalogue a warband's own special rules may modify.",
+      "$ref": "defs.schema.json#/$defs/id_list"
+    }
+  },
+  "$defs": {
+    "table": {
+      "description": "One injury table.",
+      "type": "object",
+      "required": ["id", "name", "name_i18n", "applies_to", "dice", "resolution", "results", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "applies_to": {
+          "description": "Kind of warrior the table is rolled for.",
+          "enum": ["hero", "henchman"]
+        },
+        "dice": { "$ref": "defs.schema.json#/$defs/dice" },
+        "resolution": {
+          "description": "How the table is read. `d66` is a two-die chart, read as tens and units.",
+          "enum": ["d6", "d66"]
+        },
+        "results": {
+          "description": "The results of the table.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/result" }
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "result": {
+      "description": "One result of a table. `resolution: direct` means the result applies as written; an object means the result is itself a sub-table.",
+      "type": "object",
+      "required": ["id", "roll", "result", "note", "note_i18n", "resolution"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable result id: `campaign.serious-injury.<kind>.<roll>-<slug>`. The semantic outcome is kept and the roll is never the only identifier.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "roll": {
+          "description": "The roll that reaches this result, as printed: `11-15`, `61` or `Dead`.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "result": {
+          "description": "Name of the result.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "note": {
+          "description": "The full text of the result.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "note_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "resolution": {
+          "description": "`direct` for a result that applies as written, or the sub-table it rolls on.",
+          "oneOf": [
+            { "const": "direct" },
+            { "$ref": "#/$defs/sub_table" }
+          ]
+        },
+        "effects": {
+          "description": "The typed operations the result applies, in order. Absent when the result only changes campaign state the applications own (e.g. a step of the exploration phase); an empty list is the declared convention for `no operation applies`.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/effect" }
+        }
+      }
+    },
+    "sub_table": {
+      "description": "A table rolled from inside a result.",
+      "type": "object",
+      "required": ["type", "dice"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "description": "`roll_table` rolls on the branches declared here; `repeat_table` re-rolls on another table, excluding the results listed in `reroll_ids`.",
+          "enum": ["roll_table", "repeat_table"]
+        },
+        "dice": { "$ref": "defs.schema.json#/$defs/dice" },
+        "branches": {
+          "description": "The branches of a `roll_table`, each with its own id and effects.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/branch" }
+        },
+        "table_id": {
+          "description": "Table a `repeat_table` re-rolls on.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "reroll_ids": {
+          "description": "Results of that table excluded from the re-roll.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "type": { "const": "roll_table" } },
+            "required": ["type"]
+          },
+          "then": { "required": ["branches"] }
+        },
+        {
+          "if": {
+            "properties": { "type": { "const": "repeat_table" } },
+            "required": ["type"]
+          },
+          "then": { "required": ["table_id", "reroll_ids"] }
+        }
+      ]
+    },
+    "branch": {
+      "description": "One branch of a sub-table.",
+      "type": "object",
+      "required": ["id", "when", "result", "effects"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "when": { "$ref": "defs.schema.json#/$defs/interval" },
+        "result": {
+          "description": "Name of the branch result.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "effects": {
+          "description": "The typed operations the branch applies, in order.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/effect" }
+        }
+      }
+    },
+    "effect": {
+      "description": "One typed operation of the campaign catalogue. Its `type` is the discriminator: every form below is closed, so an operation cannot carry a key no application reads.",
+      "oneOf": [
+        { "$ref": "#/$defs/characteristic_modifier" },
+        { "$ref": "#/$defs/add_condition" },
+        { "$ref": "#/$defs/miss_games" },
+        { "$ref": "#/$defs/battle_start_check" },
+        { "$ref": "#/$defs/equipment_limit" },
+        { "$ref": "#/$defs/remove_warrior" },
+        { "$ref": "#/$defs/disposition" },
+        { "$ref": "#/$defs/prisoner" },
+        { "$ref": "#/$defs/add_hatred" },
+        { "$ref": "#/$defs/encounter_trigger" },
+        { "$ref": "#/$defs/reward" }
+      ]
+    },
+    "resources": {
+      "description": "The resources a reward grants. Each one is a fixed or rolled amount.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "gold_crowns": { "$ref": "defs.schema.json#/$defs/amount" },
+        "experience": { "$ref": "defs.schema.json#/$defs/amount" },
+        "wyrdstone_fragments": { "$ref": "defs.schema.json#/$defs/amount" }
+      }
+    },
+    "characteristic_enum": {
+      "description": "Characteristic an operation modifies, named in full instead of by the profile abbreviation.",
+      "enum": [
+        "attacks",
+        "ballistic_skill",
+        "initiative",
+        "leadership",
+        "movement",
+        "strength",
+        "toughness",
+        "weapon_skill",
+        "wounds"
+      ]
+    },
+    "characteristic_modifier": {
+      "description": "Permanently modifies a characteristic of the subject.",
+      "type": "object",
+      "required": ["type", "characteristic", "modifier"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "warrior.characteristic_modifier" },
+        "characteristic": { "$ref": "#/$defs/characteristic_enum" },
+        "modifier": {
+          "description": "Amount the characteristic changes by.",
+          "type": "integer"
+        }
+      }
+    },
+    "add_condition": {
+      "description": "Applies a condition that already exists in `catalog/rules/conditions.yaml`; the condition holds the persistent rule and this operation only applies it.",
+      "type": "object",
+      "required": ["type", "condition_id", "duration"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "warrior.add_condition" },
+        "condition_id": {
+          "description": "Canonical condition id; it must exist in the conditions catalogue before it is referenced here.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "duration": {
+          "description": "How long the condition lasts on the subject.",
+          "const": "permanent"
+        }
+      }
+    },
+    "miss_games": {
+      "description": "The subject misses games.",
+      "type": "object",
+      "required": ["type", "games"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "warrior.miss_games" },
+        "subject": {
+          "description": "Who misses the games, when it is not the warrior the table was rolled for.",
+          "$ref": "defs.schema.json#/$defs/id_or_parameter"
+        },
+        "games": { "$ref": "defs.schema.json#/$defs/amount" }
+      }
+    },
+    "battle_start_check": {
+      "description": "A check the subject rolls at the start of every battle; its failure applies `on_failure`.",
+      "type": "object",
+      "required": ["type", "check_id", "dice", "failure_when", "on_failure"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "warrior.battle_start_check" },
+        "check_id": {
+          "description": "Stable id of the check, so the applications can name it in their UI.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "dice": { "$ref": "defs.schema.json#/$defs/dice" },
+        "failure_when": { "$ref": "defs.schema.json#/$defs/interval" },
+        "on_failure": {
+          "description": "The operations applied when the check fails. An empty list is the declared convention for `nothing happens`.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/effect" }
+        }
+      }
+    },
+    "equipment_limit": {
+      "description": "Limits what the subject may carry.",
+      "type": "object",
+      "required": ["type", "maximum_one_handed_weapons"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "warrior.equipment_limit" },
+        "maximum_one_handed_weapons": {
+          "description": "How many one-handed weapons the subject may carry.",
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "remove_warrior": {
+      "description": "Removes the warrior from the roster.",
+      "type": "object",
+      "required": ["type", "reason"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "roster.remove_warrior" },
+        "reason": {
+          "description": "Why the warrior leaves the roster.",
+          "enum": ["dead", "severe_injuries_or_died"]
+        },
+        "subject": {
+          "description": "Who leaves the roster, when it is not the warrior the table was rolled for.",
+          "$ref": "defs.schema.json#/$defs/id_or_parameter"
+        },
+        "note": { "$ref": "defs.schema.json#/$defs/display_text" }
+      }
+    },
+    "disposition": {
+      "description": "Changes what happens to the equipment the subject carries.",
+      "type": "object",
+      "required": ["type", "scope", "disposition"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "equipment.disposition" },
+        "scope": {
+          "description": "Whose equipment is affected.",
+          "const": "carried_by_subject"
+        },
+        "disposition": {
+          "description": "What happens to it.",
+          "const": "lost"
+        }
+      }
+    },
+    "prisoner": {
+      "description": "Takes the subject prisoner.",
+      "type": "object",
+      "required": ["type", "captive", "captor", "equipment_policy"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "prisoner.create" },
+        "captive": {
+          "description": "Who is taken prisoner.",
+          "const": "subject"
+        },
+        "captor": {
+          "description": "Who holds the prisoner.",
+          "const": "opposing_warband"
+        },
+        "equipment_policy": {
+          "description": "What happens to the prisoner's equipment.",
+          "const": "retained_until_resolution"
+        }
+      }
+    },
+    "add_hatred": {
+      "description": "Records a lasting hatred between the subject and another party.",
+      "type": "object",
+      "required": ["type", "target_selector", "duration"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "relationship.add_hatred" },
+        "target_selector": {
+          "description": "Who the subject comes to hate.",
+          "enum": [
+            "enemy_leader",
+            "inflicting_warband",
+            "inflicting_warband_type",
+            "inflicting_warrior_or_enemy_leader_if_henchman"
+          ]
+        },
+        "duration": {
+          "description": "How long the hatred lasts.",
+          "const": "permanent"
+        }
+      }
+    },
+    "encounter_trigger": {
+      "description": "Triggers an encounter the applications resolve.",
+      "type": "object",
+      "required": ["type", "encounter_id", "subject"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "encounter.trigger" },
+        "encounter_id": { "$ref": "defs.schema.json#/$defs/id" },
+        "subject": { "$ref": "defs.schema.json#/$defs/id_or_parameter" }
+      }
+    },
+    "reward": {
+      "description": "Grants a reward to a recipient.",
+      "type": "object",
+      "required": ["type", "recipient", "resources"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "reward.grant" },
+        "recipient": {
+          "description": "Who receives the reward.",
+          "enum": ["hero", "hero_and_henchman_group", "heroes", "leader", "subject", "warband"]
+        },
+        "resources": { "$ref": "#/$defs/resources" },
+        "note": { "$ref": "defs.schema.json#/$defs/display_text" }
+      }
+    }
+  }
+}

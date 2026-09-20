@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/campaign-scenario-rewards.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/campaign/scenario-rewards.yaml",
+  "description": "The rewards of a scenario expressed as what they give the warband: a resource, a loot chart, or a bonus on the exploration phase. Every reward is identified by a `scenario.<slug>.<reward>` id and every loot row by `scenario.<slug>.loot.<row>`, so the applications can present a reward the player resolves at the table without reading the scenario prose again.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "catalog", "status", "scenarios"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 2 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "catalog": { "$ref": "defs.schema.json#/$defs/id" },
+    "status": { "$ref": "defs.schema.json#/$defs/catalog_status" },
+    "scenarios": {
+      "description": "One entry per scenario that declares rewards. A scenario without rewards has no entry — the absence is documented in the scenario's `progression.notes`.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/scenario" }
+    }
+  },
+  "$defs": {
+    "scenario": {
+      "description": "The rewards of one scenario.",
+      "type": "object",
+      "required": ["scenario_id", "rewards"],
+      "additionalProperties": false,
+      "properties": {
+        "scenario_id": {
+          "description": "Scenario of `scenarios.yaml` the rewards belong to; the catalogue never repeats the scenario's identity.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "rewards": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/reward" }
+        }
+      }
+    },
+    "reward": {
+      "description": "One reward. `kind` is the discriminator: a resource the warband gains, a chart it rolls on, or a bonus on a later phase.",
+      "oneOf": [
+        { "$ref": "#/$defs/resource_reward" },
+        { "$ref": "#/$defs/loot_table_reward" },
+        { "$ref": "#/$defs/exploration_reward" }
+      ]
+    },
+    "resource_reward": {
+      "description": "A resource the warband gains. The amount is resolved in play (the source states it as a rule, not as a number), so the reward declares which resource and whether the player has to enter a quantity.",
+      "type": "object",
+      "required": ["id", "kind", "resource", "rule", "quantity_input"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "kind": { "const": "resource" },
+        "resource": {
+          "description": "Resource gained.",
+          "enum": ["gold_crowns", "wyrdstone_fragments"]
+        },
+        "rule": {
+          "description": "How the amount is determined, faithful to the source.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "quantity_input": {
+          "description": "Whether the player enters the resolved quantity when the reward is applied.",
+          "type": "boolean"
+        }
+      }
+    },
+    "loot_table_reward": {
+      "description": "A chart the warband rolls on for treasure.",
+      "type": "object",
+      "required": ["id", "kind", "rule", "contents", "manual_resolution"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "kind": { "const": "loot_table" },
+        "rule": {
+          "description": "When and how the chart is rolled, faithful to the source.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "contents": {
+          "description": "The rows of the chart.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/loot_row" }
+        },
+        "manual_resolution": {
+          "description": "Whether the chart is resolved by hand at the table instead of by the application — the source's own `roll for each item separately` cases.",
+          "type": "boolean"
+        }
+      }
+    },
+    "exploration_reward": {
+      "description": "A bonus the warband applies on the exploration phase of the same post-battle sequence.",
+      "type": "object",
+      "required": ["id", "kind", "rule", "extra_dice", "reroll_all"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "kind": { "const": "exploration" },
+        "rule": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "extra_dice": {
+          "description": "Exploration dice the bonus adds.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "reroll_all": {
+          "description": "Whether the bonus re-rolls every exploration die rather than a selection of them.",
+          "type": "boolean"
+        }
+      }
+    },
+    "loot_row": {
+      "description": "One row of a loot chart: what is found, the roll that finds it and, when the source discriminates, the interval and the side.",
+      "type": "object",
+      "required": ["id", "label", "roll", "grant"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable row id: `scenario.<slug>.loot.<row>`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "label": {
+          "description": "What the row gives, as printed, e.g. `3D6 gold crowns`.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "roll": {
+          "description": "The roll that reaches the row, as printed: `2D6`, `6-8` or `automatic`.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "grant": { "$ref": "#/$defs/grant" },
+        "quantity_dice": { "$ref": "defs.schema.json#/$defs/dice" },
+        "availability": {
+          "description": "The roll a player must pass for the row's reward to still be there, when the scenario declares one.",
+          "type": "object",
+          "required": ["dice"],
+          "additionalProperties": false,
+          "properties": {
+            "dice": { "$ref": "defs.schema.json#/$defs/dice" },
+            "target": {
+              "description": "Value the roll must reach, when the source states one.",
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "when": { "$ref": "defs.schema.json#/$defs/interval" }
+      }
+    },
+    "grant": {
+      "description": "What a loot row grants. `kind` is the discriminator: a catalogue item, a resource, or a special reward the item catalogue does not cover.",
+      "oneOf": [
+        { "$ref": "#/$defs/grant_item" },
+        { "$ref": "#/$defs/grant_resource" },
+        { "$ref": "#/$defs/grant_special" }
+      ]
+    },
+    "grant_item": {
+      "description": "Grants a canonical item.",
+      "type": "object",
+      "required": ["kind", "item_id", "quantity_input"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "const": "item" },
+        "item_id": {
+          "description": "Canonical `item_id` of `catalog/items/`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "quantity_input": {
+          "description": "Whether the player enters the quantity when the reward is applied.",
+          "type": "boolean"
+        }
+      }
+    },
+    "grant_resource": {
+      "description": "Grants a resource.",
+      "type": "object",
+      "required": ["kind", "resource", "quantity_input"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "const": "resource" },
+        "resource": {
+          "description": "Resource gained.",
+          "enum": ["gold_crowns", "wyrdstone_fragments"]
+        },
+        "quantity_input": {
+          "description": "Whether the player enters the quantity when the reward is applied.",
+          "type": "boolean"
+        }
+      }
+    },
+    "grant_special": {
+      "description": "Grants a special reward the item catalogue does not define, named by its own id instead of being invented as an item.",
+      "type": "object",
+      "required": ["kind", "special_id", "quantity_input"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "const": "special" },
+        "special_id": {
+          "description": "Id of the special reward, e.g. `cloak-of-mists` or a scenario reward id.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "quantity_input": {
+          "description": "Whether the player enters the quantity when the reward is applied.",
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

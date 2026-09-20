@@ -1,0 +1,234 @@
+schema_version: 2
+band_id: blood-dragons-mou
+profiles:
+- id: vampire
+  name: Vampire
+  type: hero
+  cost: 110
+  experience: 20
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 5
+    A: 2
+    Ld: 9
+  equipment_lists:
+  - blood-dragon-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not use missile weapons.
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 1 Vampire
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  source_path:
+  - heroes
+  - 1 Vampire
+  name_i18n:
+    es: Vampiro
+  rule_ids:
+  - vampire--leader
+  - vampire--fear
+  - vampire--immune-to-psychology
+  - vampire--immune-to-poisons
+  - vampire--no-pain
+  - vampire--summoner
+  - vampire--bloodline-abilities
+  combat_traits: {}
+- id: wights
+  name: Wights
+  type: hero
+  cost: 80
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - blood-dragon-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not use missile weapons.
+  skill_access:
+  - combat
+  - academic
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-2 Wights
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  source_path:
+  - heroes
+  - 0-2 Wights
+  name_i18n:
+    es: Espectros
+  rule_ids:
+  - wights--fear
+  - wights--immune-to-psychology
+  - wights--immune-to-poisons
+  - wights--no-pain
+  - wights--killing-blow
+  combat_traits: {}
+- id: dreg
+  name: Dreg
+  type: hero
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-1 Dreg
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  source_path:
+  - heroes
+  - 0-1 Dreg
+  name_i18n:
+    es: Lastimoso
+  rule_ids: []
+  combat_traits: {}
+- id: skeleton-warriors
+  name: Skeleton Warriors
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / Skeleton Warriors
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  source_path:
+  - henchmen
+  - Skeleton Warriors
+  name_i18n:
+    es: Guerreros Esqueleto
+  rule_ids:
+  - skeleton-warriors--fear
+  - skeleton-warriors--immune-to-psychology
+  - skeleton-warriors--immune-to-poisons
+  - skeleton-warriors--no-pain
+  - skeleton-warriors--slow
+  - skeleton-warriors--no-brain
+  combat_traits: {}
+- id: grave-guards
+  name: Grave Guards
+  type: henchman
+  cost: 50
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 4
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Never more Grave Guards than Skeletons
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Grave Guards
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  source_path:
+  - henchmen
+  - 0-5 Grave Guards
+  name_i18n:
+    es: Guardianes de Tumba
+  rule_ids:
+  - grave-guards--immune-to-psychology
+  - grave-guards--immune-to-poisons
+  - grave-guards--no-pain
+  - grave-guards--slow
+  - grave-guards--killing-blow
+  combat_traits: {}
+- id: hell-hounds
+  name: Hell Hounds
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 8
+    WS: 4
+    BS: 0
+    S: 4
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Animals cannot use weapons or armour.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Hell Hounds
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  source_path:
+  - henchmen
+  - 0-5 Hell Hounds
+  name_i18n:
+    es: Sabuesos Infernales
+  rule_ids:
+  - hell-hounds--fear
+  - hell-hounds--immune-to-psychology
+  - hell-hounds--immune-to-poisons
+  - hell-hounds--no-pain
+  - hell-hounds--animal
+  combat_traits: {}

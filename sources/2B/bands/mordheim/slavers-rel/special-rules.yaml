@@ -1,0 +1,392 @@
+schema_version: 2
+band_id: slavers-rel
+rules:
+- id: band--extra-treasure
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.slavers-rel.band.extra-treasure
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Extra Treasure
+  effect: >-
+    There are a lot of dinars to be made in the slave trade. As such a slaver warband will always
+    count as gaining an extra piece of Treasure (as he sells non-fighting slaves) after every
+    battle.
+  source:
+    manual: Broheim
+    printed_page: 9
+    section: Slavers / Special rules
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Tesoro Adicional
+  effect_i18n:
+    es: >-
+      Hay muchos dinares que ganar en el comercio de esclavos. Por ello, una banda esclavista
+      siempre contará como si obtuviera una pieza adicional de Tesoro (al vender esclavos no
+      combatientes) después de cada batalla.
+  applies_to:
+    band: true
+- id: band--slaves-talent-advance
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.slavers-rel.band.slaves-talent-advance
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Lad's Got the Talent (Slaves)
+  effect: >-
+    Slaves will generally be ill-treated by a slave merchant. If any slave achieves the 'Lad's got
+    the Talent' advance, then the slave must make a leadership test. If it is passed then the slave
+    merchant sees some potential and loyalty in the slave and frees him. The slave retains his
+    statistic line though his type is changed to caravan guard. This means that he now may become a
+    warband leader and loses all the special rules associated with being a slave, such as stupidity
+    etc. However, if the slave fails his leadership test then the slave merchant is displeased with
+    his outspoken property. The slave obviously needs to learn his place and the overseer sets to it
+    with relish. After the screams and begging ends, the slave is nigh immune to pain and obeys his
+    master without question. The slave is removed from your warband list and becomes a new eunuch in
+    his own henchman group. Roll advances for any slave left in the henchman group as normal.
+  source:
+    manual: Broheim
+    printed_page: 9
+    section: Slavers / Special rules
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Chico con Talento (esclavos)
+  effect_i18n:
+    es: >-
+      Los esclavos suelen ser maltratados por el mercader de esclavos. Si algún esclavo logra el
+      avance 'Chico con Talento', debe hacer un chequeo de liderazgo. Si lo supera, el mercader ve
+      potencial y lealtad en el esclavo y lo libera. El esclavo conserva su línea de estadísticas
+      aunque su tipo cambia a guardián de caravana; esto significa que ahora puede convertirse en
+      líder de banda y pierde todas las reglas especiales asociadas a ser esclavo, como estupidez,
+      etc. Si el esclavo falla su chequeo de liderazgo, el mercader está descontento con su
+      propiedad tan habladora. Obviamente el esclavo necesita aprender su lugar y el capataz se
+      encarga con entusiasmo. Cuando terminan los gritos y las súplicas, el esclavo es casi inmune
+      al dolor y obedece a su amo sin preguntas. El esclavo se retira de la lista de la banda y se
+      convierte en un nuevo eunuco en su propio grupo de secuaces. Tira avances para cualquier
+      esclavo que quede en el grupo de secuaces con normalidad.
+  applies_to:
+    band: true
+- id: band--hiring-restrictions
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.slavers-rel.band.hiring-restrictions
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Hiring Restrictions (Slaves)
+  effect: >-
+    It is not a mistake that a slaver warband may have up to 20 warriors, yet the restrictions on
+    hiring warband members will give you a maximum of 12. This is because a slave merchant isn't
+    much of a slave merchant if he doesn't have any slaves, so he'll need to buy some if he wants to
+    make up the numbers.
+  source:
+    manual: Broheim
+    printed_page: 9
+    section: Slavers / Special rules
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Restricciones de contratación (esclavos)
+  effect_i18n:
+    es: >-
+      No es un error que una banda esclavista pueda tener hasta 20 guerreros, aunque las
+      restricciones de contratación de miembros te dan un máximo de 12. Esto se debe a que un
+      mercader de esclavos no es mucho mercader sin esclavos, así que tendrá que comprar algunos si
+      quiere completar los números.
+  applies_to:
+    band: true
+- id: band--slaver-special-equipment
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.slavers-rel.band.slaver-special-equipment
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Slaver Special Equipment
+  effect: >-
+    This equipment is only available to Slavers, and no other warbands may purchase it. Trapper's
+    pole (15 dinars, Rare 6): used for capturing beasts at arms length, a trapper's pole makes use
+    of a noose attached to a long pole; it works exactly like a spear with the following special
+    rule - Trapper: keep track of a living, non-experience-gaining animal (which includes horses,
+    dogs, giant rats and boars) that a warrior armed with a trapper's pole takes out of action; if a
+    1 or 2 is rolled for the animal when working out injuries it will be added to the trapper's
+    warband. Manacles (20+D6 dinars, Rare 8): a handy device for slavers made of metal, often
+    rusted, and always uncomfortable; You're mine - keep track of any living henchmen that a warrior
+    equipped with manacles takes out of action; if a 1 is rolled for the henchmen when working out
+    injuries he will be added to the slaver warband if he is human; as the warrior will need to have
+    his spirit broken he will lose all his possessions and will have all the statistics as a new
+    slave; if the henchman is a non-human then he may be sold for 2D6 dinars.
+  source:
+    manual: Broheim
+    printed_page: 10
+    section: Slaver special equipment
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Equipo Especial de los Esclavistas
+  effect_i18n:
+    es: >-
+      Este equipo solo está disponible para los Esclavistas; ninguna otra banda puede comprarlo.
+      Palo de trampero (15 coronas, Rareza 6): usado para capturar bestias a distancia de brazos,
+      emplea un lazo sujeto a un palo largo; funciona exactamente como una lanza con la siguiente
+      regla especial - Trampero: registra cualquier animal vivo que no gane experiencia (incluye
+      caballos, perros, ratas gigantes y jabalíes) que un guerrero armado con palo de trampero deje
+      fuera de combate; si al resolver sus heridas se saca un 1 o 2 para el animal, se añade a la
+      banda del trampero. Grilletes (20+1D6 coronas, Rareza 8): un útil artilugio de metal para
+      esclavistas, a menudo oxidado y siempre incómodo; Es mío - registra cualquier secuaz vivo que
+      un guerrero equipado con grilletes deje fuera de combate; si al resolver sus heridas sale un
+      1, el secuaz se añade a la banda esclavista si es humano; como necesitará que le quiebren el
+      espíritu, perderá todas sus posesiones y tendrá todas las estadísticas de un esclavo nuevo; si
+      el secuaz no es humano, puede venderse por 2D6 dinares.
+  applies_to:
+    band: true
+- id: slave-merchant--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.slavers-rel.slave-merchant.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: Any warrior within 6" of the Slave Merchant may use his Leadership instead of his own.
+  source:
+    manual: Broheim
+    printed_page: 11
+    section: Heroes / 1 Slave merchant / Special Rules / Leader
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6" del Mercader de Esclavos puede usar su Liderazgo en lugar del propio.
+  applies_to:
+    profile_ids:
+    - slave-merchant
+- id: overseer--slave-driver
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.slavers-rel.overseer.slave-driver
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Slave Driver
+  effect: >-
+    An Overseer strikes fear into his slaves. Any slave within 3" may use his leadership. If he is
+    armed with a scourge, this increases to 6".
+  source:
+    manual: Broheim
+    printed_page: 11
+    section: Heroes / 0-1 Overseer / Special Rules / Slave Driver
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Latigador de Esclavos
+  effect_i18n:
+    es: >-
+      Un Capataz infunde miedo a sus esclavos. Cualquier esclavo a 3" puede usar su liderazgo. Si va
+      armado con un azote, el alcance aumenta a 6".
+  applies_to:
+    profile_ids:
+    - overseer
+- id: eunuchs--broken-spirit
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.slavers-rel.eunuchs.broken-spirit
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Broken Spirit
+  effect: >-
+    A Eunuch will automatically pass any Leadership test he is required to make, as long as the
+    Slave Merchant is not out of action. A Eunuch may never become a warband leader.
+  source:
+    manual: Broheim
+    printed_page: 11
+    section: Henchmen / 0-5 Eunuchs / Special Rules / Broken Spirit
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Espíritu Quebrado
+  effect_i18n:
+    es: >-
+      Un Eunuco superará automáticamente cualquier chequeo de Liderazgo que deba hacer, mientras el
+      Mercader de Esclavos no esté fuera de combate. Un Eunuco jamás puede convertirse en líder de
+      la banda.
+  applies_to:
+    profile_ids:
+    - eunuchs
+- id: ogre-bodyguard--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.slavers-rel.ogre-bodyguard.fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Fear
+  effect: Ogres are large, threatening creatures that cause fear.
+  source:
+    manual: Broheim
+    printed_page: 11
+    section: Henchmen / 0-1 Ogre Bodyguard / Special Rules / Fear
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Los ogros son criaturas grandes y amenazantes que causan miedo.
+  applies_to:
+    profile_ids:
+    - ogre-bodyguard
+- id: ogre-bodyguard--large
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.slavers-rel.ogre-bodyguard.large
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Large
+  effect: >-
+    Ogres are huge, lumbering creatures and therefore make tempting targets for archers. Any model
+    may shoot at an Ogre, even if it is not the closest target.
+  source:
+    manual: Broheim
+    printed_page: 11
+    section: Henchmen / 0-1 Ogre Bodyguard / Special Rules / Large
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Grande
+  effect_i18n:
+    es: >-
+      Los ogros son criaturas enormes y torpes que por tanto constituyen blancos tentadores para los
+      arqueros. Cualquier modelo puede disparar a un Ogro, aunque no sea el objetivo más cercano.
+  applies_to:
+    profile_ids:
+    - ogre-bodyguard
+- id: ogre-bodyguard--slow-witted
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.slavers-rel.ogre-bodyguard.slow-witted
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Slow Witted
+  effect: >-
+    Although Ogres are capable of earning experience and bettering themselves they are not the
+    smartest of creatures. Ogres only gain advances at half the rate of everyone else.
+  source:
+    manual: Broheim
+    printed_page: 11
+    section: Henchmen / 0-1 Ogre Bodyguard / Special Rules / Slow Witted
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Cortos de Mente
+  effect_i18n:
+    es: >-
+      Aunque los ogros son capaces de ganar experiencia y superarse, no son las criaturas más
+      inteligentes. Los ogros solo ganan avances a la mitad de velocidad que el resto.
+  applies_to:
+    profile_ids:
+    - ogre-bodyguard
+- id: hounds--experience
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.slavers-rel.hounds.experience
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Experience
+  effect: Hounds are animals and do not gain experience.
+  source:
+    manual: Broheim
+    printed_page: 11
+    section: Henchmen / 0-5 Hounds / Special Rules / Experience
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Experiencia
+  effect_i18n:
+    es: Los sabuesos son animales y no ganan experiencia.
+  applies_to:
+    profile_ids:
+    - hounds
+- id: hounds--keen-scent
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.slavers-rel.hounds.keen-scent
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Keen Scent
+  effect: >-
+    Hounds will be able to locate the scent of an escaped slave over vast distances. If the warband
+    includes a Hound, slaves will ignore the I'm outta here special rule.
+  source:
+    manual: Broheim
+    printed_page: 11
+    section: Henchmen / 0-5 Hounds / Special Rules / Keen Scent
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Olfato Fino
+  effect_i18n:
+    es: >-
+      Los sabuesos pueden rastrear el olor de un esclavo fugado a grandes distancias. Si la banda
+      incluye un Sabueso, los esclavos ignorarán la regla especial de Me largo de aquí.
+  applies_to:
+    profile_ids:
+    - hounds

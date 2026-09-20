@@ -1,0 +1,646 @@
+schema_version: 2
+band_id: mazzalupo-web
+rules:
+- id: band--hired-swords
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.mazzalupo-web.band.hired-swords
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hiring Hired Swords and Dramatis Personae is a
+        roster-construction/campaign mechanic outside the duel scope.
+  name: Hired Swords
+  effect: >-
+    The Mazzalupo can hire the same types of Hired Swords and dramatis personae as the Mercenary
+    warbands.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hired Swords
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Espadas a Sueldo
+  effect_i18n:
+    es: >-
+      Los Mazzalupo pueden contratar los mismos tipos de Espadas a Sueldo y dramatis personae que
+      las bandas Mercenarias.
+  applies_to:
+    band: true
+- id: wandering-knight--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.wandering-knight.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
+        psychology/rout mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Wandering Knight / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - wandering-knight
+  rule_ref: shared-rule.leader
+- id: wandering-knight--riding
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.wandering-knight.riding
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: mounted movement and Riding skill grants are outside the current engine
+        scope.
+  name: Riding (horse)
+  effect: The Wandering knight has the Riding (horses) skill.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Wandering Knight / Special Rules / Riding (horse)
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Montar (caballo)
+  effect_i18n:
+    es: El Caballero Errante tiene la habilidad Montar (caballos).
+  applies_to:
+    profile_ids:
+    - wandering-knight
+- id: wandering-knight--commands
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.wandering-knight.commands
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: Commands are a spell-like order subsystem cast following the magic rules; the
+        six printed Commands are preserved verbatim as separate rules with their difficulties.
+  name: Commands
+  effect: >-
+    The Wandering knight can issue Commands to his comrades; he knows one at creation and can
+    acquire others the same way new spells are learned. Animals, allies, dramatis personae, and
+    hired swords cannot be targeted by Commands. Unless explicitly specified, the Wandering knight
+    is not affected by the Commands. The Wandering knight does not count as a wizard and Commands do
+    not count as spells but are cast following the rules for Magic. If the Wandering knight dies,
+    the new warband Captain gains the Commands ability starting with a random Command. During the
+    recovery phase, if the Wandering knight is not knocked down, stunned, or out of action, he may
+    shout a Command instead of running. Commands affect friendly models within 6" that can hear him
+    (not stunned or knocked down). Models may only benefit from one Command per turn.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Wandering Knight / Special Rules / Commands
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Órdenes
+  effect_i18n:
+    es: >-
+      El Caballero Errante puede dar Órdenes a sus camaradas; conoce una al crearse y puede adquirir
+      otras de la misma forma en que se aprenden nuevos hechizos. Los animales, aliados, dramatis
+      personae y espadas a sueldo no pueden ser objetivo de las Órdenes. Salvo especificación
+      explícita, el Caballero Errante no se ve afectado por sus propias Órdenes. El Caballero
+      Errante no cuenta como hechicero y las Órdenes no cuentan como hechizos, pero se lanzan
+      siguiendo las reglas de Magia. Si el Caballero Errante muere, el nuevo Capitán de la banda
+      gana la habilidad de Órdenes comenzando con una Orden aleatoria. Durante la fase de
+      recuperación, si el Caballero Errante no está derribado, aturdido o fuera de combate, puede
+      gritar una Orden en lugar de correr. Las Órdenes afectan a los modelos amistosos dentro de 6"
+      que puedan oírle (no aturdidos ni derribados). Los modelos solo pueden beneficiarse de una
+      Orden por turno.
+  applies_to:
+    profile_ids:
+    - wandering-knight
+- id: wandering-knight--command-raise-our-insignia
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.command.raise-our-insignia
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: Command (spell-like order); magic/rally subsystems are outside the current
+        engine scope. Difficulty 6.
+  name: Raise our insignia!
+  effect: >-
+    Difficulty: 6. Encouraging the Squire to raise a handkerchief in the army's colours, the
+    Mazzalupo regain courage, united under the same banner. This Command can only be issued to the
+    Squire if it is within 12" and is not fleeing, knocked down, stunned, or taken out of action.
+    Until the beginning of the next Shooting phase, every model of the Mazzalupo warband, including
+    the Wandering knight, who has line of sight to the Squire can reroll failed Leadership tests,
+    including the warband's Rout test.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Commands / Raise our insignia!
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: ¡Enarbolar nuestro estandarte!
+  effect_i18n:
+    es: >-
+      Dificultad: 6. Animando al Escudero a alzar un pañuelo con los colores del ejército, los
+      Mazzalupo recuperan el valor, unidos bajo la misma insignia. Esta Orden solo puede darse al
+      Escudero si está a 12" y no está huyendo, derribado, aturdido o fuera de combate. Hasta el
+      comienzo de la siguiente fase de Disparo, todos los modelos de la banda Mazzalupo, incluido el
+      Caballero Errante, que tengan línea de visión al Escudero pueden repetir las pruebas de
+      Liderazgo fallidas, incluida la prueba de Retirada de la banda.
+  applies_to:
+    profile_ids:
+    - wandering-knight
+- id: wandering-knight--command-move-ye-miscreant
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.command.move-ye-miscreant
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: Command (spell-like order) granting extra movement; movement orders are
+        outside the current engine scope. Difficulty 6.
+  name: Move, ye miscreant!
+  effect: >-
+    Difficulty: 6. The booming voice of the Knight Errant urges even the most slothful of the
+    Mazzalupo to spring into action. A single Mazzalupo warrior within 6" of the Wandering knight
+    may immediately move again up to its maximum Movement distance. If this moves them into base
+    contact with an enemy model, they count as charging.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Commands / Move, ye miscreant!
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: ¡Muévete, granuja!
+  effect_i18n:
+    es: >-
+      Dificultad: 6. La voz atronadora del Caballero Errante incita incluso al más perezoso de los
+      Mazzalupo a entrar en acción. Un único guerrero Mazzalupo a 6" del Caballero Errante puede
+      moverse de nuevo inmediatamente hasta su distancia máxima de Movimiento. Si esto lo pone en
+      contacto base con un modelo enemigo, cuenta como carga.
+  applies_to:
+    profile_ids:
+    - wandering-knight
+- id: wandering-knight--command-follow-me-mine-pugnacious-ones
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.command.follow-me
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: Command (spell-like order) granting an area to-hit bonus; aura bonuses are
+        outside the current engine scope. Difficulty 8.
+  name: Follow me, mine pugnacious ones!
+  effect: >-
+    Difficulty: 8. With heroic demeanour, the Wandering knight rallies his men and bolsters their
+    fighting spirit. Members of the Mazzalupo warband within 4" of the Wandering knight gain a +1
+    bonus to hit in hand-to-hand combat until the end of the turn.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Commands / Follow me, mine pugnacious ones!
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: ¡Seguidme, belicosos míos!
+  effect_i18n:
+    es: >-
+      Dificultad: 8. Con porte heroico, el Caballero Errante reúne a sus hombres y aviva su espíritu
+      de lucha. Los miembros de la banda Mazzalupo a 4" del Caballero Errante ganan un bonificador
+      de +1 al impacto en combate cuerpo a cuerpo hasta el final del turno.
+  applies_to:
+    profile_ids:
+    - wandering-knight
+- id: wandering-knight--command-be-on-guard-my-brave-ones
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.command.be-on-guard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: Command (spell-like order) enabling a disengagement move; combat-disengagement
+        mechanics are outside the current engine scope. Difficulty 7.
+  name: Be on guard, my brave ones!
+  effect: >-
+    Difficulty: 7. A true commander knows the importance of caution and teaches his comrades that
+    there is no shame in fleeing from a fight, only wisdom. Choose a member of the Mazzalupo warband
+    within 12" that is engaged in hand-to-hand combat. That model can immediately move away from the
+    combat up to the maximum distance allowed by their Movement value but cannot come into contact
+    with other enemy models.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Commands / Be on guard, my brave ones!
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: ¡En guardia, mis valientes!
+  effect_i18n:
+    es: >-
+      Dificultad: 7. Un verdadero comandante conoce la importancia de la prudencia y enseña a sus
+      camaradas que no hay vergüenza en huir de una lucha, solo sabiduría. Elige a un miembro de la
+      banda Mazzalupo a 12" que esté en combate cuerpo a cuerpo. Ese modelo puede alejarse
+      inmediatamente del combate hasta la distancia máxima permitida por su valor de Movimiento,
+      pero no puede entrar en contacto con otros modelos enemigos.
+  applies_to:
+    profile_ids:
+    - wandering-knight
+- id: wandering-knight--command-pay-them-no-heed
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.command.pay-them-no-heed
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: Command (spell-like order) modifying shooting target selection; the shooting
+        phase is outside the current engine scope. Difficulty 6.
+  name: Pay them no heed!
+  effect: >-
+    Difficulty: 6. Ever watchful of battlefield developments, the Knight Errant issues orders on
+    which targets are the highest priority. Choose a Mazzalupo model within 12". Until the next
+    Shooting phase, the model can target any enemy warrior even if they are not the closest.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Commands / Pay them no heed!
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: ¡No les hagáis caso!
+  effect_i18n:
+    es: >-
+      Dificultad: 6. Siempre atento a la evolución del campo de batalla, el Caballero Errante da
+      órdenes sobre cuáles son los objetivos prioritarios. Elige un modelo Mazzalupo a 12". Hasta la
+      siguiente fase de Disparo, el modelo puede atacar a cualquier guerrero enemigo aunque no sea
+      el más cercano.
+  applies_to:
+    profile_ids:
+    - wandering-knight
+- id: wandering-knight--command-art-thou-ready-to-die-fighting
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.command.art-thou-ready
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: Command (spell-like order) modifying out-of-action rolls; injury-table
+        modification is outside the current engine scope. Difficulty 8.
+  name: Art thou ready to die fighting?
+  effect: >-
+    Difficulty: 8. The Wandering knight appeals to the tenacity of his men to withstand the enemy's
+    blows. Every Mazzalupo model within 4", including the Wandering knight, can only be taken out of
+    action on a roll of 6 until the next Mazzalupo turn.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Commands / Art thou ready to die fighting?
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: ¿Estáis listo para morir luchando?
+  effect_i18n:
+    es: >-
+      Dificultad: 8. El Caballero Errante apela a la tenacidad de sus hombres para resistir los
+      golpes del enemigo. Todos los modelos Mazzalupo a 4", incluido el Caballero Errante, solo
+      pueden ser puestos fuera de combate con un resultado de 6 hasta el próximo turno Mazzalupo.
+  applies_to:
+    profile_ids:
+    - wandering-knight
+- id: master-of-finances--corruption
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.master-of-finances.corruption
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: out-of-game bribery to reroll enemy attack rolls is a
+        meta/combat-bargaining mechanic outside the current engine scope.
+  name: Corruption
+  effect: >-
+    Masters of finances are not good fighters but they are certainly skilled at convincing the enemy
+    to leave them alone. When hit in close combat but before rolling to wound, the player
+    controlling the Mazzalupo warband can give 5 gold crowns to the opponent for each model that hit
+    the Master of finances. If it does, the corrupted model must reroll a successful attack roll.
+    Each model cannot reroll more than one attack in this way, but multiple models can be bribed
+    with 5 gold crowns each. Models immune to Psychology cannot be corrupted.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Master of Finances / Special Rules / Corruption
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Corrupción
+  effect_i18n:
+    es: >-
+      Los Maestros de Finanzas no son buenos luchadores, pero ciertamente son diestros convenciendo
+      al enemigo de dejarlos en paz. Cuando le golpean en combate cuerpo a cuerpo pero antes de
+      tirar para herir, el jugador que controle la banda Mazzalupo puede dar 5 coronas de oro al
+      oponente por cada modelo que haya golpeado al Maestro de Finanzas. Si lo hace, el modelo
+      corrompido debe repetir una tirada de impacto exitosa. Cada modelo no puede repetir más de un
+      impacto de esta forma, pero se puede sobornar a varios modelos con 5 coronas de oro cada uno.
+      Los modelos inmunes a la Psicología no pueden ser corrompidos.
+  applies_to:
+    profile_ids:
+    - master-of-finances
+- id: master-of-finances--haggle
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.master-of-finances.haggle
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: Haggle is a trading/campaign skill; the trading phase is outside the current
+        engine scope.
+  name: Haggle
+  effect: >-
+    The Master of finances has made handling money his life's work and knows every trick to get the
+    most profit from every trade. The Master of finances has the Haggle skill.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Master of Finances / Special Rules / Haggle
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Regateo
+  effect_i18n:
+    es: >-
+      El Maestro de Finanzas ha hecho del manejo del dinero el trabajo de su vida y conoce todos los
+      trucos para obtener el máximo beneficio de cada trato. El Maestro de Finanzas tiene la
+      habilidad Regateo.
+  applies_to:
+    profile_ids:
+    - master-of-finances
+- id: fallen-noble--indolent
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.fallen-noble.indolent
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: rule interaction with the Commands subsystem, which is itself outside the
+        current engine scope.
+  name: Indolent
+  effect: >-
+    Fallen nobles are resistant to orders and consider themselves of higher rank than any Wandering
+    knight, although they often follow them out of laziness. Fallen nobles can never be the target
+    of a Wandering knight's Commands.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Fallen Noble / Special Rules / Indolent
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Indolente
+  effect_i18n:
+    es: >-
+      Los nobles decaídos son resistentes a las órdenes y se consideran de mayor rango que cualquier
+      Caballero Errante, aunque a menudo los siguen por pereza. Los nobles decaídos nunca pueden ser
+      objetivo de las Órdenes de un Caballero Errante.
+  applies_to:
+    profile_ids:
+    - fallen-noble
+- id: fallen-noble--riding
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.fallen-noble.riding
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: mounted movement and Riding skill grants are outside the current engine
+        scope.
+  name: Riding (horse)
+  effect: The Fallen nobles have the Riding (horses) skill.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Fallen Noble / Special Rules / Riding (horse)
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Montar (caballo)
+  effect_i18n:
+    es: Los nobles decaídos tienen la habilidad Montar (caballos).
+  applies_to:
+    profile_ids:
+    - fallen-noble
+- id: fallen-noble--ye-give-way
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.fallen-noble.ye-give-way
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: challenge/duel-isolation mechanics and cumulative modifiers are outside
+        the current engine scope.
+  name: Ye give way
+  effect: >-
+    When the Fallen noble declares a charge against a Hero, they may challenge the target to yield
+    the way. If the opponent refuses the challenge, the Fallen Noble cannot charge that model but
+    may continue their turn normally, even declaring a new challenge; the warrior who refused the
+    challenge suffers a -1 to hit in hand-to-hand combat, non-cumulative, until the end of the game.
+    If the opponent accepts, the combat proceeds normally, but no other warrior may join the fight,
+    although both models can still suffer area effects and be the target of spells. If the Fallen
+    Noble manages to put the challenged opponent out of action, they gain a +1 to hit in
+    hand-to-hand and a +1 S, non-cumulative, until the end of the game.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Fallen Noble / Special Rules / Ye give way
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: ¡Apartad el paso!
+  effect_i18n:
+    es: >-
+      Cuando el Noble Decaído declara una carga contra un Héroe, puede retar al objetivo a que le
+      ceda el paso. Si el oponente rechaza el reto, el Noble Decaído no puede cargar contra ese
+      modelo pero puede continuar su turno con normalidad, incluso declarando un nuevo reto; el
+      guerrero que rechazó el reto sufre un -1 al impacto en combate cuerpo a cuerpo, no acumulable,
+      hasta el final de la partida. Si el oponente acepta, el combate prosigue con normalidad, pero
+      ningún otro guerrero puede unirse a la lucha, aunque ambos modelos pueden seguir sufriendo
+      efectos de área y ser objetivo de hechizos. Si el Noble Decaído logra dejar fuera de combate
+      al oponente retado, gana un +1 al impacto en combate cuerpo a cuerpo y un +1 a F, no
+      acumulables, hasta el final de la partida.
+  applies_to:
+    profile_ids:
+    - fallen-noble
+- id: squire--petty-thief
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.squire.petty-thief
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: post-game wyrdstone theft is a campaign resolution mechanic outside the
+        current engine scope.
+  name: Petty thief
+  effect: >-
+    Squires have a background that taught them to get by with thefts and scams. If, at the end of
+    the game, the Squire was not taken out of action, roll 1d6. On a result of 5+, subtract one
+    Wyrdstone shard from a randomly determined opposing warband and add it to your reserve.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Squire / Special Rules / Petty thief
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Ladrón menor
+  effect_i18n:
+    es: >-
+      Los escuderos tienen un pasado que les enseñó a arreglárselas con robos y estafas. Si, al
+      final de la partida, el Escudero no fue puesto fuera de combate, tira 1d6. Con un resultado de
+      5+, resta un fragmento de piedra bruja de una banda enemiga determinada aleatoriamente y
+      añádelo a tu reserva.
+  applies_to:
+    profile_ids:
+    - squire
+- id: black-sheep--stupidity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.black-sheep.stupidity
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: stupidity is a psychology mechanic not covered by the current engine
+        scope.
+  name: Stupidity
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-5 Black Sheep / Special Rules / Stupidity
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Estupidez
+  applies_to:
+    profile_ids:
+    - black-sheep
+  rule_ref: shared-rule.stupidity
+- id: black-sheep--animals
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.black-sheep.animals
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the Animals classification (no experience, no equipment) is a roster/campaign
+        mechanic outside the duel scope.
+  name: Animals
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-5 Black Sheep / Special Rules / Animals
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Animales
+  applies_to:
+    profile_ids:
+    - black-sheep
+  rule_ref: shared-rule.animal
+- id: black-sheep--butchers-meat
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.black-sheep.butchers-meat
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: closest-target determination and random hits in the shooting phase are outside
+        the current engine scope.
+  name: Butcher's meat
+  effect: >-
+    Black sheep can be ignored by the opponent when determining the closest target in the Shooting
+    phase. At the same time, the Mazzalupo warriors can shoot at enemy models if they are engaged in
+    hand-to-hand combat exclusively against Black sheep, randomly determining which of all models
+    engaged in combat is hit.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-5 Black Sheep / Special Rules / Butcher's meat
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Carne de carnicero
+  effect_i18n:
+    es: >-
+      El oponente puede ignorar a las ovejas negras al determinar el objetivo más cercano en la fase
+      de Disparo. Al mismo tiempo, los guerreros Mazzalupo pueden disparar a modelos enemigos si
+      están en combate cuerpo a cuerpo exclusivamente contra ovejas negras, determinando
+      aleatoriamente cuál de todos los modelos en combate es golpeado.
+  applies_to:
+    profile_ids:
+    - black-sheep
+- id: black-sheep--mountain-animals
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.mazzalupo-web.black-sheep.mountain-animals
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: climbing/movement rules are outside the current engine scope.
+  name: Mountain animals
+  effect: Black sheep can climb up and down following normal rules despite being animals.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-5 Black Sheep / Special Rules / Mountain animals
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Animales de montaña
+  effect_i18n:
+    es: >-
+      Las ovejas negras pueden trepar y descender siguiendo las reglas normales a pesar de ser
+      animales.
+  applies_to:
+    profile_ids:
+    - black-sheep

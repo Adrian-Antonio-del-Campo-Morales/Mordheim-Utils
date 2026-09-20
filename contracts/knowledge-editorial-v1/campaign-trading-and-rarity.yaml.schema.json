@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/campaign-trading-and-rarity.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/campaign/trading-and-rarity.yaml",
+  "description": "The purchase procedure: how a rare item is searched for and how equipment moves between a warrior, the warband and its stash. The rule reads the rarity of the requested item from `trading-post.yaml` instead of repeating `Rare N`, and the item is named by the caller, so `$requested_item_id` is a parameter and not an id. Rarity rolls, bought items and stash contents are campaign state and stay outside the KB.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "ruleset",
+    "catalog",
+    "status",
+    "rarity",
+    "equipment_allocation",
+    "effect_ids"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "catalog": { "$ref": "defs.schema.json#/$defs/id" },
+    "status": { "$ref": "defs.schema.json#/$defs/catalog_status" },
+    "rarity": { "$ref": "#/$defs/rarity" },
+    "equipment_allocation": { "$ref": "#/$defs/allocation" },
+    "effect_ids": {
+      "description": "Effects of this catalogue a warband's own special rules may modify.",
+      "$ref": "defs.schema.json#/$defs/id_list"
+    }
+  },
+  "$defs": {
+    "rarity": {
+      "description": "The rarity procedure.",
+      "type": "object",
+      "required": ["tests", "modifiers", "market_catalog"],
+      "additionalProperties": false,
+      "properties": {
+        "tests": {
+          "description": "The rarity tests.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/rarity_test" }
+        },
+        "modifiers": {
+          "description": "Modifiers a warband's special rules apply to the test. Empty today: the base test is recorded, and a modifier is added as data when a source declares one.",
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "market_catalog": {
+          "description": "Market document of this same directory the test reads the rarity from.",
+          "enum": ["trading-post.yaml"]
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "rarity_test": {
+      "description": "One rarity test. It carries no `Rare N`: the target is read from the market catalogue for the item the caller asked about.",
+      "type": "object",
+      "required": [
+        "id",
+        "actor",
+        "attempt_limit",
+        "dice",
+        "target_rarity",
+        "success_when",
+        "units_per_success",
+        "note",
+        "source_refs"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "actor": {
+          "description": "Who may attempt the test. A Hero taken out of action is not an `eligible_hero`; common items do not use this test at all.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "attempt_limit": {
+          "description": "How often the actor may try. Currently one attempt per eligible Hero.",
+          "const": "one_per_actor"
+        },
+        "dice": { "$ref": "defs.schema.json#/$defs/dice" },
+        "target_rarity": { "$ref": "#/$defs/target_rarity" },
+        "success_when": {
+          "description": "How the roll is compared with the target rarity.",
+          "const": "greater_than_or_equal_to_target"
+        },
+        "units_per_success": {
+          "description": "How many units of the requested item one successful test buys.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "note": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "target_rarity": {
+      "description": "Where the target of the test is read from. The item is the one the caller requests, so `item_id` is the `$requested_item_id` parameter rather than a canonical catalogue entry.",
+      "type": "object",
+      "required": ["source", "catalog", "item_id", "field"],
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "description": "How the value is obtained. `catalog_field` reads it from a catalogue document.",
+          "const": "catalog_field"
+        },
+        "catalog": {
+          "description": "Catalogue the value is read from, e.g. `campaign/trading-post`.",
+          "type": "string",
+          "minLength": 1
+        },
+        "item_id": {
+          "description": "The requested item: the caller's `$requested_item_id` parameter, not a canonical catalogue entry.",
+          "$ref": "defs.schema.json#/$defs/id_or_parameter"
+        },
+        "field": {
+          "description": "Dotted path of the value inside that catalogue record, e.g. `availability.rarity`.",
+          "type": "string",
+          "pattern": "^[a-z_]+(\\.[a-z_]+)*$"
+        }
+      }
+    },
+    "allocation": {
+      "description": "How equipment moves and is valued when sold, hoarded or reassigned.",
+      "type": "object",
+      "required": ["rules"],
+      "additionalProperties": false,
+      "properties": {
+        "rules": {
+          "description": "The allocation rules.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/allocation_rule" }
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "allocation_rule": {
+      "description": "One allocation rule: from where, to where, under which condition and at which price.",
+      "type": "object",
+      "required": ["id", "from", "to", "condition", "note", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "from": {
+          "description": "Where the equipment comes from.",
+          "enum": ["warband", "warrior", "warband_stash", "warband_stash_or_warrior", "none"]
+        },
+        "to": {
+          "description": "Where it goes. `none` states that the equipment is lost.",
+          "enum": ["treasury", "warband_stash", "eligible_warrior", "none"]
+        },
+        "condition": {
+          "description": "When the rule applies.",
+          "enum": ["item_is_sellable", "any", "warrior_can_use_item", "warrior_died"]
+        },
+        "price_rule": {
+          "description": "How the equipment is valued, when selling. `half_of_listed_price` halves the basic cost.",
+          "enum": ["half_of_listed_price"]
+        },
+        "note": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    }
+  }
+}

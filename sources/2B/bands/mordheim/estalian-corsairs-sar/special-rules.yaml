@@ -1,0 +1,332 @@
+schema_version: 2
+band_id: estalian-corsairs-sar
+rules:
+- id: band--pirate-rules
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.estalian-corsairs-sar.band.pirate-rules
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: General Pirate rules
+  effect: >-
+    Swabbies: Human Pirates take human Swabbies (see the rules for capturing Swabbies in the Sartosa
+    campaign rules). Hired Swords: unless noted otherwise, Pirate Warbands have the same access to
+    Hired Swords & any other items as for a regular human Mercenary Warband; they must however pay
+    an additional +20 gc in upkeep if they have both Dwarfs and Elves together in the same warband
+    (the ship is only so big!). Swivel Guns are Rare, Matey!: except for Sartosan Pirates, no Pirate
+    Warband may start with a Swivel Gun on their roster in campaign games; if playing a one-off
+    game, non-Sartosans may purchase a Swivel Gun for an additional price of 2D6 gc. Succession: if
+    the Captain is killed, one of the Mates will take over in the same manner as a Champion taking
+    over for a Mercenary warband.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Pirate special rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  name_i18n:
+    es: Reglas generales de piratas
+  effect_i18n:
+    es: >-
+      Fregones: los Piratas Humanos llevan Fregones humanos (ver las reglas para capturar Fregones
+      en las reglas de campaña de Sartosa). Espadas a Sueldo: salvo indicación contraria, las bandas
+      de Piratas tienen el mismo acceso a Espadas a Sueldo y objetos que una banda mercenaria humana
+      normal; sin embargo, deben pagar +20 coronas adicionales de mantenimiento si tienen enanos y
+      elfos juntos en la misma banda (¡el barco es solo tan grande!). Los cañones giratorios son
+      raros, ¡amigo!: salvo los Piratas Sartosanos, ninguna banda pirata puede empezar con un cañón
+      giratorio en su lista en partidas de campaña; en partidas sueltas, los no Sartosanos pueden
+      comprar uno por 2D6 coronas adicionales. Sucesión: si el Capitán muere, uno de los
+      Contramaestres tomará el mando de la misma forma que un Campeón en una banda mercenaria.
+  applies_to:
+    band: true
+- id: band--estalian-special-rules
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.estalian-corsairs-sar.band.estalian-special-rules
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Estalian Special Rules
+  effect: >-
+    All Estalian Captains and Champions start off with the skill Expert Swordsman. In addition,
+    Rapiers and Heavy Armor are added to the Pirate Equipment List. Alternatively, Crossbows are
+    removed from the Pirate Equipment list.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Estalian Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  name_i18n:
+    es: Reglas especiales Estalianas
+  effect_i18n:
+    es: >-
+      Todos los Capitanes y Campeones Estalianos empiezan con la habilidad Espadachín Experto.
+      Además, las Estoque y la Armadura Pesada se añaden a la Lista de Equipo Pirata. Por su parte,
+      las Ballestas se retiran de la Lista de Equipo Pirata.
+  applies_to:
+    band: true
+- id: captain--leader
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.estalian-corsairs-sar.captain.leader
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Leader
+  effect: >-
+    Any pirate within 6" of the Captain may use his Leadership characteristic when taking any
+    Leadership tests.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Pirate Captain / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier pirata a 6" del Capitán puede usar su característica de Liderazgo en cualquier
+      chequeo de Liderazgo.
+  applies_to:
+    profile_ids:
+    - captain
+- id: gunners--swivel-guns-are-dangerous
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.estalian-corsairs-sar.gunners.swivel-guns-are-dangerous
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Swivel Guns is Dangerous, Matey!
+  effect: >-
+    If a Pirate Warband includes a Swivel Gun, the Gunner wielding it will always be considered an
+    individual and can never have anyone else with him. Since a Pirate Warband may only have one
+    Swivel Gun, if a Gunner is equipped with one then he must either be a new Gunner, or split from
+    an existing unit. If the latter, he retains all Experience and Skills he had previously.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-7 Gunners / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  name_i18n:
+    es: Los cañones giratorios son peligrosos, ¡amigo!
+  effect_i18n:
+    es: >-
+      Si una Banda Pirata incluye un Cañón Giratorio, el Artillero que lo porte siempre será
+      considerado un individuo y nunca podrá llevar a nadie más con él. Como una Banda Pirata solo
+      puede tener un Cañón Giratorio, si un Artillero lleva uno, debe ser un Artillero nuevo o
+      separarse de una unidad existente. En este último caso, conserva toda la Experiencia y
+      Habilidades que tuviera previamente.
+  applies_to:
+    profile_ids:
+    - gunners
+- id: boatswains--expert-riggers
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.estalian-corsairs-sar.boatswains.expert-riggers
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Expert Riggers
+  effect: >-
+    Boatswains are highly trained in using their ropes. They may re-roll failed Initiative tests
+    Leaping over Gaps, Jumping Down, and performing a Diving Charge, as well as the normal test for
+    Climbing Up or Down that a Rope allows.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / 0-5 Boatswains / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  name_i18n:
+    es: Jarcieros Expertos
+  effect_i18n:
+    es: >-
+      Los Contramaestres de Jarcia están muy entrenados en el uso de sus cuerdas. Pueden repetir las
+      tiradas fallidas de Iniciativa para Saltar Huecos, Saltar hacia Abajo y Cargar en Picado, así
+      como la tirada normal para Trepar Arriba o Abajo que permite una Cuerda.
+  applies_to:
+    profile_ids:
+    - boatswains
+- id: swabbies--not-hired
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.estalian-corsairs-sar.swabbies.not-hired
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Not Hired
+  effect: >-
+    Swabbies are not hired, they follow the special 'recruitment' rules (see the Sartosa campaign
+    rules for capturing Swabbies).
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / 0-5 Swabbies / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  name_i18n:
+    es: No contratados
+  effect_i18n:
+    es: >-
+      Los Fregones no son contratados, siguen las reglas especiales de 'reclutamiento' (ver las
+      reglas de campaña de Sartosa para capturar Fregones).
+  applies_to:
+    profile_ids:
+    - swabbies
+- id: swabbies--never-gain-experience
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.estalian-corsairs-sar.swabbies.never-gain-experience
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Never Gain Experience
+  effect: >-
+    Swabbies generally aren't interested in proving their worth to the crew, they are interested in
+    survival and hopefully escape! Swabbies never gain experience in games.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / 0-5 Swabbies / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  name_i18n:
+    es: Nunca Ganarán Experiencia
+  effect_i18n:
+    es: >-
+      Los Fregones no están interesados en demostrar su valor a la tripulación, ¡les interesa
+      sobrevivir y escapar si pueden! Los Fregones nunca ganan experiencia en las partidas.
+  applies_to:
+    profile_ids:
+    - swabbies
+- id: swabbies--rabble
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.estalian-corsairs-sar.swabbies.rabble
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Rabble
+  effect: >-
+    Swabbies do not need to be armed all the same. Each may be given different equipment, but only
+    items listed in the Swabbie equipment list. Swabbies can never use magic, or cast spells of any
+    sort, no matter their original background or abilities.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / 0-5 Swabbies / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  name_i18n:
+    es: Chusma
+  effect_i18n:
+    es: >-
+      Los Fregones no necesitan ir armados todos igual. Cada uno puede recibir equipo distinto, pero
+      solo objetos de la lista de equipo de Fregones. Los Fregones nunca pueden usar magia ni lanzar
+      hechizos de ningún tipo, sin importar su origen o habilidades previas.
+  applies_to:
+    profile_ids:
+    - swabbies
+- id: swabbies--blimey-they-got-away
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.estalian-corsairs-sar.swabbies.blimey-they-got-away
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Blimey, they got away!
+  effect: >-
+    If the Pirate Warband itself Routs, any Swabbies who have already left the table in previous
+    turns are presumed to have made a successful escape, and are never seen from again. Remove them
+    from your warband roster as if they had been killed.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / 0-5 Swabbies / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  name_i18n:
+    es: ¡Maldición, se han escapado!
+  effect_i18n:
+    es: >-
+      Si la Banda Pirata Huye, cualquier Fregón que ya haya abandonado la mesa en turnos anteriores
+      se da por escapado con éxito, y nunca más se le verá. Retíralos de la lista de la banda como
+      si hubieran muerto.
+  applies_to:
+    profile_ids:
+    - swabbies
+- id: swabbies--dont-mind-them-mates
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.estalian-corsairs-sar.swabbies.dont-mind-them-mates
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Don't mind them mates, they ain't true pirates!
+  effect: >-
+    The rest of the crew barely notice if any Swabbies run away or go Out of Action - they know
+    they'll find them later on and give them 30 lashes if they're lucky! Any Swabbies who are
+    running away or have been taken out of action do not count towards the need to take a Rout test
+    for the warband.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / 0-5 Swabbies / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  name_i18n:
+    es: No les hagas caso, ¡no son piratas de verdad!
+  effect_i18n:
+    es: >-
+      El resto de la tripulación apenas nota si algún Fregón huye o queda Fuera de Combate: ¡saben
+      que los encontrarán más tarde y les darán 30 latigazos si tienen suerte! Cualquier Fregón que
+      esté huyendo o haya sido dejado fuera de combate no cuenta para la necesidad de hacer un
+      chequeo de Huida de la banda.
+  applies_to:
+    profile_ids:
+    - swabbies

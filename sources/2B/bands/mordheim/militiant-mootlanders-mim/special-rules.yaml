@@ -1,0 +1,387 @@
+schema_version: 2
+band_id: militiant-mootlanders-mim
+rules:
+- id: band--woodland-striders
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.militiant-mootlanders-mim.band.woodland-striders
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Woodland Striders
+  effect: Halflings can move through any woodland terrain without penalty.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Woodland Striders
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
+  name_i18n:
+    es: Zancudos del Bosque
+  effect_i18n:
+    es: Los medianos pueden moverse por cualquier terreno boscoso sin penalización.
+  applies_to:
+    band: true
+- id: band--short-shanks
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.militiant-mootlanders-mim.band.short-shanks
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Short Shanks
+  effect: >-
+    Halflings riding draft horses, warhorses or anything larger than a mule or mountain goat move 2
+    inches less than normal.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Short Shanks
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
+  name_i18n:
+    es: Patas Cortas
+  effect_i18n:
+    es: >-
+      Los medianos que monten caballos de tiro, caballos de guerra o cualquier animal mayor que una
+      mula o una cabra montesa se mueven 2 pulgadas menos de lo normal.
+  applies_to:
+    band: true
+- id: band--smooth-customers
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.militiant-mootlanders-mim.band.smooth-customers
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Smooth Customers
+  effect: >-
+    Halfling Heroes gain +1 when rolling to find rare items that are not exclusively available to
+    Halflings.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Smooth Customers
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
+  name_i18n:
+    es: Zalameros
+  effect_i18n:
+    es: >-
+      Los héroes medianos obtienen +1 al tirar para encontrar objetos raros que no estén disponibles
+      exclusivamente para medianos.
+  applies_to:
+    band: true
+- id: band--spry
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.militiant-mootlanders-mim.band.spry
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Spry
+  effect: Any Halfling Rogue may run or charge while climbing.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Spry
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
+  name_i18n:
+    es: Ágiles
+  effect_i18n:
+    es: Cualquier pícaro mediano puede correr o cargar mientras trepa.
+  applies_to:
+    band: true
+- id: band--hired-swords
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.militiant-mootlanders-mim.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Hired Swords
+  effect: >-
+    Halfling warbands may only hire Ogres as bouncers and other Halflings as Hired Swords, to abide
+    with Guild policy.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Hired Swords
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
+  name_i18n:
+    es: Espadas a Sueldo
+  effect_i18n:
+    es: >-
+      Las bandas medianas solo pueden contratar Ogros como porteros y otros medianos como Espadas a
+      Sueldo, para cumplir la normativa del Gremio.
+  applies_to:
+    band: true
+- id: burgermeister--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.militiant-mootlanders-mim.burgermeister.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: >-
+    Any warrior within 6 inches of the Burgermeister may use his Leadership value instead of his own
+    when taking Leadership tests.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Burgermeister / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6 pulgadas del Burgomaestre puede usar su valor de Liderazgo en los
+      chequeos de Liderazgo.
+  applies_to:
+    profile_ids:
+    - burgermeister
+- id: quartermaster--long-shot
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.militiant-mootlanders-mim.quartermaster.long-shot
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Long Shot
+  effect: >-
+    Quartermasters may add 2 inches of range to any thrown weapons and 4 inches to the range of a
+    sling.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Quartermaster / Special Rules / Long Shot
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
+  name_i18n:
+    es: Tiro Largo
+  effect_i18n:
+    es: >-
+      Los Intendentes pueden añadir 2 pulgadas de alcance a cualquier arma arrojadiza y 4 pulgadas
+      al alcance de una honda.
+  applies_to:
+    profile_ids:
+    - quartermaster
+- id: chef--hot-pot
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.militiant-mootlanders-mim.chef.hot-pot
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Hot Pot
+  effect: >-
+    Before each battle the Chef cooks a spicy pot of stew. On a successful Leadership test the hot
+    pot heals a number of Wounds equal to the difference rolled +1; any friendly model supping stew
+    recovers Wounds up to their maximum (e.g. on a roll of 7 the stew heals up to 2 Wounds).
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Chef / Special Rules / Hot Pot
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
+  name_i18n:
+    es: Olla Caliente
+  effect_i18n:
+    es: >-
+      Antes de cada batalla, el Chef prepara una olla de estofado condimentado. Con un chequeo de
+      Liderazgo superado, la olla cura un número de Heridas igual a la diferencia obtenida +1; am
+      amigo que tome estofado recupera Heridas hasta su máximo (p. ej., con un resultado de 7 el
+      estofado cura hasta 2 Heridas).
+  applies_to:
+    profile_ids:
+    - chef
+- id: thieves--uneasy-allies
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.militiant-mootlanders-mim.thieves.uneasy-allies
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Uneasy Allies
+  effect: >-
+    At the end of each battle, roll a D6: 1 = Stop Thief! (remove one Thief from the roster along
+    with any Treasures in the stash from previous games; do not add additional Treasures if any
+    Thieves remain); 2-5 = Tax Time (the Thieves charge their regular fees paid through selling
+    Treasures as normal); 6 = Ignorance is Bliss (the Thieves forgo any charges; the warband ignores
+    Thieves for warband size when selling Treasures).
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-3 Thieves / Special Rules / Uneasy Allies
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
+  name_i18n:
+    es: Aliados Incómodos
+  effect_i18n:
+    es: >-
+      Al final de cada batalla, tira 1D6: 1 = ¡Al ladrón! (elimina un Ladrón del roster junto con
+      los Tesoros acumulados de partidas anteriores; no añadas Tesoros extra si quedan Ladrones);
+      2-5 = Hora de Impuestos (los Ladrones cobran sus tarifas normales, pagadas vendiendo Tesoros
+      con normalidad); 6 = Más Vale Ignorancia (los Ladrones renuncian a sus honorarios; la banda
+      ignora a los Ladrones al calcular el tamaño de la banda al vender Tesoros).
+  applies_to:
+    profile_ids:
+    - thieves
+- id: thieves--infiltration
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.militiant-mootlanders-mim.thieves.infiltration
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Infiltration
+  effect: A Halfling Thief can infiltrate. See the Skaven special skill of the same name.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-3 Thieves / Special Rules / Infiltration
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
+  name_i18n:
+    es: Infiltración
+  effect_i18n:
+    es: >-
+      Un Ladrón medano puede infiltrarse. Ver la habilidad especial de los skaven del mismo nombre.
+  applies_to:
+    profile_ids:
+    - thieves
+- id: thieves--pick-locks
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.militiant-mootlanders-mim.thieves.pick-locks
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Pick Locks
+  effect: >-
+    When testing to open a locked door, the Thief just needs to make an Initiative test in order to
+    be successful.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-3 Thieves / Special Rules / Pick Locks
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
+  name_i18n:
+    es: Forzar Cerraduras
+  effect_i18n:
+    es: >-
+      Al intentar abrir una puerta cerrada con llave, el Ladrón solo necesita superar un chequeo de
+      Iniciativa para lograrlo.
+  applies_to:
+    profile_ids:
+    - thieves
+- id: thieves--cutpurse
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.militiant-mootlanders-mim.thieves.cutpurse
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Cutpurse
+  effect: >-
+    At the end of the game when the warband rolls to find Treasures, they receive one additional
+    Treasure for each Thief who was in the battle and wasn't taken out of action.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-3 Thieves / Special Rules / Cutpurse
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
+  name_i18n:
+    es: Cortabolsas
+  effect_i18n:
+    es: >-
+      Al final de la partida, cuando la banda tira para encontrar Tesoros, reciben un Tesoro
+      adicional por cada Ladrón que estuviera en la batalla y no quedara Fuera de combate.
+  applies_to:
+    profile_ids:
+    - thieves
+- id: cooks--feast
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.militiant-mootlanders-mim.cooks.feast
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Feast
+  effect: >-
+    A warband with Cooks gains one batch of provisions before each battle. If the battle was lost,
+    the warband loses its appetite and can only feast after a victory. When selling Treasures, the
+    warband is considered one size lower for each batch consumed (never lower than 1-3 models).
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-2 Cooks / Special Rules / Feast
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
+  name_i18n:
+    es: Banquete
+  effect_i18n:
+    es: >-
+      Una banda con Cocineros obtiene un lote de provisiones antes de cada batalla. Si la batalla se
+      perdió, la banda pierde el apetito y solo puede banquetear tras una victoria. Al vender
+      Tesoros, la banda se considera un tamaño menor por cada lote consumido (nunca menor de 1-3
+      modelos).
+  applies_to:
+    profile_ids:
+    - cooks

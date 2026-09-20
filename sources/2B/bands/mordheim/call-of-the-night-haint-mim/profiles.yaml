@@ -1,0 +1,142 @@
+schema_version: 2
+band_id: call-of-the-night-haint-mim
+profiles:
+- id: cairn-wraith
+  name: Cairn Wraith
+  type: hero
+  cost: 110
+  experience: 20
+  characteristics: {M: 5, WS: 4, BS: 2, S: 3, T: 2, W: 3, I: 2, A: 1, Ld: 8}
+  equipment_lists: [night-haint-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, special]
+  source: {manual: Broheim, printed_page: 4, section: 1 Cairn Wraith, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf'}
+  source_path: [heroes, 1 Cairn Wraith]
+  name_i18n: {es: Espectro de Cairn}
+  rule_ids: [cairn-wraith--ethereal, cairn-wraith--causes-fear, cairn-wraith--may-not-run,
+    cairn-wraith--immune-to-psychology, cairn-wraith--immune-to-poison, cairn-wraith--no-pain,
+    cairn-wraith--wizard, cairn-wraith--warrior-wizard, cairn-wraith--death-was-merely-the-beginning]
+  combat_traits: {}
+- id: corpse-master
+  name: Corpse Master
+  type: hero
+  cost: 25
+  experience: 8
+  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [night-haint-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, special]
+  source: {manual: Broheim, printed_page: 4, section: 1 Corpse Master, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf'}
+  source_path: [heroes, 1 Corpse Master]
+  name_i18n: {es: Maestro de Cadáveres}
+  rule_ids: [corpse-master--magical-void, corpse-master--gofer, corpse-master--guardian-of-the-requilary]
+  combat_traits: {}
+- id: tomb-banshee
+  name: Tomb Banshee
+  type: hero
+  cost: 60
+  experience: 8
+  characteristics: {M: 5, WS: 2, BS: 0, S: 2, T: 2, W: 1, I: 2, A: 1, Ld: 7}
+  equipment_lists: [night-haint-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, special]
+  source: {manual: Broheim, printed_page: 4, section: 0-1 Tomb Banshee, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf'}
+  source_path: [heroes, 0-1 Tomb Banshee]
+  name_i18n: {es: Banshee de Tumba}
+  rule_ids: [tomb-banshee--ethereal, tomb-banshee--causes-fear, tomb-banshee--may-not-run,
+    tomb-banshee--immune-to-psychology, tomb-banshee--immune-to-poison, tomb-banshee--no-pain,
+    tomb-banshee--ghostly-howl]
+  combat_traits: {}
+- id: malignant-spirits
+  name: Malignant Spirits
+  type: hero
+  cost: 30
+  experience: 0
+  characteristics: {M: 5, WS: 3, BS: 0, S: 3, T: 2, W: 2, I: 2, A: 1, Ld: 6}
+  equipment_lists: [night-haint-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions:
+  - Heavy armour is Malignant Spirits only.
+  skill_access: [combat, shooting, strength, speed]
+  source: {manual: Broheim, printed_page: 4, section: 0-2 Malignant Spirits, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf'}
+  source_path: [heroes, 0-2 Malignant Spirits]
+  name_i18n: {es: Espíritus Malignos}
+  rule_ids: [malignant-spirits--ethereal, malignant-spirits--causes-fear, malignant-spirits--may-not-run,
+    malignant-spirits--immune-to-psychology, malignant-spirits--immune-to-poison,
+    malignant-spirits--no-pain, malignant-spirits--violent-entry]
+  combat_traits: {}
+- id: revenants
+  name: Revenants
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 2, S: 3, T: 3, W: 1, I: 1, A: 1, Ld: 5}
+  equipment_lists: [night-haint-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 5, section: Revenants, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf'}
+  source_path: [henchmen, Revenants]
+  name_i18n: {es: Espectros}
+  rule_ids: [revenants--causes-fear, revenants--may-not-run, revenants--immune-to-psychology,
+    revenants--immune-to-poison, revenants--no-pain, revenants--spectral-ascension]
+  combat_traits: {}
+- id: spirit-hosts
+  name: Spirit Hosts
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics: {M: 3, WS: 2, BS: 0, S: 2, T: 2, W: 3, I: 2, A: 3, Ld: 6}
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Spirit Hosts fight with spectral claws and daggers.
+  skill_access: []
+  source: {manual: Broheim, printed_page: 5, section: 0-2 Spirit Host, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf'}
+  source_path: [henchmen, 0-2 Spirit Host]
+  name_i18n: {es: Huestes de Espíritus}
+  rule_ids: [spirit-hosts--ethereal, spirit-hosts--large, spirit-hosts--causes-fear,
+    spirit-hosts--may-not-run, spirit-hosts--immune-to-psychology, spirit-hosts--immune-to-poison,
+    spirit-hosts--no-pain, spirit-hosts--no-brain, spirit-hosts--spectral-touch]
+  combat_traits: {}
+- id: poltergeists
+  name: Poltergeists
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics: {M: 4, WS: 1, BS: 1, S: 1, T: 1, W: 1, I: 1, A: 1, Ld: 6}
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Poltergeists fight unarmed without penalty.
+  skill_access: []
+  source: {manual: Broheim, printed_page: 5, section: Poltergeists, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf'}
+  source_path: [henchmen, Poltergeists]
+  name_i18n: {es: Poltergeists}
+  rule_ids: [poltergeists--incorporeal, poltergeists--ethereal, poltergeists--silent-move,
+    poltergeists--causes-fear, poltergeists--may-not-run, poltergeists--immune-to-psychology,
+    poltergeists--immune-to-poison, poltergeists--no-pain, poltergeists--no-brain,
+    poltergeists--ignored]
+  combat_traits: {}
+- id: mourngul
+  name: Mourngul
+  type: henchman
+  cost: 210
+  experience: 0
+  characteristics: {M: 6, WS: 3, BS: 0, S: 5, T: 5, W: 3, I: 2, A: 3, Ld: 6}
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - The Mourngul fights with Nightmarish Claws and Fangs.
+  skill_access: []
+  source: {manual: Broheim, printed_page: 5, section: 0-1 Mourngul, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf'}
+  source_path: [henchmen, 0-1 Mourngul]
+  name_i18n: {es: Mourngul}
+  rule_ids: [mourngul--ethereal, mourngul--large, mourngul--causes-fear, mourngul--may-not-run,
+    mourngul--immune-to-psychology, mourngul--immune-to-poison, mourngul--no-pain,
+    mourngul--no-brain, mourngul--nightmare-birth, mourngul--ravening-onslaught,
+    mourngul--haunter-of-the-dark]
+  combat_traits: {}

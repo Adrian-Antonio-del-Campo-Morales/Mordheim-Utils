@@ -1,0 +1,577 @@
+schema_version: 2
+band_id: skaven-of-clan-moulder-web
+rules:
+- id: band--packmasters-and-goading
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.band.packmasters-and-goading
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: the Goading system (difficulty checks, results chart, backfire
+        Stupidity/enrage) is a magic-like pre-turn subsystem outside the current engine scope; the
+        full chart is preserved in the band's rules text.
+  name: Packmasters and Goading
+  effect: >-
+    Clan Moulder Packmasters and Apprentices have access to a unique system known as "Goading,"
+    allowing them to whip their beasts into a frenzy with special effects based on success. Goading
+    attempts are made at the very beginning of the Moulder turn, before any movement takes place,
+    against a single model or henchman group of beasts (Giant Rats, Wolf Rats, or Rat Ogres) within
+    6". Difficulty: Giant Rat 6, Wolf Rat 8, Rat Ogre 10. If successful, roll on the Goading Results
+    Chart: 1-2 "Yelp" — the beast has been struck in some tender parts of its nethers and lets out a
+    strangled cry before rushing forward. The beast or group must run during the Movement phase, may
+    do so at up to triple normal movement rather than double, and will do so even if there are enemy
+    models within 8" when they begin the move. 3-4 "Growl" — the pain of the lash angers the beast
+    and it seeks a target on which to vent its rage. If an enemy is within Line of Sight of the beast
+    or group, they must attempt to Charge it (if there are multiple enemies in LoS, the Moulder
+    player may choose which is the target/s), and will do so at triple their normal movement rather
+    than double. All the normal rules for charges apply, save that the beast/s are moving so rapidly
+    they cannot be Intercepted. 5-6 "Roar!" — whatever you did, it worked! The beast or group are
+    considered subject to Frenzy and Hatred (of all models in the opposing warband) until the
+    beginning of the next Moulder turn. Double 6s: select the effect instead of rolling. If the
+    check is failed the beast takes a Stupidity test; if failed with double 1s the beast(s) become
+    enraged and each immediately attacks the character who attempted to Goad, returning to control
+    at the beginning of his next turn.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Packmasters and Goading; Goading
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Maestros de Manada y Azuzamiento
+  effect_i18n:
+    es: >-
+      Los Maestros de Manada y Aprendices del Clan Moulder tienen acceso a un sistema único conocido
+      como "Azuzamiento", que les permite azuzar a sus bestias hasta el frenesí con efectos
+      especiales según su éxito. Los intentos de azuzamiento se hacen al comienzo mismo del turno
+      Moulder, antes de cualquier movimiento, contra un único modelo o grupo de secuaces de bestias
+      (Ratas Gigantes, Ratas Lobo u Ogros Rata) a 6". Dificultad: Rata Gigante 6, Rata Lobo 8, Ogro
+      Rata 10. Si tiene éxito, tira en la tabla de resultados: 1-2 "Chillido" — la bestia ha recibido
+      un golpe en alguna parte delicada y suelta un grito ahogado antes de lanzarse hacia delante.
+      La bestia o el grupo debe correr en la fase de Movimiento, puede hacerlo hasta el triple de su
+      movimiento normal en lugar del doble, y lo hará aun si hay modelos enemigos a 8" cuando
+      comienza el movimiento. 3-4 "Gruñido" — el dolor del látigo enfurece a la bestia, que busca un
+      objetivo en el que descargar su ira. Si hay un enemigo dentro de la línea de visión de la
+      bestia o del grupo, deben intentar Cargarle (si hay varios enemigos en la línea de visión, el
+      jugador Moulder elige cuál es el objetivo), y lo harán al triple de su movimiento normal en
+      lugar del doble. Se aplican todas las reglas normales de carga, salvo que las bestias se
+      mueven tan rápido que no pueden ser Interceptadas. 5-6 "¡Rugido!" — ¡hagas lo que hagas, ha
+      funcionado! La bestia o el grupo se consideran sujetos a Frenesí y Odio (contra todos los
+      modelos de la banda oponente) hasta el comienzo del próximo turno Moulder. Dobles 6: elige el efecto en lugar de tirar. Si la prueba
+      falla, la bestia hace una prueba de Estupidez; si falla con dobles 1, las bestias se enfurecen
+      y cada una ataca inmediatamente al personaje que intentó azuzarlas, volviendo al control del
+      jugador al comienzo de su siguiente turno.
+  applies_to:
+    band: true
+- id: band--mutations
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.band.mutations
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: mutation purchases are roster-construction/campaign mechanics outside
+        the duel scope.
+  name: Mutations
+  effect: >-
+    Certain models may purchase Mutations from the Possessed Warband list in the Mordheim Rulebook.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Mutations
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Mutaciones
+  effect_i18n:
+    es: >-
+      Ciertos modelos pueden comprar Mutaciones de la lista de la banda de los Endemoniados del
+      libro de reglas de Mordheim.
+  applies_to:
+    band: true
+- id: band--animal-limitations
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.band.animal-limitations
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: experience exemption is a campaign-progression mechanic outside the duel
+        scope.
+  name: Animal Limitations
+  effect: Giant Rats, Wolf Rats, and Rat Ogres do not gain Experience unless otherwise stated.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Animal Limitations
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Limitaciones de los Animales
+  effect_i18n:
+    es: >-
+      Las Ratas Gigantes, Ratas Lobo y Ogros Rata no ganan Experiencia salvo que se indique lo
+      contrario.
+  applies_to:
+    band: true
+- id: packmaster--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.packmaster.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
+        psychology/rout mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Packmaster / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - packmaster
+  rule_ref: shared-rule.leader
+- id: packmaster--master-handler
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.packmaster.master-handler
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: skill grants and the Goading system are roster/psychology mechanics
+        outside the duel scope.
+  name: Master Handler
+  effect: >-
+    Packmasters are experts at handling all manner of twisted creatures. They have access to the
+    Goading system detailed below, plus begin any one-off game or campaign with the Ride Wolf Rat
+    skill and one additional Beast Handling skill (choose either Giant Rats or Wolf Rats).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Packmaster / Special Rules / Master Handler
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Domador Maestro
+  effect_i18n:
+    es: >-
+      Los Maestros de Manada son expertos en manejar todo tipo de criaturas retorcidas. Tienen
+      acceso al sistema de Azuzamiento detallado abajo, además de comenzar cualquier partida suelta
+      o campaña con la habilidad Montar Rata Lobo y una habilidad adicional de Manejo de Bestias
+      (elige Ratas Gigantes o Ratas Lobo).
+  applies_to:
+    profile_ids:
+    - packmaster
+- id: packmaster--poke-em-in-the-squidgy-bits
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.packmaster.poke-em-in-the-squidgy-bits
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: equipment interaction with the Goading system is outside the duel scope.
+  name: Poke 'em in the Squidgy Bits
+  effect: >-
+    Packmasters are trained to take full advantage of the tools of Clan Moulder's trade. If so
+    equipped, they can gain the beneficial effects of both the Beastwhip and the Thingcatcher during
+    a Goading attempt.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Packmaster / Special Rules / Poke 'em in the squidgy bits
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Pincha en las Partes Blandas
+  effect_i18n:
+    es: >-
+      Los Maestros de Manada están entrenados para sacar el máximo partido de las herramientas del
+      oficio del Clan Moulder. Si están equipados así, pueden obtener los efectos beneficiosos tanto
+      del Látigo de Bestias como del Atrapacosas durante un intento de Azuzamiento.
+  applies_to:
+    profile_ids:
+    - packmaster
+- id: apprentices--novice-handler
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.apprentices.novice-handler
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: equipment interaction with the Goading system is outside the duel scope.
+  name: Novice Handler
+  effect: >-
+    An Apprentice has access to the Goading system detailed below, but can only use the beneficial
+    effect of either a Beastwhip or a Thingcatcher during a Goad, not both.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Apprentices / Special Rules / Novice Handler
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Domador Novato
+  effect_i18n:
+    es: >-
+      Un Aprendiz tiene acceso al sistema de Azuzamiento detallado abajo, pero solo puede usar el
+      efecto beneficioso de un Látigo de Bestias o de un Atrapacosas durante un Azuzamiento, no
+      ambos.
+  applies_to:
+    profile_ids:
+    - apprentices
+- id: apprentices--heir-to-power
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.apprentices.heir-to-power
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: leader succession and warband disbandment are roster/campaign mechanics
+        outside the duel scope.
+  name: Heir to Power
+  effect: >-
+    If the Packmaster is slain, one of the Apprentices must be chosen to succeed him as Leader. They
+    are treated as a Packmaster in all respects from that moment on, and a new Apprentice may be
+    hired to take their place. If the Packmaster and all Apprentices die at once, or if there are no
+    Apprentices in the warband when the Packmaster dies, the warband disbands as none of the
+    remaining Heroes has the skill to keep the beasts in line.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Apprentices / Special Rules / Heir to Power
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Heredero al Poder
+  effect_i18n:
+    es: >-
+      Si el Maestro de Manada muere, uno de los Aprendices debe ser elegido para sucederle como
+      Líder. Se le trata como un Maestro de Manada en todos los aspectos a partir de ese momento, y
+      puede contratarse un nuevo Aprendiz para ocupar su puesto. Si el Maestro de Manada y todos los
+      Aprendices mueren a la vez, o si no hay Aprendices en la banda cuando muere el Maestro de
+      Manada, la banda se disuelve, ya que ninguno de los Héroes restantes tiene la habilidad para
+      mantener a las bestias a raya.
+  applies_to:
+    profile_ids:
+    - apprentices
+- id: giant-rats--pack-size
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.giant-rats.pack-size
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: recruitment limits are roster-construction mechanics outside the duel
+        scope.
+  name: Pack Size
+  effect: >-
+    You may recruit as many Giant Rats as you wish subject to the warband's maximum number of
+    models.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Giant Rats / Special Rules / Pack Size
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Tamaño de la Manada
+  effect_i18n:
+    es: >-
+      Puedes reclutar tantas Ratas Gigantes como quieras, sujetas al número máximo de modelos de la
+      banda.
+  applies_to:
+    profile_ids:
+    - giant-rats
+- id: giant-rats--experience
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.giant-rats.experience
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: experience exemption is a campaign-progression mechanic outside the duel
+        scope.
+  name: Experience
+  effect: Giant Rats are animals and so do not gain Experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Giant Rats / Special Rules / Experience
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Experiencia
+  effect_i18n:
+    es: Las Ratas Gigantes son animales y por tanto no ganan Experiencia.
+  applies_to:
+    profile_ids:
+    - giant-rats
+    - wolf-rats
+- id: wolf-rats--poisoned-attack
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.wolf-rats.poisoned-attack
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: fixed-Strength attacks without armour-save modification are weapon
+        mechanics outside the duel scope.
+  name: Poisoned Attack
+  effect: >-
+    The mouths of Wolf Rats fester with any number of poxes and corrosive agents, their attacks are
+    considered to be Strength 4 but do not modify armour saves.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-3 Wolf Rats / Special Rules / Poisoned Attack
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Ataque Envenenado
+  effect_i18n:
+    es: >-
+      Las bocas de las Ratas Lobo están podridas por todo tipo de viruelas y agentes corrosivos; sus
+      ataques se consideran de Fuerza 4 pero no modifican las salvaciones por armadura.
+  applies_to:
+    profile_ids:
+    - wolf-rats
+- id: rat-ogres--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Fear is a psychology mechanic outside the duel scope.
+  name: Fear
+  effect: Rat Ogres are so terrifying they cause Fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Rat Ogres / Special Rules / Fear
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Los Ogros Rata son tan aterradores que causan Miedo.
+  applies_to:
+    profile_ids:
+    - rat-ogres
+- id: rat-ogres--stupidity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.stupidity
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Stupidity conditional immunity auras are psychology mechanics outside
+        the duel scope.
+  name: Stupidity
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Rat Ogres / Special Rules / Stupidity
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Estupidez
+  applies_to:
+    profile_ids:
+    - rat-ogres
+  rule_ref: shared-rule.stupidity
+- id: rat-ogres--experience
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.experience
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: experience exemption is a campaign-progression mechanic outside the duel
+        scope.
+  name: Experience
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Rat Ogres / Special Rules / Experience
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Experiencia
+  applies_to:
+    profile_ids:
+    - rat-ogres
+  rule_ref: shared-rule.experience
+- id: rat-ogres--large-target
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.large-target
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Large Target shooting modifiers are outside the current engine scope.
+  name: Large Target
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Rat Ogres / Special Rules / Large Target
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Objetivo Grande
+  applies_to:
+    profile_ids:
+    - rat-ogres
+  rule_ref: shared-rule.large-target
+- id: rat-ogres--its-alive
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.its-alive
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: mutation purchases are roster-construction/campaign mechanics outside
+        the duel scope.
+  name: It's Alive!
+  effect: >-
+    Moulder Rat Ogres are twisted creatures ever subject to the cruel curiosity of their masters.
+    When hired each Rat Ogre must purchase a single Mutation from the list in the Mordheim Rulebook
+    at the listed price (see Possessed Warband section).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Rat Ogres / Special Rules / It's Alive!
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: ¡Está Vivo!
+  effect_i18n:
+    es: >-
+      Los Ogros Rata de Moulder son criaturas retorcidas siempre expuestas a la cruel curiosidad de
+      sus amos. Al ser contratado, cada Ogro Rata debe comprar una única Mutación de la lista del
+      libro de reglas de Mordheim por el precio indicado (ver la sección de la banda de los
+      Endemoniados).
+  applies_to:
+    profile_ids:
+    - rat-ogres
+- id: rat-ogres--hard-to-handle
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.hard-to-handle
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: henchmen grouping rules are roster-construction mechanics outside the
+        duel scope.
+  name: Hard to Handle
+  effect: >-
+    Rat Ogres can only be bought individually, they never form a Henchmen Group even if you hire
+    more than one.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Rat Ogres / Special Rules / Hard to Handle
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Difíciles de Manejar
+  effect_i18n:
+    es: >-
+      Los Ogros Rata solo pueden comprarse individualmente; nunca forman un Grupo de Secuaces
+      incluso si contratas más de uno.
+  applies_to:
+    profile_ids:
+    - rat-ogres
+- id: band--clan-moulder-special-skills
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-of-clan-moulder-web.special.clan-moulder-special-skills
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: skill selections on promotion are advancement-time mechanics outside the
+        duel scope (Black Hunger's combat-relevant effect is a candidate for later implementation).
+  name: Clan Moulder Special Skills
+  effect: >-
+    Clan Moulder heroes may choose to use the following Skill list instead of any of the standard
+    Skill tables available to them. Black Hunger: the Hero may declare at the beginning of his turn
+    that he is using this skill; he may add +1 attack and +D3" to the total move on his profile for
+    the duration of his own turn, but will suffer D3 S3 hits with no armour save possible at the end
+    of the turn. Beastkin: the range at which any Beast/Animal Handling skills operate is doubled to
+    12". Hypnotic Musk: any animal or beast from an opposing warband wishing to charge him must pass
+    a Leadership test to do so unless said charge is the result of Goading; mounts are immune.
+    Subjugator of Mankind: if a Hero with this skill and equipped with a Thingcatcher takes an
+    opposing model out of action, do not roll for injuries post-battle, instead treat the enemy as
+    if they'd rolled Captured on the Serious Injuries chart; large creatures such as Ogres cannot be
+    caught this way, but animals can. Twistkin (Stormvermin only): upon taking this skill the Hero
+    must buy a Mutation from the list in the Mordheim Rulebook (see Possessed Warband) at half the
+    listed cost.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  name_i18n:
+    es: Habilidades Especiales del Clan Moulder
+  effect_i18n:
+    es: >-
+      Los héroes del Clan Moulder pueden elegir usar la siguiente lista de habilidades en lugar de
+      cualquiera de las tablas de habilidades estándar disponibles para ellos. Hambre Negra: el
+      Héroe puede declarar al comienzo de su turno que usa esta habilidad; puede añadir +1 ataque y
+      +D3" a su movimiento total durante su propio turno, pero sufrirá D3 impactos de F3 sin posible
+      salvación por armadura al final del turno. Semejante a Bestias: el alcance al que operan las
+      habilidades de Manejo de Bestias/Animales se duplica a 12". Almizcle Hipnótico: cualquier
+      animal o bestia de una banda oponente que quiera cargar contra él debe superar una prueba de
+      Liderazgo para hacerlo, salvo que la carga sea resultado de un Azuzamiento; las monturas son
+      inmunes. Sojuzgador de la Humanidad: si un Héroe con esta habilidad y equipado con un
+      Atrapacosas deja Fuera de Combate a un modelo oponente, no tires heridas tras la partida; en
+      su lugar, trata al enemigo como si hubiera sacado Capturado en la tabla de Heridas Graves;
+      criaturas grandes como los Ogros no pueden capturarse así, pero los animales sí. Retorcido
+      (solo Guerreros Tormenta): al tomar esta habilidad, el Héroe debe comprar una Mutación de la
+      lista del libro de reglas de Mordheim (ver banda de los Endemoniados) a mitad del precio
+      indicado.
+  applies_to:
+    band: true

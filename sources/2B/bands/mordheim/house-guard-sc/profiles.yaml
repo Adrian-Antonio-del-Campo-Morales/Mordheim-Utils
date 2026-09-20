@@ -1,0 +1,94 @@
+schema_version: 2
+band_id: house-guard-sc
+profiles:
+- id: commander
+  name: Commander
+  type: hero
+  cost: 65
+  experience: 20
+  characteristics: {M: 4, WS: 4, BS: 4, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 8}
+  equipment_lists: [heroes-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, academic, strength, speed]
+  source: {manual: Broheim, printed_page: 3, section: 1 Commander, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf'}
+  source_path: [heroes, 1 Commander]
+  name_i18n: {es: Comandante}
+  rule_ids: [commander--leader]
+  combat_traits: {}
+- id: sergeants
+  name: Sergeants
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics: {M: 4, WS: 4, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [heroes-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, strength, speed]
+  source: {manual: Broheim, printed_page: 3, section: 0-3 Sergeants, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf'}
+  source_path: [heroes, 0-3 Sergeants]
+  name_i18n: {es: Sargentos}
+  rule_ids: []
+  combat_traits: {}
+- id: adjutant
+  name: Adjutant
+  type: hero
+  cost: 20
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 2, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 6}
+  equipment_lists: [heroes-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [academic, special]
+  source: {manual: Broheim, printed_page: 4, section: 0-1 Adjutant, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf'}
+  source_path: [heroes, 0-1 Adjutant]
+  name_i18n: {es: Ayudante}
+  rule_ids: [adjutant--relay-orders]
+  combat_traits: {}
+- id: guards
+  name: Guards
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [henchmen-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 4, section: Guards, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf'}
+  source_path: [henchmen, Guards]
+  name_i18n: {es: Guardias}
+  rule_ids: []
+  combat_traits: {}
+- id: pikemen
+  name: Pikemen
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 7}
+  equipment_lists: [henchmen-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 4, section: 0-4 Pikemen, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf'}
+  source_path: [henchmen, 0-4 Pikemen]
+  name_i18n: {es: Piqueros}
+  rule_ids: [pikemen--pikewall]
+  combat_traits: {}
+- id: warhounds
+  name: Warhounds
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics: {M: 6, WS: 4, BS: 0, S: 4, T: 3, W: 1, I: 4, A: 1, Ld: 5}
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Warhounds never use or need weapons and armour.
+  skill_access: []
+  source: {manual: Broheim, printed_page: 4, section: 0-4 Warhounds, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf'}
+  source_path: [henchmen, 0-4 Warhounds]
+  name_i18n: {es: Perros de Guerra}
+  rule_ids: [warhounds--animals]
+  combat_traits: {}

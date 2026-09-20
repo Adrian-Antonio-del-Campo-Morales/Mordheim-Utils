@@ -1,0 +1,62 @@
+schema_version: 2
+id: watchmen-mim
+canonical_family: watchmen-mim
+name: Watchmen
+name_i18n:
+  es: Guardia Urbana
+original_locale: en
+ruleset: mordheim
+categories:
+- 2b
+grade: 2b
+setting: Mutiny in Marienburg
+publication: Mutiny in Marienburg Supplement
+status: staging
+sources:
+- manual: Broheim
+  printed_page: 1
+  section: Watchmen
+  url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+roster:
+  minimum_models: 3
+  maximum_models: 12
+  starting_gold: 500
+  members:
+  - profile_id: watch-captain
+    minimum: 1
+    maximum: 1
+  - profile_id: sergeants
+    minimum: 0
+    maximum: 2
+  - profile_id: private-sleuth
+    minimum: 0
+    maximum: 1
+  - profile_id: rookies
+    minimum: 0
+    maximum: 2
+  - profile_id: officers
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: turnkeys
+    minimum: 0
+    maximum: 2
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: sewer-jacks
+    minimum: 0
+    maximum: 4
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--black-caps
+- band--secretariat
+- band--whistling
+- band--jurisdiction
+- band--interrogation
+- band--fanatical
+- band--fenland-striders

@@ -1,0 +1,249 @@
+schema_version: 2
+band_id: lothern-sea-patrol-sar
+profiles:
+- id: commodore
+  name: Commodore
+  type: hero
+  cost: 70
+  experience: 20
+  characteristics:
+    M: 5
+    WS: 5
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - pirate
+  - special
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 1 Commodore
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Lothern%20Sea%20Patrol.pdf
+  source_path:
+  - heroes
+  - 1 Commodore
+  name_i18n:
+    es: Comodoro
+  rule_ids:
+  - commodore--leader
+  combat_traits: {}
+- id: mist-mage
+  name: Mist Mage
+  type: hero
+  cost: 50
+  experience: 10
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not use armour while casting spells.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-1 Mist Mage
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Lothern%20Sea%20Patrol.pdf
+  source_path:
+  - heroes
+  - 0-1 Mist Mage
+  name_i18n:
+    es: Mago de la Niebla
+  rule_ids:
+  - mist-mage--wizard
+  combat_traits: {}
+- id: bossuns
+  name: Bossuns
+  type: hero
+  cost: 50
+  experience: 8
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - pirate
+  - special
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-2 Bossuns
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Lothern%20Sea%20Patrol.pdf
+  source_path:
+  - heroes
+  - 0-2 Bossuns
+  name_i18n:
+    es: Contramaestres
+  rule_ids:
+  - bossuns--disciplined
+  combat_traits: {}
+- id: ships-company
+  name: Ship's Company
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / Ship's Company
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Lothern%20Sea%20Patrol.pdf
+  source_path:
+  - henchmen
+  - Ship's Company
+  name_i18n:
+    es: Dotación del Barco
+  rule_ids: []
+  combat_traits: {}
+- id: seaguards
+  name: Seaguards
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / Seaguards
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Lothern%20Sea%20Patrol.pdf
+  source_path:
+  - henchmen
+  - Seaguards
+  name_i18n:
+    es: Guardias del Mar
+  rule_ids:
+  - seaguards--spear-master
+  combat_traits: {}
+- id: sea-rangers
+  name: Sea Rangers
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - ranger-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 Sea Rangers
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Lothern%20Sea%20Patrol.pdf
+  source_path:
+  - henchmen
+  - 0-5 Sea Rangers
+  name_i18n:
+    es: Guardabosques del Mar
+  rule_ids:
+  - sea-rangers--hide-in-shadows
+  - sea-rangers--hate-dark-elves
+  combat_traits: {}
+- id: raw-recruits
+  name: Raw Recruits
+  type: henchman
+  cost: 0
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - recruit-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 Raw Recruits
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Lothern%20Sea%20Patrol.pdf
+  source_path:
+  - henchmen
+  - 0-5 Raw Recruits
+  name_i18n:
+    es: Reclutas Novatos
+  rule_ids:
+  - raw-recruits--specially-hired
+  - raw-recruits--never-gain-experience
+  - raw-recruits--rabble
+  - raw-recruits--oh-dear-they-got-away
+  - raw-recruits--dont-mind-them
+  combat_traits: {}

@@ -1,0 +1,315 @@
+schema_version: 2
+band_id: skaven-of-clan-pestilens-mou
+rules:
+- id: band--pestilens-special-skills
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-of-clan-pestilens-mou.band.pestilens-special-skills
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Clan Pestilence Special Skills
+  effect: >-
+    Skaven Heroes with the Special skill available to them may choose to use the following Skill
+    list instead of any of the standard Skill tables available to them. Cloud of Flies: the Skaven
+    is surrounded by a cloud of buzzing flies; any model in base contact with the character suffers
+    a -1 penalty to all to hit rolls; Clan Pestilens Heroes and Plague Monks, Undeads and followers
+    of Nurgle are immune to this effect. Numb: the Hero treats a Stunned result as Knocked down.
+    Frenzy: the Skaven is subject to Frenzy. Resilient: same as the Strength skill. Rotten Body: the
+    Hero causes Fear.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Clan Pestilence Special Skills
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  name_i18n:
+    es: Habilidades Especiales del Clan Pestilente
+  effect_i18n:
+    es: >-
+      Los héroes skaven con la habilidad Especial disponible pueden elegir usar la siguiente lista
+      en lugar de cualquiera de las tablas de habilidades estándar. Nube de Moscas: el skaven está
+      rodeado de una nube de moscas zumbantes; cualquier modelo en contacto base con el personaje
+      sufre una penalización de -1 a todas las tiradas para golpear; los héroes del Clan Pestilente
+      y los Monjes de la Peste, los Muertos Vivientes y los seguidores de Nurgle son inmunes a este
+      efecto. Entumecido: el héroe trata un resultado Aturdido como Derribado. Frenesí: el skaven
+      está sujeto a Frenesí. Resistente: igual que la habilidad de Fuerza. Cuerpo Podrido: el héroe
+      causa Miedo.
+  applies_to:
+    band: true
+- id: band--plague-censer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-of-clan-pestilens-mou.band.plague-censer
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Plague Censer
+  effect: >-
+    Cost 75+5D6 wt, Rare 12. A Plague Censer is a hollow spiked metal ball attached to a long chain
+    and is swung as a flail; a plague-infested shard of warpstone is burning inside the ball so that
+    it emits a foul bubonic vapour as the censer is swung. Profile: Close Combat, Strength As User
+    +2, Special Rules Heavy, Two Handed, Fog of Death. Heavy: the Plague Censer is wielded as a
+    flail, and confers +2 Strength only on the first round of combat. Two-handed: a flail requires
+    two hands to use and a model using a flail may not use a shield, buckler or additional hand
+    weapon in close combat; if the model has a shield he still gets a +1 bonus to his armour save
+    against shooting. Fog of Death: the billowing clouds of vapour created by the swinging Censer
+    makes the wielder a difficult target to shoot at; there is an extra penalty of -1 to hit for
+    shooting at the wielder of a Plague Censer. In addition, at the end of each close-combat phase
+    roll a D6 for each model in base contact with the Plague Censer wielder; on the roll of 6 the
+    model suffers a wound from the poisonous gas, with no armour save allowed as the vapours
+    penetrate any defenses. Note that Plague Censer wielders are immune to the Fog of Death, even if
+    they are in base contact with another Plague Censer wielder.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Clan Pestilence Special Equipment / Plague Censer
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  name_i18n:
+    es: Incensario de la Peste
+  effect_i18n:
+    es: >-
+      Coste 75+5D6 wt, Rareza 12. Un Incensario de la Peste es una bola metálica hueca con pinchos
+      unida a una larga cadena que se blanden como un mayal; dentro de la bola arde un fragmento de
+      piedra warp infestado de plagas que emite un vapor bubónico fétido al blandir el incensario.
+      Perfil: Combate Cuerpo a Cuerpo, Fuerza Igual al Usuario +2, Reglas Especiales Pesado, A Dos
+      Manos, Niebla de Muerte. Pesado: el Incensario de la Peste se blande como un mayal y otorga +2
+      de Fuerza solo en la primera ronda de combate. A Dos Manos: un mayal requiere dos manos y un
+      modelo que use un mayal no puede usar escudo, broquel o arma adicional en combate cuerpo a
+      cuerpo; si el modelo tiene escudo aún obtiene un +1 a su salvación por armadura contra
+      disparos. Niebla de Muerte: las nubes de vapor creadas por el incensario hacen difícil
+      disparar al portador; hay una penalización adicional de -1 para disparar al portador de un
+      Incensario de la Peste. Además, al final de cada fase de combate cuerpo a cuerpo tira un D6
+      por cada modelo en contacto base con el portador; con un 6 el modelo sufre una herida por el
+      gas venenoso, sin tirada de salvación por armadura ya que los vapores penetran cualquier
+      defensa. Los portadores de Incensarios de la Peste son inmunes a la Niebla de Muerte, incluso
+      si están en contacto base con otro portador.
+  applies_to:
+    band: true
+- id: plague-priest--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pestilens-mou.plague-priest.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Leader
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 1 Plague Priest / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - plague-priest
+  rule_ref: shared-rule.leader
+- id: plague-priest--frenzy
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pestilens-mou.plague-priest.frenzy
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Frenzy (Plague Priest)
+  effect: >-
+    The Skaven has contracted a disease that gives him feverish nightmares that turn him into a
+    frothing madman in combat. The Skaven is subject to Frenzy.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 1 Plague Priest / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  name_i18n:
+    es: Frenesí
+  effect_i18n:
+    es: >-
+      El skaven ha contraído una enfermedad que le da pesadillas febriles que lo convierten en un
+      loco espumeante en combate. El skaven está sujeto a Frenesí.
+  applies_to:
+    profile_ids:
+    - plague-priest
+- id: plague-priest--resilient
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pestilens-mou.plague-priest.resilient
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Resilient (Plague Priest)
+  effect: >-
+    The Plague Priest is a disease-ridden Skaven and starts with the Resilience Strength skill.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 1 Plague Priest / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  name_i18n:
+    es: Resistente
+  effect_i18n:
+    es: >-
+      El Sacerdote de la Peste es un skaven lleno de enfermedades y empieza con la habilidad de
+      Fuerza Resistencia.
+  applies_to:
+    profile_ids:
+    - plague-priest
+- id: plague-champion--frenzy
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pestilens-mou.plague-champion.frenzy
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Frenzy (Plague Champion)
+  effect: >-
+    The Skaven has contracted a disease that gives him feverish nightmares that turn him into a
+    frothing madman in combat. The Skaven is subject to Frenzy.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-2 Plague Champions / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  name_i18n:
+    es: Frenesí
+  effect_i18n:
+    es: >-
+      El skaven ha contraído una enfermedad que le da pesadillas febriles que lo convierten en un
+      loco espumeante en combate. El skaven está sujeto a Frenesí.
+  applies_to:
+    profile_ids:
+    - plague-champion
+- id: plague-champion--resilient
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pestilens-mou.plague-champion.resilient
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Resilient (Plague Champion)
+  effect: >-
+    The Plague Champion is a disease-ridden Skaven and starts with the Resilience Strength skill.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-2 Plague Champions / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  name_i18n:
+    es: Resistente
+  effect_i18n:
+    es: >-
+      El Campeón de la Peste es un skaven lleno de enfermedades y empieza con la habilidad de Fuerza
+      Resistencia.
+  applies_to:
+    profile_ids:
+    - plague-champion
+- id: plague-rat--plague-infested
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pestilens-mou.plague-rat.plague-infested
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Plague Infested
+  effect: >-
+    The rats are infected with various diseases and plagues. All their attacks counts as if their
+    teeth were coated with Black Lotus.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-5 Plague Rats / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  name_i18n:
+    es: Infestado de Peste
+  effect_i18n:
+    es: >-
+      Las ratas están infectadas con varias enfermedades y plagas. Todos sus ataques cuentan como si
+      sus dientes estuvieran recubiertos de Loto Negro.
+  applies_to:
+    profile_ids:
+    - plague-rat
+- id: plague-rat--animals
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pestilens-mou.plague-rat.animals
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Animals
+  effect: The Plague-Rats are animals and never gain experience.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-5 Plague Rats / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  name_i18n:
+    es: Animales
+  effect_i18n:
+    es: Las Rataspeste son animales y nunca ganan experiencia.
+  applies_to:
+    profile_ids:
+    - plague-rat
+- id: skaven-slave--abused
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pestilens-mou.skaven-slave.abused
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Abused
+  effect: >-
+    Skaven Slaves are badly mistreated and never have the chance to advance. Slaves do not gain
+    experience.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: 0-5 Slaves / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  name_i18n:
+    es: Maltratados
+  effect_i18n:
+    es: >-
+      Los Esclavos Skaven son maltratados y nunca tienen la oportunidad de avanzar. Los esclavos no
+      ganan experiencia.
+  applies_to:
+    profile_ids:
+    - skaven-slave

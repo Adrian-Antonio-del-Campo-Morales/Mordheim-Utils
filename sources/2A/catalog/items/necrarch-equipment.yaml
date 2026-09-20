@@ -1,0 +1,111 @@
+schema_version: 2
+ruleset: mordheim
+status: staging
+items:
+- id: staff_of_damnation
+  kind: combat-equipment
+  name: Staff of Damnation
+  name_i18n:
+    es: Bastón de la Perdición
+  effect: >-
+    The preferred weapon of these ancient mages, the Staff of Damnation allows them to bear deadly
+    magic against their foes. Range: Close Combat. Strength: As user. Special Rules: Two-Handed,
+    Magic-well.
+  effect_i18n:
+    es: >-
+      El arma predilecta de estos magos ancestrales, el Bastón de la Perdición les permite descargar
+      magia letal contra sus enemigos. Alcance: combate cuerpo a cuerpo. Fuerza: como el usuario.
+      Reglas Especiales: A Dos Manos, Pozo de magia.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Staff of Damnation
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  rarity: null
+  availability_note: Necrarch only. Cost 25 gc.
+  combat_status: out_of_scope
+  special_rules:
+  - id: two-handed
+    name: Two-Handed
+    effect: >-
+      As the Staff of Damnation requires two hands to wield, a model equipped with it may not use a
+      shield, buckler or secondary weapon in close combat. If the model has a shield it will still
+      get a +1 bonus to its armour save against shooting.
+    effect_i18n:
+      es: >-
+        Como el Bastón de la Perdición requiere dos manos para empuñarlo, una miniatura equipada con
+        él no puede usar escudo, broquel ni arma secundaria en combate cuerpo a cuerpo. Si la
+        miniatura lleva escudo, sigue recibiendo el bonificador de +1 a su salvación por armadura
+        contra disparos.
+    name_i18n:
+      es: A Dos Manos
+  - id: magic-well
+    name: Magic-well
+    effect: >-
+      A Necrarch Vampire may cast a spell into the Staff of Damnation during his Magic phase instead
+      of casting as normal. Upon a successful casting, the spell is stored within the staff. The
+      spell may be released during a later shooting phase in lieu of casting another spell.
+    effect_i18n:
+      es: >-
+        Un Vampiro Necrarca puede lanzar un hechizo dentro del Bastón de la Perdición durante su
+        fase de Magia en lugar de lanzarlo con normalidad. Si el lanzamiento tiene éxito, el hechizo
+        queda almacenado en el bastón. El hechizo puede liberarse en una fase de Disparo posterior
+        en lugar de lanzar otro hechizo.
+    name_i18n:
+      es: Pozo de Magia
+- id: unholy_relic
+  kind: miscellaneous
+  name: Unholy Relic
+  name_i18n:
+    es: Reliquia Impía
+  effect: >-
+    A blasphemous artefact carried by the Necrarchs' servants. (No further rules text is printed for
+    this item on the source page; it appears only in the Hero Equipment List at 15 gc.)
+  effect_i18n:
+    es: >-
+      Un artefacto blasfemo que portan los sirvientes de los Necrarcas. (La página de origen no
+      imprime más texto de reglas para este objeto; solo aparece en la Lista de Equipo de Héroes por
+      15 coronas.)
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Necrarch equipment lists / Hero Equipment List / Miscellaneous Equipment (Heroes Only)
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  rarity: null
+  availability_note: Heroes only (Necrarch Hero Equipment List). Cost 15 gc.
+  combat_status: out_of_scope
+- id: damned_book
+  kind: miscellaneous
+  name: Damned Book
+  name_i18n:
+    es: Libro Maldito
+  effect: >-
+    Penned in the blood of elven maidens and written upon the flesh of virgins, the Damned Book
+    perverts space about it. Cursed Aura: a model bearing the Damned Book causes all enemy models
+    within 2 inches to suffer a -1 penalty to hit in close combat.
+  effect_i18n:
+    es: >-
+      Escrito con la sangre de doncellas elfas y sobre la carne de vírgenes, el Libro Maldito
+      pervierte el espacio a su alrededor. Aura Maldita: una miniatura que porte el Libro Maldito
+      hace que todas las miniaturas enemigas a 2 pulgadas sufran una penalización de -1 por impactar
+      en combate cuerpo a cuerpo.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Damned Book
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  rarity: 11
+  availability_note: 45+3D6 gc.
+  combat_status: out_of_scope
+  special_rules:
+  - id: cursed-aura
+    name: Cursed Aura
+    effect: >-
+      A model bearing the Damned Book causes all enemy models within 2 inches to suffer a -1 penalty
+      to hit in close combat.
+    effect_i18n:
+      es: >-
+        Una miniatura que porte el Libro Maldito hace que todas las miniaturas enemigas a 2 pulgadas
+        sufran una penalización de -1 por impactar en combate cuerpo a cuerpo.
+    name_i18n:
+      es: Aura Maldita

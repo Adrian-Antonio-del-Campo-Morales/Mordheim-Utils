@@ -1,0 +1,35 @@
+schema_version: 2
+ruleset: mordheim
+# White wolf pelt cloak of the Wolf-Priests of Ulric (Miracle Workers chapter,
+# Werekin — Liber Malefic; the priest article of the Mutiny in Marienburg
+# project). Resolves the `wolf_pelt_cloak` reference from the chapter's
+# hireling profiles (previously a deliberately dangling ref).
+#
+# Distinct from the KB's existing cloak-class items — do NOT merge at
+# promotion without an equivalence review:
+# - `wolfcloak` (KB catalog/items/out-of-scope.yaml): Middenheim hunt cloak,
+#   acquired via a Strength test hunt, +1 armour saves vs shooting only.
+# - `lion_cloak`-class Lustria hides: different item entirely.
+# The pelt's effect is a plain 6+ saving throw usable in place of armour.
+items:
+- id: wolf_pelt_cloak
+  kind: combat-equipment
+  name: White Wolf Pelt Cloak
+  name_i18n:
+    es: Capa de Piel de Lobo Blanco
+  effect: >-
+    Wolf-Priests of Ulric may never wear armour, trusting in Ulric's protection. The only
+    exception is that every Wolf-Priest is garbed in a cloak made from the pelt of a white
+    wolf; the pelt allows a 6+ saving throw.
+  effect_i18n:
+    es: >-
+      Los Sacerdotes Lobo de Ulric nunca pueden llevar armadura, confiando en la protección
+      de Ulric. La única excepción es que cada Sacerdote Lobo viste una capa hecha con la
+      piel de un lobo blanco; la piel concede una tirada de salvación de 6+.
+  source_refs:
+  - manual: Liber Malefic (Miracle Workers, Werekin)
+    printed_page: 9
+    section: Wolf-Priest of Ulric / Strictures
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  availability_note: Wolf-Priests of Ulric only (starting equipment, not purchasable).
+  combat_status: out_of_scope

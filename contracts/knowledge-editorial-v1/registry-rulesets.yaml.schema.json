@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/registry-rulesets.yaml.schema.json",
+  "title": "Mordheim KB registry — registry/rulesets.yaml",
+  "description": "The rulesets of the repository. Every catalogue document declares its `ruleset`, and the loaders refuse a document that does not describe the one they were asked for.",
+  "type": "object",
+  "required": ["schema_version", "rulesets"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 2 },
+    "rulesets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "defs.schema.json#/$defs/id" },
+          "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+          "status": {
+            "description": "Lifecycle of the ruleset. Currently `active`.",
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

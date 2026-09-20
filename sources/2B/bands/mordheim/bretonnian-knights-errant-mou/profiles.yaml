@@ -1,0 +1,76 @@
+schema_version: 2
+band_id: bretonnian-knights-errant-mou
+profiles:
+- id: knights-errant
+  name: Knights Errant
+  type: hero
+  cost: 50
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - knights-errant-equipment-list
+  fixed_equipment:
+  - light_armour
+  - shield
+  equipment_restrictions:
+  - Must buy a weapon from the hand-to-hand combat list; a simple dagger is not acceptable.
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: 1- 4 Knights Errant
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian Knights Errant.pdf
+  source_path:
+  - heroes
+  - 1- 4 Knights Errant
+  name_i18n:
+    es: Caballeros Errantes
+  rule_ids:
+  - knights-errant--brettonian-leader
+  - knights-errant--knights-virtue
+  combat_traits: {}
+- id: squires
+  name: Squires
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - squires-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: Squires
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian Knights Errant.pdf
+  source_path:
+  - henchmen
+  - Squires
+  name_i18n:
+    es: Escuderos
+  rule_ids: []
+  combat_traits: {}

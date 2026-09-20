@@ -1,0 +1,112 @@
+schema_version: 2
+band_id: masters-of-horror-sylv
+profiles:
+- id: mad-scientist
+  name: Mad Scientist
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 8}
+  equipment_lists: [hero-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [academic, speed, special]
+  source: {manual: mordheimer.net (Sylvania Supplement), printed_page: 0, section: 1 Mad Scientist, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror'}
+  source_path: [heroes, 1 Mad Scientist]
+  name_i18n: {es: Científico Loco}
+  rule_ids: [mad-scientist--leader, mad-scientist--immune-to-psychology]
+  combat_traits: {}
+- id: thrall
+  name: Thrall
+  type: hero
+  cost: 70
+  experience: 8
+  characteristics: {M: 5, WS: 3, BS: 3, S: 4, T: 4, W: 1, I: 5, A: 1, Ld: 7}
+  equipment_lists: [hero-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, strength, speed, special]
+  source: {manual: mordheimer.net (Sylvania Supplement), printed_page: 0, section: 0-1 Thrall, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror'}
+  source_path: [heroes, 0-1 Thrall]
+  name_i18n: {es: Esclavo}
+  rule_ids: [thrall--cause-fear, thrall--immune-to-psychology, thrall--immune-to-poison, thrall--no-pain]
+  combat_traits: {}
+- id: wolfman
+  name: Wolfman
+  type: hero
+  cost: 65
+  experience: 8
+  characteristics: {M: 6, WS: 3, BS: 3, S: 4, T: 3, W: 2, I: 2, A: 2, Ld: 7}
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - A werewolf cannot bear equipment. They attack with tooth and claw, and suffer
+    no penalties for doing so.
+  skill_access: [combat, strength, speed, special]
+  source: {manual: mordheimer.net (Sylvania Supplement), printed_page: 0, section: 0-1 Wolfman, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror'}
+  source_path: [heroes, 0-1 Wolfman]
+  name_i18n: {es: Hombre Lobo}
+  rule_ids: []
+  combat_traits: {}
+- id: hunchbacks
+  name: Hunchback
+  type: hero
+  cost: 25
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 2, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [hero-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, strength, speed, special]
+  source: {manual: mordheimer.net (Sylvania Supplement), printed_page: 0, section: 0-2 Hunchbacks, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror'}
+  source_path: [heroes, 0-2 Hunchbacks]
+  name_i18n: {es: Jorobado}
+  rule_ids: []
+  combat_traits: {}
+- id: zombies
+  name: Zombies
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 0, S: 3, T: 4, W: 1, I: 1, A: 1, Ld: 5}
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Zombies never carry any equipment, and do not suffer any penalties for this.
+  skill_access: []
+  source: {manual: mordheimer.net (Sylvania Supplement), printed_page: 0, section: Zombies, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror'}
+  source_path: [henchmen, Zombies]
+  name_i18n: {es: Zombis}
+  rule_ids: [zombies--cause-fear, zombies--may-not-run, zombies--immune-to-psychology, zombies--immune-to-poison, zombies--no-pain, zombies--no-brain]
+  combat_traits: {poison_immune: true}
+- id: flesh-construct
+  name: Flesh Construct
+  type: henchman
+  cost: 80
+  experience: 0
+  characteristics: {M: 4, WS: 3, BS: 0, S: 4, T: 5, W: 2, I: 2, A: 2, Ld: 6}
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Flesh Constructs do not use weapons, and suffer no penalties.
+  skill_access: []
+  source: {manual: mordheimer.net (Sylvania Supplement), printed_page: 0, section: 0-1 Flesh Construct, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror'}
+  source_path: [henchmen, 0-1 Flesh Construct]
+  name_i18n: {es: Construido de Carne}
+  rule_ids: [flesh-construct--cause-fear, flesh-construct--immune-to-psychology, flesh-construct--immune-to-poison, flesh-construct--no-pain, flesh-construct--a-bit-unhinged, flesh-construct--its-only-a-flesh-wound, flesh-construct--cannot-run]
+  combat_traits: {poison_immune: true}
+- id: the-bitten
+  name: The Bitten
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 2, S: 4, T: 3, W: 1, I: 4, A: 1, Ld: 6}
+  equipment_lists: [bitten-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: mordheimer.net (Sylvania Supplement), printed_page: 0, section: 0-3 The Bitten, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror'}
+  source_path: [henchmen, 0-3 The Bitten]
+  name_i18n: {es: Los Mordidos}
+  rule_ids: [the-bitten--transform]
+  combat_traits: {}

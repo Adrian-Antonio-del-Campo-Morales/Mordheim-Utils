@@ -1,0 +1,448 @@
+schema_version: 2
+band_id: disciples-of-maldred-mou
+rules:
+- id: prophet--leader
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.disciples-of-maldred-mou.prophet.leader
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Leader (Prophet)
+  effect: >-
+    Any warrior within 6" of the Prophet may use his Leadership value when taking Leadership tests.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Prophet of the False Grail / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  name_i18n:
+    es: Líder (Profeta)
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6" o menos del Profeta puede usar su valor de Liderazgo cuando realice
+      tiradas de Liderazgo.
+  applies_to:
+    profile_ids:
+    - prophet
+- id: prophet--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.disciples-of-maldred-mou.prophet.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Wizard (Prophet)
+  effect: The Prophet of the False Grail is a wizard and uses Chaos Rituals.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Prophet of the False Grail / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  name_i18n:
+    es: Mago (Profeta)
+  effect_i18n:
+    es: El Profeta del Falso Grial es un mago y usa Rituales del Caos.
+  applies_to:
+    profile_ids:
+    - prophet
+- id: prophet--corrupting-influence
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.disciples-of-maldred-mou.prophet.corrupting-influence
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Corrupting Influence
+  effect: >-
+    A Prophet of the False Grail uses guile and cunning to deceive his followers into acts of
+    depravation. As a Knight under the Prophet's tutelage follows his increasingly amoral
+    instructions, the seeds of corruption sprout and blossom within him. A Disciples of Maldred
+    warband whose leader has the Corrupting Influence skill must test to see whether any untainted
+    Knights under him are corrupted (see Corruption, under Questing Knights). Note that a Corrupt
+    Knight will always become leader over an untainted Knight should the Prophet perish, and will
+    gain the Corrupting Influence skill on his promotion.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Prophet of the False Grail / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  name_i18n:
+    es: Influencia Corruptora
+  effect_i18n:
+    es: >-
+      Un Profeta del Falso Grial usa el engaño y la astucia para llevar a sus seguidores a actos de
+      depravación. Mientras un Caballero bajo la tutela del Profeta sigue sus instrucciones cada vez
+      más amorales, las semillas de la corrupción brotan y florecen en su interior. Una banda de
+      Discípulos de Maldred cuyo líder tenga la habilidad Influencia Corruptora debe hacer tiradas
+      para ver si los Caballeros no corrompidos a su cargo resultan corrompidos (ver Corrupción,
+      bajo Caballeros Errantes). Nota: un Caballero Corrupto siempre se convertirá en líder antes
+      que un Caballero no corrompido si el Profeta perece, y ganará la habilidad Influencia
+      Corruptora al ser promovido.
+  applies_to:
+    profile_ids:
+    - prophet
+- id: prophet--his-masters-gift
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.disciples-of-maldred-mou.prophet.his-masters-gift
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: His Master's Gift (Prophet)
+  effect: >-
+    When a Prophet has accumulated enough experience, instead of picking a skill he may roll on the
+    Gifts of Tzeentch table (see Gifts of Tzeentch).
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Heroes / 1 Prophet of the False Grail / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  name_i18n:
+    es: El Don de su Señor (Profeta)
+  effect_i18n:
+    es: >-
+      Cuando un Profeta ha acumulado suficiente experiencia, en lugar de elegir una habilidad puede
+      tirar en la tabla Dones de Tzeentch (ver Dones de Tzeentch).
+  applies_to:
+    profile_ids:
+    - prophet
+- id: band--gifts-of-tzeentch
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.disciples-of-maldred-mou.band.gifts-of-tzeentch
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Gifts of Tzeentch
+  effect: >-
+    Roll 2D6. 2-3 The Master's Foresight: from now on the character is allowed to reroll one die
+    during each battle (not during the post battle sequence); in addition, the next time you roll on
+    this table you may add +1 to your die roll; this bonus is one use only. 4 Unfit!: the character
+    receives a permanent -1 WS, but is allowed to continue to fight for the warband. 5 Twisted Fate:
+    if the character is taken OOA but survives his injury roll (i.e. anything but a Dead result), he
+    has to immediately roll again and accept the second result too; this lasts for D6 turns, before
+    Tzeentch loses interest and abandons him. 6-8 Silence: nothing happens. 9 Tzeentch's
+    Temperament: before each battle starts roll a D6; on an even number the hero is -1 I and WS; on
+    an odd number, they are +1 I and WS. 10 Energy Surge: you randomly get +1 on a stat (max 10);
+    this may take your character beyond his race-max; any stat can only be raised once this way. 11
+    Mutation: randomly determine a mutation (pg. 76 Mordheim Rulebook); this mutation must be paid
+    for as per the price listed; if this is not possible, you only have the mutation for the next
+    battle. 12 Chaos Armour: confers a 3+ saving throw on the warrior, including a shield; the
+    bearer suffers no movement penalty for wearing it; in addition, Chaos armour does not prevent
+    sorcerers who wear it from casting spells; Chaos Armour may never be swapped between warband
+    members; it is permanently fused to the warrior, and cannot be removed.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Gifts of Tzeentch
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  name_i18n:
+    es: Dones de Tzeentch
+  effect_i18n:
+    es: >-
+      Tira 2D6. 2-3 La Previsión del Señor: desde ahora el personaje puede repetir un dado en cada
+      batalla (no durante la secuencia posterior a la batalla); además, la próxima vez que tires en
+      esta tabla puedes sumar +1 a tu tirada; esta bonificación es de un solo uso. 4 ¡Indigno!: el
+      personaje recibe un -1 permanente a HA, pero puede seguir luchando para la banda. 5 Destino
+      Torcido: si el personaje queda fuera de combate pero sobrevive a su tirada de herida (es
+      decir, cualquier resultado menos Muerto), debe tirar de inmediato otra vez y aceptar también
+      el segundo resultado; esto dura D6 turnos, antes de que Tzeentch pierda interés y lo abandone.
+      6-8 Silencio: no pasa nada. 9 Temperamento de Tzeentch: antes de cada batalla tira 1D6; con
+      número par el héroe tiene -1 I y HA; con número impar, +1 I y HA. 10 Oleada de Energía:
+      obtienes al azar +1 en una característica (máx. 10); esto puede llevar a tu personaje más allá
+      de su máximo racial; cada característica solo puede subirse una vez de esta forma. 11
+      Mutación: determina al azar una mutación (pág. 76 del libro de Mordheim); esta mutación debe
+      pagarse según el precio listado; si no es posible, solo tendrás la mutación para la próxima
+      batalla. 12 Armadura del Caos: otorga al guerrero una salvación de 3+, incluido escudo; el
+      portador no sufre penalización de movimiento por llevarla; además, la armadura del Caos no
+      impide a los hechiceros que la llevan lanzar hechizos; la Armadura del Caos nunca puede
+      intercambiarse entre miembros de la banda; está permanentemente fusionada al guerrero y no
+      puede quitarse.
+  applies_to:
+    band: true
+- id: questing-knights--knights-virtue
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.disciples-of-maldred-mou.questing-knights.knights-virtue
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Knight's Virtue
+  effect: >-
+    An untainted Questing Knight is a chivalrous warrior who is superior to ordinary warriors. He
+    will never panic and break from combat and so does not have to pass a Leadership test for being
+    all alone. Note that he loses this Virtue when he embraces his darkness and becomes a Corrupt
+    Knight.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Heroes / 0-2 Questing Knights / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  name_i18n:
+    es: Virtud del Caballero
+  effect_i18n:
+    es: >-
+      Un Caballero Errante no corrompido es un guerrero caballeroso superior a los guerreros
+      ordinarios. Nunca entra en pánico ni huye del combate, y por eso no necesita superar una
+      tirada de Liderazgo por estar en solitario. Ten en cuenta que pierde esta Virtud cuando abraza
+      su oscuridad y se convierte en un Caballero Corrupto.
+  applies_to:
+    profile_ids:
+    - questing-knights
+- id: questing-knights--knights-feats
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.disciples-of-maldred-mou.questing-knights.knights-feats
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Knight's Feats (Questing Knight)
+  effect: >-
+    A Questing Knight is a mighty hero capable of dashing feats of strength and bravery. He may
+    choose from the Knights Feats special skill list when he gains a skill through advancement. Note
+    that only untainted Knights may choose from this list. However, they keep any Feats they have
+    once corrupt (see Knights Feats).
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Heroes / 0-2 Questing Knights / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  name_i18n:
+    es: Hazañas de Caballería (Caballero Errante)
+  effect_i18n:
+    es: >-
+      Un Caballero Errante es un héroe poderoso capaz de asombrosas hazañas de fuerza y valentía.
+      Puede elegir de la lista de habilidades especiales Hazañas de Caballería cuando gane una
+      habilidad por progreso. Nota: solo los Caballeros no corrompidos pueden elegir de esta lista.
+      Sin embargo, conservan cualquier Hazaña que tuvieran una vez corrompidos (ver Hazañas de
+      Caballería).
+  applies_to:
+    profile_ids:
+    - questing-knights
+- id: questing-knights--corruption
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.disciples-of-maldred-mou.questing-knights.corruption
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Corruption
+  effect: >-
+    After each battle any untainted Knights (ie. basic Questing Knights) must take a Ld test in
+    order to resist the seduction of Chaos. Add +1 to the roll if the Knight took any models OOA
+    that game. If the Knight passes his test, he remains in the warband uncorrupted, albeit slightly
+    suspicious of his leader. If he fails, the Knight has finally succombed to the lure of Tzeentch
+    and has become corrupted! He immediately rolls on the Gifts of Tzeentch table. However, should
+    the Ld roll come up snake eyes (Double 1), the Prophet has gone too far, as the veil of deceipt
+    is lifted from the Knights mind! The Knight recognises the attrocities he and his breathren have
+    commited in their master's name, immediately leaving the warband with his Squire to live out a
+    life of penitence and shame. Remove him and his Squire from the roster.
+  source:
+    manual: Broheim
+    printed_page: 8
+    section: Heroes / 0-2 Questing Knights / Corruption
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  name_i18n:
+    es: Corrupción
+  effect_i18n:
+    es: >-
+      Tras cada batalla, todos los Caballeros no corrompidos (es decir, Caballeros Errantes básicos)
+      deben hacer una prueba de Ld para resistir la seducción del Caos. Suma +1 a la tirada si el
+      Caballero dejó fuera de combate a algún modelo esa partida. Si el Caballero supera la prueba,
+      permanece en la banda sin corromper, aunque algo desconfiado de su líder. Si la falla, ¡el
+      Caballero ha sucumbido por fin a la seducción de Tzeentch y se ha corrompido! Tira de
+      inmediato en la tabla Dones de Tzeentch. Sin embargo, si la tirada de Ld sale dobles unos, el
+      Profeta ha ido demasiado lejos: ¡el velo del engaño se levanta de la mente del Caballero! El
+      Caballero reconoce las atrocidades que él y sus hermanos han cometido en nombre de su señor, y
+      abandona de inmediato la banda junto con su Escudero para vivir una vida de penitencia y
+      vergüenza. Retíralo a él y a su Escudero de la lista.
+  applies_to:
+    profile_ids:
+    - questing-knights
+- id: questing-knights--his-masters-gift
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.disciples-of-maldred-mou.questing-knights.his-masters-gift
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: His Master's Gift (Corrupt Knight)
+  effect: >-
+    Once corrupted, when a Knight has accumulated enough experience, instead of picking a skill he
+    may roll on the Gifts of Tzeentch table (see Gifts of Tzeentch).
+  source:
+    manual: Broheim
+    printed_page: 8
+    section: Heroes / 0-2 Questing Knights / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  name_i18n:
+    es: El Don de su Señor (Caballero Corrupto)
+  effect_i18n:
+    es: >-
+      Una vez corrompido, cuando un Caballero ha acumulado suficiente experiencia, en lugar de
+      elegir una habilidad puede tirar en la tabla Dones de Tzeentch (ver Dones de Tzeentch).
+  applies_to:
+    profile_ids:
+    - questing-knights
+- id: squires--oath-of-servitude
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.disciples-of-maldred-mou.squires.oath-of-servitude
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Oath of Servitude
+  effect: >-
+    When hiring new Squires, elect which Knight they are to follow. Note that a Knight may only have
+    one Squire at a time. While in his service, a Squire is sworn to follow his lord completely and
+    utterly, no matter what. As such, when a Knight gives in to his darkness, his Squire will follow
+    unquestionably. If a Knight becomes corrupted, then his Squire too is corrupted.
+  source:
+    manual: Broheim
+    printed_page: 8
+    section: Heroes / 0-2 Squires / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  name_i18n:
+    es: Juramento de Servidumbre
+  effect_i18n:
+    es: >-
+      Al contratar nuevos Escuderos, elige a qué Caballero seguirán. Ten en cuenta que un Caballero
+      solo puede tener un Escudero a la vez. Mientras está a su servicio, un Escudero jura seguir a
+      su señor de forma completa y absoluta, pase lo que pase. Así, cuando un Caballero cae en su
+      oscuridad, su Escudero lo seguirá sin cuestionarse nada. Si un Caballero se corrompe, su
+      Escudero también queda corrompido.
+  applies_to:
+    profile_ids:
+    - squires
+- id: squires--in-his-lords-footsteps
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.disciples-of-maldred-mou.squires.in-his-lords-footsteps
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: In His Lord's Footsteps
+  effect: >-
+    On a Knight's death, the Squire is released from his bond and elevated into the sacred order of
+    Knights. He receives any armour his master had in his equipment, and can now choose from the
+    Disciples equipment list. Note that the Squire now counts towards the maximum number of Knights
+    (ie. 2), and can have a Squire of his own. He now follows all special rules for Questing
+    Knights, including skill lists.
+  source:
+    manual: Broheim
+    printed_page: 8
+    section: Heroes / 0-2 Squires / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  name_i18n:
+    es: Tras los Pasos de su Señor
+  effect_i18n:
+    es: >-
+      A la muerte de un Caballero, el Escudero queda liberado de su vínculo y elevado a la sagrada
+      orden de los Caballeros. Recibe cualquier armadura que su señor tuviera en su equipo, y ahora
+      puede elegir de la lista de equipo de los Discípulos. Ten en cuenta que el Escudero cuenta
+      ahora para el número máximo de Caballeros (es decir, 2) y puede tener su propio Escudero.
+      Ahora sigue todas las reglas especiales de los Caballeros Errantes, incluidas las listas de
+      habilidades.
+  applies_to:
+    profile_ids:
+    - squires
+- id: band--knights-feats-maldred
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.disciples-of-maldred-mou.band.knights-feats-maldred
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Knights Feats
+  effect: >-
+    1 - Combat charge: the character gains +1 attack and +1 WS when he charges. 2 - Lancer: the
+    character can use this skill only on horseback; may not be combined with combat charge; if the
+    character's first opponent(s) suffer an unsaved wound, the character may continue his charge;
+    opponents are not allowed to strike back; the charge may then be continued another 4", and any
+    enemy within 2" of that charge line can be charged; if the character does charge another enemy
+    he counts as charging in the next combat round. 3 - Sword master: when using a sword the
+    character may parry, with reroll at equal or higher. 4 - Armour specialist: when using Heavy
+    armour and shield the subject ignores the standard movement penalty and his armour save cannot
+    be modified beyond 5+ due to strength; this does not work on horseback.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Heroes / 0-2 Questing Knights / Knights Feats
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  name_i18n:
+    es: Hazañas de Caballería
+  effect_i18n:
+    es: >-
+      1 - Carga de combate: el personaje gana +1 ataque y +1 HA cuando carga. 2 - Lancero: el
+      personaje solo puede usar esta habilidad a caballo; no puede combinarse con carga de combate;
+      si el primer oponente u oponentes del personaje sufren una herida no salvada, el personaje
+      puede continuar su carga; los oponentes no pueden devolver los golpes; la carga puede
+      continuarse otros 4", y cualquier enemigo a 2" o menos de esa línea de carga puede ser
+      cargado; si el personaje carga contra otro enemigo, cuenta como cargando en la siguiente ronda
+      de combate. 3 - Maestro de la espada: al usar una espada el personaje puede detener golpes,
+      repitiendo la tirada con igual o mayor. 4 - Especialista en armaduras: al usar armadura pesada
+      y escudo, el sujeto ignora la penalización estándar de movimiento y su salvación por armadura
+      no puede modificarse por debajo de 5+ por fuerza; esto no funciona a caballo.
+  applies_to:
+    band: true

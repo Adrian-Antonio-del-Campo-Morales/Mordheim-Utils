@@ -1,0 +1,393 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/hireling-profile-hired-sword.yaml.schema.json",
+  "title": "Mordheim KB catalogue — hired-sword profiles of catalog/hirelings/hired-swords",
+  "description": "The canonical identity of a Hired Sword: what belongs to the warrior himself — characteristics, intrinsic equipment, skill access, starting skills, intrinsic rules and his contribution to the warband rating. The campaign-side contract (hiring fee, upkeep, availability and eligibility) lives in `catalog/campaign/hired-swords-and-dramatis.yaml`, which points back here through `profile_id`; a hired sword therefore never repeats its fee or its hiring restrictions in this file.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "catalog", "grade", "profiles"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "catalog": {
+      "description": "Catalogue id shared by every grade file of the family: `hirelings-hired-swords`.",
+      "$ref": "defs.schema.json#/$defs/id"
+    },
+    "grade": {
+      "description": "Grade of the file. `core` is the Mordheim Rulebook roster; `1a`, `1b`, `1c` and `2a` are the fan and supplement grades, kept apart so a source change stays auditable.",
+      "enum": ["core", "1a", "1b", "1c", "2a"]
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/profile" }
+    },
+    "rules": {
+      "description": "The rules of the profiles of the core file. The core roster declares its rules here, with `source_refs`, and its profiles point at them with `rule_ids`; the fan grades keep the rules inline in the profile instead.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/catalog_rule" }
+    }
+  },
+  "$defs": {
+    "catalog_rule": {
+      "description": "A rule declared by the document itself and referenced by a profile's `rule_ids`.",
+      "type": "object",
+      "required": ["id", "name", "name_i18n", "effect", "effect_i18n", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "kind": {
+          "description": "Optional editorial classification. `special-skill-option` marks an entry that `special_skill_rule_ids` offers as an optional skill rather than a rule the profile always has.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "mechanics": {
+          "description": "Optional typed mechanics the rule declares, e.g. the Ogre Butcher's effect on the maximum number of models.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/mechanic" }
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "mechanic": {
+      "description": "A mechanically typed value a rule declares, e.g. `{ type: warband.maximum_models_modifier, value: 1 }`.",
+      "type": "object",
+      "required": ["type", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "$ref": "defs.schema.json#/$defs/id" },
+        "value": { "type": "integer" }
+      }
+    },
+    "profile": {
+      "description": "One Hired Sword. Its rules are inline (`rules`) or shared (`rule_ids`) — never duplicated in both.",
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "grade",
+        "publication",
+        "name",
+        "name_i18n",
+        "normalization_status",
+        "characteristics",
+        "starting_skill_ids",
+        "source_refs"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable profile id: `hireling.hired-sword.<slug>`.",
+          "type": "string",
+          "pattern": "^hireling\\.hired-sword\\.[a-z0-9][a-z0-9-]*$"
+        },
+        "kind": { "const": "hired-sword" },
+        "grade": {
+          "description": "Grade of the profile; it repeats the file's grade so a record keeps its source when moved.",
+          "enum": ["core", "1a", "1b", "1c", "2a"]
+        },
+        "publication": {
+          "description": "Publication the profile was printed in, e.g. `Mordheim Rulebook` or `Town Cryer 13`.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "characteristics": { "$ref": "defs.schema.json#/$defs/characteristic_map" },
+        "warband_rating": {
+          "description": "The rating a Hired Sword contributes. It is either a fixed value, or a base plus one point per accumulated Experience point.",
+          "$ref": "#/$defs/warband_rating"
+        },
+        "equipment": {
+          "description": "Intrinsic equipment: what the profile comes with. A choice records the printed alternative instead of duplicating catalogue items.",
+          "$ref": "#/$defs/equipment"
+        },
+        "skill_access": {
+          "description": "Skill lists the profile may learn from: `combat`, `shooting`, `academic`, `strength`, `speed`, `special` and the `cavalry` list used by mounted profiles.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z][a-z-]*$"
+          }
+        },
+        "starting_skill_ids": {
+          "description": "Canonical skill ids the profile starts with. Empty when the source declares none — the key is never dropped, so `no skills` is stated rather than implied.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "rules": {
+          "description": "The intrinsic special rules, inline: text that belongs to this profile and is not shared with another one.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/inline_rule" }
+        },
+        "rule_ids": {
+          "description": "Ids of rules that live in `hired-swords/rules.yaml` or in this file. A profile uses this list instead of repeating shared prose in `rules`.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "special_skill_rule_ids": {
+          "description": "Ids of the optional special skills the profile may pick, e.g. `hireling.hired-sword.dwarf-troll-slayer.skill.ferocious-charge`.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "unresolved_references": {
+          "description": "Source concepts this profile uses whose canonical catalogue does not exist yet. Never given a guessed canonical id; each entry names the kind of gap and the source wording, and disappears when the catalogue lands. An empty list is the declared convention for `nothing pending`.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/unresolved_reference" }
+        },
+        "source_notes": {
+          "description": "Editorial notes about the transcription: a label typo kept out of the data, an editorial recommendation not printed in the original, a source disagreement.",
+          "type": "array",
+          "items": { "$ref": "defs.schema.json#/$defs/display_text" }
+        },
+        "normalization_status": {
+          "description": "Editorial state of the profile. Every published Hired Sword of this family is `normalized`; a profile that cannot be modelled is not published here but in the Dramatis catalogue, with its `out_of_scope_reason`.",
+          "const": "normalized"
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "warband_rating": {
+      "description": "Rating contribution of the profile.",
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "description": "`fixed` for a flat contribution; `base_plus_experience` for a base amount plus one point per Experience point.",
+          "enum": ["fixed", "base_plus_experience"]
+        },
+        "value": {
+          "description": "The fixed contribution, when `kind` is `fixed`.",
+          "type": "integer"
+        },
+        "base": {
+          "description": "The base contribution, when `kind` is `base_plus_experience`.",
+          "type": "integer"
+        },
+        "per_experience_point": {
+          "description": "Points added per accumulated Experience point, when `kind` is `base_plus_experience`.",
+          "type": "integer"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "kind": { "const": "fixed" } },
+            "required": ["kind"]
+          },
+          "then": { "required": ["value"] }
+        },
+        {
+          "if": {
+            "properties": { "kind": { "const": "base_plus_experience" } },
+            "required": ["kind"]
+          },
+          "then": { "required": ["base", "per_experience_point"] }
+        }
+      ]
+    },
+    "equipment": {
+      "description": "Intrinsic equipment of a profile. Every key is optional so a profile without equipment states the absence by omission, and an empty list is not needed.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fixed_items": {
+          "description": "Items the profile always carries.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/fixed_item" }
+        },
+        "optional_items": {
+          "description": "Items the profile may take under a named condition, e.g. the mount rules of an optional warhorse.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/optional_item" }
+        },
+        "unique_equipment": {
+          "description": "Equipment that exists only on this profile: named here with its own rules instead of being invented as a catalogue item.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/unique_equipment" }
+        },
+        "choices": {
+          "description": "Printed alternatives between equipment loadouts.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/choice" }
+        }
+      }
+    },
+    "fixed_item": {
+      "description": "A canonical item with the quantity the profile carries.",
+      "type": "object",
+      "required": ["item_id", "quantity"],
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "description": "Canonical `item_id` of `catalog/items/`. Existing ids are referenced, never duplicated.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "quantity": { "$ref": "defs.schema.json#/$defs/amount" }
+      }
+    },
+    "optional_item": {
+      "description": "A canonical item the profile may take when a named condition holds.",
+      "type": "object",
+      "required": ["item_id", "quantity", "when"],
+      "additionalProperties": false,
+      "properties": {
+        "item_id": { "$ref": "defs.schema.json#/$defs/id" },
+        "quantity": { "$ref": "defs.schema.json#/$defs/amount" },
+        "when": {
+          "description": "Condition under which the item may be taken.",
+          "$ref": "defs.schema.json#/$defs/id"
+        }
+      }
+    },
+    "unique_equipment": {
+      "description": "A piece of equipment that exists only on this profile. Its id follows the profile (`hireling.hired-sword.<slug>.item.<slug>`) so it can be referenced by the profile's rules.",
+      "type": "object",
+      "required": ["id", "name", "name_i18n"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "counts_as": {
+          "description": "Canonical item this equipment counts as, either named plainly or with the context in which it counts as it.",
+          "oneOf": [
+            { "$ref": "defs.schema.json#/$defs/id" },
+            { "$ref": "#/$defs/counts_as" }
+          ]
+        },
+        "save": {
+          "description": "Save the equipment grants, as printed: `4+`, or `4+ unmodifiable` when the source forbids modifiers.",
+          "type": "string",
+          "pattern": "^[0-9]\\+.*$"
+        },
+        "movement_modifier": {
+          "description": "Movement modifier the equipment applies.",
+          "type": "integer"
+        },
+        "strength_bonus": {
+          "description": "Strength bonus the equipment grants.",
+          "type": "integer"
+        },
+        "rules": {
+          "description": "Ids of the rules of this same profile that describe the equipment.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        }
+      }
+    },
+    "counts_as": {
+      "description": "Canonical item this unique equipment counts as, in a named context.",
+      "type": "object",
+      "required": ["item_id", "context"],
+      "additionalProperties": false,
+      "properties": {
+        "item_id": { "$ref": "defs.schema.json#/$defs/id" },
+        "context": {
+          "description": "Where it counts as that item: `rules` or `close_combat`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "quantity": { "$ref": "defs.schema.json#/$defs/amount" }
+      }
+    },
+    "choice": {
+      "description": "A printed choice: how many options are picked, and the options themselves.",
+      "type": "object",
+      "required": ["choose", "options"],
+      "additionalProperties": false,
+      "properties": {
+        "choose": {
+          "description": "How many options the player picks.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/choice_option" }
+        }
+      }
+    },
+    "choice_option": {
+      "description": "One option of a choice: a concrete loadout, or a pick from a list of items.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "description": "Loadout of this option.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/fixed_item" }
+        },
+        "choose_items": {
+          "description": "How many items are picked from `from_item_ids`.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "from_item_ids": {
+          "description": "Items this option picks from.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "repetition_allowed": {
+          "description": "Whether the same item may be picked more than once.",
+          "type": "boolean"
+        }
+      },
+      "anyOf": [
+        { "required": ["items"] },
+        { "required": ["choose_items", "from_item_ids"] }
+      ]
+    },
+    "inline_rule": {
+      "description": "A rule that belongs to one profile. Its id follows the profile (`hireling.hired-sword.<slug>.rule.<slug>`); a rule shared by several profiles is promoted to `rules.yaml` instead.",
+      "type": "object",
+      "required": ["id", "name", "name_i18n", "effect", "effect_i18n"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "kind": {
+          "description": "Optional editorial classification of the rule.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "mechanics": {
+          "description": "Optional typed mechanics the rule declares.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/mechanic" }
+        }
+      }
+    },
+    "unresolved_reference": {
+      "description": "A source concept with no canonical catalogue yet.",
+      "type": "object",
+      "required": ["kind", "source_name"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "description": "Kind of gap, e.g. `equipment_mapping`, `skill`, `mount_profile`, `summoning_procedure`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "source_name": {
+          "description": "The wording of the source, kept verbatim so the concept can be recognised when its catalogue lands.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "note": {
+          "description": "Why it is unresolved, when the source wording alone does not say.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        }
+      }
+    }
+  }
+}

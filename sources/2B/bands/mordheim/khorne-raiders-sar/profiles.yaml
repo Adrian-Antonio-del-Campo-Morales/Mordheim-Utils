@@ -1,0 +1,226 @@
+schema_version: 2
+band_id: khorne-raiders-sar
+profiles:
+- id: dread-captain
+  name: Dread Captain
+  type: hero
+  cost: 70
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - pirate
+  - special
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 1 Dread Captain
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Khorne%20Raiders.pdf
+  source_path:
+  - heroes
+  - 1 Dread Captain
+  name_i18n:
+    es: Capitán Pavoroso
+  rule_ids:
+  - dread-captain--leader
+  combat_traits: {}
+- id: quartermasters
+  name: Quartermasters
+  type: hero
+  cost: 60
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 0
+    S: 4
+    T: 4
+    W: 1
+    I: 2
+    A: 2
+    Ld: 7
+  equipment_lists:
+  - madbrain-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - The Armour section is available to Quartermasters and Flayerkin only.
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-2 Quartermasters
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Khorne%20Raiders.pdf
+  source_path:
+  - heroes
+  - 0-2 Quartermasters
+  name_i18n:
+    es: Intendentes
+  rule_ids:
+  - quartermasters--massive-swing
+  combat_traits: {}
+- id: cannibal-boys
+  name: Cannibal Boys
+  type: hero
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour.
+  skill_access:
+  - combat
+  - speed
+  - pirate
+  - special
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-2 Cannibal Boys
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Khorne%20Raiders.pdf
+  source_path:
+  - heroes
+  - 0-2 Cannibal Boys
+  name_i18n:
+    es: Chicos Caníbales
+  rule_ids:
+  - cannibal-boys--frenzy
+  combat_traits: {}
+- id: plunderers
+  name: Plunderers
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / Plunderers
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Khorne%20Raiders.pdf
+  source_path:
+  - henchmen
+  - Plunderers
+  name_i18n:
+    es: Saqueadores
+  rule_ids: []
+  combat_traits: {}
+- id: madbrains
+  name: Madbrains
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 4
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - madbrain-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - The Armour section is available to Quartermasters and Flayerkin only.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0-5 Madbrains
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Khorne%20Raiders.pdf
+  source_path:
+  - henchmen
+  - 0-5 Madbrains
+  name_i18n:
+    es: Cebos Locos
+  rule_ids:
+  - madbrains--immune-to-psychology
+  - madbrains--reckless
+  combat_traits: {}
+- id: flayerkin
+  name: Flayerkin
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - madbrain-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not use any weapons other than their Hooks.
+  - May only use armour from the Madbrain Equipment list; the Hooks are fixed (see Hooks).
+  - The Armour section is available to Quartermasters and Flayerkin only.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0-3 Flayerkin
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Khorne%20Raiders.pdf
+  source_path:
+  - henchmen
+  - 0-3 Flayerkin
+  name_i18n:
+    es: Despelladores
+  rule_ids:
+  - flayerkin--hooks
+  - flayerkin--climbing
+  - flayerkin--chain-spine
+  - flayerkin--mindless
+  combat_traits: {}

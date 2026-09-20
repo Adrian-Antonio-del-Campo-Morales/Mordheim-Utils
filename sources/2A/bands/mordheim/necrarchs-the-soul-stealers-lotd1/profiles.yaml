@@ -1,0 +1,274 @@
+schema_version: 2
+band_id: necrarchs-the-soul-stealers-lotd1
+profiles:
+- id: necrarch-vampire
+  name: Necrarch Vampire
+  type: hero
+  cost: 110
+  experience: 20
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 4
+    S: 6
+    T: 6
+    W: 4
+    I: 9
+    A: 3
+    Ld: 10
+  equipment_lists:
+  - necrarch-hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Necrarch Vampire may be armed from the Necrarch Hero Equipment list.
+  skill_access:
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Racial Maximum / Heroes / 1 Necrarch Vampire
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  source_path:
+  - heroes
+  - 1 Necrarch Vampire
+  name_i18n:
+    es: Vampiro Necrarca
+  rule_ids:
+  - necrarch-vampire--leader
+  - necrarch-vampire--cause-fear
+  - necrarch-vampire--wizard
+  - necrarch-vampire--immune-to-psychology
+  - necrarch-vampire--immune-to-poison
+  - necrarch-vampire--no-pain
+  combat_traits: {}
+- id: thrall
+  name: Thrall
+  type: hero
+  cost: 60
+  experience: 8
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 5
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - necrarch-hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Thrall may be equipped from the Necrarch Hero Equipment List.
+  skill_access:
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0-1 Thrall
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  source_path:
+  - heroes
+  - 0-1 Thrall
+  name_i18n:
+    es: Vasallo
+  rule_ids:
+  - thrall--cause-fear
+  - thrall--immune-to-psychology
+  - thrall--immune-to-poison
+  - thrall--no-pain
+  combat_traits: {}
+- id: acolyte
+  name: Acolyte
+  type: hero
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - necrarch-henchmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Acolytes may equip themselves with weapons and armour from the Henchmen equipment list.
+  skill_access:
+  - academic
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0-3 Acolytes
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  source_path:
+  - heroes
+  - 0-3 Acolytes
+  name_i18n:
+    es: Acólito
+  rule_ids:
+  - acolyte--vassal
+  combat_traits: {}
+- id: skeletal-warrior
+  name: Skeletal Warrior
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - necrarch-henchmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Skeletal warriors may be equipped with weapons and armour chosen from the Henchmen
+    Equipment list.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0-5 Skeletal Warriors
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  source_path:
+  - henchmen
+  - 0-5 Skeletal Warriors
+  name_i18n:
+    es: Guerrero Esquelético
+  rule_ids:
+  - skeletal-warrior--cause-fear
+  - skeletal-warrior--may-not-run
+  - skeletal-warrior--immune-to-psychology
+  - skeletal-warrior--immune-to-poison
+  - skeletal-warrior--no-pain
+  - skeletal-warrior--no-brain
+  combat_traits: {}
+- id: zombie
+  name: Zombie
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 1
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Zombies never carry any equipment, and do not suffer any penalties for this.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Zombies
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  source_path:
+  - henchmen
+  - Zombies
+  name_i18n:
+    es: Zombi
+  rule_ids:
+  - zombie--cause-fear
+  - zombie--may-not-run
+  - zombie--immune-to-psychology
+  - zombie--immune-to-poison
+  - zombie--no-pain
+  - zombie--no-brain
+  combat_traits: {}
+- id: abomination
+  name: Abomination
+  type: henchman
+  cost: 190
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 0
+    S: 4
+    T: 5
+    W: 3
+    I: 2
+    A: 3
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Abominations do not employ weapons, and suffer no penalties for doing so.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0-1 Abomination
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  source_path:
+  - henchmen
+  - 0-1 Abomination
+  name_i18n:
+    es: Abominación
+  rule_ids:
+  - abomination--cause-fear
+  - abomination--immune-to-psychology
+  - abomination--immune-to-poison
+  - abomination--no-pain
+  - abomination--no-brain
+  - abomination--large-target
+  - abomination--powered
+  - abomination--spare-parts
+  combat_traits: {}
+- id: waif
+  name: Waif
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - necrarch-henchmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Waif may be armed with weapons and armour chosen from the Henchmen Equipment list.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0-5 Waifs
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  source_path:
+  - henchmen
+  - 0-5 Waifs
+  name_i18n:
+    es: Expósito
+  rule_ids: []
+  combat_traits: {}

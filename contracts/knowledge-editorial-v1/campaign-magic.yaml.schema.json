@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/campaign-magic.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/campaign/magic.yaml",
+  "description": "The magic catalogue: how a spell is cast, which lore each wizard uses and the spells of every lore. It is the canonical source of lores and spells — the hireling profiles reference them by `lore.*` and `spell.*` id instead of restating them, and a wizard never carries his own copy of a spell list.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "catalog", "status", "casting_rules", "lore_assignments", "lores", "pending_lores", "effect_ids"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "catalog": { "$ref": "defs.schema.json#/$defs/id" },
+    "status": { "$ref": "defs.schema.json#/$defs/catalog_status" },
+    "casting_rules": { "$ref": "#/$defs/casting_rules" },
+    "lore_assignments": { "$ref": "#/$defs/assignments" },
+    "lores": {
+      "description": "The lores, each with its spells.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/lore" }
+    },
+    "pending_lores": {
+      "description": "Lores known to exist whose spells are not transcribed yet. An empty list is the declared convention for `nothing pending`, so a pending lore is recorded as data instead of being silently missing.",
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "effect_ids": {
+      "description": "Effects of this catalogue a warband's own special rules may modify.",
+      "$ref": "defs.schema.json#/$defs/id_list"
+    }
+  },
+  "$defs": {
+    "casting_rules": {
+      "description": "The rules shared by every caster: how a spell is cast, how damage is resolved and how a wizard starts.",
+      "type": "object",
+      "required": ["id", "effect", "effect_i18n", "damage", "starting_spells", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "damage": {
+          "description": "How damage from a spell is resolved.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "starting_spells": {
+          "description": "How many spells a wizard starts with and how the first one is determined.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "assignments": {
+      "description": "Which lore each wizard of each warband uses. The assignment is editorial knowledge: it is not inferred from a profile name.",
+      "type": "object",
+      "required": ["rows", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "rows": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/assignment" }
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "assignment": {
+      "description": "One wizard-to-lore assignment. A band wizard is identified by the pair (`band`, `profile_id`); a hireling wizard belongs to no warband, so `band` is `null` and `profile_id` alone names him.",
+      "type": "object",
+      "required": ["wizard", "profile_id", "band", "lore"],
+      "additionalProperties": false,
+      "properties": {
+        "wizard": {
+          "description": "Editorial key of the assignment (`<band-slug>-<wizard-slug>`), kept stable so a row can be discussed in review.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "profile_id": { "$ref": "defs.schema.json#/$defs/id" },
+        "band": {
+          "description": "Warband the wizard belongs to, or `null` when he is a hireling: a Hired Sword or a Dramatis Persona is hired by any warband, so only his `profile_id` identifies him.",
+          "oneOf": [
+            { "$ref": "defs.schema.json#/$defs/id" },
+            { "type": "null" }
+          ]
+        },
+        "lore": {
+          "description": "Lore the wizard casts from: a `lore.*` id of this document.",
+          "$ref": "defs.schema.json#/$defs/id"
+        }
+      }
+    },
+    "lore": {
+      "description": "One lore of magic.",
+      "type": "object",
+      "required": ["id", "name", "name_i18n", "note", "spells", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable lore id: `lore.<slug>`.",
+          "type": "string",
+          "pattern": "^lore\\.[a-z0-9][a-z0-9-]*$"
+        },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "note": {
+          "description": "Editorial note about the lore: who may use it, where it comes from, anything the spell rows do not say.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "spells": {
+          "description": "The spells of the lore.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/spell" }
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "spell": {
+      "description": "One spell. `roll` is the D6 a wizard rolls to determine it, not part of its id.",
+      "type": "object",
+      "required": ["id", "roll", "name", "name_i18n", "difficulty", "effect", "effect_i18n"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable spell id: `spell.<lore-slug>.<slug>`.",
+          "type": "string",
+          "pattern": "^spell\\.[a-z0-9][a-z0-9-]*\\.[a-z0-9][a-z0-9-]*$"
+        },
+        "roll": {
+          "description": "The D6 result that determines the spell, as printed: `0` for a spell of an open-ended row, `1`–`6` otherwise.",
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "difficulty": {
+          "description": "Casting difficulty: the value 2D6 must reach, or `auto` for a spell that is not rolled for.",
+          "oneOf": [
+            { "type": "integer", "minimum": 1 },
+            { "const": "auto" }
+          ]
+        },
+        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" }
+      }
+    }
+  }
+}

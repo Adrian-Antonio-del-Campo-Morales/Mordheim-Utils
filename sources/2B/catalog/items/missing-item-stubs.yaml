@@ -1,0 +1,20 @@
+schema_version: 2
+ruleset: mordheim
+# Missing-item stubs: EMPTY as of 2026-09-14.
+#
+# All 81 stubs from the item_id resolution check have been resolved:
+# - 79 transcribed into full item definitions under sources/2B/catalog/items/
+#   (mim-special-equipment-a/b/c.yaml, sc-sealed-city-gear.yaml,
+#   lus-rel-shared.yaml, sar-sartosa-gear.yaml, lus-mou-remaining.yaml),
+#   including the re-pointed band references.
+# - 1 stub ("thieves-cloak", Low Kings) resolved as a pure name-form artifact:
+#   the Low Kings equipment list actually reads "Thief's cloak" at 15 gc, the
+#   very entry already transcribed as `thiefs_cloak`
+#   (mim-special-equipment-b.yaml). The band list
+#   (low-kings-mim) already references thiefs_cloak; no separate item exists.
+#
+# Seven of the transcribed items are name-form duplicates of active-KB items
+# and carry promotion-merge NOTEs inside their definitions; see
+# sources/2B/catalog/promotion-merge-notes.md for the consolidated patch plan.
+# This file is kept (empty) so the stub-generation tooling remains stable.
+items: []

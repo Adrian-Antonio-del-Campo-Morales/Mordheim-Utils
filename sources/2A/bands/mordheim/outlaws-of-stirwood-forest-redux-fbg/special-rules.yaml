@@ -1,0 +1,98 @@
+schema_version: 2
+band_id: outlaws-of-stirwood-forest-redux-fbg
+rules:
+- id: band--bow-restrictions
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.outlaws-of-stirwood-forest-redux-fbg.band.bow-restrictions
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: equipment restrictions are roster-construction mechanics outside the
+        duel scope.
+  name: Bow Restrictions
+  effect: >-
+    All warriors in an Outlaws warband may be equipped with only one missile weapon at any time. All
+    warriors must carry a type of bow, but not crossbows, as part of their equipment. So, even if an
+    Outlaw acquires skills that allow him to use additional ballistic weaponry, he cannot do so. The
+    only exception to this is the Cleric who may choose to carry a bow, but is not compelled to do
+    so.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Special Rules
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/outlaws-of-stirwood-forest-redux
+  name_i18n:
+    es: Restricciones de Arco
+  effect_i18n:
+    es: >-
+      Todos los guerreros de una banda de Proscritos pueden estar equipados con una sola arma de
+      misil en cualquier momento. Todos los guerreros deben llevar un tipo de arco, pero no
+      ballestas, como parte de su equipo. Así, incluso si un Proscrito adquiere habilidades que le
+      permitan usar armamento balístico adicional, no puede hacerlo. La única excepción es el
+      Clérigo, que puede elegir llevar un arco, pero no está obligado a hacerlo.
+  applies_to:
+    band: true
+- id: bandit-leader--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.outlaws-of-stirwood-forest-redux-fbg.bandit-leader.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leader aura (friendly models within 6" use her Leadership) is a
+        psychology/rout mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: 1 Bandit Leader / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/outlaws-of-stirwood-forest-redux
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - bandit-leader
+  rule_ref: shared-rule.leader
+- id: cleric--disciple-of-sigmar
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.outlaws-of-stirwood-forest-redux-fbg.cleric.disciple-of-sigmar
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (Prayers of Sigmar are already in the active KB
+        lore.prayers-of-sigmar; the Cleric starts knowing one of them and is restricted from Sorcery
+        and Arcane Lore).
+  name: Disciple of Sigmar
+  effect: >-
+    The Cleric has devoted his life in the constant service to Sigmar and as such he would start a
+    campaign knowing one of the Prayers of Sigmar (see Mordheim rulebook page 57). As with a
+    Witch-Hunter's Warrior Priest, he is also subject to some of the restrictions of being a
+    follower of the Lord Sigmar and may learn neither Sorcery nor Arcane Lore.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: 0-1 Cleric / Special Rules / Disciple of Sigmar
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/outlaws-of-stirwood-forest-redux
+  name_i18n:
+    es: Discípulo de Sigmar
+  effect_i18n:
+    es: >-
+      El Clérigo ha dedicado su vida al servicio constante de Sigmar y, como tal, comenzaría la
+      campaña conociendo una de las Plegarias de Sigmar (ver página 57 del libro de reglas de
+      Mordheim). Como con el Sacerdote Guerrero del Cazador de Brujas, también está sujeto a algunas
+      de las restricciones de ser seguidor del Señor Sigmar y no puede aprender ni Hechicería ni
+      Saberes Arcanos.
+  applies_to:
+    profile_ids:
+    - cleric

@@ -1,0 +1,93 @@
+schema_version: 2
+band_id: araby-smugglers-sar
+profiles:
+- id: rais
+  name: Rais
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics: {M: 4, WS: 4, BS: 4, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 8}
+  equipment_lists: [corsair-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, academic, strength, speed, pirate]
+  source: {manual: Broheim, printed_page: 3, section: 1 Rais, url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf}
+  source_path: [heroes, 1 Rais]
+  name_i18n: {es: Rais}
+  rule_ids: [rais--leader]
+  combat_traits: {}
+- id: mates
+  name: Mates
+  type: hero
+  cost: 25
+  experience: 8
+  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [corsair-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, speed, pirate]
+  source: {manual: Broheim, printed_page: 3, section: 0-3 Mates, url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf}
+  source_path: [heroes, 0-3 Mates]
+  name_i18n: {es: Marineros}
+  rule_ids: []
+  combat_traits: {}
+- id: merchant
+  name: Merchant
+  type: hero
+  cost: 25
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 2, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [corsair-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [academic, speed, pirate]
+  source: {manual: Broheim, printed_page: 3, section: 0-1 Merchant, url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf}
+  source_path: [heroes, 0-1 Merchant]
+  name_i18n: {es: Comerciante}
+  rule_ids: [merchant--fine-craftsmanship]
+  combat_traits: {}
+- id: crew
+  name: Crew
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [corsair-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 3, section: Crew, url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf}
+  source_path: [henchmen, Crew]
+  name_i18n: {es: Tripulación}
+  rule_ids: []
+  combat_traits: {}
+- id: janissaries
+  name: Janissaries
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics: {M: 4, WS: 4, BS: 3, S: 4, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [janissary-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 3, section: 0-5 Janissaries, url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf}
+  source_path: [henchmen, 0-5 Janissaries]
+  name_i18n: {es: Jenízaros}
+  rule_ids: [janissaries--not-pirates]
+  combat_traits: {}
+- id: slaves
+  name: Slaves
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 2, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 6}
+  equipment_lists: [slave-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 3, section: 0-5 Slaves, url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf}
+  source_path: [henchmen, 0-5 Slaves]
+  name_i18n: {es: Esclavos}
+  rule_ids: [slaves--life-of-slavery]
+  combat_traits: {}

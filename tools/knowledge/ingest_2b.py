@@ -10,17 +10,8 @@ Commands::
     python tools/knowledge/ingest_2b.py discover    # compare Broheim rows to the manifest
     python tools/knowledge/ingest_2b.py download    # fetch PDFs, compute SHA-256, log redirects
     python tools/knowledge/ingest_2b.py extract     # draft text extraction into the cache
-    python tools/knowledge/ingest_2b.py claim       # mark bands as owned (parallel coordination)
     python tools/knowledge/ingest_2b.py validate    # validate the staging tree
     python tools/knowledge/ingest_2b.py report      # progress by band and source
-
-Claims: transcription workers announce ownership with ``claim --owner NAME``
-so parallel threads never transcribe the same band. Bulk claims (``--source``)
-take only free ``text-extracted`` rows; explicit ``--ids`` may also claim
-``pdf-verified`` rows (e.g. for OCR work); ``modeled``-and-beyond rows are
-never claimable. ``--release`` frees your claims, ``--force`` takes over a
-foreign claim. Coordination is last-writer-wins at manifest granularity:
-check ``claim --list`` (or a ``--dry-run``) before committing.
 
 Manifest rows progress through::
 
@@ -43,7 +34,6 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
@@ -184,8 +174,6 @@ def match_manifest(rows: list[dict], observed: list[dict]) -> tuple[list[dict], 
                 "pdf_is_text": None,
                 "blockers": [],
                 "notes": [],
-                "owner": None,
-                "claimed_at": None,
             }
             updated.append(row)
             index[key] = row
@@ -336,106 +324,6 @@ def cmd_extract(args: argparse.Namespace) -> int:
 
 
 # --------------------------------------------------------------------------
-# claims (parallel-worker coordination)
-# --------------------------------------------------------------------------
-
-CLAIMABLE_BULK_STATUSES = {"text-extracted"}
-CLAIMABLE_EXPLICIT_STATUSES = {"pdf-verified", "text-extracted"}
-CLAIM_TIMESTAMP_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
-
-
-def claimable(row: dict, explicit: bool) -> bool:
-    """Whether a row may be claimed: past PDF text extraction, not yet modeled."""
-    status = row.get("status")
-    if status in CLAIMABLE_BULK_STATUSES:
-        return True
-    if explicit and status in CLAIMABLE_EXPLICIT_STATUSES:
-        return True
-    return False
-
-
-def cmd_claim(args: argparse.Namespace) -> int:
-    rows = load_manifest()
-    if not rows:
-        print("manifest is empty; run 'discover' first", file=sys.stderr)
-        return 1
-    now = datetime.now(timezone.utc).strftime(CLAIM_TIMESTAMP_FORMAT)
-
-    if args.list:
-        for row in sorted(rows, key=lambda r: str(r.get("id"))):
-            owner = row.get("owner")
-            if owner:
-                print(f"{row['id']:36s} {owner:20s} {str(row.get('claimed_at') or ''):21s} {row.get('status')}")
-        return 0
-
-    if args.release:
-        if args.owner is None:
-            print("--release requires --owner", file=sys.stderr)
-            return 2
-        released = 0
-        for row in rows:
-            if row.get("owner") != args.owner:
-                continue
-            if args.ids and str(row.get("id")) not in args.ids:
-                continue
-            row["owner"] = None
-            row["claimed_at"] = None
-            released += 1
-        if args.dry_run:
-            print(f"dry-run: would release {released} claim(s) of {args.owner}")
-            return 0
-        save_manifest(rows)
-        print(f"released {released} claim(s) of {args.owner}")
-        return 0
-
-    if not args.owner:
-        print("claim requires --owner (or --list / --release --owner)", file=sys.stderr)
-        return 2
-
-    selected: list[dict] = []
-    if args.ids:
-        wanted = set(args.ids)
-        known = {str(row.get("id")) for row in rows}
-        missing = wanted - known
-        if missing:
-            print(f"unknown band id(s): {', '.join(sorted(missing))}", file=sys.stderr)
-            return 1
-        selected = [row for row in rows if str(row.get("id")) in wanted]
-    elif args.source:
-        selected = [
-            row for row in rows
-            if str(row.get("source_code")) == args.source and claimable(row, explicit=False)
-        ]
-    else:
-        print("nothing to claim: pass --ids ... or --source CODE (or --list)", file=sys.stderr)
-        return 2
-
-    taken = conflicts = 0
-    for row in selected:
-        band_id = str(row.get("id"))
-        if not claimable(row, explicit=bool(args.ids)):
-            print(f"SKIP  {band_id}: status {row.get('status')!r} is not claimable")
-            continue
-        if row.get("owner") and row["owner"] != args.owner:
-            if not args.force:
-                print(f"SKIP  {band_id}: owned by {row['owner']} (use --force to take over)")
-                conflicts += 1
-                continue
-        row["owner"] = args.owner
-        row["claimed_at"] = now
-        taken += 1
-    if args.dry_run:
-        for row in selected:
-            if row.get("owner") == args.owner:
-                print(f"DRY   {row['id']}")
-        print(f"dry-run: {args.owner} would take {taken} claim(s); {conflicts} foreign conflict(s)")
-        return 0
-    save_manifest(rows)
-    print(f"{args.owner} now owns {taken} band(s); {conflicts} foreign conflict(s) skipped")
-    return 1 if (args.ids and not taken) else 0
-
-
-# --------------------------------------------------------------------------
 # validation
 # --------------------------------------------------------------------------
 
@@ -444,6 +332,7 @@ def validate(rows: list[dict]) -> list[str]:
     problems: list[str] = []
 
     seen_ids: set[str] = set()
+    claimed: set[str] = set()
     for row in rows:
         band_id = str(row.get("id") or "")
         label = band_id or str(row.get("broheim_name"))
@@ -459,28 +348,107 @@ def validate(rows: list[dict]) -> list[str]:
         blockers = row.get("blockers") or []
         if blockers and status in {"validated", "promotable"}:
             problems.append(f"{band_id}: status {status} must be blocker-free (has {blockers})")
+        # A source document may print more than one warband list; 'packages' declares
+        # every band package the row produced (defaults to the row id itself).
+        packages = [str(package) for package in row.get("packages") or [] if str(package).strip()]
+        if packages and band_id not in packages:
+            problems.append(f"{band_id}: 'packages' must include the row's own id")
+        packages = packages or [band_id]
+        for package in packages:
+            if package in claimed:
+                problems.append(f"{package}: package claimed by more than one manifest row")
+            claimed.add(package)
         if status == "discovered":
             continue
         if not row.get("sha256"):
             problems.append(f"{band_id}: status {status} but no sha256 recorded")
-        documents = STAGING / "bands" / "mordheim" / band_id
         if status not in {"modeled", "english-reviewed", "translated", "validated", "promotable"}:
             continue
-        for document in BAND_DOCUMENTS:
-            path = documents / document
-            if not path.exists():
-                problems.append(f"{band_id}: missing {document}")
-                continue
-            try:
-                yaml.safe_load(path.read_text(encoding="utf-8"))
-            except yaml.YAMLError as error:
-                problems.append(f"{band_id}: {document} is not valid YAML: {error}")
-        missing = [d for d in BAND_DOCUMENTS
-                   if not (documents / d).exists()]
-        if missing:
-            continue  # already reported above
-        validate_band_references(band_id, documents, problems)
+        for package in packages:
+            documents = STAGING / "bands" / "mordheim" / package
+            for document in BAND_DOCUMENTS:
+                path = documents / document
+                if not path.exists():
+                    problems.append(f"{package}: missing {document}")
+                    continue
+                try:
+                    yaml.safe_load(path.read_text(encoding="utf-8"))
+                except yaml.YAMLError as error:
+                    problems.append(f"{package}: {document} is not valid YAML: {error}")
+            missing = [d for d in BAND_DOCUMENTS
+                       if not (documents / d).exists()]
+            if missing:
+                continue  # already reported above
+            validate_band_references(package, documents, problems)
+    bands_root = STAGING / "bands" / "mordheim"
+    if bands_root.exists():
+        for directory in sorted(bands_root.iterdir()):
+            if directory.is_dir() and directory.name not in claimed:
+                problems.append(
+                    f"{directory.name}: staging package is not declared by any manifest row "
+                    f"(add it to that row's 'packages')"
+                )
     return problems
+
+
+def validate_runtime(
+    rule_id: str, runtime: dict, band_id: str, problems: list[str], rule_kind: object = None
+) -> None:
+    """Hardened runtime contract (2A sweep lessons): schema scopes/grant,/kinds only."""
+    scope = runtime.get("scope")
+    if scope not in ("YES", "NO", "LATER"):
+        problems.append(
+            f"{band_id}: rule {rule_id!r} runtime.scope must be 'YES'/'NO'/'LATER', "
+            f"got {scope!r}"
+        )
+    if str(runtime.get("implemented")) not in ("YES", "NO"):
+        problems.append(f"{band_id}: rule {rule_id!r} runtime.implemented must be 'YES'/'NO'")
+    if runtime.get("grant") not in ("profile", "band", "selectable", "none"):
+        problems.append(
+            f"{band_id}: rule {rule_id!r} runtime.grant {runtime.get('grant')!r} is not a "
+            f"runtime-schema value (profile/band/selectable/none)"
+        )
+    if runtime.get("grant") == "selectable" and str(rule_kind or "") not in (
+        "warband_skill", "mutation", "blessing", "virtue", "mark", "modification",
+        "profile_ability", "warband_variant",
+    ):
+        problems.append(
+            f"{band_id}: selectable rule {rule_id!r} must declare a runtime-schema kind"
+        )
+    effects = runtime.get("effects")
+    if not effects:
+        # runtime-schema required_fields: scope, implemented, grant, effects.
+        # Every KB rule carries a non-empty effects list, rule_ref included.
+        problems.append(
+            f"{band_id}: rule {rule_id!r} runtime has no effects; every classified rule "
+            f"declares at least one effect entry"
+        )
+        return
+    for effect in effects:
+        if not isinstance(effect, dict):
+            problems.append(f"{band_id}: rule {rule_id!r} has a non-dict effect")
+            continue
+        if not effect.get("id"):
+            problems.append(f"{band_id}: rule {rule_id!r} has an effect without id")
+        binding = effect.get("binding")
+        if isinstance(binding, dict) and binding.get("kind") not in (
+            "mechanic", "trait", "profile", "compiler"
+        ):
+            problems.append(
+                f"{band_id}: rule {rule_id!r} binding kind {binding.get('kind')!r} is not a "
+                f"runtime-schema value (mechanic/trait/profile/compiler)"
+            )
+        esc = str(effect.get("scope"))
+        if esc not in ("YES", "NO", "LATER"):
+            problems.append(f"{band_id}: rule {rule_id!r} effect scope {esc!r} invalid")
+        if esc in ("NO", "LATER") and not effect.get("reason"):
+            problems.append(
+                f"{band_id}: rule {rule_id!r} unbound effect {effect.get('id')!r} has no reason"
+            )
+        if esc == "YES" and runtime.get("implemented") == "YES" and not effect.get("binding"):
+            problems.append(
+                f"{band_id}: rule {rule_id!r} YES effect {effect.get('id')!r} has no binding"
+            )
 
 
 def validate_band_references(band_id: str, documents: Path, problems: list[str]) -> None:
@@ -501,8 +469,52 @@ def validate_band_references(band_id: str, documents: Path, problems: list[str])
     if band.get("ruleset") != "mordheim":
         problems.append(f"{band_id}: band.yaml ruleset must be mordheim")
 
+    # KB conformance: no fields outside the KB band.yaml pattern
+    kb_band_keys = {
+        "schema_version", "id", "canonical_family", "name", "name_i18n",
+        "original_locale", "ruleset", "categories", "grade", "setting",
+        "publication", "status", "sources", "roster", "rule_ids", "variants",
+    }
+    stray = sorted(set(band) - kb_band_keys)
+    if stray:
+        problems.append(f"{band_id}: band.yaml has non-KB keys {stray}")
+    if "rule_ids" not in band:
+        problems.append(f"{band_id}: band.yaml is missing the KB rule_ids field")
+
+    # KB conformance: roster key set and member key set (KB: profile_id/min/max/group_size)
+    kb_roster_keys = {"minimum_models", "maximum_models", "starting_gold", "members"}
+    stray_roster = sorted(set(roster := (band.get("roster") or {})) - kb_roster_keys)
+    if stray_roster:
+        problems.append(f"{band_id}: roster has non-KB keys {stray_roster}")
+    for member in (band.get("roster") or {}).get("members") or ():
+        stray_member = sorted(set(member) - {"profile_id", "minimum", "maximum", "group_size"})
+        if stray_member:
+            problems.append(
+                f"{band_id}: roster member {member.get('profile_id')!r} has non-KB keys {stray_member}"
+            )
+
     profile_ids = {str(p.get("id") or "") for p in profiles_doc.get("profiles") or ()}
     profile_ids.discard("")
+    characteristics_keys = ["M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"]
+    for profile in profiles_doc.get("profiles") or ():
+        profile_id = profile.get("id")
+        if profile.get("type") not in ("hero", "henchman", "animal"):
+            problems.append(
+                f"{band_id}: profile {profile_id!r} type {profile.get('type')!r} is not a KB value "
+                f"(hero/henchman/animal)"
+            )
+        if "references" in profile:
+            problems.append(
+                f"{band_id}: profile {profile_id!r} uses the non-KB 'references' field; KB profiles "
+                f"are self-contained"
+            )
+        chars = profile.get("characteristics") or {}
+        if list(chars) != characteristics_keys:
+            problems.append(
+                f"{band_id}: profile {profile_id!r} characteristics must list all nine KB keys, "
+                f"got {list(chars)}"
+            )
+
     roster_members = band.get("roster") or {}
     for member in roster_members.get("members") or ():
         profile_id = str(member.get("profile_id") or "")
@@ -513,16 +525,68 @@ def validate_band_references(band_id: str, documents: Path, problems: list[str])
 
     rule_ids = {str(r.get("id") or "") for r in rules_doc.get("rules") or ()}
     rule_ids.discard("")
+    kb_rule_ids: set[str] = set()
     for rule in rules_doc.get("rules") or ():
+        rule_id = str(rule.get("id") or "?")
+        runtime = rule.get("runtime") or {}
+        # KB conformance: rule-id grammar and runtime-schema values
+        if "--" not in rule_id:
+            problems.append(
+                f"{band_id}: rule id {rule_id!r} does not follow the KB <owner>--<name> grammar"
+            )
+        else:
+            owner = rule_id.split("--")[0]
+            if owner != "band" and owner not in profile_ids:
+                problems.append(
+                    f"{band_id}: rule {rule_id!r} owner {owner!r} is neither 'band' nor a profile id"
+                )
+        if not isinstance(runtime, dict):
+            problems.append(f"{band_id}: rule {rule_id!r} has a non-dict runtime block")
+            continue
+        validate_runtime(rule_id, runtime, band_id, problems, rule.get("kind"))
+        if "effects" in rule:
+            problems.append(
+                f"{band_id}: rule {rule_id!r} carries a rule-level 'effects' key; "
+                f"effects belong inside runtime"
+            )
+        if rule.get("applies_to") and "profiles" in (rule.get("applies_to") or {}):
+            problems.append(
+                f"{band_id}: rule {rule_id!r} applies_to uses 'profiles'; the KB key is 'profile_ids'"
+            )
         if rule.get("rule_ref"):
+            ref = str(rule["rule_ref"])
+            kb_rule_ids.add(ref)
+            if ref not in _kb_rule_ids():
+                problems.append(
+                    f"{band_id}: rule {rule_id!r} rule_ref {ref!r} not found in active KB"
+                )
+            if rule.get("effect") or rule.get("effect_i18n"):
+                # KB pattern: a referencing rule carries no effect; every consumer
+                # renders the shared record and ignores the local prose.
+                problems.append(
+                    f"{band_id}: rule {rule_id!r} references {ref!r} and restates the prose; "
+                    f"the KB keeps the shared rule's text, so a rule_ref rule carries no effect"
+                )
             continue
         if not rule.get("effect"):
-            problems.append(f"{band_id}: rule {rule.get('id')!r} has no effect and no rule_ref")
+            problems.append(f"{band_id}: rule {rule_id!r} has no effect and no rule_ref")
     owners = [band, *(band.get("variants") or ())]
+    band_level_rules = {rid for rid in rule_ids if rid.startswith("band--")}
+    all_listed: set[str] = set()
     for owner in owners:
+        # KB pattern (Tileans): the band lists its own band-- rules and each variant
+        # lists the rules it introduces; together they must cover every band-- rule.
         for rule_id in owner.get("rule_ids") or ():
+            all_listed.add(rule_id)
             if rule_id not in rule_ids:
                 problems.append(f"{band_id}: rule_ids reference unknown rule {rule_id!r}")
+            elif not rule_id.startswith("band--"):
+                problems.append(
+                    f"{band_id}: band.yaml rule_ids lists profile rule {rule_id!r}; "
+                    f"the KB lists only band-- rules there"
+                )
+    for rule_id in sorted(band_level_rules - all_listed):
+        problems.append(f"{band_id}: band rule {rule_id!r} missing from band.yaml rule_ids")
 
     band_profile_ids = profile_ids
     for rule in rules_doc.get("rules") or ():
@@ -531,14 +595,74 @@ def validate_band_references(band_id: str, documents: Path, problems: list[str])
                 problems.append(
                     f"{band_id}: rule {rule.get('id')!r} applies to unknown profile {profile_id!r}"
                 )
+    for profile in profiles_doc.get("profiles") or ():
+        for rule_id in profile.get("rule_ids") or ():
+            if rule_id.startswith("band--"):
+                problems.append(
+                    f"{band_id}: profile {profile.get('id')!r} lists band rule {rule_id!r}; "
+                    f"the KB lists band rules only in band.yaml"
+                )
+            elif rule_id not in rule_ids:
+                problems.append(
+                    f"{band_id}: profile {profile.get('id')!r} references unknown rule {rule_id!r}"
+                )
 
     known_items = active_item_ids()
     for item_id in equipment_doc.get("starting_items") or ():
         if item_id not in known_items:
             problems.append(f"{band_id}: equipment references unknown item {item_id!r}")
+    for equipment_list in equipment_doc.get("equipment_lists") or ():
+        list_id = str(equipment_list.get("id") or "?")
+        for entry in equipment_list.get("items") or ():
+            if not isinstance(entry, dict):
+                continue
+            item_id = str(entry.get("item_id") or "")
+            if item_id and item_id not in known_items:
+                problems.append(
+                    f"{band_id}: equipment list {list_id!r} references unknown item {item_id!r}"
+                )
+            stray_keys = sorted(set(entry) - {"item_id", "cost", "notes", "price_override"})
+            if stray_keys:
+                problems.append(
+                    f"{band_id}: equipment list {list_id!r} item {item_id!r} has non-KB keys "
+                    f"{stray_keys}; availability remarks belong in 'notes'"
+                )
+        stray_list_keys = sorted(set(equipment_list) - {"id", "name", "items", "source", "loadouts"})
+        if stray_list_keys:
+            problems.append(
+                f"{band_id}: equipment list {list_id!r} carries non-KB key(s) {stray_list_keys}"
+            )
+    for profile in profiles_doc.get("profiles") or ():
+        for item_id in profile.get("fixed_equipment") or ():
+            if isinstance(item_id, str) and item_id and item_id not in known_items:
+                problems.append(
+                    f"{band_id}: profile {profile.get('id')!r} fixed_equipment references "
+                    f"unknown item {item_id!r}"
+                )
+
+
+_KB_RULE_IDS: set[str] | None = None
 
 
 _ACTIVE_ITEMS: list[str] | None = None
+
+
+def _kb_rule_ids() -> set[str]:
+    """IDs of every rule/condition defined by the active knowledge base."""
+    global _KB_RULE_IDS
+    if _KB_RULE_IDS is None:
+        ids: set[str] = set()
+        for path in (KNOWLEDGE / "catalog/rules").glob("*.yaml"):
+            try:
+                document = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+            except yaml.YAMLError:
+                continue
+            for key in ("rules", "conditions"):
+                for rule in document.get(key) or ():
+                    if isinstance(rule, dict) and rule.get("id"):
+                        ids.add(str(rule["id"]))
+        _KB_RULE_IDS = ids
+    return set(_KB_RULE_IDS)
 
 
 def active_item_ids() -> set[str]:
@@ -603,7 +727,6 @@ def cmd_report(args: argparse.Namespace) -> int:
                     "source": row.get("source_code"),
                     "status": row.get("status"),
                     "pdf": bool(row.get("sha256")),
-                    "owner": row.get("owner"),
                     "blockers": row.get("blockers") or [],
                 }
                 for row in rows
@@ -616,8 +739,7 @@ def cmd_report(args: argparse.Namespace) -> int:
         for row in by_source[source]:
             pdf = "PDF" if row.get("sha256") else "-- "
             blockers = ",".join(row.get("blockers") or []) or "-"
-            owner = str(row.get("owner") or "-")
-            print(f"  {str(row.get('id')):36s} {pdf:4s} {str(row.get('status')):16s} {owner:16s} {blockers}")
+            print(f"  {str(row.get('id')):36s} {pdf:4s} {str(row.get('status')):16s} {blockers}")
     print(f"\ntotal: {len(rows)}")
     return 0
 
@@ -635,14 +757,6 @@ def main(argv: list[str] | None = None) -> int:
     download.add_argument("--refresh", action="store_true", help="re-download even if hashed")
     download.add_argument("--purge", action="store_true", help="empty the cache first")
     sub.add_parser("extract", help="draft text extraction into the cache")
-    claim = sub.add_parser("claim", help="coordinate parallel transcription workers")
-    claim.add_argument("--owner", help="worker name taking or releasing claims")
-    claim.add_argument("--ids", nargs="+", help="explicit band ids to claim")
-    claim.add_argument("--source", help="claim all claimable bands of one source code")
-    claim.add_argument("--list", action="store_true", help="show current claims")
-    claim.add_argument("--release", action="store_true", help="release claims (with --owner)")
-    claim.add_argument("--force", action="store_true", help="take over a foreign claim")
-    claim.add_argument("--dry-run", action="store_true")
     sub.add_parser("validate", help="validate the staging tree")
     report = sub.add_parser("report", help="progress by band and source")
     report.add_argument("--json", action="store_true")
@@ -653,8 +767,6 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_download(args)
     if args.command == "extract":
         return cmd_extract(args)
-    if args.command == "claim":
-        return cmd_claim(args)
     if args.command == "validate":
         return cmd_validate(args)
     if args.command == "report":

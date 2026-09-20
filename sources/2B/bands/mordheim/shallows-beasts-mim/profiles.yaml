@@ -1,0 +1,108 @@
+schema_version: 2
+band_id: shallows-beasts-mim
+profiles:
+- id: buccaneer
+  name: Buccaneer
+  type: hero
+  cost: 85
+  experience: 20
+  characteristics: {M: 4, WS: 4, BS: 4, S: 4, T: 4, W: 1, I: 4, A: 1, Ld: 8}
+  equipment_lists: [heroes-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, academic, strength, speed]
+  source: {manual: Broheim, printed_page: 3, section: Heroes / Buccaneer, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf'}
+  source_path: [heroes, Buccaneer]
+  name_i18n: {es: Bucanero}
+  rule_ids: [buccaneer--leader, buccaneer--swashbuckler]
+  combat_traits: {}
+- id: mutant-priest
+  name: Mutant-Priest
+  type: hero
+  cost: 75
+  experience: 14
+  characteristics: {M: 4, WS: 4, BS: 4, S: 3, T: 4, W: 1, I: 4, A: 1, Ld: 8}
+  equipment_lists: [heroes-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, academic]
+  source: {manual: Broheim, printed_page: 3, section: Heroes / 0-1 Mutant-Priest, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf'}
+  source_path: [heroes, 0-1 Mutant-Priest]
+  name_i18n: {es: Sacerdote Mutante}
+  rule_ids: [mutant-priest--wizard, mutant-priest--prayers, mutant-priest--bite-attack]
+  combat_traits: {}
+- id: renegades
+  name: Renegades
+  type: hero
+  cost: 35
+  experience: 10
+  characteristics: {M: 4, WS: 4, BS: 3, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 7}
+  equipment_lists: [heroes-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, strength]
+  source: {manual: Broheim, printed_page: 3, section: Heroes / 0-2 Renegades, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf'}
+  source_path: [heroes, 0-2 Renegades]
+  name_i18n: {es: Renegados}
+  rule_ids: []
+  combat_traits: {}
+- id: foundlings
+  name: Foundlings
+  type: hero
+  cost: 20
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 2, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 6}
+  equipment_lists: [heroes-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, speed]
+  source: {manual: Broheim, printed_page: 3, section: Heroes / 0-2 Foundlings, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf'}
+  source_path: [heroes, 0-2 Foundlings]
+  name_i18n: {es: Expósitos}
+  rule_ids: [foundlings--blessed-child]
+  combat_traits: {}
+- id: wreckers
+  name: Wreckers
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [henchmen-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 4, section: Henchmen / Wreckers, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf'}
+  source_path: [henchmen, Wreckers]
+  name_i18n: {es: Naufragadores}
+  rule_ids: []
+  combat_traits: {}
+- id: fishmen
+  name: Fishmen
+  type: henchman
+  cost: 30
+  experience: 0
+  characteristics: {M: 3, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [henchmen-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 4, section: Henchmen / Fishmen, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf'}
+  source_path: [henchmen, Fishmen]
+  name_i18n: {es: Hombres Pez}
+  rule_ids: [fishmen--mer-creatures]
+  combat_traits: {}
+- id: swampers
+  name: Swampers
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [henchmen-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 4, section: Henchmen / 0-2 Swampers, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf'}
+  source_path: [henchmen, 0-2 Swampers]
+  name_i18n: {es: Ciénagueros}
+  rule_ids: [swampers--swamp-striders, swampers--marsh-born, swampers--herb-lore]
+  combat_traits: {}

@@ -1,0 +1,355 @@
+schema_version: 2
+band_id: order-of-the-mare-web
+rules:
+- id: band--knights-virtue
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.order-of-the-mare-web.band.knights-virtue
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: all-alone Leadership test exemption is a psychology/rout mechanic
+        outside the duel scope.
+  name: Knight's Virtue
+  effect: >-
+    A knight is a chivalrous warrior who is superior to ordinary warriors. He will never panic and
+    break from combat and so does not have to pass a Leadership test for being all alone.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Knight's virtue
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  name_i18n:
+    es: Virtud del Caballero
+  effect_i18n:
+    es: >-
+      Un caballero es un guerrero cortés superior a los guerreros ordinarios. Nunca entra en pánico
+      ni huye del combate, por lo que no tiene que superar una prueba de Liderazgo por estar
+      completamente solo.
+  applies_to:
+    band: true
+- id: band--hired-swords
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.order-of-the-mare-web.band.hired-swords
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hired-sword availability is a roster-construction/campaign mechanic
+        outside the duel scope.
+  name: Hired Swords
+  effect: >-
+    Order of the Mare warbands have access to the same hired swords as a mercenary warband would.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hired swords
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  name_i18n:
+    es: Espadas a Sueldo
+  effect_i18n:
+    es: >-
+      Las bandas de la Orden de la Yegua tienen acceso a las mismas Espadas a Sueldo que una banda
+      mercenaria.
+  applies_to:
+    band: true
+- id: band--horse-and-rider
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.order-of-the-mare-web.band.horse-and-rider
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: recruitment discounts are roster-construction/campaign mechanics outside
+        the duel scope.
+  name: Horse and Rider
+  effect: >-
+    Because the knights of Bretonnia are typically mounted on horseback, the Paragon and the Gallant
+    may buy a single horse or warhorse each at half the normal price upon recruitment.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Horse and rider
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  name_i18n:
+    es: Caballo y Jinete
+  effect_i18n:
+    es: >-
+      Como los caballeros de Bretonnia suelen ir montados a caballo, el Paradigma y el Galán pueden
+      comprar un caballo o corcel de guerra cada uno a mitad de precio al ser reclutados.
+  applies_to:
+    band: true
+- id: paragon--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.order-of-the-mare-web.paragon.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
+        psychology/rout mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Paragon / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - paragon
+  rule_ref: shared-rule.leader
+- id: paragon--knights-virtue
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.order-of-the-mare-web.shared.knights-virtue
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: all-alone Leadership test exemption is a psychology/rout mechanic
+        outside the duel scope.
+  name: Knight's Virtue
+  effect: >-
+    A knight is a chivalrous warrior who is superior to ordinary warriors. He will never panic and
+    break from combat and so does not have to pass a Leadership test for being all alone.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Paragon / Special Rules / Knight's virtue
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  name_i18n:
+    es: Virtud del Caballero
+  effect_i18n:
+    es: >-
+      Un caballero es un guerrero cortés superior a los guerreros ordinarios. Nunca entra en pánico
+      ni huye del combate, por lo que no tiene que superar una prueba de Liderazgo por estar
+      completamente solo.
+  applies_to:
+    profile_ids:
+    - paragon
+    - dame-of-the-mare
+    - gallant
+    - redeemed-knights
+- id: paragon--vow-of-poverty
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.order-of-the-mare-web.paragon.vow-of-poverty
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: equipment restrictions are roster-construction mechanics outside the
+        duel scope.
+  name: Vow of Poverty
+  effect: The Paragon may not use a Lance.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Paragon / Special Rules / Vow of poverty
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  name_i18n:
+    es: Voto de Pobreza
+  effect_i18n:
+    es: El Paradigma no puede usar una Lanza.
+  applies_to:
+    profile_ids:
+    - paragon
+- id: dame-of-the-mare--prayers
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.order-of-the-mare-web.dame-of-the-mare.prayers
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (Blessings of the Mare; the prayer list is preserved in
+        sources/2A/catalog/magic-2a.yaml).
+  name: Prayers
+  effect: >-
+    The Dame of the Mare may use prayers from the Blessings of the Mare list. She starts with one
+    randomly determined prayer.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Dame of the Mare / Special Rules / Prayers
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  name_i18n:
+    es: Plegarias
+  effect_i18n:
+    es: >-
+      La Dama de la Yegua puede usar plegarias de la lista de Bendiciones de la Yegua. Comienza con
+      una plegaria determinada aleatoriamente.
+  applies_to:
+    profile_ids:
+    - dame-of-the-mare
+- id: pilgrims--hatred
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.order-of-the-mare-web.pilgrims.hatred
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Hatred (reroll failed to-hit in first round against hated foes) is a
+        psychology mechanic outside the duel scope.
+  name: Hatred
+  effect: >-
+    Pilgrims are so devout to the Dame of the Mare that they hate all and any enemies that defy her.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pilgrims / Special Rules / Hatred
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  name_i18n:
+    es: Odio
+  effect_i18n:
+    es: >-
+      Los Peregrinos son tan devotos de la Dama de la Yegua que odian a todos y cualquiera de los
+      enemigos que la desafíen.
+  applies_to:
+    profile_ids:
+    - pilgrims
+- id: pilgrims--peasants
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.order-of-the-mare-web.pilgrims.peasants
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: promotion/advancement restrictions are post-duel/campaign progression
+        mechanics.
+  name: Peasants
+  effect: >-
+    While devout and loyal, pilgrims are simple peasants with no ambition other than following their
+    chosen saint, as such may never become heroes. Reroll any The Lad's Got Talent results.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pilgrims / Special Rules / Peasants
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  name_i18n:
+    es: Campesinos
+  effect_i18n:
+    es: >-
+      Aunque devotos y leales, los peregrinos son simples campesinos sin otra ambición que seguir a
+      su santa elegida, por lo que nunca pueden convertirse en héroes. Repite cualquier resultado de
+      ¡Ese Chico Tiene Talento!.
+  applies_to:
+    profile_ids:
+    - pilgrims
+- id: companion-filly--horse
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.order-of-the-mare-web.companion-filly.horse
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: mounted-movement rules and experience exemption are movement/campaign
+        mechanics outside the duel scope.
+  name: Horse
+  effect: >-
+    The filly is an animal and thus does not gain any experience. Additionally it follows the
+    movement rules for mounted warriors.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Companion Filly / Special Rules / Horse
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  name_i18n:
+    es: Yegua
+  effect_i18n:
+    es: >-
+      La potranca es un animal y por tanto no gana experiencia. Además, sigue las reglas de
+      movimiento de los guerreros montados.
+  applies_to:
+    profile_ids:
+    - companion-filly
+- id: band--dame-of-the-mare-succession
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.order-of-the-mare-web.band.dame-of-the-mare-succession
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+  name: Dame of the Mare Succession
+  effect: >-
+    Your warband must include a single Dame of the Mare. If she is removed you must recruit a new
+    one without delay (no other warriors may be recruited before you do).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Choice of warriors / Dame of the Mare
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  name_i18n:
+    es: 'Dama de la Yegua: Sucesión'
+  effect_i18n:
+    es: >-
+      Tu banda debe incluir una única Dama de la Yegua. Si es eliminada debes reclutar a otra sin
+      demora (no puedes reclutar ningún otro guerrero antes de hacerlo).
+  applies_to:
+    band: true
+- id: band--blazing-saddles
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.order-of-the-mare-web.band.blazing-saddles
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: a supplement that grants the Ride skill and lifts the campaign-level
+        limit of two mounts is outside the duel scope.
+  name: Blazing Saddles
+  effect: >-
+    If the Blazing Saddles supplement (Town Cryer #14) is in play, the Paragon, Gallant,
+    Esquiresses and Redeemed Knights should all automatically have the Ride skill. In addition, the
+    Order of the Mare warbands should be allowed to ignore the normal warband limitation of two
+    mounts in areas of dense terrain.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: A Word from the Author / Blazing Saddles
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  name_i18n:
+    es: Sillas en Llamas
+  effect_i18n:
+    es: >-
+      Si se juega con el suplemento Blazing Saddles (Town Cryer n.º 14), el Parangón, el Galante, las
+      Esquiresas y los Caballeros Redimidos deberían tener automáticamente la habilidad de Montar.
+      Además, a las bandas de la Orden de la Yegua debería permitírseles ignorar la limitación normal
+      de dos monturas en zonas de terreno denso.
+  applies_to:
+    band: true

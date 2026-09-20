@@ -1,0 +1,339 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/campaign-hired-swords-and-dramatis.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/campaign/hired-swords-and-dramatis.yaml",
+  "description": "The campaign side of hiring: the search procedure, the fee and upkeep of every Hired Sword and Dramatis Persona, their availability and their static eligibility. The character himself — characteristics, equipment, skills and intrinsic rules — belongs to `catalog/hirelings/`, and this catalogue only points at him with `profile_id`. Current-roster, current-hires and warband-variant checks are profile rules evaluated by the application, never inferred from the static lists here; `eligibility_semantics` states that boundary as data.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "ruleset",
+    "catalog",
+    "status",
+    "availability_procedures",
+    "hired_swords",
+    "dramatis_personae",
+    "eligibility_semantics",
+    "effect_ids"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 2 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "catalog": { "$ref": "defs.schema.json#/$defs/id" },
+    "status": { "$ref": "defs.schema.json#/$defs/catalog_status" },
+    "availability_procedures": {
+      "description": "The procedures that decide whether a character is available to be looked for.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/availability_procedure" }
+    },
+    "hired_swords": {
+      "description": "The hiring entries of the Hired Swords.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/hireling_entry" }
+    },
+    "dramatis_personae": {
+      "description": "The hiring entries of the Dramatis Personae. Unlike a Hired Sword, a Dramatis entry may declare no hiring fee when the source hires him by another route (a summoning, a scenario).",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/dramatis_entry" }
+    },
+    "eligibility_semantics": { "$ref": "#/$defs/semantics" },
+    "effect_ids": {
+      "description": "Effects of this catalogue a warband's own special rules may modify.",
+      "$ref": "defs.schema.json#/$defs/id_list"
+    }
+  },
+  "$defs": {
+    "availability_procedure": {
+      "description": "One search procedure: a characteristic test that says whether the character can be found.",
+      "type": "object",
+      "required": ["id", "type", "actor", "characteristic", "dice", "success_when"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "type": {
+          "description": "Kind of procedure.",
+          "const": "characteristic_test"
+        },
+        "actor": {
+          "description": "Who searches, e.g. an eligible Hero.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "characteristic": { "$ref": "#/$defs/characteristic" },
+        "dice": { "$ref": "defs.schema.json#/$defs/dice" },
+        "success_when": {
+          "description": "How the roll is compared with the characteristic.",
+          "enum": ["roll_less_than_characteristic", "roll_less_than_or_equal_to_characteristic"]
+        }
+      }
+    },
+    "hireling_entry": {
+      "description": "One Hired Sword hiring entry.",
+      "type": "object",
+      "required": ["id", "profile_id", "hiring_fee", "upkeep", "availability", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable campaign id: `campaign.hireling.hired-sword.<slug>`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "profile_id": {
+          "description": "Profile of `catalog/hirelings/hired-swords/` the entry hires. The profile is never copied here.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "hiring_fee": { "$ref": "#/$defs/resources_holder" },
+        "upkeep": {
+          "description": "What keeping him costs after every battle, or `null` when the source charges no upkeep (a Hired Sword who serves a single battle, or one the warband does not keep).",
+          "oneOf": [
+            { "$ref": "#/$defs/resources_holder" },
+            { "type": "null" }
+          ]
+        },
+        "availability": {
+          "description": "How the Hired Sword is obtained. `common` is hired from the market list; `construction` and `hero_replacement` are the source's special routes, which a scenario or a warband rule resolves.",
+          "type": "object",
+          "required": ["kind"],
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": ["common", "construction", "hero_replacement"]
+            }
+          }
+        },
+        "eligibility": { "$ref": "#/$defs/eligibility" },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "dramatis_entry": {
+      "description": "One Dramatis Personae hiring entry.",
+      "type": "object",
+      "required": ["id", "profile_id", "hiring_fee", "upkeep", "availability", "eligibility", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable campaign id: `campaign.hireling.dramatis.<slug>`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "profile_id": {
+          "description": "Profile of `catalog/hirelings/dramatis-personae/` the entry hires.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "hiring_fee": {
+          "description": "What hiring costs, or `null` when the character is not hired with resources at all (a summoning, a scenario reward).",
+          "oneOf": [
+            { "$ref": "#/$defs/resources_holder" },
+            { "type": "null" }
+          ]
+        },
+        "upkeep": {
+          "description": "What keeping him costs after every battle, or `null` when the source charges no upkeep.",
+          "oneOf": [
+            { "$ref": "#/$defs/resources_holder" },
+            { "type": "null" }
+          ]
+        },
+        "availability": {
+          "description": "How the character is obtained: through the search procedure (`procedure_id`) or by one of the source's own special routes (`kind`).",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "description": "Special route, when the character is not looked for on the market.",
+              "enum": ["summoning", "special_scenario"]
+            },
+            "procedure_id": {
+              "description": "Search procedure of this document that decides whether he is found.",
+              "$ref": "defs.schema.json#/$defs/id"
+            }
+          },
+          "oneOf": [
+            { "required": ["procedure_id"], "not": { "required": ["kind"] } },
+            { "required": ["kind"], "not": { "required": ["procedure_id"] } }
+          ]
+        },
+        "eligibility": { "$ref": "#/$defs/eligibility" },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "resources_holder": {
+      "description": "A fee or an upkeep, expressed in the resources the source asks for.",
+      "type": "object",
+      "required": ["resources"],
+      "additionalProperties": false,
+      "properties": {
+        "resources": {
+          "description": "Which resources and how much of each. The keys are the campaign's resources; a source that charges in treasures or in Campaign Points says so here instead of being converted into crowns.",
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": false,
+          "properties": {
+            "gold_crowns": { "$ref": "#/$defs/resource_cost" },
+            "treasures": { "$ref": "#/$defs/resource_cost" },
+            "wyrdstone_fragments": { "$ref": "#/$defs/resource_cost" },
+            "campaign_points": { "$ref": "#/$defs/resource_cost" }
+          }
+        }
+      }
+    },
+    "resource_cost": {
+      "description": "What one resource costs. It is a number, or a formula the source prints as text.",
+      "type": "object",
+      "required": ["cost"],
+      "additionalProperties": false,
+      "properties": {
+        "cost": {
+          "description": "Amount of the resource, or the expression the source prints instead of a single number.",
+          "oneOf": [
+            { "type": "integer", "minimum": 0 },
+            { "$ref": "defs.schema.json#/$defs/display_text" }
+          ]
+        }
+      }
+    },
+    "eligibility": {
+      "description": "The static eligibility of a hiring entry: which bands may hire the character at all. The lists are the plain cases; `expression` is the boolean form for the cases the lists cannot express, and the two are mutually exclusive.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allow_band_ids": {
+          "description": "Bands that may hire him. When both allow lists are empty there is no positive static filter.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "allow_groups": {
+          "description": "Shared band groups that may hire him.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "forbid_band_ids": {
+          "description": "Bands that may not hire him. A match here rejects the hire, whatever the allow lists say.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "forbid_groups": {
+          "description": "Shared band groups that may not hire him.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "expression": {
+          "description": "Complete static predicate for the cases that need boolean composition; when it is present the allow and forbid lists are not used for that entry.",
+          "$ref": "#/$defs/eligibility_expression"
+        }
+      },
+      "not": { "required": ["expression", "allow_band_ids"] }
+    },
+    "eligibility_expression": {
+      "description": "A static eligibility predicate over band ids and shared band groups. Exactly one operator or leaf per node; the operators nest.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["any_of"],
+          "additionalProperties": false,
+          "properties": {
+            "any_of": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/eligibility_expression" }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["all_of"],
+          "additionalProperties": false,
+          "properties": {
+            "all_of": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/eligibility_expression" }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["not"],
+          "additionalProperties": false,
+          "properties": {
+            "not": { "$ref": "#/$defs/eligibility_expression" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["band_id"],
+          "additionalProperties": false,
+          "properties": {
+            "band_id": { "$ref": "defs.schema.json#/$defs/id" }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["group_id"],
+          "additionalProperties": false,
+          "properties": {
+            "group_id": { "$ref": "defs.schema.json#/$defs/id" }
+          }
+        }
+      ]
+    },
+    "semantics": {
+      "description": "The meaning of the fields above, stated as data so the application and the catalogue cannot drift apart: what the lists mean, what the expression is for and which checks are deliberately left to the application. These are editorial statements, not executable rules.",
+      "type": "object",
+      "required": ["simple_lists", "expression", "dynamic_checks"],
+      "additionalProperties": false,
+      "properties": {
+        "simple_lists": {
+          "description": "How the allow and forbid lists combine.",
+          "type": "object",
+          "required": ["allow", "forbid", "precedence"],
+          "additionalProperties": false,
+          "properties": {
+            "allow": { "$ref": "defs.schema.json#/$defs/display_text" },
+            "forbid": { "$ref": "defs.schema.json#/$defs/display_text" },
+            "precedence": {
+              "description": "Which list wins when both match. Currently `forbid`.",
+              "const": "forbid"
+            }
+          }
+        },
+        "expression": {
+          "description": "What the expression form is for.",
+          "type": "object",
+          "required": ["purpose", "leaf_fields", "operators", "mutual_exclusion"],
+          "additionalProperties": false,
+          "properties": {
+            "purpose": { "$ref": "defs.schema.json#/$defs/display_text" },
+            "leaf_fields": {
+              "description": "The fields an expression may test.",
+              "type": "array",
+              "minItems": 1,
+              "items": { "enum": ["band_id", "group_id"] }
+            },
+            "operators": {
+              "description": "The operators an expression may use.",
+              "type": "array",
+              "minItems": 1,
+              "items": { "enum": ["all_of", "any_of", "not"] }
+            },
+            "mutual_exclusion": { "$ref": "defs.schema.json#/$defs/display_text" }
+          }
+        },
+        "dynamic_checks": {
+          "description": "The checks that are deliberately not part of this catalogue because they depend on the current roster, the current Hires or the selected variants.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        }
+      }
+    },
+    "characteristic": {
+      "description": "Characteristic a search test rolls against, named in full.",
+      "enum": [
+        "attacks",
+        "ballistic_skill",
+        "initiative",
+        "leadership",
+        "movement",
+        "strength",
+        "toughness",
+        "weapon_skill",
+        "wounds"
+      ]
+    }
+  }
+}

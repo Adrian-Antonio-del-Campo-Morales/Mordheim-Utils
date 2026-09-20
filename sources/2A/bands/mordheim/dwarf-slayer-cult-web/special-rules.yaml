@@ -1,0 +1,589 @@
+schema_version: 2
+band_id: dwarf-slayer-cult-web
+rules:
+- id: band--hard-to-kill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.band.hard-to-kill
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: injury-table result conversion is a post-duel/campaign resolution
+        mechanic.
+  name: Hard to Kill
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Dwarf Special Rules / Hard to Kill
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Difícil de Matar
+  applies_to:
+    band: true
+  rule_ref: shared-rule.hard-to-kill
+- id: band--hard-head
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.band.hard-head
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: weapon special-rule exemptions are outside the current engine scope.
+  name: Hard Head
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Dwarf Special Rules / Hard Head
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Cabeza Dura
+  applies_to:
+    band: true
+  rule_ref: shared-rule.hard-head-2
+- id: band--grudgebearers
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.band.grudgebearers
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hired-sword availability is a roster-construction/campaign mechanic
+        outside the duel scope.
+  name: Grudgebearers
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Dwarf Special Rules / Grudgebearers
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Portadores del Agravio
+  applies_to:
+    band: true
+  rule_ref: shared-rule.grudgebearers
+- id: band--hatred-orcs-and-goblins
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.band.hatred-orcs-and-goblins
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Hatred (reroll failed to-hit in first round against hated foes) is a
+        psychology mechanic outside the duel scope.
+  name: Hatred
+  effect: >-
+    The Rememberer, Stubbles, and Axe Hurlers all Hate Orcs and Goblins. This is ignored if the
+    warrior later becomes Immune to Psychology.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Dwarf Special Rules / Hatred
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Odio
+  effect_i18n:
+    es: >-
+      El Memoralista, los Barbas Nacientes y los Lanzahachas odian a los Orcos y a los Goblins. Esto
+      se ignora si el guerrero se vuelve posteriormente Inmune a la Psicología.
+  applies_to:
+    profile_ids:
+    - rememberer
+    - stubbles
+    - axe-hurlers
+- id: band--slayer-rules
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.band.slayer-rules
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Deathwish psychology immunity, armour/missile/magic restrictions and
+        exploration-dice conditions are psychology and campaign-resolution mechanics outside the
+        duel scope.
+  name: Slayer
+  effect: >-
+    Deathwish: Slayers seek an honorable death in combat. Unless stated otherwise, all members of
+    this are completely immune to all psychology and never need to test if fighting alone. This
+    includes Hatred, Frenzy & Stupidity. Damnable Luck: While Slayers SEEK death, it often eerily
+    avoids them. In the postgame, after rolling for all injuries, you may reroll one result of Death
+    for a single slayer hero or henchman, accepting the second result. No Armour, No Toys! Slayers
+    may never use armour of any kind, nor cloaks that provide a constant save bonus (though they may
+    use Lucky Charms). Also, they may not use any missiles that aren't thrown, nor may they learn
+    magic. Only in Victory: Slayer heroes do NOT gain exploration dice at the end of the battle if
+    they were defeated or routed; they only gain them if they win the scenario, were allied with the
+    winner, or tied. (Does not include the Rememberer.)
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Slayer Special Rules
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Matatroll
+  effect_i18n:
+    es: >-
+      Deseo de Muerte: los Matatrolles buscan una muerte honorable en combate. Salvo que se indique
+      lo contrario, todos los miembros son completamente inmunes a toda la psicología y nunca
+      necesitan hacer pruebas si luchan solos. Esto incluye Odio, Frenesí y Estupidez. Suerte
+      Maldita: aunque los Matatrolles BUSCAN la muerte, esta a menudo los evita misteriosamente.
+      Tras la partida, después de tirar todas las heridas, puedes repetir un resultado de Muerte de
+      un único héroe o secuaz matatroll, aceptando el segundo resultado. ¡Sin Armadura, sin
+      Juguetes! Los Matatrolles nunca pueden usar armadura de ningún tipo, ni capas que proporcionen
+      un bonificador constante de salvación (aunque pueden usar Amuletos de la Suerte). Además, no
+      pueden usar misiles que no sean arrojadizos, ni aprender magia. Solo con la Victoria: los
+      héroes Matatrolles NO obtienen dados de exploración al final de la batalla si fueron
+      derrotados o huyeron; solo los obtienen si ganan el escenario, estaban aliados con el vencedor
+      o empataron. (No incluye al Memoralista.)
+  applies_to:
+    profile_ids:
+    - giant-slayer
+    - doomseeker
+    - troll-slayers
+- id: rememberer--record-of-valor
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.rememberer.record-of-valor
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: post-battle exploration-dice grants are campaign mechanics outside the
+        duel scope.
+  name: Record of Valor
+  effect: >-
+    If a Slayer hero is taken out of action while the Rememberer was present on the board, you
+    receive +1 Exploration dice in the post-game phase; this represents their patrons in Karak
+    Kadrin rewarding their courage with money and hirelings. This only applies if the Slayer was
+    taken out of action directly or indirectly by an enemy or NPC attack. A Slayer that is taken out
+    of action without any opposing influences does not grant you an exploration dice. If a Slayer is
+    somehow brought back to the battlefield, this extra die is lost (as they are saved from the jaws
+    of death). Back-up Records: if your
+    warband includes a Bard Hired Sword, the bard gains the Rememberer ability, "Record of Valor";
+    however, two rememberers do not stack (i.e. 1 Slayer taken OOA gives you a max of 1 exploration
+    die, even if both the Rememberer and the Bard witness it). This rule merely provides a backup if
+    the Rememberer somehow misses a game or is taken out of action.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Rememberer / Special Rules / Record of Valor
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Registro de Valentía
+  effect_i18n:
+    es: >-
+      Si un héroe Matatroll queda Fuera de Combate mientras el Memoralista estaba presente en la
+      mesa, recibes +1 dado de Exploración en la fase posterior a la partida; esto representa que
+      sus mecenas de Karak Kadrin recompensan su valor con dinero y mercenarios. Solo se aplica si
+      el Matatroll quedó Fuera de Combate directa o indirectamente por un ataque de un enemigo o
+      PNJ. Un Matatroll que quede Fuera de Combate sin ninguna influencia hostil no te otorga un
+      dado de exploración. Si un Matatroll es devuelto de algún modo al campo de batalla, este dado
+      extra se pierde (pues se les salva de las fauces de la muerte). Copias de Seguridad: si tu banda incluye una Espada a Sueldo Bardo, el bardo
+      gana la habilidad de Memoralista "Registro de Valentía"; sin embargo, dos memorialistas no se
+      acumulan (es decir, 1 Matatroll Fuera de Combate te da como máximo 1 dado de exploración,
+      aunque lo presencien tanto el Memoralista como el Bardo). Esta regla solo sirve de respaldo
+      por si el Memoralista se pierde una partida o queda Fuera de Combate.
+  applies_to:
+    profile_ids:
+    - rememberer
+- id: rememberer--rememberer
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.rememberer.rememberer
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: combat reroll aura is a psychology/buff mechanic outside the duel scope.
+  name: Rememberer
+  effect: >-
+    The Rememberer's task is to record the doom of each of the slayers. When he is close by, the
+    slayers will fight even harder to make their death more honourable. Once per game, any Slayer
+    Hero fighting against a Large creature or a creature with Toughness 5 or greater, and is within
+    6" of the Rememberer, may re-roll any failed To Hit rolls once only.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Rememberer / Special Rules / Rememberer
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Memoralista
+  effect_i18n:
+    es: >-
+      La tarea del Memoralista es registrar el destino de cada uno de los Matatrolles. Cuando está
+      cerca, los Matatrolles lucharán con más ahínco para hacer su muerte más honorable. Una vez por
+      partida, cualquier Héroe Matatroll que luche contra una criatura Grande o una criatura con
+      Resistencia 5 o superior, y esté a 6" del Memoralista, puede repetir una sola vez cualquier
+      tirada fallida por impactar.
+  applies_to:
+    profile_ids:
+    - rememberer
+- id: rememberer--pick-up-the-slack
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.rememberer.pick-up-the-slack
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: rarity searches are campaign mechanics outside the duel scope.
+  name: Pick up the Slack
+  effect: >-
+    If he was not taken out of action, the Rememberer may make a rarity or Dramatis Personae roll
+    for each Slayer hero that was taken out of action this game in addition to their normal rarity
+    search.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Rememberer / Special Rules / Pick up the Slack
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Cubrir el Hueco
+  effect_i18n:
+    es: >-
+      Si no quedó Fuera de Combate, el Memoralista puede hacer una tirada de rareza o de Dramatis
+      Personae por cada héroe Matatroll que haya quedado Fuera de Combate esta partida, además de su
+      búsqueda de rareza normal.
+  applies_to:
+    profile_ids:
+    - rememberer
+- id: rememberer--not-a-slayer
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.rememberer.not-a-slayer
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: skill-access restrictions and leader designation are roster-construction
+        mechanics outside the duel scope.
+  name: Not a Slayer
+  effect: >-
+    A Rememberer is not a Slayer, and the slayer rules don't apply. Also, they may not learn "Slayer
+    Only" skills, and may never be warband leader.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Rememberer / Special Rules / Not a Slayer
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: No Es un Matatroll
+  effect_i18n:
+    es: >-
+      Un Memoralista no es un Matatroll, y las reglas de matatroll no se le aplican. Además, no
+      pueden aprender habilidades "Solo Matatrolles" y nunca puede ser el líder de la banda.
+  applies_to:
+    profile_ids:
+    - rememberer
+- id: giant-slayer--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.giant-slayer.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
+        psychology/rout mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Giant Slayer / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - giant-slayer
+  rule_ref: shared-rule.leader
+- id: stubbles--skittish
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.stubbles.skittish
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: skill grants on promotion are advancement-time mechanics outside the
+        duel scope.
+  name: Skittish
+  effect: >-
+    As newly crowned Slayers, Stubbles do not have the skill 'Death Wish', and suffer psychology
+    like normal. When a Stubble gains 'That Lad's Got Talent', instead of making an immediate roll
+    on the Hero Advance Table, he MUST learn the skill 'Death Wish.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Stubbles / Special Rules / Skittish
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Nerviosos
+  effect_i18n:
+    es: >-
+      Como Matatrolles recién coronados, los Barbas Nacientes no tienen la habilidad "Deseo de
+      Muerte" y sufren psicología con normalidad. Cuando un Barba Naciente gana "¡Ese Chico Tiene
+      Talento!", en lugar de hacer una tirada inmediata en la Tabla de Mejoras del Héroe, DEBE
+      aprender la habilidad "Deseo de Muerte".
+  applies_to:
+    profile_ids:
+    - stubbles
+- id: axe-hurlers--strong-arm
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.axe-hurlers.strong-arm
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: range bonuses from characteristics are outside the current engine scope.
+  name: Strong Arm
+  effect: >-
+    The Axe Hurler can use his strength to hurl thrown weapons farther still. When throwing weapons,
+    the Axe Hurler may throw the missile extra inches equal to his Strength (ex. S3 = +3").
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-5 Axe Hurlers / Special Rules / Strong Arm
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Brazo Fuerte
+  effect_i18n:
+    es: >-
+      El Lanzahachas puede usar su fuerza para arrojar armas arrojadizas aún más lejos. Al lanzar
+      armas, el Lanzahachas puede lanzar el misil pulgadas extra iguales a su Fuerza (p. ej. F3 =
+      +3").
+  applies_to:
+    profile_ids:
+    - axe-hurlers
+- id: axe-hurlers--born-marksmen
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.axe-hurlers.born-marksmen
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: skill selections on promotion are advancement-time mechanics outside the
+        duel scope.
+  name: Born Marksmen
+  effect: >-
+    If an Axe Hurler rolls a "That Lad's Got Talent" as an advancement, he may always choose
+    Shooting skills as one of his two skill list choices. He may do this even if there are no heroes
+    with Shooting Skills in the warband. Reminder: Even with Weapon Mastery, he may not use any
+    missile weapons that aren't thrown.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-5 Axe Hurlers / Special Rules / Born Marksmen
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Tiradores Natos
+  effect_i18n:
+    es: >-
+      Si un Lanzahachas saca "¡Ese Chico Tiene Talento!" como mejora, siempre puede elegir
+      habilidades de Disparo como una de sus dos opciones de lista de habilidades. Puede hacerlo
+      incluso si no hay héroes con habilidades de Disparo en la banda. Recordatorio: incluso con
+      Maestría en Armas, no puede usar armas de misil que no sean arrojadizas.
+  applies_to:
+    profile_ids:
+    - axe-hurlers
+- id: axe-hurlers--skittish
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.axe-hurlers.skittish
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: skill grants on promotion are advancement-time mechanics outside the
+        duel scope.
+  name: Skittish
+  effect: >-
+    As newly crowned Slayers, Hurlers do not have the skill 'Death Wish,' and suffer psychology like
+    normal. When a Hurler gains 'That Lad's Got Talent', instead of making an immediate roll on the
+    Hero Advance Table, he MUST learn the skill 'Death Wish.'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-5 Axe Hurlers / Special Rules / Skittish
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Nerviosos
+  effect_i18n:
+    es: >-
+      Como Matatrolles recién coronados, los Lanzahachas no tienen la habilidad "Deseo de Muerte" y
+      sufren psicología con normalidad. Cuando un Lanzahachas gana "¡Ese Chico Tiene Talento!", en
+      lugar de hacer una tirada inmediata en la Tabla de Mejoras del Héroe, DEBE aprender la
+      habilidad "Deseo de Muerte".
+  applies_to:
+    profile_ids:
+    - axe-hurlers
+- id: band--slayer-special-skills
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.special.slayer-special-skills
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: skill selections on promotion are advancement-time mechanics outside the
+        duel scope.
+  name: Slayer Special Skills
+  effect: >-
+    The Slayer hero skill list (Slayers Only): Deathwish — the hero is completely immune to all
+    psychology and never needs to test if fighting alone. Ferocious Charge — the Slayer may double
+    his attacks on the turn in which he charges, with a -1 to-hit penalty that turn. Monster Slayer
+    — in close combat, the Slayer always wounds any opponent on a roll of 4+, regardless of
+    Toughness, unless his own Strength (after all modifiers due to weapon bonuses, etc) would mean a
+    lower roll is needed. Berserker — the Slayer may add +1 to his close combat to-hit rolls during the turn in
+    which he charges. Deathblow — if the Hero is taken out of action in hand-to-hand, he may
+    immediately make the remainder of his attacks before being removed, if he hasn't made all his
+    attacks this turn; he may use this skill even if knocked down or stunned. Relentless — if the
+    Hero charges a model but the charge fails, the Hero may still move the full distance of his
+    move; only against enemies within sight or that the Slayer can detect. Axe Mastery — he may
+    reroll all missed attacks if using an axe or dwarven axe in the hand-to-hand phase of the turn
+    that he charges; may not be used with Whirling Blades. True Grit — when rolling on the Injury
+    table for this Hero, a roll of 1-3 is treated as knocked down, 4-5 as stunned, and 6 as out of
+    action. Thick Skull — he has a 3+ save on a D6 to avoid being stunned; if the save is made,
+    treat a stunned result as knocked down instead.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Habilidades Especiales de Matatroll
+  effect_i18n:
+    es: >-
+      Lista de habilidades de héroe Matatroll (Solo Matatrolles): Deseo de Muerte — el héroe es
+      completamente inmune a toda la psicología y nunca necesita hacer pruebas si lucha solo. Carga
+      Feroz — el Matatroll puede doblar sus ataques en el turno en que carga, con -1 por impactar
+      ese turno. Matamonstruos — en combate cuerpo a cuerpo, el Matatroll siempre hiere a cualquier
+      oponente con un 4+, independientemente de la Resistencia, salvo que su propia Fuerza (tras
+      todos los modificadores debidos a bonificaciones de armas, etc.) requiera una tirada menor. Berserker — el Matatroll puede
+      sumar +1 a sus tiradas por impactar en combate durante el turno en que carga. Golpe Mortal —
+      si el Héroe queda Fuera de Combate en combate cuerpo a cuerpo, puede realizar inmediatamente
+      el resto de sus ataques antes de ser retirado, si no los ha hecho ya este turno; puede usar
+      esta habilidad aunque esté derribado o aturdido. Implacable — si el Héroe carga contra un
+      modelo pero la carga falla, puede aun así mover toda la distancia de su movimiento; solo
+      contra enemigos a la vista o que pueda detectar. Maestría con el Hacha — puede repetir todos
+      los ataques fallidos si usa un hacha o hacha enana en la fase de combate del turno en que
+      carga; no puede combinarse con Hojas Giratorias. Bronca — al tirar en la tabla de Heridas para
+      este Héroe, un resultado de 1-3 se trata como derribado, 4-5 como aturdido y 6 como fuera de
+      combate. Cabeza Dura — tiene una salvación de 3+ en 1D6 para evitar quedar aturdido; si la
+      supera, trata el resultado de aturdido como derribado.
+  applies_to:
+    band: true
+- id: band--rememberer-skills
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.special.rememberer-skills
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: leadership reroll auras and post-game experience are psychology/campaign
+        mechanics outside the duel scope.
+  name: Rememberer Skills
+  effect: >-
+    Songster — a Bard's rousing war songs steel the hearts of all those around him. Any friendly
+    model within 6" of a Bard may re-roll any failed Leadership test with a +1 to Leadership, to a
+    max of 10. This includes rout tests. Rememberer only. Song of Honor — in the postgame, if one or
+    more Slayers in your warband died, all heroes and henchmen gain +1 Experience. Rememberer only.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Songster, Song of Honor
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Habilidades del Memoralista
+  effect_i18n:
+    es: >-
+      Cantor — las enérgicas canciones de guerra de un Bardo templán los corazones de cuantos le
+      rodean. Cualquier modelo amistoso a 6" de un Bardo puede repetir cualquier prueba de Liderazgo
+      fallida con +1 de Liderazgo, hasta un máximo de 10. Esto incluye las tiradas de huida. Solo
+      Memoralista. Canción de Honor — tras la partida, si uno o más Matatrolles de tu banda
+      murieron, todos los héroes y secuaces ganan +1 de Experiencia. Solo Memoralista.
+  applies_to:
+    band: true
+- id: band--slayer-rites
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-slayer-cult-web.rites.slayer-rites
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: post-game promotion and equipment awards are campaign-progression
+        mechanics outside the duel scope.
+  name: Slayer Rites
+  effect: >-
+    The Rite of Trollslaying: if a slayer henchman takes an enemy out of action, if it was Large and
+    started the game with multiple wounds, then in the post-game phase the henchman gains experience
+    enough to bring it to the next advancement (or if maxed out, to 16 exp), and treats it as if
+    that henchman rolls "That Lad's Got Talent!". The Rite of Dragonslaying: if a slayer takes out a
+    model that is a large or gigantic scaled monster (including but not limited to: Hydra, Dragon,
+    Wyvern, Sea Drake, Merwyrm, Turtigon, or any of their young versions), has Skull of Iron and/or
+    4+ wounds, and is an NPC or rolls a death injury, then in the post-game the slayer may tan the
+    hide and gain a Sea Dragon
+    Cloak for free, provided they don't own one already; they may not sell or give it to another
+    warrior. This is the exception to the rule that a Slayer may not wear armour.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Slayer Rites
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+  name_i18n:
+    es: Ritos de Matatroll
+  effect_i18n:
+    es: >-
+      El Rito de Matarrollear: si un secuaz matatroll deja Fuera de Combate a un enemigo que era
+      Grande y comenzó la partida con múltiples heridas, en la fase posterior a la partida el secuaz
+      gana experiencia suficiente para alcanzar su siguiente mejora (o, si está al máximo, hasta 16
+      puntos), y se trata como si sacara "¡Ese Chico Tiene Talento!". El Rito de MatarDragones: si
+      un matatroll deja fuera de combate a un modelo que cumpla todas estas condiciones —monstruo
+      grande o gigantesco con escamas (incluyendo, entre otros: Hidra, Dragón, Viverna, Drago de Mar,
+      Merwyrm, Turtigón, o cualquiera de sus versiones jóvenes), tiene Cráneo de Hierro y/o 4+
+      heridas, y es un PNJ o
+      saca herida de muerte—, tras la partida el matatroll puede curtir la piel y obtener gratis una
+      Capa de Draco Marino, siempre que no posea ya una; no puede venderla ni dársela a otro
+      guerrero. Esta es la excepción a la regla de que un Matatroll no puede llevar armadura.
+  applies_to:
+    band: true

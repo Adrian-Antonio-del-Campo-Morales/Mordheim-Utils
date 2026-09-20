@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/special-rules.yaml.schema.json",
+  "title": "Mordheim KB warband — special-rules.yaml",
+  "description": "The editorial special rules of a warband: the source prose plus its machine classification. A rule keeps its own id and declares equivalence by sharing a binding, never by repeating prose. Shared definitions live in defs.schema.json.",
+  "type": "object",
+  "required": ["schema_version", "band_id", "rules"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 2 },
+    "band_id": {
+      "description": "Band the rules belong to; must match the directory and `band.yaml`.",
+      "$ref": "defs.schema.json#/$defs/id"
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/rule" }
+    }
+  },
+  "$defs": {
+    "rule": {
+      "description": "One special rule: prose (its own `effect` or a `rule_ref` to shared text) plus the runtime classification.",
+      "type": "object",
+      "required": ["id", "name", "name_i18n", "applies_to", "runtime", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/rule_id" },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "effect": {
+          "description": "Canonical English prose of the rule, reviewed against the source.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "rule_ref": {
+          "description": "Id of a shared rule in `catalog/rules/special-rules.yaml` whose text this rule reuses; it replaces `effect` and is only set after an equivalence review.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "kind": {
+          "description": "What a `selectable` rule lets the player choose.",
+          "enum": [
+            "warband_skill", "mutation", "blessing", "virtue", "mark", "modification",
+            "profile_ability", "warband_variant"
+          ]
+        },
+        "applies_to": {
+          "description": "Who the rule is granted to at least one of: the whole band, or specific profiles.",
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": false,
+          "properties": {
+            "band": { "type": "boolean" },
+            "profile_ids": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "defs.schema.json#/$defs/id" }
+            }
+          }
+        },
+        "eligibility": {
+          "description": "Profile ids allowed to take the rule when it is selectable.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "defs.schema.json#/$defs/id" }
+        },
+        "summoned_profile_id": {
+          "description": "Profile the rule summons, when it does.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "summoned_count": {
+          "description": "How many models the rule summons, as a dice expression such as `1D3`.",
+          "type": "string",
+          "pattern": "^[0-9]*D[0-9]+([+-][0-9]+)?$"
+        },
+        "runtime": { "$ref": "defs.schema.json#/$defs/rule_runtime" },
+        "runtime_selectable": {
+          "description": "Legacy flag superseded by `runtime.grant: selectable`; kept until the editorial pass removes it.",
+          "type": "boolean"
+        },
+        "skill_category": {
+          "description": "Legacy free-form skill category of the rule; kept until the editorial pass removes it.",
+          "type": "string",
+          "minLength": 1
+        },
+        "source": { "$ref": "defs.schema.json#/$defs/source_ref" }
+      },
+      "oneOf": [
+        {
+          "description": "The rule carries its own prose.",
+          "required": ["effect"]
+        },
+        {
+          "description": "The rule reuses shared text.",
+          "required": ["rule_ref"]
+        }
+      ],
+      "allOf": [
+        {
+          "description": "A selectable rule must declare what type of choice it is.",
+          "if": {
+            "properties": {
+              "runtime": { "properties": { "grant": { "const": "selectable" } } }
+            }
+          },
+          "then": { "required": ["kind"] }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,222 @@
+schema_version: 2
+band_id: turjuk-rel
+rules:
+- id: band--turjuk-riders
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.turjuk-rel.band.turjuk-riders
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Turjuk Riders
+  effect: >-
+    Virtually born on horses, Turjuk males have learned to fight from mounts with ease. Every Turjuk
+    Emir and Askar has the following skills: Ride Horse, Ride Arabian Steed and Horse Archer.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Arabian Tribes / Turjuk / Special Rules
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Jinetes Turjuk
+  effect_i18n:
+    es: >-
+      Prácticamente nacidos a caballo, los varones Turjuk han aprendido a luchar desde sus monturas
+      con facilidad. Todo Emir y Askar Turjuk tiene las siguientes habilidades: Montar Caballo,
+      Montar Corcel Árabe y Arquero a Caballo.
+  applies_to:
+    band: true
+- id: band--turjuk-leader-mount
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.turjuk-rel.band.turjuk-leader-mount
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader Must Own a Mount
+  effect: >-
+    As horses are viewed with such pride by the Turjuks, any leader of a Turjuk warband that does
+    not own a Riding Horse or Arabian Steed will have his leadership reduced by 1.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Arabian Tribes / Turjuk / Special Rules
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: El líder debe poseer montura
+  effect_i18n:
+    es: >-
+      Dado que los caballos son vistos con tanto orgullo por los Turjuk, cualquier líder de una
+      banda Turjuk que no posea un Caballo de Montar o un Corcel Árabe verá su liderazgo reducido en
+      1.
+  applies_to:
+    band: true
+- id: band--slaves-can-lead
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.turjuk-rel.band.slaves-can-lead
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Slaves May Become Warband Leader
+  effect: >-
+    It is a regular occurrence for slaves, or the sons of slaves, to gain high positions, especially
+    if they can prove themselves on the battlefield. Therefore, it is possible for a slave in an
+    Arabian warband to become a warband leader.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Arabian Tribes / Turjuk / Special Rules
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Los esclavos pueden llegar a líderes de banda
+  effect_i18n:
+    es: >-
+      Es habitual que los esclavos, o los hijos de esclavos, alcancen posiciones elevadas, sobre
+      todo si demuestran su valía en el campo de batalla. Por tanto, es posible que un esclavo de
+      una banda árabe se convierta en el líder de la banda.
+  applies_to:
+    band: true
+- id: emir--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.turjuk-rel.emir.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Leader
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Emir / Special Rules / Leader
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - emir
+  rule_ref: shared-rule.leader
+- id: emir--turjuk-riding-skills
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.turjuk-rel.emir.turjuk-riding-skills
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Ride Horse, Ride Arabian Steed and Horse Archer
+  effect: >-
+    Every Turjuk Emir has the following skills: Ride Horse, Ride Arabian Steed and Horse Archer.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Arabian Tribes / Turjuk / Special Rules
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Montar Caballo, Montar Corcel Árabe y Arquero a Caballo
+  effect_i18n:
+    es: >-
+      Todo Emir Turjuk tiene las habilidades de Montar Caballo, Montar Corcel Árabe y Arquero a
+      Caballo.
+  applies_to:
+    profile_ids:
+    - emir
+- id: askar--turjuk-riding-skills
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.turjuk-rel.askar.turjuk-riding-skills
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Ride Horse, Ride Arabian Steed and Horse Archer
+  effect: >-
+    Every Turjuk Askar has the following skills: Ride Horse, Ride Arabian Steed and Horse Archer.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Arabian Tribes / Turjuk / Special Rules
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Montar Caballo, Montar Corcel Árabe y Arquero a Caballo
+  effect_i18n:
+    es: >-
+      Todo Askar Turjuk tiene las habilidades de Montar Caballo, Montar Corcel Árabe y Arquero a
+      Caballo.
+  applies_to:
+    profile_ids:
+    - askar
+- id: scholar--field-of-scholarship
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.turjuk-rel.scholar.field-of-scholarship
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Field of Scholarship
+  effect: >-
+    When joining a warband, the scholar must choose the area of knowledge he specialises in. Choose
+    one of the following. Cartography: the Scholar keeps a detailed map of where you have been; you
+    may add or deduct 1 from a D6 when exploring. Physiology: after all serious injuries have been
+    resolved you may select a hero to re-roll his result. Poetry: the Scholar writes grand poems
+    that increase the reputation of the warband throughout the land and inspires them to great
+    deeds; your leader adds +1 to his Leadership for his first leadership test in a scenario if your
+    warband won the last battle they fought; also, for one turn during a scenario the poet grants
+    any friendly model within 6" +1 WS and +1 A. Theology: this Scholar is a devoted servant of The
+    One and has access to Holy Skills. The Occult: the scholar is versed in the arts of magic and is
+    a wizard that can use Lesser magic (see the Magic section of the Core Rules).
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-1 Scholar / Special Rules / Field of Scholarship
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Campo de Erudición
+  effect_i18n:
+    es: >-
+      Al unirse a una banda, el erudito debe elegir el área de conocimiento en la que se
+      especializa. Elige una de las siguientes. Cartografía: el Erudito conserva un mapa detallado
+      de los lugares visitados; puedes sumar o restar 1 a un D6 al explorar. Fisiología: una vez
+      resueltas todas las heridas graves, puedes elegir un héroe para que repita su resultado.
+      Poesía: el Erudito escribe grandes poemas que aumentan la reputación de la banda por toda la
+      tierra y los inspiran a grandes hazañas; tu líder suma +1 a su Liderazgo en su primer chequeo
+      de liderazgo de un escenario si tu banda ganó la última batalla; además, durante un turno de
+      un escenario, el poeta otorga a cualquier modelo amigable a 6" +1 HA y +1 A. Teología: este
+      Erudito es un devoto servidor de El Uno y tiene acceso a Habilidades Sagradas. Lo Oculto: el
+      erudito está versado en las artes de la magia y es un mago que puede usar Magia Menor (ver la
+      sección de Magia de las reglas básicas).
+  applies_to:
+    profile_ids:
+    - scholar

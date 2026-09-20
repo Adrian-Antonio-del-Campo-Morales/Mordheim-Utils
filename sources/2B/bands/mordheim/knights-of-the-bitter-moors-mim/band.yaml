@@ -1,0 +1,56 @@
+schema_version: 2
+id: knights-of-the-bitter-moors-mim
+canonical_family: knights-of-the-bitter-moors-mim
+name: Knights of the Bitter Moors
+name_i18n:
+  es: Caballeros de los Páramos Amargos
+original_locale: en
+ruleset: mordheim
+categories:
+- 2b
+grade: 2b
+setting: Mutiny in Marienburg
+publication: Mutiny in Marienburg Supplement
+status: staging
+sources:
+- manual: Broheim
+  printed_page: 1
+  section: Knights of the Bitter Moors
+  url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: questing-knight
+    minimum: 1
+    maximum: 1
+  - profile_id: knights-errant
+    minimum: 0
+    maximum: 2
+  - profile_id: squires
+    minimum: 0
+    maximum: 3
+  - profile_id: men-at-arms
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: bowmen
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: mounted-yeomen
+    minimum: 0
+    maximum: 3
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--peasant-labour
+- band--hired-swords
+- band--ladys-blessing
+- band--field-trebuchet

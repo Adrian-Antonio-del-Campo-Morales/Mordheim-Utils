@@ -1,0 +1,253 @@
+schema_version: 2
+band_id: mazzalupo-web
+profiles:
+- id: wandering-knight
+  name: Wandering Knight
+  type: hero
+  cost: 70
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - knight-noble-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Wandering Knight
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Caballero Errante
+  rule_ids:
+  - wandering-knight--leader
+  - wandering-knight--riding
+  - wandering-knight--commands
+  combat_traits: {}
+  source_path:
+  - heroes
+  - 1 Wandering Knight
+- id: master-of-finances
+  name: Master of Finances
+  type: hero
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - finance-squire-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - shooting
+  - academic
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Master of Finances
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Maestro de Finanzas
+  rule_ids:
+  - master-of-finances--corruption
+  - master-of-finances--haggle
+  combat_traits: {}
+  source_path:
+  - heroes
+  - 0-1 Master of Finances
+- id: fallen-noble
+  name: Fallen Noble
+  type: hero
+  cost: 40
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - knight-noble-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Fallen nobles may not ride a horse unless the Captain of the warband is riding a horse.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Fallen Noble
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Noble Decaído
+  rule_ids:
+  - fallen-noble--indolent
+  - fallen-noble--riding
+  - fallen-noble--ye-give-way
+  combat_traits: {}
+  source_path:
+  - heroes
+  - 0-2 Fallen Noble
+- id: squire
+  name: Squire
+  type: hero
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - finance-squire-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Squire
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Escudero
+  rule_ids:
+  - squire--petty-thief
+  combat_traits: {}
+  source_path:
+  - heroes
+  - 0-1 Squire
+- id: sheepherder
+  name: Sheepherder
+  type: henchman
+  cost: 30
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - herder-churl-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Sheepherders
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Pastor
+  rule_ids: []
+  combat_traits: {}
+  source_path:
+  - henchmen
+  - 0-2 Sheepherders
+- id: churl
+  name: Churl
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - herder-churl-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Churl
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Rastacuero
+  rule_ids: []
+  combat_traits: {}
+  source_path:
+  - henchmen
+  - Churl
+- id: black-sheep
+  name: Black Sheep
+  type: henchman
+  cost: 10
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 2
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - 'Weapons/Armour: none.'
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-5 Black Sheep
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Oveja Negra
+  rule_ids:
+  - black-sheep--stupidity
+  - black-sheep--animals
+  - black-sheep--butchers-meat
+  - black-sheep--mountain-animals
+  combat_traits: {}
+  source_path:
+  - henchmen
+  - 0-5 Black Sheep

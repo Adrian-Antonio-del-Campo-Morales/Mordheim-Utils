@@ -1,0 +1,1492 @@
+schema_version: 2
+band_id: snotlings-web
+rules:
+- id: band--dodgy
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.snotlings-web.band.dodgy
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: dodge/step-aside saves are not covered by the current engine scope.
+  name: Dodgy
+  effect: >-
+    Due to their small and dodgy nature, All Snotlings have a 6+ dodge/step aside save in the same
+    way as the Dark Elf Skill "Fey Quickness". Hence, if a Hero gains dodge or step aside, it can be
+    combined to get a 4+ dodge/step aside save respectively.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Dodgy
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Escurridizo
+  effect_i18n:
+    es: >-
+      Debido a su naturaleza pequeña y escurridiza, todos los Snotlings tienen una salvación de
+      esquivar/apartarse de 6+ de la misma manera que la habilidad de Elfo Oscuro "Celeridad
+      Feérica". Por tanto, si un Héroe gana esquivar o apartarse, puede combinarse para obtener una
+      salvación de 4+ respectivamente.
+  applies_to:
+    band: true
+- id: band--small-target
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.snotlings-web.band.small-target
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: to-hit modifiers for ranged attacks are outside the current engine
+        scope.
+  name: Small Target
+  effect: >-
+    All Snotlings are at minus one (-1) to be hit from ranged attacks because they are so diminutive
+    and hard to hit from a distance.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Small Target
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Objetivo Pequeño
+  effect_i18n:
+    es: >-
+      Todos los Snotlings tienen -1 para ser impactados por ataques a distancia porque son tan
+      diminutos y difíciles de alcanzar desde lejos.
+  applies_to:
+    band: true
+- id: band--small-hands
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.snotlings-web.band.small-hands
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: equipment restrictions are roster-construction mechanics outside the
+        duel scope.
+  name: Small Hands
+  effect: >-
+    Snotlings and the Bullied Goblin may never use Long bows, Elf Bows, Handguns, Long Rifles or
+    Blunderbusses even if they gain an advance roll that would allow them to do so. Such big weapons
+    aren't built for such tiny hands! The exception is Shoota Teams, which use teamwork to make up
+    for the difference!
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Small Hands
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Manos Pequeñas
+  effect_i18n:
+    es: >-
+      Los Snotlings y el Goblin Apaleado nunca pueden usar Arcos Largos, Arcos Elfos, Pistolas de
+      Fuego, Fusiles de Francotirador ni Tronaderas, incluso si obtienen una tirada de mejora que se
+      lo permita. ¡Esas armas tan grandes no están hechas para unas manos tan pequeñas! La excepción
+      son los Equipos de Tiro, que usan el trabajo en equipo para compensar la diferencia.
+  applies_to:
+    band: true
+- id: band--not-so-tough-gits
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.snotlings-web.band.not-so-tough-gits
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: injury-table result conversion is a post-duel/campaign resolution
+        mechanic.
+  name: Not-So-Tough Gits
+  effect: >-
+    When you roll on the injury table for Snotlings, a roll of a 1 is knocked down 2-3 means stunned
+    and 4-6 means OoA. Henchmen who go OOA during a game will die on the roll of a 1-3 rather than
+    just 1-2, and Snotling Heroes (not the Gobbo leader) must roll twice on the Heroes serious
+    injury table.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Not-So-Tough Gits
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Tipos Poco Duros
+  effect_i18n:
+    es: >-
+      Cuando tiras en la tabla de heridas para los Snotlings, un 1 es Derribado, 2-3 es Aturdido y
+      4-6 es Fuera de Combate. Los secuaces que quedan Fuera de Combate durante una partida mueren
+      con una tirada de 1-3 en lugar de solo 1-2, y los Héroes Snotling (no el líder goblin) deben
+      tirar dos veces en la tabla de heridas graves de héroes.
+  applies_to:
+    band: true
+- id: band--weakness-in-numbers
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.snotlings-web.band.weakness-in-numbers
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: warband rating, income and trading are campaign mechanics outside the
+        duel scope.
+  name: Weakness in Numbers
+  effect: >-
+    Snotlings aren't looked upon as being much in the way of a powerful and imposing enemy. As such,
+    most warbands scoff at the thought of facing such puny opposition and will in fact more than
+    likely be found rolling on the floor laughing at the prospect. To represent this lack of
+    confidence of a Snotling Warbands ability to deal vast amounts of death, Snotling warband
+    ratings count as being half of its' current value. Likewise, for the purposes of Income and
+    trading, Snotlings count as only half their actual warband size rounding up, producing a number
+    between 3 and 15 as conventional warbands have for this purpose.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Weakness in Numbers
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Debilidad en los Números
+  effect_i18n:
+    es: >-
+      Los Snotlings no son considerados un enemigo poderoso ni imponente. Por ello, la mayoría de
+      las bandas se burlan de la idea de enfrentarse a una oposición tan raquítica y lo más probable
+      es que se encuentren rodando por el suelo de risa ante la sola perspectiva. Para representar
+      esta falta de confianza en la capacidad de una banda Snotling para lidiar cantidades ingentes
+      de muerte, el valor de la banda Snotling cuenta como la mitad de su valor actual. Asimismo, a
+      efectos de Ingresos y comercio, los Snotlings cuentan solo como la mitad de su tamaño real de
+      banda redondeando hacia arriba, produciendo un número entre 3 y 15 como tienen las bandas
+      convencionales para este propósito.
+  applies_to:
+    band: true
+- id: band--scavengers
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.snotlings-web.band.scavengers
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: exploration dice are post-duel/campaign resolution mechanics.
+  name: Scavengers!
+  effect: >-
+    Swarms of Snotlings forage around the Orcish Settlement where they live, stealing and scavenging
+    raw materials from workshops and rubbish dumps. Anything that looks vaguely useful and
+    momentarily unguarded is immediately seized. The little gits will pinch anything that isn't
+    nailed down, but even then... Snotlings always roll an additional One exploration dice when
+    exploring. They even get this extra dice when all the Heroes in the warband are knocked out of
+    action.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Scavengers!
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: ¡Carroñeros!
+  effect_i18n:
+    es: >-
+      Enjambres de Snotlings buscan comida alrededor del Asentamiento Orco donde viven, robando y
+      recolectando materias primas de talleres y vertederos. Todo lo que parezca vagamente útil y
+      esté momentáneamente desguardado es inmediatamente apoderado. Los pequeños pillos cogerán
+      cualquier cosa que no esté clavada, pero incluso entonces... Los Snotlings siempre tiran un
+      dado de exploración adicional al explorar. Incluso obtienen este dado extra cuando todos los
+      Héroes de la banda están Fuera de Combate.
+  applies_to:
+    band: true
+- id: band--that-gits-got-talent
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.snotlings-web.band.that-gits-got-talent
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: promotion skills are post-duel/campaign progression mechanics.
+  name: That (Git)'s Got Talent!
+  effect: >-
+    When a Snotling henchman gets the 'That Lad's Got Talent!' advance, they automatically learn the
+    skills Mob Rule and The Rigors of Leadership. See Warband list for details of these skills.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / That (Git)'s Got Talent!
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: ¡Ese (Pillo) Tiene Talento!
+  effect_i18n:
+    es: >-
+      Cuando un secuaz Snotling obtiene la mejora "¡Ese Chico Tiene Talento!", aprende
+      automáticamente las habilidades Regla de Masa y Los Rigores del Liderazgo. Véase la lista de
+      la banda para más detalles sobre estas habilidades.
+  applies_to:
+    band: true
+- id: band--too-unruly
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.snotlings-web.band.too-unruly
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hiring rules are campaign mechanics outside the duel scope.
+  name: Too Unruly
+  effect: >-
+    Snotlings may never use any Hired Swords or Dramatis Personae, with the exception of Snotling
+    Hired Swords and DPs, or HS/DP that mention the warband by name.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Too Unruly
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Demasiado Indisciplinados
+  effect_i18n:
+    es: >-
+      Los Snotlings nunca pueden usar Espadas a Sueldo ni Dramatis Personae, con la excepción de las
+      Espadas a Sueldo y DPs Snotling, o de las ES/DP que mencionen a la banda por su nombre.
+  applies_to:
+    band: true
+- id: band--characteristic-increase
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.snotlings-web.band.characteristic-increase
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: characteristic-increase caps on advancement are outside the duel scope.
+  name: Characteristic Increase
+  effect: >-
+    Characteristics for the Bullied Goblin and the Snotling warriors may not be increased beyond the
+    maximum limits shown on the following profiles. Goblin maximums: M 4, WS 5, BS 6, S 4, T 4, W 3,
+    I 6, A 4, Ld 7. Snotling maximums: M 4, WS 4, BS 4, S 3, T 3, W 2, I 9, A 4, Ld 6. If a
+    characteristic is at its maximum, take the other option or roll again if you can only increase
+    one characteristic. If both are already at their maximum, you may increase any other by +1
+    instead. Remember that Henchman can only add +1 to any characteristic.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Characteristic Increase
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Aumento de Características
+  effect_i18n:
+    es: >-
+      Las características del Goblin Apaleado y de los guerreros Snotling no pueden aumentarse más
+      allá de los límites máximos mostrados en los siguientes perfiles. Máximos de Goblin: M 4, HA
+      5, HP 6, F 4, R 4, H 3, I 6, A 4, L 7. Máximos de Snotling: M 4, HA 4, HP 4, F 3, R 3, H 2, I
+      9, A 4, L 6. Si una característica está en su máximo, toma la otra opción o vuelve a tirar si
+      solo puedes aumentar una característica. Si ambas ya están en su máximo, puedes aumentar
+      cualquier otra en +1 en su lugar. Recuerda que los secuaces solo pueden añadir +1 a cualquier
+      característica.
+  applies_to:
+    band: true
+- id: bullied-goblin--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.bullied-goblin.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
+        psychology/rout mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Bullied Goblin / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - bullied-goblin
+  rule_ref: shared-rule.leader
+- id: bullied-goblin--not-a-snotling
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.bullied-goblin.not-a-snotling
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: rule-interaction exemptions (Dodgy, Small, Not-So-Tough, rating halving)
+        are campaign/psychology mechanics outside the duel scope.
+  name: Not A Snotling
+  effect: >-
+    The Bullied Goblin is NOT a Snotling, and does not use the rules for "Dodgy", "Small", and "Not
+    so Tough Git". His rating is still halved (in regards to the rule "Weakness in Numbers"), and
+    may still use a Pebble.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Bullied Goblin / Special Rules / Not A Snotling
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: No Es un Snotling
+  effect_i18n:
+    es: >-
+      El Goblin Apaleado NO es un Snotling, y no usa las reglas de "Escurridizo", "Objetivo Pequeño"
+      ni "Tipo Poco Duro". Su valor sigue siendo la mitad (con respecto a la regla "Debilidad en los
+      Números"), y puede seguir usando una Piedrecita.
+  applies_to:
+    profile_ids:
+    - bullied-goblin
+- id: bullied-goblin--mob-rule
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.shared.mob-rule
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leadership bonuses from nearby Snotlings are psychology mechanics
+        outside the duel scope.
+  name: Mob Rule
+  effect: >-
+    The Hero is easily goaded on by his fellow Snotlings, and swells with courage in large groups.
+    For every 2 Snotlings within 6" of the Hero, the Hero gains +1 Leadership, to a maximum of 10.
+    (Note: These bonuses will stack onto the Leader's base Leadership for the purposes of the Leader
+    skill).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Bullied Goblin / Special Rules / Mob Rule
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Regla de Masa
+  effect_i18n:
+    es: >-
+      El Héroe es incitado fácilmente por sus compañeros Snotlings, y se llena de valor en grupos
+      grandes. Por cada 2 Snotlings a 6" del Héroe, el Héroe gana +1 de Liderazgo, hasta un máximo
+      de 10. (Nota: estos bonificadores se acumulan al Liderazgo base del Líder a efectos de la
+      habilidad Líder).
+  applies_to:
+    profile_ids:
+    - bullied-goblin
+    - bigsnotz
+    - scouts
+    - shaman
+- id: bullied-goblin--the-rigors-of-leadership
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.shared.the-rigors-of-leadership
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: experience gain rules are post-duel/campaign progression mechanics.
+  name: The Rigors of Leadership
+  effect: >-
+    Snotlings are incredibly bright when it comes to having spur of the moment ideas - Pump Wagons,
+    Herding bigger things into battle, poking their best mates in the eyes etc - but are quite dim
+    witted in other senses, especially when they are being egged on by their mates. Thus the whole
+    fact of leading such an unruly mob of Snots' to battle has got to be quite worrisome to the
+    Leader of the band and his trusted heroes who also play a part in leading the band. These Heroes
+    gain +2 experience for surviving a battle.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Bullied Goblin / Special Rules / The Rigors of Leadership
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Los Rigores del Liderazgo
+  effect_i18n:
+    es: >-
+      Los Snotlings son increíblemente ingeniosos cuando se trata de tener ideas repentinas - Carros
+      Bomba, Arrear cosas más grandes hacia la batalla, meter el dedo en el ojo a sus mejores
+      amigos, etc - pero son bastante tontos en otros sentidos, especialmente cuando sus compañeros
+      les dan corrillo. Así que el simple hecho de liderar a una masa tan indisciplinada de Snots
+      hacia la batalla tiene que ser bastante preocupante para el Líder de la banda y sus héroes de
+      confianza, que también participan en el liderazgo de la banda. Estos Héroes ganan +2 de
+      experiencia por sobrevivir a una batalla.
+  applies_to:
+    profile_ids:
+    - bullied-goblin
+    - bigsnotz
+    - scouts
+    - shaman
+- id: scouts--scout
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.scouts.scout
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: pre-battle deployment (Infiltrate) is outside the current engine scope.
+  name: Scout
+  effect: >-
+    Each Snotling Scout has this modified Infiltration skill representing their diminutive size and
+    ability to infiltrate combining together to represent a superior talent. The Snotling Scout is
+    always placed on the battlefield after the opposing warband and can be placed anywhere on the
+    table as long as it is out of sight of the opposing warband and more than 8" away from any enemy
+    model. If both players have models which infiltrate, roll a D6 for each, and the lowest roll
+    sets up first.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Snotling Scouts / Special Rules / Scout
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Explorador
+  effect_i18n:
+    es: >-
+      Cada Explorador Snotling tiene esta versión modificada de la habilidad Infiltración que
+      representa su tamaño diminuto y su capacidad de infiltración combinadas para representar un
+      talento superior. El Explorador Snotling siempre se coloca en el campo de batalla después de
+      la banda contraria y puede colocarse en cualquier parte de la mesa siempre que esté fuera de
+      la vista de la banda contraria y a más de 8" de cualquier modelo enemigo. Si ambos jugadores
+      tienen modelos que se infiltran, tira un D6 por cada uno, y la tirada más baja se despliega
+      primero.
+  applies_to:
+    profile_ids:
+    - scouts
+- id: scouts--hes-no-threat
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.scouts.hes-no-threat
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: movement/restrictions on running are outside the current engine scope.
+  name: He's No Threat!
+  effect: >-
+    Single Snotlings, especially small ones like Scouts, are not given much respect for their threat
+    potential. To represent this, Scouts (and ONLY Scouts) may always run, even if there are enemy
+    within 8" at the beginning of the turn.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Snotling Scouts / Special Rules / He's No Threat!
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: ¡No Es una Amenaza!
+  effect_i18n:
+    es: >-
+      A los Snotlings individuales, especialmente a los pequeños como los Exploradores, no se les
+      concede mucho respeto por su potencial de amenaza. Para representar esto, los Exploradores (y
+      SOLO los Exploradores) siempre pueden correr, incluso si hay enemigos a 8" al comienzo del
+      turno.
+  applies_to:
+    profile_ids:
+    - scouts
+- id: shaman--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.shaman.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (Snotling Waaagh! Magic; the spell list is preserved in
+        sources/2A/catalog/magic-2a.yaml).
+  name: Wizard
+  effect: The Shaman starts with one spell from the Snotling Magic List.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Snotling Shaman / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Hechicero
+  effect_i18n:
+    es: El Chamán comienza con un hechizo de la Lista de Magia Snotling.
+  applies_to:
+    profile_ids:
+    - shaman
+- id: shaman--eadache
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.shaman.eadache
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: magic-casting backlash hits are outside the current engine scope.
+  name: '''Eadache!'
+  effect: >-
+    After each time that a Shaman attempts to cast a spell, successful or not, roll 1D6: on a roll
+    of 1 or 2, the Shaman and every model in base contact with him suffer a S5 magical hit. If the
+    Shaman owns a familiar that has not been used this turn, he may reroll to see if he suffers an
+    'Eadache', accepting the second result. A Shaman does not have to test for 'Eadache' if he is
+    merely rolling to maintain a spell.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Snotling Shaman / Special Rules / 'Eadache!
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: ¡Dolor de Melena!
+  effect_i18n:
+    es: >-
+      Después de cada vez que un Chamán intente lanzar un hechizo, con éxito o no, tira 1D6: con un
+      resultado de 1 o 2, el Chamán y cada modelo en contacto base con él sufren un impacto mágico
+      de F5. Si el Chamán posee un familiar que no se haya usado este turno, puede repetir la tirada
+      para ver si sufre un "Dolor de Melena", aceptando el segundo resultado. Un Chamán no tiene que
+      hacer la prueba de "Dolor de Melena" si solo está tirando para mantener un hechizo.
+  applies_to:
+    profile_ids:
+    - shaman
+- id: shoota-teams--teamwork
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.shoota-teams.teamwork
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: multi-model single-unit abstraction is outside the current engine scope.
+  name: Teamwork
+  effect: >-
+    While a Shoota Team technically consists of 2 or more snotlings, for all intents and purposes,
+    they count as one model.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-5 Snotling Shoota Team / Special Rules / Teamwork
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Trabajo en Equipo
+  effect_i18n:
+    es: >-
+      Aunque un Equipo de Tiro técnicamente consiste en 2 o más snotlings, a todos los efectos
+      prácticos cuentan como un solo modelo.
+  applies_to:
+    profile_ids:
+    - shoota-teams
+- id: shoota-teams--cumbersome
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.shoota-teams.cumbersome
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: movement/restrictions on running are outside the current engine scope.
+  name: Cumbersome
+  effect: >-
+    Any Shoota Team possessing a Missile weapon (other than Pebble or a Slingshot) can never run
+    (only charge).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-5 Snotling Shoota Team / Special Rules / Cumbersome
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Engorroso
+  effect_i18n:
+    es: >-
+      Cualquier Equipo de Tiro que posea un arma de proyectiles (distinta de una Piedrecita o una
+      Hondita) nunca puede correr (solo cargar).
+  applies_to:
+    profile_ids:
+    - shoota-teams
+- id: shoota-teams--recoil
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.shoota-teams.recoil
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: knockback movement from shooting and collision hits are outside the
+        current engine scope.
+  name: Recoil
+  effect: >-
+    When they fire a missile weapon other than a Pebble or Slingshot, Shoota Teams are immediately
+    knocked backwards 1D6 inches. If this causes the team to collide with a solid terrain piece, it
+    suffers a S2 hit. Likewise, if this causes them to collide with another model, then both the
+    team and the model's struck suffer a S2 hit. If the Shoota team fires a pistol in combat, then
+    they automatically move the D6" directly away from the model they were in combat with, leaving
+    combat (the opponent does not get a free attack. (Note: If you are knocked back off a buildings'
+    top, test for falling as normal).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-5 Snotling Shoota Team / Special Rules / Recoil
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Retroceso
+  effect_i18n:
+    es: >-
+      Cuando disparan un arma de proyectiles que no sea una Piedrecita o una Hondita, los Equipos de
+      Tiro son inmediatamente empujados hacia atrás 1D6 pulgadas. Si esto hace que el equipo choque
+      con una pieza de terreno sólido, sufre un impacto de F2. Igualmente, si esto hace que choquen
+      con otro modelo, tanto el equipo como el modelo golpeado sufren un impacto de F2. Si el Equipo
+      de Tiro dispara una pistola en combate, se mueve automáticamente D6" directamente alejándose
+      del modelo con el que estaba en combate, abandonando el combate (el oponente no obtiene un
+      ataque libre). (Nota: si eres empujado desde lo alto de un edificio, haz la prueba de caída
+      con normalidad).
+  applies_to:
+    profile_ids:
+    - shoota-teams
+- id: snotling-mobs--teamwork
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.snotling-mobs.teamwork
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: multi-model single-unit abstraction is outside the current engine scope.
+  name: Teamwork
+  effect: >-
+    While a Snotling Mob technically consists of LOTS of snotlings, for all intents and purposes,
+    they count as one model.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-3 Snotling Mobs / Special Rules / Teamwork
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Trabajo en Equipo
+  effect_i18n:
+    es: >-
+      Aunque un Mob Snotling técnicamente consiste de MUCHOS snotlings, a todos los efectos
+      prácticos cuenta como un solo modelo.
+  applies_to:
+    profile_ids:
+    - snotling-mobs
+- id: snotling-mobs--not-so-small-surprisingly-tough
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.snotling-mobs.not-so-small-surprisingly-tough
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: to-hit modifiers and injury-table exemptions are outside the current
+        engine scope.
+  name: Not So Small, Surprisingly Tough
+  effect: >-
+    A Snotling Mob does NOT get the normal Snotling rule of "Small" -therefore, any missile shots at
+    them do not suffer -1 to hit. Thankfully, they do not suffer the rule "Not So Tough Gits",
+    meaning they roll for Injury on the normal table and are only killed on a 1D6 Injury roll of
+    1-2. They have the "Dodgy" bonus as normal, to reflect their ability to jump over individual
+    attacks.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-3 Snotling Mobs / Special Rules / Not So Small, Surprisingly Tough
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: No Tan Pequeños, Sorprendentemente Duros
+  effect_i18n:
+    es: >-
+      Un Mob Snotling NO obtiene la regla normal de Snotling de "Objetivo Pequeño": por tanto,
+      cualquier disparo de proyectiles contra ellos no sufre -1 al impacto. Afortunadamente, no
+      sufren la regla "Tipos Poco Duros", lo que significa que tiran en la tabla de Heridas normal y
+      solo mueren con una tirada de Heridas de 1D6 de 1-2. Tienen el bonificador "Escurridizo" con
+      normalidad, para reflejar su capacidad de saltar sobre ataques individuales.
+  applies_to:
+    profile_ids:
+    - snotling-mobs
+- id: snotling-mobs--mass-stupidity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.snotling-mobs.mass-stupidity
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: promotion rolls are post-duel/campaign progression mechanics.
+  name: Mass Stupidity
+  effect: >-
+    A Mob can never gain 'That Lad's Got Talent'. If TLGT is rolled, Re-roll the dice until they
+    gain a different advancement.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-3 Snotling Mobs / Special Rules / Mass Stupidity
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Estupidez de Masa
+  effect_i18n:
+    es: >-
+      Un Mob nunca puede obtener "¡Ese Chico Tiene Talento!". Si se saca ECTT, repite el dado hasta
+      que obtengan una mejora diferente.
+  applies_to:
+    profile_ids:
+    - snotling-mobs
+- id: snotling-mobs--mob-mentality
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.snotling-mobs.mob-mentality
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (Fear) is not covered by the current engine scope.
+  name: Mob Mentality
+  effect: >-
+    Snotlings are infamous for becoming totally immune to being afraid of everything when they gang
+    up into one big mass. When Snotling Mobs starts a turn within 2" of another Snotling Mob, they
+    both become Immune to Psychology for the rest of the turn (this applies to an opponent's turn as
+    well.)
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-3 Snotling Mobs / Special Rules / Mob Mentality
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Mentalidad de Masa
+  effect_i18n:
+    es: >-
+      Los Snotlings son famosos por volverse totalmente inmunes al miedo a todo cuando se agrupan en
+      una gran masa. Cuando un Mob Snotling comienza un turno a 2" de otro Mob Snotling, ambos se
+      vuelven Inmunes a la Psicología durante el resto del turno (esto también se aplica al turno de
+      un oponente).
+  applies_to:
+    profile_ids:
+    - snotling-mobs
+- id: runts--teeny-hands
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.runts.teeny-hands
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: equipment restrictions and promotion changes are
+        roster-construction/progression mechanics outside the duel scope.
+  name: Teeny Hands
+  effect: >-
+    Runts can use Missile Weapons as normal. However, Runt Henchmen can only use a single One-Handed
+    Weapon at a time (ex. if a Snotling with a Pointed Stick buys a Club, he must 'holster' his
+    Pointy Stick - he may not use them both to gain a second-hand attack!) Likewise, Runt henchmen
+    are not allowed to take any types of armour. A Runt that rolls "That Lad's Got Talent" loses the
+    "Teeny Hands" rule and may take weapons and armour as normal.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Runts / Special Rules / Teeny Hands
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Manitas
+  effect_i18n:
+    es: >-
+      Los Renacuajos pueden usar Armas de Proyectiles con normalidad. Sin embargo, los secuaces
+      Renacuajos solo pueden usar un Arma de Una Mano a la vez (p. ej. si un Snotling con un Palo
+      Afilado compra un Garrote, debe "guardarse" su Palo Afilado: ¡no puede usar ambos para obtener
+      un ataque de segunda mano!). Igualmente, no se permite a los secuaces Renacuajos llevar ningún
+      tipo de armadura. Un Renacuajo que saque "¡Ese Chico Tiene Talento!" pierde la regla "Manitas"
+      y puede llevar armas y armadura con normalidad.
+  applies_to:
+    profile_ids:
+    - runts
+- id: runts--smallest-of-the-small
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.runts.smallest-of-the-small
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: to-hit modifiers and injury rolls are outside the current engine scope.
+  name: Smallest of the Small
+  effect: >-
+    Due to their incredibly small size, opponents are at an additional -1 to hit them at range with
+    missile weapon attacks (for a total of -2 to hit). They are hit as normal in combat. Also, when
+    taken out of action, after a game, Runt henchmen die on an injury roll of 1-4 instead of 1-3.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Runts / Special Rules / Smallest of the Small
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: El Más Pequeño de los Pequeños
+  effect_i18n:
+    es: >-
+      Debido a su tamaño increíblemente pequeño, los oponentes sufren un -1 adicional para
+      impactarlos a distancia con ataques de armas de proyectiles (para un total de -2 al impacto).
+      En combate son golpeados con normalidad. Además, cuando son puestos Fuera de Combate, después
+      de una partida los secuaces Renacuajos mueren con una tirada de herida de 1-4 en lugar de 1-3.
+  applies_to:
+    profile_ids:
+    - runts
+- id: runts--experience
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.runts.experience
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: experience gain rules are post-duel/campaign progression mechanics.
+  name: Experience
+  effect: >-
+    Runts can earn experience as normal. However, Each Enemy Hero or Henchmen Group that knocks a
+    Runt out of action must, after the battle roll a D6, on a result of a 5+ the warrior who killed
+    the Runt gains one experience point as per the normal rules for gaining experience. On a roll of
+    1-4, the warrior gains nothing.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Runts / Special Rules / Experience
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Experiencia
+  effect_i18n:
+    es: >-
+      Los Renacuajos pueden ganar experiencia con normalidad. Sin embargo, cada Héroe Enemigo o
+      Grupo de Secuaces que deje Fuera de Combate a un Renacuajo debe, tras la batalla, tirar un D6:
+      con un resultado de 5+, el guerrero que mató al Renacuajo gana un punto de experiencia según
+      las reglas normales para ganar experiencia. Con una tirada de 1-4, el guerrero no gana nada.
+  applies_to:
+    profile_ids:
+    - runts
+- id: runts--swarm-size
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.runts.swarm-size
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: henchmen group composition is a roster-construction mechanic outside the
+        duel scope.
+  name: Swarm Size
+  effect: >-
+    Runts are brought in henchmen groups of 1+. There is no limit to how many Runts can be included
+    in a single Henchman group.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Runts / Special Rules / Swarm Size
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Tamaño del Enjambre
+  effect_i18n:
+    es: >-
+      Los Renacuajos se contratan en grupos de secuaces de 1+. No hay límite de cuántos Renacuajos
+      pueden incluirse en un solo grupo de secuaces.
+  applies_to:
+    profile_ids:
+    - runts
+- id: wheelo--movement
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.wheelo.movement
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: random 1D6/2D6 movement with pivot, straight-line restriction and
+        terrain-collision stops are outside the current engine scope.
+  name: Movement
+  effect: >-
+    A Wheelo's movement is entirely dependent upon the efforts of the Snotling crew to give it
+    enough speed to move. Walking: a Wheelo has a move of 1D6 inches, rolled each turn that it
+    walks; it may only ever move in a straight line forwards or backwards, but may pivot up to 90
+    degrees on the spot before moving. If the Wheelo collides into any form of terrain other than
+    open terrain, or comes into base-to-base contact with a building's wall, the machine immediately
+    stops (note: this enables climbing to take place - though it's still random climbing so if you
+    get halfway up the wall only, you fall as normal). If the 1D6" move brings the Wheelo into
+    another model, it deals Impact Hits to it - if
+    the model was an enemy, it counts as a charge. Running/Charging: instead of only moving 1D6", a
+    Wheelo may instead run or charge 2D6". If this brings it into contact with an enemy, it counts
+    as a charge; if the move falls short, the Wheelo's move is NOT halved, like normal failed
+    charges. Every time a running/charging Wheelo moves over/through a different piece of terrain
+    (open terrain such as streets etc. has no penalties, but moving over difficult terrain such as
+    rubble, barricades, and into houses etc. would incur the damage rolls), the Wheelo takes an
+    automatic Strength 5 hit, worked out immediately when the Wheelo contacts the piece of terrain.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Snotling Wheelo / Special Rules / Movement
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Movimiento
+  effect_i18n:
+    es: >-
+      El movimiento de un Wheelo depende por completo de los esfuerzos de la tripulación Snotling
+      para darle velocidad suficiente para moverse. Caminando: un Wheelo tiene un movimiento de 1D6
+      pulgadas, tirado en cada turno que camine; solo puede moverse en línea recta hacia delante o
+      hacia atrás, pero puede girar hasta 90 grados sobre sí mismo antes de moverse. Si el Wheelo
+      choca con cualquier forma de terreno que no sea terreno abierto, o entra en contacto base con
+      la pared de un edificio, la máquina se detiene inmediatamente (nota: esto permite trepar,
+      aunque sigue siendo trepar aleatorio, así que si solo subes medio muro te caes como siempre).
+      Si el movimiento de 1D6" lleva al Wheelo contra otro modelo, le causa Impactos de Colisión; si
+      el modelo era enemigo, cuenta como carga. Corriendo/Cargando: en lugar de moverse solo 1D6", un Wheelo puede correr o cargar
+      2D6". Si esto lo pone en contacto con un enemigo, cuenta como carga; si el movimiento se queda
+      corto, el movimiento del Wheelo NO se reduce a la mitad como en las cargas fallidas normales.
+      Cada vez que un Wheelo que corre o carga se mueve sobre/a través de una pieza diferente de
+      terreno (el terreno abierto, como las calles, no tiene penalización, pero moverse sobre
+      terreno difícil como escombros, barricadas o entrar en casas sí provocaría las tiradas de
+      daño), el Wheelo recibe un impacto automático de Fuerza 5, que se resuelve inmediatamente
+      cuando el Wheelo entra en contacto con la pieza de terreno.
+  applies_to:
+    profile_ids:
+    - wheelo
+- id: wheelo--impact-hits
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.wheelo.impact-hits
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: pre-combat automatic impact hits are outside the current engine scope.
+  name: Impact Hits
+  effect: >-
+    Whenever a Wheelo moves into a model, that model automatically suffers 1D3 Strength 4 hits,
+    which are worked out before any blows are struck, in the same way as a crossbow pistol. These
+    represent the Impact Hits of the Wheelo as it comes to a sudden stop against an unsolid object.
+    These are only dealt in the first round of combat, and only if the Wheelo "charged" this turn.
+    Models that charge a Wheelo during his or her turn do NOT suffer Impact Hits. If a Wheelo rolls
+    into a friendly model, that model still suffers Impact Hits as normal. An Impact Hit does not
+    reflect the strength of the Wheelo crew, and thus the attack will remain S4, even if the crew
+    gains a Strength Upgrade.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Snotling Wheelo / Special Rules / Impact Hits
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Impactos de Colisión
+  effect_i18n:
+    es: >-
+      Siempre que un Wheelo se mueve contra un modelo, ese modelo sufre automáticamente 1D3 impactos
+      de Fuerza 4, que se resuelven antes de que se golpee ningún golpe, de la misma manera que una
+      ballesta de pistola. Estos representan los Impactos de Colisión del Wheelo cuando se detiene
+      de golpe contra un objeto no sólido. Solo se causan en la primera ronda de combate, y solo si
+      el Wheelo "cargó" este turno. Los modelos que cargan contra un Wheelo durante su turno NO
+      sufren Impactos de Colisión. Si un Wheelo rueda contra un modelo amistoso, ese modelo sufre
+      Impactos de Colisión con normalidad. Un Impacto de Colisión no refleja la fuerza de la
+      tripulación del Wheelo, y por tanto el ataque se mantendrá en F4, incluso si la tripulación
+      gana una mejora de Fuerza.
+  applies_to:
+    profile_ids:
+    - wheelo
+- id: wheelo--impact-hits-and-multiple-charges
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.wheelo.impact-hits-and-multiple-charges
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: pre-combat automatic impact hits are outside the current engine scope.
+  name: Impact Hits and Multiple Charges
+  effect: >-
+    If the Wheelo charged two models simultaneously, they each suffer 1D3-1 Impact Hits, to a
+    minimum of 1 hit each (roll the dice once; both models receive that same number of hits). If a
+    Wheelo charged 3 or more models, they each suffer 1 Impact Hit.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Snotling Wheelo / Special Rules / Impact Hits and Multiple Charges
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Impactos de Colisión y Cargas Múltiples
+  effect_i18n:
+    es: >-
+      Si el Wheelo cargó contra dos modelos simultáneamente, cada uno sufre 1D3-1 Impactos de
+      Colisión, con un mínimo de 1 impacto cada uno (tira el dado una vez; ambos modelos reciben ese
+      mismo número de impactos). Si un Wheelo cargó contra 3 o más modelos, cada uno sufre 1 Impacto
+      de Colisión.
+  applies_to:
+    profile_ids:
+    - wheelo
+- id: wheelo--combat
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.wheelo.combat
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: fear-based to-hit restrictions are not covered by the current engine
+        scope.
+  name: Combat
+  effect: >-
+    The statline above represents the stats of the Wheelo's Crew members, who pull out built-in
+    weapons and hide behind wooden armour. If the Wheelo rolls into an opponent, it counts as a
+    charge, and the crew will fight in each hand-to-hand combat phase as normal. If the Wheelo is
+    charged by an opponent, they will likewise fight, although without the Impact Hit bonus. If the
+    Wheelo accidentally rolls into a friendly model, that model suffers Impact Hits (see above), but
+    the crew will not attack the model. If the Wheelo rolls into a Fear-causing opponent, it still
+    counts as a charge (and the model still suffers Impact Hits), but the crew must pass a
+    Leadership Test, otherwise they will not hit on anything but 6s.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Snotling Wheelo / Special Rules / Combat
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Combate
+  effect_i18n:
+    es: >-
+      La línea de características anterior representa las estadísticas de los miembros de la
+      tripulación del Wheelo, que sacan armas integradas y se esconden detrás de la armadura de
+      madera. Si el Wheelo rueda contra un oponente, cuenta como carga, y la tripulación luchará en
+      cada fase de combate cuerpo a cuerpo con normalidad. Si el Wheelo es cargado por un oponente,
+      igualmente lucharán, aunque sin el bonificador de Impacto de Colisión. Si el Wheelo rueda
+      accidentalmente contra un modelo amistoso, ese modelo sufre Impactos de Colisión (ver arriba),
+      pero la tripulación no atacará al modelo. Si el Wheelo rueda contra un oponente que causa
+      Miedo, sigue contando como carga (y el modelo sigue sufriendo Impactos de Colisión), pero la
+      tripulación debe superar una prueba de Liderazgo; de lo contrario, solo golpeará con 6.
+  applies_to:
+    profile_ids:
+    - wheelo
+- id: wheelo--tough-machine
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.wheelo.tough-machine
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: injury-table exemption and post-battle repair charts are
+        post-duel/campaign resolution mechanics.
+  name: Tough Machine
+  effect: >-
+    The Snotling Special Rules of "Not So Tough Gits", "Small", and "Dodgy" do not apply to Wheelos.
+    Also, if the Wheelo is out of action, do not roll on the normal Injury Chart to see if it dies.
+    Instead, roll 1D6 on the following chart: 1 - The Wheelo is permanently Destroyed, remove it
+    from the roster. 2 - The Wheelo must miss the next 1D3 games as it is taken back to the
+    warband's encampment and fixed/repaired. 3-6 - The Wheelo has survived the game relatively
+    unscathed and can participate in the next battle as normal.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Snotling Wheelo / Special Rules / Tough Machine
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Máquina Resistente
+  effect_i18n:
+    es: >-
+      Las reglas especiales de Snotling de "Tipos Poco Duros", "Objetivo Pequeño" y "Escurridizo" no
+      se aplican a los Wheelos. Además, si el Wheelo queda fuera de combate, no tires en la tabla de
+      Heridas normal para ver si muere. En su lugar, tira 1D6 en la siguiente tabla: 1 - El Wheelo
+      queda permanentemente Destruido, retíralo de la plantilla. 2 - El Wheelo debe perderse las
+      próximas 1D3 partidas, pues se le lleva de vuelta al campamento de la banda para ser
+      arreglado/reparado. 3-6 - El Wheelo ha sobrevivido a la partida relativamente ileso y puede
+      participar en la próxima batalla con normalidad.
+  applies_to:
+    profile_ids:
+    - wheelo
+- id: wheelo--upgrades
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.wheelo.upgrades
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: advancement rolls and skill selections are post-duel/campaign
+        progression mechanics.
+  name: Upgrades
+  effect: >-
+    Wheelos count as henchmen, but whenever they earn an advancement, they instead roll on the
+    Hero's Advancement Table (in that regard, they're very much like Hired Swords). However, they
+    may never learn "That Lad's Got Talent", and like normal henchmen, may not have any stat
+    increased more than once. The Wheelo ignores the normal max stats for Snotlings. If a Wheelo
+    rolls "Skill" as an advance, they may learn Combat, Strength, and Speed Skills. These 'Skills'
+    do not represent actual knowledge (as mechanized barrels don't learn much), but take into
+    account any upgrade we can think of, be it a rocket motor (Sprint or Leap), blades and saws
+    (Strike to Injure and Web of Steel), or even such things as a Parachute (Acrobat) or Wallo
+    Gripping Tyres and Grapnels (Scale Sheer Surfaces)!
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Snotling Wheelo / Special Rules / Upgrades
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Mejoras
+  effect_i18n:
+    es: >-
+      Los Wheelos cuentan como secuaces, pero cada vez que obtienen una mejora, tiran en su lugar en
+      la Tabla de Mejoras del Héroe (a ese respecto, se parecen mucho a las Espadas a Sueldo). Sin
+      embargo, nunca pueden aprender "¡Ese Chico Tiene Talento!", y como los secuaces normales, no
+      pueden tener ninguna característica aumentada más de una vez. El Wheelo ignora los máximos
+      normales de características de los Snotlings. Si un Wheelo saca "Habilidad" como mejora, puede
+      aprender Habilidades de Combate, Fuerza y Velocidad. Estas "Habilidades" no representan
+      conocimiento real (los barriles mecanizados no aprenden mucho), sino que tienen en cuenta
+      cualquier mejora que podamos imaginar, sea un motor cohete (Esprintar o Saltar), cuchillas y
+      sierras (Golpe que Hiere y Telaraña de Acero), o incluso cosas como un Paracaídas (Acróbata) o
+      Ruedas de Agarre Wallo y Garras (Escalar Superficies Escarpadas).
+  applies_to:
+    profile_ids:
+    - wheelo
+- id: bullied-goblin--stampede
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.special.stampede
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: ally attack forfeiting for Strength bonuses is outside the current
+        engine scope.
+  name: Stampede
+  effect: >-
+    When the hero with Stampede charges an opposing warrior, keep track of any other Snotlings that
+    charged that same warrior this turn. You may have one of those charging Snotlings forfeit his
+    attack in order to give the Stampeding Hero +1 Strength for each Base Attack forfeited (do not
+    count additional hand attacks). This bonus lasts until the end of the turn, and may be used
+    multiple times (i.e. you may have multiple Snotlings each forfeit their attack, each adding
+    +1 S for each attack). However, each Snotling may only forfeit his attack once per turn (thus,
+    if you have two Stampeding Heroes, you cannot have one Snotling runt forfeit his attack TWICE,
+    giving the bonus to two different warriors). A Snotling that forfeits his attacks forfeits them
+    ALL - he may not choose to give up "half" his attacks or any other fraction. A Hero's Strength
+    may not be increased beyond Strength 10.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Snotling Special Skills / Stampede
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Estampida
+  effect_i18n:
+    es: >-
+      Cuando el héroe con Estampida carga contra un guerrero contrario, lleva la cuenta de cualquier
+      otro Snotling que haya cargado contra ese mismo guerrero este turno. Puedes hacer que uno de
+      esos Snotlings cargadores renuncie a su ataque para dar al Héroe Estampida +1 de Fuerza por
+      cada Ataque Base renunciado (no cuentes los ataques adicionales por arma secundaria). Este
+      bonificador dura hasta el final del turno, y puede usarse varias veces (es decir, puedes hacer
+      que varios Snotlings renuncien a su ataque, cada uno sumando +1 de F por cada ataque). Sin
+      embargo, cada Snotling solo puede renunciar a su ataque una vez por turno (por tanto, si
+      tienes dos Héroes con Estampida, no puedes hacer que un mismo Snotling renuncie a su ataque
+      DOS VECES, dando el bonificador a dos guerreros distintos). Un Snotling que renuncia a sus
+      ataques renuncia a TODOS: no puede elegir renunciar a la "mitad" de sus ataques ni a
+      cualquier otra fracción. La Fuerza de un Héroe no puede aumentarse más allá de Fuerza 10.
+  applies_to:
+    profile_ids:
+    - bullied-goblin
+    - bigsnotz
+    - scouts
+    - shaman
+- id: bullied-goblin--achilles-heel
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.special.achilles-heel
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: critical-hit and armour-save-piercing modifiers are outside the current
+        engine scope.
+  name: Achilles' Heel
+  effect: >-
+    Your Snotling always causes Critical Hits on rolls of 6 (when wounding) regardless of opponent's
+    toughness. In addition, when combined with the Stampede charge attack, on any successful rolls
+    to wound of 5+, the opponent gains no armour save.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Snotling Special Skills / Achilles' Heel
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Talón de Aquiles
+  effect_i18n:
+    es: >-
+      Tu Snotling siempre causa Impactos Críticos con tiradas de 6 (al herir) independientemente de
+      la resistencia del oponente. Además, cuando se combina con el ataque de carga Estampida, en
+      cualquier tirada exitosa para herir de 5+, el oponente no obtiene salvación de armadura.
+  applies_to:
+    profile_ids:
+    - bullied-goblin
+    - bigsnotz
+    - scouts
+    - shaman
+- id: scouts--worm
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.special.worm
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: wall/burrow movement is outside the current engine scope.
+  name: Worm
+  effect: >-
+    (Scout and Promoted Runts Only) The Snotling is a master of fitting through small spaces and
+    cracks in solid walls as well as burrowing under doors and floors. During the movement phase,
+    you can declare that the Snotling is moving through a wall (even charging, if you can see/detect
+    the target.) Roll a D6... on anything but a 1, your Snotling squeezes through and can attack as
+    normal. On a 1, he has charged the wall blindly and not found a crevice, concussing himself in a
+    cartoony manner. He cannot move again this turn and counts as knocked down if attacked in close
+    combat. This Skill cannot be combined with the "Stampede" skill above.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Snotling Special Skills / Worm
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Gusano
+  effect_i18n:
+    es: >-
+      (Solo Exploradores y Renacuajos Ascendidos) El Snotling es un maestro del paso por espacios
+      pequeños y grietas en muros sólidos, así como de excavar bajo puertas y suelos. Durante la
+      fase de movimiento, puedes declarar que el Snotling se mueve a través de una pared (incluso
+      cargando, si puedes ver/detectar al objetivo). Tira un D6... con cualquier cosa menos un 1, tu
+      Snotling se cuela y puede atacar con normalidad. Con un 1, ha cargado ciegamente contra la
+      pared sin encontrar grieta, conmocionándose de manera cómica. No puede volver a moverse este
+      turno y cuenta como derribado si es atacado en combate cuerpo a cuerpo. Esta habilidad no
+      puede combinarse con la habilidad "Estampida" de arriba.
+  applies_to:
+    profile_ids:
+    - scouts
+- id: bigsnotz--big-bully
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.special.big-bully
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: skill grants are advancement-time mechanics outside the duel scope.
+  name: Big Bully
+  effect: >-
+    (BigSnotz only) The BigSnot is immensely big and strong, especially by Snotling standards. The
+    BigSnot immediately learns ONE Strength Skill. A BigSnot may only take this skill once each.
+    Cannot be combined with the skill "Frustratingly Tiny".
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Snotling Special Skills / Big Bully
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Matón Enorme
+  effect_i18n:
+    es: >-
+      (Solo Grandes Snots) El Gran Snot es inmensamente grande y fuerte, especialmente según los
+      estándares Snotling. El Gran Snot aprende inmediatamente UNA Habilidad de Fuerza. Cada Gran
+      Snot solo puede tomar esta habilidad una vez. No puede combinarse con la habilidad
+      "Exasperantemente Minúsculo".
+  applies_to:
+    profile_ids:
+    - bigsnotz
+- id: bullied-goblin--frustratingly-tiny
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.special.frustratingly-tiny
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: to-hit modifiers and hidden-detection changes are outside the current
+        engine scope.
+  name: Frustratingly Tiny
+  effect: >-
+    (Snotlings Only) Your Snotling is a master of using his tiny size to his advantage. In
+    Hand-to-hand combat, enemies attacking your hero are at -1 to hit. Also, all opponents halve
+    their Initiative when trying to detect a Hidden "Tiny" hero. This skill cannot be combined with
+    the "Big Bully" skill above.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Snotling Special Skills / Frustratingly Tiny
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Exasperantemente Minúsculo
+  effect_i18n:
+    es: >-
+      (Solo Snotlings) Tu Snotling es un maestro en usar su tamaño diminuto a su favor. En combate
+      cuerpo a cuerpo, los enemigos que atacan a tu héroe tienen -1 al impacto. Además, todos los
+      oponentes reducen a la mitad su Iniciativa al intentar detectar a un héroe "Minúsculo" Oculto.
+      Esta habilidad no puede combinarse con la habilidad "Matón Enorme" de arriba.
+  applies_to:
+    profile_ids:
+    - bigsnotz
+    - scouts
+    - shaman
+- id: bullied-goblin--mob-master
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.special.mob-master
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology immunity auras are not covered by the current engine scope.
+  name: Mob Master
+  effect: >-
+    The Hero is a Master at controlling and leading the Snotlings around him as a Mob. So long as
+    your Hero is within 2" of a Snotling Mob, both he and the Snotling Mob become Immune to
+    Psychology exactly as if the Hero counted as a second Snotling Mob. When this skill is combined
+    with the "Stampede" skill above, the Hero automatically gains +1 to hit for each forfeited
+    attack, in addition to +1 Strength. A natural roll of 1 will always fail to hit.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Snotling Special Skills / Mob Master
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Maestro de la Masa
+  effect_i18n:
+    es: >-
+      El Héroe es un Maestro en controlar y liderar a los Snotlings a su alrededor como una Masa.
+      Mientras tu Héroe esté a 2" de un Mob Snotling, tanto él como el Mob Snotling se vuelven
+      Inmunes a la Psicología exactamente como si el Héroe contara como un segundo Mob Snotling.
+      Cuando esta habilidad se combina con la habilidad "Estampida" de arriba, el Héroe gana
+      automáticamente +1 al impacto por cada ataque renunciado, además de +1 de Fuerza. Una tirada
+      natural de 1 siempre falla al impacto.
+  applies_to:
+    profile_ids:
+    - bullied-goblin
+    - bigsnotz
+    - scouts
+    - shaman
+- id: wheelo--special-skill-modifications
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.snotlings-web.wheelo.special-skill-modifications
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: fitted-weapon modifications to Impact Hits and skill-granted movement
+        are advancement/campaign mechanics outside the duel scope.
+  name: Special Skill Modifications
+  effect: >-
+    Weapons Training: as Wheelos do not carry weapons as such (any blades etc. on the Wheelo itself
+    count as the instruments for the actual Impact Hits themselves). However, a Wheelo who gains
+    "Weapons Training" may have one of the following weapons fitted to its body. This will boost the
+    Impact Hits in the following way: Axe - Impact Hits deal -1 Armour save. Club - Impact Hits deal
+    Concussion. Spear - if charged, the Wheelo still deals a single Impact Hit to the charger before
+    attacks are made. Morning Star - the first round of Impact Hits dealt each game are at S5
+    instead of S4; all Impact Hits after are at normal Strength. Sprint: instead of rolling 2D6" to
+    run/charge, the Snotling player may choose to move the Wheelo 3D6" instead. Mighty Blow: the
+    crew gains +1 to wound in combat; has no effect on Impact Hits.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Snotling Wheelo / Special Rules / Special Skill Modifications
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Modificaciones de Habilidades Especiales
+  effect_i18n:
+    es: >-
+      Entrenamiento con Armas: como los Wheelos no llevan armas como tal (cualquier cuchilla u otra
+      cosa en el propio Wheelo cuenta como el instrumento de los Impactos de Colisión). Sin embargo,
+      un Wheelo que obtenga "Entrenamiento con Armas" puede llevar una de las siguientes armas
+      acopladas a su cuerpo, lo que potencia los Impactos de Colisión así: Hacha - los Impactos de
+      Colisión causan -1 a la salvación por armadura. Garrote - los Impactos de Colisión causan
+      Conmoción. Lanza - si es cargado, el Wheelo sigue causando un único Impacto de Colisión al
+      cargador antes de que se hagan los ataques. Lucero del Alba - la primera ronda de Impactos de
+      Colisión de cada partida es a F5 en lugar de F4; todos los Impactos posteriores son a Fuerza
+      normal. Esprintar: en lugar de tirar 2D6" para correr/cargar, el jugador Snotling puede elegir
+      mover el Wheelo 3D6". Golpe Poderoso: la tripulación gana +1 para herir en combate; no tiene
+      efecto sobre los Impactos de Colisión.
+  applies_to:
+    profile_ids:
+    - wheelo
+- id: band--pointy-stick
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.snotlings-web.item.pointy-stick
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: a modifier that grants the defender an armour save against a specific
+        weapon is outside the current engine scope.
+  name: Pointy Stick
+  effect: >-
+    1st free/2 gc, Common. The Snotlings' dagger - the equipment lists print their rows as
+    "Dagger/Pointy Stick". +1 enemy armour save: pointy sticks are not the best weapons to use for
+    penetrating an enemy model's armour. An enemy wounded by a pointy stick gains a +1 bonus to his
+    armour save, and a 6+ armour save if he has none normally.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: New Equipment / Pointy Stick
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  name_i18n:
+    es: Palo Afilado
+  effect_i18n:
+    es: >-
+      Primero gratis/2 gc, Común. Es la daga de los Snotlings: las listas de equipo imprimen sus
+      filas como "Daga/Palo Afilado". +1 a la salvación enemiga: los palos afilados no son las
+      mejores armas para penetrar la armadura de un enemigo. Un enemigo herido por un palo afilado
+      gana +1 a su salvación por armadura, y una salvación por armadura de 6+ si normalmente no
+      tiene ninguna.
+  applies_to:
+    band: true

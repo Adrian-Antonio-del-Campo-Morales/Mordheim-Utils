@@ -1,0 +1,47 @@
+schema_version: 2
+id: slavers-rel
+canonical_family: slavers-rel
+name: Slavers
+name_i18n:
+  es: Esclavistas
+original_locale: en
+ruleset: mordheim
+categories:
+- 2b
+grade: 2b
+setting: Relics of the Crusades
+publication: Relics of the Crusades Part 2
+status: staging
+sources:
+- manual: Broheim
+  printed_page: 9
+  section: Slavers
+  url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+roster:
+  minimum_models: 3
+  maximum_models: 20
+  starting_gold: 500
+  members:
+  - profile_id: slave-merchant
+    minimum: 1
+    maximum: 1
+  - profile_id: overseer
+    minimum: 0
+    maximum: 1
+  - profile_id: caravan-guards
+    minimum: 0
+    maximum: 3
+  - profile_id: eunuchs
+    minimum: 0
+    maximum: 5
+  - profile_id: ogre-bodyguard
+    minimum: 0
+    maximum: 1
+  - profile_id: hounds
+    minimum: 0
+    maximum: null
+rule_ids:
+- band--extra-treasure
+- band--slaves-talent-advance
+- band--hiring-restrictions
+- band--slaver-special-equipment

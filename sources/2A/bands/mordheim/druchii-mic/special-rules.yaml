@@ -1,0 +1,744 @@
+schema_version: 2
+band_id: druchii-mic
+rules:
+- id: band--kindred-hatred
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.druchii-mic.band.kindred-hatred
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Hatred (reroll misses against hated foes) is a combat psychology
+        mechanic not covered by the current engine scope.
+  name: Kindred Hatred
+  effect: Dark Elves Hate any High Elf warriors including High Elf Hired Swords.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Special Rules / Kindred Hatred
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Odio de Estirpe
+  effect_i18n:
+    es: >-
+      Los Elfos Oscuros Odian a cualquier guerrero Elfos Alto, incluidas las Espadas a Sueldo de
+      Altos Elfos.
+  applies_to:
+    band: true
+- id: band--fey-acuity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.druchii-mic.band.fey-acuity
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: exploration-phase wyrdstone/artefact counts are post-duel/campaign
+        resolution mechanics.
+  name: Fey Acuity
+  effect: >-
+    During the Exploration phase when checking for artifacts or wyrdstone at the end of the game,
+    add +1 to the number of pieces found by a Dark Elf warband, as long as at least one hero was
+    searching.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Special Rules / Fey Acuity
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Agudeza Feérica
+  effect_i18n:
+    es: >-
+      Durante la fase de Exploración, al buscar artefactos o piedrahechiceira al final de la
+      partida, añade +1 al número de piezas encontradas por una banda de Elfos Oscuros, siempre que
+      al menos un héroe estuviera buscando.
+  applies_to:
+    band: true
+- id: band--disdain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.druchii-mic.band.disdain
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: equipment-purchase restrictions are roster-construction mechanics
+        outside the duel scope.
+  name: Disdain
+  effect: >-
+    Dark Elves may never use black powder weapons, as they find them too crude, noisy and
+    unreliable.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Special Rules / Disdain
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Desdén
+  effect_i18n:
+    es: >-
+      Los Elfos Oscuros nunca pueden usar armas de pólvora negra, ya que las consideran demasiado
+      toscas, ruidosas y poco fiables.
+  applies_to:
+    band: true
+- id: band--hired-swords
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.druchii-mic.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: hired-sword recruitment eligibility is a campaign/hiring mechanic.
+  name: Hired Swords
+  effect: >-
+    Due to their merciless nature a Druchii warband may only employ the following Hired Swords:
+    Official: Pit Fighter, Ogre Bodyguard, Warlock, Imperial Assassin, Tilean Marksman, Highwayman.
+    Unofficial, but published by SG: Duelist, Witch, Emissary of Chaos, Human Scout, Old Prospector.
+    Lustria: Dark Elf Assassin, Pathfinder. Khemri: Nomad Scout, Thief. Completely unofficial: Shade
+    Scout.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Henchmen / Hired Swords
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Espadas a Sueldo
+  effect_i18n:
+    es: >-
+      Debido a su naturaleza despiadada, una banda Druchii solo puede emplear las siguientes Espadas
+      a Sueldo: Oficiales: Luchador de Foso, Ogro Guardaespaldas, Hechicero, Asesino Imperial, Tirador
+      Tileano, Salteador. No oficiales, pero publicadas por SG: Duelista, Bruja, Emisario del Caos,
+      Explorador Humano, Viejo Buscador. Lustria: Asesina Elfa Oscura, Explorador. Khemri: Explorador
+      Nómada, Ladrón. Completamente no oficial: Explorador de las Sombras.
+  applies_to:
+    band: true
+- id: band--slavers
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.druchii-mic.band.slavers
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: prisoner-taking during exploration is a campaign resolution mechanic.
+  name: Slavers
+  effect: >-
+    In case of finding prisoners (roll of "333" during Exploration phase) Druchii may follow the
+    rules for Skaven.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Special Rules / Slavers
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Esclavistas
+  effect_i18n:
+    es: >-
+      En caso de encontrar prisioneros (tirada de "333" durante la fase de Exploración), los Druchii
+      pueden seguir las reglas de los Skaven.
+  applies_to:
+    band: true
+- id: band--maximum-characteristics
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.druchii-mic.band.maximum-characteristics
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: characteristic-increase caps on advancement are outside the duel scope.
+  name: Maximum Characteristics
+  effect: >-
+    Druchii warriors may never increase their characteristics beyond the following maximums: M 5, WS
+    7, BS 7, S 4, T 3, W 3, I 9, A 4, Ld 10.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Special Rules / Maximum Characteristics
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Características Máximas
+  effect_i18n:
+    es: >-
+      Los guerreros Druchii nunca pueden aumentar sus características más allá de los siguientes
+      máximos: M 5, HA 7, HP 7, F 4, R 3, H 3, I 9, A 4, L 10.
+  applies_to:
+    band: true
+- id: noble--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.druchii-mic.noble.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
+        psychology/rout mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 1 Noble / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - noble
+  rule_ref: shared-rule.leader
+- id: sorceress--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.druchii-mic.sorceress.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (Dark Magic; the spell list is preserved in
+        sources/2A/catalog/magic-2a.yaml).
+  name: Wizard
+  effect: The Dark Elf Sorceress is a wizard and uses Dark Magic, detailed below.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-1 Sorceress / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Hechicera
+  effect_i18n:
+    es: La Hechicera Elfa Oscura es una hechicera y usa la Magia Oscura, detallada más abajo.
+  applies_to:
+    profile_ids:
+    - sorceress
+- id: beastmaster--slavehounds
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.druchii-mic.beastmaster.slavehounds
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hiring rules are campaign mechanics outside the duel scope.
+  name: Slavehounds
+  effect: >-
+    The Beastmaster may be accompanied by up to three Slavehounds. These are bought as henchmen and
+    follow all rules listed for them.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-1 Beastmaster / Special Rules / Slavehounds
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Sabuesos de Esclavos
+  effect_i18n:
+    es: >-
+      El Maestro de Bestias puede ir acompañado de hasta tres Sabuesos de Esclavos. Se compran como
+      secuaces y siguen todas las reglas listadas para ellos.
+  applies_to:
+    profile_ids:
+    - beastmaster
+- id: shades--natural-stealth
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.druchii-mic.shades.natural-stealth
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hidden-movement detection (Initiative-based Spotting) is outside the
+        current engine scope.
+  name: Natural Stealth
+  effect: >-
+    If a Shade is Hidden, enemy models halve their Initiative value for determining if they can
+    detect it or not.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-5 Shades / Special Rules / Natural Stealth
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Sigilo Natural
+  effect_i18n:
+    es: >-
+      Si una Sombra está Oculta, los modelos enemigos reducen a la mitad su valor de Iniciativa para
+      determinar si pueden detectarla o no.
+  applies_to:
+    profile_ids:
+    - shades
+- id: witch-elves--frenzy
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.frenzy
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
+  name: Frenzy
+  effect: >-
+    Witch Elves, being intent on proving their battle prowess in Khaela Mensha Khaine's all-seeing
+    gaze, follow the Frenzy special rule.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-3 Witch Elves / Special Rules / Frenzy
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Frenesí
+  effect_i18n:
+    es: >-
+      Las Elfas Brujas, decididas a demostrar su destreza en la batalla bajo la mirada que todo lo
+      ve de Khaela Mensha Khaine, siguen la regla especial Frenesí.
+  applies_to:
+    profile_ids:
+    - witch-elves
+- id: witch-elves--maibd-poison
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.druchii-mic.witch-elves.maibd-poison
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: equipment-purchase pricing/availability and poison use are
+        roster-construction mechanics outside the duel scope.
+  name: Maibd Poison
+  effect: >-
+    Witch Elves often anoint their weapons in various poisons, for both martial and religious
+    purposes. They are able to prepare their poisons and they know where to get needed ingredients.
+    As a result, a warband, containing Witch Elves, may purchase Black Lotus as Common item for
+    reduced price of 5 gc per dose. However, Black Lotus, purchased in such a way, may only be used
+    by Witch Elves. The poison must be used in the next battle and cannot be sold or traded to other
+    warbands.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-3 Witch Elves / Special Rules / Maibd Poison
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Veneno Maibd
+  effect_i18n:
+    es: >-
+      Las Elfas Brujas a menudo ungen sus armas con varios venenos, tanto con fines marciales como
+      religiosos. Son capaces de preparar sus venenos y saben dónde conseguir los ingredientes
+      necesarios. Como resultado, una banda que contenga Elfas Brujas puede comprar Loto Negro como
+      objeto Común a un precio reducido de 5 coronas por dosis. Sin embargo, el Loto Negro comprado
+      de esta manera solo puede ser usado por las Elfas Brujas. El veneno debe usarse en la
+      siguiente batalla y no puede venderse ni intercambiarse con otras bandas.
+  applies_to:
+    profile_ids:
+    - witch-elves
+- id: slavehounds--animals
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.druchii-mic.slavehounds.animals
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: experience gain rules are post-duel/campaign progression mechanics.
+  name: Animals
+  effect: Slavehounds are animals, and all animal rules apply to them. They never gain experience.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-3 Slavehounds / Special Rules / Animals
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Animales
+  effect_i18n:
+    es: >-
+      Los Sabuesos de Esclavos son animales, y se les aplican todas las reglas de animales. Nunca
+      ganan experiencia.
+  applies_to:
+    profile_ids:
+    - slavehounds
+- id: slavehounds--beastmaster
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.druchii-mic.slavehounds.beastmaster
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leadership substitution and availability gating on the Beastmaster are
+        psychology/rout mechanics outside the duel scope.
+  name: Beastmaster
+  effect: >-
+    Slavehounds are vicious creatures that are barely kept under control by their Beastmaster. As
+    long as Beastmaster is not knocked down, stunned or out of action, Slavehounds may use his
+    Leadership instead of their own for any Leadership test, provided that the Beastmaster is within
+    6" of the Slavehound in question. But, since Beastmaster is the only authority they respect,
+    they cannot use Leadership of warband Leader. Consequently, if the Beastmaster is unable to
+    participate in a battle, then neither will the beasts. If the warband does not contain a
+    Beastmaster, there is no one able to control Slavehounds, so they have to stay in warband's camp
+    (and when feeding time comes, it has to be done from a safe distance).
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-3 Slavehounds / Special Rules / Beastmaster
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Maestro de Bestias
+  effect_i18n:
+    es: >-
+      Los Sabuesos de Esclavos son criaturas feroces que su Maestro de Bestias apenas mantiene bajo
+      control. Mientras el Maestro de Bestias no esté derribado, aturdido o fuera de combate, los
+      Sabuesos pueden usar su Liderazgo en lugar del propio para cualquier prueba de Liderazgo,
+      siempre que el Maestro de Bestias esté a 6" del Sabueso en cuestión. Pero, como el Maestro de
+      Bestias es la única autoridad que respetan, no pueden usar el Liderazgo del líder de la banda.
+      En consecuencia, si el Maestro de Bestias no puede participar en una batalla, las bestias
+      tampoco lo harán. Si la banda no contiene un Maestro de Bestias, no hay nadie capaz de
+      controlar a los Sabuesos, por lo que deben quedarse en el campamento de la banda (y cuando
+      llegue la hora de comer, habrá que alimentarlos desde una distancia prudencial).
+  applies_to:
+    profile_ids:
+    - slavehounds
+- id: slavehounds--pack-work
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.druchii-mic.slavehounds.pack-work
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hidden-movement detection and charge declarations are outside the
+        current engine scope.
+  name: Pack Work
+  effect: >-
+    Slavehounds are trained to detect hiding slaves and show them to their masters. If a Slavehound
+    knows about enemy model (has a line of sight, has unhidden it etc.), the Beastmaster and all
+    other slavehounds of the same warband can declare charge on this model even if they do not see
+    it. No Initiative roll is necessary.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: 0-3 Slavehounds / Special Rules / Pack Work
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Trabajo en Manada
+  effect_i18n:
+    es: >-
+      Los Sabuesos de Esclavos están entrenados para detectar esclavos ocultos y enseñárselos a sus
+      amos. Si un Sabueso conoce a un modelo enemigo (tiene línea de visión, lo ha destapado, etc.),
+      el Maestro de Bestias y todos los demás sabuesos de la misma banda pueden declarar una carga
+      contra este modelo incluso si no lo ven. No es necesaria ninguna tirada de Iniciativa.
+  applies_to:
+    profile_ids:
+    - slavehounds
+- id: noble--frenzied-charge
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.druchii-mic.special.frenzied-charge
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: multi-combat follow-up moves are outside the current engine scope.
+  name: Frenzied Charge
+  effect: >-
+    The Dark Elf is infused with an intense raging thirst for blood and is a whirlwind in
+    hand-to-hand combat, moving from opponent to opponent. The Druchii may make a 4" follow up move
+    if they take all of their opponents out of action. If the elf comes into contact with another
+    enemy, this starts a new combat. This new combat takes place in the following turn and the model
+    counts as charging.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Special Skills / Frenzied Charge
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Carga Frenética
+  effect_i18n:
+    es: >-
+      El Elfo Oscuro está imbuido de una intensa y rabiosa sed de sangre y es un torbellino en el
+      combate cuerpo a cuerpo, pasando de un oponente a otro. El Druchii puede hacer un movimiento
+      de seguimiento de 4" si deja a todos sus oponentes Fuera de Combate. Si el elfo entra en
+      contacto con otro enemigo, esto inicia un nuevo combate. Este nuevo combate tiene lugar en el
+      turno siguiente y el modelo cuenta como que carga.
+  applies_to:
+    profile_ids:
+    - noble
+    - lordlings
+    - sorceress
+    - beastmaster
+- id: noble--fey-quickness
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.druchii-mic.special.fey-quickness
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: dodge-style avoidance rolls are not covered by the current engine scope.
+  name: Fey Quickness
+  effect: >-
+    Few can ever hope to match an Elf's inhuman quickness and agility. An Elf with Fey Quickness can
+    avoid melee or missile attacks on a roll of 6. If the Elf also has Step Aside or Dodge, this
+    will increase to a 4+ in the relevant area. For example, an Elf with Fey Quickness and Step
+    Aside avoids melee attacks on a 4+ and missile attacks on a 6.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Special Skills / Fey Quickness
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Celeridad Feérica
+  effect_i18n:
+    es: >-
+      Pocos pueden esperar igualar la rapidez y agilidad inhumanas de un Elfo. Un Elfo con Celeridad
+      Feérica puede esquivar ataques cuerpo a cuerpo o de misiles con una tirada de 6. Si el Elfo
+      también tiene Apartarse o Esquivar, esto aumentará a 4+ en el área correspondiente. Por
+      ejemplo, un Elfo con Celeridad Feérica y Apartarse esquiva ataques cuerpo a cuerpo con un 4+ y
+      ataques de misiles con un 6.
+  applies_to:
+    profile_ids:
+    - noble
+    - lordlings
+    - sorceress
+    - beastmaster
+- id: noble--infiltration
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.druchii-mic.special.infiltration
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: pre-battle deployment (Infiltrate) is outside the current engine scope.
+  name: Infiltration
+  effect: The Dark Elf can Infiltrate. This skill is identical to the Skaven skill.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Special Skills / Infiltration
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Infiltración
+  effect_i18n:
+    es: El Elfo Oscuro puede Infiltrarse. Esta habilidad es idéntica a la habilidad de los Skaven.
+  applies_to:
+    profile_ids:
+    - noble
+    - lordlings
+    - sorceress
+    - beastmaster
+- id: noble--poisoner
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.druchii-mic.special.poisoner
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: search-for-rare-items alternatives and poison doses are campaign
+        mechanics outside the duel scope.
+  name: Poisoner
+  effect: >-
+    The Dark Elf is proficient in concocting different poisons. If the Hero doesn't search for rare
+    items, he may make D2 doses of Dark Venom instead. The poison must be used in the next battle
+    and cannot be sold or traded to other warbands as the Dark Elves guard their secrets very
+    carefully.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Special Skills / Poisoner
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Envenenador
+  effect_i18n:
+    es: >-
+      El Elfo Oscuro es experto en la preparación de diferentes venenos. Si el Héroe no busca
+      objetos raros, puede preparar en su lugar D2 dosis de Veneno Oscuro. El veneno debe usarse en
+      la siguiente batalla y no puede venderse ni intercambiarse con otras bandas, ya que los Elfos
+      Oscuros guardan sus secretos con mucho cuidado.
+  applies_to:
+    profile_ids:
+    - noble
+    - lordlings
+    - sorceress
+    - beastmaster
+- id: noble--marksman-of-naggaroth
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.druchii-mic.special.marksman-of-naggaroth
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: shooting-penalty modifications and multi-shot firing are outside the
+        current engine scope.
+  name: Marksman of Naggaroth
+  effect: >-
+    Eyes of this hero are so keen and hands so steady that he can completely omit the penalty for
+    long range if using a crossbow type weapon. Further, if he did not move this turn, he can shoot
+    from repeater crossbow twice per turn without penalty or three times per turn with -1 penalty to
+    hit.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Special Skills / Marksman of Naggaroth
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Tirador de Naggaroth
+  effect_i18n:
+    es: >-
+      Los ojos de este héroe son tan agudos y sus manos tan firmes que puede omitir por completo la
+      penalización por largo alcance si usa un arma de tipo ballesta. Además, si no se movió este
+      turno, puede disparar con la ballesta de repetición dos veces por turno sin penalización o
+      tres veces por turno con una penalización de -1 al impacto.
+  applies_to:
+    profile_ids:
+    - noble
+    - lordlings
+    - sorceress
+    - beastmaster
+- id: noble--will-to-survive
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.druchii-mic.special.will-to-survive
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: post-duel Serious Injuries rolls are campaign resolution mechanics.
+  name: Will to Survive
+  effect: >-
+    Naggaroth is a harsh land with harsh inhabitants and weaklings are shown no mercy. This elf is
+    able to survive by pure strength of will. If the model gets out of action and result of the
+    Serious Injuries roll is death, make a Leadership test against unmodified Ld of the model (no
+    holy relics etc.). If you succeed, the model will survive but will miss D3 battles instead.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Special Skills / Will to Survive
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Voluntad de Supervivencia
+  effect_i18n:
+    es: >-
+      Naggaroth es una tierra dura con habitantes duros y no se muestra piedad alguna a los débiles.
+      Este elfo es capaz de sobrevivir por pura fuerza de voluntad. Si el modelo queda Fuera de
+      Combate y el resultado de la tirada de Heridas Graves es muerte, haz una prueba de Liderazgo
+      contra la L sin modificar del modelo (sin reliquias sagradas, etc.). Si lo logras, el modelo
+      sobrevivirá pero se perderá D3 batallas.
+  applies_to:
+    profile_ids:
+    - noble
+    - lordlings
+    - sorceress
+    - beastmaster
+- id: noble--keen-sight
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.druchii-mic.special.keen-sight
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hidden-movement detection ranges are outside the current engine scope.
+  name: Keen Sight
+  effect: >-
+    There are numerous legends detailing the excellent eyesight of the Elves, both Druchii and Asur
+    kin. This elf can spot Hidden enemies from twice as far away than normal warriors (i.e. twice
+    his Initiative value in inches).
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Special Skills / Keen Sight
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Vista Aguda
+  effect_i18n:
+    es: >-
+      Existen numerosas leyendas que detallan la excelente vista de los Elfos, tanto Druchii como
+      sus parientes Asur. Este elfo puede detectar enemigos Ocultos desde el doble de distancia que
+      los guerreros normales (es decir, el doble de su valor de Iniciativa en pulgadas).
+  applies_to:
+    profile_ids:
+    - noble
+    - lordlings
+    - sorceress
+    - beastmaster
+- id: band--naggaroth-prices
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.druchii-mic.band.naggaroth-prices
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+  name: Naggaroth Prices
+  effect: >-
+    These special prices represent the lower rarity of these items in Naggaroth. When attempting to
+    purchase these items in Mordheim, Dark Elf warbands pay the same prices as other warbands and
+    must roll to find them as normal. No roll is necessary to find these items when first starting a
+    Dark Elf warband. Note that henchmen promoted to heroes still select their equipment from their
+    henchmen-class table. They do not get access to “heroes equipment”.
+  source:
+    manual: mordheimer.net (Mordheim Index Catalog)
+    printed_page: 0
+    section: Dark Elf equipment lists
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Precios de Naggaroth
+  effect_i18n:
+    es: >-
+      Estos precios especiales representan la menor rareza de estos objetos en Naggaroth. Al
+      intentar comprarlos en Mordheim, las bandas Druchii pagan los mismos precios que las demás
+      bandas y deben tirar para encontrarlos con normalidad. No es necesaria ninguna tirada para
+      encontrarlos al crear la banda. Ten en cuenta que los secuaces ascendidos a héroes siguen
+      eligiendo su equipo de la tabla de secuaces; no acceden al “equipo de héroes”.
+  applies_to:
+    band: true

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/registry-runtime-scope.yaml.schema.json",
+  "title": "Mordheim KB registry — registry/runtime-scope.yaml",
+  "description": "Scope policy of the runtime: the declared scope, the mechanics and profiles excluded from it with a reason each, the supported combat traits, and what a special rule means when it carries no executable binding.",
+  "type": "object",
+  "required": [
+    "schema_version", "ruleset", "scope", "profile_exclusions", "mechanic_exclusions",
+    "special_rule_policy", "supported_combat_traits"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 2 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "scope": { "$ref": "defs.schema.json#/$defs/runtime_scope" },
+    "profile_exclusions": {
+      "description": "Profiles excluded from the runtime; empty today.",
+      "type": "array",
+      "items": { "$ref": "defs.schema.json#/$defs/id" }
+    },
+    "mechanic_exclusions": {
+      "description": "Mechanics of the catalogue that stay out of the runtime, each with the reason why.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "defs.schema.json#/$defs/id" },
+          "reason": {
+            "description": "Why the mechanic is outside the scope, phrased as the audit taxonomy does (`shooting`, `campaign`, `movement` …).",
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "special_rule_policy": {
+      "description": "What happens to a special rule without an executable binding.",
+      "type": "object",
+      "required": ["default", "executable_binding", "note"],
+      "additionalProperties": false,
+      "properties": {
+        "default": { "type": "string", "minLength": 1 },
+        "executable_binding": { "type": "string", "minLength": 1 },
+        "note": { "type": "string", "minLength": 1 }
+      }
+    },
+    "supported_combat_traits": {
+      "description": "Combat traits that participate in one-against-one combat; they are keys of `profiles.yaml` `combat_traits` and of `mordheim_construction.contracts.TRAIT_TYPES`.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*$"
+      }
+    }
+  }
+}

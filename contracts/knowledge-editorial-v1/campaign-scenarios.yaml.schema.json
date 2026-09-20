@@ -1,0 +1,278 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/campaign-scenarios.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/campaign/scenarios.yaml",
+  "description": "The scenarios a campaign can play: identity, provenance, the selection tables and, under `progression`, only what affects a warband's progression after the game. On-table game mechanics (terrain, deployment, victory conditions, monsters, table special rules) are out of scope by decision, so they are not modelled here. An Experience row references the canonical award with `ref` or carries the scenario-specific text with `effect`, never both.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "catalog", "status", "pre_battle", "selection_tables", "scenarios", "effect_ids"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "catalog": { "$ref": "defs.schema.json#/$defs/id" },
+    "status": { "$ref": "defs.schema.json#/$defs/catalog_status" },
+    "pre_battle": {
+      "description": "The rules that precede the battle: who rolls on the scenario table and what is set up from the result.",
+      "type": "object",
+      "required": ["id", "effect", "effect_i18n", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "selection_tables": {
+      "description": "The tables a scenario is rolled on.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/selection_table" }
+    },
+    "scenarios": {
+      "description": "The scenarios. `number` is declared only by the scenarios whose source prints one.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/scenario" }
+    },
+    "effect_ids": {
+      "description": "Effects of this catalogue a warband's own special rules may modify.",
+      "$ref": "defs.schema.json#/$defs/id_list"
+    }
+  },
+  "$defs": {
+    "selection_table": {
+      "description": "One scenario selection table.",
+      "type": "object",
+      "required": ["id", "name", "name_i18n", "dice", "rows", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "dice": { "$ref": "defs.schema.json#/$defs/dice" },
+        "rows": {
+          "description": "The rows of the table. A row either names the scenario rolled or states an outcome instead, e.g. that the lower-rated player chooses.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["when"],
+            "additionalProperties": false,
+            "properties": {
+              "when": { "$ref": "defs.schema.json#/$defs/interval" },
+              "scenario": { "$ref": "defs.schema.json#/$defs/id" },
+              "outcome": { "$ref": "defs.schema.json#/$defs/display_text" }
+            },
+            "oneOf": [
+              { "required": ["scenario"], "not": { "required": ["outcome"] } },
+              { "required": ["outcome"], "not": { "required": ["scenario"] } }
+            ]
+          }
+        },
+        "note": {
+          "description": "Editorial note about the table.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "scenario": {
+      "description": "One scenario.",
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "name_i18n",
+        "setting",
+        "source",
+        "author",
+        "player_mode",
+        "effect",
+        "effect_i18n",
+        "tags",
+        "progression",
+        "source_refs"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable scenario id: `scenario.<slug>`.",
+          "type": "string",
+          "pattern": "^scenario\\.[a-z0-9][a-z0-9-]*$"
+        },
+        "number": {
+          "description": "The scenario number the source prints, when it prints one.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "setting": {
+          "description": "Where the scenario is set.",
+          "enum": ["Albion", "Khemri", "Lustria", "Mordheim", "The Empire"]
+        },
+        "source": {
+          "description": "Publication the scenario was transcribed from.",
+          "enum": ["Archive Pestilen", "Fanatic Magazine", "Fanatic Online", "Mordheim Rulebook", "Rynn Tyrr", "Town Cryer"]
+        },
+        "author": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "player_mode": {
+          "description": "How many players the scenario is written for.",
+          "enum": ["1v1", "multiplayer"]
+        },
+        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "tags": {
+          "description": "Editorial tags that describe the scenario's shape, so scenarios can be selected by property instead of by name. The vocabulary is closed: a new tag is a new way of querying the catalogue. An empty list is the declared convention for `no tag applies`.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "attacker-defender",
+              "brawl",
+              "chaos-on-the-streets",
+              "escort-npc",
+              "friendly-npc",
+              "hazards",
+              "hostile-npc",
+              "interior",
+              "low-visibility",
+              "objective",
+              "objective-building",
+              "reserves",
+              "traverse-the-board",
+              "treasure",
+              "underground",
+              "wyrdstone-tokens"
+            ]
+          }
+        },
+        "progression": { "$ref": "#/$defs/progression" },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "progression": {
+      "description": "What the scenario gives the warband after the game. Every key is optional, but a scenario that gives nothing declares it in `notes`: the absence of a reward is documented, never left to be inferred.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "experience": {
+          "description": "The Experience the scenario awards.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/experience_award" }
+        },
+        "wyrdstone": {
+          "description": "The wyrdstone obtained, in the words of the source (per shard in possession, with the cap the source declares).",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "income": {
+          "description": "The income in crowns, in the words of the source.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "loot": {
+          "description": "Treasure and items, and when they are obtained.",
+          "type": "object",
+          "required": ["effect", "effect_i18n"],
+          "additionalProperties": false,
+          "properties": {
+            "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+            "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+            "contents": {
+              "description": "The contents chart, when the treasure is rolled for.",
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/loot_row" }
+            }
+          }
+        },
+        "exploration": {
+          "description": "Bonuses on the later exploration phase: extra dice, re-rolls. It never duplicates the exploration table itself.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "notes": {
+          "description": "Doubts, errata and clarifications of the source for later steps; also where a scenario states that it grants no progression reward.",
+          "type": "array",
+          "items": { "$ref": "defs.schema.json#/$defs/display_text" }
+        }
+      },
+      "anyOf": [
+        { "required": ["experience"] },
+        { "required": ["wyrdstone"] },
+        { "required": ["income"] },
+        { "required": ["loot"] },
+        { "required": ["exploration"] },
+        { "required": ["notes"] }
+      ]
+    },
+    "experience_award": {
+      "description": "One Experience award of a scenario: either the canonical award it matches, or the scenario-specific text.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ref": {
+          "description": "Canonical `campaign.experience.award.*` id of `experience-and-advances.yaml`, when the line matches the standard award.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "effect": {
+          "description": "The award as the source states it, for an award the canonical list does not cover.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "amount": {
+          "description": "Experience points, when the source gives a number.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "amount_dice": {
+          "description": "The dice expression, when the source gives the amount in dice instead of a number.",
+          "type": "string",
+          "pattern": "^[0-9]*D[0-9]+([+-][0-9]+)?$"
+        },
+        "amount_when_multiple": {
+          "description": "The amount when more than one warband is involved, in the scenarios that scale it.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "selection": {
+          "description": "How the recipient of the award is chosen, when the scenario does not fix it. `multiple` means several warriors share it.",
+          "const": "multiple"
+        }
+      },
+      "oneOf": [
+        { "required": ["ref"], "not": { "required": ["effect"] } },
+        { "required": ["effect"], "not": { "required": ["ref"] } }
+      ],
+      "allOf": [
+        {
+          "not": { "required": ["amount", "amount_dice"] }
+        }
+      ]
+    },
+    "loot_row": {
+      "description": "One row of a treasure contents chart.",
+      "type": "object",
+      "required": ["reward", "roll"],
+      "additionalProperties": false,
+      "properties": {
+        "reward": {
+          "description": "What is found, in the words of the source.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "roll": {
+          "description": "The roll that finds it, as printed: `4D6` or `automatic`.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "when": { "$ref": "defs.schema.json#/$defs/interval" },
+        "item_id": {
+          "description": "Canonical item id, when the reward is a concrete Trading Post item. It never invents an id for a reward the catalogue does not have.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "side": {
+          "description": "Which side finds it, when the chart discriminates.",
+          "enum": ["attacker", "defender"]
+        }
+      }
+    }
+  }
+}

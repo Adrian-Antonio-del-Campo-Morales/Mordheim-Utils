@@ -1,0 +1,441 @@
+schema_version: 2
+band_id: skaven-of-clan-skryre-rel
+rules:
+- id: band--clan-skryre-special-equipment
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-rel.band.clan-skryre-special-equipment
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Clan Skryre Special Equipment
+  effect: >-
+    This equipment is only available to Clan Skryre, and no other warbands may purchase it. Poison
+    wind globe (15+D6 dinars, Rare 6): Range 6", Strength Special, Thrown, Poison Wind, Drop; models
+    using poison wind globes do not suffer penalties for range or moving; obstacles do not affect
+    the deadly gas inside the globes; ignore penalties to cover when rolling to hit; the globes
+    ignore armour saves; a globe deals D3 wounds to the target on a 3+ and a single wound to anyone
+    else within 2" on a 4+; the warpstone poison is magical so it also affects undead; if a model
+    rolls a 1 to hit he has dropped it - resolve a hit against the model that dropped it; a model
+    may voluntarily drop a globe on a model in base-to-base contact instead of using a weapon in
+    close combat. Warp blades (40+D6 dinars, Rare 8): large blades attached to any pole the skaven
+    has handy; Tap into the winds - warp blades may be attached to any spear, staff or halberd; it
+    gives its bearer +1 Strength and the knowledge of the Chain Lightening spell. Gas mask (5
+    dinars, Rare 6): if a model wears a gas mask, then he is only affected by poison wind on a D6
+    roll of 6+. Warpstone tokens (1 piece of treasure, Special): by trading in a piece of treasure
+    to Skaven merchants, the warband gains D3 warpstone tokens; Warpstone boost - a skaven wizard
+    can consume one warpstone token before he casts a spell; he gains +1 to his rolls to see if he
+    can cast spells successfully that turn and may consume more than one for a cumulative effect; if
+    the wizard rolls doubles when using a warpstone token he will be taken out of action as the raw
+    power is too much for his mind to handle. Insulation robe (30+2D6 dinars, Rare 9): Insulation -
+    if the skaven wearing an insulation robe gains an unmodified armour save of 3+ if he is affected
+    by any electrical damage (such as from a misfiring Chain Lightening spell); Heavy - the wearer
+    suffers a -1 penalty to their Movement and Initiative.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Clan Skryre special equipment
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Equipo especial del Clan Skryre
+  effect_i18n:
+    es: >-
+      Este equipo solo está disponible para el Clan Skryre; ninguna otra banda puede comprarlo.
+      Esfera de viento envenenado (15+1D6 coronas, Rareza 6): Alcance 6", Fuerza Especial,
+      Arrojadiza, Viento Envenenado, Caída; los modelos que usan esferas de viento envenenado no
+      sufren penalizaciones por alcance ni por moverse; los obstáculos no afectan al gas letal del
+      interior de las esferas; ignora las penalizaciones por cobertura al tirar para impactar; las
+      esferas ignoran las salvaciones por armadura; una esfera causa 1D3 heridas al objetivo con un
+      3+ y una herida a cualquier otro modelo a 2" con un 4+; el veneno de piedra bruja es mágico,
+      por lo que también afecta a los muertos vivientes; si un modelo saca un 1 al impactar la ha
+      soltado: resuelve un impacto contra el modelo que la soltó; un modelo puede soltar
+      voluntariamente una esfera sobre un modelo en contacto base con base en lugar de usar un arma
+      en combate cuerpo a cuerpo. Hojas warp (40+1D6 coronas, Rareza 8): hojas grandes que se
+      acoplan a cualquier asta que el skaven tenga a mano; Conectar con los vientos - las hojas warp
+      pueden acoplarse a cualquier lanza, bastón o alabarda; otorga a su portador +1 Fuerza y el
+      conocimiento del hechizo Rayo Eléctrico. Máscara de gas (5 coronas, Rareza 6): si un modelo
+      lleva máscara de gas, solo se ve afectado por el viento envenenado con un resultado de 6+ en
+      1D6. Fichas de piedra bruja (1 objeto de tesoro, Especial): al intercambiar un objeto de
+      tesoro con mercaderes skaven, la banda gana 1D3 fichas de piedra bruja; Impulso de piedra
+      bruja - un mago skaven puede consumir una ficha de piedra bruja antes de lanzar un hechizo;
+      gana +1 en sus tiradas para lanzar hechizos con éxito ese turno y puede consumir más de una
+      para un efecto acumulativo; si el mago saca dobles al usar una ficha de piedra bruja quedará
+      fuera de combate, pues el poder bruto es demasiado para su mente. Túnica aislante (30+2D6
+      coronas, Rareza 9): Aislamiento - el skaven que lleva una túnica aislante obtiene una
+      salvación por armadura no modificable de 3+ si se ve afectado por cualquier daño eléctrico
+      (como el de un Rayo Eléctrico fallado); Pesada - el portador sufre una penalización de -1 a
+      Movimiento e Iniciativa.
+  applies_to:
+    band: true
+- id: band--clan-skryre-magic
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-rel.band.clan-skryre-magic
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Clan Skryre Magic - Chain Lightning
+  effect: >-
+    Difficulty 7. Lightening arcs from the complex devices attached to the warlock's weapon and into
+    his enemies. The spell has a range of 24" and has a strength of 3. Roll to hit a target using
+    the warlock's ballistic skill. If the spell hits, then roll another D6. On a 5+ it arcs to the
+    next closest model within 6". The spell will continue to arc to the next model within range
+    until you either run out of targets or you roll under 5. If a 1 is rolled to see if the spell
+    arcs, then the warlock suffers a hit at the strength of the spell as his warp blades overload!
+    The spell may also be used if the warlock is in close combat. If this option is chosen, then it
+    automatically inflicts D3 hits against the warlock and any other model in base-to-base contact
+    with him.
+  source:
+    manual: Broheim
+    printed_page: 8
+    section: Clan Skryre Magic / Chain Lightning
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Magia del Clan Skryre - Rayo Eléctrico
+  effect_i18n:
+    es: >-
+      Dificultad 7. El rayo salta desde los complejos dispositivos acoplados al arma del hechicero
+      hacia sus enemigos. El hechizo tiene un alcance de 24" y una fuerza de 3. Tira para impactar
+      al objetivo usando la HP del hechicero. Si el hechizo impacta, tira otro 1D6. Con un 5+ salta
+      al modelo más cercano a 6". El hechizo seguirá saltando al siguiente modelo dentro de alcance
+      hasta que te quedes sin objetivos o saques menos de 5. Si al ver si el hechizo salta sale un
+      1, ¡el hechicero sufre un impacto con la Fuerza del hechizo por sobrecarga de sus hojas warp!
+      El hechizo también puede usarse si el hechicero está en combate cuerpo a cuerpo. Si se elige
+      esta opción, causa automáticamente 1D3 impactos contra el hechicero y cualquier otro modelo en
+      contacto base con él.
+  applies_to:
+    band: true
+- id: warlock-engineer--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-rel.warlock-engineer.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Leader
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Heroes / 1 Warlock engineer / Special Rules / Leader
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - warlock-engineer
+  rule_ref: shared-rule.leader
+- id: warlock-engineer--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-rel.warlock-engineer.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Wizard
+  effect: >-
+    A Warlock Engineer is a wizard and uses the Magic of the Horned Rat (see the Magic section for
+    details).
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Heroes / 1 Warlock engineer / Special Rules / Wizard
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Mago
+  effect_i18n:
+    es: >-
+      Un Ingeniero Hechicero es un mago y usa la Magia de la Rata con Cuernos (ver la sección de
+      Magia para más detalles).
+  applies_to:
+    profile_ids:
+    - warlock-engineer
+- id: overseer--slave-driver
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-rel.overseer.slave-driver
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Slave Driver
+  effect: >-
+    A Skaven Overseer strikes fear into his slaves. They may use his leadership if they are within
+    3". If he is armed with a scourge, this increases to 6".
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Heroes / 0-1 Skaven Overseer / Special Rules / Slave Driver
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Latigador de Esclavos
+  effect_i18n:
+    es: >-
+      Un Capataz Skaven infunde miedo a sus esclavos. Pueden usar su liderazgo si están a 3". Si va
+      armado con un azote, el alcance aumenta a 6".
+  applies_to:
+    profile_ids:
+    - overseer
+- id: overseer--slave-master
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-rel.overseer.slave-master
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Slave Master
+  effect: >-
+    Though he works the slaves to their limits, a Skaven Overseer knows that it is in the warband's
+    best interests to keep them alive. Skaven Slaves ignore the easy come, easy go rule if the
+    Skaven Overseer wasn't taken Out of Action in the battle.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Heroes / 0-1 Skaven Overseer / Special Rules / Slave Master
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Amo de Esclavos
+  effect_i18n:
+    es: >-
+      Aunque explota a los esclavos al límite, un Capataz Skaven sabe que mantenerlos con vida está
+      en el interés de la banda. Los Esclavos Skaven ignoran la regla de fácil venen, fácil se van
+      si el Capataz Skaven no quedó Fuera de Combate en la batalla.
+  applies_to:
+    profile_ids:
+    - overseer
+- id: skaven-slaves--life-is-cheap
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.life-is-cheap
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Life Is Cheap
+  effect: >-
+    Skaven slaves are worthless to the Warlock Engineers. Members of a Clan Skryre warband may shoot
+    into a close combat that only contains enemies and skaven slaves. Randomise hits.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Henchmen / Skaven slaves / Special Rules / Life is cheap
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: La Vida es Barata
+  effect_i18n:
+    es: >-
+      Los esclavos skaven no valen nada para los Ingenieros Hechiceros. Los miembros de una banda
+      del Clan Skryre pueden disparar a un combate cuerpo a cuerpo que solo contenga enemigos y
+      esclavos skaven. Reparte los impactos al azar.
+  applies_to:
+    profile_ids:
+    - skaven-slaves
+- id: skaven-slaves--easy-come-easy-go
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.easy-come-easy-go
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Easy Come, Easy Go
+  effect: >-
+    Skaven Slaves are often used as living experiments and their lifespans are mercifully short.
+    After rolling for Injuries, roll a D3 and remove that amount of Skaven Slaves from your warband.
+    They haven't survived their ordeal in Araby.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Henchmen / Skaven slaves / Special Rules / Easy come, easy go
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Fácil Venir, Fácil Irse
+  effect_i18n:
+    es: >-
+      Los Esclavos Skaven suelen usarse como experimentos vivientes y su esperanza de vida es
+      misericordiosamente corta. Tras tirar por las Heridas, tira 1D3 y retira esa cantidad de
+      Esclavos Skaven de tu banda. No sobrevivieron a su calvario en Araby.
+  applies_to:
+    profile_ids:
+    - skaven-slaves
+- id: skaven-slaves--numerous
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.numerous
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Numerous
+  effect: >-
+    Skaven Slaves may be used to increase the Clan Skryre's warband numbers up to 20. For example if
+    there are 15 Skaven in your warband, you may add up to 5 skaven slaves.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Henchmen / Skaven slaves / Special Rules / Numerous
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Numerosos
+  effect_i18n:
+    es: >-
+      Los Esclavos Skaven pueden usarse para aumentar el número de la banda del Clan Skryre hasta
+      20. Por ejemplo, si hay 15 skaven en tu banda, puedes añadir hasta 5 esclavos skaven.
+  applies_to:
+    profile_ids:
+    - skaven-slaves
+- id: skaven-slaves--experience
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.experience
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Experience
+  effect: Skaven Slaves don't survive long enough to gain experience.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Henchmen / Skaven slaves / Special Rules / Experience
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Experiencia
+  effect_i18n:
+    es: Los Esclavos Skaven no sobreviven lo suficiente para ganar experiencia.
+  applies_to:
+    profile_ids:
+    - skaven-slaves
+- id: skaven-slaves--worthless
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.worthless
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Worthless
+  effect: >-
+    A Warlock Engineer doesn't expect much from slaves, and is therefore not unsettled if skaven
+    slaves break or get cut down in battle. In fact, that's what they're there for! When testing to
+    see if a Clan Skryre warband needs to take a Rout test, each skaven slave taken out of action
+    only counts as half a model. Therefore, a band of 5 Skaven and 10 skaven slaves (15 models)
+    would only have to take a test if 4 models fell (4 Skaven or 8 skaven slaves, or some
+    combination thereof).
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Henchmen / Skaven slaves / Special Rules / Worthless
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: No Vales Nada
+  effect_i18n:
+    es: >-
+      Un Ingeniero Hechicero no espera mucho de los esclavos y, por tanto, no le inquieta que los
+      esclavos skaven huyan o caigan en combate. ¡De hecho, para eso están! Al comprobar si una
+      banda del Clan Skryre debe hacer un chequeo de Huida, cada esclavo skaven fuera de combate
+      solo cuenta como medio modelo. Por tanto, una banda de 5 skaven y 10 esclavos skaven (15
+      modelos) solo tendría que hacer la prueba si cayeran 4 modelos (4 skaven u 8 esclavos skaven,
+      o cualquier combinación).
+  applies_to:
+    profile_ids:
+    - skaven-slaves
+- id: giant-rats--pack-size
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-rel.giant-rats.pack-size
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Pack Size
+  effect: You can recruit as many Giant Rats as you wish.
+  source:
+    manual: Broheim
+    printed_page: 8
+    section: Henchmen / Giant rats / Special Rules / Pack size
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Tamaño de la Manada
+  effect_i18n:
+    es: Puedes reclutar tantas Ratas Gigantes como desees.
+  applies_to:
+    profile_ids:
+    - giant-rats
+- id: giant-rats--experience
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-rel.giant-rats.experience
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Experience
+  effect: Giant Rats are animals and do not gain experience.
+  source:
+    manual: Broheim
+    printed_page: 8
+    section: Henchmen / Giant rats / Special Rules / Experience
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Experiencia
+  effect_i18n:
+    es: Las Ratas Gigantes son animales y no ganan experiencia.
+  applies_to:
+    profile_ids:
+    - giant-rats

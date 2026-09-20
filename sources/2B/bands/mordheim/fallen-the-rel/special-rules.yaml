@@ -1,0 +1,366 @@
+schema_version: 2
+band_id: fallen-the-rel
+rules:
+- id: band--eaters-of-flesh
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.fallen-the-rel.band.eaters-of-flesh
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Eaters of Flesh
+  effect: >-
+    Make a note of any enemy model that is taken out of action by a warrior with the Eaters of Flesh
+    special rule. If it is a hero he must deduct 1 from his serious injury roll. If it is a henchman
+    he is removed from the warband on D6 roll of 1-3 instead of 1-2.
+  source:
+    manual: Broheim
+    printed_page: 12
+    section: The Fallen / Special Rules / Eaters of Flesh
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Comedores de Carne
+  effect_i18n:
+    es: >-
+      Anota cualquier modelo enemigo que sea dejado fuera de combate por un guerrero con la regla
+      especial Comedores de Carne. Si es un héroe, debe restar 1 a su tirada de herida grave. Si es
+      un secuaz, es retirado de la banda con un resultado de 1D6 de 1-3 en lugar de 1-2.
+  applies_to:
+    band: true
+- id: revenant--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fallen-the-rel.revenant.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: Any friendly warrior within 6" of the Revenant may use his Leadership instead of his own.
+  source:
+    manual: Broheim
+    printed_page: 13
+    section: Heroes / 1 Revenant / Special Rules / Leader
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: Cualquier guerrero amistoso a 6" del Espectro puede usar su Liderazgo en lugar del propio.
+  applies_to:
+    profile_ids:
+    - revenant
+- id: revenant--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fallen-the-rel.revenant.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Cause Fear
+  effect: Revenants are terrifying Undead creatures and therefore cause fear.
+  source:
+    manual: Broheim
+    printed_page: 13
+    section: Heroes / 1 Revenant / Special Rules / Cause Fear
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Causar Miedo
+  effect_i18n:
+    es: Los Espectros son aterradoras criaturas no muertas y por tanto causan miedo.
+  applies_to:
+    profile_ids:
+    - revenant
+- id: revenant--immune-to-poison
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fallen-the-rel.revenant.immune-to-poison
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Immune to Poison
+  effect: Revenants are not affected by any poison.
+  source:
+    manual: Broheim
+    printed_page: 13
+    section: Heroes / 1 Revenant / Special Rules / Immune to Poison
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Inmune al Veneno
+  effect_i18n:
+    es: Los Espectros no se ven afectados por ningún veneno.
+  applies_to:
+    profile_ids:
+    - revenant
+- id: revenant--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  source:
+    manual: Broheim
+    printed_page: 13
+    section: Heroes / 1 Revenant / Special Rules / No Pain
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Sin Dolor
+  applies_to:
+    profile_ids:
+    - revenant
+  rule_ref: shared-rule.no-pain
+- id: revenant--eaters-of-flesh
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fallen-the-rel.revenant.eaters-of-flesh
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Eaters of Flesh
+  effect: >-
+    If the Revenant takes a living enemy out of action and is not in base contact with an enemy
+    model, he will be stricken with a hunger for blood and flesh. He must make a Leadership test and
+    if he fails he will start eating the body. He may do nothing during these turns. When D3 turns
+    are up or he is hit by an attack he may take his turns as normal.
+  source:
+    manual: Broheim
+    printed_page: 13
+    section: Heroes / 1 Revenant / Special Rules / Eaters of Flesh
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Comedores de Carne
+  effect_i18n:
+    es: >-
+      Si el Espectro deja fuera de combate a un enemigo vivo y no está en contacto base con un
+      modelo enemigo, le asaltará un hambre de sangre y carne. Debe hacer un chequeo de Liderazgo y,
+      si falla, empezará a comerse el cuerpo. No puede hacer nada durante esos turnos. Cuando pasen
+      1D3 turnos o sea golpeado por un ataque, podrá actuar con normalidad.
+  applies_to:
+    profile_ids:
+    - revenant
+- id: butcher--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fallen-the-rel.butcher.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Cause Fear
+  effect: >-
+    Butchers are degenerate men involved in shocking acts of brutality. They therefore cause fear.
+  source:
+    manual: Broheim
+    printed_page: 13
+    section: Heroes / 0-1 Butcher / Special Rules / Cause Fear
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Causar Miedo
+  effect_i18n:
+    es: >-
+      Los Carniceros son hombres degenerados envueltos en impactantes actos de brutalidad y por
+      tanto causan miedo.
+  applies_to:
+    profile_ids:
+    - butcher
+- id: butcher--eaters-of-flesh
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fallen-the-rel.butcher.eaters-of-flesh
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Eaters of Flesh
+  effect: >-
+    If the Butcher takes a living enemy out of action and is not in base contact with an enemy
+    model, he will be stricken with a hunger for blood and flesh. He must make a Leadership test and
+    if he fails he will start eating the body. He may do nothing during these turns. When D3 turns
+    are up or he is hit by an attack he may take his turns as normal.
+  source:
+    manual: Broheim
+    printed_page: 13
+    section: Heroes / 0-1 Butcher / Special Rules / Eaters of Flesh
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Comedores de Carne
+  effect_i18n:
+    es: >-
+      Si el Carnicero deja fuera de combate a un enemigo vivo y no está en contacto base con un
+      modelo enemigo, le asaltará un hambre de sangre y carne. Debe hacer un chequeo de Liderazgo y,
+      si falla, empezará a comerse el cuerpo. No puede hacer nada durante esos turnos. Cuando pasen
+      1D3 turnos o sea golpeado por un ataque, podrá actuar con normalidad.
+  applies_to:
+    profile_ids:
+    - butcher
+- id: ghouls--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fallen-the-rel.ghouls.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Cause Fear
+  effect: Ghouls are twisted and cursed men that cause fear.
+  source:
+    manual: Broheim
+    printed_page: 14
+    section: Henchmen / Ghouls / Special Rules / Cause Fear
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Causar Miedo
+  effect_i18n:
+    es: Los Gulles son hombres retorcidos y malditos que causan miedo.
+  applies_to:
+    profile_ids:
+    - ghouls
+- id: sgulls--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fallen-the-rel.sgulls.fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Fear
+  effect: Sgulls are horrifying Undead creatures that cause fear.
+  source:
+    manual: Broheim
+    printed_page: 14
+    section: Henchmen / 0-3 Sgulls / Special Rules / Fear
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Los buitres muertos son horribles criaturas no muertas que causan miedo.
+  applies_to:
+    profile_ids:
+    - sgulls
+- id: sgulls--flyers
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fallen-the-rel.sgulls.flyers
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Flyers
+  effect: >-
+    Sgulls are granted a mockery of flight in their undeath. They ignore all terrain and can move at
+    any angle.
+  source:
+    manual: Broheim
+    printed_page: 14
+    section: Henchmen / 0-3 Sgulls / Special Rules / Flyers
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Voladores
+  effect_i18n:
+    es: >-
+      Los buitres muertos reciben una burla del vuelo en su no-muerte. Ignoran todo terreno y pueden
+      moverse en cualquier ángulo.
+  applies_to:
+    profile_ids:
+    - sgulls
+- id: sgulls--experience
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fallen-the-rel.sgulls.experience
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Experience
+  effect: Sgulls do not gain experience.
+  source:
+    manual: Broheim
+    printed_page: 14
+    section: Henchmen / 0-3 Sgulls / Special Rules / Experience
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Experiencia
+  effect_i18n:
+    es: Los buitres muertos no ganan experiencia.
+  applies_to:
+    profile_ids:
+    - sgulls
+- id: wild-dogs--experience
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fallen-the-rel.wild-dogs.experience
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Experience
+  effect: Wild dogs are animals and do not gain experience.
+  source:
+    manual: Broheim
+    printed_page: 14
+    section: Henchmen / 0-5 Wild dogs / Special Rules / Experience
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Experiencia
+  effect_i18n:
+    es: Los perros salvajes son animales y no ganan experiencia.
+  applies_to:
+    profile_ids:
+    - wild-dogs

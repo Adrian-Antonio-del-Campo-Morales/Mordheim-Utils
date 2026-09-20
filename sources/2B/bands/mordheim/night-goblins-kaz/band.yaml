@@ -1,0 +1,57 @@
+schema_version: 2
+id: night-goblins-kaz
+canonical_family: night-goblins
+name: Night Goblins
+name_i18n:
+  es: Goblins Nocturnos
+original_locale: en
+ruleset: mordheim
+categories:
+- 2b
+grade: 2b
+setting: Karak Azgal
+publication: 'Karak Azgal web expansion (Night Goblins v2.1)'
+status: source-normalized
+sources:
+- manual: broheim.net
+  printed_page: 44
+  section: Night Goblins v2.1
+  url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+roster:
+  minimum_models: 3
+  maximum_models: 20
+  starting_gold: 500
+  members:
+  - profile_id: big-boss
+    minimum: 1
+    maximum: 1
+  - profile_id: shaman
+    minimum: 0
+    maximum: 1
+  - profile_id: bosses
+    minimum: 0
+    maximum: 4
+  - profile_id: night-goblins
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: fanatics
+    minimum: 0
+    maximum: 2
+  - profile_id: cave-squigs
+    minimum: 0
+    maximum: 5
+  - profile_id: troll
+    minimum: 0
+    maximum: 1
+  - profile_id: snotling-mob
+    minimum: 0
+    maximum: 1
+rule_ids:
+- band--animosity
+- band--hate-stunties
+- band--night-goblin-special-skills
+- band--cave-squig-limit
+- band--hired-swords

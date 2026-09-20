@@ -1,0 +1,332 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/campaign-experience-and-advances.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/campaign/experience-and-advances.yaml",
+  "description": "The allowed Experience awards, the underdog bonus, the advance tables and the ladder of accumulated Experience at which a warrior earns an Advance roll. An `advancement_tables` result describes the outcome of the 2D6 (an increase, a choice, a sub-roll, a promotion), never the threshold: the accumulated Experience of a concrete warrior belongs to the roster and to campaign state, not here.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "ruleset",
+    "catalog",
+    "status",
+    "awards",
+    "underdog_bonus",
+    "advancement_tables",
+    "advance_thresholds",
+    "effect_ids"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "catalog": { "$ref": "defs.schema.json#/$defs/id" },
+    "status": { "$ref": "defs.schema.json#/$defs/catalog_status" },
+    "awards": {
+      "description": "The standard Experience awards a scenario can reference instead of restating them.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/award" }
+    },
+    "underdog_bonus": { "$ref": "#/$defs/underdog_bonus" },
+    "advancement_tables": {
+      "description": "One table per kind of warrior.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/advancement_table" }
+    },
+    "advance_thresholds": { "$ref": "#/$defs/thresholds" },
+    "effect_ids": {
+      "description": "Effects of this catalogue a warband's own special rules may modify.",
+      "$ref": "defs.schema.json#/$defs/id_list"
+    }
+  },
+  "$defs": {
+    "award": {
+      "description": "One way of earning Experience.",
+      "type": "object",
+      "required": ["id", "recipient", "trigger", "amount", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable award id of the `campaign.experience.award.*` family; a scenario `progression.experience` row references it with `ref`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "recipient": {
+          "description": "Who earns the Experience.",
+          "enum": ["hero", "hero_and_henchman_group", "heroes", "leader", "subject", "warband"]
+        },
+        "trigger": {
+          "description": "What earns it.",
+          "enum": ["survived_battle", "warband_won_battle", "enemy_put_out_of_action"]
+        },
+        "amount": {
+          "description": "Experience points awarded.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "underdog_bonus": {
+      "description": "The bonus the underdog earns, per difference in warband rating.",
+      "type": "object",
+      "required": ["id", "applies_to", "bands", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "applies_to": {
+          "description": "Who earns the bonus.",
+          "const": "participating_fighters"
+        },
+        "bands": {
+          "description": "The bonus per rating difference. The last band is open-ended, so it declares `min` only.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/underdog_band" }
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "underdog_band": {
+      "description": "One band of rating difference and the bonus it earns.",
+      "type": "object",
+      "required": ["when", "amount"],
+      "additionalProperties": false,
+      "properties": {
+        "when": {
+          "type": "object",
+          "required": ["rating_difference"],
+          "additionalProperties": false,
+          "properties": {
+            "rating_difference": { "$ref": "defs.schema.json#/$defs/interval" }
+          }
+        },
+        "amount": {
+          "description": "Experience points the band earns.",
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "advancement_table": {
+      "description": "One advance table.",
+      "type": "object",
+      "required": ["id", "applies_to", "resolution", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "applies_to": {
+          "description": "What the table is rolled for. A henchman group advances as a group: every warrior of the group gains the same advance.",
+          "enum": ["hero", "henchman_group"]
+        },
+        "resolution": {
+          "description": "The roll and its branches.",
+          "type": "object",
+          "required": ["dice", "branches"],
+          "additionalProperties": false,
+          "properties": {
+            "dice": { "$ref": "defs.schema.json#/$defs/dice" },
+            "branches": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/branch" }
+            }
+          }
+        },
+        "note": {
+          "description": "Editorial clarification of the table, e.g. that a characteristic is never increased twice and the roll is repeated instead.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "branch": {
+      "description": "One branch of an advance table.",
+      "type": "object",
+      "required": ["when", "result"],
+      "additionalProperties": false,
+      "properties": {
+        "when": { "$ref": "defs.schema.json#/$defs/interval" },
+        "result": { "$ref": "#/$defs/result" }
+      }
+    },
+    "characteristic": {
+      "description": "Characteristic an advance increases, named in full.",
+      "enum": [
+        "attacks",
+        "ballistic_skill",
+        "initiative",
+        "leadership",
+        "movement",
+        "strength",
+        "toughness",
+        "weapon_skill",
+        "wounds"
+      ]
+    },
+    "result": {
+      "description": "The outcome of an advance roll. `type` is the discriminator and every form is closed, so a result cannot carry a key the applications do not read.",
+      "oneOf": [
+        { "$ref": "#/$defs/characteristic_increase" },
+        { "$ref": "#/$defs/choose_one" },
+        { "$ref": "#/$defs/result_roll_table" },
+        { "$ref": "#/$defs/promote_henchman" },
+        { "$ref": "#/$defs/choose_skill" },
+        { "$ref": "#/$defs/generate_spell" }
+      ]
+    },
+    "characteristic_increase": {
+      "description": "Increases a characteristic.",
+      "type": "object",
+      "required": ["type", "characteristic", "amount"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "characteristic_increase" },
+        "characteristic": { "$ref": "#/$defs/characteristic" },
+        "amount": {
+          "description": "Points the characteristic increases by.",
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "choose_one": {
+      "description": "The player picks one of the options.",
+      "type": "object",
+      "required": ["type", "options"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "choose_one" },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/result" }
+        }
+      }
+    },
+    "result_roll_table": {
+      "description": "The result is a sub-roll on its own table.",
+      "type": "object",
+      "required": ["type", "dice", "branches"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "roll_table" },
+        "dice": { "$ref": "defs.schema.json#/$defs/dice" },
+        "branches": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/branch" }
+        }
+      }
+    },
+    "promote_henchman": {
+      "description": "`Lad's Got Talent`: the promoted henchman keeps his increases, gains access to the hero skill lists and rolls his next advance on the hero table; the rest of his group re-rolls, excluding the promotion itself.",
+      "type": "object",
+      "required": ["type", "promotion", "on_maximum_heroes", "preserve", "skill_lists", "immediate_follow_up", "remaining_group"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "promote_henchman" },
+        "promotion": { "const": "lads_got_talent" },
+        "on_maximum_heroes": {
+          "description": "What happens when the warband has no room for another Hero.",
+          "const": "reroll_current_advance"
+        },
+        "preserve": {
+          "description": "What the promoted henchman keeps.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": ["henchman_type", "experience", "characteristic_increases"]
+          }
+        },
+        "skill_lists": {
+          "description": "The skill lists the promoted warrior gains.",
+          "type": "object",
+          "required": ["choose", "source"],
+          "additionalProperties": false,
+          "properties": {
+            "choose": {
+              "description": "How many skills are picked.",
+              "type": "integer",
+              "minimum": 1
+            },
+            "source": {
+              "description": "Which list they are picked from.",
+              "enum": ["hero_skill_access", "warband_hero_skill_access", "wizard_spell_list"]
+            }
+          }
+        },
+        "immediate_follow_up": {
+          "description": "Table the promoted warrior rolls on immediately.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "remaining_group": {
+          "description": "How the rest of the group resolves its roll.",
+          "type": "object",
+          "required": ["reroll_current_advance_excluding"],
+          "additionalProperties": false,
+          "properties": {
+            "reroll_current_advance_excluding": {
+              "description": "Results excluded from the re-roll.",
+              "type": "array",
+              "minItems": 1,
+              "items": { "const": "lads_got_talent" }
+            }
+          }
+        }
+      }
+    },
+    "choose_skill": {
+      "description": "The player picks a skill from the warrior's lists.",
+      "type": "object",
+      "required": ["type", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "choose_skill" },
+        "source": {
+          "description": "Which lists it is picked from.",
+          "enum": ["hero_skill_access", "warband_hero_skill_access", "wizard_spell_list"]
+        }
+      }
+    },
+    "generate_spell": {
+      "description": "The wizard generates a spell from his lore.",
+      "type": "object",
+      "required": ["type", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "const": "generate_spell" },
+        "source": {
+          "description": "Which list it is generated from.",
+          "enum": ["hero_skill_access", "warband_hero_skill_access", "wizard_spell_list"]
+        },
+        "when": {
+          "description": "Condition under which this option exists, e.g. only for a wizard.",
+          "const": "subject_is_wizard"
+        }
+      }
+    },
+    "thresholds": {
+      "description": "The accumulated Experience at which a warrior earns an Advance roll, per kind of warrior. The thresholds are game data; the accumulated Experience of a concrete warrior is not.",
+      "type": "object",
+      "required": ["id", "hero", "henchman", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "hero": {
+          "description": "Thresholds of a Hero, ascending.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "integer", "minimum": 1 }
+        },
+        "henchman": {
+          "description": "Thresholds of a henchman, ascending.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "integer", "minimum": 1 }
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    }
+  }
+}

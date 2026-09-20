@@ -1,0 +1,699 @@
+schema_version: 2
+band_id: channel-rats-mim
+rules:
+- id: band--water-caravan
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.channel-rats-mim.band.water-caravan
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred mechanic: vehicles (Riverboat/River Barge) are a campaign/board subsystem out of
+        the current combat engine scope; the wagon-and-horses replacement is purely a
+        recruitment/narrative swap.
+  name: Water Caravan
+  effect: >-
+    Each Strigany warband must include one Riverboat or River Barge. If there are no rivers in your
+    campaign then you should replace the River Boat with a Wagon and two horses. If you do this then
+    replace 'Rigger' skill with 'Handyman' to allow your Tinker to repair the wagon.
+  source:
+    manual: broheim.net
+    printed_page: 177
+    section: Choice of Warriors / Water Caravan
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Caravana de Agua
+  effect_i18n:
+    es: >-
+      Cada banda de Strigany debe incluir un Barco Fluvial o una Barcaza Fluvial. Si no hay ríos en
+      tu campaña, deberás sustituir el Barco Fluvial por un Carro y dos caballos. Si haces esto,
+      sustituye la habilidad «Trincador» por «Trapacero» para permitir a tu Calderero reparar el
+      carro.
+  applies_to:
+    band: true
+- id: band--lucky-white-heather
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.channel-rats-mim.band.lucky-white-heather
+      scope: LATER
+      binding: null
+      reason: >-
+        Campaign mechanic: post-battle sequence thefts, cons and Serious Injuries are outside the
+        current combat engine scope.
+  name: Lucky White Heather
+  effect: >-
+    Instead of searching for a rare item during the post battle sequence, one of the Heroes prepares
+    to con or rob a Hero chosen from another warband! Whenever a Hero from a Strigany warband
+    participates in a job by visiting another warband roll a D6: on a roll of 1 the Strigany Hero
+    involved has pushed his luck and got lynched, roll on the Serious Injuries Chart and apply the
+    result. On a 2-5 the other warband is forced to buy a fake lucky charm for D6 gold crowns. On a
+    roll of 6 the Strigany steals an item while they are distracted! Choose an item belonging to a
+    Hero for the pesky Strigany to steal.
+  source:
+    manual: broheim.net
+    printed_page: 176
+    section: Special Rules / Lucky White Heather
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Brezo Blanco de la Suerte
+  effect_i18n:
+    es: >-
+      En lugar de buscar un objeto raro durante la secuencia posterior a la batalla, uno de los
+      Héroes se prepara para engañar o robar a un Héroe elegido de otra banda. Siempre que un Héroe
+      de una banda de Strigany participe en un trabajo visitando otra banda, tira 1D6: con un
+      resultado de 1, el Héroe Strigany involucrado ha tentado demasiado a la suerte y ha sido
+      linchado; tira en la Tabla de Heridas Graves y aplica el resultado. Con un 2-5, la otra banda
+      se ve obligada a comprar un amuleto de la suerte falso por 1D6 coronas de oro. Con un
+      resultado de 6, ¡el Strigany roba un objeto mientras están distraídos! Elige un objeto que
+      pertenezca a un Héroe para que lo robe el molesto Strigany.
+  applies_to:
+    band: true
+- id: band--shadowy-traditions
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.channel-rats-mim.band.shadowy-traditions
+      scope: LATER
+      binding: null
+      reason: >-
+        Campaign mechanic: the Father-in-Darkness chart permanently modifies hero profiles
+        (Blood-swain / Surrogate Vampire) and the Red Thirst is a turn-structure psychology effect;
+        both out of the current engine scope.
+  name: Shadowy Traditions
+  effect: >-
+    The Petru is an enchanter able to summon one of the Old Fathers. Instead of searching for a rare
+    item during the post battle sequence, the Petru can request for one of his family to be granted
+    an audience with the Old Father. On a successful Leadership test one of the other Heroes in the
+    warband must visit their ancient master in the post battle sequence. If the test was failed this
+    painstaking process means the Petru must miss the next battle. One of the Heroes in the warband
+    may pay a visit to the Old Father to seek his blessing. Choose a human warrior in the warband
+    for the vampire to beguile and roll on the Father-in-Darkness chart. The leader or a spellcaster
+    may not seek a blessing. A Hero with mutations receives a -1 modifier. Father-in-Darkness chart:
+    1-3 Unworthy Son (the Hero is drained and removed from the warband list); 4 Fortunate Son
+    (nothing happens); 5 Favourite Son (the Hero becomes a Blood-swain: +1 Initiative and +1 Attack;
+    if the Blood-swain visits again apply a +1 modifier to the result); 6 Son-in-darkness (the Hero
+    becomes a Surrogate Vampire: +1 Movement, +1 Toughness, +1 Wound, +1 Initiative and +1 Attack;
+    Surrogates cause fear, are immune to poison and are subject to the Red Thirst). Red Thirst:
+    recently turned vampirekind roll a D6 at the start of each turn; on a roll of 1 the Surrogate
+    must test for stupidity that turn, on a 2-5 nothing happens and on a 6 they become subject to
+    frenzy for that turn.
+  source:
+    manual: broheim.net
+    printed_page: 176
+    section: Special Rules / Shadowy Traditions, Father-in-Darkness chart, Red Thirst
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Tradiciones Sombrías
+  effect_i18n:
+    es: >-
+      El Petru es un encantador capaz de invocar a uno de los Viejos Padres. En lugar de buscar un
+      objeto raro durante la secuencia posterior a la batalla, el Petru puede solicitar que se
+      conceda una audiencia con el Viejo Padre a uno de sus familiares. Con un chequeo de Liderazgo
+      superado, uno de los otros Héroes de la banda debe visitar a su antiguo maestro en la
+      secuencia posterior a la batalla. Si el chequeo falla, este laborioso proceso obliga al Petru
+      a perderse la siguiente batalla. Uno de los Héroes de la banda puede visitar al Viejo Padre
+      para buscar su bendición. Elige a un guerrero humano de la banda para que el vampiro lo
+      seduzca y tira en la tabla de Padre en la Oscuridad. El líder o un lanzador de hechizos no
+      pueden buscar una bendición. Un Héroe con mutaciones recibe un modificador de -1. Tabla de
+      Padre en la Oscuridad: 1-3 Hijo Indigno (el Héroe es drenado y se retira de la lista de la
+      banda); 4 Hijo Afortunado (no ocurre nada); 5 Hijo Favorito (el Héroe se convierte en
+      Consentido de la Sangre: +1 Iniciativa y +1 Ataque; si el Consentido de la Sangre visita de
+      nuevo, aplica un modificador de +1 al resultado); 6 Hijo en la Oscuridad (el Héroe se
+      convierte en Vampiro Sustituto: +1 Movimiento, +1 Resistencia, +1 Herida, +1 Iniciativa y +1
+      Ataque; los Sustitutos causan miedo, son inmunes al veneno y están sujetos a la Sed de
+      Sangre). Sed de Sangre: los vampiros recién convertidos tiran 1D6 al inicio de cada turno; con
+      un resultado de 1 el Sustituto debe hacer un chequeo de estupidez ese turno, con un 2-5 no
+      ocurre nada y con un 6 están sujetos a frenesí ese turno.
+  applies_to:
+    band: true
+- id: petru--wizard
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.channel-rats-mim.petru.wizard
+      scope: LATER
+      binding: null
+      reason: >-
+        Magic is out of the current engine scope. The Charms & Hexes spell list (Scry, Curse, Dust
+        of the Blind, Age of Stone, Warrior's Bane, Cure) is preserved verbatim in
+        band--charms-and-hexes.
+  name: Wizard
+  effect: Petrus are Strigany mystics and have two spells generated from the Charms & Hexes list.
+  source:
+    manual: broheim.net
+    printed_page: 179
+    section: Heroes / Petru / Special Rules / Wizard
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Hechicero
+  effect_i18n:
+    es: >-
+      Los Petru son místicos Strigany y tienen dos hechizos generados de la lista de Encantos y
+      Maleficios.
+  applies_to:
+    profile_ids:
+    - petru
+- id: band--charms-and-hexes
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.channel-rats-mim.band.charms-and-hexes
+      scope: LATER
+      binding: null
+      reason: >-
+        Magic subsystem out of the current engine scope; spells preserved verbatim for the future
+        magic module.
+  name: Charms & Hexes
+  effect: >-
+    Charms and Hexes are the magic of witchcraft. They involve copious amounts of spell ingredients
+    and painstaking incantations but they can be devastating, reducing enemies to pitiful wrecks and
+    infusing comrades with almost incomprehensible luck. 1 Scry (Difficulty 6): for the duration of
+    the turn one Hero or Henchman may re-roll D3 dice rolls with +1 or -1 to the result. 2 Curse
+    (Difficulty 6): one enemy model within 12" of the Petru must re-roll all successful dice rolls
+    for the duration of this and their next turn. 3 Dust of the Blind (Difficulty 9): one enemy
+    model within 16" of the Petru is struck instantly blind; they may not shoot, charge or run, are
+    at half Weapon Skill and will move in a random direction at the start of their turn; the
+    blindness lasts until the Petru casts another spell or moves. 4 Age of Stone (Difficulty 8): one
+    enemy model within 12" of the Petru has all of their characteristics reduced by -1 for the
+    duration of this and their next turn. 5 Warrior's Bane (Difficulty 7): one enemy model within
+    18" of the Petru will be unable to use any of their weapons; they will be unable to shoot and
+    count as fighting with fists in hand-to-hand combat; the enchantment lasts for the duration of
+    this and their next turn. 6 Cure (Difficulty 6): all friendly models within 6" of the Petru have
+    a single Wound healed; in addition any stunned or knocked down models may immediately stand up.
+  source:
+    manual: broheim.net
+    printed_page: 182
+    section: Charms & Hexes
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Encantos y Maleficios
+  effect_i18n:
+    es: >-
+      Los Encantos y Maleficios son la magia de la brujería. Requieren grandes cantidades de
+      ingredientes de hechizos e incantaciones minuciosas, pero pueden ser devastadores, reduciendo
+      a los enemigos a pobres despojos e infundiendo a los camaradas una suerte casi incomprensible.
+      1 Escudriñar (Dificultad 6): durante el turno, un Héroe o Secuaz puede repetir 1D3 tiradas de
+      dado con +1 o -1 al resultado. 2 Maldición (Dificultad 6): un modelo enemigo a 12" del Petru
+      debe repetir todas sus tiradas de dado exitosas durante este turno y el siguiente. 3 Polvo del
+      Ciego (Dificultad 9): un modelo enemigo a 16" del Petru queda instantáneamente ciego; no puede
+      disparar, cargar ni correr, tiene la mitad de su Habilidad de Combate y se moverá en una
+      dirección aleatoria al inicio de su turno; la ceguera dura hasta que el Petru lance otro
+      hechizo o se mueva. 4 Era de Piedra (Dificultad 8): un modelo enemigo a 12" del Petru ve todas
+      sus características reducidas en -1 durante este turno y el siguiente. 5 Azote del Guerrero
+      (Dificultad 7): un modelo enemigo a 18" del Petru no podrá usar ninguna de sus armas; no podrá
+      disparar y se considerará que pelea a puño limpio en combate cuerpo a cuerpo; el encantamiento
+      dura este turno y el siguiente. 6 Curar (Dificultad 6): todos los modelos amistosos a 6" del
+      Petru curan una Herida; además, cualquier modelo aturdido o derribado puede ponerse en pie
+      inmediatamente.
+  applies_to:
+    band: true
+- id: petru--necromancy
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.channel-rats-mim.petru.necromancy
+      scope: LATER
+      binding: null
+      reason: >-
+        Magic and post-battle advancement are outside the current engine scope.
+  name: Necromancy
+  effect: >-
+    Knowing a little of the black arts, Petrus may randomly determine a new spell from the
+    Necromancy list instead of learning a new skill.
+  source:
+    manual: broheim.net
+    printed_page: 179
+    section: Heroes / Petru / Special Rules / Necromancy
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Necromancia
+  effect_i18n:
+    es: >-
+      Conociendo un poco de las artes negras, los Petru pueden determinar aleatoriamente un nuevo
+      hechizo de la lista de Necromancia en lugar de aprender una nueva habilidad.
+  applies_to:
+    profile_ids:
+    - petru
+- id: petru--potions
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.channel-rats-mim.petru.potions
+      scope: LATER
+      binding: null
+      reason: >-
+        Pre-battle random allocation with cross-battle persistence is a campaign mechanic outside
+        the current engine scope.
+  name: Potions
+  effect: >-
+    Offering curatives through supplying suspicious potions, the Petru carries assorted philtres for
+    the purpose of remedial thaumaturgy. A single Hero in the warband may chance upon the Petru
+    before battle to risk one of these vitalogist wares. Roll a D6 to discover the draught's effect:
+    1 Debilitating (-1 Toughness for the whole of the next battle until they roll a 6 on a D6 in the
+    recovery phase to shrug off the ill effects); 2-3 Strength (+1 Strength bonus until he rolls a 1
+    on a D6 in the recovery phase); 4-5 Resilience (+1 Toughness until he rolls a 1 on a D6 in the
+    recovery phase); 6 Fortitude (gains an extra wound for the whole battle; once lost the wound
+    cannot be restored).
+  source:
+    manual: broheim.net
+    printed_page: 179
+    section: Heroes / Petru / Special Rules / Potions
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Pociones
+  effect_i18n:
+    es: >-
+      Ofreciendo remedios mediante la provisión de pociones sospechosas, el Petru lleva surtido de
+      filtros para la talasurgia terapéutica. Un único Héroe de la banda puede acercarse al Petru
+      antes de la batalla para arriesgarse a probar uno de estos productos vitalogistas. Tira 1D6
+      para descubrir el efecto del brebaje: 1 Debilitante (-1 Resistencia durante toda la siguiente
+      batalla, hasta que supere los efectos con un 6 en 1D6 en la fase de recuperación); 2-3 Fuerza
+      (+1 al modificador de Fuerza hasta que saque un 1 en 1D6 en la fase de recuperación); 4-5
+      Resiliencia (+1 Resistencia hasta que saque un 1 en 1D6 en la fase de recuperación); 6
+      Fortaleza (gana una herida adicional para toda la batalla; una vez perdida, la herida no puede
+      restaurarse).
+  applies_to:
+    profile_ids:
+    - petru
+- id: domnu--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.channel-rats-mim.domnu.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Leader re-roll aura is a psychology/rout mechanic; the active engine currently binds
+        leadership through roster leader selection instead of an aura rule.
+  name: Leader
+  effect: >-
+    Any warrior within 6" of the Domnu may use his Leadership value instead of his own when taking
+    Leadership tests.
+  source:
+    manual: broheim.net
+    printed_page: 179
+    section: Heroes / Domnu / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6" del Domnu puede usar su valor de Liderazgo en lugar del propio cuando
+      realice chequeos de Liderazgo.
+  applies_to:
+    profile_ids:
+    - domnu
+- id: domnu--prize-fighter
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.channel-rats-mim.domnu.prize-fighter
+      scope: LATER
+      binding: null
+      reason: >-
+        Unarmed-fight modifier has no matching engine mechanic; verified against the active
+        mechanics catalog (no unarmed-combat binding exists).
+  name: Prize-fighter
+  effect: >-
+    The Caravan Master suffers no penalties whatsoever for fighting unarmed and receives +1 Attack
+    when doing so.
+  source:
+    manual: broheim.net
+    printed_page: 179
+    section: Heroes / Domnu / Special Rules / Prize-fighter
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Luchador
+  effect_i18n:
+    es: >-
+      El Maestro de Caravana no sufre ninguna penalización por pelear desarmado y recibe +1 Ataque
+      al hacerlo.
+  applies_to:
+    profile_ids:
+    - domnu
+- id: domnu--bear-hug
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.channel-rats-mim.domnu.bear-hug
+      scope: LATER
+      binding: null
+      reason: >-
+        Opposed roll replacing normal attacks is a turn-structure combat variant with no matching
+        engine mechanic.
+  name: Bear Hug
+  effect: >-
+    Wrestling and fist fighting are traditional Strigany sport. If the Domnu hits the same enemy
+    warrior with both of his unarmed attacks in the same round of combat, the player may choose to
+    make a single Bear Hug attack instead of resolving the attacks normally. Each player rolls a D6
+    and adds his warrior's Strength to the roll. If the Domnu's total is higher or the totals are
+    equal, the opposing warrior takes a single automatic wound with no armour save allowed. If the
+    enemy warrior's total is higher, the warrior has broken the Domnu's hold and suffers no damage
+    from the attack.
+  source:
+    manual: broheim.net
+    printed_page: 179
+    section: Heroes / Domnu / Special Rules / Bear Hug
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Abrazo del Oso
+  effect_i18n:
+    es: >-
+      La lucha y el pugilato son deportes tradicionales de los Strigany. Si el Domnu impacta al
+      mismo guerrero enemigo con ambos de sus ataques desarmados en la misma ronda de combate, el
+      jugador puede elegir hacer un único ataque de Abrazo del Oso en lugar de resolver los ataques
+      con normalidad. Cada jugador tira 1D6 y suma la Fuerza de su guerrero a la tirada. Si el total
+      del Domnu es mayor o los totales son iguales, el guerrero oponente sufre una herida automática
+      sin tirada de salvación por armadura. Si el total del guerrero enemigo es mayor, el guerrero
+      ha roto la presa del Domnu y no sufre daño del ataque.
+  applies_to:
+    profile_ids:
+    - domnu
+- id: tinker--grifter
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.channel-rats-mim.tinker.grifter
+      scope: LATER
+      binding: null
+      reason: >-
+        Trading with other warbands is a campaign mechanic outside the engine scope.
+  name: Grifter
+  effect: >-
+    Tinkers are crooked dealers! Like a merchant, a Tinker allows trading deals to be arranged with
+    other warbands.
+  source:
+    manual: broheim.net
+    printed_page: 179
+    section: Heroes / Tinker / Special Rules / Grifter
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Trapacero
+  effect_i18n:
+    es: >-
+      ¡Los Caldereros son tramposos! Como un mercader, un Calderero permite organizar acuerdos
+      comerciales con otras bandas.
+  applies_to:
+    profile_ids:
+    - tinker
+- id: tinker--rigger
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.channel-rats-mim.tinker.rigger
+      scope: LATER
+      binding: null
+      reason: >-
+        Vehicle repair is part of the Water Caravan vehicle subsystem, out of scope.
+  name: Rigger
+  effect: >-
+    The Tinker is skilled in fixing minor damage to watercraft. If the boat or barge is stationary
+    and has not moved during the last turn then if the Tinker is in contact with it, he may repair
+    one previously damaged location, ie, a paddle or mast. The Hero may do nothing else that turn
+    and the vehicle may not be moved. A ship cannot be repaired if an enemy model is in contact with
+    the Tinker or the watercraft.
+  source:
+    manual: broheim.net
+    printed_page: 179
+    section: Heroes / Tinker / Special Rules / Rigger
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Trincador
+  effect_i18n:
+    es: >-
+      El Calderero es hábil reparando daños menores en embarcaciones. Si el barco o la barcaza está
+      estacionaria y no se ha movido durante el último turno, y el Calderero está en contacto con
+      ella, puede reparar una localización previamente dañada, es decir, una pala o un mástil. El
+      Héroe no puede hacer nada más ese turno y el vehículo no puede moverse. Un barco no puede
+      repararse si un modelo enemigo está en contacto con el Calderero o la embarcación.
+  applies_to:
+    profile_ids:
+    - tinker
+- id: truants--spry
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.channel-rats-mim.truant.spry
+      scope: LATER
+      binding: null
+      reason: >-
+        Climbing-while-running interaction is a movement-phase rules exception; no matching engine
+        mechanic exists (verified against the active mechanics catalog).
+  name: Spry
+  effect: >-
+    A Truant is used to climbing in and out of portholes, as well as running along rooftops with
+    catlike stealth. To reflect this, a Truant may run or charge while climbing.
+  source:
+    manual: broheim.net
+    printed_page: 180
+    section: Heroes / Truants / Special Rules / Spry
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Agil
+  effect_i18n:
+    es: >-
+      Un Vagabundo está acostumbrado a trepar por ojos de buey, así como a correr por los tejados
+      con sigilo felino. Para reflejar esto, un Vagabundo puede correr o cargar mientras trepa.
+  applies_to:
+    profile_ids:
+    - truants
+- id: truants--taunt
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.channel-rats-mim.truant.taunt
+      scope: LATER
+      binding: null
+      reason: >-
+        Replaces a shooting-phase action and forces an enemy movement decision; no matching engine
+        mechanic exists.
+  name: Taunt
+  effect: >-
+    During the Shooting phase, the Truant may choose to taunt one enemy instead of shooting with a
+    missile weapon. The Truant must be able to see the enemy and taunting requires a line of sight
+    as it would for shooting. The enemy then takes a Leadership test. If he passes, nothing happens,
+    but if he fails he must spend his next movement phase trying to get into close combat with the
+    Truant who taunted him.
+  source:
+    manual: broheim.net
+    printed_page: 180
+    section: Heroes / Truants / Special Rules / Taunt
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Provocar
+  effect_i18n:
+    es: >-
+      Durante la fase de Disparo, el Vagabundo puede elegir provocar a un enemigo en lugar de
+      disparar con un arma de misil. El Vagabundo debe poder ver al enemigo y provocar requiere
+      línea de visión, igual que para disparar. El enemigo realiza entonces un chequeo de Liderazgo.
+      Si lo supera, no ocurre nada, pero si lo falla debe gastar su siguiente fase de movimiento
+      intentando entrar en combate cuerpo a cuerpo con el Vagabundo que lo provocó.
+  applies_to:
+    profile_ids:
+    - truants
+- id: dead-eyes--dead-eye-shot
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.channel-rats-mim.dead-eye.dead-eye-shot
+      scope: LATER
+      binding: null
+      reason: >-
+        Shooting modifier exception with no matching engine mechanic; verify against the active
+        mechanics catalog during the promotion equivalence review.
+  name: Dead Eye Shot
+  effect: >-
+    The Dead-Eye has the eyes of an eagle and can hit the smallest target. He ignores to hit
+    modifiers for cover when shooting or throwing his weapon.
+  source:
+    manual: broheim.net
+    printed_page: 181
+    section: Henchmen / Dead-eyes / Special Rules / Dead Eye Shot
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Tiro de Ojo Muerto
+  effect_i18n:
+    es: >-
+      El Ojos Muertos tiene ojos de águila y puede alcanzar el objetivo más pequeño. Ignora los
+      modificadores por impactar por cobertura cuando dispara o lanza su arma.
+  applies_to:
+    profile_ids:
+    - dead-eyes
+- id: dead-eyes--target-practice
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.channel-rats-mim.dead-eye.target-practice
+      scope: LATER
+      binding: null
+      reason: >-
+        Stand-and-shoot on charge is a charge-response mechanic; the active engine has no matching
+        binding.
+  name: Target Practice
+  effect: >-
+    The warrior can fire a single missile attack when being charged. Models that stand and shoot
+    suffer a -1 modifier to hit.
+  source:
+    manual: broheim.net
+    printed_page: 181
+    section: Henchmen / Dead-eyes / Special Rules / Target Practice
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Práctica de Tiro
+  effect_i18n:
+    es: >-
+      El guerrero puede efectuar un único ataque de misil cuando está siendo cargado. Los modelos
+      que disparan ante una carga sufren un modificador de -1 por impactar.
+  applies_to:
+    profile_ids:
+    - dead-eyes
+- id: dead-eyes--weapons-expert
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.channel-rats-mim.dead-eye.weapons-expert
+      scope: LATER
+      binding: null
+      reason: >-
+        Cross-reference to Mordheim Rulebook p. 122 skill; resolves after equivalence review against
+        the active skills catalog.
+  name: Weapons Expert
+  effect: See page 122 of the Mordheim Rulebook.
+  source:
+    manual: broheim.net
+    printed_page: 181
+    section: Henchmen / Dead-eyes / Special Rules / Weapons Expert
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Experto en Armas
+  effect_i18n:
+    es: Ver la página 122 del Libro de Reglas de Mordheim.
+  applies_to:
+    profile_ids:
+    - dead-eyes
+- id: fugitives--charismatic
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.channel-rats-mim.fugitive.charismatic
+      scope: LATER
+      binding: null
+      reason: >-
+        Charge restriction via Leadership test is a psychology mechanic outside the current engine
+        scope.
+  name: Charismatic
+  effect: >-
+    Heartless seducers oozing machismo. A romantic rogue to the last, any model from the opposite
+    sex (Sisters of Sigmar, Amazons, Kislev Ranger etc), must make a Leadership test if they wish to
+    charge a Fugitive.
+  source:
+    manual: broheim.net
+    printed_page: 181
+    section: Henchmen / Fugitives / Special Rules / Charismatic
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Carismático
+  effect_i18n:
+    es: >-
+      Seductores desalmados que destilan machismo. Un pícaro romántico de principio a fin, cualquier
+      modelo del sexo opuesto (Hermanas de Sigmar, Amazonas, Explorador de Kislev, etc.) debe hacer
+      un chequeo de Liderazgo si desea cargar contra un Fugitivo.
+  applies_to:
+    profile_ids:
+    - fugitives
+- id: band--strigany-special-skills-list
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.channel-rats-mim.band.strigany-special-skills-list
+      scope: LATER
+      binding: null
+      reason: >-
+        River Strigany may choose this list instead of the standard skill lists. The six special
+        skills have no matching engine mechanics; preserved verbatim for the skills equivalence
+        review at promotion time.
+  name: Strigany Special Skills
+  effect: >-
+    River Strigany may choose to use the following skill list instead of the standard skill lists.
+    Knowledge of Myths and Legends: during the Exploration phase, if the Hero was not taken out of
+    action, you may re-roll one dice, keeping the second result even if it is worse. Bull Rush: when
+    he charges, the Hero may attempt to knock down his opponent rather than making his normal
+    attacks; roll to hit once with a +1 to hit modifier, though no roll to wound is necessary; if
+    the warrior hits with this attack, the opposing model is knocked down. Songster: any friendly
+    model within 6" of the Hero may re-roll any failed Leadership test with a +1 to Leadership; this
+    includes rout tests. Prize-fighter: the Hero suffers no penalties whatsoever for fighting
+    unarmed and receives +1 Attack when doing so. Animal Charmer: the Hero can control up to five
+    animals using Strigany charms provided that they remain within 6" of him; if an animal is not
+    within 6" of the Animal Charmer in the Movement phase, they will move D6" in a random direction.
+    Infiltration: a Strigany with this skill is always placed on the battlefield after the opposing
+    warband and can be placed anywhere on the table as long as it is out of sight of the opposing
+    warband and more than 12" away from any enemy model; if both players have models which
+    infiltrate, roll a D6 for each, and the lowest roll sets up first.
+  source:
+    manual: broheim.net
+    printed_page: 181
+    section: Strigany Special Skills
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Channel Rats.pdf
+  name_i18n:
+    es: Habilidades Especiales Strigany
+  effect_i18n:
+    es: >-
+      Los Strigany del Río pueden elegir usar la siguiente lista de habilidades en lugar de las
+      listas de habilidades estándar. Conocimiento de Mitos y Leyendas: durante la fase de
+      Exploración, si el Héroe no quedó Fuera de Combate, puedes repetir un dado, quedándote con el
+      segundo resultado aunque sea peor. Embestida: cuando carga, el Héroe puede intentar derribar a
+      su oponente en lugar de hacer sus ataques normales; tira por impactar una vez con un
+      modificador de +1 por impactar, aunque no es necesaria tirada para herir; si el guerrero
+      impacta con este ataque, el modelo oponente queda derribado. Cantor: cualquier modelo amistoso
+      a 6" del Héroe puede repetir cualquier chequeo de Liderazgo fallido con un +1 al Liderazgo;
+      esto incluye las tiradas de Huida. Luchador: el Héroe no sufre ninguna penalización por pelear
+      desarmado y recibe +1 Ataque al hacerlo. Encantador de Animales: el Héroe puede controlar
+      hasta cinco animales usando encantos Strigany, siempre que permanezcan a 6" de él; si un
+      animal no está a 6" del Encantador de Animales en la fase de Movimiento, se moverá 1D6" en una
+      dirección aleatoria. Infiltración: un Strigany con esta habilidad siempre se coloca en el
+      campo de batalla después de la banda oponente y puede colocarse en cualquier parte de la mesa,
+      siempre que esté fuera de la línea de visión de la banda oponente y a más de 12" de cualquier
+      modelo enemigo; si ambos jugadores tienen modelos que infiltran, tira 1D6 por cada uno, y el
+      que saque el resultado más bajo despliega primero.
+  applies_to:
+    band: true

@@ -1,0 +1,193 @@
+schema_version: 2
+band_id: disciples-of-maldred-mou
+profiles:
+- id: prophet
+  name: Prophet of the False Grail
+  type: hero
+  cost: 80
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - disciples-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not use missile weapons.
+  skill_access:
+  - combat
+  - academic
+  - speed
+  - special
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Prophet of the False Grail
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  source_path:
+  - heroes
+  - 1 Prophet of the False Grail
+  name_i18n:
+    es: Profeta del Falso Grial
+  rule_ids:
+  - prophet--leader
+  - prophet--wizard
+  - prophet--corrupting-influence
+  - prophet--his-masters-gift
+  combat_traits: {}
+- id: questing-knights
+  name: Questing Knights
+  type: hero
+  cost: 65
+  experience: 12
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - disciples-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not use missile weapons.
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Heroes / 0-2 Questing Knights
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  source_path:
+  - heroes
+  - 0-2 Questing Knights
+  name_i18n:
+    es: Caballeros Errantes
+  rule_ids:
+  - questing-knights--knights-virtue
+  - questing-knights--knights-feats
+  - questing-knights--corruption
+  - questing-knights--his-masters-gift
+  combat_traits: {}
+- id: squires
+  name: Squires
+  type: hero
+  cost: 15
+  experience: 4
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - squires-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Never more Squires than Knights
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  source:
+    manual: Broheim
+    printed_page: 8
+    section: Heroes / 0-2 Squires
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  source_path:
+  - heroes
+  - 0-2 Squires
+  name_i18n:
+    es: Escuderos
+  rule_ids:
+  - squires--oath-of-servitude
+  - squires--in-his-lords-footsteps
+  combat_traits: {}
+- id: mercenaries
+  name: Mercenary Guards
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - squires-equipment-list
+  - men-at-arms-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May be equipped from the Mercenary Equipment list before the first game of a new campaign; after that
+    only from the Squire or Men-at-Arms Equipment Lists.
+  - May not use missile weapons.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 9
+    section: Henchmen / 0-6 Mercenaries
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  source_path:
+  - henchmen
+  - 0-6 Mercenaries
+  name_i18n:
+    es: Guardias Mercenarios
+  rule_ids: []
+  combat_traits: {}
+- id: men-at-arms
+  name: Men-at-Arms
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - men-at-arms-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - 0-4 per Questing Knight
+  - May not use missile weapons.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 9
+    section: Henchmen / 0-8 Men-at-Arms
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  source_path:
+  - henchmen
+  - 0-8 Men-at-Arms
+  name_i18n:
+    es: Hombres de Armas
+  rule_ids: []
+  combat_traits: {}

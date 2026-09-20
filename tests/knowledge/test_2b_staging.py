@@ -34,6 +34,22 @@ def manifest_rows() -> list[dict]:
     return document.get("bands") or []
 
 
+def package_status() -> dict[str, str]:
+    """Band package directory -> manifest status.
+
+    A manifest row describes one source document; when that document prints more
+    than one warband list, the row lists every package it produced under
+    ``packages`` (defaulting to the row id itself).
+    """
+    out: dict[str, str] = {}
+    for row in manifest_rows():
+        status = str(row.get("status"))
+        for package in row.get("packages") or [row.get("id")]:
+            if package:
+                out[str(package)] = status
+    return out
+
+
 def test_staging_is_isolated_from_active_kb() -> None:
     """sources/knowledge must not contain or reference the staging tree."""
     assert not (KNOWLEDGE / "2B").exists()
@@ -67,18 +83,32 @@ def test_staging_uses_the_same_document_contract() -> None:
     while another worker is transcribing, and an in-progress package is not
     an error until its manifest row claims 'modeled' or later.
     """
-    rows = {str(row.get("id")): row for row in manifest_rows()}
+    rows = package_status()
     staging_dirs = STAGING / "bands" / "mordheim"
     if not staging_dirs.exists():
         return
     for band_dir in sorted(staging_dirs.iterdir()):
         if not band_dir.is_dir():
             continue
-        status = (rows.get(band_dir.name) or {}).get("status")
+        status = rows.get(band_dir.name)
         if status not in {"modeled", "english-reviewed", "translated", "validated", "promotable"}:
             continue
         for document in BAND_DOCUMENTS:
             assert (band_dir / document).exists(), f"{band_dir.name}: missing {document}"
+
+
+def test_every_staging_package_is_declared_by_a_manifest_row() -> None:
+    """No band package may exist outside the manifest's declared rows."""
+    declared = set(package_status())
+    staging_dirs = STAGING / "bands" / "mordheim"
+    if not staging_dirs.exists():
+        return
+    for band_dir in sorted(staging_dirs.iterdir()):
+        if band_dir.is_dir():
+            assert band_dir.name in declared, (
+                f"{band_dir.name}: package is not declared by any manifest row "
+                f"(add it to that row's 'packages')"
+            )
 
 
 def test_manifest_rows_are_well_formed() -> None:
@@ -108,7 +138,7 @@ def test_modeled_bands_have_consistent_references() -> None:
     manifest row claims 'modeled' or beyond; in-progress packages are
     skipped while the transcribing worker is still writing.
     """
-    rows = {str(row.get("id")): row for row in manifest_rows()}
+    rows = package_status()
     staging_dirs = STAGING / "bands" / "mordheim"
     if not staging_dirs.exists():
         return
@@ -128,10 +158,19 @@ def test_modeled_bands_have_consistent_references() -> None:
                 if isinstance(item, dict) and item.get("id")
             }
 
+    kb_rule_ids = set()
+    for path in (KNOWLEDGE / "catalog/rules").glob("*.yaml"):
+        document = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        for key in ("rules", "conditions"):
+            kb_rule_ids |= {
+                str(rule["id"]) for rule in document.get(key) or ()
+                if isinstance(rule, dict) and rule.get("id")
+            }
+
     for band_dir in sorted(staging_dirs.iterdir()):
         if not band_dir.is_dir():
             continue
-        status = (rows.get(band_dir.name) or {}).get("status")
+        status = rows.get(band_dir.name)
         if status not in {"modeled", "english-reviewed", "translated", "validated", "promotable"}:
             continue
         band = yaml.safe_load((band_dir / "band.yaml").read_text(encoding="utf-8")) or {}
@@ -159,11 +198,29 @@ def test_modeled_bands_have_consistent_references() -> None:
                     f"{band_dir.name}: rule_ids reference unknown rule {rule_id!r}"
                 )
         for rule in rules_doc.get("rules") or ():
-            if not rule.get("rule_ref"):
-                assert rule.get("effect"), f"{band_dir.name}: rule {rule.get('id')!r} has no effect"
+            if rule.get("rule_ref"):
+                assert rule["rule_ref"] in kb_rule_ids, (
+                    f"{band_dir.name}: rule {rule.get('id')!r} rule_ref {rule['rule_ref']!r} not in active KB"
+                )
+                continue
+            assert rule.get("effect"), f"{band_dir.name}: rule {rule.get('id')!r} has no effect"
             for profile_id in (rule.get("applies_to") or {}).get("profile_ids") or ():
                 assert profile_id in profile_ids, (
                     f"{band_dir.name}: rule {rule.get('id')!r} applies to unknown profile {profile_id!r}"
+                )
+
+        equipment_doc = (
+            yaml.safe_load((band_dir / "equipment-access.yaml").read_text(encoding="utf-8")) or {}
+        )
+        for equipment_list in equipment_doc.get("equipment_lists") or ():
+            list_id = str(equipment_list.get("id") or "?")
+            for entry in equipment_list.get("items") or ():
+                if not isinstance(entry, dict):
+                    continue
+                item_id = str(entry.get("item_id") or "")
+                assert item_id in active_items, (
+                    f"{band_dir.name}: equipment list {list_id!r} references "
+                    f"unknown item {item_id!r}"
                 )
 
 

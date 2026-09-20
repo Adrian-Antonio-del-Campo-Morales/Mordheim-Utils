@@ -1,0 +1,81 @@
+schema_version: 2
+band_id: fen-guard-mim
+profiles:
+- id: branchwych
+  name: Branchwych
+  type: hero
+  cost: 125
+  experience: 20
+  characteristics: {M: 5, WS: 2, BS: 2, S: 2, T: 3, W: 3, I: 3, A: 1, Ld: 9}
+  equipment_lists: [dryad-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, academic, special]
+  source: {manual: Broheim, printed_page: 4, section: 1 Branchwych, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf'}
+  source_path: [heroes, 1 Branchwych]
+  name_i18n: {es: Bruja de las Ramas}
+  rule_ids: [branchwych--leader, branchwych--immune-to-psychology, branchwych--wizard,
+    branchwych--eternal, branchwych--feed-upon-magic, branchwych--advancement]
+  combat_traits: {}
+- id: branchnymph
+  name: Branchnymph
+  type: hero
+  cost: 90
+  experience: 14
+  characteristics: {M: 5, WS: 4, BS: 3, S: 3, T: 4, W: 2, I: 3, A: 1, Ld: 8}
+  equipment_lists: [dryad-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, special]
+  source: {manual: Broheim, printed_page: 4, section: 1 Branchnymph, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf'}
+  source_path: [heroes, 1 Branchnymph]
+  name_i18n: {es: Ninfa de las Ramas}
+  rule_ids: [branchnymph--instinctual]
+  combat_traits: {}
+- id: spiteborn
+  name: Spiteborn
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics: {M: 5, WS: 3, BS: 3, S: 3, T: 2, W: 2, I: 3, A: 1, Ld: 6}
+  equipment_lists: [dryad-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, special]
+  source: {manual: Broheim, printed_page: 4, section: 0-2 Spiteborn, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf'}
+  source_path: [heroes, 0-2 Spiteborn]
+  name_i18n: {es: Nacidos del Rencor}
+  rule_ids: []
+  combat_traits: {}
+- id: dryads
+  name: Dryads
+  type: henchman
+  cost: 60
+  experience: 2
+  characteristics: {M: 5, WS: 3, BS: 0, S: 3, T: 4, W: 1, I: 2, A: 1, Ld: 8}
+  equipment_lists: [dryad-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 5, section: Dryads, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf'}
+  source_path: [henchmen, Dryads]
+  name_i18n: {es: Dríadas}
+  rule_ids: [dryads--fear, dryads--root-walk, dryads--tanglevine]
+  combat_traits: {}
+- id: treekin
+  name: Treekin
+  type: henchman
+  cost: 180
+  experience: 0
+  characteristics: {M: 6, WS: 3, BS: 0, S: 4, T: 4, W: 3, I: 1, A: 2, Ld: 10}
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Treekin cannot use weapons and fight unarmed without penalty.
+  skill_access: []
+  source: {manual: Broheim, printed_page: 5, section: 0-2 Treekin, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf'}
+  source_path: [henchmen, 0-2 Treekin]
+  name_i18n: {es: Hombres Árbol}
+  rule_ids: [treekin--immune-to-psychology, treekin--fear, treekin--may-not-run,
+    treekin--large, treekin--redwood, treekin--slow-growing]
+  combat_traits: {}

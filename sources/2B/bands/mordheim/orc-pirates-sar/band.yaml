@@ -1,0 +1,61 @@
+schema_version: 2
+id: orc-pirates-sar
+canonical_family: orc-mob
+name: Orc Pirates (Sartosa)
+name_i18n:
+  es: Piratas Orcos (Sartosa)
+original_locale: en
+ruleset: mordheim
+categories:
+- 2b
+grade: 2b
+setting: Sartosa
+publication: Sartosa Supplement
+status: staging
+sources:
+- manual: Broheim
+  printed_page: 2
+  section: Orc Pirates
+  url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+roster:
+  minimum_models: 3
+  maximum_models: 20
+  starting_gold: 500
+  members:
+  - profile_id: orc-boss
+    minimum: 1
+    maximum: 1
+  - profile_id: goblin-enjuneer
+    minimum: 0
+    maximum: 1
+  - profile_id: orc-big-uns
+    minimum: 0
+    maximum: 2
+  - profile_id: orc-boyz
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: goblin-swabbies
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: sea-squigs
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: sea-troll
+    minimum: 0
+    maximum: 1
+    group_size:
+      minimum: 1
+      maximum: 1
+rule_ids:
+- band--da-mob-rules
+- band--pressganging-orc
+- band--booma-pistol

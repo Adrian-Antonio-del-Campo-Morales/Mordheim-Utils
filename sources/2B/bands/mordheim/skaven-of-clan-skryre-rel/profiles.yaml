@@ -1,0 +1,218 @@
+schema_version: 2
+band_id: skaven-of-clan-skryre-rel
+profiles:
+- id: warlock-engineer
+  name: Warlock Engineer
+  type: hero
+  cost: 70
+  experience: 20
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - heroes-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Heroes / 1 Warlock engineer
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  source_path:
+  - heroes
+  - 1 Warlock engineer
+  name_i18n:
+    es: Ingeniero Hechicero
+  rule_ids:
+  - warlock-engineer--leader
+  - warlock-engineer--wizard
+  combat_traits: {}
+- id: overseer
+  name: Skaven Overseer
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - heroes-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Heroes / 0-1 Skaven Overseer
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  source_path:
+  - heroes
+  - 0-1 Skaven Overseer
+  name_i18n:
+    es: Capataz Skaven
+  rule_ids:
+  - overseer--slave-driver
+  - overseer--slave-master
+  combat_traits: {}
+- id: apprentice-warlocks
+  name: Apprentice Warlocks
+  type: hero
+  cost: 18
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 4
+  equipment_lists:
+  - heroes-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - shooting
+  - academic
+  - speed
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Heroes / 0-3 Apprentice warlocks
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  source_path:
+  - heroes
+  - 0-3 Apprentice warlocks
+  name_i18n:
+    es: Aprendices Hechiceros
+  rule_ids: []
+  combat_traits: {}
+- id: verminkin
+  name: Verminkin
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - henchmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 8
+    section: Henchmen / Verminkin
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  source_path:
+  - henchmen
+  - Verminkin
+  name_i18n:
+    es: Verminkin
+  rule_ids: []
+  combat_traits: {}
+- id: skaven-slaves
+  name: Skaven Slaves
+  type: henchman
+  cost: 6
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 2
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Armed with various scavenged weapons; they count as armed with a single dagger
+    and cannot use any other equipment.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Henchmen / Skaven slaves
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  source_path:
+  - henchmen
+  - Skaven slaves
+  name_i18n:
+    es: Esclavos Skaven
+  rule_ids:
+  - skaven-slaves--life-is-cheap
+  - skaven-slaves--easy-come-easy-go
+  - skaven-slaves--numerous
+  - skaven-slaves--experience
+  - skaven-slaves--worthless
+  combat_traits: {}
+- id: giant-rats
+  name: Giant Rats
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 2
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - None. Giant Rats never use any armour or weapons.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 8
+    section: Henchmen / Giant rats
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  source_path:
+  - henchmen
+  - Giant rats
+  name_i18n:
+    es: Ratas Gigantes
+  rule_ids:
+  - giant-rats--pack-size
+  - giant-rats--experience
+  combat_traits: {}

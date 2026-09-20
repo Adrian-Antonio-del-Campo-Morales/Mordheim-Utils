@@ -1,0 +1,182 @@
+schema_version: 2
+band_id: dwarf-slayers-kaz
+profiles:
+- id: giant-slayer
+  name: Giant Slayer
+  type: hero
+  cost: 85
+  experience: 20
+  characteristics:
+    M: 3
+    WS: 5
+    BS: 3
+    S: 3
+    T: 4
+    W: 2
+    I: 2
+    A: 2
+    Ld: 9
+  equipment_lists:
+  - dwarf-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not use any missile weapons or armour.
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 33
+    section: 1 Giant Slayer
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 1 Giant Slayer
+  name_i18n:
+    es: Matacolosos
+  rule_ids:
+  - giant-slayer--leader
+  combat_traits: {}
+- id: troll-slayers
+  name: Troll Slayers
+  type: hero
+  cost: 50
+  experience: 10
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - dwarf-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not use any missile weapons or armour.
+  skill_access:
+  - combat
+  - strength
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 33
+    section: 0-3 Troll Slayer
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 0-3 Troll Slayer
+  name_i18n:
+    es: Matatrolles
+  rule_ids: []
+  combat_traits: {}
+- id: rememberer
+  name: Rememberer
+  type: hero
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 3
+    BS: 2
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - dwarf-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Random race at recruitment — roll a D6; 1-4 he is a Dwarf, 5-6 he is a Human. If you do not
+    wish to hire whichever race you roll then you must wait until after your next game before
+    trying again. A Human Rememberer is instead equipped from the Mercenary equipment list in
+    the Mordheim rulebook (M 4, WS 4, BS 2, S 3, T 3, W 1, I 4, A 1, Ld 7).
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  source:
+    manual: broheim.net
+    printed_page: 33
+    section: 0-1 Rememberer
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 0-1 Rememberer
+  name_i18n:
+    es: Memoralista
+  rule_ids:
+  - rememberer--hard-to-find
+  - rememberer--rememberer
+  combat_traits: {}
+- id: slayers
+  name: Slayers
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 3
+    BS: 2
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - dwarf-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not use any missile weapons or armour.
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 34
+    section: Slayers
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - henchmen
+  - Slayers
+  name_i18n:
+    es: Matacollectiones
+  rule_ids: []
+  combat_traits: {}
+- id: clansmen
+  name: Dwarf Clansmen
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - dwarf-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 34
+    section: Dwarf Clansmen
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - henchmen
+  - Dwarf Clansmen
+  name_i18n:
+    es: Miembros del Clan
+  rule_ids: []
+  combat_traits: {}

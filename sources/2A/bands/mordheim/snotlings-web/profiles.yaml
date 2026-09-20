@@ -1,0 +1,309 @@
+schema_version: 2
+band_id: snotlings-web
+profiles:
+- id: bullied-goblin
+  name: Bullied Goblin
+  type: hero
+  cost: 35
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - snotling-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Bullied Goblin
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  source_path:
+  - heroes
+  - 1 Bullied Goblin
+  name_i18n:
+    es: Goblin Apaleado
+  rule_ids:
+  - bullied-goblin--leader
+  - bullied-goblin--not-a-snotling
+  - bullied-goblin--mob-rule
+  - bullied-goblin--the-rigors-of-leadership
+  combat_traits: {}
+- id: bigsnotz
+  name: Snotling BigSnotz
+  type: hero
+  cost: 15
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 2
+    T: 2
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - snotling-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Snotling BigSnotz
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  source_path:
+  - heroes
+  - 0-2 Snotling BigSnotz
+  name_i18n:
+    es: Grandes Snots
+  rule_ids:
+  - bullied-goblin--mob-rule
+  - bullied-goblin--the-rigors-of-leadership
+  combat_traits: {}
+- id: scouts
+  name: Snotling Scouts
+  type: hero
+  cost: 20
+  experience: 4
+  characteristics:
+    M: 5
+    WS: 1
+    BS: 2
+    S: 1
+    T: 1
+    W: 1
+    I: 5
+    A: 1
+    Ld: 4
+  equipment_lists:
+  - snotling-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - shooting
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Snotling Scouts
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  source_path:
+  - heroes
+  - 0-2 Snotling Scouts
+  name_i18n:
+    es: Exploradores Snotling
+  rule_ids:
+  - bullied-goblin--mob-rule
+  - bullied-goblin--the-rigors-of-leadership
+  - scouts--scout
+  - scouts--hes-no-threat
+  combat_traits: {}
+- id: shaman
+  name: Snotling Shaman
+  type: hero
+  cost: 30
+  experience: 4
+  characteristics:
+    M: 4
+    WS: 1
+    BS: 1
+    S: 1
+    T: 1
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - snotling-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Snotling Shaman
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  source_path:
+  - heroes
+  - 0-1 Snotling Shaman
+  name_i18n:
+    es: Chamán Snotling
+  rule_ids:
+  - bullied-goblin--mob-rule
+  - bullied-goblin--the-rigors-of-leadership
+  - shaman--wizard
+  - shaman--eadache
+  combat_traits: {}
+- id: shoota-teams
+  name: Snotling Shoota Team
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 1
+    T: 1
+    W: 2
+    I: 3
+    A: 2
+    Ld: 4
+  equipment_lists:
+  - shoota-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May only purchase ONE non-pebble or non-slingshot missile weapon (they cannot buy a crossbow AND a
+    blunderbuss).
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-5 Snotling Shoota Team
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  source_path:
+  - henchmen
+  - 0-5 Snotling Shoota Team
+  name_i18n:
+    es: Equipo de Tiro Snotling
+  rule_ids:
+  - shoota-teams--teamwork
+  - shoota-teams--cumbersome
+  - shoota-teams--recoil
+  combat_traits: {}
+- id: snotling-mobs
+  name: Snotling Mob
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 2
+    T: 2
+    W: 3
+    I: 3
+    A: 3
+    Ld: 5
+  equipment_lists:
+  - snotling-mob-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-3 Snotling Mobs
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  source_path:
+  - henchmen
+  - 0-3 Snotling Mobs
+  name_i18n:
+    es: Mobs Snotling
+  rule_ids:
+  - snotling-mobs--teamwork
+  - snotling-mobs--not-so-small-surprisingly-tough
+  - snotling-mobs--mass-stupidity
+  - snotling-mobs--mob-mentality
+  combat_traits: {}
+- id: runts
+  name: Runts
+  type: henchman
+  cost: 5
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 1
+    BS: 1
+    S: 1
+    T: 1
+    W: 1
+    I: 4
+    A: 1
+    Ld: 3
+  equipment_lists:
+  - snotling-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Runt Henchmen can only use a single One-Handed Weapon at a time and are not allowed any types of armour
+    (Teeny Hands).
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Runts
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  source_path:
+  - henchmen
+  - Runts
+  name_i18n:
+    es: Renacuajos
+  rule_ids:
+  - runts--teeny-hands
+  - runts--smallest-of-the-small
+  - runts--experience
+  - runts--swarm-size
+  combat_traits: {}
+- id: wheelo
+  name: Snotling Wheelo
+  type: henchman
+  cost: 100
+  experience: 0
+  characteristics:
+    M: 0
+    WS: 2
+    BS: 2
+    S: 4
+    T: 3
+    W: 2
+    I: 5
+    A: 2
+    Ld: 6
+  equipment_lists: []
+  fixed_equipment:
+  - dagger
+  - small_pebble
+  equipment_restrictions:
+  - The Crew of the Wheelo are armed with a Dagger and 1 Pebble. Movement 0 (1D6" walking / 2D6" run or
+    charge, rolled each turn). Uses a 40mm base.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Snotling Wheelo
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+  source_path:
+  - henchmen
+  - 0-1 Snotling Wheelo
+  name_i18n:
+    es: Wheelo Snotling
+  rule_ids:
+  - wheelo--movement
+  - wheelo--impact-hits
+  - wheelo--impact-hits-and-multiple-charges
+  - wheelo--combat
+  - wheelo--tough-machine
+  - wheelo--upgrades
+  combat_traits: {}

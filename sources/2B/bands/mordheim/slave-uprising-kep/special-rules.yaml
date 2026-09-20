@@ -1,0 +1,217 @@
+schema_version: 2
+band_id: slave-uprising-kep
+rules:
+- id: band--escapists
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.slave-uprising-kep.band.escapists
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Combines capture avoidance with a voluntary escape move out of hand-to-hand combat
+        (Ld test at the end of any combat round). Both subsystems are campaign/post-battle
+        or engagement-structure mechanics outside the current 1v1 duel scope; no matching
+        engine mechanic exists.
+  name: Escapists
+  effect: >-
+    These slaves are specialists at giving the slip in any sticky situation and know that
+    to run today means to be alive to run another day. They can never be captured, and any
+    injury result like Sold to the Pits or Captured by Skaven are treated as full recovery.
+    Additionally, any slave can run from a hand-to-hand combat at the end of any combat
+    round by passing an I test; if it is passed, place him 1/2" away from his opponent.
+  source:
+    manual: broheim.net
+    printed_page: 23
+    section: Special Rules / Escapists
+    url: https://broheim.net/downloads/warbands/supplement/karakeightpeaks/Slave Uprising.pdf
+  name_i18n:
+    es: Fugitivos
+  effect_i18n:
+    es: >-
+      Estos esclavos son especialistas en escapar de cualquier situación comprometida y saben
+      que correr hoy significa seguir vivo para correr otro día. Nunca pueden ser capturados, y
+      cualquier resultado de herida como «Sold to the Pits» o «Captured by Skaven» se trata como
+      recuperación total. Además, cualquier esclavo puede huir de un combate cuerpo a cuerpo al
+      final de cualquier ronda de combate superando un test de I; si lo supera, colócalo a 1/2"
+      de su oponente.
+  applies_to:
+    band: true
+- id: band--hate-skaven
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.slave-uprising-kep.band.hate-skaven
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Hate Skaven
+  effect: >-
+    After years of mistreatment, the warband's members hate all Skaven. See the Psychology
+    section of the Mordheim rules for details on the effects of hatred.
+  source:
+    manual: broheim.net
+    printed_page: 23
+    section: Special Rules / Hate Skaven
+    url: https://broheim.net/downloads/warbands/supplement/karakeightpeaks/Slave Uprising.pdf
+  name_i18n:
+    es: Odio a los Skaven
+  effect_i18n:
+    es: >-
+      Tras años de maltrato, los miembros de la banda odian a todos los Skaven. Consulta la sección
+      de Psicología de las reglas de Mordheim para más detalles sobre los efectos del odio.
+  applies_to:
+    band: true
+- id: demagogue--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.slave-uprising-kep.demagogue.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Leader re-roll aura is a psychology/rout mechanic; the active engine currently binds
+        leadership through roster leader selection instead of an aura rule (same
+        classification as the active KB and clan-angrund-kep Leader rules).
+  name: Leader
+  effect: >-
+    Any slaves can use his leadership if within 6".
+  source:
+    manual: broheim.net
+    printed_page: 24
+    section: Heroes / 1 Demagogue / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/karakeightpeaks/Slave Uprising.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier esclavo puede usar su Liderazgo si está a 6".
+  applies_to:
+    profile_ids:
+    - demagogue
+- id: underlings--trustworthy
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.slave-uprising-kep.underlings.trustworthy
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Narrative flavour of the Underlings' revolutionary role; no effect applies to the
+        isolated 1v1 duel or legal fighter construction.
+  name: Trustworthy
+  effect: >-
+    To organize a revolution the Demagogue will have need of trusty (as trusty as a Skaven
+    can be) appointees, to strike at several points at once and organize the movements of
+    thousands of forced labour.
+  source:
+    manual: broheim.net
+    printed_page: 24
+    section: Heroes / 0-3 Underlings
+    url: https://broheim.net/downloads/warbands/supplement/karakeightpeaks/Slave Uprising.pdf
+  name_i18n:
+    es: De Confianza
+  effect_i18n:
+    es: >-
+      Para organizar una revolución, el Demagogo necesitará nombrados de confianza (tan de confianza
+      como puede serlo un Skaven), para golpear en varios puntos a la vez y organizar los
+      movimientos de miles de trabajadores forzados.
+  applies_to:
+    profile_ids:
+    - underlings
+- id: goblin-leader--hate-dwarfs
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.slave-uprising-kep.goblin-leader.hate-dwarfs
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Special Rules
+  effect: >-
+    Greenskins have a deep mistrust of Skaven, and this is doubly true in the case of
+    Goblins. They rally around one of them, with whom the Demagogue will have to deal.
+    Special Rules: Hate Dwarfs.
+  source:
+    manual: broheim.net
+    printed_page: 24
+    section: Heroes / 0-1 Goblin Leader
+    url: https://broheim.net/downloads/warbands/supplement/karakeightpeaks/Slave Uprising.pdf
+  name_i18n:
+    es: Reglas Especiales
+  effect_i18n:
+    es: >-
+      Los pieles verdes desconfían profundamente de los Skaven, y esto es doblemente cierto en el
+      caso de los Goblins. Se agrupan en torno a uno de ellos, con quien el Demagogo tendrá que
+      entenderse. Reglas Especiales: Odio a los Enanos.
+  applies_to:
+    profile_ids:
+    - goblin-leader
+- id: human-leader--keep-together
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.slave-uprising-kep.human-leader.keep-together
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Narrative flavour; no effect applies to the isolated 1v1 duel or legal fighter
+        construction.
+  name: Keep Together
+  effect: >-
+    Humans are quite lost in the Under-Empire and keep together, one of them is then
+    manipulated by the Demagogue to add numbers to the fight.
+  source:
+    manual: broheim.net
+    printed_page: 24
+    section: Heroes / 0-1 Human Leader
+    url: https://broheim.net/downloads/warbands/supplement/karakeightpeaks/Slave Uprising.pdf
+  name_i18n:
+    es: Mantenerse Unidos
+  effect_i18n:
+    es: >-
+      Los humanos se sienten bastante perdidos en el Bajo Imperio y se mantienen unidos; uno de
+      ellos es manipulado entonces por el Demagogo para añadir efectivos a la lucha.
+  applies_to:
+    profile_ids:
+    - human-leader
+- id: goblin-slaves--hate-dwarfs
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.slave-uprising-kep.goblin-slaves.hate-dwarfs
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Hate Dwarfs
+  effect: Hate Dwarfs. See the Psychology section of the Mordheim rules.
+  source:
+    manual: broheim.net
+    printed_page: 25
+    section: Henchmen / 0-5 Goblin Slaves / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/karakeightpeaks/Slave Uprising.pdf
+  name_i18n:
+    es: Odio a los Enanos
+  effect_i18n:
+    es: >-
+      Odio a los Enanos. Consulta la sección de Psicología de las reglas de Mordheim.
+  applies_to:
+    profile_ids:
+    - goblin-slaves

@@ -1,0 +1,285 @@
+schema_version: 2
+band_id: woodsmen-de-artois-mou
+rules:
+- id: band--woodsmen-special-skills
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.woodsmen-de-artois-mou.band.woodsmen-special-skills
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Woodsmen Special Skills
+  effect: >-
+    Woodsmen Heroes with the Special skill available to them may choose to use the following Skill
+    list instead of any of the standard Skill tables available to them. Staff Master: when fighting
+    with a quarterstaff the warrior may use it to parry every attack made by one opponent. Bull
+    Rush: when he charges this hero may attempt to knock down his opponent rather than making his
+    normal attacks; roll to hit once with a +1 to hit modifier, though no 'to wound' roll is
+    necessary; instead, if the warrior hits with this attack, the opposing model is Knocked Down.
+    Forager: having learned to live off the land this warrior does not count towards warband size
+    when calculating income. Infiltration: a warrior with this ability is skilled at advancing under
+    cover without being detected; he can be placed anywhere on the table after the opposing warband
+    as long as it is out of sight of the opposing warband and more than 12" away from any enemy
+    model; if more than one player has models which infiltrate, roll a D6 for each, and the lowest
+    roll sets up first. Sniper: if Hidden, a warrior may shoot or cast prayers and still remain
+    hidden; if however the sniper's target is not taken out of action he is allowed an immediate
+    Initiative test as are anyone within 2" of him and if successful they spot the sniper and he
+    loses his ability to remain hidden.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Woodsmen Special Skills
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  name_i18n:
+    es: Habilidades Especiales de los Leñadores
+  effect_i18n:
+    es: >-
+      Los héroes leñadores con la habilidad Especial disponible pueden elegir usar la siguiente
+      lista en lugar de cualquiera de las tablas de habilidades estándar. Maestro del Bastón: al
+      luchar con un bastón el guerrero puede usarlo para parar cada ataque de un oponente.
+      Embestida: cuando carga, este héroe puede intentar derribar a su oponente en lugar de hacer
+      sus ataques normales; tira para golpear una vez con +1 para golpear, sin necesidad de tirada
+      para herir; si el guerrero golpea con este ataque, el modelo contrario queda Derribado.
+      Buscador de Comida: este guerrero no cuenta para el tamaño de la banda al calcular los
+      ingresos. Infiltración: puede colocarse en cualquier lugar de la mesa tras la banda rival,
+      siempre fuera de la vista de la banda enemiga y a más de 12 pulgadas de cualquier modelo
+      enemigo; si más de un jugador tiene modelos que se infiltran, tira un D6 por cada uno y la
+      tirada más baja se despliega primero. Francotirador: si está Oculto, el guerrero puede
+      disparar o rezar plegarias y seguir oculto; si el objetivo del francotirador no queda fuera de
+      combate, este puede hacer una prueba inmediata de Iniciativa, igual que cualquiera dentro de 2
+      pulgadas de él, y si la superan descubren al francotirador y pierde su capacidad de permanecer
+      oculto.
+  applies_to:
+    band: true
+- id: band--quarterstaff
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.woodsmen-de-artois-mou.band.quarterstaff
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Quarterstaff
+  effect: >-
+    Cost 15 gc, Common. Some Woodsmen favour the quarterstaff. It is a hefty length of wood about
+    the height of the warrior. In skilled hands it is a versatile weapon and not only will give a +1
+    S bonus but can also be used to parry. The quarterstaff is used two handed and cannot be used
+    with an additional hand weapon. Profile: Close Combat, Strength As User +1, Special Rules Two
+    Handed, Parry. Two-handed: a quarterstaff requires two hands to use and so a model using a
+    quarterstaff may not use a shield, buckler or additional hand weapon in close combat; if the
+    model has a shield he still gets a +1 bonus to his armour save against shooting. Parry: when an
+    opponent rolls to hit, the model armed with a quarterstaff may roll a D6; if the score is
+    greater than the highest to hit score of his opponent, the model has parried the blow, and that
+    attack is discarded. A model may not parry attacks made with double his own Strength - they are
+    simply too powerful to be stopped.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Woodsmen Special Equipment / Quarterstaff
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  name_i18n:
+    es: Bastón
+  effect_i18n:
+    es: >-
+      Coste 15 coronas, Común. Algunos leñadores prefieren el bastón. Es un grueso palo de madera de
+      la altura del guerrero. En manos expertas es un arma versátil que no solo da un bonus de +1 F,
+      sino que también puede usarse para parar. El bastón se usa a dos manos y no puede usarse con
+      un arma adicional. Perfil: Combate Cuerpo a Cuerpo, Fuerza Igual al Usuario +1, Reglas
+      Especiales A Dos Manos, Parar. A Dos Manos: el bastón requiere dos manos, por lo que un modelo
+      que lo use no puede llevar escudo, broquel o arma adicional en combate cuerpo a cuerpo; si el
+      modelo tiene escudo aún obtiene un +1 a su salvación por armadura contra disparos. Parar:
+      cuando un oponente tira para golpear, el modelo armado con bastón puede tirar un D6; si el
+      resultado es mayor que la tirada para golpear más alta de su oponente, el modelo ha parado el
+      golpe y ese ataque se descarta. Un modelo no puede parar ataques hechos con el doble de su
+      propia Fuerza: son simplemente demasiado poderosos para ser detenidos.
+  applies_to:
+    band: true
+- id: chief--leader
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.woodsmen-de-artois-mou.chief.leader
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Leader
+  effect: >-
+    Any warrior within 6" of the Chief may use his Leadership value when taking Leadership tests.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Chief / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6 pulgadas del Jefe puede usar su valor de Liderazgo cuando haga pruebas
+      de Liderazgo.
+  applies_to:
+    profile_ids:
+    - chief
+- id: friar--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.woodsmen-de-artois-mou.friar.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Wizard
+  effect: The Friar is a Priest of Taal and may use the prayers of Taal in TC 11.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Friar / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  name_i18n:
+    es: Hechicero
+  effect_i18n:
+    es: El Fraile es un Sacerdote de Taal y puede usar las plegarias de Taal en TC 11.
+  applies_to:
+    profile_ids:
+    - friar
+- id: bowman--expert-shot
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.woodsmen-de-artois-mou.bowman.expert-shot
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Expert Shot
+  effect: >-
+    Bowmen are used to shooting in dense forests and ignore penalties for cover when using a bow or
+    longbow.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-7 Bowmen / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  name_i18n:
+    es: Tirador Experto
+  effect_i18n:
+    es: >-
+      Los Arqueros están acostumbrados a disparar en bosques densos e ignoran las penalizaciones por
+      cobertura cuando usan un arco o arco largo.
+  applies_to:
+    profile_ids:
+    - bowman
+- id: trapper--set-traps
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.woodsmen-de-artois-mou.trapper.set-traps
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Set Traps
+  effect: >-
+    Trappers are not surprisingly experts in setting traps. A Trapper may set a trap if he spends a
+    turn doing nothing else (he may not set traps if he's just recovered from being Knocked Down).
+    Place a marker in base contact with the Trapper. When a model, friend or foe, moves within 2" of
+    the marker he risks setting off the trap - roll a D6. On a score of 3+ he has triggered the trap
+    and suffers a S4 hit (note that the Trapper won't trigger his own traps). If the trap did not
+    wound the model or it didn't trigger, the 'victim' may finish his move otherwise he is placed
+    knocked down or stunned 2" from the marker. Regardless whether the trap was triggered or not,
+    the marker is removed.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-5 Trappers / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  name_i18n:
+    es: Colocar Trampas
+  effect_i18n:
+    es: >-
+      Los Tramperos son, como no podía ser de otra forma, expertos en colocar trampas. Un Trampero
+      puede colocar una trampa si dedica un turno a no hacer nada más (no puede colocar trampas si
+      acaba de recuperarse de estar Derribado). Coloca un marcador en contacto base con el Trampero.
+      Cuando un modelo, amigo o enemigo, se mueva a 2 pulgadas del marcador corre el riesgo de
+      activar la trampa: tira un D6. Con un 3+ ha activado la trampa y sufre un impacto de F4 (ten
+      en cuenta que el Trampero no activará sus propias trampas). Si la trampa no hirió al modelo o
+      no se activó, la 'víctima' puede terminar su movimiento; de lo contrario se coloca derribada o
+      aturdida a 2 pulgadas del marcador. Independientemente de si la trampa se activó o no, el
+      marcador se retira.
+  applies_to:
+    profile_ids:
+    - trapper
+- id: hunting-hound--animals
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.woodsmen-de-artois-mou.hunting-hound.animals
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Animals
+  effect: Hunting Hounds are animals and do not gain experience (or learn new tricks).
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-5 Hunting Hounds / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  name_i18n:
+    es: Animales
+  effect_i18n:
+    es: Los Sabuesos de Caza son animales y no ganan experiencia (ni aprenden nuevos trucos).
+  applies_to:
+    profile_ids:
+    - hunting-hound
+- id: hunting-hound--dog-handler
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.woodsmen-de-artois-mou.hunting-hound.dog-handler
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Dog Handler
+  effect: >-
+    You may purchase no more Hunting Hounds than you have Trappers. If the number of Trappers is
+    reduced below the number of Hounds then the surplus Hounds may not take part in battles. They
+    can be kept until the Trappers are replaced but will count towards the warband size for trading
+    and maximum numbers.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-5 Hunting Hounds / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Woodsmen%20de%20Artois.pdf
+  name_i18n:
+    es: Adiestrador de Perros
+  effect_i18n:
+    es: >-
+      No puedes comprar más Sabuesos de Caza que Tramperos tengas. Si el número de Tramperos se
+      reduce por debajo del número de Sabuesos, los Sabuesos sobrantes no pueden participar en las
+      batallas. Pueden conservarse hasta que los Tramperos sean reemplazados, pero contarán para el
+      tamaño de banda a efectos de comercio y números máximos.
+  applies_to:
+    profile_ids:
+    - hunting-hound

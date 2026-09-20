@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/campaign-mutations.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/campaign/mutations.yaml",
+  "description": "The purchase rules and the mutation list of the Chaos warbands. A mutation is prose plus its listed price; the mutations a concrete warrior carries are campaign state. `effect` is the source text, not a typed operation, because no engine evaluates a mutation yet — the schema says so instead of pretending otherwise.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "catalog", "status", "rules", "mutations", "effect_ids"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "catalog": { "$ref": "defs.schema.json#/$defs/id" },
+    "status": { "$ref": "defs.schema.json#/$defs/catalog_status" },
+    "rules": { "$ref": "#/$defs/purchase_rules" },
+    "mutations": {
+      "description": "The mutation list.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/mutation" }
+    },
+    "effect_ids": {
+      "description": "Effects of this catalogue a warband's own special rules may modify.",
+      "$ref": "defs.schema.json#/$defs/id_list"
+    }
+  },
+  "$defs": {
+    "purchase_rules": {
+      "description": "When and at what price a mutation may be bought.",
+      "type": "object",
+      "required": ["id", "purchase", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "purchase": {
+          "type": "object",
+          "required": ["timing", "pricing", "note"],
+          "additionalProperties": false,
+          "properties": {
+            "timing": {
+              "description": "When a mutation may be bought. Currently only at recruitment, as the source states.",
+              "const": "at_recruitment_only"
+            },
+            "pricing": {
+              "description": "How the listed price of a mutation is applied.",
+              "type": "object",
+              "required": ["first_mutation", "second_and_subsequent"],
+              "additionalProperties": false,
+              "properties": {
+                "first_mutation": {
+                  "description": "Price of the first mutation a warrior takes.",
+                  "const": "listed_price"
+                },
+                "second_and_subsequent": {
+                  "description": "Price of every later mutation, as the source states it.",
+                  "const": "double_listed_price"
+                }
+              }
+            },
+            "note": { "$ref": "defs.schema.json#/$defs/display_text" }
+          }
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "mutation": {
+      "description": "One mutation: the listed price and the source text of its effect.",
+      "type": "object",
+      "required": ["id", "name", "name_i18n", "cost_gc", "effect", "effect_i18n", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable mutation id of the `campaign.mutation.*` family.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "cost_gc": {
+          "description": "Listed price in gold crowns, before the purchase rule's doubling.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    }
+  }
+}

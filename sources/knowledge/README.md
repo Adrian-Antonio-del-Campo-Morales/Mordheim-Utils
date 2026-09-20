@@ -9,6 +9,14 @@ indicates whether the effect belongs to the duel; `implemented` whether it has
 an implementation; `grant` how it is granted. An absent classification does not
 mean out of scope.
 
+The format of every maintained document here — the four files of a band package
+(`band.yaml`, `profiles.yaml`, `equipment-access.yaml`, `special-rules.yaml`),
+the catalogue families, the hireling catalogue and the campaign catalogue — is
+defined by the JSON Schemas of
+[`contracts/knowledge-editorial-v1`](../../contracts/knowledge-editorial-v1/README.md),
+which `python -m mordheim_combat_lab validate` enforces over the whole knowledge
+base.
+
 The KB carries no evidence of correctness. The structural contract and the
 semantic scenarios live in `tests/specs/`, so that the runtime does not depend
 on its own tests.

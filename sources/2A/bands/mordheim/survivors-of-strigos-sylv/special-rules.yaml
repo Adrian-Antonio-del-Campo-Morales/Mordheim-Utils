@@ -1,0 +1,657 @@
+schema_version: 2
+band_id: survivors-of-strigos-sylv
+rules:
+- id: band--undead-leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.band.undead-leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: leader death/replacement and hiring rules are campaign mechanics outside
+        the duel scope.
+  name: Undead Leader
+  effect: >-
+    The Strigoi Vampire is the only Undead model in the warband. The warband does not disband if the
+    Strigoi is killed, though it may not hire a new one.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Rules / Undead Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Líder No Muerto
+  effect_i18n:
+    es: >-
+      El Vampiro Strigoi es el único modelo no muerto de la banda. La banda no se disuelve si el
+      Strigoi muere, aunque no puede contratar otro nuevo.
+  applies_to:
+    band: true
+- id: band--hired-swords
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.band.hired-swords
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hiring rules are campaign mechanics outside the duel scope.
+  name: Hired Swords
+  effect: The warband may hire Hired Swords available to Undead warbands.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Rules / Hired Swords
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Espadas a Sueldo
+  effect_i18n:
+    es: La banda puede contratar las Espadas a Sueldo disponibles para las bandas de No Muertos.
+  applies_to:
+    band: true
+- id: strigoi-vampire--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.strigoi-vampire.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
+        psychology/rout mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 1 Strigoi Vampire / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+  rule_ref: shared-rule.leader
+- id: strigoi-vampire--kindred-hatred
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.strigoi-vampire.kindred-hatred
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Hatred (reroll misses against hated foes) is a combat psychology
+        mechanic not covered by the current engine scope.
+  name: Kindred Hatred
+  effect: A Strigoi Vampire Hates vampires of other blood-lines.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 1 Strigoi Vampire / Special Rules / Kindred Hatred
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Odio de Estirpe
+  effect_i18n:
+    es: Un Vampiro Strigoi Odia a los vampiros de otras estirpes.
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+- id: strigoi-vampire--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.strigoi-vampire.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Cause Fear
+  effect: Vampires are terrifying Undead creatures and therefore cause Fear.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 1 Strigoi Vampire / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Causa Miedo
+  effect_i18n:
+    es: Los vampiros son criaturas no muertas aterradoras y por tanto causan Miedo.
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+- id: strigoi-vampire--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.strigoi-vampire.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (Fear, never leaving combat) is not covered by the current
+        engine scope.
+  name: Immune to Psychology
+  effect: Vampires are not affected by psychology (such as fear) and never leave combat.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 1 Strigoi Vampire / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Inmune a la Psicología
+  effect_i18n:
+    es: >-
+      Los vampiros no se ven afectados por la psicología (como el miedo) y nunca abandonan el
+      combate.
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+- id: strigoi-vampire--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Vampires are not affected by any poison.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 1 Strigoi Vampire / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Inmune al Veneno
+  effect_i18n:
+    es: Los vampiros no se ven afectados por ningún veneno.
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+- id: strigoi-vampire--no-pain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.strigoi-vampire.no-pain
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: injury-table result conversion is a post-duel/campaign resolution
+        mechanic.
+  name: No Pain
+  effect: Vampires treat a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 1 Strigoi Vampire / Special Rules / No Pain
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: Los vampiros tratan un resultado Aturdido de la tabla de heridas como Derribado.
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+- id: seer--seeker
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.seer.seeker
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: exploration-dice modification is a post-duel/campaign resolution
+        mechanic.
+  name: Seeker
+  effect: >-
+    Due to their premonitions, Seers who partake in a battle, and are not taken Out of Action may
+    modify a single exploration dice by +/- 1.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-1 Seer / Special Rules / Seeker
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Buscador
+  effect_i18n:
+    es: >-
+      Gracias a sus premoniciones, los Videntes que participan en una batalla y no quedan Fuera de
+      Combate pueden modificar un dado de exploración en +/- 1.
+  applies_to:
+    profile_ids:
+    - seer
+- id: seer--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.seer.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (Charms & Hexes; the spell list is preserved in
+        sources/2A/catalog/magic-2a.yaml).
+  name: Wizard
+  effect: Seers have one spell randomly generated from the Charms & Hexes spell list.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-1 Seer / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Hechicera
+  effect_i18n:
+    es: >-
+      Las Videntes tienen un hechizo generado aleatoriamente de la lista de hechizos Encantos y
+      Maldiciones (Charms & Hexes).
+  applies_to:
+    profile_ids:
+    - seer
+- id: domnu--child-of-darkness
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.domnu.child-of-darkness
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: immunity to the setting-specific Spooky rule belongs to the Sylvania
+        exploration/psychology settings outside the duel scope.
+  name: Child of Darkness
+  effect: >-
+    Borne of the night, Domnu are steadfast and loyal servants of the Strigoi. They are immune to
+    the Spooky special rule for Sylvania.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-3 Domnu / Special Rules / Child of Darkness
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Hijo de la Oscuridad
+  effect_i18n:
+    es: >-
+      Engendrados por la noche, los Domnu son servidores leales y firmes de los Strigoi. Son inmunes
+      a la regla especial Escalofriante de Sylvania.
+  applies_to:
+    profile_ids:
+    - domnu
+- id: domnu--gypsy-ward
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.domnu.gypsy-ward
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: magic-subsystem ward saves are outside the current engine scope.
+  name: Gypsy Ward
+  effect: >-
+    Possessing an innate resistance to magic, the Domnu has a special save of 5+ versus magical
+    attacks.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-3 Domnu / Special Rules / Gypsy Ward
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Protección Gitana
+  effect_i18n:
+    es: >-
+      Con una resistencia innata a la magia, el Domnu tiene una salvación especial de 5+ contra los
+      ataques mágicos.
+  applies_to:
+    profile_ids:
+    - domnu
+- id: ghouls--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.ghouls.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Cause Fear
+  effect: Ghouls are twisted and repulsive creatures and therefore cause Fear.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Ghouls / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Causa Miedo
+  effect_i18n:
+    es: Los necrófagos son criaturas retorcidas y repulsivas y por tanto causan Miedo.
+  applies_to:
+    profile_ids:
+    - ghouls
+- id: giant-bats--animals
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.giant-bats.animals
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: experience gain rules are post-duel/campaign progression mechanics.
+  name: Animals
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-2 Giant Bats / Special Rules / Animals
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Animales
+  applies_to:
+    profile_ids:
+    - giant-bats
+  rule_ref: shared-rule.animal
+- id: giant-bats--flying
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.giant-bats.flying
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: flying movement is outside the current engine scope.
+  name: Flying
+  effect: >-
+    Giant Bats fly through the night air, and thus do not need to climb or leap over gaps, even if
+    their movement phase ends with them over open air.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-2 Giant Bats / Special Rules / Flying
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Volador
+  effect_i18n:
+    es: >-
+      Los Murciélagos Gigantes vuelan por el aire nocturno, y por tanto no necesitan trepar ni
+      saltar sobre huecos, incluso si su fase de movimiento termina con ellos sobre el vacío.
+  applies_to:
+    profile_ids:
+    - giant-bats
+- id: giant-bats--large
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.giant-bats.large
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Large-target targeting and hitting modifiers are outside the current
+        engine scope.
+  name: Large
+  effect: Giant Bats are Large creatures.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-2 Giant Bats / Special Rules / Large
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Grande
+  effect_i18n:
+    es: Los Murciélagos Gigantes son criaturas Grandes.
+  applies_to:
+    profile_ids:
+    - giant-bats
+- id: giant-bats--sonic
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.giant-bats.sonic
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Line of Sight handling for charges is outside the current engine scope.
+  name: Sonic
+  effect: >-
+    Giant Bats use sonic vibrations to navigate the dark of night. No Line of Sight is needed for a
+    charge.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-2 Giant Bats / Special Rules / Sonic
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Sónico
+  effect_i18n:
+    es: >-
+      Los Murciélagos Gigantes usan vibraciones sónicas para orientarse en la oscuridad de la noche.
+      No se necesita Línea de Visión para una carga.
+  applies_to:
+    profile_ids:
+    - giant-bats
+- id: strigoi-vampire--iron-sinews
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.special.iron-sinews
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: skill-granted characteristic bonuses are advancement-time mechanics
+        outside the duel scope.
+  name: Iron Sinews
+  effect: >-
+    After death the Vampire's muscles grow far greater than they ever could have in his mortal life.
+    The Strigoi becomes a beast of pure muscular power. Add +1S to the Vampire's profile.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Skills / Strigoi Vampire Only / Iron Sinews
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Tendones de Hierro
+  effect_i18n:
+    es: >-
+      Tras la muerte, los músculos del Vampiro crecen mucho más de lo que jamás pudieron en su vida
+      mortal. El Strigoi se convierte en una bestia de pura potencia muscular. Añade +1 a la F del
+      Vampiro.
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+- id: strigoi-vampire--great-thirster
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.special.great-thirster
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: conditional Frenzy tied to out-of-action results is not covered by the
+        current engine scope.
+  name: Great Thirster
+  effect: >-
+    Such is the appetite of this beast that he must feed almost constantly. Once the taste of blood
+    has touched his lips, there is little that can stop the Vampire from drinking again. Once the
+    Vampire takes a model Out of Action, treat him as Frenzied. This effect remains until he is
+    Knocked Down, Stunned, or taken Out of Action.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Skills / Strigoi Vampire Only / Great Thirster
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Gran Asediador
+  effect_i18n:
+    es: >-
+      Tal es el apetito de esta bestia que debe alimentarse casi constantemente. Una vez que el
+      sabor de la sangre ha tocado sus labios, hay poco que pueda impedir que el Vampiro beba de
+      nuevo. Cuando el Vampiro deje Fuera de Combate a un modelo, trátalo como Frenético. Este
+      efecto persiste hasta que sea Derribado, Aturdido o deje de estar Fuera de Combate.
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+- id: strigoi-vampire--curse-of-the-revenant
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.regeneration
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.regeneration
+  name: Curse of the Revenant
+  effect: >-
+    So strong is the desire for some to continue living that they defy death. Once a Vampire has
+    taken the Great Thirster special skill, he may choose the Curse of the Revenant. This skill
+    allows the Vampire to regenerate lost wounds on a D6 roll of 5+. Only one wound may be recovered
+    in this fashion per turn.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Skills / Strigoi Vampire Only / Curse of the Revenant
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Maldición del Réprobo
+  effect_i18n:
+    es: >-
+      Tan fuerte es el deseo de algunos por seguir viviendo que desafían a la muerte. Una vez que el
+      Vampiro haya tomado la habilidad especial Gran Asediador, puede elegir la Maldición del
+      Réprobo. Esta habilidad permite al Vampiro regenerar las heridas perdidas con una tirada de D6
+      de 5+. Solo se puede recuperar una herida de esta manera por turno.
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+- id: strigoi-vampire--dark-arts
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.special.dark-arts
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (Dark Arts; the spell list is preserved in
+        sources/2A/catalog/magic-2a.yaml).
+  name: Dark Arts
+  effect: >-
+    The Strigoi has retained some of its former magical aptitude. He may choose Arcane Lore as an
+    advance, and immediately roll for a spell on the Dark Arts table below. Subsequent spells may be
+    chosen instead of skills.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Skills / Strigoi Vampire Only / Dark Arts
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Artes Oscuras
+  effect_i18n:
+    es: >-
+      El Strigoi ha conservado parte de su aptitud mágica original. Puede elegir un Saber Arcano
+      como mejora, e inmediatamente tirar por un hechizo de la tabla de Artes Oscuras de abajo. Los
+      hechizos posteriores pueden elegirse en lugar de habilidades.
+  applies_to:
+    profile_ids:
+    - strigoi-vampire
+- id: seer--light-fingers
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.special.light-fingers
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: post-duel wyrdstone collection is a campaign resolution mechanic.
+  name: Light Fingers
+  effect: >-
+    Gypsies are apt to find things that others have lost. Should a Hero with this skill take an
+    enemy model Out of Action, they will find an extra piece of Wyrdstone. Only one piece of
+    treasure may be found in this manner per game.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Skills / Strigany Heroes Only / Light Fingers
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Manos Ligeras
+  effect_i18n:
+    es: >-
+      Los gitanos tienen facilidad para encontrar cosas que otros han perdido. Si un Héroe con esta
+      habilidad deja Fuera de Combate a un modelo enemigo, encontrará una pieza extra de
+      Piedrahechiceira. Solo se puede encontrar un tesoro de esta manera por partida.
+  applies_to:
+    profile_ids:
+    - seer
+    - domnu
+- id: seer--practiced-arm
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.survivors-of-strigos-sylv.special.practiced-arm
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: multi-shot thrown-weapon attacks are outside the current engine scope.
+  name: Practiced Arm
+  effect: >-
+    Such is the skill with which the Gypsy can launch throwing knives that he can throw two of them
+    per turn. These missiles must be at the same target and gain +1 to their injury rolls to
+    represent the skill with which they were aimed.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Skills / Strigany Heroes Only / Practiced Arm
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+  name_i18n:
+    es: Brazo Ejercitado
+  effect_i18n:
+    es: >-
+      Tal es la habilidad con la que el gitano puede lanzar cuchillas arrojadizas que puede lanzar
+      dos por turno. Estos proyectiles deben ir dirigidos al mismo objetivo y suman +1 a sus tiradas
+      de herida para representar la destreza con la que fueron apuntados.
+  applies_to:
+    profile_ids:
+    - seer
+    - domnu

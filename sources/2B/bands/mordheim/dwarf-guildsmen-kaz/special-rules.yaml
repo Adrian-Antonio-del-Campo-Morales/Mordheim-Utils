@@ -1,0 +1,226 @@
+schema_version: 2
+band_id: dwarf-guildsmen-kaz
+rules:
+- id: band--town-crier-6-inheritance
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-guildsmen-kaz.band.town-crier-6-inheritance
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred cross-reference: inherits special rules, equipment lists, Dwarf Axe usage and
+        Dwarf special skills from Town Crier 6 (or Best of Town Crier), except Incomparable
+        Miners. Resolves after equivalence review against the active KB dwarf bands.
+  name: Town Crier 6 Inheritance
+  effect: >-
+    All of the special rules and equipment lists from Town Crier 6 (or Best of Town Crier) apply
+    apart from Incomparable Miners. Dwarf Guildsmen may use the Dwarf Axe as detailed in Town
+    Crier 6 (or Best of Town Crier). Dwarf Heroes may use any of the Dwarf Special Skills listed
+    in Town Crier 6 (or Best of Town Crier).
+  source:
+    manual: broheim.net
+    printed_page: 26
+    section: Special Rules / Dwarf Equipment Lists / Dwarf Special Skills
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Herencia de Town Crier 6
+  effect_i18n:
+    es: >-
+      Se aplican todas las reglas especiales y las listas de equipo de Town Crier 6 (o Best of
+      Town Crier), excepto Mineros Incomparables. Los Gremios Enanos pueden usar el Hacha Enana
+      tal como se detalla en Town Crier 6 (o Best of Town Crier). Los héroes enanos pueden usar
+      cualquiera de las Habilidades Especiales Enanas listadas en Town Crier 6 (o Best of Town
+      Crier).
+  applies_to:
+    band: true
+- id: master-craftsman--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-guildsmen-kaz.master-craftsman.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Leader
+  effect: >-
+    Any model in the warband within 6\" of the Dwarf Master Craftsman may use his Leadership
+    instead of their own.
+  source:
+    manual: broheim.net
+    printed_page: 26
+    section: heroes / 1 Dwarf Master Craftsman / Special Rules / Leader
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier modelo de la banda a 6\" del Maestro Artesano Enano puede usar su Liderazgo en
+      lugar del propio.
+  applies_to:
+    profile_ids:
+    - master-craftsman
+- id: band--shame
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-guildsmen-kaz.band.shame
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: campaign progression and psychology (Immune to Psychology, Trollslayer
+        conversion).
+  name: Shame
+  effect: >-
+    If a Dwarf hero is taken OOA in any of the following circumstances the Dwarf is so ashamed by
+    his failure that he becomes a Trollslayer. Only by seeking honourable death in combat can he
+    redeem himself. The Dwarf loses any special abilities, e.g. \"Leader\", but keeps any skills
+    he got. The Dwarf is Immune to Psychology. The Dwarf has also access to the special
+    Trollslayer skills in the Mordheim rulebook. Except for the leader, his place may be taken by
+    another Dwarf at the next recruiting phase. If the leader becomes a Trollslayer you must
+    choose another leader as if he had died. A Dwarf hero will consider any of the following to
+    be shameful: to be taken OOA in the Dwarf player's first or second turn; to be taken OOA in
+    single combat against an opponent with WS 2 or S 2 or by an animal (e.g. dogs, rats or
+    squirrels).
+  source:
+    manual: broheim.net
+    printed_page: 25
+    section: Special Rules / Shame
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Vergüenza
+  effect_i18n:
+    es: >-
+      Si un héroe enano queda fuera de combate en cualquiera de las siguientes circunstancias,
+      el enano queda tan avergonzado por su fracaso que se convierte en Matatrolles. Solo buscando una muerte honorable en combate podrá redimirse. El enano
+      pierde cualquier habilidad especial, p. ej. \"Líder\", pero conserva las habilidades que
+      ya tuviera. El enano es Inmune a la Psicología. El enano también tiene acceso a las
+      habilidades especiales de Matatrolles del libro de reglas de Mordheim. Excepto en el
+      caso del líder, su puesto puede ser ocupado por otro enano en la siguiente fase de
+      reclutamiento. Si el líder se convierte en Matatrolles debes elegir otro líder como
+      si hubiera muerto. Un héroe enano considerará vergonzoso cualquiera de lo siguiente: quedar
+      fuera de combate en el primer o segundo turno del jugador enano; quedar fuera de combate
+      en combate singular contra un oponente con HA 2 o F 2 o por un animal (p. ej. perros, ratas
+      o ardillas).
+  applies_to:
+    band: true
+- id: band--miners
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-guildsmen-kaz.band.miners
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: deployment.
+  name: Miners
+  effect: >-
+    Miners are particularly adept at finding their way underground and at need will make new
+    tunnels. Up to 3 models (man sized - no ogres etc) may be deployed anywhere on the table at
+    the end of the first turn. They may not be placed closer than 8\" from any enemy model.
+  source:
+    manual: broheim.net
+    printed_page: 25
+    section: Special Rules / Miners
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Mineros
+  effect_i18n:
+    es: >-
+      Los mineros son especialmente hábiles para abrirse camino bajo tierra y, si es necesario,
+      cavarán nuevos túneles. Hasta 3 modelos (de tamaño humano; no ogros, etc.) pueden
+      desplegarse en cualquier punto de la mesa al final del primer turno. No pueden colocarse a
+      menos de 8\" de ningún modelo enemigo.
+  applies_to:
+    band: true
+- id: band--engineers
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-guildsmen-kaz.band.engineers
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: shooting ranges are outside the close-combat runtime.
+  name: Engineers
+  effect: >-
+    A Dwarf Weaponsmith is a master of mechanical devices. By using stronger construction
+    materials and time-tested secrets of Dwarf engineering, a Dwarf Weaponsmith can increase the
+    distance the warband's missile weapons can shoot. All the warband's missile weapons have 6\"
+    added to their range, as long as the Dwarf Weaponsmith or a Master Craftsman is in the
+    warband (the modifications require constant maintenance).
+  source:
+    manual: broheim.net
+    printed_page: 25
+    section: Special Rules / Engineers
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Ingenieros
+  effect_i18n:
+    es: >-
+      Un Herrero Enano es un maestro de los dispositivos mecánicos. Mediante el uso de
+      materiales de construcción más fuertes y los secretos probados por el tiempo de la
+      ingeniería enana, un Herrero Enano puede aumentar la distancia a la que disparan las armas
+      de misil de la banda. Todas las armas de misil de la banda tienen 6\" adicionales de
+      alcance, mientras el Herrero Enano o un Maestro Artesano esté en la banda (las
+      modificaciones requieren mantenimiento constante).
+  applies_to:
+    band: true
+- id: band--brewers
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-guildsmen-kaz.band.brewers
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: pre-battle random effects and psychology (fear, frenzy).
+  name: Brewers
+  effect: >-
+    A Dwarf Brewer is always able to produce a barrel of his finest brew prior to each battle.
+    The leader will allow D3 of his heroes to drink before a battle. Nominate the models to
+    drink and then roll a D6 to determine what type of beer he is offering. 1-2: XXXXXX A strong
+    brew which endows the Dwarf with confidence. The warrior is immune to fear for the duration
+    of the battle. 3-4: Troll Brew. Wild and frothy, the beer goes to the Dwarf's head filling
+    him with a kind of madness. For the duration of the battle, the warrior is subject to frenzy
+    as described in the Mordheim rulebook. 5-6: Special Brew. A yeasty brew with plenty of body
+    to invigorate and strengthen. The warrior's Weapon Skill and Strength are both increased by
+    +1 for the duration of the battle. This may temporarily take the statistics above the normal
+    racial maximum but never greater than 10. Only Dwarfs may drink the brew as they guard their
+    precious supply jealously and anyway it is said to be too strong for other races.
+  source:
+    manual: broheim.net
+    printed_page: 25
+    section: Special Rules / Brewers
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Cerveceros
+  effect_i18n:
+    es: >-
+      un Cervecero Enano siempre puede producir un barril de su mejor cerveza antes de cada
+      batalla. El líder permitirá que D3 de sus héroes beban antes de la batalla. Designa a los
+      modelos que beben y luego tira un D6 para determinar qué tipo de cerveza ofrece. 1-2:
+      XXXXXX, una cerveza fuerte que dota al enano de confianza. El guerrero es inmune al miedo
+      durante la batalla. 3-4: Cerveza de Troll. Salvaje y espumosa, la cerveza sube a la
+      cabeza del enano llenándolo de una especie de locura. Durante la batalla, el guerrero está
+      sujeto a frenesí tal como se describe en el libro de reglas de Mordheim. 5-6: Cerveza
+      Especial. Una cerveza con mucho cuerpo que invigora y fortalece. La HA y la F del guerrero
+      aumentan ambas en +1 durante la batalla. Esto puede llevar temporalmente las
+      características por encima del máximo racial normal, pero nunca por encima de 10. Solo los
+      enanos pueden beber, porque guardan celosamente su preciada reserva y, en cualquier caso,
+      se dice que es demasiado fuerte para otras razas.
+  applies_to:
+    band: true

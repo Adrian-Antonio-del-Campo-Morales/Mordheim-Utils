@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/campaign-trading-post.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/campaign/trading-post.yaml",
+  "description": "The market: base price, availability and restrictions of every tradable item, plus the purchase options a few of them carry (a brace, a first free dagger). It is the only source of market price, rarity and post-battle availability — `bands/*/equipment-access.yaml` says who may select an item when creating the warband and never repeats the market price, and a confirmed difference is recorded there as a `price_override`, not as a second implicit price here.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "catalog", "status", "source", "items", "effect_ids"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "catalog": { "$ref": "defs.schema.json#/$defs/id" },
+    "status": { "$ref": "defs.schema.json#/$defs/catalog_status" },
+    "source": { "$ref": "defs.schema.json#/$defs/source_ref" },
+    "items": {
+      "description": "One entry per tradable item. The entry keeps a campaign id of its own and points at the canonical record through `item_id`; the item definition is never duplicated.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/entry" }
+    },
+    "effect_ids": {
+      "description": "Effects of the market a warband's own special rules may modify.",
+      "$ref": "defs.schema.json#/$defs/id_list"
+    }
+  },
+  "$defs": {
+    "entry": {
+      "description": "One market entry.",
+      "type": "object",
+      "required": ["id", "item_id", "price", "availability", "restrictions", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable campaign id of the `campaign.trading-post.*` family; a purchase option gets an explicit child id such as `campaign.trading-post.pistol.brace`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "item_id": {
+          "description": "Canonical `item_id` of `catalog/items/`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "price": {
+          "description": "The published market price, or `null` when the source lists the item without printing a market price.",
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/price" }
+          ]
+        },
+        "availability": { "$ref": "#/$defs/availability" },
+        "restrictions": {
+          "description": "Who may buy the item. An empty list is the declared convention for `no restriction`.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/restriction" }
+        },
+        "purchase_options": {
+          "description": "Alternative ways of buying the same item, e.g. a brace of two or a first free dagger.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/purchase_option" }
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "price": {
+      "description": "A published market price. It is either a fixed amount with an optional variable surcharge, or a multiplier applied to the record being upgraded.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "base_gc": {
+          "description": "Fixed part of the price, in gold crowns.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "multiplier": {
+          "description": "Multiple of the base price of the record being upgraded, e.g. Gromril Weapon at 4x. Used instead of `base_gc`, not next to it.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "per": {
+          "description": "Unit of sale the price applies to. `pair` prices the brace as a whole.",
+          "enum": ["pair"]
+        },
+        "optional_variable_cost": { "$ref": "#/$defs/variable_cost" }
+      },
+      "oneOf": [
+        { "required": ["base_gc"] },
+        { "required": ["multiplier"] }
+      ]
+    },
+    "variable_cost": {
+      "description": "A rolled surcharge on top of the base price, as the source prints it: `10 + 1D6 gc` is `{ dice: { count: 1, sides: 6 } }` on a `base_gc: 10`.",
+      "type": "object",
+      "required": ["dice"],
+      "additionalProperties": false,
+      "properties": {
+        "dice": { "$ref": "defs.schema.json#/$defs/dice" },
+        "multiplier": {
+          "description": "Multiple applied to the rolled amount, e.g. `D6 x 25`.",
+          "type": "integer"
+        }
+      }
+    },
+    "availability": {
+      "description": "How the item is obtained after a battle.",
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "description": "`common` is always available and needs no test; `rare` requires a rarity test against `rarity` (see `trading-and-rarity.yaml`); `not_sold` is listed by the source but not on the market.",
+          "enum": ["common", "rare", "not_sold"]
+        },
+        "rarity": {
+          "description": "The `Rare N` value a rarity test must reach. Declared exactly when the item is `rare`, and read from here by the rarity rule instead of being repeated in it.",
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "kind": { "const": "rare" } },
+            "required": ["kind"]
+          },
+          "then": { "required": ["rarity"] }
+        },
+        {
+          "if": {
+            "properties": { "kind": { "enum": ["common", "not_sold"] } },
+            "required": ["kind"]
+          },
+          "then": { "not": { "required": ["rarity"] } }
+        }
+      ]
+    },
+    "restriction": {
+      "description": "A typed buying restriction. `condition` and `profile_only` carry the source wording in `note` because the restriction is editorial prose, not a rule the applications evaluate yet. A warband restriction names either the individual bands (`band_ids`) or the shared groups (`groups`) it applies to, never both.",
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "enum": ["warband_only", "warband_forbidden", "heroes_only", "profile_only", "limit_per_warband", "limit_per_model", "condition"] },
+        "band_ids": { "$ref": "defs.schema.json#/$defs/id_list" },
+        "groups": { "$ref": "defs.schema.json#/$defs/id_list" },
+        "value": { "type": "integer", "minimum": 1 },
+        "note": { "$ref": "defs.schema.json#/$defs/display_text" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "enum": ["warband_only", "warband_forbidden"] } }, "required": ["type"] },
+          "then": {
+            "oneOf": [
+              { "required": ["band_ids"], "not": { "required": ["groups"] } },
+              { "required": ["groups"], "not": { "required": ["band_ids"] } }
+            ]
+          }
+        },
+        {
+          "if": { "properties": { "type": { "const": "heroes_only" } }, "required": ["type"] },
+          "then": { "not": { "anyOf": [{ "required": ["band_ids"] }, { "required": ["groups"] }, { "required": ["value"] }, { "required": ["note"] }] } }
+        },
+        {
+          "if": { "properties": { "type": { "enum": ["limit_per_warband", "limit_per_model"] } }, "required": ["type"] },
+          "then": { "required": ["value"] }
+        },
+        {
+          "if": { "properties": { "type": { "enum": ["condition", "profile_only"] } }, "required": ["type"] },
+          "then": { "required": ["note"] }
+        }
+      ]
+    },
+    "purchase_option": {
+      "description": "An alternative way of buying the item.",
+      "type": "object",
+      "required": ["id", "quantity", "price"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Child id of the entry, e.g. `campaign.trading-post.pistol.brace`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "quantity": {
+          "description": "How many units the option buys at once.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "price": { "$ref": "#/$defs/price" },
+        "availability": { "$ref": "#/$defs/availability" },
+        "condition": {
+          "description": "When the option applies, e.g. `first_dagger_for_new_recruit`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        }
+      }
+    }
+  }
+}

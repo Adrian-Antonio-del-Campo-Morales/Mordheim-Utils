@@ -1,0 +1,896 @@
+schema_version: 2
+band_id: necrarchs-the-soul-stealers-lotd1
+rules:
+- id: band--death-of-the-leader
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.band.death-of-the-leader
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: leader replacement, warband-wide crumble cascade and hiring rules are campaign
+        mechanics outside the duel scope.
+  name: Death of the Leader
+  effect: >-
+    Should the Necrarch perish, the Thrall shall pick up the mantle of Leader and all conferred
+    bonuses shall be transferred to him. He may immediately roll on the spell list for one spell.
+    You cannot hire another Necrarch, but you may create another Thrall from your current list of
+    Acolyte Heroes. They will retain their current stat-line, but shall gain the benefits of being
+    undead: Immune to Poison & Psychology, causes Fear & suffers No Pain. Should both Necrarch and
+    Thrall be destroyed at once, the evil magics that bind the warband together fade, and all turns
+    to dust.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Death of the Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Muerte del Líder
+  effect_i18n:
+    es: >-
+      Si el Necrarca perece, el Vasallo tomará el manto de Líder y todas las bonificaciones
+      concedidas se transferirán a él. Puede tirar inmediatamente en la lista de hechizos por un
+      hechizo. No se puede contratar otro Necrarca, pero puedes crear otro Vasallo a partir de tu
+      lista actual de Héroes Acólitos. Mantendrán su línea de características actual, pero ganará
+      los beneficios de ser no-muerto: inmune al veneno y a la psicología, causa miedo y sufre Sin
+      Dolor. Si Necrarca y Vasallo son destruidos a la vez, las mágias malignas que mantienen unida
+      a la banda se desvanecen y todo se convierte en polvo.
+  applies_to:
+    band: true
+- id: necrarch-vampire--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.necrarch-vampire.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: leadership-radios checks are a morale mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Necrarch Vampire / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - necrarch-vampire
+  rule_ref: shared-rule.leader
+- id: necrarch-vampire--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.necrarch-vampire.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (cause fear).
+  name: Cause Fear
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Necrarch Vampire / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Causa Miedo
+  applies_to:
+    profile_ids:
+    - necrarch-vampire
+  rule_ref: shared-rule.cause-fear-2
+- id: necrarch-vampire--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.necrarch-vampire.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (Necromantic magic; the Dreaded Scrolls of Nagash are
+        preserved in sources/2A/catalog/magic-2a.yaml).
+  name: Wizard
+  effect: Necrarch Vampires have one spell randomly generated from the Necromancy spell list.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Necrarch Vampire / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Hechicero
+  effect_i18n:
+    es: >-
+      Los Vampiros Necrarca tienen un hechizo generado aleatoriamente de la lista de magia
+      Nigromántica.
+  applies_to:
+    profile_ids:
+    - necrarch-vampire
+- id: necrarch-vampire--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.necrarch-vampire.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology immunity checks.
+  name: Immune to Psychology
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Necrarch Vampire / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Inmune a la Psicología
+  applies_to:
+    profile_ids:
+    - necrarch-vampire
+  rule_ref: shared-rule.immune-to-psychology
+- id: necrarch-vampire--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Necrarch Vampire / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Inmune al Veneno
+  applies_to:
+    profile_ids:
+    - necrarch-vampire
+  rule_ref: shared-rule.immune-to-poison
+- id: necrarch-vampire--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Necrarch Vampire / Special Rules / No Pain
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Sin Dolor
+  applies_to:
+    profile_ids:
+    - necrarch-vampire
+  rule_ref: shared-rule.no-pain
+- id: thrall--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.thrall.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (cause fear).
+  name: Cause Fear
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0-1 Thrall / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Causa Miedo
+  applies_to:
+    profile_ids:
+    - thrall
+  rule_ref: shared-rule.cause-fear-2
+- id: thrall--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.thrall.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology immunity checks.
+  name: Immune to Psychology
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0-1 Thrall / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Inmune a la Psicología
+  applies_to:
+    profile_ids:
+    - thrall
+  rule_ref: shared-rule.immune-to-psychology
+- id: thrall--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0-1 Thrall / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Inmune al Veneno
+  applies_to:
+    profile_ids:
+    - thrall
+  rule_ref: shared-rule.immune-to-poison
+- id: thrall--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0-1 Thrall / Special Rules / No Pain
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Sin Dolor
+  applies_to:
+    profile_ids:
+    - thrall
+  rule_ref: shared-rule.no-pain
+- id: acolyte--vassal
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.acolyte.vassal
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: spell-casting relay and casting-failure penalties are magic-subsystem
+        interactions.
+  name: Vassal
+  effect: >-
+    The Acolyte has given himself over to his dark lord. At a whim, the Necrarch can see what the
+    Acolyte sees, hear what he hears, and even speak through his slave. As long as the Necrarch has
+    line of sight to an Acolyte, and the Acolyte is not engaged in hand-to-hand combat, he may use
+    it as a casting point for a spell. Upon a critical failure of a casting (rolling double 1's)
+    regardless of skills such as Mind Focus or the like, the Acolyte must roll on the Injury table
+    and add +1.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0-3 Acolytes / Special Rules / Vassal
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Vasallaje
+  effect_i18n:
+    es: >-
+      El Acólito se ha entregado a su señor oscuro. A su antojo, el Necrarca puede ver lo que el
+      Acólito ve, oír lo que oye e incluso hablar a través de su esclavo. Mientras el Necrarca tenga
+      línea de visión a un Acólito, y el Acólito no esté trabado en combate cuerpo a cuerpo, puede
+      usarlo como punto de lanzamiento de un hechizo. Ante un fallo crítico de lanzamiento (doble
+      1), independientemente de habilidades como Enfoque Mental o similares, el Acólito debe tirar
+      en la tabla de Heridas sumando +1.
+  applies_to:
+    profile_ids:
+    - acolyte
+- id: skeletal-warrior--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.skeletal-warrior.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (cause fear).
+  name: Cause Fear
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-5 Skeletal Warriors / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Causan Miedo
+  applies_to:
+    profile_ids:
+    - skeletal-warrior
+  rule_ref: shared-rule.cause-fear-2
+- id: skeletal-warrior--may-not-run
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.skeletal-warrior.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: movement-phase run/charge rules are outside the duel scope.
+  name: May not Run
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-5 Skeletal Warriors / Special Rules / May not Run
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: No Pueden Correr
+  applies_to:
+    profile_ids:
+    - skeletal-warrior
+  rule_ref: shared-rule.may-not-run
+- id: skeletal-warrior--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.skeletal-warrior.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology immunity checks.
+  name: Immune to Psychology
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-5 Skeletal Warriors / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Inmunes a la Psicología
+  applies_to:
+    profile_ids:
+    - skeletal-warrior
+  rule_ref: shared-rule.immune-to-psychology
+- id: skeletal-warrior--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-5 Skeletal Warriors / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Inmunes al Veneno
+  applies_to:
+    profile_ids:
+    - skeletal-warrior
+  rule_ref: shared-rule.immune-to-poison
+- id: skeletal-warrior--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-5 Skeletal Warriors / Special Rules / No Pain
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Sin Dolor
+  applies_to:
+    profile_ids:
+    - skeletal-warrior
+  rule_ref: shared-rule.no-pain
+- id: skeletal-warrior--no-brain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.skeletal-warrior.no-brain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: experience progression is a campaign mechanic.
+  name: No Brain
+  effect: Skeletal Warriors do not gain experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-5 Skeletal Warriors / Special Rules / No Brain
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Sin Cerebro
+  effect_i18n:
+    es: Los Guerreros Esqueléticos no ganan experiencia.
+  applies_to:
+    profile_ids:
+    - skeletal-warrior
+- id: zombie--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.zombie.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (cause fear).
+  name: Cause Fear
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Zombies / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Causan Miedo
+  applies_to:
+    profile_ids:
+    - zombie
+  rule_ref: shared-rule.cause-fear-2
+- id: zombie--may-not-run
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.zombie.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: movement-phase run/charge rules are outside the duel scope.
+  name: May not Run
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Zombies / Special Rules / May not Run
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: No Pueden Correr
+  applies_to:
+    profile_ids:
+    - zombie
+  rule_ref: shared-rule.may-not-run
+- id: zombie--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.zombie.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology immunity checks.
+  name: Immune to Psychology
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Zombies / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Inmunes a la Psicología
+  applies_to:
+    profile_ids:
+    - zombie
+  rule_ref: shared-rule.immune-to-psychology
+- id: zombie--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Zombies / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Inmunes al Veneno
+  applies_to:
+    profile_ids:
+    - zombie
+  rule_ref: shared-rule.immune-to-poison
+- id: zombie--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Zombies / Special Rules / No Pain
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Sin Dolor
+  applies_to:
+    profile_ids:
+    - zombie
+  rule_ref: shared-rule.no-pain
+- id: zombie--no-brain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.zombie.no-brain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: experience progression is a campaign mechanic.
+  name: No Brain
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Zombies / Special Rules / No Brain
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Sin Cerebro
+  applies_to:
+    profile_ids:
+    - zombie
+  rule_ref: shared-rule.brainless
+- id: abomination--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.abomination.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (cause fear).
+  name: Cause Fear
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-1 Abomination / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Causan Miedo
+  applies_to:
+    profile_ids:
+    - abomination
+  rule_ref: shared-rule.cause-fear-2
+- id: abomination--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.abomination.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology immunity checks.
+  name: Immune to Psychology
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-1 Abomination / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Inmunes a la Psicología
+  applies_to:
+    profile_ids:
+    - abomination
+  rule_ref: shared-rule.immune-to-psychology
+- id: abomination--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-1 Abomination / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Inmunes al Veneno
+  applies_to:
+    profile_ids:
+    - abomination
+  rule_ref: shared-rule.immune-to-poison
+- id: abomination--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-1 Abomination / Special Rules / No Pain
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Sin Dolor
+  applies_to:
+    profile_ids:
+    - abomination
+  rule_ref: shared-rule.no-pain
+- id: abomination--no-brain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.abomination.no-brain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: experience progression is a campaign mechanic.
+  name: No Brain
+  effect: Abominations do not gain experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-1 Abomination / Special Rules / No Brain
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Sin Cerebro
+  effect_i18n:
+    es: Las Abominaciones no ganan experiencia.
+  applies_to:
+    profile_ids:
+    - abomination
+- id: abomination--large-target
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.abomination.large-target
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: large-target modifiers belong to the shooting subsystem.
+  name: Large Target
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-1 Abomination / Special Rules / Large Target
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Objetivo Grande
+  applies_to:
+    profile_ids:
+    - abomination
+  rule_ref: shared-rule.large-target
+- id: abomination--powered
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.abomination.powered
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: wyrdstone-shard transfer and re-animation are campaign economy mechanics.
+  name: Powered
+  effect: >-
+    A Necrarch has placed a shard of wyrdstone in the Abomination to bring it life. Should the
+    Abomination be removed from combat, the model who took it down receives a shard of wyrdstone. A
+    new shard is then needed to re-animate the Abomination.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-1 Abomination / Special Rules / Powered
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Animado
+  effect_i18n:
+    es: >-
+      Un Necrarca ha colocado un fragmento de piedra bruja en la Abominación para darle vida. Si la
+      Abominación es retirada del combate, la miniatura que la derribó recibe un fragmento de piedra
+      bruja. Se necesita un fragmento nuevo para reanimar la Abominación.
+  applies_to:
+    profile_ids:
+    - abomination
+- id: abomination--spare-parts
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.abomination.spare-parts
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: post-battle injury-table rolls are a campaign mechanic.
+  name: Spare Parts
+  effect: >-
+    Thanks to the dark magics of their lords and the manner of their construction, Abominations
+    ignore rolls of 1&2 on the post battle Injury Table; they cannot be destroyed.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-1 Abomination / Special Rules / Spare Parts
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Piezas de Repuesto
+  effect_i18n:
+    es: >-
+      Gracias a las mágias oscuras de sus señores y a la forma en que fueron construidas, las
+      Abominaciones ignoran los resultados 1 y 2 en la tabla de Heridas posterior a la batalla; no
+      pueden ser destruidas.
+  applies_to:
+    profile_ids:
+    - abomination
+- id: band--special-skill-pupil-of-nagash
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.band.pupil-of-nagash
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: rolling on a spell list is a magic-subsystem interaction.
+  name: Pupil of Nagash
+  effect: >-
+    Delving further into the evil teachings of Nagash, the Necrarch Vampire brings greater darkness
+    to the realm of the living. He may roll immediately on the Scrolls of Nagash for a spell, and
+    choose to do so again instead of a future Skill.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Pupil of Nagash
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Discípulo de Nagash
+  effect_i18n:
+    es: >-
+      Profundizando en las enseñanzas malignas de Nagash, el Vampiro Necrarca aporta una mayor
+      oscuridad al reino de los vivos. Puede tirar inmediatamente en los Pergaminos de Nagash por un
+      hechizo, y elegir repetirlo en lugar de una Futura Habilidad.
+  applies_to:
+    band: true
+- id: band--special-skill-master-of-the-black-arts
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.band.master-of-the-black-arts
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: spell range extension is a magic-subsystem interaction.
+  name: Master of the Black Arts
+  effect: >-
+    Such is the power of the Necrarch that the range of all his magical workings is extended by
+    half-again.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Master of the Black Arts
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Maestro de las Artes Oscuras
+  effect_i18n:
+    es: >-
+      Tal es el poder del Necrarca que el alcance de todas sus invocaciones mágicas se ve aumentado
+      en la mitad de nuevo.
+  applies_to:
+    band: true
+- id: band--special-skill-pull-of-undeath
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.band.pull-of-undeath
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: out-of-action determination is a post-duel/campaign resolution mechanic.
+  name: Pull of Undeath
+  effect: >-
+    So strong is the center of undeath within the Necrarch that he may save his constructs around
+    him from their demise. As long as the Necrarch is within 4 inches of an undead henchman, they
+    may only be taken Out of Action on a roll of a natural 6. Available only to the Leader.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Pull of Undeath
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Tirón de la No-Muerte
+  effect_i18n:
+    es: >-
+      Tan fuerte es el centro de no-mortandad dentro del Necrarca que puede salvar a sus constructos
+      de su desaparición. Mientras el Necrarca esté a 4 pulgadas de un secuaz no-muerto, este solo
+      puede ser puestos Fuera de Combate con un resultado natural de 6. Disponible solo para el
+      Líder.
+  applies_to:
+    band: true

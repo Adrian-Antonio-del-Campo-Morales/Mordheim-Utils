@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/band.yaml.schema.json",
+  "title": "Mordheim KB warband — band.yaml",
+  "description": "Canonical identity and roster frame of one warband: who it is, which collection and grade it belongs to, its editorial sources and the size, gold and member limits of its roster. Shared definitions live in defs.schema.json.",
+  "type": "object",
+  "required": [
+    "schema_version", "id", "canonical_family", "name", "name_i18n", "original_locale",
+    "ruleset", "categories", "grade", "setting", "publication", "status", "sources",
+    "roster", "rule_ids"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "description": "Document schema version. Exactly 2 for the current editorial contract.",
+      "const": 2
+    },
+    "id": {
+      "description": "Band id, equal to the directory name and stable across the KB.",
+      "$ref": "defs.schema.json#/$defs/id"
+    },
+    "canonical_family": {
+      "description": "Family the band belongs to when several printings share a warband (e.g. `amazons` groups `amazons-lustria` and `amazons-mordheim`).",
+      "$ref": "defs.schema.json#/$defs/id"
+    },
+    "name": {
+      "description": "Canonical English name.",
+      "$ref": "defs.schema.json#/$defs/display_text"
+    },
+    "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+    "original_locale": {
+      "description": "Locale the warband was published in (`en`, `es`).",
+      "$ref": "defs.schema.json#/$defs/id"
+    },
+    "ruleset": {
+      "description": "Ruleset the band plays under; the collection registry must allow it.",
+      "$ref": "defs.schema.json#/$defs/id"
+    },
+    "categories": {
+      "description": "Grade or staging labels the band is published under (`core`, `1a`, `1b`, `1c`, `trollheim`, …).",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "defs.schema.json#/$defs/id" }
+    },
+    "grade": {
+      "description": "Editorial grade of the band. The Trollheim collection carries no grade and stores null.",
+      "type": ["string", "null"]
+    },
+    "setting": {
+      "description": "Published setting (`Mordheim`, `Lustria`, `Khemri`, `Border Town Burning`, …).",
+      "$ref": "defs.schema.json#/$defs/display_text"
+    },
+    "publication": {
+      "description": "Publication the band was printed in, as labelled by the source.",
+      "$ref": "defs.schema.json#/$defs/display_text"
+    },
+    "status": {
+      "description": "Editorial status of the transcription. Currently `source-normalized`.",
+      "$ref": "defs.schema.json#/$defs/display_text"
+    },
+    "sources": {
+      "description": "Editorial sources of the band record.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "defs.schema.json#/$defs/source_ref" }
+    },
+    "roster": { "$ref": "#/$defs/roster" },
+    "rule_ids": {
+      "description": "Band-level rules of `special-rules.yaml` that apply to the warband as a whole; they must resolve to declared rule ids.",
+      "type": "array",
+      "items": { "$ref": "defs.schema.json#/$defs/rule_id" }
+    },
+    "variants": {
+      "description": "Variant-capable warbands (Reikland, Middenheim, Marienburg, Ostermark, bloodlines …) declare each choice here.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/variant" }
+    }
+  },
+  "$defs": {
+    "roster": {
+      "description": "Construction frame of the warband: size, gold and the member slots every profile must fill.",
+      "type": "object",
+      "required": ["minimum_models", "maximum_models", "starting_gold", "members"],
+      "additionalProperties": false,
+      "properties": {
+        "minimum_models": { "type": "integer", "minimum": 0 },
+        "maximum_models": { "type": "integer", "minimum": 0 },
+        "starting_gold": { "type": "integer", "minimum": 0 },
+        "requires_variant_selection": {
+          "description": "When true the application must ask for a variant before the warband is usable.",
+          "type": "boolean"
+        },
+        "members": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/member" }
+        }
+      }
+    },
+    "member": {
+      "description": "One roster slot: how many models of a profile the warband must or may field.",
+      "type": "object",
+      "required": ["profile_id", "minimum", "maximum"],
+      "additionalProperties": false,
+      "properties": {
+        "profile_id": {
+          "description": "Profile declared in `profiles.yaml` of the same package.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "minimum": { "type": "integer", "minimum": 0 },
+        "maximum": {
+          "description": "Upper bound, or null when the source sets none beyond `roster.maximum_models`.",
+          "type": ["integer", "null"]
+        },
+        "group_size": {
+          "description": "Size of one henchman group of this profile.",
+          "type": "object",
+          "required": ["minimum", "maximum"],
+          "additionalProperties": false,
+          "properties": {
+            "minimum": { "type": "integer", "minimum": 0 },
+            "maximum": { "type": ["integer", "null"] }
+          }
+        }
+      }
+    },
+    "variant": {
+      "description": "One selectable variant of the warband.",
+      "type": "object",
+      "required": ["id", "name", "name_i18n", "rule_ids"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "starting_gold": {
+          "description": "Starting gold of this variant, when it differs from the band default.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "rule_ids": {
+          "type": "array",
+          "items": { "$ref": "defs.schema.json#/$defs/rule_id" }
+        },
+        "profile_bonuses": {
+          "description": "Per-profile characteristic bonuses of the variant: `profile_id` → characteristic → bonus.",
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": { "$ref": "defs.schema.json#/$defs/id" },
+          "additionalProperties": {
+            "type": "object",
+            "minProperties": 1,
+            "propertyNames": { "$ref": "defs.schema.json#/$defs/characteristic_name" },
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

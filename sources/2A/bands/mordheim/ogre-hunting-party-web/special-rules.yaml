@@ -1,0 +1,708 @@
+schema_version: 2
+band_id: ogre-hunting-party-web
+rules:
+- id: band--greenskins
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.band.greenskins
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: race-classification interactions (Animosity exemption, Bicker) are
+        psychology/campaign mechanics outside the duel scope.
+  name: Greenskins
+  effect: >-
+    Unlike Goblins, Gnoblars do not tend to work closely with Orcs. However, for all intents and
+    purposes, they count as 'Greenskins'. They do not suffer Animosity, but suffer the rule known as
+    'Bicker' (see below).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Greenskins
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Pieles Verdes
+  effect_i18n:
+    es: >-
+      A diferencia de los Goblins, los Gnoblars no suelen trabajar codo con codo con los Orcos. Sin
+      embargo, a todos los efectos prácticos cuentan como "Pieles Verdes". No sufren Animosidad,
+      pero sufren la regla conocida como "Rencilla" (ver más abajo).
+  applies_to:
+    band: true
+- id: band--bicker
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.band.bicker
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: turn-start random inaction is a psychology mechanic outside the duel
+        scope.
+  name: Bicker
+  effect: >-
+    At the start of your turn, at the end of the Recovery phase, roll 1D6 for each Gnoblar henchmen
+    that is not in combat: on a roll of 1, it does nothing but issue insults at the nearest Gnoblar.
+    It may not move, shoot, or cast magic this turn. Once a Gnoblar henchmen gains "That Lad's Got
+    Talent", he loses the rule for Bicker, having put such childish games behind him.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Bicker
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Rencilla
+  effect_i18n:
+    es: >-
+      Al comienzo de tu turno, al final de la fase de Recuperación, tira 1D6 por cada secuaz Gnoblar
+      que no esté en combate: con un resultado de 1, no hace nada excepto proferir insultos al
+      Gnoblar más cercano. No puede moverse, disparar ni lanzar magia este turno. Una vez que un
+      secuaz Gnoblar gane "¡Ese Chico Tiene Talento!", pierde la regla de Rencilla, habiendo dejado
+      atrás esos juegos infantiles.
+  applies_to:
+    profile_ids:
+    - gnoblar-fighters
+    - flingers
+- id: band--ideas-above-their-station
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.band.ideas-above-their-station
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: leader replacement is a roster/campaign mechanic outside the duel scope.
+  name: Ideas Above Their Station
+  effect: >-
+    If the Ogre Hunter is killed, the Gnoblar with the highest leadership takes over as leader (or,
+    if tied, the Gnoblar with the highest experience takes over). A replacement Ogre Hunter may be
+    purchased, in which case he becomes the new leader.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Ideas Above Their Station
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Ambiciones Fuera de Lugar
+  effect_i18n:
+    es: >-
+      Si el Ogro Cazador muere, el Gnoblar con el Liderazgo más alto se convierte en el nuevo líder
+      (o, en caso de empate, el Gnoblar con más experiencia). Puede comprarse un Ogro Cazador de
+      reemplazo, en cuyo caso este se convierte en el nuevo líder.
+  applies_to:
+    band: true
+- id: band--distasteful-company
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.band.distasteful-company
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hired-sword availability is a roster-construction/campaign mechanic
+        outside the duel scope.
+  name: Distasteful Company
+  effect: >-
+    Most hired swords will refuse to work for the Ogres or Gnoblars, as they know that they are just
+    as likely to eat them as fight with them. Ogre Hunter warbands may only hire the following hired
+    swords: Hobgoblin Scout, Gnoblar Botcher and Ninja Gnoblar. If your warband does not contain an
+    Ogre Hunter for any reason, you may hire an Ogre Bodyguard and/or Ogre Slaver — however, if you
+    rehire another Ogre Hunter, all other Ogres must leave the warband.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Distasteful Company
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Compañía Desagradable
+  effect_i18n:
+    es: >-
+      La mayoría de las Espadas a Sueldo se negarán a trabajar para los Ogros o los Gnoblars, ya que
+      saben que es igual de probable que se los coman que que luchen con ellos. Las bandas de Ogros
+      Cazadores solo pueden contratar las siguientes Espadas a Sueldo: Explorador Hobgoblin,
+      Curandero Gnoblar y Gnoblar Ninja. Si tu banda no contiene un Ogro Cazador por cualquier
+      motivo, puedes contratar un Guardaespaldas Ogro y/o un Esclavista Ogro; sin embargo, si
+      vuelves a contratar a otro Ogro Cazador, todos los demás Ogros deben abandonar la banda.
+  applies_to:
+    band: true
+- id: band--characteristic-increase
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.band.characteristic-increase
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: characteristic-increase caps on advancement are outside the duel scope.
+  name: Characteristic Increase
+  effect: >-
+    Characteristics for warriors may not be increased beyond the maximum limits shown on the
+    following profile. Ogre: M 6, WS 6, BS 4, S 5, T 5, W 5, I 4, A 5, Ld 9. Gnoblar: M 4, WS 5, BS
+    6, S 3, T 4, W 3, I 6, A 4, Ld 7.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Characteristic Increase
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Aumento de Características
+  effect_i18n:
+    es: >-
+      Las características de los guerreros no pueden aumentarse más allá de los límites máximos
+      mostrados en el siguiente perfil. Ogro: M 6, HA 6, HP 4, F 5, R 5, H 5, I 4, A 5, L 9.
+      Gnoblar: M 4, HA 5, HP 6, F 3, R 4, H 3, I 6, A 4, L 7.
+  applies_to:
+    band: true
+- id: band--huuuuge
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.band.huuuuge
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Fear, Large Target, all-alone exemption and warband-rating changes are
+        psychology/campaign mechanics outside the duel scope.
+  name: Huuuuge
+  effect: >-
+    Ogres are big, massive and frightening creatures. All ogre models cause fear. All ogres are
+    Large targets. Ogres also ignore all alone tests. An ogre can never have Ithilmar or Gromril or
+    heavy armour — they don't make it in such sizes! All ogres have a warband rating of 20 plus
+    experience (instead of 5).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Ogre Hunter / Special Rules / Huuuuge
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Enorme
+  effect_i18n:
+    es: >-
+      Los Ogros son criaturas grandes, masivas y aterradoras. Todos los modelos Ogro causan miedo.
+      Todos los Ogros son Objetivos Grandes. Los Ogros también ignoran las pruebas de estar solo. Un
+      Ogro nunca puede llevar armadura de Ithilmar, de Gromril ni armadura pesada: ¡no la hacen de
+      esos tamaños! Todos los Ogros tienen un valor de banda de 20 más experiencia (en lugar de 5).
+  applies_to:
+    profile_ids:
+    - ogre-hunter
+- id: band--slow-witted
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.band.slow-witted
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: experience gain rates are campaign-progression mechanics outside the
+        duel scope.
+  name: Slow Witted
+  effect: >-
+    Although Ogres are capable of earning experience and bettering themselves they are not the
+    smartest of creatures. Ogres only improve at half the rate of everyone else. They must earn
+    twice the usual number of experience points to gain an advance.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Ogre Hunter / Special Rules / Slow Witted
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Cabeza Lenta
+  effect_i18n:
+    es: >-
+      Aunque los Ogros son capaces de ganar experiencia y mejorarse, no son las criaturas más
+      listas. Los Ogros mejoran a la mitad de velocidad que los demás. Deben ganar el doble de
+      puntos de experiencia de lo habitual para obtener una mejora.
+  applies_to:
+    profile_ids:
+    - ogre-hunter
+- id: ogre-hunter--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.ogre-hunter.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
+        psychology/rout mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Ogre Hunter / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - ogre-hunter
+  rule_ref: shared-rule.leader
+- id: ogre-hunter--dont-fight-with-eating-knives
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.ogre-hunter.dont-fight-with-eating-knives
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: unarmed-combat modifier exceptions are weapon mechanics outside the duel
+        scope.
+  name: Don't Fight with Eating Knives
+  effect: >-
+    Ogres don't use daggers for fighting, just for eating. They don't carry them on the battlefield.
+    If forced to, by losing a weapon or not carrying any weapon, they will fight unarmed. But since
+    their physical strength the -1S penalty does not apply, but the +1 enemy armour save still does.
+    They may make more than one unarmed attack, depending on their Attacks value. Note that you
+    cannot combine this unarmed attack with another weapon, so it doesn't count as an additional
+    attack like the dagger would. It can only be made if the ogre doesn't have any other weapons at
+    his disposal.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Ogre Hunter / Special Rules / Don't Fight with Eating Knives
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: No Pelees con Cuchillos de Trinchar
+  effect_i18n:
+    es: >-
+      Los Ogros no usan las dagas para pelear, solo para comer. No las llevan al campo de batalla.
+      Si se ven forzados, por perder un arma o no llevar ninguna, lucharán desarmados. Pero dada su
+      fuerza física, la penalización de -1F no se aplica, aunque el +1 a la salvación por armadura
+      del enemigo sí. Pueden hacer más de un ataque desarmado, dependiendo de su valor de Ataques.
+      Ten en cuenta que no puedes combinar este ataque desarmado con otra arma, por lo que no cuenta
+      como ataque adicional como lo haría la daga. Solo puede realizarse si el Ogro no tiene ninguna
+      otra arma a su disposición.
+  applies_to:
+    profile_ids:
+    - ogre-hunter
+- id: ogre-hunter--lazy
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.ogre-hunter.lazy
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: exploration-dice restrictions are campaign mechanics outside the duel
+        scope.
+  name: Lazy
+  effect: >-
+    An Ogre Hunter is far too preoccupied with Hunting to worry about pretty stones — that's a
+    Gnoblar's job! If any of your Gnoblar heroes are able to search for wyrdstone or Rare Items, the
+    Ogre Hunter does not add an exploration dice or search; they may only explore and search if all
+    other gnoblar heroes are unable to (ex. taken out of action).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Ogre Hunter / Special Rules / Lazy
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Perezoso
+  effect_i18n:
+    es: >-
+      Un Ogro Cazador está demasiado ocupado cazando como para preocuparse por las piedritas
+      bonitas: ¡ese es trabajo de un Gnoblar! Si alguno de tus héroes Gnoblar puede buscar piedra
+      bruja u Objetos Raros, el Ogro Cazador no añade un dado de exploración ni busca; solo pueden
+      explorar y buscar si todos los demás héroes gnoblar no pueden hacerlo (p. ej. Fuera de
+      Combate).
+  applies_to:
+    profile_ids:
+    - ogre-hunter
+- id: ogre-hunter--central-figure
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.ogre-hunter.central-figure
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: rout-level triggers are rout mechanics outside the duel scope.
+  name: Central Figure
+  effect: >-
+    The gnoblars flock around the Ogre Hunter, and take strength from his presence. If he is taken
+    out of action during a game, the warband is automatically at Rout level, regardless of the
+    number of casualties.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Ogre Hunter / Special Rules / Central Figure
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Figura Central
+  effect_i18n:
+    es: >-
+      Los gnoblars se agolpan en torno al Ogro Cazador y toman fuerzas de su presencia. Si él queda
+      Fuera de Combate durante una partida, la banda está automáticamente al nivel de Huida,
+      independientemente del número de bajas.
+  applies_to:
+    profile_ids:
+    - ogre-hunter
+- id: ogre-hunter--sabre-trainer
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.ogre-hunter.sabre-trainer
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: random-movement redirection is a movement mechanic outside the duel
+        scope.
+  name: Sabre Trainer
+  effect: >-
+    Whenever a Sabretusk cub rolls a 1 for Untamed, if it started the turn within 6" of this hero,
+    you may move the cub 3D6" towards any model within 12" of it that it can see (instead of towards
+    the nearest model).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Ogre Hunter / Special Rules / Sabre Trainer
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Adiestrador de Sabretusks
+  effect_i18n:
+    es: >-
+      Siempre que un cachorro Sabretusk saque un 1 en Indomable, si comenzó el turno a 6" de este
+      héroe, puedes mover al cachorro 3D6" hacia cualquier modelo a 12" de él que pueda ver (en
+      lugar de hacia el modelo más cercano).
+  applies_to:
+    profile_ids:
+    - ogre-hunter
+- id: trappers--veteran-tracker
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.trappers.veteran-tracker
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: skill selections at purchase are roster-construction mechanics outside
+        the duel scope.
+  name: Veteran Tracker
+  effect: >-
+    A trapper starts with ONE of the following Special Skills: Infiltration (max 1), Set Traps,
+    Netter, or Scent Hound. You must choose this skill upon the hero's purchase. See the Special
+    Skills rules for details.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-3 Trappers / Special Rules / Veteran Tracker
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Rastreador Veterano
+  effect_i18n:
+    es: >-
+      Un Trampero comienza con UNA de las siguientes Habilidades Especiales: Infiltración (máx. 1),
+      Poner Trampas, Redador u Olfato de Sabueso. Debes elegir esta habilidad al contratar al héroe.
+      Consulta las reglas de Habilidades Especiales para más detalles.
+  applies_to:
+    profile_ids:
+    - trappers
+- id: sabre-baiter--bait
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.sabre-baiter.bait
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: reactive dodge movement on charge declaration is a movement mechanic
+        outside the duel scope.
+  name: Bait
+  effect: >-
+    Whenever a model declares a charge against a Sabre-baiter, he may immediately move 1D6" in the
+    opposite direction of the charger. This may cause him to move outside of the charger's charge
+    range, in which case, the charge failed. You may only use this ability once per turn, and only
+    if the Baiter isn't knocked down, stunned, or in hand-to-hand combat. If the charging model is a
+    Sabretusk, you may move the baiter 2D6" instead, and may maneuver around any models in your path
+    (potentially causing the Sabretusk to charge someone else!).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Sabre-Baiter / Special Rules / Bait
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Cebo
+  effect_i18n:
+    es: >-
+      Siempre que un modelo declare una carga contra un Cebo de Sabretusk, este puede moverse
+      inmediatamente 1D6" en la dirección opuesta al cargador. Esto puede hacer que quede fuera del
+      alcance de carga del cargador, en cuyo caso la carga falla. Solo puedes usar esta habilidad
+      una vez por turno, y solo si el Cebo no está derribado, aturdido o en combate cuerpo a cuerpo.
+      Si el modelo que carga es un Sabretusk, puedes mover al Cebo 2D6" en su lugar, y puede
+      maniobrar rodeando cualquier modelo en su camino (¡provocando potencialmente que el Sabretusk
+      cargue contra otra persona!).
+  applies_to:
+    profile_ids:
+    - sabre-baiter
+- id: flingers--scrap-slinger
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.flingers.scrap-slinger
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: multiple-shot shooting exceptions are shooting mechanics outside the
+        duel scope.
+  name: Scrap Slinger
+  effect: >-
+    A Flinger may throw 3 pieces of Sharp Stuff every turn, instead of the normal 1. (This does not
+    combo with Knife Thrower, nor apply to throwing knives).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-7 Flingers / Special Rules / Scrap Slinger
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Lanzachatarra
+  effect_i18n:
+    es: >-
+      Un Lanzador puede tirar 3 trozos de Chatarra Afilada cada turno, en lugar del 1 normal. (Esto
+      no se combina con Lanzacuchillas, ni se aplica a los cuchillos de lanzamiento).
+  applies_to:
+    profile_ids:
+    - flingers
+- id: sabretusks--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.sabretusks.fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Fear is a psychology mechanic outside the duel scope.
+  name: Fear
+  effect: Sabretusks are huge feline predators and thus cause fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-3 Sabretusk Cubs / Special Rules / Fear
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Los Sabretusks son enormes depredadores felinos y por tanto causan miedo.
+  applies_to:
+    profile_ids:
+    - sabretusks
+- id: sabretusks--animals
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.sabretusks.animals
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: experience exemption is a campaign-progression mechanic outside the duel
+        scope.
+  name: Animals
+  effect: Sabretusks are animals, and don't gain experience.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-3 Sabretusk Cubs / Special Rules / Animals
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Animales
+  effect_i18n:
+    es: Los Sabretusks son animales y no ganan experiencia.
+  applies_to:
+    profile_ids:
+    - sabretusks
+- id: sabretusks--untamed
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.sabretusks.untamed
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: turn-start random charge movement is a movement mechanic outside the
+        duel scope.
+  name: Untamed
+  effect: >-
+    Sabretusks don't bicker. However, at the start of each turn, roll 1D6 for each Sabretusk not in
+    combat. On a 1, it does not move normally this turn. Instead, it moves 3D6" to the nearest
+    non-sabretusk model; this counts as a charge. If it charges another member of your warband this
+    way, after combat, move it 1" away.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-3 Sabretusk Cubs / Special Rules / Untamed
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Indomable
+  effect_i18n:
+    es: >-
+      Los Sabretusks no rencillen. Sin embargo, al comienzo de cada turno, tira 1D6 por cada
+      Sabretusk que no esté en combate. Con un 1, no se mueve con normalidad este turno. En su
+      lugar, se mueve 3D6" hacia el modelo más cercano que no sea un sabretusk; esto cuenta como
+      carga. Si de esta forma carga contra otro miembro de tu banda, tras el combate, aléjalo 1".
+  applies_to:
+    profile_ids:
+    - sabretusks
+- id: sabretusks--charge
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.sabretusks.charge
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: charge-conditional attack bonuses are outside the current engine scope.
+  name: Charge
+  effect: >-
+    Sabretusks are slavering creatures that overpower their opponents when they charge. Sabretusks
+    fight with 2 attacks instead of 1 during the turn they charge.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-3 Sabretusk Cubs / Special Rules / Charge
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Embestida
+  effect_i18n:
+    es: >-
+      Los Sabretusks son criaturas babeantes que arrollan a sus oponentes cuando cargan. Los
+      Sabretusks luchan con 2 ataques en lugar de 1 durante el turno en que cargan.
+  applies_to:
+    profile_ids:
+    - sabretusks
+- id: sabretusks--tough-hide
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.sabretusks.tough-hide
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: natural armour saves are outside the current engine scope.
+  name: Tough Hide
+  effect: Sabretusks have a natural 5+ armour save.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-3 Sabretusk Cubs / Special Rules / Tough Hide
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Piel Dura
+  effect_i18n:
+    es: Los Sabretusks tienen una salvación natural por armadura de 5+.
+  applies_to:
+    profile_ids:
+    - sabretusks
+- id: band--ogre-hunting-skills
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: skill selections on promotion are advancement-time mechanics outside the
+        duel scope.
+  name: Ogre Hunting Party Special Skills
+  effect: >-
+    Crude Belch: Ogres and Gnoblars eat almost anything. A Hero with this 'condition' may unleash
+    his noxious fumes on all enemies engaged in close combat. Those that do not pass a Ld test
+    suffer a -1 'to hit' modifier for the turn. The Hero must wait until a new enemy engages him in
+    combat before he relieves himself again. Scent Hound: the Ogre or Gnoblar has the keen nose of
+    an expert tracker; the hero spots Hidden enemies from two times as far away as other warriors
+    (ie, twice his Initiative value in inches). Maneater (Ogres only): this Ogre may immediately
+    learn one skill from the Shooting or Academic skill lists; this skill may be taken only once.
+    Bull Charge (Ogres only): when charging, an Ogre with this skill may attempt a single attack
+    with a +1 'to hit' modifier rather than making his normal attacks; if successful the enemy model
+    is automatically knocked down. Bellowing Roar (Leader only, Ogres only): this skill may only be
+    taken by the warband leader, allowing him to reroll the first failed Rout test. Set Traps
+    (Gnoblars only): Trappers are experts at dropping snares. A Trapper may set a trap if he spends
+    a turn doing nothing else (he may not set traps if he's just recovered from being Knocked Down).
+    Place a marker in base contact with the Trapper. When another model, friend or foe, moves within
+    2" of the marker he risks setting off the trap: roll a D6. On a score of 3+ he has triggered the
+    trap and suffers a S4 hit (note that the Trapper won't trigger his own traps). If the trap did
+    not wound the model, the injured model has multiple wounds, or it didn't trigger, the 'victim'
+    may finish his move; however, if the model was knocked Down or Stunned, place him 2" from the
+    marker. Regardless whether the trap was triggered or not, the marker is removed. Infiltration
+    (Gnoblars only): as the standard Infiltration skill. Netter (Gnoblars only): each game, the hero
+    starts with 3 Nets; these may not be sold, traded, or given to another warrior; if not used
+    during the game, they are assumed to be stashed away or fallen apart. The next game, the hero
+    will start with 3 nets again, without penalty or cost.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Habilidades Especiales de la Partida de Caza de Ogros
+  effect_i18n:
+    es: >-
+      Eructo Basto: los Ogros y los Gnoblars comen casi cualquier cosa. Un Héroe con esta "afección"
+      puede soltar sus vapores nocivos sobre todos los enemigos en combate cuerpo a cuerpo con él.
+      Los que no superen una prueba de Liderazgo sufren un modificador de -1 por impactar durante el
+      turno. El Héroe debe esperar a que un nuevo enemigo se enfrente a él en combate antes de
+      aliviarse de nuevo. Olfato de Sabueso: el Ogro o Gnoblar tiene el olfato fino de un rastreador
+      experto; el héroe detecta enemigos Ocultos al doble de distancia que otros guerreros (es
+      decir, al doble de su valor de Iniciativa en pulgadas). Devorador de Hombres (solo Ogros):
+      este Ogro puede aprender inmediatamente una habilidad de las listas de Disparo o Académicas;
+      esta habilidad solo puede tomarse una vez. Carga de Toro (solo Ogros): al cargar, un Ogro con
+      esta habilidad puede intentar un único ataque con un modificador de +1 por impactar en lugar
+      de hacer sus ataques normales; si tiene éxito, el modelo enemigo queda automáticamente
+      derribado. Rugido Estentóreo (solo Líder, solo Ogros): esta habilidad solo puede tomarla el
+      líder de la banda, permitiéndole repetir la primera tirada de Huida fallida. Poner Trampas
+      (solo Gnoblars): los Tramperos son expertos en colocar cepos. Un Trampero puede poner una
+      trampa si pasa un turno sin hacer nada más (no puede poner trampas si acaba de recuperarse de
+      estar Derribado). Coloca un marcador en contacto base con el Trampero. Cuando otro modelo,
+      amigo o enemigo, se mueva a 2" del marcador corre el riesgo de activar la trampa: tira un D6.
+      Con un resultado de 3+ ha activado la trampa y sufre un impacto de F4 (nota: el Trampero no
+      activa sus propias trampas). Si la trampa no hirió al modelo, el modelo herido tiene varias
+      heridas o no se activó, la 'víctima' puede terminar su movimiento; sin embargo, si el modelo
+      quedó Derribado o Aturdido, colócalo a 2" del marcador. Independientemente de si la trampa se
+      activó o no, el marcador se retira. Infiltración (solo Gnoblars): como la habilidad estándar
+      de Infiltración. Redador (solo Gnoblars): en cada partida, el héroe comienza con 3 Redes; no
+      pueden venderse, intercambiarse ni darse a otro guerrero; si no se usan durante la partida, se
+      supone que quedan guardadas o se han descompuesto. En la siguiente partida, el héroe comenzará
+      de nuevo con 3 redes, sin penalización ni coste.
+  applies_to:
+    band: true

@@ -1,0 +1,262 @@
+schema_version: 2
+band_id: strigoi-kaz
+profiles:
+- id: vampire
+  name: Vampire
+  type: hero
+  cost: 125
+  experience: 20
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 5
+    A: 2
+    Ld: 8
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Strigoi Vampire does not use any weapons or equipment.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  source:
+    manual: broheim.net
+    printed_page: 51
+    section: 1 Vampire
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 1 Vampire
+  name_i18n:
+    es: Vampiro
+  rule_ids:
+  - vampire--leader
+  - vampire--bestial
+  - vampire--wizard
+  - vampire--bloodline
+  combat_traits: {}
+- id: charnel-guard
+  name: Charnel Guard
+  type: hero
+  cost: 50
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 2
+    Ld: 6
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Charnel Guard never carry any equipment, apart from a few bones which they use as primitive weapons.
+  skill_access:
+  - combat
+  - strength
+  - speed
+  source:
+    manual: broheim.net
+    printed_page: 52
+    section: 0-2 Charnel Guard
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 0-2 Charnel Guard
+  name_i18n:
+    es: Guardia de Osario
+  rule_ids:
+  - charnel-guard--cause-fear
+  - charnel-guard--cunning
+  combat_traits: {}
+- id: strigany
+  name: Strigany
+  type: hero
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  source:
+    manual: broheim.net
+    printed_page: 52
+    section: 0-2 Strigany
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 0-2 Strigany
+  name_i18n:
+    es: Strigany
+  rule_ids:
+  - strigany--living
+  combat_traits: {}
+- id: ghouls
+  name: Ghouls
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 2
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Ghouls never carry any equipment, apart from a few bones, which they use as primitive weapons.
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 52
+    section: Ghouls
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - henchmen
+  - Ghouls
+  name_i18n:
+    es: Gulles
+  rule_ids:
+  - ghouls--cause-fear
+  combat_traits: {}
+- id: skeletons
+  name: Skeletons
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 1
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - undead-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Skeletons may not use missile weapons.
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 53
+    section: Skeletons
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - henchmen
+  - Skeletons
+  name_i18n:
+    es: Esqueletos
+  rule_ids:
+  - skeletons--cause-fear
+  - skeletons--may-not-run
+  - skeletons--immune-to-psychology
+  - skeletons--immune-to-poison
+  - skeletons--no-pain
+  - skeletons--no-brain
+  combat_traits: {}
+- id: bats
+  name: Bats
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 8
+    WS: 2
+    BS: 0
+    S: 3
+    T: 2
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - 'Equipment: None.'
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 53
+    section: 0-5 Bats
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - henchmen
+  - 0-5 Bats
+  name_i18n:
+    es: Murciélagos
+  rule_ids:
+  - bats--living
+  - bats--animals
+  - bats--flyers
+  - bats--squishy
+  combat_traits: {}
+- id: fell-bats
+  name: Fell Bats
+  type: henchman
+  cost: 80
+  experience: 0
+  characteristics:
+    M: 8
+    WS: 3
+    BS: 0
+    S: 3
+    T: 3
+    W: 2
+    I: 3
+    A: 2
+    Ld: 6
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - 'Equipment: None.'
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 54
+    section: 0-2 Fell Bats
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - henchmen
+  - 0-2 Fell Bats
+  name_i18n:
+    es: Murciélagos Funestos
+  rule_ids:
+  - fell-bats--animals
+  - fell-bats--flyers
+  - fell-bats--cause-fear
+  - fell-bats--may-not-run
+  - fell-bats--immune-to-psychology
+  - fell-bats--immune-to-poison
+  - fell-bats--no-pain
+  combat_traits: {}

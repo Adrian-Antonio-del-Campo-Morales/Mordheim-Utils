@@ -1,0 +1,227 @@
+schema_version: 2
+band_id: skaven-of-clan-pristekk-sc
+rules:
+- id: band--countless
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-of-clan-pristekk-sc.band.countless
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Countless
+  effect: Giant rats may increase the Clan Pristekk warband's numbers up to 20.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Giant rats / Special Rules / Countless
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
+  name_i18n:
+    es: Incontables
+  effect_i18n:
+    es: Las ratas gigantes pueden aumentar el número de la banda del Clan Pristekk hasta 20.
+  applies_to:
+    band: true
+- id: chieftain--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pristekk-sc.chieftain.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Leader
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 1 Chieftain / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - chieftain
+  rule_ref: shared-rule.leader
+- id: sorcerer--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pristekk-sc.sorcerer.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Wizard
+  effect: >-
+    A Clan Pristekk Sorcerer is a wizard and uses the Magic of the Horned Rat. See the Magic section
+    for details.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 0-1 Clan Pristekk sorcerer / Special Rules / Wizard
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
+  name_i18n:
+    es: Mago
+  effect_i18n:
+    es: >-
+      Un Hechicero del Clan Pristekk es un mago y usa la Magia de la Rata Cuerna. Consulta la
+      sección de Magia para más detalles.
+  applies_to:
+    profile_ids:
+    - sorcerer
+- id: giant-rats--countless
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pristekk-sc.giant-rats.countless
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Countless
+  effect: Giant rats may increase the warband's numbers up to 20.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Giant rats / Special Rules / Countless
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
+  name_i18n:
+    es: Incontables
+  effect_i18n:
+    es: Las ratas gigantes pueden aumentar el número de la banda hasta 20.
+  applies_to:
+    profile_ids:
+    - giant-rats
+- id: giant-rats--animals
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pristekk-sc.giant-rats.animals
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Animals
+  effect: Giant rats are animals and do not gain experience.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Giant rats / Special Rules / Animals
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
+  name_i18n:
+    es: Animales
+  effect_i18n:
+    es: Las ratas gigantes son animales y no ganan experiencia.
+  applies_to:
+    profile_ids:
+    - giant-rats
+- id: rat-ogres--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pristekk-sc.rat-ogres.fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Fear
+  effect: Rat Ogres are so frightening they cause fear.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-2 Rat ogres / Special Rules / Fear
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Los Ogros Rata son tan aterradores que causan miedo.
+  applies_to:
+    profile_ids:
+    - rat-ogres
+- id: rat-ogres--stupidity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pristekk-sc.rat-ogres.stupidity
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology or mounts.
+  name: Stupidity
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-2 Rat ogres / Special Rules / Stupidity
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
+  name_i18n:
+    es: Estupidez
+  applies_to:
+    profile_ids:
+    - rat-ogres
+  rule_ref: shared-rule.stupidity
+- id: rat-ogres--experience
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pristekk-sc.rat-ogres.experience
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+  name: Experience
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-2 Rat ogres / Special Rules / Experience
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
+  name_i18n:
+    es: Experiencia
+  applies_to:
+    profile_ids:
+    - rat-ogres
+  rule_ref: shared-rule.experience
+- id: rat-ogres--large-target
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pristekk-sc.rat-ogres.large-target
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: shooting.
+  name: Large Target
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-2 Rat ogres / Special Rules / Large Target
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
+  name_i18n:
+    es: Objetivo Grande
+  applies_to:
+    profile_ids:
+    - rat-ogres
+  rule_ref: shared-rule.large-target

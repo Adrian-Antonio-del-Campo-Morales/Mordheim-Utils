@@ -1,0 +1,150 @@
+schema_version: 2
+band_id: bretonnian-knights-errant-mou
+rules:
+- id: knights-errant--brettonian-leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.bretonnian-knights-errant-mou.knights-errant.brettonian-leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology and leader election.
+  name: Brettonian Leader
+  effect: >-
+    The Knights Errant warband doesn't have a leader like a normal warband has; the Knights
+    Errant are brothers in arms and the Squires will happily follow any of the mighty knights.
+    However as rules and scenarios confer special bonuses or rules to leaders the warband must
+    have one. Each of the Knights Errant starts with D6+7 experience points; the knight which
+    rolls the highest experience is the leader, and from now on follows all the rules that
+    apply to the leader. If two or more knights roll the same experience, choose one of them
+    as the leader. Note that the experience rolled does not allow the Knights Errant any
+    starting advances.
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: heroes / 1- 4 Knights Errant / Special Rules / Brettonian Leader
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian Knights Errant.pdf
+  name_i18n:
+    es: Líder Bretón
+  effect_i18n:
+    es: >-
+      La banda de Caballeros Errantes no tiene un líder como lo tiene una banda normal; los
+      Caballeros Errantes son hermanos de armas y los Escuderos seguirán encantados a
+      cualquiera de los poderosos caballeros. Sin embargo, como las reglas y los escenarios
+      confieren bonificaciones o reglas especiales a los líderes, la banda debe tener uno.
+      Cada uno de los Caballeros Errantes empieza con D6+7 puntos de experiencia; el caballero
+      que saque la experiencia más alta es el líder, y a partir de entonces sigue todas las
+      reglas que se aplican al líder. Si dos o más caballeros sacan la misma experiencia,
+      elige a uno de ellos como líder. Ten en cuenta que la experiencia sacada no permite a los
+      Caballeros Errantes ningún avance inicial.
+  applies_to:
+    profile_ids:
+    - knights-errant
+- id: knights-errant--knights-virtue
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.bretonnian-knights-errant-mou.knights-errant.knights-virtue
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Knights Virtue
+  effect: >-
+    A Knight Errant is a chivalrous warrior who is superior to ordinary warriors. He will
+    never break and panic from combat and so does not have to pass a Leadership test for
+    being All Alone.
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: heroes / 1- 4 Knights Errant / Special Rules / Knights Virtue
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian Knights Errant.pdf
+  name_i18n:
+    es: Virtud del Caballero
+  effect_i18n:
+    es: >-
+      Un Caballero Errante es un guerrero caballeroso superior a los guerreros ordinarios.
+      Nunca huirá ni entrará en pánico por el combate, por lo que no tiene que superar un
+      chequeo de Liderazgo por estar Solo.
+  applies_to:
+    profile_ids:
+    - knights-errant
+- id: band--knights-feats
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+  name: Knights Feats
+  effect: >-
+    Knights Errant may choose to use the following skill list instead of the standard skill
+    lists: 1 - Combat charge: the character gains +1 attack and +1 WS when he charges.
+    2 - Lancer: the character can use this skill only on horseback; may not be combined with
+    Combat charge. If the character's first opponent(s) suffer an unsaved wound, the character
+    may continue his charge; opponents are not allowed to strike back. 3 - Sword master: when
+    using a sword the character may parry, with re-roll at equal or higher. 4 - Armour
+    specialist: when using Heavy armour and shield the subject ignores the standard movement
+    penalty and his armour save cannot be modified beyond 5+ due to Strength. This does not
+    work on horseback.
+  source:
+    manual: broheim.net
+    printed_page: 2
+    section: Knights Feats
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian Knights Errant.pdf
+  name_i18n:
+    es: Hazañas de Caballería
+  effect_i18n:
+    es: >-
+      Los Caballeros Errantes pueden elegir usar la siguiente lista de habilidades en lugar de
+      las listas de habilidades estándar: 1 - Carga de combate: el personaje gana +1 ataque y
+      +1 HA cuando carga. 2 - Lancero: el personaje solo puede usar esta habilidad a caballo;
+      no puede combinarse con Carga de combate. Si el primer oponente o oponentes del
+      personaje sufren una herida no salvada, el personaje puede continuar su carga; los
+      oponentes no tienen derecho a golpes de respuesta. 3 - Maestro de la espada: al usar una
+      espada, el personaje puede parar, repitiendo las paradas iguales o superiores. 4 -
+      Especialista en armaduras: al usar armadura pesada y escudo, el sujeto ignora la
+      penalización estándar de movimiento y su tirada de salvación por armadura no puede ser
+      modificada a más de 5+ por la Fuerza. Esto no funciona a caballo.
+  applies_to:
+    band: true
+- id: band--hired-swords
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.bretonnian-knights-errant-mou.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Hired Swords
+  effect: >-
+    The Knights Errant warband may not recruit evil Hired Swords or those who practice magic or use
+    poison, for this would dishonor them.
+  source:
+    manual: broheim.net
+    printed_page: 2
+    section: Hired Swords
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian Knights Errant.pdf
+  name_i18n:
+    es: Espadas a Sueldo
+  effect_i18n:
+    es: >-
+      La banda de Caballeros Errantes no puede reclutar Espadas a Sueldo malignas ni a quienes
+      practiquen la magia o usen veneno, pues los deshonraría.
+  applies_to:
+    band: true

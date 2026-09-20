@@ -1,0 +1,829 @@
+schema_version: 2
+band_id: metal-mongers-mim
+rules:
+- id: band--skurvey-alliance
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.metal-mongers-mim.band.skurvey-alliance
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Skurvey Alliance
+  effect: >-
+    The hospitality of Riskin Tatter-Ear is extended only so far as to allies in his armada from
+    Clan Skurvey.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Skurvey Alliance
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Alianza Skurvey
+  effect_i18n:
+    es: >-
+      La hospitalidad de Riskin Tatter-Ear solo se extiende a los aliados de su armada del Clan
+      Skurvey.
+  applies_to:
+    band: true
+- id: band--skaven-special-skills
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.metal-mongers-mim.band.skaven-special-skills
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Skaven Special Skills
+  effect: >-
+    Skaven Heroes may choose to use the following skill list instead of the standard skill lists:
+    Tail Fighting (may wield a shield, dagger or sword with its tail: extra attack with the
+    appropriate weapon or +1 to its armour save); Infiltration (placed after the opposing warband,
+    anywhere out of sight and more than 12" from any enemy model; if both players infiltrate, roll a
+    D6 for each, lowest sets up first); Unblinking Eye (a monstrous telescopic lens replaces one
+    eye: the sharpshooter Hero can spot hidden enemies at twice his Initiative value in inches);
+    Metallic Body (elaborate armour encases the Hero: 3+ armour save); Respirator (a pump system fed
+    into the respiratory organs: ignores the effects of gas or soporific based attacks and is immune
+    to poison); Tinker-Rat (during the post battle sequence, when rolling for Hero and Henchmen
+    advances, the Hero may instead tinker with the Machine-Ogre: roll 2D6 on the Customisation
+    Chart; the Hero cannot be used for anything else in that post battle sequence).
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Skaven special skills
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Habilidades Especiales de los Skaven
+  effect_i18n:
+    es: >-
+      Los héroes skaven pueden usar la siguiente lista de habilidades en lugar de las listas
+      estándar: Combate con la Cola (puede empuñar escudo, daga o espada con la cola: ataque extra
+      con el arma apropiada o +1 a su salvación por armadura); Infiltración (se despliega tras la
+      banda rival, en cualquier punto sin línea de visión y a más de 12" de cualquier modelo
+      enemigo; si ambos jugadores infiltran, cada uno tira 1D6 y el más bajo despliega primero); Ojo
+      Implacable (una lente telescópica monstruosa sustituye a un ojo: el héroe tirador puede
+      detectar enemigos ocultos al doble de su Iniciativa en pulgadas); Cuerpo Metálico (una
+      armadura elaborada envuelve al héroe: salvación por armadura de 3+); Respirador (un sistema de
+      bombeo conectado a los órganos respiratorios: ignora los efectos de ataques de gas o
+      soporíferos y es inmune al veneno); Rata Manitas (durante la secuencia posterior a la batalla,
+      al tirar avances de héroes y secuaces, el héroe puede en su lugar trastear con el Ogro
+      Mecánico: tira 2D6 en la Tabla de Personalización; el héroe no puede usarse para nada más en
+      esa secuencia).
+  applies_to:
+    band: true
+- id: band--customisation-chart
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.metal-mongers-mim.band.customisation-chart
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Customisation Chart
+  effect: >-
+    2D6 result: 2 - That didn't go well! Over-enthusiastic tinkering coupled with a wobbly ladder
+    means that something important has been sliced off! Roll again on this chart (re-rolling any
+    further instances of 'That didn't go well!' and 'Breakthrough!') but instead of increasing the
+    characteristic rolled, decrease it!; 3 - Warpfire Projector: a smaller version of the dreaded
+    warpfire thrower has been built into the machine's arm; 4 - Every Gear and Gizmo: the extra
+    gears give the Machine-Ogre +1 Movement; 5 - Warp-powered Skeleton: warpstone dust hardens the
+    bones: +1 Weapon Skill; 6 - Faster Pistons: faster moving joints: +1 Initiative; 7 - More
+    Reliable: the D6 roll to activate and work the Machine-Ogre can be re-rolled each turn; 8 -
+    Extra Arm: +1 Attack; 9 - Bigger Claws: +1 Strength; 10 - Reinforced Cavity: +1 Toughness; 11 -
+    Steel Spine: +1 Wound; 12 - Breakthrough! Roll a further D3 times on this chart, ignoring any
+    further rolls of 'Breakthrough!'.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Customisation chart
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Tabla de Personalización
+  effect_i18n:
+    es: >-
+      Resultado de 2D6: 2 - ¡Eso no fue bien! Un trasteo demasiado entusiasta unido a una escalera
+      coja hace que se haya seccionado algo importante. Tira de nuevo en esta tabla (repitiendo
+      cualquier otra aparición de '¡Eso no fue bien!' y '¡Avance!'), pero en lugar de aumentar la
+      característica obtenida, ¡redúcela!; 3 - Proyector de Fuego Warp: una versión más pequeña del
+      temible lanzallamas warp se ha incorporado al brazo de la máquina; 4 - Engranajes y Chismes:
+      los engranajes extra dan al Ogro Mecánico +1 Movimiento; 5 - Esqueleto Propulsado por Warp: el
+      polvo de piedra bruja endurece los huesos: +1 Habilidad de Armas; 6 - Pistones más Rápidos:
+      articulaciones de movimiento más veloz: +1 Iniciativa; 7 - Más Fiable: la tirada de 1D6 para
+      activar y manejar al Ogro Mecánico puede repetirse cada turno; 8 - Brazo Extra: +1 Ataque; 9 -
+      Garras más Grandes: +1 Fuerza; 10 - Cavidad Reforzada: +1 Resistencia; 11 - Columna de Acero:
+      +1 Herida; 12 - ¡Avance! Tira 1D3 veces más en esta tabla, ignorando cualquier nueva aparición
+      de '¡Avance!'.
+  applies_to:
+    band: true
+- id: band--experimental-weapon-chart
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.metal-mongers-mim.band.experimental-weapon-chart
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Experimental Weapon Chart
+  effect: >-
+    D6 result: 1 - Scrap: the weapon is mangled beyond repair; it must be removed from the warband's
+    roster; they may choose to either add 1 club to the roster or add 3 gold crowns for the scrap
+    metal value; 2-4 - Badly Mangled: the weapon is a pile of bits; you can either not risk it and
+    add the bits to the warband's parts pile, counting as gaining 1 wyrdstone shard more than normal
+    in the post battle sequence, or try to repair it (D6, on 3+ repaired; otherwise the weapon is
+    useless and removed from the roster); 5-6 - Few Bits Missing: apart from cosmetic damage, the
+    weapon can be used as normal from now on.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Experimental weapon chart
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Tabla de Armas Experimentales
+  effect_i18n:
+    es: >-
+      Resultado de 1D6: 1 - Chatarra: el arma queda destrozada sin remedio; debe retirarse de la
+      lista de la banda; pueden añadir 1 garrote a la lista o sumar 3 coronas de oro por su valor
+      como chatarra; 2-4 - Muy Destrozada: el arma es un montón de piezas; puedes no arriesgarte y
+      añadir las piezas al montón de recambios de la banda (contando como ganar 1 fragmento de
+      piedra bruja extra en la secuencia posterior a la batalla), o intentar repararla (1D6, con 3+
+      queda reparada; en cualquier otro resultado es inservible y se retira de la lista); 5-6 -
+      Faltan Algunas Piezas: salvo daños cosméticos, el arma puede usarse con normalidad a partir de
+      ahora.
+  applies_to:
+    band: true
+- id: band--warpfire-projector
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.metal-mongers-mim.item.warpfire-projector
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Warpfire Projector
+  effect: >-
+    Availability: Machine-Ogre only. Range: 6", Strength: 4, Save Modifier -1, Jet of Flame, Refuel.
+    Jet of Flame: draw a line 6" long and 2" wide; all models in its path are hit on a 4+ with no
+    modifiers; the warpfire projector causes fire damage (see the rules for the Brazier Iron from
+    page 85 of the Mordheim 2002 annual). Refuel: the warpfire projector must be refuelled using D3
+    wyrdstone shards between battles.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Warpfire projector
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Proyector de Fuego Warp
+  effect_i18n:
+    es: >-
+      Disponibilidad: solo Ogro Mecánico. Alcance: 6", Fuerza: 4, Modificador de Salvación -1,
+      Chorro de Llamas, Rellenar. Chorro de Llamas: traza una línea de 6" de largo y 2" de ancho;
+      todos los modelos en su trayectoria son impactados con un 4+ sin modificadores; el proyector
+      de fuego warp causa daño de fuego (ver las reglas del Hierro del Brasero de la página 85 del
+      annual de Mordheim 2002). Rellenar: el proyector debe rellenarse con 1D3 fragmentos de piedra
+      bruja entre batallas.
+  applies_to:
+    band: true
+- id: band--ratling-gun
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.metal-mongers-mim.item.ratling-gun
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Ratling Gun
+  effect: >-
+    275 gc (Forge-Rats and Technicians only), Rare 14. Range: 6"-16", Strength: 3, Save Modifier -1,
+    Move or fire, Unwieldy, Jeopardous, Metal storm!. Metal storm!: nominate the target model then
+    roll 2D6; this is the number of shots fired; spread the shots evenly between the target model
+    and another model within 6" (friend or foe!), then roll to hit and to wound as normal for each
+    shot; once fired, it cannot be used again for the rest of the game. Unwieldy: it takes two
+    models to carry it; may not be fired if any enemy models are within 6" of the firer; you may
+    never move and fire with it, regardless of special rules such as the Nimble skill. Jeopardous:
+    if a double is rolled for the number of shots, the gun misfires! Roll on the Ratling gun misfire
+    chart: 1 - Boom! the firer is automatically taken out of action and every model within 6" takes
+    a Strength 4 hit on a 4+; roll a D6-1 on the Experimental weapon chart; 2 - Blam! the firer
+    takes a Strength 4 hit on a 4+; roll a D6 on the Experimental weapon chart; 3 - Boing! the
+    failure tears the weapon apart; roll a D6 on the Experimental weapon chart; 4 - Ping! the weapon
+    is unusable for the rest of the game; 5 - Clunk! you miss this turn's shooting phase as you try
+    to stick the handle back on; 6 - Roar! each model (friend or foe!) within 16" of the firer and
+    in line of sight takes 2 automatic hits.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Ratling gun
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Ametralladora Ratling
+  effect_i18n:
+    es: >-
+      275 coronas (solo Ratas de Forja y Técnicos), Rareza 14. Alcance: 6"-16", Fuerza: 3,
+      Modificador de Salvación -1, Disparar o mover, Poco manejable, Peligrosa, ¡Tormenta metálica!.
+      ¡Tormenta metálica!: designa al modelo objetivo y tira 2D6; ese es el número de disparos;
+      reparte los disparos equitativamente entre el objetivo y otro modelo a 6" (¡amigo o enemigo!),
+      y tira para impactar y herir con normalidad con cada disparo; una vez disparada, no puede
+      volver a usarse en el resto de la partida. Poco manejable: se necesitan dos modelos para
+      portarla; no puede dispararse si hay modelos enemigos a 6" del tirador; nunca puedes moverte y
+      disparar con ella, sin importar reglas especiales como la habilidad Ágil. Peligrosa: si sale
+      un doble en el número de disparos, ¡el arma se encasquilla! Tira en la tabla de
+      encasquillamiento de la ratling: 1 - ¡Boom! el tirador queda automáticamente fuera de combate
+      y cada modelo a 6" recibe un impacto de Fuerza 4 con un 4+; tira 1D6-1 en la tabla de armas
+      experimentales; 2 - ¡Blam! el tirador recibe un impacto de Fuerza 4 con un 4+; tira 1D6 en la
+      tabla de armas experimentales; 3 - ¡Boing! el fallo despedaza el arma; tira 1D6 en la tabla de
+      armas experimentales; 4 - ¡Ping! el arma queda inservible durante el resto de la partida; 5 -
+      ¡Clunk! pierdes la fase de disparo de este turno mientras intentas volver a encajar la
+      manivela; 6 - ¡Rugido! cada modelo (¡amigo o enemigo!) a 16" del tirador y con línea de visión
+      recibe 2 impactos automáticos.
+  applies_to:
+    band: true
+- id: band--poison-wind-globe
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.metal-mongers-mim.item.poison-wind-globe
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Poison Wind Globe
+  effect: >-
+    20 gold crowns (Skaven only), Rare 6. Range: 6", Strength: Special, Thrown weapon, Poison wind,
+    Drop. Poison wind: obstacles do not affect the deadly gas inside the globes; ignore penalties to
+    cover when rolling to hit; the globes ignore armour saves; a globe deals D3 wounds to the target
+    on a 3+ and a single wound to anyone else within 2" on a 4+; the warpstone poison is magical so
+    it also affects undead. Drop: if a model rolls a 1 to hit, he has dropped it or the fragile
+    sphere has broken in its hands; resolve a hit against the model that dropped it; a model may
+    voluntarily drop a globe on a model in base-to-base contact instead of using a weapon in close
+    combat.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Poison wind globe
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Esfera de Viento Envenenado
+  effect_i18n:
+    es: >-
+      20 coronas de oro (solo skaven), Rareza 6. Alcance: 6", Fuerza: Especial, Arma arrojadiza,
+      Viento envenenado, Caída. Viento envenenado: los obstáculos no afectan al gas letal del
+      interior de las esferas; ignora las penalizaciones por cobertura al tirar para impactar; las
+      esferas ignoran las salvaciones por armadura; una esfera causa 1D3 heridas al objetivo con un
+      3+ y una herida a cualquier otro modelo a 2" con un 4+; el veneno de piedra bruja es mágico,
+      por lo que también afecta a los muertos vivientes. Caída: si un modelo saca un 1 al impactar,
+      la ha soltado o la frágil esfera se ha roto en sus manos; resuelve un impacto contra el modelo
+      que la soltó; un modelo puede soltar voluntariamente una esfera sobre un modelo en contacto
+      base con base en lugar de usar un arma en combate cuerpo a cuerpo.
+  applies_to:
+    band: true
+- id: band--spike-jawed-snatcher
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.metal-mongers-mim.item.spike-jawed-snatcher
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Spike-Jawed Snatcher
+  effect: >-
+    25 gold crowns (Skaven only), Rare 10. Range: Close Combat, Strength: As user, Capture,
+    Two-handed. Capture: a model taken out of action by a spike-jawed snatcher becomes captured
+    unless the warband is routed; do not roll for Serious Injuries. Large models, such as Ogres or
+    Trolls cannot be captured this way, and neither can animals: roll for Serious Injuries as
+    normal.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Spike-jawed snatcher
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Capturador de Mandíbulas con Púas
+  effect_i18n:
+    es: >-
+      25 coronas de oro (solo skaven), Rareza 10. Alcance: Combate Cuerpo a Cuerpo, Fuerza: la del
+      usuario, Captura, A dos manos. Captura: un modelo dejado fuera de combate por un capturador de
+      mandíbulas con púas queda capturado salvo que la banda huya; no se tira por Heridas Graves.
+      Los modelos grandes, como Ogros o Trolls, no pueden capturarse así, y tampoco los animales:
+      tira por Heridas Graves con normalidad.
+  applies_to:
+    band: true
+- id: band--gas-mask
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.metal-mongers-mim.item.gas-mask
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Gas Mask
+  effect: >-
+    15 gold crowns, Rare 6. Protectively-coated visors crafted from leathery human skin. A skaven
+    wearing the grisly mask receives a 3+ save against any gas or soporific based attacks. Any
+    non-skaven Hero wearing the stinky facial apparel receives a -1 modifier to hit in close combat,
+    shooting missiles or casting spells.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Gas mask
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Máscara de Gas
+  effect_i18n:
+    es: >-
+      15 coronas de oro, Rareza 6. Viseras protectoras confeccionadas con piel humana correosa. Un
+      skaven que lleve la máscara macabra recibe una salvación de 3+ contra cualquier ataque de gas
+      o soporífero. Cualquier héroe que no sea skaven y lleve tan apestoso ornamento facial recibe
+      un modificador de -1 para impactar en combate cuerpo a cuerpo, al disparar proyectiles o al
+      lanzar hechizos.
+  applies_to:
+    band: true
+- id: band--pneumatic-arm
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.metal-mongers-mim.item.pneumatic-arm
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Pneumatic Arm
+  effect: >-
+    140 gold crowns (Engineer Adept only), Rare 13. Pneumatic arms fastened to harnesses allow the
+    Adept to wield weapons well beyond his strength. An Engineer Adept equipped with this harness
+    counts as having two extra arms. Furthermore they may equip the harness to hold Missile Weapons
+    with the Unwieldy Trait (Ratling Gun, Warpfire Thrower etc.), the power of the arms ignoring the
+    two-model requirement. Experimental Technology: should a 1 be rolled to hit with any missile
+    weapon, something has gone wrong! Roll a D6 on the Experimental Weapon Chart. If the weapon
+    malfunctions, resolve the hit against the firer instead of the target, hitting on a 4+. If the
+    firer should be taken out of action by the shot, roll D6+1 on the Experimental Weapon Chart.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Pneumatic Arm
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Brazo Neumático
+  effect_i18n:
+    es: >-
+      140 coronas de oro (solo Adepto Ingeniero), Rareza 13. Los brazos neumáticos fijados a arneses
+      permiten al Adepto empuñar armas muy por encima de su fuerza. Un Adepto Ingeniero equipado con
+      este arnés cuenta como si tuviera dos brazos extra. Además puede equipar el arnés para portar
+      armas de proyectil con el rasgo Poco Manejable (Ametralladora Ratling, Lanzallamas warp,
+      etc.), ignorando el requisito de dos modelos gracias a la fuerza de los brazos. Tecnología
+      Experimental: si al impactar con cualquier arma de proyectil sale un 1, ¡algo ha ido mal! Tira
+      1D6 en la tabla de Armas Experimentales. Si el arma funciona mal, resuelve el impacto contra
+      el tirador en lugar del objetivo, impactando con un 4+. Si el disparo dejara fuera de combate
+      al tirador, tira 1D6+1 en la tabla de Armas Experimentales.
+  applies_to:
+    band: true
+- id: engineer-adept--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.metal-mongers-mim.engineer-adept.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: >-
+    Any warrior within 6" of the Engineer may use his Leadership value instead of his own when
+    taking Leadership tests.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / Engineer Adept / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6" del Ingeniero puede usar su valor de Liderazgo en los chequeos de
+      Liderazgo.
+  applies_to:
+    profile_ids:
+    - engineer-adept
+- id: pirate-rats--water-rat
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.metal-mongers-mim.pirate-rats.water-rat
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Water-Rat
+  effect: >-
+    Water-rats from Clan Skurvy are among the few skaven with an affinity for water and the lunatic
+    capacity for braving the subterranean rivers of the Under-Empire. Pirate-Rats are aquatic.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / Pirate-Rats / Special Rules / Water-Rat
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Rata de Agua
+  effect_i18n:
+    es: >-
+      Las ratas de agua del Clan Skurvy son de los pocos skaven con afinidad por el agua y la locura
+      capaz de adentrarse en los ríos subterráneos del Sub-Imperio. Las Ratas Piratas son acuáticas.
+  applies_to:
+    profile_ids:
+    - pirate-rats
+- id: technicians--globadier
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.metal-mongers-mim.technicians.globadier
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Globadier
+  effect: >-
+    Technicians are specially selected from broods with high intelligences to be the assistants for
+    Forge-rats and engineers; as such they are trained to use both Poison Wind Globes and Gas Masks,
+    and may buy them when being recruited.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / 0-2 Technicians / Special Rules / Globadier
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Globadier
+  effect_i18n:
+    es: >-
+      Los Técnicos se seleccionan especialmente de camadas de alta inteligencia para ser los
+      asistentes de las Ratas de Forja y los ingenieros; por ello están entrenados para usar tanto
+      Esferas de Viento Envenenado como Máscaras de Gas, y pueden comprarlas al ser reclutados.
+  applies_to:
+    profile_ids:
+    - technicians
+- id: machine-ogre--large
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.metal-mongers-mim.machine-ogre.large
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Large
+  effect: >-
+    Machine-Ogres are huge creatures and therefore a tempting target. Any model may shoot at the
+    Machine-Ogre, even if it is not the closest model.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Machine Ogre / Special Rules / Large
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Grande
+  effect_i18n:
+    es: >-
+      Los Ogros Mecánicos son criaturas enormes y por tanto un blanco tentador. Cualquier modelo
+      puede disparar al Ogro Mecánico, aunque no sea el modelo más cercano.
+  applies_to:
+    profile_ids:
+    - machine-ogre
+- id: machine-ogre--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.metal-mongers-mim.machine-ogre.fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Fear
+  effect: The Rat Ogre is a fearsome, monstrous beast that causes fear.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Machine Ogre / Special Rules / Fear
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: El Ogro Rata es una bestia monstruosa y temible que causa miedo.
+  applies_to:
+    profile_ids:
+    - machine-ogre
+- id: machine-ogre--bio-machinery
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.metal-mongers-mim.machine-ogre.bio-machinery
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Bio Machinery
+  effect: >-
+    The Machine-Ogre is simply a mindless fusion of materials animated by warpstone. The
+    Machine-Ogre is immune to psychology and never leaves combat.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Machine Ogre / Special Rules / Bio Machinery
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Bio Maquinaria
+  effect_i18n:
+    es: >-
+      El Ogro Mecánico es simplemente una fusión irracional de materiales animados por piedra bruja.
+      El Ogro Mecánico es inmune a la psicología y nunca abandona el combate.
+  applies_to:
+    profile_ids:
+    - machine-ogre
+- id: machine-ogre--immune-to-poison
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.metal-mongers-mim.machine-ogre.immune-to-poison
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Immune to Poison
+  effect: >-
+    Machine-Ogres are not alive as such; being a monstrous combination of dead flesh, arcane Skaven
+    technology and dark sorcery they are not affected by any poison.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Machine Ogre / Special Rules / Immune to Poison
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Inmune al Veneno
+  effect_i18n:
+    es: >-
+      Los Ogros Mecánicos no están vivos como tales; al ser una combinación monstruosa de carne
+      muerta, tecnología skaven arcana y hechicería oscura, no se ven afectados por ningún veneno.
+  applies_to:
+    profile_ids:
+    - machine-ogre
+- id: machine-ogre--may-not-run
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.metal-mongers-mim.machine-ogre.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: May Not Run
+  effect: >-
+    The Machine-Ogre is a lumbering mechanical brute! It lacks the sheer animal speed of a living
+    Rat Ogre. It may not run.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Machine Ogre / Special Rules / May Not Run
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: No Puede Correr
+  effect_i18n:
+    es: >-
+      ¡El Ogro Mecánico es un bruto mecánico pesado! Carece de la pura velocidad animal de un Ogro
+      Rata vivo. No puede correr.
+  applies_to:
+    profile_ids:
+    - machine-ogre
+- id: machine-ogre--warpstone-heart
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.metal-mongers-mim.machine-ogre.warpstone-heart
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Warpstone Heart
+  effect: >-
+    The Machine-Ogre is a mindless machine requiring Wyrdstone shards to power it. It requires a
+    single piece of Wyrdstone before each game to be 'powered-up'.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Machine Ogre / Special Rules / Warpstone Heart
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Corazón de Piedra Bruja
+  effect_i18n:
+    es: >-
+      El Ogro Mecánico es una máquina irracional que requiere fragmentos de piedra bruja para
+      funcionar. Necesita una sola pieza de Piedra Bruja antes de cada partida para ser 'cargado'.
+  applies_to:
+    profile_ids:
+    - machine-ogre
+- id: machine-ogre--warptooth
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.metal-mongers-mim.machine-ogre.warptooth
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Warptooth
+  effect: >-
+    The Machine-Ogre is designed to obey all commands given to it by its master and creator, the
+    Engineer Adept using a 'warptooth'. This precaution dissuades any ambitious apprentices seeking
+    advancement, knowing that a Machine-Ogre can easily be used as a fast track to the top! Should
+    the Machine-Ogre ever find itself more than 18" from the Engineer Adept at the start of the
+    Movement phase, it 'powers down' reducing its Movement and Weapon Skill characteristic to 0. If
+    the Engineer Adept is taken out of action the same thing happens.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Machine Ogre / Special Rules / Warptooth
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Dientewarp
+  effect_i18n:
+    es: >-
+      El Ogro Mecánico está diseñado para obedecer todas las órdenes que le dé su maestro y creador,
+      el Adepto Ingeniero, mediante un 'dientewarp'. Esta precaución disuade a los aprendices
+      ambiciosos que buscan ascender, sabiendo que un Ogro Mecánico ¡puede usarse fácilmente como
+      una vía rápida a la cima! Si el Ogro Mecánico llegara a encontrarse a más de 18" del Adepto
+      Ingeniero al inicio de la fase de movimiento, se 'apaga', reduciendo sus características de
+      Movimiento y Habilidad de Armas a 0. Si el Adepto Ingeniero queda fuera de combate, ocurre lo
+      mismo.
+  applies_to:
+    profile_ids:
+    - machine-ogre
+- id: machine-ogre--no-pain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.metal-mongers-mim.machine-ogre.no-pain
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: No Pain
+  effect: Machine-Ogres treat a stunned result as knocked down.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Machine Ogre / Special Rules / No Pain
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: Los Ogros Mecánicos tratan un resultado aturdido como derribado.
+  applies_to:
+    profile_ids:
+    - machine-ogre
+- id: machine-ogre--no-brain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.metal-mongers-mim.machine-ogre.no-brain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: No Brain
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Machine Ogre / Special Rules / No Brain
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Sin Cerebro
+  applies_to:
+    profile_ids:
+    - machine-ogre
+  rule_ref: shared-rule.brainless
+- id: machine-ogre--unreliable
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.metal-mongers-mim.machine-ogre.unreliable
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Unreliable
+  effect: >-
+    The technology of biomechanics is still in its infancy and as with most Clan Skyre experiments
+    is neither safe nor entirely reliable! At the beginning of each turn, the Skaven player may roll
+    a D6 to activate and work the Machine-Ogre. On a roll of 2-6 everything is fine and the Rat Ogre
+    may be moved normally. On a roll of 1, something has gone drastically wrong - roll again on the
+    Malfunction Chart: 1 - Explodes! All models within 6" of the Machine-Ogre receive a single
+    Strength 5 hit; the Machine-Ogre is completely destroyed, do not roll for injuries after the
+    game; 2 - Malfunctions! From now until the end of the game the Machine-Ogre is out of control;
+    at the start of each Skaven turn it moves randomly (use the Artillery Scatter dice); if there
+    are any warriors within charge range (of either side) it counts as charging them; 3 - Shuts
+    Down! It comes to a halt for the rest of the battle and is hit automatically if engaged in close
+    combat; 4 - Temporary Loss of Control! It moves in a random direction and if it comes into
+    contact with any warriors (of either side) it attacks and counts as charging; if it does not
+    move into contact but there are warriors within range of its warpfire projector (if it has
+    one!), it fires at them instead; 5-6 - Freezes! It freezes up for this turn and is hit
+    automatically if engaged in close combat.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Machine Ogre / Special Rules / Unreliable
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  name_i18n:
+    es: Poco Fiable
+  effect_i18n:
+    es: >-
+      ¡La tecnología de la biomecánica aún está en pañales y, como en la mayoría de los experimentos
+      del Clan Skryre, no es segura ni del todo fiable! Al principio de cada turno, el jugador
+      skaven puede tirar 1D6 para activar y manejar al Ogro Mecánico. Con un resultado de 2-6 todo
+      va bien y el Ogro Rata puede moverse con normalidad. Con un 1, algo ha ido drásticamente mal -
+      tira de nuevo en la Tabla de Averías: 1 - ¡Explota! Todos los modelos a 6" del Ogro Mecánico
+      reciben un único impacto de Fuerza 5; el Ogro Mecánico queda completamente destruido, no se
+      tiran heridas tras la partida; 2 - ¡Averiado! Desde ahora hasta el final de la partida el Ogro
+      Mecánico está fuera de control; al inicio de cada turno skaven se mueve aleatoriamente (usa el
+      dado de dispersión de artillería); si hay guerreros al alcance de carga (de cualquiera de los
+      bandos) cuenta como cargándolos; 3 - ¡Se Apaga! Se detiene durante el resto de la batalla y
+      recibe impactos automáticamente si se le combate en cuerpo a cuerpo; 4 - ¡Pérdida Temporal de
+      Control! Se mueve en una dirección aleatoria y si entra en contacto con guerreros (de
+      cualquier bando) ataca y cuenta como carga; si no llega al contacto pero hay guerreros al
+      alcance de su proyector de fuego warp (¡si lo tiene!), dispara contra ellos; 5-6 - ¡Se
+      Congela! Se queda congelado este turno y recibe impactos automáticamente si se le combate en
+      cuerpo a cuerpo.
+  applies_to:
+    profile_ids:
+    - machine-ogre
