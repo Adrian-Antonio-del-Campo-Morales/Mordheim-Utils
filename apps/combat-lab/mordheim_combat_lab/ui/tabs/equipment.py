@@ -17,15 +17,15 @@ from tkinter import ttk
 class EquipmentAnalysisTab(ttk.Frame):
     """Compare legal armour and off-hand combinations against the current enemy."""
 
-    MAX_CONFIGURATIONS = 500
-
-    def __init__(self, parent, catalogue, candidate_editor, enemy_editor, settings_provider, simulations):
+    def __init__(self, parent, catalogue, candidate_editor, enemy_editor, settings_provider, simulations, usage_factory=None):
         super().__init__(parent, padding=12)
         self.catalogue = catalogue
         self.candidate_editor = candidate_editor
         self.enemy_editor = enemy_editor
         self.settings_provider = settings_provider
         self.simulations = simulations
+        self.workers = tk.IntVar(value=-1)
+        self._usage_factory = usage_factory
         self.maximum_changed_slots = IntVar(value=1)
         self.status = StringVar(value=tr("Compare the candidate's legal off-hand and armour configurations."))
         self._running = False
@@ -42,6 +42,8 @@ class EquipmentAnalysisTab(ttk.Frame):
         self.run_button.pack(side="left")
         ttk.Label(controls, text=tr("Maximum changed slots")).pack(side="left", padx=(14, 5))
         ttk.Spinbox(controls, from_=1, to=8, textvariable=self.maximum_changed_slots, width=5).pack(side="left")
+        ttk.Label(controls, text=tr("Battery workers (-1 = automatic, 0 = sequential)")).pack(side="left", padx=(14, 5))
+        ttk.Spinbox(controls, from_=-1, to=32, increment=1, textvariable=self.workers, width=5).pack(side="left")
         self.progress = AnalysisProgress(self)
         self.progress.pack(fill="x", pady=(0, 10))
         columns = ("item1", "item2", "item3", "item4", "item5", "optimal", "motta", "cost", "equipment")
@@ -68,14 +70,14 @@ class EquipmentAnalysisTab(ttk.Frame):
         except (KeyError, TypeError, ValueError) as exc:
             self.status.set(tr("Configuration error: {}").format(exc))
             return
-        if len(configurations) > self.MAX_CONFIGURATIONS:
-            self.status.set(tr("{} configurations exceed the {} safety limit. Reduce maximum changed slots.").format(f"{len(configurations):,}", f"{self.MAX_CONFIGURATIONS:,}"))
-            return
         self._running = True
         self.run_button.configure(state="disabled")
         self.status.set(tr("Comparing {} equipment configurations…").format(len(configurations)))
         cancel_event = self.progress.start(len(configurations))
-        threading.Thread(target=self._compare, args=(candidate, enemy, configurations, settings, cancel_event), daemon=True).start()
+        raw_workers = int(self.workers.get())
+        workers = None if raw_workers < 0 else max(0, raw_workers)  # -1 = automatic
+        observe = self._usage_factory("equipment", len(configurations)) if self._usage_factory else None
+        threading.Thread(target=self._compare, args=(candidate, enemy, configurations, settings, cancel_event, workers, observe), daemon=True).start()
 
     def _configurations(self, candidate) -> tuple[tuple[dict, str], ...]:
         """Build bounded variations across every equipment slot supported by the editor."""
@@ -129,12 +131,12 @@ class EquipmentAnalysisTab(ttk.Frame):
                 configurations.append((updates, " · ".join(labels)))
         return tuple(configurations)
 
-    def _compare(self, candidate, enemy, configurations, settings, cancel_event) -> None:
+    def _compare(self, candidate, enemy, configurations, settings, cancel_event, workers=0, observe=None) -> None:
         try:
             variants = tuple(ComparisonCandidate(str(index), label, replace(candidate, **updates))
                 for index, (updates, label) in enumerate(configurations))
             batch = compare_builds(candidate, enemy, variants, settings, cancel_event,
-                lambda completed: self.after(0, self.progress.advance, completed))
+                lambda completed: self.after(0, self.progress.advance, completed), workers=workers, observe=observe)
             rows = [(row.candidate.label, row.win_rate, row.improvement) for row in batch.results]
             skipped = len(batch.rejected)
         except SimulationCancelled:

@@ -35,6 +35,19 @@ def apply_theme(root) -> None:
         "TScrollbar", background=COLORS["border"], troughcolor=COLORS["bg"],
         bordercolor=COLORS["border"], arrowcolor=COLORS["text"], relief="flat",
     )
+    # Popover scrollbars must be plainly visible: slightly wider arrows, a
+    # lighter thumb than the trough and a matching trough surface.
+    style.configure(
+        "Popover.Vertical.TScrollbar",
+        background=COLORS["border_light"], troughcolor=COLORS["surface"],
+        bordercolor=COLORS["border"], arrowcolor=COLORS["text"], relief="flat",
+        arrowsize=14,
+    )
+    style.map(
+        "Popover.Vertical.TScrollbar",
+        background=[("pressed", COLORS["accent"]), ("active", COLORS["accent_hover"])],
+        arrowcolor=[("pressed", "#111111")],
+    )
     style.map(
         "TScrollbar",
         background=[("pressed", COLORS["accent"]), ("active", COLORS["border_light"])],
@@ -59,6 +72,9 @@ def apply_theme(root) -> None:
     root.option_add("*TCombobox*Listbox.selectForeground", "#111111")
     root.option_add("*TCombobox*Listbox.highlightThickness", 0)
     root.option_add("*TCombobox*Listbox.font", default_font)
+    # The popdown shell itself is a classic Tk toplevel (class ComboboxPopdown);
+    # left unpainted it flashes a white frame around the dark listbox.
+    root.option_add("*ComboboxPopdown.background", COLORS["surface_alt"])
     style.configure(".", background=COLORS["bg"], foreground=COLORS["text"], fieldbackground=COLORS["surface"], bordercolor=COLORS["border"], font=default_font)
     style.configure("TFrame", background=COLORS["bg"])
     style.configure("Card.TFrame", background=COLORS["surface"])

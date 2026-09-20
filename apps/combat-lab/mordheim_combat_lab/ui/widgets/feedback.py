@@ -70,6 +70,10 @@ class _TooltipManager:
                     foreground=COLORS["text"],
                     relief=tk.SOLID,
                     borderwidth=1,
+                    # The 1px SOLID relief border is painted with
+                    # highlightbackground on Windows; the default is white.
+                    highlightbackground=COLORS["border"],
+                    highlightcolor=COLORS["border"],
                     font=("Segoe UI", 9),
                     wraplength=420,
                 )

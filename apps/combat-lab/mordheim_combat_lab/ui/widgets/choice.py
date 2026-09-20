@@ -19,11 +19,19 @@ class ChoiceVar:
         self.value = value
         self.variable = tk.StringVar(master=master, value="")
         self._options: dict[str, str] = {}
+        self._boxes: list["ChoiceBox"] = []
+
+    def subscribe(self, box: "ChoiceBox"):
+        """Register a combobox so option changes keep its dropdown in sync."""
+        self._boxes.append(box)
+        box._sync_values()
 
     def set_options(self, options: dict[str | None, str]):
         """Replace the choices. ``options`` maps data value → label key."""
         self._options = dict(options)
         self.variable.set(tr(self._options.get(self.value)) if self._has(self.value) else "")
+        for box in self._boxes:
+            box._sync_values()
 
     def set(self, value):
         self.value = value
@@ -60,10 +68,22 @@ class ChoiceBox(ttk.Combobox):
         self._choice = choice
         self._on_change = on_change
         self.bind("<<ComboboxSelected>>", self._selected)
+        choice.subscribe(self)
+
+    def _sync_values(self):
+        """Mirror the ChoiceVar options into the dropdown list.
+
+        The combobox only shows what ``values`` contains; a change that
+        updates just the displayed variable leaves an empty dropdown.
+        """
+        try:
+            self.configure(values=tuple(tr(key) for key in self._choice._options.values()))
+        except tk.TclError:
+            pass  # widget already destroyed during a UI rebuild
 
     def refresh_labels(self):
         """Re-render option labels and the current selection (locale change)."""
-        self.configure(values=tuple(tr(key) for key in self._choice._options.values()))
+        self._sync_values()
         if self._choice.value is not None and self._choice._has(self._choice.value):
             self._choice.set(self._choice.value)
 
