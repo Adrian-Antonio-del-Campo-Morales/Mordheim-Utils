@@ -6,10 +6,12 @@ from mordheim_knowledge.loader import BandPackage
 from mordheim_knowledge.loader import load_bands
 from mordheim_knowledge.loader import load_collections
 from mordheim_knowledge.loader import load_mechanics
+from mordheim_knowledge.loader import load_racial_maximums
 from mordheim_knowledge.loader import load_runtime_scope
 from mordheim_knowledge.loader import load_shared_rules
 from mordheim_knowledge.loader import load_simulation_mappings
 from mordheim_knowledge.loader import load_skills
+from mordheim_knowledge.campaign import load_warband_groups
 from mordheim_knowledge.i18n import display_effect
 from mordheim_knowledge.i18n import display_name
 
@@ -40,6 +42,26 @@ class ProfileRule:
     name: str
     effect: str
     runtime_grant: bool
+
+
+
+#: Race-group suffix → ``profile`` key of ``catalog/rules/racial-maximums.yaml``.
+#: Mirrors the campaign engine's band-race heuristics; groups the KB declares
+#: without a single racial-maximum table (lizardmen resolve per profile,
+#: mixed-race, pygmy) stay unresolved instead of guessing.
+_GROUP_RACE = {
+    "human": "human", "chaos-human": "human", "human-mercenary": "human",
+    "undead": "human", "elf": "elf", "high-elf": "elf", "dark-elf": "elf",
+    "dwarf": "dwarf", "chaos-dwarf": "dwarf", "skaven": "skaven",
+    "ogre": "ogre", "goblin": "goblin", "orc": "orc",
+    "halfling": "halfling", "beastmen": "other_beastmen",
+}
+
+#: Racial-maximum characteristic field → the editor's display key.
+_MAXIMUM_FIELDS = {
+    "WS": "weapon_skill", "S": "strength", "T": "toughness",
+    "W": "wounds", "I": "initiative", "A": "attacks",
+}
 
 
 class CombatCatalogue:
@@ -291,6 +313,37 @@ class CombatCatalogue:
                     and runtime.get("implemented") == "YES",
                 ))
         return tuple(result)
+
+    def characteristic_maximums(self, choice: ProfileChoice | None) -> dict[str, int]:
+        """Racial maximum characteristics for one profile, in editor keys.
+
+        Resolves the race from ``registry/warband-groups.yaml`` (the same
+        warband-side heuristic the campaign engine applies) and the maximums
+        from ``catalog/rules/racial-maximums.yaml``. Groups without a single
+        racial-maximum table return no maximum so the UI never invents one.
+        """
+        if choice is None:
+            return {}
+        group_id = next(
+            (str(group["id"]) for group in load_warband_groups(self.ruleset)
+             if choice.band_id in set(group.get("band_ids") or ())
+             and str(group["id"]).removeprefix("warband-group.") in _GROUP_RACE),
+            None,
+        )
+        if group_id is None:
+            return {}
+        race = _GROUP_RACE[str(group_id).removeprefix("warband-group.")]
+        table = next(
+            (row for row in load_racial_maximums(self.ruleset) if str(row.get("profile")) == race),
+            None,
+        )
+        if table is None:
+            return {}
+        declared = table.get("characteristics") or {}
+        return {
+            key: int(declared[field]) for key, field in _MAXIMUM_FIELDS.items()
+            if field in declared
+        }
 
     def profile_rules(self, choice: ProfileChoice | None) -> tuple[ProfileRule, ...]:
         """Return editorial profile rules together with their runtime status."""

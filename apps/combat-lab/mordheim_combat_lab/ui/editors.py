@@ -147,7 +147,14 @@ class FighterEditor(ttk.Frame):
         )
     @staticmethod
     def _initial_stat(value):
-        """Use the minimum roll for random KB profiles, as the compiler does."""
+        """Use the minimum roll for random KB profiles, as the compiler does.
+
+        Composite models (e.g. the Carnival of Chaos plague cart) declare
+        ``null`` characteristics; the compiler resolves those profiles with
+        default characteristics, so the editor assumes the same floor value.
+        """
+        if value is None:
+            return 1
         if isinstance(value, int):
             return value
         match = re.fullmatch(r"(\d*)D(\d+)(?:\+(\d+))?", str(value), re.IGNORECASE)
@@ -184,7 +191,7 @@ class FighterEditor(ttk.Frame):
         return {item_id: self.catalogue.localized_name(item_id, name) if item_id else name for item_id, name in pairs}
 
     def _configure_options(self,choice):
-        self._weapon_options={None:"Free hand", **dict(self.catalogue.weapons(choice))}; self.weapon.set_options(self._labelled(self._weapon_options.items())); self.weapon.set("weapon.fist")
+        self._weapon_options={None:"Free hand", **dict(self.catalogue.weapons(choice))}; self.weapon.set_options(self._labelled(self._weapon_options.items())); self.weapon.set("weapon.fist" if "weapon.fist" in self._weapon_options else None)
         self._armour_options=dict(self.catalogue.armours(choice)); self.armour.set_options(self._labelled(self._armour_options.items())); self.armour.set("armour.no-armour")
         self._material_options=dict(self.catalogue.materials(choice)); self.main_material.set_options(self._labelled(self._material_options.items())); self.off_material.set_options(self._labelled(self._material_options.items())); self.main_material.set("material.normal"); self.off_material.set("material.normal")
         self._poison_options=dict(self.catalogue.poisons(choice)); self.main_poison.set_options(self._labelled(self._poison_options.items())); self.off_poison.set_options(self._labelled(self._poison_options.items())); self.main_poison.set(None); self.off_poison.set(None)
@@ -251,7 +258,7 @@ class FighterEditor(ttk.Frame):
                 self.band.set(next(name for name,value in self._band_packages.items() if value == package)); self._band_changed(); self.profile_name.set(next(name for name,choice in self._profiles.items() if choice.profile_id==build.profile_id)); self._profile_changed()
                 if build.characteristics:
                     for key,value in zip(("WS","S","T","W","I","A"),(build.characteristics.weapon_skill,build.characteristics.strength,build.characteristics.toughness,build.characteristics.wounds,build.characteristics.initiative,build.characteristics.attacks)):self.manual_characteristics[key].set(value)
-            self.weapon.set("weapon.fist" if build.main_weapon_id == "weapon.fist" else build.main_weapon_id)
+            self.weapon.set(("weapon.fist" if "weapon.fist" in self._weapon_options else None) if build.main_weapon_id == "weapon.fist" else build.main_weapon_id)
             self._main_weapon_changed(); self.off_hand.set_by_value(build.off_hand_id, default=None); self._off_hand_changed(); self.armour.set_by_value(build.armour_id, default="armour.no-armour"); self.main_material.set_by_value(build.main_material_id, default="material.normal"); self.off_material.set_by_value(build.off_material_id, default="material.normal")
             self.main_poison.set_by_value(build.main_poison_id); self.off_poison.set_by_value(build.off_poison_id)
             selected=set(build.defence_ids)|set(build.preparation_ids)
