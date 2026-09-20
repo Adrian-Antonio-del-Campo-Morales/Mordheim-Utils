@@ -29,6 +29,70 @@ Run `python tools/mordheim-utils.py verify --inventory` for the live status.
       `compiler.forbid-item-categories`, `compiler.censer-bearer-loadout`).
       Update that file when bindings evolve.
 
+- [ ] **Close the 28 pending semantic specifications.** `verify` currently
+      reports 617/645 obligations verified, 28 pending, 3,743 passed cases,
+      849 detected mutations and 217/217 required interactions covered.
+      Every pending item reads `independent semantic specification
+      incomplete or missing`: the effect is classified and bound, but its
+      specification under `tests/specs/semantic/` is missing or incomplete.
+      This is the only remaining gap for `semantic_complete=True`; the plain
+      `verify` gate passes (exit 0) and only `--require-complete` fails.
+      Live list: `python tools/mordheim-utils.py verify --json` (key
+      `pending`).
+
+      | Binding family | Pending |
+      | --- | --- |
+      | `profile.equipment-restrictions` (no-armour) | 14 |
+      | `compiler.no-missile-weapons` | 12 |
+      | `compiler.forbid-skill-categories` | 2 |
+
+  - [ ] **no-armour restrictions (14)** — armour rejection with the specific
+        reason plus the legal no-armour control, per profile: Mordheim —
+        beastmen-raiders (beastmen shaman), dwarf-rangers and
+        dwarf-treasure-hunters (dwarf troll slayers), norse-explorers-btb
+        and norse-explorers-lustria (berserkers), orc-mob (orc shaman),
+        pit-fighters (dwarf troll slayer), sisters-of-sigmar (augur),
+        tomb-guardians (liche priest); Trollheim —
+        chaos-streets-dwarf-treasure-hunters (dwarf troll slayers),
+        chaos-streets-greenskins (orc shaman), chaos-streets-pit-fighters
+        (dwarf troll slayer), khemri-cursed-of-karak-zorn (troll slayer),
+        khemri-tomb-guardians (mortuary priest).
+  - [ ] **no-missile-weapons (12)** — ranged-equipment rejection, per
+        profile: Mordheim — black-dwarfs (bull centaur), dwarf-rangers and
+        dwarf-treasure-hunters (dwarf troll slayers), ostlanders
+        (ruffians), pit-fighters (dwarf troll slayer), witch-hunters
+        (flagellants); Trollheim — chaos-streets-dwarf-treasure-hunters
+        (dwarf troll slayers), chaos-streets-pit-fighters (dwarf troll
+        slayer), khemri-cursed-of-karak-zorn (troll slayer),
+        lustria-lizardmen (saurus totem warrior, saurus braves),
+        trollheim-witch-hunters (flagellants).
+  - [ ] **forbid-skill-categories (2)** — chaos-streets-undead-bloodlines
+        (necrarch vampire: Strength skills), lustria-lizardmen (saurus
+        totem warrior: Academic skills).
+  - [ ] **Template plan** — do not hand-write 28 specifications from
+        scratch: copy one already-verified specification of the same binding
+        family as the template (specific rejection reason, legal control
+        without the prohibition, activation and absence cases), then
+        instantiate per profile. `audit.py` reads `sources` as a list, so
+        check whether one specification may pin several profile obligations
+        per collection (troll slayers alone recur across six bands) before
+        creating one file per obligation. After each family run
+      `python -m pytest tests/verification/test_semantics.py -q` and
+      `python tools/mordheim-utils.py verify --json` to confirm the
+      pending count drops.
+
+- [x] **Improvements tab selectors** — restored (skill filter plus 1–5
+      improvements per row, attribute increases inside the racial maximums).
+      Decision: workbook persistence of the analysis selection is **not
+      planned**. The selection regenerates from the loaded candidate each
+      time the filter opens, so a saved selection against a different
+      candidate would be stale anyway; the data that makes a run
+      reproducible (both builds, seed, simulations, batch, rounds) already
+      round-trips; and changing the workbook format costs a round-trip
+      fixture plus backward compatibility for one minor convenience.
+      Re-open only if mid-analysis Save/Load of a custom selection becomes
+      a real workflow.
+
 ## 2. Deferred subsystems (`scope: LATER`) — decide and schedule
 
 486 rule-level markers are deferred (`LATER`). The recurring reasons name the

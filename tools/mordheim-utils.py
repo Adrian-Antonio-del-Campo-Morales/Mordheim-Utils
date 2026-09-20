@@ -10,7 +10,13 @@ as a package command and there is no parser to duplicate::
 
 Delegated commands keep their own parsers (Combat Lab CLI, pytest,
 ``combine_kb_yaml.py``), so their help text and behaviour never drift.
-Running from a source checkout is enough: child processes get the configured package roots on their `PYTHONPATH`.
+Running from a source checkout is enough: child processes get the configured
+package roots on their ``PYTHONPATH``.
+
+The surface is grouped by task rather than by module: applications, knowledge
+base, engines and repository upkeep. Reports live behind one entry point
+(``report rules`` / ``report tests``) and the knowledge base has a single gate
+(``verify``, with ``--structural`` for the structural-only pass).
 """
 
 from __future__ import annotations
@@ -63,19 +69,34 @@ SCOPE_PATHS = {
 }
 
 #: Combat Lab subcommands forwarded verbatim to ``python -m mordheim_combat_lab``.
-LAB_COMMANDS = ("benchmark", "parity", "test-report", "coverage-gate", "verify", "audit", "validate")
+LAB_COMMANDS = ("benchmark", "parity", "coverage-gate", "verify", "calibrate")
+
+#: ``report <kind>`` forwards to the matching Combat Lab report command: the
+#: two report generators share one entry point instead of two lookalike names.
+REPORT_KINDS = {
+    "rules": "audit",
+    "tests": "test-report",
+}
+
+#: One-line usage shown by ``<command> --help`` for commands whose arguments
+#: are not delegated to another parser.
+USAGE = {
+    "combat-lab": "python tools/mordheim-utils.py combat-lab",
+    "warband-manager": "python tools/mordheim-utils.py warband-manager",
+    "doctor": "python tools/mordheim-utils.py doctor",
+    "build-native": "python tools/mordheim-utils.py build-native [pip install args ...]",
+}
 
 #: Command help lines, in the order shown by ``--help``.
 COMMANDS = (
     ("combat-lab", "open the Combat Lab graphical application"),
     ("warband-manager", "open the Campaign Manager (warband) graphical application"),
+    ("verify", "validate the KB and run the semantic specifications"),
+    ("report", "generate the rule and test reports (report rules | report tests)"),
     ("benchmark", "measure the combat engines (modular, NumPy, native) with configurable sizes"),
     ("parity", "certify the vectorized and native engines against the modular oracle"),
-    ("test-report", "generate the human-readable parity and technical test CSVs"),
     ("coverage-gate", "measure deterministic engine coverage and check the drift budget"),
-    ("verify", "run the semantic specifications against the modular engine"),
-    ("audit", "generate the auditable rule inventory"),
-    ("validate", "validate the KB and structural connections"),
+    ("calibrate", "measure this machine's engine optima and install the calibration profile"),
     ("tests", "run the pytest suites, filtered by --scope"),
     ("run-ci", "run the local equivalent of the CI validation gates before Pages publishing"),
     ("combine-kb", "combine the KB YAML files into one .txt per subdirectory"),
@@ -85,10 +106,10 @@ COMMANDS = (
 
 #: Command groups for ``--help``; every name in COMMANDS appears exactly once.
 COMMAND_GROUPS = (
-    ("Graphical applications", ("combat-lab", "warband-manager")),
-    ("Engines, parity and benchmarks", ("benchmark", "parity", "test-report", "coverage-gate")),
-    ("Rules and knowledge base", ("verify", "audit", "validate")),
-    ("Development and testing", ("tests", "run-ci", "combine-kb", "build-native", "doctor")),
+    ("Applications", ("combat-lab", "warband-manager")),
+    ("Knowledge base", ("verify", "report")),
+    ("Engines", ("benchmark", "parity", "coverage-gate", "calibrate")),
+    ("Repository", ("tests", "run-ci", "combine-kb", "build-native", "doctor")),
 )
 
 COMBINE_KB_SCRIPT = REPO_ROOT / "tools" / "kb" / "combine_kb_yaml.py"
@@ -125,16 +146,51 @@ def _run_in(directory: Path, *argv: str) -> int:
     return subprocess.call([executable, *argv[1:]], cwd=directory, env=env)
 
 
-def combat_lab_command(_args: list[str]) -> int:
+def _print_usage(name: str, detail: str) -> int:
+    print(f"usage: {USAGE[name]}")
+    print(f"\n{detail}")
+    return 0
+
+
+def combat_lab_command(args: list[str]) -> int:
+    if any(argument in ("-h", "--help") for argument in args):
+        return _print_usage(
+            "combat-lab", "Open the Combat Lab graphical application (Tkinter).")
     return _run_module("mordheim_combat_lab", "ui")
 
 
-def warband_manager_command(_args: list[str]) -> int:
+def warband_manager_command(args: list[str]) -> int:
+    if any(argument in ("-h", "--help") for argument in args):
+        return _print_usage(
+            "warband-manager",
+            "Open the Campaign Manager desktop application (Tkinter).")
     return _run_module("mordheim_desktop")
 
 
 def lab_command(name: str, args: list[str]) -> int:
     return _run_module("mordheim_combat_lab", name, *args)
+
+
+def report_command(args: list[str]) -> int:
+    """``report rules|tests`` -> the matching Combat Lab report command."""
+    if not args or args[0] in ("-h", "--help"):
+        print("usage: python tools/mordheim-utils.py report <rules|tests> [args ...]")
+        print()
+        print("  rules   auditable per-rule inventory (CSV/JSON in outputs/audit/)")
+        print("  tests   human-readable parity and technical test CSVs")
+        print()
+        print("Arguments after the kind are forwarded to the report command;")
+        print("run `report <kind> --help` for its own options.")
+        return 0
+    kind, forwarded = args[0], args[1:]
+    if kind not in REPORT_KINDS:
+        print(
+            f"report: unknown kind {kind!r}; choose from "
+            + ", ".join(sorted(REPORT_KINDS)),
+            file=sys.stderr,
+        )
+        return 2
+    return lab_command(REPORT_KINDS[kind], forwarded)
 
 
 def tests_command(args: list[str]) -> int:
@@ -232,6 +288,11 @@ def combine_kb_command(args: list[str]) -> int:
 
 
 def build_native_command(args: list[str]) -> int:
+    if any(argument in ("-h", "--help") for argument in args):
+        return _print_usage(
+            "build-native",
+            "Build the native Cython backend with `pip install -e .` from the "
+            "repository root (any extra arguments are forwarded to pip).")
     command = [sys.executable, "-m", "pip", "install", "-e", ".", *args]
     print("Building the native Cython backend with: " + " ".join(command))
     return _run(*command)
@@ -304,9 +365,16 @@ def _help_text() -> str:
             lines.append(f"    {name:<{width}}  {by_name[name]}")
     lines.extend((
         "",
-        "The lab commands (benchmark, parity, test-report, verify, audit, validate) "
-        "run as `python -m mordheim_combat_lab <command>`; the underlying modules "
-        "and scripts remain callable directly.",
+        "Common tasks:",
+        "    doctor                              check the environment first",
+        "    tests --scope deterministic         the per-change engine gate",
+        "    verify                              knowledge base before touching rules",
+        "    report rules                        per-rule implementation inventory",
+        "    run-ci                              everything, before publishing",
+        "",
+        "The engine commands (benchmark, parity, coverage-gate, calibrate) and the "
+        "knowledge base gate (verify) run as `python -m mordheim_combat_lab <command>`; "
+        "`report rules|tests` forwards to the `audit` and `test-report` lab commands.",
         "",
         "Tab completion (bash/zsh): source tools/completions/mordheim-utils.bash "
         "or mordheim-utils.zsh. Completion covers the command names and, for the "
@@ -335,6 +403,14 @@ def _tests_candidates(typed: list[str]) -> list[str]:
     if current.startswith("-"):
         return ["--scope"]
     return []
+
+
+def _report_candidates(typed: list[str]) -> list[str]:
+    """Candidates after ``report``: the kind, then the report's own options."""
+    current = typed[-1] if typed else ""
+    if len(typed) <= 1:
+        return [kind for kind in REPORT_KINDS if kind.startswith(current)]
+    return _lab_candidates(REPORT_KINDS[typed[0]], typed[1:])
 
 
 def _lab_candidates(command: str, typed: list[str]) -> list[str]:
@@ -392,6 +468,8 @@ def _command_candidates(words: list[str]) -> list[str]:
     head, rest = words[0], words[1:]
     if head == "tests":
         return _tests_candidates(rest)
+    if head == "report":
+        return _report_candidates(rest)
     if head in LAB_COMMANDS:
         return _lab_candidates(head, rest)
     return []
@@ -410,10 +488,17 @@ def main(argv: list[str] | None = None) -> int:
         print(f"mordheim-utils {version}")
         return 0
     name, args = raw[0], raw[1:]
+    if name in ("doctor",) and any(argument in ("-h", "--help") for argument in args):
+        return _print_usage(
+            "doctor",
+            "Report the Python version, installed engines and KB location, "
+            "then exit.")
     if name == "combat-lab":
         return combat_lab_command(args)
     if name == "warband-manager":
         return warband_manager_command(args)
+    if name == "report":
+        return report_command(args)
     if name == "tests":
         return tests_command(args)
     if name == "run-ci":

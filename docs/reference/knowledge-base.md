@@ -109,6 +109,33 @@ A band directory is typically four files:
 | `equipment-access.yaml` | The equipment lists each profile may buy from (creation prices; the Trading Post is the market price — see below). |
 | `special-rules.yaml` | The editorial special rules of the band. |
 
+**Every document has a formal format.**
+`contracts/knowledge-editorial-v1/` holds one JSON Schema per document (plus
+the shared `defs.schema.json`) describing its fields, types and editorial
+conventions: the four files of a band package, the catalogue families
+(`items`, `skills`, `rules`, `mechanics`), the hireling catalogue
+(`hired-swords`, `dramatis-personae`, their `rules.yaml`, `traits.yaml`) and the
+campaign catalogue (the thirteen documents of `catalog/campaign/`, including the
+typed campaign effects and the exploration procedure tree).
+`mordheim_knowledge.editorial_schemas` validates them all, the structural
+layer of `verify` fails on any mismatch, and
+`tests/knowledge/test_editorial_schemas.py` keeps the schemas
+in step with the code contracts they mirror (`EffectSet`, `TRAIT_TYPES`,
+`runtime-schema.yaml`, the documents a post-battle step may resolve, the band
+skill-list vocabulary). The suite also fails when a maintained YAML document
+appears that no schema claims. See
+[the contract README](../../contracts/knowledge-editorial-v1/README.md) for the
+document map and the single document declared outside the contract.
+
+**The schemas describe the knowledge base, not a shape it might have.**
+`mordheim_knowledge.editorial_schema_audit` compares every schema with the
+documents it claims and fails the suite on a hole — a node that leaves keys
+undescribed, a tautological subschema, a key the documents carry and the
+contract never names, a definition nothing can reach — and on a declaration no
+document exercises unless it is listed with the contract that keeps it alive.
+`python tools/knowledge/audit_schema_strictness.py` prints the same report, so a
+curator can see which declarations the data backs before touching a schema.
+
 Example — `bands/mordheim/orc-mob/band.yaml` declares the Orc Mob (Town
 Cryer #6 / Mordheim Annual 2002): 500 starting gold, 3–20 models, required
 Orc Boss, henchmen groups sized 1–5, and its ten `band--*` rule ids.
@@ -208,14 +235,13 @@ So the layers of the same weapon are: item record (`items/`, snake_case id)
 
 ### hirelings/ and campaign/
 
-- `hirelings/` — `hired-swords/` and `dramatis-personae/` catalogues
-  (102 profiles), with their own README covering id conventions, the trait
-  registry, out-of-scope entities and the 59 pending intrinsic references.
+- `hirelings/` — `hired-swords/` and `dramatis-personae/` catalogues, with
+  their own README covering id conventions, the trait registry, out-of-scope
+  entities and the pending intrinsic references.
 - `campaign/` — the persistent campaign rules: post-battle sequence, trading
-  post (338 entries), serious injuries, experience and advances, exploration
-  and income, recruitment and veterans, warband rating, trading and rarity,
-  98 scenarios, magic (45 lore↔wizard assignments, 31 lores, 188 spells),
-  mutations and hired swords. These documents are **published data for the
+  post, serious injuries, experience and advances, exploration and income,
+  recruitment and veterans, warband rating, trading and rarity, scenarios,
+  magic, mutations and hired swords. These documents are **published data for the
   campaign runtime**; their README covers data ownership, the price-collation
   policy and the loader contract, and its HOWTO explains how to query the
   catalogue from application code. Campaign entries reference canonical
@@ -278,10 +304,8 @@ nouns, Orcish-dialect names (`Waaagh!`, `'Ere We Go!`) and domains
 (`mordheimer.net`) are preserved.
 
 Scalar quoting of names is canonicalised too — safe values are plain, quotes
-are kept only when YAML requires them.
-
-Ingestion artifacts such as `true grit` vs `True Grit` are normalised away by
-this rule. Run it idempotently after editing any maintained YAML names::
+are kept only when YAML requires them. Run it idempotently after editing any
+maintained YAML names:
 
 ```powershell
 python tools/normalize_names.py --check sources/knowledge
@@ -302,11 +326,8 @@ Rule prose has **one key: `effect`** (plus its locale block `effect_i18n`).
 There is no `summary` key anywhere in `sources/knowledge` — the display text
 of a rule, item, skill, condition, scenario, spell or mutation is always its
 `effect`, and shared rules are defined once in the catalog with band rules
-referencing them (`rule_ref`) instead of restating the prose (see
-"Shared rule text" below). `tools/rename_summary_keys.py` performed the
-one-time migration of the old prose `summary` keys (and renamed the count
-metadata block of `implemented-canonical-families.yaml` to `counts`); a test
-guards that no `summary` key returns.
+referencing them (`rule_ref`) instead of restating the prose. A test guards
+that no `summary` key returns.
 
 Descriptive fields such as `effect`, `description`, `notes`, and `reason` use
 folded blocks (`>-`) when they need wrapping. This keeps source text readable
@@ -314,16 +335,14 @@ while loading it as one logical line. Literal blocks (`|`) remain reserved for
 text where line breaks are meaningful. Formatting must preserve key order,
 anchors, aliases, IDs, URLs, scalar types, and parsed values.
 
-Effect prose is **never quoted**: `effect` and `effect_i18n.es` values written
-as single-line or multi-line quoted scalars (an ingestion artefact — quoting
-was needed only for content such as `: ` or `"`) are migrated by the formatter
-to `>-` blocks rewrapped at the target width, which make the same content
-plain-safe. Plain values that spill across continuation lines — and single
-lines that exceed the target width — are folded the same way, so every effect
-value ends up as either a plain single line within the target width or a `>-`
-block; `python tools/format_yaml.py --check sources/knowledge` reports zero
-residual quoted or continuation-wrapped effect prose, and the pass is
-idempotent.
+Effect prose is **never quoted**: the formatter rewrites every quoted `effect`
+/ `effect_i18n.es` scalar (quoting was only ever needed for content such as
+`: ` or `"`) as a `>-` block rewrapped at the target width, which makes the
+same content plain-safe. Plain values that spill across continuation lines —
+and single lines past the target width — are folded the same way, so every
+effect value ends up as either a plain single line or a `>-` block.
+`python tools/format_yaml.py --check sources/knowledge` reports zero residual
+quoted or continuation-wrapped effect prose, and the pass is idempotent.
 
 `reason` strings — the audit-taxonomy metadata such as `Deferred subsystem:
 psychology.`, `Out of scope: campaign.` or `dead` — are uniformly folded `>-`
@@ -351,8 +370,8 @@ run combat tests, parity, or benchmarks for a formatting-only change.
 
 The KB has no `verification/` area of its own: the verification corpus — the
 structural contract (`tests/specs/structural/phase-verification.yaml`) and the
-semantic scenarios (`tests/specs/semantic/`, ~170 files) — lives in `tests/`.
-It is test material and is never distributed with the applications.
+semantic scenarios under `tests/specs/semantic/` — lives in `tests/`. It is
+test material and is never distributed with the applications.
 
 Semantic scenarios reference KB targets by canonical path and **content
 digest**, so the corpus breaks loudly when the referenced rule changes:
@@ -450,11 +469,11 @@ For items the same path holds with the extra indirection step: band
 After any KB change run the structural validation and the affected evidence:
 
 ```powershell
-python tools/mordheim-utils.py validate      # structure, connections, runtime schema
-python tools/mordheim-utils.py verify        # semantic specs against the real engine
-python tools/mordheim-utils.py parity        # vectorized/native certification against the oracle
-python tools/mordheim-utils.py audit         # per-rule status CSV in outputs/audit/
-python tools/mordheim-utils.py combine-kb    # flatten directories for a review pass
+python tools/mordheim-utils.py verify --structural   # structure, connections, runtime schema, editorial JSON Schemas
+python tools/mordheim-utils.py verify                # the above plus the semantic specs against the real engine
+python tools/mordheim-utils.py parity                # vectorized/native certification against the oracle
+python tools/mordheim-utils.py report rules          # per-rule status CSV in outputs/audit/
+python tools/mordheim-utils.py combine-kb            # flatten directories for a review pass
 ```
 
 See also [Modify the knowledge base](../guides/modify-knowledge-base.md),

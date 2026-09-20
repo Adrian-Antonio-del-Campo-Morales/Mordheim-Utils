@@ -26,7 +26,7 @@ limits and architecture tests pass.
 To consult the global status before editing specifications:
 
 ```powershell
-python tools/mordheim-utils.py audit
+python tools/mordheim-utils.py report rules
 ```
 
 The command generates `outputs/audit/rules-audit.csv`, encoded to open
@@ -51,7 +51,7 @@ evidence (`semantic_status`). To see which decisions need an answer, filter
 To generate only the questions without replacing the full report:
 
 ```powershell
-python tools/mordheim-utils.py audit --review-status needs_ruling --output outputs/audit/questions
+python tools/mordheim-utils.py report rules --review-status needs_ruling --output outputs/audit/questions
 ```
 
 `question` keeps the question even once it is resolved. `ruling` holds the

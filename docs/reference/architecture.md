@@ -18,7 +18,7 @@ contracts/campaign-file-v5                  neutral persistence contract and fix
 tests                                      Python, TypeScript and web integration tests
 ```
 
-The old `src/` package layout is retired. `pyproject.toml` and the test configuration list the package roots explicitly; editable installation from the repository root is the supported Python setup.
+`pyproject.toml` and the test configuration list the package roots explicitly; editable installation from the repository root is the supported Python setup.
 
 ## Dependency boundaries
 
@@ -91,8 +91,8 @@ The desktop persistence module is `packages/python/campaign/mordheim_campaign/pe
 
 Generated reports are written below ignored `outputs/`:
 
-- `audit/` — rule inventory and review status.
-- `test-report/` — semantic and technical CSVs.
+- `audit/` — rule inventory and review status (`report rules`).
+- `test-report/` — semantic and technical CSVs (`report tests`).
 - `parity/` — machine-readable parity certificates.
 - `benchmarks/` — benchmark results.
 

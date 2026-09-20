@@ -6,12 +6,12 @@ from pathlib import Path
 import subprocess
 import sys
 
-from mordheim_combat_lab.verification.test_reporting import SEMANTIC_COLUMNS
-from mordheim_combat_lab.verification.test_reporting import TECHNICAL_COLUMNS
-from mordheim_combat_lab.verification.test_reporting import _overall
-from mordheim_combat_lab.verification.test_reporting import generate_test_report
-from mordheim_combat_lab.verification.test_reporting import semantic_report_rows
-from mordheim_combat_lab.verification.test_reporting import write_csv
+from mordheim_combat_lab.verification.reporting import SEMANTIC_COLUMNS
+from mordheim_combat_lab.verification.reporting import TECHNICAL_COLUMNS
+from mordheim_combat_lab.verification.reporting import _overall
+from mordheim_combat_lab.verification.reporting import generate_test_report
+from mordheim_combat_lab.verification.reporting import semantic_report_rows
+from mordheim_combat_lab.verification.reporting import write_csv
 
 
 def test_semantic_csv_inventory_is_human_readable_and_complete():
@@ -68,7 +68,7 @@ def test_overall_status_distinguishes_fail_pending_and_scope():
 
 
 def test_both_reports_survive_a_semantic_generation_failure(tmp_path, monkeypatch):
-    import mordheim_combat_lab.verification.test_reporting as reporting
+    import mordheim_combat_lab.verification.reporting as reporting
 
     monkeypatch.setattr(reporting, "semantic_report_rows", lambda **kwargs: (_ for _ in ()).throw(RuntimeError("boom")))
     def technical(path):

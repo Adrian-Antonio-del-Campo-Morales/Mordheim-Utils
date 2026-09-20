@@ -26,6 +26,7 @@ apps/combat-lab                             Combat Lab application and CLI
 apps/warband-manager-desktop                desktop composition root
 apps/warband-manager-web                    React/Vite web shell
 contracts/campaign-file-v5                  versioned campaign-file contract
+contracts/knowledge-editorial-v1             JSON Schemas of the KB documents (bands, catalogue, registry)
 tests                                     Python, TypeScript and web-contract tests
 docs                                      reference, guides and design decisions
 tools                                     launcher, generators, reports and packaging
@@ -57,21 +58,24 @@ python tools/mordheim-utils.py --help
 python tools/mordheim-utils.py doctor
 python tools/mordheim-utils.py combat-lab
 python tools/mordheim-utils.py warband-manager
-python tools/mordheim-utils.py validate
-python tools/mordheim-utils.py verify
+python tools/mordheim-utils.py verify        # KB gate: --structural for structure only
+python tools/mordheim-utils.py report rules  # or `report tests` for the test CSVs
 python tools/mordheim-utils.py parity --require-complete
+python tools/mordheim-utils.py calibrate     # measure this machine's optima
 python tools/mordheim-utils.py tests --scope deterministic
 python tools/mordheim-utils.py run-ci
 ```
 
-Available command groups are graphical applications, combat benchmarks/parity, knowledge-base verification, testing/CI, KB generation and native-backend building. Use `<command> --help` for delegated options. Bash and zsh completions live in `tools/completions/`.
+The commands are grouped by task (applications, knowledge base, engines,
+repository); `--help` lists them and `<command> --help` opens the delegated
+parser. Bash and zsh completions live in `tools/completions/`.
 
 ## Validation and development loop
 
 Fast checks for a change:
 
 ```powershell
-python tools/mordheim-utils.py validate
+python tools/mordheim-utils.py verify --structural
 python tools/mordheim-utils.py tests --scope deterministic
 cd packages/typescript && npm run typecheck && npm test
 cd ../../apps/warband-manager-web && npm run typecheck && npm run lint && npm test

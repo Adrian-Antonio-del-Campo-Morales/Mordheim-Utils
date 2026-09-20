@@ -15,7 +15,7 @@ justify itself by covering something no deterministic test covers.
 
 | Layer | Certifies | Artifacts / commands | Cost | Runs when |
 | --- | --- | --- | --- | --- |
-| L0 structure | KB + compiled fighters are well-formed and connected | `validate`, structural contract `tests/specs/structural/` | seconds | every change |
+| L0 structure | KB + compiled fighters are well-formed and connected | `verify --structural`, structural contract `tests/specs/structural/` | seconds | every change |
 | L1 per-rule determinism | each rule behaves as written, both engines, exact distributions | semantic specs with scripted dice + exhaustive finite brute force; exact operator checks; native backend where exposed | seconds–minutes | every change |
 | L2 whole-duel determinism | orchestration: acting order, reply phases, stateful timing | round-truncation outcome parity (`parity --truncations`); observed-mode samples | minutes | engine-touching changes |
 | L3 interaction, statistical | joint behaviour of many rules over real archetype duels | 6σ marginal gate; deep archetype matrix; numpy↔native cross at scale | minutes–hours | certification, deep on demand |
@@ -35,15 +35,15 @@ on L1–L5.
 >
 > | Command | Full run | Trimmed version for small checks |
 > | --- | --- | --- |
-> | `parity --deep --pair-set fast` (L3) | 30 pairs: ≈2.925M oracle duels + 1M cross duels/pair (target ≈10–15 min pooled) | `--deep-simulations 10000 --deep-cross-simulations 100000` |
-> | `parity --deep --pair-set full` (L3) | 42 pairs: ≈4.05M oracle duels + 1M cross duels/pair (tens of minutes pooled; hours without pooling) | use `--pair-set fast` for the short loop |
+> | `parity --level deep --pair-set fast` (L3) | 30 pairs: ≈2.925M oracle duels + 1M cross duels/pair (target ≈10–15 min pooled) | `--deep-simulations 10000 --deep-cross-simulations 100000` |
+> | `parity --level deep --pair-set full` (L3) | 42 pairs: ≈4.05M oracle duels + 1M cross duels/pair (tens of minutes pooled; hours without pooling) | use `--pair-set fast` for the short loop |
 > | `parity --truncations --pair-set fast` (L2) | 30 pairs × 8 horizons × 10k duels/engine (≈20–40 min sequential, ≈6–12 min pooled) | `--truncation-simulations 2000` |
 > | `parity --truncations --pair-set full` (L2) | 42 pairs × 8 horizons × 10k duels/engine (≈28–55 min sequential, ≈8–15 min pooled) | use `--pair-set fast` for a smaller sweep |
 > | `coverage-gate` (L4) | ≈3–10 min under `coverage` | run the deterministic suites directly (`pytest tests/combat/... tests/verification/test_parity.py -q`) |
 > | `tools/mutate-engine.py` (L4) | full catalogue ≈3–5 min | `--mutant <name>` for the single defect under test |
-> | `test-report` | whole semantic corpus + full `pytest` suite (minutes) | omit `--statistical`; or `pytest tests/verification/test_semantics.py -q` |
+> | `report tests` | whole semantic corpus + full `pytest` suite (minutes) | `pytest tests/verification/test_semantics.py -q` |
 > | `benchmark --deep --pair-set fast` | vectorized grid over 30 coverage pairs, up to 5M duels | shrink the sizes (`--simulation-sizes 10k,100k`) or select one `--scenario` |
-> | `benchmark --deep --pair-set full` | vectorized grid over all 42 pairs, up to 5M duels | use `--pair-set fast` for the short loop |
+> | `benchmark --deep --pair-set full` | vectorized grid over all 42 pairs, up to 5M duels | use `--pair-set fast` for the short loop, or `--processes N` to run the scenario measurements through a process pool (the report includes the real speedup). `--tts` is the time-to-solution study over the (simulation size × batch size) grid — see [Develop and release](../guides/develop-and-release.md) |
 >
 > A small change cannot escape the cheap layers — L1 pins every rule and
 > every engine line deterministically — so the full certification adds
@@ -78,10 +78,8 @@ require adding a statistical pair.
 ## L2 — whole-duel orchestration, deterministically
 
 Per-rule checks prove each rule fires correctly in isolation; they are weak
-at proving the *duel driver* composes phases in the right order. The known
-orchestration defect — a downed primary suppressing the standing opponent's
-reply attack — was invisible to per-rule evidence and only showed up on whole
-duels.
+at proving the *duel driver* composes phases in the right order — a defect in
+how phases are sequenced can leave every individual rule green.
 
 The **round-truncation outcome parity** (`_truncations.py`, CLI
 `parity --truncations`) certifies the outcome distribution at every horizon
@@ -106,7 +104,7 @@ compares outcomes at each horizon rather than resolution-round histograms.
 
 What remains for statistics is *interaction*: many rules composed over real
 archetype duels, watched for joint drift. The 6σ marginal gate
-(`--statistical`, `--deep`) compares first/second/unresolved rates on the
+(`--level statistical`, `--level deep`) compares first/second/unresolved rates on the
 42-pair archetype matrix (glass cannons, brutes, elites, tanks, parry,
 mechanics like regeneration-vs-fire, ward saves, entangle, the
 timing/parry amplifiers — 4 hits vs one parry, a W1 stun stressor, a
@@ -118,7 +116,7 @@ scale cheap and the oracle is never touched. `--pair-set fast` is designed to
 retain the full matrix's distinct effect-axis coverage in a smaller run;
 `--pair-set full` adds the omitted baselines, mirrors and alternate matchup
 contexts. The pair set applies only to the deep matrix and truncation sweep;
-the five-scenario `--statistical` preset is unchanged.
+the five-scenario statistical preset is unchanged.
 
 Two properties keep this honest:
 
@@ -143,23 +141,20 @@ deterministic case covers (see *When to add a pair*).
   but they are valuable for finding direction-dependent or composition bugs
   after substantial engine changes.
 
-Both sets now exercise the **54 of 54 reachable compiled effect axes** identified
-by the latest static reachability scan, or approximately **100% of this
-executable rule-axis inventory**. The eight coverage-completion probes cover:
-injury profiles 3/4; hit and wound rerolls, wound modifiers and attack bonuses;
-incoming-strength modification; charge WS/Strength bonuses; first-round
-bonuses; random characteristics; bear hug and caught-fire threshold; and
-mundane-only ward/unmodified natural armour.
+Both sets are curated to exercise every reachable compiled effect axis in the
+executable rule-axis inventory; the live coverage figure is whatever the
+reachability/fingerprint scan reports, not a number kept here. The eight
+coverage-completion probes cover: injury profiles 3/4; hit and wound rerolls,
+wound modifiers and attack bonuses; incoming-strength modification; charge
+WS/Strength bonuses; first-round bonuses; random characteristics; bear hug and
+caught-fire threshold; and mundane-only ward/unmodified natural armour.
 
 This is a statistical interaction estimate, not overall rule correctness or
 Python line coverage. Deterministic semantic cases and operator checks remain
 the authority for individual rules. Several probes use benchmark-only
 trait/attack tags because the current catalogue has no legal selectable
-producer; they do not modify the KB or engines. Because the simulator and KB
-are being changed in parallel, re-run the reachability/fingerprint scan after
-those changes settle before treating the percentage as a release metric. No
-additional broad matchup variants are recommended until a new missing axis is
-demonstrated.
+producer; they do not modify the KB or engines. No additional broad matchup
+variants are recommended until a new missing axis is demonstrated.
 
 ## L4 — coverage gate and engine mutation
 
@@ -171,8 +166,8 @@ which no amount of naming discipline can assert by itself.
 `tests/combat/test_phases.py`, `tests/verification/test_parity.py`) run under
 `coverage` and the result is compared against a committed budget
 (`tests/fixtures/coverage/budget.json`, schema `mordheim-coverage-budget/v1`):
-the ~2 500 engine statements that were exercised when the budget was written
-(818 modular, 516 phases, 1 177 vectorized lines). The gate **fails when any
+the engine statements that were exercised when the budget was written (the
+committed file lists every line). The gate **fails when any
 budgeted line stops being exercised** — a line became dead code, or its test
 lost the path; both need a decision, not silence. Because the budget records
 lines rather than percentages, refactors that move code do not fail
@@ -202,9 +197,9 @@ oracle — and every survivor is a directive to add one deterministic test,
 
 The catalogue (wound-ramp off-by-one, wound-impossible tail, armour strength
 modifier, injury stun threshold, paired extra attack, hit much-weaker flip)
-is fully killed — every mutant is detected. The one survivor the catalogue
-ever had (`hit-much-weaker-flip`) exposed an untested duplicated formula and
-led to the exact-check rewrite that closed it:
+is fully killed — every mutant is detected. A survivor is not a bug in the
+harness: it exposes an untested engine decision, and the response is always a
+deterministic test that can tell the two versions apart:
 
 ```bash
 python tools/mutate-engine.py                 # full catalogue (≈3–5 min)
@@ -221,10 +216,10 @@ python tools/mutate-engine.py --mutant wound-ramp-off-by-one --json   # one muta
   `--level` presets of `parity` select the statistical/deep certification
   tiers, see [Develop and release](../guides/develop-and-release.md) — and,
   for vectorized/native code, the mutation catalogue.
-- **Deep statistical runs** (`parity --deep`, hours) are certification runs,
-  executed on demand or before a release — never the default loop. Because
-  L1/L2/L4 already pin each rule and each engine line, the deep layer only
-  watches interaction drift.
+- **Deep statistical runs** (`parity --level deep`, hours) are certification
+  runs, executed on demand or before a release — never the default loop.
+  Because L1/L2/L4 already pin each rule and each engine line, the deep layer
+  only watches interaction drift.
 - Certificates are versioned. The parity certificate is schema
   `mordheim-combat-parity/v2`: it adds the `truncations` block (horizon rows
   with their own `complete` flag) and records top-level `elapsed_seconds`;
@@ -271,7 +266,7 @@ to tens — not to the combinatorics of all possible matchups.
 
 ## Reports and the interaction matrix
 
-`test-report` writes Excel-friendly CSVs (`outputs/test-report/`);
+`report tests` writes Excel-friendly CSVs (`outputs/test-report/`);
 `parity` saves versioned certificates (`outputs/parity/`); options, statuses
 and presets are documented in [Develop and release](../guides/develop-and-release.md).
 
