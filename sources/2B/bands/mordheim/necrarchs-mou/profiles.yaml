@@ -1,0 +1,242 @@
+schema_version: 2
+band_id: necrarchs-mou
+profiles:
+- id: nosferatu
+  name: Nosferatu
+  type: hero
+  cost: 125
+  experience: 20
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 5
+    A: 2
+    Ld: 9
+  equipment_lists:
+  - nosferatu-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - He will never wear armour.
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 1 Nosferatu
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  source_path:
+  - heroes
+  - 1 Nosferatu
+  name_i18n:
+    es: Nosferatu
+  rule_ids:
+  - nosferatu--leader
+  - nosferatu--wizard
+  - nosferatu--necrolore
+  - nosferatu--tattered-mind
+  - nosferatu--fear
+  - nosferatu--immune-to-psychology
+  - nosferatu--immune-to-poisons
+  - nosferatu--no-pain
+  combat_traits: {}
+- id: abomination
+  name: Abomination
+  type: hero
+  cost: 55
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 4
+    A: 2
+    Ld: 8
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Abominations may not carry any weapons. They are a mix of fangs, talons or blades, which carry no
+    penalty in combat.
+  skill_access:
+  - combat
+  - strength
+  - speed
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-1 Abominations
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  source_path:
+  - heroes
+  - 0-1 Abominations
+  name_i18n:
+    es: Abominación
+  rule_ids:
+  - abomination--fear
+  - abomination--immune-to-poisons
+  - abomination--no-pain
+  - abomination--unnatural-life
+  combat_traits: {}
+- id: defiled
+  name: Defiled
+  type: hero
+  cost: 30
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - defiled-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Heroes / 0-3 Defiled
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  source_path:
+  - heroes
+  - 0-3 Defiled
+  name_i18n:
+    es: Profanado
+  rule_ids:
+  - defiled--absolute-faith
+  - defiled--fear
+  - defiled--may-not-run
+  - defiled--immune-to-poisons
+  - defiled--no-pain
+  combat_traits: {}
+- id: banshee
+  name: Banshee
+  type: henchman
+  cost: 45
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 4
+    BS: null
+    S: 3
+    T: 4
+    W: 1
+    I: null
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Banshees never carry any equipment, as they cannot hold them.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / 0-2 Banshees
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  source_path:
+  - henchmen
+  - 0-2 Banshees
+  name_i18n:
+    es: Aulladora
+  rule_ids:
+  - banshee--fear
+  - banshee--ethereal
+  - banshee--immune-to-poisons
+  - banshee--cold-steel
+  - banshee--wailing
+  combat_traits: {}
+- id: skeleton
+  name: Skeleton
+  type: henchman
+  cost: 17
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 1
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - defiled-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Handling multiple weapons is a feat too advanced for a skeleton, which may only ever use one at a
+    time.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / Skeleton Warriors
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  source_path:
+  - henchmen
+  - Skeleton Warriors
+  name_i18n:
+    es: Esqueleto
+  rule_ids:
+  - skeleton--fear
+  - skeleton--may-not-run
+  - skeleton--immune-to-psychology
+  - skeleton--immune-to-poisons
+  - skeleton--no-pain
+  - skeleton--no-brain
+  combat_traits: {}
+- id: wight
+  name: Wight
+  type: henchman
+  cost: 50
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 2
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - defiled-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Henchmen / 0-2 Wights
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  source_path:
+  - henchmen
+  - 0-2 Wights
+  name_i18n:
+    es: Espectro
+  rule_ids:
+  - wight--fear
+  - wight--chill-touch
+  - wight--may-not-run
+  - wight--immune-to-psychology
+  - wight--immune-to-poisons
+  combat_traits: {}

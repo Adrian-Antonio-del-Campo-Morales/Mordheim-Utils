@@ -1,0 +1,255 @@
+schema_version: 2
+ruleset: mordheim
+items:
+- id: warplock_pistol
+  kind: ranged-weapon
+  name: Warplock Pistol
+  name_i18n:
+    es: Pistola Warplock
+  effect: >-
+    Skaven pistol fired with warpstone-charged powder. Range 6", Strength 4, save modifier -2.
+    Prepare shot: a pistol takes a whole turn to reload, so you may only fire every other turn
+    (a brace may fire every turn). Hand-to-hand: may be used in close combat; a model armed with
+    a pistol and another close combat weapon gains +1 Attack resolved at Strength 4 with a -2 save
+    modifier, usable once per combat. 35 gc (70 for a brace).
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Metal Mongers Equipment List / Warplock pistol
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  - manual: broheim.net
+    printed_page: 10
+    section: Clan Skryre Heroes equipment list (97RelicsoftheCrusadesPt2)
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  rarity: Common (Metal Mongers/Clan Skryre lists)
+  combat_status: out_of_scope
+- id: warplock_rifle
+  kind: ranged-weapon
+  name: Warplock Rifle
+  name_i18n:
+    es: Rifle Warplock
+  effect: >-
+    Counts as a Handgun. Range 24", Strength 4, save modifier -1, move or fire, unwieldy.
+    Warp-lock rifles use the same unholy powder as the warplock pistol, but with longer barrels
+    and greater accuracy. 35 gc.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Metal Mongers Equipment List / Warplock rifle (counts as Handgun)
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  rarity: Common (Metal Mongers list)
+  combat_status: out_of_scope
+- id: ratling_gun
+  kind: ranged-weapon
+  name: Ratling Gun
+  name_i18n:
+    es: Ametralladora Ratling
+  effect: >-
+    X gc (Forge-Rats and Technicians only). Availability: Rare 14. Range 6"-16", Strength 3, save
+    modifier -1, move or fire, unwieldy, jeopardous. Metal storm!: the ratling gun fires a great
+    hail of bullets in a single devastating salvo; nominate the target then roll 2D6 — that is the
+    number of shots, spread evenly between the target and another model within 6" (friend or foe),
+    then roll to hit and wound as normal for each shot. Once fired it cannot be used for the rest
+    of the game. Unwieldy: takes two models to carry; may not be fired with enemy models within 6"
+    and you may never move and fire. Jeopardous: if a double is rolled for the number of shots the
+    gun misfires (roll on the misfire chart). The list price in the Metal Mongers equipment list is
+    275 gc — preserving the source discrepancy. 275 gc (list).
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Metal Mongers Equipment List / Ratling gun
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  - manual: broheim.net
+    printed_page: 6
+    section: Ratling gun (description)
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  rarity: Rare 14
+  combat_status: out_of_scope
+- id: gas_mask
+  kind: armour
+  name: Gas Mask
+  name_i18n:
+    es: Máscara de Gas
+  effect: >-
+    Protectively-coated visors crafted from leathery human skin, worn almost exclusively by the
+    artificers of Clan Skryre. A skaven wearing the grisly mask receives a 3+ save against any gas
+    or soporific-based attacks. Any non-skaven Hero wearing the stinky facial apparel receives a -1
+    modifier to hit in close combat, shooting missiles or casting spells. (Turjuk/Clan Skryre REL
+    text: a warrior wearing a gas mask is only affected by poison wind on a D6 roll of 6+; 5 dinars
+    there.) 15 gc (Metal Mongers list).
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Metal Mongers Miscellaneous / Gas mask
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  - manual: broheim.net
+    printed_page: 5
+    section: Clan Skryre special equipment / Gas mask (Relics of the Crusades Pt 2)
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  rarity: Rare 6
+  combat_status: out_of_scope
+- id: pneumatic_arm
+  kind: combat-equipment
+  name: Pneumatic Arm
+  name_i18n:
+    es: Brazo Neumático
+  effect: >-
+    Pneumatic arms fastened to harnesses allow an Engineer Adept to wield weapons well beyond his
+    strength; the wearer counts as having two extra arms. The harness may hold missile weapons with
+    the Unwieldy trait (Ratling Gun, Warpfire Thrower etc.), the power of the arms ignoring the
+    two-model requirement. Experimental Technology: weapons manufactured by Skryre Warp Engineers
+    are prone to malfunction — on a roll of 1 to hit with any missile weapon, roll on the
+    Experimental Weapon Chart; if the weapon malfunctions the hit is resolved against the firer on
+    a 4+. 140 gc (Engineer Adept only), Rare 13.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Metal Mongers Miscellaneous / Pneumatic arm
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  rarity: Rare 13
+  combat_status: out_of_scope
+- id: poison_wind_globe
+  kind: ranged-weapon
+  name: Poison Wind Globe
+  name_i18n:
+    es: Esfera de Viento Venenoso
+  effect: >-
+    Fragile spheres of glass filled with toxic warpstone-derived fumes produced by the insane
+    Warlock Engineers. Range 6", Strength special, thrown weapon, poison wind, drop. Thrown weapon:
+    models using poison wind globes do not suffer penalties for range or moving. Poison wind:
+    obstacles do not affect the deadly gas; ignore cover penalties to hit; the globes ignore armour
+    saves; a globe deals D3 wounds to the target on a 3+ and a single wound to anyone else within
+    2" on a 4+; the warpstone poison is magical so it also affects undead. Drop: on a roll of 1 to
+    hit the globe is dropped — resolve a hit against the dropper; a model may voluntarily drop a
+    globe on a model in base contact instead of using a weapon in close combat. 20 gc (Metal
+    Mongers list); 15+D6 dinars each, Rare 6, Clan Skryre only (REL text).
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Metal Mongers Missile Weapons / Poison wind globe
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  - manual: broheim.net
+    printed_page: 6
+    section: Clan Skryre special equipment / Poison wind globe (Relics of the Crusades Pt 2)
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  rarity: Rare 6
+  combat_status: out_of_scope
+- id: spike_jawed_snatcher
+  kind: close-combat-weapon
+  name: Spike-jawed Snatcher
+  name_i18n:
+    es: Capturador de Mandíbulas Pinchudas
+  effect: >-
+    Skaven-snatchers: semi-circular prongs mounted on pole-arms, ready to catch an enemy between
+    the spike-jawed snapping steel claw. Popular among the Chaos Dwarfs, this non-lethal spring
+    loaded mancatcher can ensnare the most violent of prisoners. Range: Close Combat; Strength: as
+    user; special rules: capture, two-handed. Capture: a model taken out of action by a
+    spike-jawed snatcher becomes captured unless the warband is routed; do not roll for Serious
+    Injuries. Large models such as Ogres or Trolls cannot be captured this way, and neither can
+    animals — roll for Serious Injuries as normal. 25 gc (Skaven only), Rare 10.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Metal Mongers Hand-to-hand / Spike-jawed snatcher
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  rarity: Rare 10
+  combat_status: out_of_scope
+- id: marienburg_map
+  kind: combat-equipment
+  name: Marienburg Map
+  name_i18n:
+    es: Mapa de Marienburgo
+  effect: >-
+    A detailed chart of the canals, wards and alleyways of Marienburg carried by the City Watch.
+    Watchmen listed equipment; no separate special-rules paragraph is printed beyond the list
+    entry. 20 gc.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Watchmen Miscellaneous Equipment / Marienburg Map
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  combat_status: out_of_scope
+- id: hunting_bird
+  kind: out-of-scope
+  name: Hunting Bird
+  name_i18n:
+    es: Ave de Cetrería
+  effect: >-
+    Special rules: Falconer. A good bird, trained almost from the egg, is a lethal pet: huge
+    she-hawks and warhawks require jesses and a hood, but a well-trained bird does not take to the
+    air until signalled. Hunting birds may only be used by a Hero with the animal handling skill
+    'Falconer'. A well trained fighting falcon is fully capable of blinding an opponent. Hunting
+    birds can be used as missile weapons and as weapons in hand-to-hand combat: range of the
+    falcon 24", roll to hit using the warrior's Ballistic Skill; in close combat falcons strike
+    first with a single attack using the warrior's Weapon Skill, each successful attack inflicts a
+    Strength 3 hit. If the Hero is taken out of action the falcon flies away, returning after the
+    battle. Falcons cannot be attacked or slain, but if the Hero is slain the falcons are lost. A
+    warrior must wear a falconry glove, otherwise roll on the Serious Injury chart in the post
+    battle sequence; a falconer may supervise only a single hunting bird. 25 gc, Rare 12
+    (Sergeants only).
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Watchmen Miscellaneous Equipment / Hunting bird
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  rarity: Rare 12
+  combat_status: out_of_scope
+- id: falconry_glove
+  kind: combat-equipment
+  name: Falconry Glove
+  name_i18n:
+    es: Guante de Cetrería
+  effect: >-
+    A leather or mesh glove worn to protect the falconer's arm. A warrior using a hunting bird
+    without a falconry glove must roll on the Serious Injury chart in the post battle sequence.
+    (Sergeants only). 10 gc.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Watchmen Miscellaneous Equipment / Falconry glove
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  combat_status: out_of_scope
+- id: watch_carriage
+  kind: out-of-scope
+  name: Watch Carriage / Stage Coach
+  name_i18n:
+    es: Carruaje de la Guardia / Coche de Línea
+  effect: >-
+    Black Caps: City Watch patrols may requisition one Watch Carriage with two horses before every
+    battle. Listed as watch carriage/stage coach in the Watchmen miscellaneous equipment. 100 gc.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Watchmen Miscellaneous Equipment / Watch carriage/Stage coach
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  combat_status: out_of_scope
+- id: wrench
+  kind: close-combat-weapon
+  name: Wrench
+  name_i18n:
+    es: Llave Inglesa
+  effect: >-
+    Heavy workshop wrench of the Metal Mongers' artificers. Counts as a club in close combat. 3 gc.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Metal Mongers Hand-to-hand Combat Weapons / Wrench (counts as club)
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Metal%20Mongers.pdf
+  combat_status: out_of_scope
+- id: wardog
+  kind: out-of-scope
+  name: Wardog
+  name_i18n:
+    es: Sabueso de Guerra
+  effect: >-
+    Watchmen equipment list entry (Sergeants may also use hunting birds with the Falconer skill).
+    Fights exactly like a member of the warband but is treated as equipment of the Hero who bought
+    it, counting towards rout tests in battle and as equipment for upkeep. 25 gc. NOTE: the active
+    KB already contains this concept as `warhound` (out-of-scope.yaml) — at promotion, merge this
+    entry into the KB warhound's source_refs instead of creating a duplicate row.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Watchmen Miscellaneous Equipment / Wardog
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf
+  combat_status: out_of_scope

@@ -1,0 +1,701 @@
+schema_version: 2
+band_id: dreamwalkers-cult-of-morr-fbg
+rules:
+- id: band--undead-foes-no-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.band.undead-foes-no-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Psychology subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Fearless against the undead servants of necromancers
+  effect: >-
+    Such is the faith of the followers of Morr in their god and in his protection, that in order to
+    fulfill the destiny that their god entrusts to them, they do not feel any fear when fighting
+    both vampires and necromancers and their undead followers, torn from the kingdom of Morr by the
+    dark magic of their masters.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Special Rules / Necromancers and vampires are Morr's ultimate enemies
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Sin miedo ante los siervos no muertos de los nigromantes
+  effect_i18n:
+    es: >-
+      Tal es la fe de los seguidores de Morr en su dios y en su protección que, para cumplir el
+      destino que su dios les encomienda, no sienten ningún miedo al luchar contra los vampiros y
+      nigromantes y sus seguidores no muertos, arrancados del reino de Morr por la magia oscura de
+      sus amos.
+  applies_to:
+    band: true
+- id: band--choosen-of-morr
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.band.choosen-of-morr
+      scope: LATER
+      binding: null
+      reason: >-
+        Warband-creation ritual and leader-swap subsystem: not covered by the current engine scope.
+  name: Choosen Of Morr
+  effect: >-
+    A Priest of Morr must ALWAYS certify that each dreamer is genuine, not a heretic...or worse!
+    which means that he must prove through a ritual that the dreamer's dreams truly come from Morr
+    and are not the product of necromantic magic or the corruption of chaos. When creating a band of
+    dreamwalkers, the Priest of Morr must roll a D6. If you get a +4, you can hire the Dreamer;
+    Otherwise, the Priest of Morr rejects him, through the necessary ritual he learns that the
+    dreams of that dreamer do not come from Morr. Then the priest himself will take leadership of
+    the warband to fulfill Morr's will. (in game effects the priest of Morr will be considered the
+    Leader). They will be able to try to find (hire) a new genuine Morr Dreamer again after their
+    next battle... paying their costs normally. If the priest finds a genuine dreamer, he will give
+    him the leadership of the band. (For game purposes the Dreamer will be considered the leader,
+    until he dies, in which case leadership will revert to the priest again. Once a band has a
+    genuine Dreamer and he or she dies, they will not be able to hire another one again.)
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Special Rules / Choosen Of Morr
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Elegido de Morr
+  effect_i18n:
+    es: >-
+      Un Sacerdote de Morr debe SIEMPRE certificar que cada soñador es genuino, ¡y no un hereje... o
+      algo peor!, lo que significa que debe demostrar mediante un ritual que los sueños del soñador
+      provienen realmente de Morr y no son producto de la magia necromántica o de la corrupción del
+      caos. Al crear una banda de caminantes del sueño, el Sacerdote de Morr debe lanzar un D6. Si
+      obtienes un 4+, puedes contratar al Soñador; de lo contrario, el Sacerdote de Morr lo rechaza:
+      mediante el ritual necesario aprende que los sueños de ese soñador no provienen de Morr.
+      Entonces el propio sacerdote tomará el liderazgo de la banda para cumplir la voluntad de Morr
+      (a efectos de juego, el sacerdote de Morr será considerado el Líder). Podrán intentar buscar
+      (contratar) de nuevo un Soñador de Morr genuino tras su próxima batalla... pagando sus costes
+      con normalidad. Si el sacerdote encuentra un soñador genuino, le entregará el liderazgo de la
+      banda (a efectos de juego, el Soñador será considerado el líder hasta que muera, en cuyo caso
+      el liderazgo revertirá de nuevo al sacerdote. Una vez que una banda ha tenido un Soñador
+      genuino y este muere, no podrán contratar otro nunca más).
+  applies_to:
+    band: true
+- id: band--hired-swords
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Hired Swords
+  effect: >-
+    Dreamwalkers may hire any Hired Swords allowed to a Human Mercenary warband, Witch Hunters and
+    Sisters of Sigmar. Of course they can't hire any Hired Sword of a Necromantic or Chaotic nature.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Special Rules / Hired Swords
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Espadas a Sueldo
+  effect_i18n:
+    es: >-
+      Los Caminantes del Sueño pueden contratar cualquier Espada a Sueldo permitida a una banda
+      humana de Mercenarios, Cazadores de Brujas y Hermanas de Sigmar. Por supuesto, no pueden
+      contratar ninguna Espada a Sueldo de naturaleza Necromántica o Caótica.
+  applies_to:
+    band: true
+- id: band--alliances
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.band.alliances
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Alliances
+  effect: >-
+    In multiplayer games, a Dreamwalkers warband may never forge an alliance with any Warband of a
+    Necromantic or Chaotic nature (Undead, Possessed, Skaven, Beastmen, Dark Elves etc.)
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Special Rules / Alliances
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Alianzas
+  effect_i18n:
+    es: >-
+      En partidas multijugador, una banda de Caminantes del Sueño nunca puede forjar una alianza con
+      ninguna banda de naturaleza Necromántica o Caótica (No Muertos, Poseídos, Skaven, Hombres
+      Bestia, Elfos Oscuros, etc.).
+  applies_to:
+    band: true
+- id: band--hate-undead
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.band.hate-undead
+      scope: LATER
+      binding: null
+      reason: >-
+        Psychology subsystem (hatred): not covered by the current engine scope.
+  name: Hate Undead
+  effect: >-
+    Vampires, necromancers, are Morr's ultimate enemies: they steal from his kingdom, violate his
+    protection for their own benefit, and flout his authority. All heroes in a Dreamwalkers Warband
+    hate all vampires, necromancers and undead.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Special Rules / Hate Undead
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Odian a los No Muertos
+  effect_i18n:
+    es: >-
+      Los vampiros y los nigromantes son los enemigos últimos de Morr: roban su reino, violan su
+      protección para su propio beneficio y se burlan de su autoridad. Todos los héroes de una banda
+      de Caminantes del Sueño odian a todos los vampiros, nigromantes y no muertos.
+  applies_to:
+    band: true
+- id: band--new-skills
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.band.new-skills
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: New skills
+  effect: >-
+    When a hero from a band of Dreamwalkers gains a new skill on an advance roll, they have the same
+    restrictions as witch hunters and sisters of sigmar when choosing skills from the skill list
+    described in the Mordheim rulebook.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Special Rules / New skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Nuevas habilidades
+  effect_i18n:
+    es: >-
+      Cuando un héroe de una banda de Caminantes del Sueño gana una habilidad nueva en una tirada de
+      mejora, tiene las mismas restricciones que los Cazadores de Brujas y las Hermanas de Sigmar al
+      elegir habilidades de la lista descrita en el libro de Mordheim.
+  applies_to:
+    band: true
+- id: dreamer--leader
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.dreamer.leader
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Standard Leader ability, engine-wide; to be bound via the shared rule at promotion.
+  name: Leader
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Heroes / 0-1 Dreamer / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - dreamer
+  rule_ref: shared-rule.leader
+- id: dreamer--choosen-of-morr
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.dreamer.choosen-of-morr
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: cross-reference to the band rule; pending equivalence review.
+  name: Choosen Of Morr
+  effect: See the special rules section for more information.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Heroes / 0-1 Dreamer / Special Rules / Choosen Of Morr
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Elegido de Morr
+  effect_i18n:
+    es: Ver la sección de reglas especiales para más información.
+  applies_to:
+    profile_ids:
+    - dreamer
+- id: dreamer--guiding-dream
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.dreamer.guiding-dream
+      scope: LATER
+      binding: null
+      reason: >-
+        Pre-battle D6 table with per-battle modifiers: deferred to the scenario/pre-battle engine
+        milestone.
+  name: Guiding Dream
+  effect: >-
+    At the beginning of each battle, the Dreamer must roll D6 and consult the Guiding Dream table to
+    discover what kind of vision Morr is sending him. 1 - Disturbing Vision: The vision of the
+    previous night is clear, but incomplete. That worries the dreamer too much and he feels very
+    tired the next day. The dreamer suffers a -1" Movement penalty. 2-3 - Vision of Truth: Morr
+    shows the dreamer the combat tactics of his enemy and images of himself defeating his enemy with
+    accurate blows to their weak points, which makes it easier for the dreamer to land his blows
+    against them. Designate one of your opponent's heroes as a target. The dreamer gets a +1 to hit
+    this model. 4-5 - Empowering Vision: Morr sends a vision to the dreamer in which he sees himself
+    in the heat of battle fighting against his enemies without ever failing and emerging victorious
+    despite his wounds, which imbues the dreamer with great strength. Designate one of your
+    opponent's heroes as a target. The dreamer has +1 Strength when fighting this model. 6 -
+    Infuriating Vision: Morr shows the dreamer the face of his enemy, this gives the dreamer a clear
+    vision of his goal and an inexhaustible determination to finish him off. Designate one of your
+    opponent's heroes as a target. The dreamer will have Frenzy against this model. The hero has a
+    dream related to a specific action that Morr wants you to perform. These dreams are always
+    perfectly clear, but never complete. It will never be explained in them why Morr wants you to
+    act that way. In visions you usually appear performing a specific action in a specific place and
+    at a specific time, and in some way you will know what the place is called and where it is, as
+    well as the exact date you must be there (even if it is not obvious). You have no control over
+    the content of the dream, and there are no guarantees that you will survive to fulfill Morr's
+    assignment.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Guiding Dream
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Sueño Guía
+  effect_i18n:
+    es: >-
+      Al comienzo de cada batalla, el Soñador debe lanzar un D6 y consultar la tabla de Sueño Guía
+      para descubrir qué tipo de visión le envía Morr. 1 - Visión Inquietante: la visión de la noche
+      anterior es clara, pero incompleta. Eso preocupa demasiado al soñador y al día siguiente se
+      siente muy cansado; sufre una penalización de -1" de Movimiento. 2-3 - Visión de Verdad: Morr
+      muestra al soñador las tácticas de combate de su enemigo e imágenes de sí mismo derrotándolo
+      con golpes certeros a sus puntos débiles, lo que le facilita alcanzarlo. Designa a uno de los
+      héroes de tu oponente como objetivo; el soñador obtiene +1 por impactar a esa miniatura. 4-5 -
+      Visión de Fortalecimiento: Morr envía al soñador una visión en la que se ve en pleno combate
+      luchando contra sus enemigos sin fallar jamás y saliendo victorioso pese a sus heridas, lo que
+      le infunde gran fuerza. Designa a uno de los héroes de tu oponente como objetivo; el soñador
+      tiene +1 de Fuerza al luchar contra esa miniatura. 6 - Visión Enfurecedora: Morr muestra al
+      soñador el rostro de su enemigo, lo que le da una visión clara de su objetivo y una
+      determinación inagotable de acabar con él. Designa a uno de los héroes de tu oponente como
+      objetivo; el soñador tendrá Frenesí contra esa miniatura. El héroe tiene un sueño relacionado
+      con una acción específica que Morr quiere que realices. Estos sueños son siempre perfectamente
+      claros, pero nunca completos. Nunca se explicará en ellos por qué Morr quiere que actúes así.
+      En las visiones normalmente apareces realizando una acción concreta en un lugar concreto y en
+      un momento concreto, y de alguna manera sabrás cómo se llama el lugar y dónde está, así como
+      la fecha exacta a la que debes estar allí (aunque no sea obvio). No tienes control sobre el
+      contenido del sueño y no hay garantías de que sobrevivas para cumplir el encargo de Morr.
+  applies_to:
+    profile_ids:
+    - dreamer
+- id: priest-of-morr--funerary-rites
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.priest-of-morr.funerary-rites
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Magic-phase content: the Funerary Rites list lives in the KB (lore.funerary-rites); casting
+        is out of engine scope.
+  name: Funerary Rites
+  effect: >-
+    Priests of Morr are not wizards by any means, however, they do have numerous Funerary Rites,
+    which they may perform. As such, priests of Morr may choose a Funerary Rite, using the rules for
+    Magic. See the Magic section for details. Priest Of Morr may choose skills from the Academic and
+    Speed skills list, or they may randomly determine a new funerary from the Funerary Rites list.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Heroes / 1 Priest Of Morr / Special Rules
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Ritos Funerarios
+  effect_i18n:
+    es: >-
+      Los sacerdotes de Morr no son magos en absoluto; sin embargo, tienen numerosos Ritos
+      Funerarios que pueden realizar. Así, los sacerdotes de Morr pueden elegir un Rito Funerario
+      usando las reglas de Magia. Ver la sección de Magia para más detalles. El Sacerdote de Morr
+      puede elegir habilidades de las listas de Académicas y Velocidad, o determinar al azar un
+      nuevo rito funerario de la lista de Ritos Funerarios.
+  applies_to:
+    profile_ids:
+    - priest-of-morr
+- id: priest-of-morr--loner
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.priest-of-morr.loner
+      scope: LATER
+      binding: null
+      reason: >-
+        Psychology subsystem (All Alone immunity): not covered by the current engine scope.
+  name: Loner
+  effect: >-
+    Few people care to spend any length of time in the company of a priest of Morr - even when it is
+    their duty to do so. As such, a priest of Morr is used to being alone and probably prefers it
+    that way. Priests of Morr do not suffer from the all alone rules.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Heroes / 1 Priest Of Morr / Special Rules / Loner
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Solitario
+  effect_i18n:
+    es: >-
+      Poca gente se detiene a pasar tiempo en compañía de un sacerdote de Morr, aunque sea su deber
+      hacerlo. Así, un sacerdote de Morr está acostumbrado a estar solo y probablemente lo prefiere
+      así. Los sacerdotes de Morr no sufren las reglas de Todo Solo.
+  applies_to:
+    profile_ids:
+    - priest-of-morr
+- id: black-guards--silent-guardian
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.black-guards.silent-guardian
+      scope: LATER
+      binding: null
+      reason: >-
+        Hidden-movement and armour-movement subsystems: not covered by the current engine scope.
+  name: Silent Guardian
+  effect: >-
+    If a Black Guard has been declared Hidden, enemies must take an Initiative test to spot them.
+    And never suffer movement penalties for wearing armour.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Heroes / 0-2 Black Guards Of Morr / Special Rules / Silent Guardian
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Guardián Silencioso
+  effect_i18n:
+    es: >-
+      Si un Guardia Negro ha sido declarado Oculto, los enemigos deben superar una tirada de
+      Iniciativa para descubrirlo. Y nunca sufre penalizaciones de movimiento por llevar armadura.
+  applies_to:
+    profile_ids:
+    - black-guards
+- id: black-guards--mount-option
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.black-guards.mount-option
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Mounted-models optional rule: out of engine scope.
+  name: Mount option
+  effect: >-
+    If using the optional rules for mounted models or the Blazing Saddles expanded mounted rules,
+    the Black Guard may ride a Warhorse, paying its cost. If so increasing their save to +4 while
+    mounted.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Heroes / 0-2 Black Guards Of Morr / Weapons-Armour
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Opción de montura
+  effect_i18n:
+    es: >-
+      Si se usan las reglas opcionales para miniaturas montadas o las reglas ampliadas de monturas
+      Blazing Saddles, el Guardia Negro puede montar un Caballo de Guerra, pagando su coste. Si lo
+      hace, aumenta su salvación a +4 mientras esté montado.
+  applies_to:
+    profile_ids:
+    - black-guards
+- id: andanti--estalian-tecnique
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.andanti.estalian-tecnique
+      scope: LATER
+      binding: null
+      reason: >-
+        Modified parry mechanics: deferred to the close-combat engine milestone.
+  name: Estalian Tecnique
+  effect: >-
+    The Andanti may parry using his rapier and Main Gauche if he can roll under his weapon skill as
+    opposed to over his opponent's highest hit roll as per the normal rules.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Heroes / 0-1 The Andanti / Special Rules / Estalian Tecnique
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Técnica Estalia
+  effect_i18n:
+    es: >-
+      Los Andanti pueden parar usando su estoque y su Daga de Guardia si consiguen una tirada
+      inferior a su Habilidad de Armas, en lugar de superior a la tirada de impacto más alta de su
+      oponente según las reglas normales.
+  applies_to:
+    profile_ids:
+    - andanti
+- id: andanti--andanti-knowledge
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.andanti.andanti-knowledge
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: conditional to-hit bonus pending scope refinement.
+  name: Andanti Knowledge
+  effect: >-
+    Their secret knowledge passed from member to member makes them skilled fighters against
+    vampires. When fighting a vampire they get +1 to hit in close combat.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Heroes / 0-1 The Andanti / Special Rules / Andanti Knowledge
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Conocimiento Andanti
+  effect_i18n:
+    es: >-
+      Su conocimiento secreto, transmitido de miembro a miembro, los convierte en luchadores
+      diestros contra los vampiros. Al luchar contra un vampiro obtienen +1 por impactar en combate
+      cuerpo a cuerpo.
+  applies_to:
+    profile_ids:
+    - andanti
+- id: deaths-heads--expert-halberdier
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.deaths-heads.expert-halberdier
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: weapon-combination exception pending scope refinement.
+  name: Expert Halberdier
+  effect: >-
+    Death's Heads are so skilled with their weapons that they may combat carrying his halberd in one
+    hand and shield at the other.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Henchmen / 0-5 Death's Heads Of Ostermark / Special Rules
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Alabardero Experto
+  effect_i18n:
+    es: >-
+      Las Cabezas de Muerte son tan diestros con sus armas que pueden combatir llevando su alabarda
+      en una mano y el escudo en la otra.
+  applies_to:
+    profile_ids:
+    - deaths-heads
+- id: band--special-skill-inspiring-presence
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.special-skill.inspiring-presence
+      scope: LATER
+      binding: null
+      reason: >-
+        Leadership-range modification: deferred to the psychology engine milestone.
+  name: Inspiring Presence
+  effect: >-
+    When a Dreamer proves to be a brave leader and truly chosen of Morr, his followers will follow
+    their dreamer to death with unwavering courage. To represent this, Morr Worshwishpers can use
+    the dreamer's lead if they are 12" away instead of the usual 6". (Only for Dreamer).
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Special Skills / Inspiring Presence
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Presencia Inspiradora
+  effect_i18n:
+    es: >-
+      Cuando un Soñador demuestra ser un líder valiente y un verdadero elegido de Morr, sus
+      seguidores seguirán a su soñador hasta la muerte con valentía inquebrantable. Para
+      representarlo, los Adoradores de Morr pueden usar el Liderazgo del soñador si están a 12" o
+      menos en lugar de los 6" habituales (solo para el Soñador).
+  applies_to:
+    band: true
+  kind: warband_skill
+- id: band--special-skill-fanatical
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.special-skill.fanatical
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Rout-test re-roll: campaign/post-battle adjacent; pending scope refinement.
+  name: Fanatical
+  effect: >-
+    The dreamwalkers are convinced that they are the chosen ones to carry out Morr's will and
+    eradicate the necromantic plague of the old world. Once per game, if the Dreamer is not out of
+    action, stunned or knocked down, you may re-roll a failed rout test. (Only for Dreamer).
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Special Skills / Fanatical
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Fanático
+  effect_i18n:
+    es: >-
+      Los caminantes del sueño están convencidos de que son los elegidos para cumplir la voluntad de
+      Morr y erradicar la plaga necromántica del Viejo Mundo. Una vez por partida, si el Soñador no
+      está Fuera de combate, aturdido o derribado, puedes repetir una tirada de desbandada fallida
+      (solo para el Soñador).
+  applies_to:
+    band: true
+  kind: warband_skill
+- id: band--special-skill-inured-to-horror
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.special-skill.inured-to-horror
+      scope: LATER
+      binding: null
+      reason: >-
+        Psychology subsystem (fear immunity, All Alone): not covered by the current engine scope.
+  name: Inured to Horror
+  effect: >-
+    Only the true faithful followers of Morr know and accept death and become inured to horror. The
+    model is immune to Fear, and need never take All Alone tests.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Special Skills / Inured to Horror
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Curtido en el Horror
+  effect_i18n:
+    es: >-
+      Solo los verdaderos y fieles seguidores de Morr conocen y aceptan la muerte y se curtir en el
+      horror. La miniatura es inmune al Miedo y nunca necesita hacer tiradas de Todo Solo.
+  applies_to:
+    band: true
+  kind: warband_skill
+- id: band--special-skill-blessed-by-morr
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.special-skill.blessed-by-morr
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Magic-phase content: spell nullification is out of engine scope.
+  name: Blessed by Morr
+  effect: >-
+    The hero has been blessed by Morr and has his protection against the magic that his enemies cast
+    against him. Any spell that could affect the model is nullified with a D6 roll of +4 when
+    fighting the undead. Note that if the spell is nullified, it does not affect this model, but it
+    does affect any other model as it normally would.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Special Skills / Blessed by Morr
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Bendecido por Morr
+  effect_i18n:
+    es: >-
+      El héroe ha sido bendecido por Morr y cuenta con su protección contra la magia que sus
+      enemigos lanzan contra él. Cualquier hechizo que pudiera afectar a la miniatura se anula con
+      una tirada de D6 de 4+ cuando lucha contra los no muertos. Ten en cuenta que si el hechizo se
+      anula, no afecta a esta miniatura, pero sí afecta a cualquier otra como lo haría normalmente.
+  applies_to:
+    band: true
+  kind: warband_skill
+- id: band--special-equipment-scythe
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.item.scythe
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: two-handed weapon stats pending engine weapon binding.
+  name: Scythe
+  effect: >-
+    Range: Close Combat. Strength: As user +1. Special Rules: Two Handed. Scythes are normally
+    implements used in the fields by farmers. It is rare to see them wielded as weapons of warfare.
+    However, the scythe also carries with it an image of death. It is the symbol of the Grim Reaper,
+    the representation of famine and starvation and disease through the lack of harvested food.
+    Priests of Morr, when they need to, may carry a Scythe as a weapon. This is of heavier
+    manufacture, and designed to reap warriors rather than wheat. Because the Scythe is unwieldy, it
+    must be used with two-hands and cannot be used with another weapon, shield or buckler.
+  source:
+    manual: Mordheim Facebook Group
+    printed_page: 0
+    section: Special Equipment / Scythe
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dreamwalkers-cult-of-morr
+  name_i18n:
+    es: Guadaña
+  effect_i18n:
+    es: >-
+      Alcance: combate cuerpo a cuerpo. Fuerza: la del usuario +1. Reglas especiales: a dos manos.
+      Las guadañas son normalmente herramientas usadas en los campos por los granjeros; es raro
+      verlas empuñadas como armas de guerra. Sin embargo, la guadaña también lleva consigo una
+      imagen de muerte: es el símbolo de la Parca, la representación del hambre, la inanición y la
+      enfermedad por la falta de cosecha. Los sacerdotes de Morr, cuando lo necesitan, pueden llevar
+      una Guadaña como arma; esta es de fabricación más pesada y diseñada para segar guerreros en
+      lugar de trigo. Como la Guadaña es difícil de manejar, debe usarse a dos manos y no puede
+      usarse con otra arma, escudo o broquel.
+  applies_to:
+    band: true

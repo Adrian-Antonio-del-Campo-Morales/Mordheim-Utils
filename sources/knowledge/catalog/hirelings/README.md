@@ -101,6 +101,18 @@ resolved entries from the profiles' `unresolved_references` and update the
 > because it was not indexed in the magic section of the site. 0 pending of
 > type `spell_list`.
 
+## Format contract
+
+Every document of this catalogue has a JSON Schema in
+`contracts/knowledge-editorial-v1/`: `hireling-profile-hired-sword.yaml`,
+`hireling-profile-dramatis-personae.yaml`, `hireling-rules.yaml` and
+`hirelings-traits.yaml`. They fix the profile envelope, the intrinsic equipment
+shapes, the closed trait vocabulary and the rule that an `out_of_scope` entry
+must state its reason (`normalization_status: out_of_scope` exists only in the
+Dramatis catalogue). `mordheim_knowledge.editorial_schemas` validates them in the
+`validate` gate and in `tests/knowledge/test_editorial_schemas.py`, before this
+directory's own loader contract.
+
 ## Loader contract
 
 `mordheim_knowledge.campaign.load_hirelings(ruleset)` is the authorised read

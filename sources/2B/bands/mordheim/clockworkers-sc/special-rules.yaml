@@ -1,0 +1,498 @@
+schema_version: 2
+band_id: clockworkers-sc
+rules:
+- id: band--constructs
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.clockworkers-sc.band.constructs
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Constructs
+  effect: >-
+    Clockwork constructs differ massively from living beings and follow a number of special rules:
+    Need Orders (roll a D6 at the start of your turn for each construct without a friendly hero
+    within 6 inches unless it is in close combat; on 1-2 the model may neither move nor shoot this
+    turn); Immune to Psychology (immune to psychology and never leaves combat); No Pain (treats
+    stunned results as knocked down); May Not Run (no running, but may charge as normal); Immune to
+    Poison (unaffected by poison or drugs); Brainless (gain no experience, only physical
+    enhancement); In-built Equipment (once given, a weapon or armour may not be removed; constructs
+    use slots instead of the normal weapon maximums, and enough equipment must be abandoned to free
+    the required slots).
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special skills / Constructs
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Constructos
+  effect_i18n:
+    es: >-
+      Los constructos de cuerda difieren enormemente de los seres vivos y siguen una serie de reglas
+      especiales: Necesitan Órdenes (tira 1D6 al inicio de tu turno por cada constructo sin un héroe
+      amigo a 6 pulgadas, salvo que esté en combate cuerpo a cuerpo; con 1-2 el modelo no puede
+      moverse ni disparar ese turno); Inmunes a la Psicología (inmunes a la psicología y nunca
+      abandonan el combate); Sin Dolor (tratan los resultados aturdido como derribado); No Pueden
+      Correr (no pueden correr, pero pueden cargar con normalidad); Inmunes al Veneno (no les
+      afectan venenos ni drogas); Carentes de Mente (no ganan experiencia, solo pueden mejorarse
+      físicamente); Equipo Integrado (una vez dado, un arma o armadura no puede retirarse; los
+      constructos usan ranuras en lugar del máximo normal de armas, y debe abandonarse equipo
+      suficiente para liberar las ranuras necesarias).
+  applies_to:
+    band: true
+- id: master-of-clocks--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clockworkers-sc.master-of-clocks.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: >-
+    Any warrior within 6 inches of the Master of Clocks may use his Leadership instead of his own.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 1 Master of Clocks / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6 pulgadas del Maestro de los Relojes puede usar su Liderazgo en lugar
+      del propio.
+  applies_to:
+    profile_ids:
+    - master-of-clocks
+- id: master-of-clocks--laws-of-construction
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clockworkers-sc.master-of-clocks.laws-of-construction
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Laws of Construction
+  effect: >-
+    The Master of Clocks is able to overwrite the basic functions of his constructs and thus starts
+    with one Law of Construction. Laws are not spells: protection against spells does not affect
+    them and they may be used like prayers even while wearing armour. The six Laws are Offense
+    (difficulty 7), Motion (6), Defense (7), Sacrifice (9), Protection (7) and Rampage (10).
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Laws of Construction
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Leyes de la Construcción
+  effect_i18n:
+    es: >-
+      El Maestro de los Relojes puede sobrescribir las funciones básicas de sus constructos y por
+      ello comienza con una Ley de la Construcción. Las Leyes no son hechizos: la protección contra
+      hechizos no las afecta y pueden usarse como plegarias incluso llevando armadura. Las seis
+      Leyes son Ofensiva (dificultad 7), Movimiento (6), Defensa (7), Sacrificio (9), Protección (7)
+      y Devastación (10).
+  applies_to:
+    profile_ids:
+    - master-of-clocks
+- id: master-of-clocks--promotion
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clockworkers-sc.master-of-clocks.promotion
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Promotion
+  effect: >-
+    If the Master of Clocks dies or otherwise leaves the expedition, the new leader may learn Laws
+    of Construction on subsequent skill advances.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 1 Master of Clocks / Special Rules / Promotion
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Ascenso
+  effect_i18n:
+    es: >-
+      Si el Maestro de los Relojes muere o abandona la expedición por otro motivo, el nuevo líder
+      puede aprender Leyes de la Construcción en mejoras de habilidad posteriores.
+  applies_to:
+    profile_ids:
+    - master-of-clocks
+- id: dwarf-engineer--armour
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clockworkers-sc.dwarf-engineer.armour
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction.
+  name: Armour
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 0-1 Dwarf engineer / Special Rules / Armour
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Armadura
+  applies_to:
+    profile_ids:
+    - dwarf-engineer
+  rule_ref: shared-rule.armour-2
+- id: dwarf-engineer--hard-to-kill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.hard-to-kill
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
+  name: Hard to Kill
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 0-1 Dwarf engineer / Special Rules / Hard to Kill
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Difícil de Matar
+  applies_to:
+    profile_ids:
+    - dwarf-engineer
+  rule_ref: shared-rule.hard-to-kill
+- id: dwarf-engineer--hard-head
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.concussion-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.concussion-immune
+        parameters:
+          value: true
+  name: Hard Head
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 0-1 Dwarf engineer / Special Rules / Hard Head
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Cabeza Dura
+  applies_to:
+    profile_ids:
+    - dwarf-engineer
+  rule_ref: shared-rule.hard-head-2
+- id: dwarf-engineer--smithery
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clockworkers-sc.dwarf-engineer.smithery
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Smithery
+  effect: >-
+    Instead of searching for rare items, the engineer may equip a single construct with any weapon
+    he can lay his hands on. Two-handed and missile weapons take up 2 slots, other weapons need 1
+    slot.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 0-1 Dwarf engineer / Special Rules / Smithery
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Herrería
+  effect_i18n:
+    es: >-
+      En lugar de buscar objetos raros, el ingeniero puede equipar un único constructo con cualquier
+      arma que pueda conseguir. Las armas a dos manos y las de misil ocupan 2 ranuras; las demás
+      armas necesitan 1 ranura.
+  applies_to:
+    profile_ids:
+    - dwarf-engineer
+- id: metallurgist--moonstone-refinery
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clockworkers-sc.metallurgist.moonstone-refinery
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Moonstone Refinery
+  effect: >-
+    Instead of searching for rare items, the Metallurgist may split one moonstone into D6 orichalcum
+    tokens.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Metallurgist / Special Rules / Moonstone refinery
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Refinería de Piedra Lunar
+  effect_i18n:
+    es: >-
+      En lugar de buscar objetos raros, el Metalúrgico puede dividir una piedra lunar en D6 fichas
+      de oricalco.
+  applies_to:
+    profile_ids:
+    - metallurgist
+- id: metallurgist--hellish-tincture
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clockworkers-sc.metallurgist.hellish-tincture
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Hellish Tincture
+  effect: >-
+    Once per game this tincture may be thrown in the same way as blessed water and sets its target
+    on fire. However, if you roll a 1 to hit, the clumsy hero is set on fire instead.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Metallurgist / Special Rules / Hellish tincture
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Tintura Infernal
+  effect_i18n:
+    es: >-
+      Una vez por partida esta tintura puede lanzarse del mismo modo que el agua bendita y prende
+      fuego a su objetivo. Sin embargo, si sacas un 1 para impactar, el héroe torpe acaba ardiendo
+      en su lugar.
+  applies_to:
+    profile_ids:
+    - metallurgist
+- id: handymen--crude
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clockworkers-sc.handymen.crude
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Crude
+  effect: >-
+    When rolling 'That Lad's got talent', the new hero must choose combat and strength skills as his
+    two skill lists.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Handymen / Special Rules / Crude
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Tosco
+  effect_i18n:
+    es: >-
+      Al sacar 'el chaval tiene talento', el nuevo héroe debe elegir combate y fuerza como sus dos
+      listas de habilidades.
+  applies_to:
+    profile_ids:
+    - handymen
+- id: clockwork-soldiers--construct
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clockworkers-sc.clockwork-soldiers.construct
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Construct
+  effect: Clockwork soldiers are constructs as described in the band special rules.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-5 Clockwork soldiers / Special Rules / Construct
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Constructo
+  effect_i18n:
+    es: >-
+      Los soldados de cuerda son constructos, tal como se describe en las reglas especiales de la
+      banda.
+  applies_to:
+    profile_ids:
+    - clockwork-soldiers
+- id: clockwork-soldiers--solitary-maintenance
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clockworkers-sc.clockwork-soldiers.solitary-maintenance
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Solitary Maintenance
+  effect: Each clockwork soldier forms its own henchmen group.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-5 Clockwork soldiers / Special Rules / Solitary maintenance
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Mantenimiento Solitario
+  effect_i18n:
+    es: Cada soldado de cuerda forma su propio grupo de secuaces.
+  applies_to:
+    profile_ids:
+    - clockwork-soldiers
+- id: clockwork-fiend--construct
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clockworkers-sc.clockwork-fiend.construct
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Construct
+  effect: Clockwork fiends are constructs as described in the band special rules.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Clockwork fiend / Special Rules / Construct
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Constructo
+  effect_i18n:
+    es: >-
+      Los demonios de cuerda son constructos, tal como se describe en las reglas especiales de la
+      banda.
+  applies_to:
+    profile_ids:
+    - clockwork-fiend
+- id: clockwork-fiend--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clockworkers-sc.clockwork-fiend.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Cause Fear
+  effect: Clockwork fiends are terrifying giants made of weapons and brass and therefore cause fear.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Clockwork fiend / Special Rules / Cause fear
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Causar Miedo
+  effect_i18n:
+    es: >-
+      Los demonios de cuerda son gigantes terroríficos hechos de armas y latón, y por tanto causan
+      miedo.
+  applies_to:
+    profile_ids:
+    - clockwork-fiend
+- id: clockwork-fiend--large-target
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clockworkers-sc.clockwork-fiend.large-target
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Large Target
+  effect: Due to its huge size, the Clockwork fiend counts as a large target.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Clockwork fiend / Special Rules / Large target
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Objetivo Grande
+  effect_i18n:
+    es: Debido a su enorme tamaño, el Demonio de Cuerda cuenta como objetivo grande.
+  applies_to:
+    profile_ids:
+    - clockwork-fiend
+- id: clockwork-fiend--lumbering-behemoth
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clockworkers-sc.clockwork-fiend.lumbering-behemoth
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Lumbering Behemoth
+  effect: >-
+    Moonstone infusions need the doubled amount of orichalcum tokens per characteristic increase.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Clockwork fiend / Special Rules / Lumbering behemoth
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf
+  name_i18n:
+    es: Coloso Torpe
+  effect_i18n:
+    es: >-
+      Las infusiones de piedra lunar necesitan el doble de fichas de oricalco por cada aumento de
+      característica.
+  applies_to:
+    profile_ids:
+    - clockwork-fiend

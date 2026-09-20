@@ -1,0 +1,94 @@
+schema_version: 2
+band_id: brood-of-ghurash-the-sc
+profiles:
+- id: broodmother
+  name: Broodmother
+  type: hero
+  cost: 140
+  experience: 10
+  characteristics: {M: 6, WS: 4, BS: 2, S: 5, T: 4, W: 3, I: 2, A: 3, Ld: 5}
+  equipment_lists: [brood-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [strength, speed, special]
+  source: {manual: Broheim, printed_page: 3, section: 1 Broodmother, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf'}
+  source_path: [heroes, 1 Broodmother]
+  name_i18n: {es: Madre de Cría}
+  rule_ids: [broodmother--leader, broodmother--mother-knows-best]
+  combat_traits: {}
+- id: firstborns
+  name: Firstborns
+  type: hero
+  cost: 105
+  experience: 4
+  characteristics: {M: 6, WS: 3, BS: 2, S: 4, T: 4, W: 3, I: 1, A: 2, Ld: 4}
+  equipment_lists: [brood-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [strength, speed]
+  source: {manual: Broheim, printed_page: 3, section: 0-2 Firstborns, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf'}
+  source_path: [heroes, 0-2 Firstborns]
+  name_i18n: {es: Primogénitos}
+  rule_ids: []
+  combat_traits: {}
+- id: youths
+  name: Youths
+  type: hero
+  cost: 40
+  experience: 0
+  characteristics: {M: 6, WS: 3, BS: 2, S: 4, T: 3, W: 2, I: 1, A: 1, Ld: 4}
+  equipment_lists: [brood-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [strength, special]
+  source: {manual: Broheim, printed_page: 3, section: 0-2 Youths, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf'}
+  source_path: [heroes, 0-2 Youths]
+  name_i18n: {es: Jóvenes}
+  rule_ids: []
+  combat_traits: {}
+- id: children
+  name: Children
+  type: henchman
+  cost: 30
+  experience: 0
+  characteristics: {M: 6, WS: 3, BS: 2, S: 4, T: 3, W: 1, I: 1, A: 1, Ld: 4}
+  equipment_lists: [brood-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 4, section: Children, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf'}
+  source_path: [henchmen, Children]
+  name_i18n: {es: Crías}
+  rule_ids: []
+  combat_traits: {}
+- id: newborns
+  name: Newborns
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics: {M: 6, WS: 2, BS: 1, S: 3, T: 3, W: 1, I: 1, A: 1, Ld: 4}
+  equipment_lists: [brood-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 4, section: 0-2 Newborns, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf'}
+  source_path: [henchmen, 0-2 Newborns]
+  name_i18n: {es: Recién Nacidos}
+  rule_ids: [newborns--nestlings, newborns--too-little]
+  combat_traits: {}
+- id: baneworms
+  name: Baneworms
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics: {M: 6, WS: 2, BS: 0, S: 3, T: 2, W: 1, I: 4, A: 2, Ld: 4}
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Baneworms can never use weapons or armour.
+  skill_access: []
+  source: {manual: Broheim, printed_page: 4, section: 0-5 Baneworms, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf'}
+  source_path: [henchmen, 0-5 Baneworms]
+  name_i18n: {es: Gusanos de Ruina}
+  rule_ids: [baneworms--mer-creature, baneworms--lurker, baneworms--animal]
+  combat_traits: {}

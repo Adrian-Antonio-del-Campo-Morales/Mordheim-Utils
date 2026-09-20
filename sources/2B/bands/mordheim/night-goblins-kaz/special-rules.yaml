@@ -1,0 +1,606 @@
+schema_version: 2
+band_id: night-goblins-kaz
+rules:
+- id: band--animosity
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.night-goblins-kaz.band.animosity
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: turn-structure squabble roll happens outside the duel resolution.
+  name: Animosity
+  effect: >-
+    Goblins spend much of their lives squabbling and fighting amongst themselves. Sometimes this
+    will happen at the worst of times. At the beginning of each Night Goblin turn roll a D6. On a
+    roll of 1 they start to squabble and will do nothing else for the rest of the turn. Only Night
+    Goblins are affected. Trolls, squigs, snotlings and other non-goblins are not affected and will
+    act as normal.
+  source:
+    manual: broheim.net
+    printed_page: 44
+    section: Special Rules / Animosity
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Animadversión
+  effect_i18n:
+    es: >-
+      Los Goblins pasan gran parte de sus vidas reñían y peleando entre ellos. A veces esto ocurre
+      en el peor de los momentos. Al inicio de cada turno de Goblins Nocturnos tira 1D6. Con un
+      resultado de 1, empiezan a reñir y no harán nada más durante el resto del turno. Solo se ven
+      afectados los Goblins Nocturnos. Trolls, squigs, snotlings y otros no goblins no se ven
+      afectados y actuarán con normalidad.
+  applies_to:
+    band: true
+- id: band--hate-stunties
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.night-goblins-kaz.band.hate-stunties
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (hatred towards Dwarfs, except Fanatics).
+  name: Hate Stunties
+  effect: >-
+    Night Goblins are subject to hatred towards Dwarfs. This only affects Night Goblins, not any
+    other greenskins. Fanatics are so out of their skull that they are not affected.
+  source:
+    manual: broheim.net
+    printed_page: 44
+    section: Special Rules / Hate Stunties
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Odio a los Barbajos
+  effect_i18n:
+    es: >-
+      Los Goblins Nocturnos están sujetos a odio hacia los Enanos. Esto solo afecta a los Goblins
+      Nocturnos, no a otros pieles verdes. Los Fanáticos están tan fuera de sí que no se ven
+      afectados.
+  applies_to:
+    band: true
+- id: band--night-goblin-special-skills
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.night-goblins-kaz.band.night-goblin-special-skills
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred: Ded Shooty (shooting range) and Sneaky Git (deployment) are out of scope; the
+        Infiltrate cross-reference needs equivalence review. Netter alone has an executable binding
+        (mechanic.netter) but the special-skill selection system is not wired for this band yet.
+  name: Night Goblin Special Skills
+  effect: >-
+    Ded Shooty: the clever little git adds +6\" to the range of any missile weapons he uses (not
+    including nets). Sneaky Git: the greenskin is so sneaky that he can move D3 of his warband
+    members after all other deployment is complete; Night Goblin Big Boss only. Infiltrate: as
+    Skaven skill. Netter: the goblin is adept at using a net to disable his enemies; the technique
+    he has mastered is 'chuck and charge' (see mechanic.netter for the full text).
+  source:
+    manual: broheim.net
+    printed_page: 44
+    section: Night Goblin Special Skills
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Habilidades Especiales de Goblins Nocturnos
+  effect_i18n:
+    es: >-
+      Muy Puntero: el astuto mierdas suma +6" al alcance de cualquier arma de misil que use (sin
+      incluir redes). Git Listo: el piel verde es tan sigiloso que puede mover 1D3 miembros de su
+      banda después de que todo el resto del despliegue esté completo; solo el Gran Jefe Goblin
+      Nocturno. Infiltrarse: como la habilidad Skaven. Redador: el goblin es experto en usar una red
+      para inutilizar a sus enemigos; la técnica que ha dominado es «lanzar y cargar» (ver
+      mechanic.netter para el texto completo).
+  applies_to:
+    band: true
+- id: band--cave-squig-limit
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.night-goblins-kaz.band.cave-squig-limit
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: recruitment restriction enforced at warband-creation.
+  name: Cave Squig Limit
+  effect: >-
+    Your warband may include up to 5 Cave Squigs. You may never have more Cave Squigs in your
+    warband than you have Night Goblins.
+  source:
+    manual: broheim.net
+    printed_page: 45
+    section: Choice of Warriors / Cave Squig
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Límite de Squigs de Cueva
+  effect_i18n:
+    es: >-
+      Tu banda puede incluir hasta 5 Squigs de Cueva. Nunca puedes tener más Squigs de Cueva en tu
+      banda que Goblins Nocturnos.
+  applies_to:
+    band: true
+- id: big-boss--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.big-boss.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Leader
+  effect: >-
+    Any model in the warband within 6\" of the Big Boss may use his Leadership instead of their own.
+  source:
+    manual: broheim.net
+    printed_page: 46
+    section: heroes / 1 Big Boss / Special Rules / Leader
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: Cualquier modelo de la banda a 6" del Gran Jefe puede usar su Liderazgo en lugar del propio.
+  applies_to:
+    profile_ids:
+    - big-boss
+- id: shaman--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.shaman.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (Waaagh! Magic as listed in Best of Town Cryer).
+  name: Wizard
+  effect: A Night Goblin Shaman is a wizard and uses Waaagh! Magic as listed in Best of Town Cryer.
+  source:
+    manual: broheim.net
+    printed_page: 46
+    section: heroes / 0-1 Shaman / Special Rules / Wizard
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Hechicero
+  effect_i18n:
+    es: >-
+      Un Chamán Goblin Nocturno es un Hechicero y usa la magia Waaagh! tal y como se recoge en Best
+      of Town Cryer.
+  applies_to:
+    profile_ids:
+    - shaman
+- id: fanatics--addict
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.fanatics.addict
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: pre-battle supply and participation are campaign mechanics.
+  name: Addict
+  effect: >-
+    The Fanatic is dependent on a regular supply of Madcap Mushrooms. If he can't get any before a
+    battle he will stay in his cave foaming at the mouth and not take part. If available he will eat
+    his mushrooms before the battle.
+  source:
+    manual: broheim.net
+    printed_page: 47
+    section: henchmen / 0-2 Fanatics / Special Rules / Addict
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Adicto
+  effect_i18n:
+    es: >-
+      El Fanático depende de un suministro regular de setas Capachas. Si no consigue ninguna antes
+      de una batalla, se quedará en su cueva echando espuma por la boca y no participará. Si hay
+      disponibles, se comerá sus setas antes de la batalla.
+  applies_to:
+    profile_ids:
+    - fanatics
+- id: fanatics--looney
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.fanatics.looney
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (frenzy) and post-battle permanent damage tests.
+  name: Looney
+  effect: >-
+    Due to the effect of the Mushrooms he is subject to Frenzy. He must also test for permanent
+    damage after the battle as described in the rulebook.
+  source:
+    manual: broheim.net
+    printed_page: 47
+    section: henchmen / 0-2 Fanatics / Special Rules / Looney
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Chalado
+  effect_i18n:
+    es: >-
+      Debido al efecto de las setas está sujeto a Frenesí. También debe hacer un chequeo de daño
+      permanente tras la batalla, tal y como se describe en el libro de reglas.
+  applies_to:
+    profile_ids:
+    - fanatics
+- id: fanatics--frantic
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.always-strikes-first
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.always-strikes-first
+  name: Frantic
+  effect: >-
+    The Fanatic is hyperactive and will strike first in combat ignoring penalties for weapons or
+    initiative order.
+  source:
+    manual: broheim.net
+    printed_page: 47
+    section: henchmen / 0-2 Fanatics / Special Rules / Frantic
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Frenético
+  effect_i18n:
+    es: >-
+      El Fanático es hiperactivo y golpeará primero en combate, ignorando las penalizaciones por
+      armas u orden de iniciativa.
+  applies_to:
+    profile_ids:
+    - fanatics
+- id: cave-squigs--movement
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.cave-squigs.movement
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: 2D6 random movement and contact-charging are movement-phase mechanics outside
+        the duel scope.
+  name: Movement
+  source:
+    manual: broheim.net
+    printed_page: 47
+    section: henchmen / 0-5 Cave Squigs / Special Rules / Movement
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Movimiento
+  applies_to:
+    profile_ids:
+    - cave-squigs
+  rule_ref: shared-rule.movement
+- id: cave-squigs--minderz
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.cave-squigs.minderz
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: proximity checks and random wandering are movement-phase mechanics outside the
+        duel scope.
+  name: Minderz
+  source:
+    manual: broheim.net
+    printed_page: 47
+    section: henchmen / 0-5 Cave Squigs / Special Rules / Minderz
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Cuidadores
+  applies_to:
+    profile_ids:
+    - cave-squigs
+  rule_ref: shared-rule.minderz
+- id: cave-squigs--animals
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.cave-squigs.animals
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: experience progression is a campaign mechanic.
+  name: Animals
+  effect: Cave Squigs are animals of a sort and so do not gain experience.
+  source:
+    manual: broheim.net
+    printed_page: 47
+    section: henchmen / 0-5 Cave Squigs / Special Rules / Animals
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Animales
+  effect_i18n:
+    es: Los Squigs de Cueva son una especie de animales y por tanto no ganan experiencia.
+  applies_to:
+    profile_ids:
+    - cave-squigs
+- id: troll--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.troll.fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (cause fear).
+  name: Fear
+  effect: Trolls are frightening monsters, which cause fear.
+  source:
+    manual: broheim.net
+    printed_page: 48
+    section: henchmen / 0-1 Troll / Special Rules / Fear
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Los Trolls son monstruos aterradores, que causan miedo.
+  applies_to:
+    profile_ids:
+    - troll
+- id: troll--stupidity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.troll.stupidity
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (stupidity).
+  name: Stupidity
+  source:
+    manual: broheim.net
+    printed_page: 48
+    section: henchmen / 0-1 Troll / Special Rules / Stupidity
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Estupidez
+  applies_to:
+    profile_ids:
+    - troll
+  rule_ref: shared-rule.stupidity-2
+- id: troll--regeneration
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.troll.regeneration
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: wound regeneration is not part of the close-combat damage pipeline yet;
+        no binding is invented.
+  name: Regeneration
+  source:
+    manual: broheim.net
+    printed_page: 48
+    section: henchmen / 0-1 Troll / Special Rules / Regeneration
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Regeneración
+  applies_to:
+    profile_ids:
+    - troll
+  rule_ref: shared-rule.regeneration
+- id: troll--dumb-monsters
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.troll.dumb-monsters
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: experience progression is a campaign mechanic.
+  name: Dumb Monsters
+  effect: A Troll is far too stupid to ever learn any new skills. Trolls do not gain experience.
+  source:
+    manual: broheim.net
+    printed_page: 48
+    section: henchmen / 0-1 Troll / Special Rules / Dumb Monsters
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Monstruos Tontos
+  effect_i18n:
+    es: >-
+      Un Troll es demasiado estúpido para aprender alguna habilidad nueva. Los Trolls no ganan
+      experiencia.
+  applies_to:
+    profile_ids:
+    - troll
+- id: troll--always-hungry
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.troll.always-hungry
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: upkeep costs are a campaign mechanic.
+  name: Always Hungry
+  source:
+    manual: broheim.net
+    printed_page: 48
+    section: henchmen / 0-1 Troll / Special Rules / Always Hungry
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Siempre Hambriento
+  applies_to:
+    profile_ids:
+    - troll
+  rule_ref: shared-rule.always-hungry
+- id: troll--vomit-attack
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.troll.vomit-attack
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: a single automatic-hit S5 armour-ignoring attack replaces the normal
+        attack sequence; needs a dedicated mechanic that does not exist yet; no binding is invented.
+  name: Vomit Attack
+  source:
+    manual: broheim.net
+    printed_page: 48
+    section: henchmen / 0-1 Troll / Special Rules / Vomit Attack
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Ataque de Vómito
+  applies_to:
+    profile_ids:
+    - troll
+  rule_ref: shared-rule.vomit-attack
+- id: snotling-mob--mob
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.snotling-mob.mob
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: mob cohesion and shared-combat placement are movement/deployment mechanics
+        outside the duel scope.
+  name: Mob
+  effect: >-
+    Snotlings are naturally gregarious creatures. They are initially bought in a mob of 5. You may
+    replace mob members up to the maximum of 5. They will always move and fight as a mob. All
+    members must stay within 1\" (or 1/2\"?) and all will join in the same combat if possible.
+  source:
+    manual: broheim.net
+    printed_page: 48
+    section: henchmen / 0 - 1 Snotling Mob / Special Rules / Mob
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Horda
+  effect_i18n:
+    es: >-
+      Los Snotlings son criaturas naturalmente gregarias. Se compran inicialmente en un mob de 5.
+      Puedes reemplazar a los miembros del mob hasta un máximo de 5. Siempre se moverán y lucharán
+      como un mob. Todos los miembros deben permanecer a 1" (¿o 1/2"?) y todos se unirán al mismo
+      combate si es posible.
+  applies_to:
+    profile_ids:
+    - snotling-mob
+- id: snotling-mob--weedy
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.snotling-mob.weedy
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: alternate injury chart is an out-of-duel/campaign mechanic.
+  name: Weedy
+  source:
+    manual: broheim.net
+    printed_page: 48
+    section: henchmen / 0 - 1 Snotling Mob / Special Rules / Weedy
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Flojitos
+  applies_to:
+    profile_ids:
+    - snotling-mob
+  rule_ref: shared-rule.weedy
+- id: snotling-mob--dodgy
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.night-goblins-kaz.snotling-mob.dodgy
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: dodge save against shooting is a shooting mechanic.
+  name: Dodgy
+  effect: >-
+    The little creatures are constantly ducking and diving in the most infuriating way. They get a
+    6+ dodge save against shooting.
+  source:
+    manual: broheim.net
+    printed_page: 48
+    section: henchmen / 0 - 1 Snotling Mob / Special Rules / Dodgy
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Escurridizos
+  effect_i18n:
+    es: >-
+      Las pequeñas criaturas se agachan y esquivan constantemente de la manera más exasperante.
+      Obtienen una salvación de esquiva de 6+ contra disparos.
+  applies_to:
+    profile_ids:
+    - snotling-mob
+- id: band--hired-swords
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.night-goblins-kaz.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Hired Swords
+  effect: >-
+    The Night Goblin warband may hire the following Hired Swords and Dramatis Personae: Black Orc
+    Bodyguard and Snerik, Night Goblin Scout.
+  source:
+    manual: broheim.net
+    printed_page: 45
+    section: Hired Swords
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Espadas a Sueldo
+  effect_i18n:
+    es: >-
+      La banda de Goblins Nocturnos puede contratar las siguientes Espadas a Sueldo y Dramatis
+      Personae: Guardaespaldas Orco Negro y Snerik, Explorador Goblin Nocturno.
+  applies_to:
+    band: true

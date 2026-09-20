@@ -1,0 +1,61 @@
+schema_version: 2
+id: house-guard-sc
+canonical_family: house-guard-sc
+name: House Guard
+name_i18n:
+  es: Guardia de una Casa
+original_locale: en
+ruleset: mordheim
+categories:
+- 2b
+grade: 2b
+setting: The Sealed City
+publication: The Sealed City Supplement
+status: staging
+sources:
+- manual: Broheim
+  printed_page: 1
+  section: House Guard
+  url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: commander
+    minimum: 1
+    maximum: 1
+  - profile_id: sergeants
+    minimum: 0
+    maximum: 3
+  - profile_id: adjutant
+    minimum: 0
+    maximum: 1
+  - profile_id: guards
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: pikemen
+    minimum: 0
+    maximum: 4
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: warhounds
+    minimum: 0
+    maximum: 4
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--chain-of-command
+- band--personal-guard
+- band--houses
+- band--dueling-pride
+- band--martial-finesse
+- band--sharp-aim
+- band--merchantry
+- band--baluardo-armour
+- band--battle-seasoned

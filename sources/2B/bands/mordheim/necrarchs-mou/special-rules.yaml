@@ -1,0 +1,958 @@
+schema_version: 2
+band_id: necrarchs-mou
+rules:
+- id: band--necrolore-abilities
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.necrarchs-mou.band.necrolore-abilities
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Necrolore Abilities
+  effect: >-
+    Instead of searching for rare equipment, a Nosferatu may purchase one permanent Necrolore
+    ability. The costs shown are for the first ability only; subsequent abilities cost double. Each
+    Necrolore may be purchased once only unless specified otherwise. Kin Hatred (25 gc): the
+    Nosferatu hates other vampires, and will score a critical hit on a 5 or 6 when fighting other
+    vampires in hand-to-hand combat. Eternal Study (25 gc): he gains a 4+ save against the Tattered
+    Mind rule. Necromantic Flood (20 gc): once per battle he may reroll a failed difficulty test to
+    cast a spell. Corpus Paella (20 gc): one knocked down Skeleton, Wight, Defiled or Abomination
+    within 6" may stand up and act as normal this round. Bone Wizard (30 gc): the Nosferatu may add
+    D3-1 skeletons to the warband for the next battle, which count towards routing. Imbuing the
+    Undead (30 gc): once per battle he may cast Vanhel's Dance Macabre during his magic phase; one
+    type of undead warrior in the warband (including the Defiled) may make a charge or march move
+    (double M); all warriors of that type are affected, and if this move brings a model into close
+    combat it counts as charging.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Necrolore
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Habilidades de Necroconocimiento
+  effect_i18n:
+    es: >-
+      En lugar de buscar equipo raro, un Nosferatu puede comprar una habilidad permanente de
+      Necroconocimiento. Los costes indicados son solo para la primera habilidad; las siguientes
+      cuestan el doble. Cada Necroconocimiento solo puede comprarse una vez salvo que se indique lo
+      contrario. Odio de Estirpe (25 coronas): el Nosferatu odia a otros vampiros y obtiene un golpe
+      crítico con un 5 o 6 al luchar contra otros vampiros en combate cuerpo a cuerpo. Estudio
+      Eterno (25 coronas): obtiene una salvación de 4+ contra la regla Mente Hecha Trizas.
+      Inundación Necromántica (20 coronas): una vez por batalla puede repetir una prueba de
+      dificultad fallida para lanzar un hechizo. Corpus Paella (20 coronas): un Esqueleto, Espectro,
+      Profanado o Abominación derribado dentro de 6 pulgadas puede levantarse y actuar con
+      normalidad esta ronda. Mago de Huesos (30 coronas): el Nosferatu puede añadir D3-1 esqueletos
+      a la banda para la próxima batalla, que cuentan para la huida. Imbuyendo a los Muertos (30
+      coronas): una vez por batalla puede lanzar la Danza Macabra de Vanhel durante su fase de
+      magia; un tipo de guerrero no muerto de la banda (incluidos los Profanados) puede realizar una
+      carga o marcha (doble M); todos los guerreros de ese tipo se ven afectados, y si ese
+      movimiento lleva a un modelo a combate cuerpo a cuerpo cuenta como carga.
+  applies_to:
+    band: true
+- id: nosferatu--leader
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.nosferatu.leader
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Leader
+  effect: >-
+    Any warrior within 6" of the Nosferatu may use his Leadership value when taking Leadership
+    tests.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 1 Nosferatu / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6 pulgadas del Nosferatu puede usar su valor de Liderazgo cuando haga
+      pruebas de Liderazgo.
+  applies_to:
+    profile_ids:
+    - nosferatu
+- id: nosferatu--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.nosferatu.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Wizard
+  effect: >-
+    Decades, sometimes centuries of studying make Nosferatu powerful wizards in the Dark Arts. A
+    Nosferatu starts with one random Necromantic spell.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 1 Nosferatu / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Hechicero
+  effect_i18n:
+    es: >-
+      Décadas, a veces siglos, de estudio hacen de los Nosferatu poderosos hechiceros de las Artes
+      Oscuras. Un Nosferatu empieza con un hechizo necromántico aleatorio.
+  applies_to:
+    profile_ids:
+    - nosferatu
+- id: nosferatu--necrolore
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.nosferatu.necrolore
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Necrolore
+  effect: >-
+    The Nosferatu are dark scholars, and enhance their abilities with knowledge gleaned from ancient
+    tomes. Instead of searching for rare equipment, a Nosferatu may purchase one permanent Necrolore
+    ability (see Necrolore Abilities).
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Nosferatu / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Necroconocimiento
+  effect_i18n:
+    es: >-
+      Los Nosferatu son estudiosos oscuros que potencian sus habilidades con conocimiento extraído
+      de tomos antiguos. En lugar de buscar equipo raro, un Nosferatu puede comprar una habilidad
+      permanente de Necroconocimiento (ver Habilidades de Necroconocimiento).
+  applies_to:
+    profile_ids:
+    - nosferatu
+- id: nosferatu--tattered-mind
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.nosferatu.tattered-mind
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Tattered Mind
+  effect: >-
+    Years of studying unholy tomes and dark rituals have taken their toll on the Nosferatu. The
+    vampire is prone to bouts of insanity, especially under great pressure. If the Necrarch vampire
+    is officially alone (All Alone rule) or loses a wound without an Injury result, he loses his
+    grip on reality and immediately moves 2D6" in a random direction. Roll on the Madness serious
+    injury result (0-3 Stupidity, 4-6 Frenzied). This lasts until the end of the next combat phase.
+    As long as he is mad he cannot cast spells. Note that this move may take him into combat, in
+    which case he counts as charging in the next combat phase. This move may also take him out of
+    combat.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Nosferatu / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Mente Hecha Trizas
+  effect_i18n:
+    es: >-
+      Años de estudiar tomes impíos y rituales oscuros han pasado factura al Nosferatu. El vampiro
+      es propenso a ataques de locura, especialmente bajo gran presión. Si el vampiro Necrarca está
+      oficialmente solo (regla Todo Solo) o pierde una herida sin resultado de Herida, pierde el
+      contacto con la realidad y se mueve inmediatamente 2D6 pulgadas en una dirección aleatoria.
+      Tira en el resultado de herida grave Locura (0-3 Estupidez, 4-6 Frenético). Dura hasta el
+      final de la siguiente fase de combate. Mientras esté loco no puede lanzar hechizos. Ten en
+      cuenta que este movimiento puede llevarlo a combate, en cuyo caso cuenta como carga en la
+      siguiente fase de combate. Este movimiento también puede sacarlo del combate.
+  applies_to:
+    profile_ids:
+    - nosferatu
+- id: nosferatu--fear
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.nosferatu.fear
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Fear
+  effect: Nosferatu are terrifying undead creatures, and cause Fear.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Nosferatu / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Los Nosferatu son criaturas no muertas aterradoras y causan Miedo.
+  applies_to:
+    profile_ids:
+    - nosferatu
+- id: nosferatu--immune-to-psychology
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.nosferatu.immune-to-psychology
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Immune to Psychology
+  effect: A Nosferatu is immune to all forms of psychology and never voluntarily leaves combat.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Nosferatu / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Inmune a Psicología
+  effect_i18n:
+    es: >-
+      Un Nosferatu es inmune a todas las formas de psicología y nunca abandona voluntariamente el
+      combate.
+  applies_to:
+    profile_ids:
+    - nosferatu
+- id: nosferatu--immune-to-poisons
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.nosferatu.immune-to-poisons
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Immune to Poisons
+  effect: Nosferatu are not affected by any drug or poison.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Nosferatu / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Inmune a Venenos
+  effect_i18n:
+    es: Los Nosferatu no se ven afectados por ninguna droga o veneno.
+  applies_to:
+    profile_ids:
+    - nosferatu
+- id: nosferatu--no-pain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.nosferatu.no-pain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: No Pain
+  effect: Nosferatu treat stunned results as on the Injury table as knocked down.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Nosferatu / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: Los Nosferatu tratan los resultados aturdido de la tabla de Heridas como derribado.
+  applies_to:
+    profile_ids:
+    - nosferatu
+- id: abomination--fear
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.abomination.fear
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Fear (Abomination)
+  effect: Abominations are twisted and repulsive looking creatures, which cause Fear.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Abominations / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Las Abominaciones son criaturas retorcidas y repulsivas que causan Miedo.
+  applies_to:
+    profile_ids:
+    - abomination
+- id: abomination--immune-to-poisons
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.abomination.immune-to-poisons
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Immune to Poisons (Abomination)
+  effect: An Abomination is no longer affected by any form of poison.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Abominations / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Inmune a Venenos
+  effect_i18n:
+    es: Una Abominación ya no se ve afectada por ninguna forma de veneno.
+  applies_to:
+    profile_ids:
+    - abomination
+- id: abomination--no-pain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.abomination.no-pain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: No Pain (Abomination)
+  effect: An Abomination treats a stunned result as on the Injury table as knocked down.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Abominations / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: Una Abominación trata un resultado aturdido de la tabla de Heridas como derribado.
+  applies_to:
+    profile_ids:
+    - abomination
+- id: abomination--unnatural-life
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.abomination.unnatural-life
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Unnatural Life
+  effect: Though magically crafted and created, an Abomination counts as being alive.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Abominations / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Vida Unnatural
+  effect_i18n:
+    es: Aunque creada mágicamente, una Abominación cuenta como estar vivo.
+  applies_to:
+    profile_ids:
+    - abomination
+- id: defiled--absolute-faith
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.defiled.absolute-faith
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Absolute Faith
+  effect: >-
+    A Defiled's trust in his master is absolute. As long as they are able to draw Line of Sight to
+    the Nosferatu, they may use his Ld for any Ld-tests they take.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-3 Defiled / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Fe Absoluta
+  effect_i18n:
+    es: >-
+      La confianza de un Profanado en su maestro es absoluta. Mientras puedan trazar Línea de Visión
+      al Nosferatu, pueden usar su Ld en cualquier prueba de Ld que hagan.
+  applies_to:
+    profile_ids:
+    - defiled
+- id: defiled--fear
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.defiled.fear
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Fear (Defiled)
+  effect: Defilers are terrifying undead creatures, which cause Fear.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-3 Defiled / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Los Profanados son criaturas no muertas aterradoras que causan Miedo.
+  applies_to:
+    profile_ids:
+    - defiled
+- id: defiled--may-not-run
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.defiled.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: May Not Run (Defiled)
+  effect: Defiled are slow undead creatures and may not run (but may charge normally).
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-3 Defiled / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: No Puede Correr
+  effect_i18n:
+    es: >-
+      Los Profanados son criaturas no muertas lentas y no pueden correr (pero pueden cargar con
+      normalidad).
+  applies_to:
+    profile_ids:
+    - defiled
+- id: defiled--immune-to-poisons
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.defiled.immune-to-poisons
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Immune to Poisons (Defiled)
+  effect: Defiled are not affected by any drug or poison.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-3 Defiled / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Inmune a Venenos
+  effect_i18n:
+    es: Los Profanados no se ven afectados por ninguna droga o veneno.
+  applies_to:
+    profile_ids:
+    - defiled
+- id: defiled--no-pain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.defiled.no-pain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: No Pain (Defiled)
+  effect: Defiled treat stunned results as on the Injury table as knocked down.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-3 Defiled / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: Los Profanados tratan los resultados aturdido de la tabla de Heridas como derribado.
+  applies_to:
+    profile_ids:
+    - defiled
+- id: banshee--fear
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.banshee.fear
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Fear (Banshee)
+  effect: Banshees are twisted and repulsive creatures, which cause Fear.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-2 Banshees / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Las Aulladoras son criaturas retorcidas y repulsivas que causan Miedo.
+  applies_to:
+    profile_ids:
+    - banshee
+- id: banshee--ethereal
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.banshee.ethereal
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Ethereal
+  effect: >-
+    A Banshee is a spirit, rather than a creature of bone and dead flesh. It is not affected in its
+    movement by models or small obstacles. Only solid walls (no windows!) can stop its movement.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-2 Banshees / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Etérea
+  effect_i18n:
+    es: >-
+      Una Aulladora es un espíritu, más que una criatura de hueso y carne muerta. No se ve afectada
+      en su movimiento por modelos u obstáculos pequeños. Solo los muros sólidos (¡no ventanas!)
+      pueden detener su movimiento.
+  applies_to:
+    profile_ids:
+    - banshee
+- id: banshee--immune-to-poisons
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.banshee.immune-to-poisons
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Immune to Poisons (Banshee)
+  effect: Banshees are not affected by any drug or poison.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-2 Banshees / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Inmune a Venenos
+  effect_i18n:
+    es: Las Aulladoras no se ven afectadas por ninguna droga o veneno.
+  applies_to:
+    profile_ids:
+    - banshee
+- id: banshee--cold-steel
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.banshee.cold-steel
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Cold Steel
+  effect: >-
+    While a Banshee cannot be killed by mundane weapons, it can still feel the cold bite of steel
+    and other metals. If concentrated, these attacks can drive off the spirit. Any attack made with
+    a steel/iron weapon (ie. anything but clubs, fists etc.) can harm it, but is at -1 to hit.
+    Blessed and magic weapons (weeping blades, warplock pistols etc.) hit normally.
+    Arrows/bolts/bullets are considered being iron tipped. Treat injuries normally (ie. knocked
+    down, stunned) as the banshee loses its grip on the physical plane. An OOA will send the beast
+    back to the spirit realm.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-2 Banshees / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Acero Frío
+  effect_i18n:
+    es: >-
+      Aunque una Aulladora no puede ser muerta por armas mundanas, todavía puede sentir el frío
+      mordisco del acero y otros metales. Si se concentran, estos ataques pueden expulsar al
+      espíritu. Cualquier ataque con un arma de acero/hierro (es decir, cualquier cosa excepto
+      mazas, puños, etc.) puede dañarla, pero con -1 para golpear. Las armas bendecidas y mágicas
+      (hojas llorosas, pistolas warplock, etc.) golpean con normalidad. Flechas/saetas/balas se
+      consideran con punta de hierro. Trata las heridas con normalidad (es decir, derribada,
+      aturdida) cuando la aulladora pierde su asidero del plano físico. Un Fuera de Combate la
+      devolverá al reino espiritual.
+  applies_to:
+    profile_ids:
+    - banshee
+- id: banshee--wailing
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.banshee.wailing
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Wailing
+  effect: >-
+    Instead of a physical attack, the banshee emits a piercing wail. This attack has a 4" reach and
+    counts as a S3. Roll to hit as normal with the Banshee's WS. The wail attack always occurs
+    before any combat takes place. If the banshee gains a strength advance, its wailing strength
+    increases. A wail ignores all armour saves, and cannot be parried.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-2 Banshees / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Aullido
+  effect_i18n:
+    es: >-
+      En lugar de un ataque físico, la aulladora emite un aullido penetrante. Este ataque tiene un
+      alcance de 4 pulgadas y cuenta como F3. Tira para golpear con normalidad usando la HA de la
+      Aulladora. El aullido siempre ocurre antes de que tenga lugar cualquier combate. Si la
+      aulladora gana un avance de Fuerza, la fuerza de su aullido aumenta. Un aullido ignora todas
+      las tiradas de salvación por armadura y no puede ser parado.
+  applies_to:
+    profile_ids:
+    - banshee
+- id: skeleton--fear
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.skeleton.fear
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Fear (Skeletons)
+  effect: Skeletons are terrifying undead creatures, which cause Fear.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Skeleton Warriors / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Los Esqueletos son criaturas no muertas aterradoras que causan Miedo.
+  applies_to:
+    profile_ids:
+    - skeleton
+- id: skeleton--may-not-run
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.skeleton.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: May Not Run (Skeletons)
+  effect: Skeletons are slow undead creatures and may not run (but may charge normally).
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Skeleton Warriors / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: No Puede Correr
+  effect_i18n:
+    es: >-
+      Los Esqueletos son criaturas no muertas lentas y no pueden correr (pero pueden cargar con
+      normalidad).
+  applies_to:
+    profile_ids:
+    - skeleton
+- id: skeleton--immune-to-psychology
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.skeleton.immune-to-psychology
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Immune to Psychology (Skeletons)
+  effect: Skeletons are not affected by psychology and never leave combat.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Skeleton Warriors / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Inmune a Psicología
+  effect_i18n:
+    es: Los Esqueletos no se ven afectados por la psicología y nunca abandonan el combate.
+  applies_to:
+    profile_ids:
+    - skeleton
+- id: skeleton--immune-to-poisons
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.skeleton.immune-to-poisons
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Immune to Poisons (Skeletons)
+  effect: Skeletons are not affected by any drug or poison.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Skeleton Warriors / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Inmune a Venenos
+  effect_i18n:
+    es: Los Esqueletos no se ven afectados por ninguna droga o veneno.
+  applies_to:
+    profile_ids:
+    - skeleton
+- id: skeleton--no-pain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.skeleton.no-pain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: No Pain (Skeletons)
+  effect: Skeletons treat stunned results as on the Injury table as knocked down.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Skeleton Warriors / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: Los Esqueletos tratan los resultados aturdido de la tabla de Heridas como derribado.
+  applies_to:
+    profile_ids:
+    - skeleton
+- id: skeleton--no-brain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.skeleton.no-brain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: No Brain
+  effect: Skeletons never gain experience. They do not learn from their mistakes.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Skeleton Warriors / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Sin Cerebro
+  effect_i18n:
+    es: Los Esqueletos nunca ganan experiencia. No aprenden de sus errores.
+  applies_to:
+    profile_ids:
+    - skeleton
+- id: wight--fear
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.wight.fear
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Fear (Wights)
+  effect: Wights are terrifying undead creatures, which cause Fear.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: 0-2 Wights / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Los Espectros son criaturas no muertas aterradoras que causan Miedo.
+  applies_to:
+    profile_ids:
+    - wight
+- id: wight--chill-touch
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.wight.chill-touch
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Chill Touch
+  effect: >-
+    A Wight's chill touch can freeze its opponent as all heat drains from their body. Each time a
+    Wight hits, their opponent is at -1 WS. Several hits have a cumulative effect, which lasts until
+    one of the models leaves combat. Should a model be reduced to WS 0, he will automatically pass
+    out and counts as knocked down.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: 0-2 Wights / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Toque Gélido
+  effect_i18n:
+    es: >-
+      El toque gélido de un Espectro puede congelar a su oponente cuando todo el calor drena de su
+      cuerpo. Cada vez que un Espectro golpea, su oponente tiene -1 HA. Varios golpes tienen un
+      efecto acumulativo, que dura hasta que uno de los modelos abandona el combate. Si un modelo se
+      reduce a HA 0, se desmayará automáticamente y cuenta como derribado.
+  applies_to:
+    profile_ids:
+    - wight
+- id: wight--may-not-run
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.wight.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: May Not Run (Wights)
+  effect: Wights are undead creatures and may not run (but may charge normally).
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: 0-2 Wights / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: No Puede Correr
+  effect_i18n:
+    es: >-
+      Los Espectros son criaturas no muertas y no pueden correr (pero pueden cargar con normalidad).
+  applies_to:
+    profile_ids:
+    - wight
+- id: wight--immune-to-psychology
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.wight.immune-to-psychology
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Immune to Psychology (Wights)
+  effect: Wights are not affected by psychology and never leave combat.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: 0-2 Wights / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Inmune a Psicología
+  effect_i18n:
+    es: Los Espectros no se ven afectados por la psicología y nunca abandonan el combate.
+  applies_to:
+    profile_ids:
+    - wight
+- id: wight--immune-to-poisons
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.necrarchs-mou.wight.immune-to-poisons
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Immune to Poisons (Wights)
+  effect: Wights are not affected by any drug or poison.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: 0-2 Wights / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Inmune a Venenos
+  effect_i18n:
+    es: Los Espectros no se ven afectados por ninguna droga o veneno.
+  applies_to:
+    profile_ids:
+    - wight

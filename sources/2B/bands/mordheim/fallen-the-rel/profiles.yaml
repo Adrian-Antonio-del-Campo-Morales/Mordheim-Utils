@@ -1,0 +1,219 @@
+schema_version: 2
+band_id: fallen-the-rel
+profiles:
+- id: revenant
+  name: Revenant
+  type: hero
+  cost: 110
+  experience: 20
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 5
+    A: 2
+    Ld: 8
+  equipment_lists:
+  - fallen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  source:
+    manual: Broheim
+    printed_page: 13
+    section: Heroes / 1 Revenant
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  source_path:
+  - heroes
+  - 1 Revenant
+  name_i18n:
+    es: Espectro (Revenant)
+  rule_ids:
+  - revenant--leader
+  - revenant--cause-fear
+  - revenant--immune-to-poison
+  - revenant--no-pain
+  - revenant--eaters-of-flesh
+  combat_traits: {}
+- id: butcher
+  name: Butcher
+  type: hero
+  cost: 50
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 4
+    T: 4
+    W: 1
+    I: 3
+    A: 2
+    Ld: 6
+  equipment_lists:
+  - fallen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  - strength
+  source:
+    manual: Broheim
+    printed_page: 13
+    section: Heroes / 0-1 Butcher
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  source_path:
+  - heroes
+  - 0-1 Butcher
+  name_i18n:
+    es: Carnicero
+  rule_ids:
+  - butcher--cause-fear
+  - butcher--eaters-of-flesh
+  combat_traits: {}
+- id: scavengers
+  name: Scavengers
+  type: hero
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - fallen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  source:
+    manual: Broheim
+    printed_page: 13
+    section: Heroes / 0-3 Scavengers
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  source_path:
+  - heroes
+  - 0-3 Scavengers
+  name_i18n:
+    es: Carroñeros
+  rule_ids: []
+  combat_traits: {}
+- id: ghouls
+  name: Ghouls
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 2
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Ghouls never carry equipment as henchmen. However, if promoted to a Hero they
+    may choose weapons and armour from the Fallen equipment list.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 14
+    section: Henchmen / Ghouls
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  source_path:
+  - henchmen
+  - Ghouls
+  name_i18n:
+    es: Gulles
+  rule_ids:
+  - ghouls--cause-fear
+  combat_traits: {}
+- id: sgulls
+  name: Sgulls
+  type: henchman
+  cost: 60
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 0
+    S: 3
+    T: 4
+    W: 2
+    I: 3
+    A: 2
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Sgulls never use any armour or weapons.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 14
+    section: Henchmen / 0-3 Sgulls
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  source_path:
+  - henchmen
+  - 0-3 Sgulls
+  name_i18n:
+    es: Buitres Muertos (Sgulls)
+  rule_ids:
+  - sgulls--fear
+  - sgulls--flyers
+  - sgulls--experience
+  combat_traits: {}
+- id: wild-dogs
+  name: Wild Dogs
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Wild dogs never use any armour or weapons.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 14
+    section: Henchmen / 0-5 Wild dogs
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  source_path:
+  - henchmen
+  - 0-5 Wild dogs
+  name_i18n:
+    es: Perros Salvajes
+  rule_ids:
+  - wild-dogs--experience
+  combat_traits: {}

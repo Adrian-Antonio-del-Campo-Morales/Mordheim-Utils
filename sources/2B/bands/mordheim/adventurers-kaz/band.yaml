@@ -1,0 +1,55 @@
+schema_version: 2
+id: adventurers-kaz
+canonical_family: adventurers
+name: Adventurers
+name_i18n:
+  es: Aventureros
+original_locale: en
+ruleset: mordheim
+categories:
+- 2b
+grade: 2b
+setting: Karak Azgal
+publication: 'Karak Azgal web expansion (Adventurers Warband v2.0)'
+status: source-normalized
+sources:
+- manual: broheim.net
+  printed_page: 19
+  section: Adventurers Warband v2.0
+  url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+roster:
+  minimum_models: 4
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: wizard
+    minimum: 0
+    maximum: 1
+  - profile_id: elf
+    minimum: 0
+    maximum: 1
+  - profile_id: barbarian
+    minimum: 0
+    maximum: 1
+  - profile_id: imperial-noble
+    minimum: 0
+    maximum: 1
+  - profile_id: dwarf
+    minimum: 0
+    maximum: 1
+  - profile_id: imperial-captain
+    minimum: 0
+    maximum: 1
+  - profile_id: cannon-fodder
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--no-fixed-leader
+- band--elf-special-skills
+- band--barbarian-special-skills
+- band--noble-special-skills
+- band--dwarf-special-skills
+- band--hired-swords

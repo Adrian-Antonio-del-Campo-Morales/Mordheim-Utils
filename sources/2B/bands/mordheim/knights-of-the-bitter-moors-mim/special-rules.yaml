@@ -1,0 +1,475 @@
+schema_version: 2
+band_id: knights-of-the-bitter-moors-mim
+rules:
+- id: band--peasant-labour
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.knights-of-the-bitter-moors-mim.band.peasant-labour
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Peasant Labour
+  effect: >-
+    Bretonnian Knights always use the starting warband prices for Horses and Armour; the peasantry
+    and squires must pay the full price. Armour and Horses bought for Knights may never be swapped
+    over to their lessers in the reallocate phase.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Peasant Labour
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: Trabajo de Siervos
+  effect_i18n:
+    es: >-
+      Los Caballeros bretonianos siempre usan los precios de banda inicial para Caballos y
+      Armaduras; el campesinado y los escuderos deben pagar el precio completo. Las Armaduras y
+      Caballos comprados para Caballeros nunca pueden traspasarse a sus inferiores en la fase de
+      reasignación.
+  applies_to:
+    band: true
+- id: band--hired-swords
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.knights-of-the-bitter-moors-mim.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Hired Swords
+  effect: >-
+    Bretonnians are counted as Humans and can hire any Hired Sword applicable to Humans, except
+    those that use Black Powder, Magic or Poison. Runes are allowed.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Hired Swords
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: Espadas a Sueldo
+  effect_i18n:
+    es: >-
+      Los bretonianos cuentan como Humanos y pueden contratar cualquier Espada a Sueldo aplicable a
+      Humanos, excepto las que usan pólvora negra, magia o veneno. Se permiten las runas.
+  applies_to:
+    band: true
+- id: band--ladys-blessing
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.knights-of-the-bitter-moors-mim.band.ladys-blessing
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Lady's Blessing
+  effect: >-
+    Before the game, make a Leadership test against the warband leader's Leadership. If successful,
+    the Lady of the Lake bestows her blessing: any model in the opposing warband who wishes to fire
+    a black powder weapon must roll 4+ on a D6 to overcome the curse, and any enemy model wishing to
+    shoot at a Bretonnian Knight (Questing Knights and Errants only) must first roll 4+ on a D6.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Lady's Blessing
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: Bendición de la Dama
+  effect_i18n:
+    es: >-
+      Antes de la partida, haz un chequeo de Liderazgo contra el Liderazgo del líder de la banda. Si
+      es exitoso, la Dama del Lago otorga su bendición: cualquier modelo de la banda enemiga que
+      quiera disparar un arma de pólvora negra debe sacar 4+ en 1D6 para superar la maldición, y
+      cualquier modelo enemigo que quiera disparar a un Caballero bretoniano (solo Buscadores y
+      Novicios) debe sacar primero 4+ en 1D6.
+  applies_to:
+    band: true
+- id: questing-knight--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.knights-of-the-bitter-moors-mim.questing-knight.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: >-
+    Any warrior within 6 inches of the Questing Knight may use his Leadership when taking Leadership
+    tests.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Questing Knight / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6 pulgadas del Caballero Buscador puede usar su Liderazgo en los chequeos
+      de Liderazgo.
+  applies_to:
+    profile_ids:
+    - questing-knight
+- id: questing-knight--knights-virtue
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.knights-of-the-bitter-moors-mim.questing-knight.knights-virtue
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Knights Virtue
+  effect: >-
+    A Questing Knight is a chivalrous warrior superior to ordinary warriors. He will never panic and
+    break from combat and does not have to pass a Leadership test for being all alone.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Questing Knight / Special Rules / Knights Virtue
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: Virtud del Caballero
+  effect_i18n:
+    es: >-
+      Un Caballero Buscador es un guerrero caballeroso superior a los guerreros comunes. Nunca entra
+      en pánico ni rompe el combate, y no tiene que superar un chequeo de Liderazgo por estar solo.
+  applies_to:
+    profile_ids:
+    - questing-knight
+- id: questing-knight--ride
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.knights-of-the-bitter-moors-mim.questing-knight.ride
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Ride – Horse, Warhorse
+  effect: Knights have the Ride skill as detailed in the Blazing Saddles article.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Questing Knight / Special Rules / Ride
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: Montar – Caballo, Caballo de Guerra
+  effect_i18n:
+    es: >-
+      Los Caballeros tienen la habilidad Montar tal como se detalla en el artículo Blazing Saddles.
+  applies_to:
+    profile_ids:
+    - questing-knight
+- id: questing-knight--righteous-charge
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.knights-of-the-bitter-moors-mim.questing-knight.righteous-charge
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Righteous Charge
+  effect: >-
+    When the mounted Knight charges, if he has at least 1 other model within 2 inches, all friendly
+    charging mounted warriors (including the Questing Knight) within 4 inches gain +1 to Hit, cause
+    fear and are immune to all Psychology for the first round of combat.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Questing Knight / Special Rules / Righteous Charge
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: Carga Justiciera
+  effect_i18n:
+    es: >-
+      Cuando el Caballero montado carga, si tiene al menos otro modelo a 2 pulgadas, todos los
+      guerreros montados amigos que carguen (incluido el Caballero Buscador) a 4 pulgadas obtienen
+      +1 para impactar, causan miedo y son inmunes a toda Psicología durante el primer asalto de
+      combate.
+  applies_to:
+    profile_ids:
+    - questing-knight
+- id: knights-errant--ride
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.knights-of-the-bitter-moors-mim.knights-errant.ride
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Ride – Horse, Warhorse
+  effect: Knights have the Ride skill as detailed in the Blazing Saddles article.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-2 Knights Errant / Special Rules / Ride
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: Montar – Caballo, Caballo de Guerra
+  effect_i18n:
+    es: >-
+      Los Caballeros tienen la habilidad Montar tal como se detalla en el artículo Blazing Saddles.
+  applies_to:
+    profile_ids:
+    - knights-errant
+- id: knights-errant--knights-virtue
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.knights-of-the-bitter-moors-mim.knights-errant.knights-virtue
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Knights Virtue
+  effect: >-
+    A Knight Errant is a chivalrous warrior superior to ordinary warriors. He will never panic and
+    break from combat and does not have to pass a Leadership test for being all alone.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-2 Knights Errant / Special Rules / Knights Virtue
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: Virtud del Caballero
+  effect_i18n:
+    es: >-
+      Un Caballero Novicio es un guerrero caballeroso superior a los guerreros comunes. Nunca entra
+      en pánico ni rompe el combate, y no tiene que superar un chequeo de Liderazgo por estar solo.
+  applies_to:
+    profile_ids:
+    - knights-errant
+- id: squires--knighted
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.knights-of-the-bitter-moors-mim.squires.knighted
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Knighted
+  effect: >-
+    Once a squire has reached 20 experience points he is considered to have finished his
+    apprenticeship and becomes a full Knight Errant, gaining the skill lists, equipment list,
+    Knights Virtue and the Ride Warhorse skill.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-3 Squires / Special Rules / Knighted
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: Armatado Caballero
+  effect_i18n:
+    es: >-
+      Una vez que un escudero alcanza 20 puntos de experiencia se considera que ha terminado su
+      aprendizaje y se convierte en Caballero Novicio pleno, obteniendo las listas de habilidades,
+      la lista de equipo, la Virtud del Caballero y la habilidad Montar Caballo de Guerra.
+  applies_to:
+    profile_ids:
+    - squires
+- id: squires--ride
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.knights-of-the-bitter-moors-mim.squires.ride
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Ride – Horse
+  effect: Squires have the Ride skill as detailed in the Blazing Saddles article.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-3 Squires / Special Rules / Ride
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: Montar – Caballo
+  effect_i18n:
+    es: Los escuderos tienen la habilidad Montar tal como se detalla en el artículo Blazing Saddles.
+  applies_to:
+    profile_ids:
+    - squires
+- id: squires--animal-handler
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.knights-of-the-bitter-moors-mim.squires.animal-handler
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Animal Handler – Horse/Warhorse
+  effect: Squires have the Animal Handler skill as detailed in the Blazing Saddles article.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-3 Squires / Special Rules / Animal Handler
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: Domador – Caballo/Caballo de Guerra
+  effect_i18n:
+    es: >-
+      Los escuderos tienen la habilidad Domador tal como se detalla en el artículo Blazing Saddles.
+  applies_to:
+    profile_ids:
+    - squires
+- id: mounted-yeomen--mounted-or-nothin
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.knights-of-the-bitter-moors-mim.mounted-yeomen.mounted-or-nothin
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Mounted or Nothin'
+  effect: >-
+    Yeomen come with riding Horses included in their buying price and as such come with the skill
+    Ride Horse. If a Yeoman's horse is killed it must be rebought before the unit can be fielded
+    again.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-3 Mounted Yeomen / Special Rules / Mounted or Nothin'
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: A Caballo o Nada
+  effect_i18n:
+    es: >-
+      Los Vassalos montados vienen con Caballo de montar incluido en su precio de compra, y por
+      tanto tienen la habilidad Montar Caballo. Si el caballo de un Vassalo muere, debe volver a
+      comprarse antes de poder desplegar la unidad de nuevo.
+  applies_to:
+    profile_ids:
+    - mounted-yeomen
+- id: mounted-yeomen--smarts
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.knights-of-the-bitter-moors-mim.mounted-yeomen.smarts
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Smarts
+  effect: >-
+    Even with their supreme lack of caring for the peasantry, knights know having too much cavalry
+    with a Catapult around is unwise: you may not field the Trebuchet and the Mounted Yeomen in the
+    same match.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-3 Mounted Yeomen / Special Rules / Smarts
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: Astucia
+  effect_i18n:
+    es: >-
+      Incluso con su suprema indiferencia hacia el campesinado, los caballeros saben que tener
+      demasiada caballería con una Catapulta cerca no es prudente: no puedes desplegar el Trebuchet
+      y los Vassalos Montados en la misma partida.
+  applies_to:
+    profile_ids:
+    - mounted-yeomen
+- id: band--field-trebuchet
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.knights-of-the-bitter-moors-mim.band.field-trebuchet
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Field Trebuchet (special equipment)
+  effect: >-
+    A siege weapon costing 175 gold crowns (special availability, takes D3+1 games to build if not
+    bought at the start of the campaign). Profile T7, W3. Range 12-48 inches; fires once every other
+    turn with two crewmen and each turn with four (only Men-at-Arms may operate it). It is a Large
+    Target, is Constructed (starts as 4 crates carried by 4 non-Knight models and takes D3 turns to
+    set up; once set up it cannot move but may swivel; deconstructing takes 1 turn), uses the
+    Scatter and Artillery dice instead of Ballistic Skill (Artillery; direct hits only count as such
+    with shared line of sight), may use Indirect Fire against targets without line of sight, and
+    creates an Explosive Radius using the small blast template. Each game it carries 2 shots of each
+    ammo type: Boulders (S5 at centre, S4 elsewhere, 2-4 stunned, Bludgeoning Critical Hits),
+    Flaming Shot (S3, targets catch fire on 4+) and Boiling Oil Canister (S4, no armour save). On a
+    Misfire, roll a D6: 1 = Destroyed (crew must pass an Initiative test or be taken out of action);
+    2-3 = Disabled (suffers a wound and cannot fire this turn or next); 4-6 = May Not Shoot this
+    turn.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Bretonnian Special Equipment / Field Trebuchet
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Knights Of The Bitter%20Moors.pdf
+  name_i18n:
+    es: Trebuchet de Campo (equipo especial)
+  effect_i18n:
+    es: >-
+      Arma de asedio que cuesta 175 coronas de oro (disponibilidad especial, tarda D3+1 partidas en
+      construirse si no se compra al inicio de la campaña). Perfil T7, H3. Alcance 12-48 pulgadas;
+      dispara un turno sí y otro no con dos servidores, y cada turno con cuatro (solo los Hombres de
+      Armas pueden operarla). Es un Objetivo Grande y se Construye (empieza como 4 cajas
+      transportadas por 4 modelos no caballeros y tarda D3 turnos en montarse; una vez montada no
+      puede moverse pero puede girar; desmontarla lleva 1 turno), usa los dados de Dispersión y
+      Artillería en lugar de la Habilidad de Disparo (Artillería; los impactos directos solo cuentan
+      como tales con línea de visión compartida), puede usar Tiro Indirecto contra objetivos sin
+      línea de visión y genera un Radio Explosivo con la plantilla pequeña de explosión. Cada
+      partida lleva 2 disparos de cada munición: Rocas (F5 en el centro, F4 en el resto, 2-4
+      aturdido, Impactos Críticos de Contusión), Disparo Llameante (F3, los objetivos arden con un
+      4+) y Bote de Aceite Hirviendo (F4, sin salvación por armadura). Con un Fallo de disparo, tira
+      1D6: 1 = Destruida (la tripulación debe superar un chequeo de Iniciativa o quedar Fuera de
+      combate); 2-3 = Inutilizada (sufre una herida y no puede disparar este turno ni el siguiente);
+      4-6 = No Puede Disparar este turno.
+  applies_to:
+    band: true

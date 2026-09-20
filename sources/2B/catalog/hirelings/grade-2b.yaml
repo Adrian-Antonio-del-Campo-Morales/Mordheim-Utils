@@ -1,0 +1,599 @@
+schema_version: 1
+ruleset: mordheim
+catalog: hirelings-2b
+grade: 2b
+status: staging
+# Hired Swords and Dramatis Personae introduced by the Broheim Grade-2b sources.
+#
+# Full-profile entries (characteristics transcribed from the source stat blocks):
+#   - black-orc-bodyguard, snorri-nosebiter, aldred-fellblade  (Karak Azgal anthology)
+#
+# Name-only entries (the 2B sources list them as hireable but print no profile;
+# characteristics left null pending the external source documents):
+#   - bog-hunter, whaler            (referenced by lords-of-the-marsh-mim)
+#   - strigani-seer-necromancer     (referenced by strigoi-kaz)
+#   - snerik-night-goblin-scout     (referenced by night-goblins-kaz / savage-orcs-kaz)
+#
+# Band availability lives in the "available_to" list of each profile (mirrors the
+# static eligibility of catalog/campaign/hired-swords-and-dramatis.yaml in the KB).
+profiles:
+- id: hireling.hired-sword.black-orc-bodyguard
+  kind: hired-sword
+  grade: 2b
+  publication: Karak Azgal (Broheim anthology)
+  name: Black Orc Bodyguard
+  name_i18n:
+    es: Guardaespaldas Orco Negro
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 15
+    per_experience_point: 1
+  hire_fee:
+    kind: base_plus_upkeep
+    hire: 60
+    upkeep: 40
+  equipment:
+    fixed_items:
+    - item_id: heavy_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: helmet
+      quantity:
+        kind: fixed
+        value: 1
+    choice_groups:
+    - id: hireling.hired-sword.black-orc-bodyguard.choice.weapons
+      choose:
+        kind: fixed
+        value: 1
+      options:
+      - kind: item
+        item_id: axe
+        quantity:
+          kind: fixed
+          value: 2
+      - kind: item
+        item_id: two_handed_weapon
+        quantity:
+          kind: fixed
+          value: 1
+  skill_access:
+  - combat
+  - strength
+  - special
+  starting_skill_ids: []
+  available_to:
+  - source: 2b
+    note: Any greenskin warband may hire a Black Orc Bodyguard.
+    bands:
+    - night-goblins-kaz
+    - savage-orcs-kaz
+  rules:
+  - id: hireling.hired-sword.black-orc-bodyguard.rule.i-said-shut-it
+    name: I Said 'Shut It'
+    effect: >-
+      Whilst the Boss has this ferocious warrior in the warband the greenskins are reluctant
+      to make trouble. Any orcs or goblins within 6" of the Black Orc do not suffer from the
+      effects of Animosity. The rest of the warband tests as normal.
+    effect_i18n:
+      es: >-
+        Mientras el Jefe tenga a este feroz guerrero en la banda, los pieles verdes se
+        muestran reacios a causar problemas. Cualquier orco o goblin dentro de 6" del Orco
+        Negro no sufre los efectos de Animosidad. El resto de la banda hace las tiradas
+        con normalidad.
+    name_i18n:
+      es: He Dicho 'Cállate'
+  - id: hireling.hired-sword.black-orc-bodyguard.rule.whose-da-man
+    name: Whose Da Man!
+    effect: >-
+      If the night goblin leader is taken OOA during the battle, the Black Orc HS steps up
+      to replace him. For the duration of the battle he gains the "Leader" ability. If the
+      night goblin leader gets the "Killed" result after the battle, then the Black Orc
+      decides to fill the new vacant position permanently. The Black Orc becomes the new
+      warband leader, but he keeps his upkeep cost. The Black Orc does not count towards
+      the warband size when selling treasure.
+    effect_i18n:
+      es: >-
+        Si el líder goblin queda Fuera de combate durante la batalla, el Orco Negro lo
+        sustituye: durante esa batalla gana la capacidad de "Líder". Si el líder goblin
+        recibe el resultado "Muerto" tras la batalla, el Orco Negro ocupa la vacante de
+        forma permanente y se convierte en el nuevo líder de la banda, conservando su coste
+        de manutención. El Orco Negro no cuenta para el tamaño de la banda al vender el
+        tesoro.
+    name_i18n:
+      es: ¡Quién Manda Aquí!
+  source_refs:
+  - manual: broheim.net
+    printed_page: 62
+    section: Hired Swords and Dramatis Personae / Black Orc Bodyguard - Hired Sword V1.1
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+- id: hireling.dramatis.snorri-nosebiter
+  kind: dramatis-personae
+  grade: 2b
+  publication: Karak Azgal (Broheim anthology)
+  name: Snorri Nosebiter
+  name_i18n:
+    es: Snorri Muerde-narices
+  normalization_status: normalized
+  characteristics:
+    M: 3
+    WS: 5
+    BS: 3
+    S: 4
+    T: 4
+    W: 2
+    I: 2
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 20
+  hire_fee:
+    kind: base_plus_upkeep
+    hire: 40
+    upkeep: 25
+  equipment:
+    fixed_items:
+    - item_id: dwarf_axe
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: hammer
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access: []
+  starting_skill_ids: []
+  available_to:
+  - source: 2b
+    note: Any human or Dwarf warband may hire Snorri Nosebiter.
+    bands:
+    - adventurers-kaz
+  rules:
+  - id: hireling.dramatis.snorri-nosebiter.rule.slayer-rules
+    name: Slayer Rules
+    effect: >-
+      Snorri follows all the special rules for Slayers as can be found in the Mordheim
+      rulebook and the Slayer warband.
+    effect_i18n:
+      es: >-
+        Snorri sigue todas las reglas especiales de los Matatrolles que aparecen en el
+        libro de Mordheim y en la banda de Matatrolles.
+    name_i18n:
+      es: Reglas de Matatrolles
+  - id: hireling.dramatis.snorri-nosebiter.rule.drunk
+    name: Drunk
+    effect: >-
+      Snorri likes a drink before a battle. Roll a D6 on the following table to see what
+      effect it has: 1 - Snorri drinks to forget. This time he has forgotten to turn up.
+      2 - Snorri's head is feeling a bit delicate. His WS and S are both reduced by -1.
+      3 - It takes more than that to slow down Snorri. No effect. 4 - The effects on
+      Snorri's digestion become evident to everyone. Any model friend or foe, fighting
+      within 2" of Snorri is at -1 to hit. 5 - Fortified with liquor Snorri gains +1
+      strength. 6 - A bucket of his favourite vodka has put fire in his belly. Snorri is
+      subject to frenzy.
+    effect_i18n:
+      es: >-
+        A Snorri le gusta beber antes de una batalla. Lanza un D6 en la siguiente tabla
+        para ver qué efecto tiene: 1 - Snorri bebe para olvidar. Esta vez ha olvidado
+        presentarse. 2 - La cabeza de Snorri está algo delicada; su HA y su F se reducen
+        en -1. 3 - Hace falta más que eso para frenar a Snorri; sin efecto. 4 - Los
+        efectos en la digestión de Snorri se hacen evidentes para todos: cualquier
+        miniatura, amiga o enemiga, que luche dentro de 2" de Snorri obtiene -1 por
+        impactar. 5 - Fortalecido por el licor, Snorri gana +1 de Fuerza. 6 - Un cubo de
+        su vodka favorito le ha puesto fuego en las tripas: Snorri sufre frenesí.
+    name_i18n:
+      es: Borracho
+  - id: hireling.dramatis.snorri-nosebiter.rule.lucky
+    name: Lucky
+    effect: >-
+      Although he has no armour Snorri has a knack of avoiding harm. He has a 5+ ward
+      save against shooting and combat.
+    effect_i18n:
+      es: >-
+        Aunque no lleva armadura, Snorri tiene el don de esquivar el daño. Tiene una
+        tirada de salvación especial de 5+ contra disparos y combate.
+    name_i18n:
+      es: Afortunado
+  source_refs:
+  - manual: broheim.net
+    printed_page: 62
+    section: Hired Swords and Dramatis Personae / Snorri Nosebiter - Dramatis Personae
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+- id: hireling.dramatis.aldred-fellblade
+  kind: dramatis-personae
+  grade: 2b
+  publication: Karak Azgal (Broheim anthology)
+  name: Aldred Fellblade
+  name_i18n:
+    es: Aldred Hoja Maldita
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 6
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 4
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 60
+  hire_fee:
+    kind: base_plus_upkeep
+    hire: 75
+    upkeep: 35
+  equipment:
+    fixed_items:
+    - item_id: two_handed_weapon
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Two-handed sword — resolved to the KB `two_handed_weapon` item
+        (the source offers no separate double-handed-sword item).
+    - item_id: heavy_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: shield
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access: []
+  starting_skill_ids:
+  - skill.combat-master
+  - skill.strongman
+  - skill.sign-of-sigmar
+  - skill.protection-of-sigmar
+  - skill.righteous-fury
+  available_to:
+  - source: 2b
+    note: >-
+      Only human warbands can hire Aldred (Human Mercenaries, Witch Hunters, and
+      Adventurers).
+    bands:
+    - adventurers-kaz
+  rules:
+  - id: hireling.dramatis.aldred-fellblade.rule.righteous-fury-orcs-goblins
+    name: Righteous Fury (Orcs & Goblins)
+    effect: >-
+      Aldred's Righteous Fury adds Orc & Goblins as affected enemies.
+    effect_i18n:
+      es: >-
+        la Ira Justiciera de Aldred añade Orcos & Goblins como enemigos afectados.
+    name_i18n:
+      es: Ira Justiciera (Orcos y Goblins)
+  - id: hireling.dramatis.aldred-fellblade.rule.fellblade
+    name: Fellblade
+    effect: >-
+      Aldred is a master with this sword and he can therefore parry with it as though it
+      was a normal sword.
+    effect_i18n:
+      es: >-
+        Aldred es un maestro con esta espada y por tanto puede parar con ella como si
+        fuera una espada normal.
+    name_i18n:
+      es: Hoja Maldita
+  - id: hireling.dramatis.aldred-fellblade.rule.destiny
+    name: Destiny
+    effect: >-
+      If the "Dead" result is rolled on the Serious Injury Chart then Aldred isn't really
+      dead but he decides to quit the warband and travel to another Dwarf Hold in his
+      quest for the sword Karaghul. He is no longer available for the rest of the
+      campaign.
+    effect_i18n:
+      es: >-
+        Si se obtiene el resultado "Muerto" en la tabla de Heridas Graves, Aldred no está
+        realmente muerto, sino que decide abandonar la banda y viajar a otro bastión enano
+        en su búsqueda de la espada Karaghul. Ya no estará disponible durante el resto de
+        la campaña.
+    name_i18n:
+      es: Destino
+  source_refs:
+  - manual: broheim.net
+    printed_page: 63
+    section: Hired Swords and Dramatis Personae / Aldred Fellblade - Dramatis Personae
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+- id: hireling.hired-sword.bog-hunter
+  kind: hired-sword
+  grade: 2b
+  publication: Mutiny in Marienburg Specialists (Broheim)
+  name: Bog Hunter
+  name_i18n:
+    es: Cazador de Ciénagas
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  warband_rating:
+    kind: base_plus_experience
+    base: 15
+    per_experience_point: 1
+  hire_fee:
+    kind: base_plus_upkeep
+    hire: 30
+    upkeep: 15
+  equipment:
+    fixed_items:
+    - item_id: beastlash
+      quantity:
+        kind: fixed
+        value: 1
+      notes: >-
+        Resolves to the active-KB item `beastlash`
+        (catalog/items/weapons-close-combat.yaml, "Látigo de Señor de las Bestias").
+        The MiM Specialists source prints no price/rarity for it; the KB entry's
+        Beastbane effect (Fear in animals) applies.
+    - item_id: net
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: toughened_leathers
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids:
+  - skill.streetwise
+  - skill.haggle
+  available_to:
+  - source: 2b
+    note: Fimir, Beastmen and Greenskin Warbands may hire a Bog Hunter.
+    bands:
+    - lords-of-the-marsh-mim
+  rules:
+  - id: hireling.hired-sword.bog-hunter.rule.unholy-stink
+    name: Unholy Stink
+    effect: >-
+      The Bog hunter is covered in a thick layer of dung, the smell is so distracting
+      that all enemies are at -1 to hit the Bog hunter in close combat.
+    effect_i18n:
+      es: >-
+        El Cazador de Ciénagas está cubierto por una gruesa capa de estiércol; el olor es
+        tan distractor que todos los enemigos obtienen -1 por impactar al Cazador de
+        Ciénagas en combate cuerpo a cuerpo.
+    name_i18n:
+      es: Hedor Impío
+  - id: hireling.hired-sword.bog-hunter.rule.gopher
+    name: Gopher
+    effect: >-
+      The Bog hunter may venture into town for his masters, ferrying back his goods to
+      the waiting warband. In place of a hero doing a roll on either the Daemon swamp or
+      Trading, the Bog hunter may visit any 1 place in the Craftsmarket, Infamous Haunts
+      or Marketplace as the Hero waits outside of town for the bog hunters return.
+    effect_i18n:
+      es: >-
+        El Cazador de Ciénagas puede aventurarse en la ciudad por sus amos y traer de
+        vuelta los bienes a la banda. En lugar de que un héroe haga una tirada en el
+        Pantano del Daemon o en Comercio, el Cazador de Ciénagas puede visitar cualquier
+        lugar del Mercado de Artesanía, Refugios Infames o Mercado mientras el héroe espera fuera
+        de la ciudad su regreso.
+    name_i18n:
+      es: Recadero
+  - id: hireling.hired-sword.bog-hunter.rule.fenland-strider
+    name: Fenland Strider
+    effect: >-
+      The Bog Hunter may re-roll any failed Initiative tests when fighting on causeways,
+      jetties and gangplanks or crossing a marsh.
+    effect_i18n:
+      es: >-
+        El Cazador de Ciénagas puede repetir cualquier tirada de Iniciativa fallida cuando
+        luche en calzadas, embarcaderos y pasarelas o cruce un marisma.
+    name_i18n:
+      es: Zancada de las Ciénagas
+  source_refs:
+  - manual: broheim.net
+    printed_page: 1
+    section: Hired Swords
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords%20of%20the%20Marsh.pdf
+  - manual: broheim.net
+    printed_page: 5
+    section: Mutiny In Marienburg Specialists / Bog Hunter
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/MiM%20Specialists.pdf
+- id: hireling.hired-sword.whaler
+  kind: hired-sword
+  grade: 2b
+  publication: Mutiny in Marienburg Specialists (Broheim)
+  name: Whaler
+  name_i18n:
+    es: Ballenero
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 4
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 30
+    per_experience_point: 1
+  hire_fee:
+    kind: base_plus_upkeep
+    hire: 70
+    upkeep: 30
+  equipment:
+    fixed_items:
+    - item_id: spear
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: net
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: harpoon_crossbow
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Harpoon gun counts as harpoon crossbow.
+    - item_id: javelin
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Harpoons count as javelins.
+  skill_access:
+  - strength
+  - shooting
+  starting_skill_ids: []
+  available_to:
+  - source: 2b
+    note: >-
+      Whalers may not be hired by Undead and Skaven warbands. Fimir warbands may hire
+      the Whaler (Lords of the Marsh).
+    bands:
+    - lords-of-the-marsh-mim
+  rules:
+  - id: hireling.hired-sword.whaler.rule.marine-hunter
+    name: Marine Hunter
+    effect: >-
+      Whalers grow accustomed to hunting marine beasts. Double any wounds inflicted to aquatic
+      models.
+    effect_i18n:
+      es: >-
+        Los Balleneros se acostumbran a cazar bestias marinas. Duplica cualquier herida
+        infligida a miniaturas acuáticas.
+    name_i18n:
+      es: Cazador Marino
+  - id: hireling.hired-sword.whaler.rule.hardened
+    name: Hardened
+    effect: >-
+      Having come face to face with some of the largest most terrifying beasts the seas
+      have to offer and survived, the Whaler is immune to fear.
+    effect_i18n:
+      es: >-
+        Tras enfrentarse a algunas de las bestias más grandes y terroríficas de los mares
+        y sobrevivir, el Ballenero es inmune al miedo.
+    name_i18n:
+      es: Endurecido
+  - id: hireling.hired-sword.whaler.rule.harpooner
+    name: Harpooner
+    effect: >-
+      When the Whaler hits a model in the shooting phase, if he wounds the target, he may
+      attempt to reel in the catch. If the Whaler passes a Strength test, the target model
+      is pulled 8" towards the Whaler. Neither model counts as charging if a model is
+      reeled into close combat.
+    effect_i18n:
+      es: >-
+        Cuando el Ballenero impacta a una miniatura en la fase de disparo, si la hiere,
+        puede intentar recoger la presa. Si el Ballenero supera una tirada de Fuerza, la
+        miniatura objetivo es arrastrada 8" hacia el Ballenero. Ninguna de las dos
+        miniaturas cuenta como carga si una es arrastrada hasta el combate cuerpo a
+        cuerpo.
+    name_i18n:
+      es: Arponero
+  - id: hireling.hired-sword.whaler.rule.whalebone-carver
+    name: Whalebone Carver
+    effect: >-
+      Heroes get +2 on search rolls when looking for Scrimshaw Baubles when a Whaler
+      joins the warband.
+    effect_i18n:
+      es: >-
+        Los héroes obtienen +2 en las tiradas de búsqueda de Adornos de Escrimshaw cuando
+        un Ballenero se une a la banda.
+    name_i18n:
+      es: Tallador de Hueso de Ballena
+  source_refs:
+  - manual: broheim.net
+    printed_page: 1
+    section: Hired Swords
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords%20of%20the%20Marsh.pdf
+  - manual: broheim.net
+    printed_page: 3
+    section: Mutiny In Marienburg Specialists / Whaler
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/MiM%20Specialists.pdf
+- id: hireling.hired-sword.strigani-seer-necromancer
+  kind: hired-sword
+  grade: 2b
+  publication: Karak Azgal (Broheim anthology)
+  name: Strigani Seer Necromancer
+  name_i18n:
+    es: Adivino Nigromante Strigani
+  normalization_status: name-only
+  characteristics: null
+  warband_rating: null
+  hire_fee: null
+  equipment: {}
+  skill_access: []
+  starting_skill_ids: []
+  available_to:
+  - source: 2b
+    note: >-
+      The Strigoi Vampire warband may hire the following Hired Swords and Dramatis
+      Personae in addition to any which specifically mention them: Strigani Seer
+      Necromancer (only if they have no vampire).
+    bands:
+    - strigoi-kaz
+  rules:
+  - id: hireling.hired-sword.strigani-seer-necromancer.rule.hiring-condition
+    name: Hiring Condition
+    effect: >-
+      The Strigoi Vampire warband may only hire the Strigani Seer Necromancer if they have
+      no vampire.
+    effect_i18n:
+      es: >-
+        La banda de Vampiros Strigoi solo puede contratar al Adivino Nigromante Strigani
+        si no tiene ningún vampiro.
+    name_i18n:
+      es: Condición de Contratación
+  source_refs:
+  - manual: broheim.net
+    printed_page: 31
+    section: Hired Swords
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+- id: hireling.dramatis.snerik-night-goblin-scout
+  kind: dramatis-personae
+  grade: 2b
+  publication: Karak Azgal (Broheim anthology)
+  name: Snerik, Night Goblin Scout
+  name_i18n:
+    es: Snerik, Explorador Goblin Nocturno
+  normalization_status: name-only
+  characteristics: null
+  warband_rating: null
+  hire_fee: null
+  equipment: {}
+  skill_access: []
+  starting_skill_ids: []
+  available_to:
+  - source: 2b
+    note: >-
+      The Night Goblin warband may hire the following Hired Swords and Dramatis Personae:
+      Black Orc Bodyguard, Snerik Night Goblin Scout. A Savage Orc warband may hire the
+      following: Hired Swords: Black Orc; DP: Snerik.
+    bands:
+    - night-goblins-kaz
+    - savage-orcs-kaz
+  rules: []
+  source_refs:
+  - manual: broheim.net
+    printed_page: 45
+    section: Hired Swords
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf

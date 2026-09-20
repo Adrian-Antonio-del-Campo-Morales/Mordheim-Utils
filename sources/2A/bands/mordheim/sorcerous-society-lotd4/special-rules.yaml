@@ -1,0 +1,448 @@
+schema_version: 2
+band_id: sorcerous-society-lotd4
+rules:
+- id: band--keep-it-secret
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.sorcerous-society-lotd4.band.keep-it-secret
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: hired-sword recruitment eligibility is a campaign/hiring mechanic.
+  name: Keep it secret, keep it safe!
+  effect: >-
+    A Sorcerous Society warband may never have a Hired Sword or Dramatis Personae with the Wizard
+    ability save for the High Elf Mage. Otherwise they may use any other Hired Sword as a Human
+    Mercenary Warband.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Keep it secret, keep it safe!
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+  name_i18n:
+    es: ¡Guárdalo en secreto, guárdalo a salvo!
+  effect_i18n:
+    es: >-
+      Una banda de la Sociedad Hechicera nunca puede tener una Espada Contratada o Persona Dramática
+      con la habilidad de Hechicero, salvo el Mago Elfo Alto. Por lo demás, pueden usar cualquier
+      otra Espada Contratada como una Banda Mercenaria Humana.
+  applies_to:
+    band: true
+- id: band--vagaries-of-magic
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.sorcerous-society-lotd4.band.vagaries-of-magic
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: miscast resolution is a magic-subsystem interaction; the Magical Failure Table
+        (Border Town Burning, used with permission) is preserved verbatim in
+        sources/2A/catalog/magic-2a.yaml.
+  name: The Vagaries of Magic
+  effect: >-
+    Members of the Sorcerous Society are using powerful and sometimes little known spells. As a
+    result they are susceptible to the chaotic lure of magic. If a Wizard in the Sorcerous Society
+    Warband rolls a natural 2 (two 1's) when rolling for a spell than they must roll on the Magical
+    Failure Table.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / The Vagaries of Magic
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+  name_i18n:
+    es: Las Vicisitudes de la Magia
+  effect_i18n:
+    es: >-
+      Los miembros de la Sociedad Hechicera usan hechizos poderosos y a veces poco conocidos. Como
+      resultado, son susceptibles al señuelo caótico de la magia. Si un Hechicero de la banda de la
+      Sociedad Hechicera saca un 2 natural (dos 1) al lanzar un hechizo, debe tirar en la Tabla de
+      Fallo Mágico.
+  applies_to:
+    band: true
+- id: magus--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.sorcerous-society-lotd4.magus.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: leadership-radios checks are a morale mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Magus / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - magus
+  rule_ref: shared-rule.leader
+- id: magus--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.sorcerous-society-lotd4.magus.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem. The four Elemental lores this rule draws from are preserved
+        in sources/2A/catalog/magic-2a.yaml; Lesser Magic is already modeled by the active KB as
+        lore.lesser-magic.
+  name: Wizard
+  effect: >-
+    The Magus is a powerful wizard and may randomly generate two spells from any one Elemental list,
+    or from the Lesser Magic list found in the Core Rulebook.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Magus / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+  name_i18n:
+    es: Hechicero
+  effect_i18n:
+    es: >-
+      El Mago Supremo es un hechicero poderoso y puede generar aleatoriamente dos hechizos de una
+      sola lista Elemental, o de la lista de Magia Menor del libro de reglas básico.
+  applies_to:
+    profile_ids:
+    - magus
+- id: companion--dont-look-at-me
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.sorcerous-society-lotd4.companion.dont-look-at-me
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: leadership eligibility and rout tests are campaign-resolution mechanics.
+  name: Don't look at me!
+  effect: >-
+    A Companion does not command the respect that a wizard does. As a result the Companion may never
+    become the Leader of a warband and his Leadership may never be used for any Leadership tests
+    except his own. This includes Rout Tests after the Leader has been taken Out of Action.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0-2 Companions / Special Rules / Don't look at me!
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+  name_i18n:
+    es: ¡Mira a otro!
+  effect_i18n:
+    es: >-
+      Un Compañero no goza del respeto que recibe un hechicero. Como resultado, el Compañero nunca
+      puede convertirse en el Líder de una banda y su Liderazgo nunca puede usarse para tiradas de
+      Liderazgo que no sean las suyas propias. Esto incluye las tiradas de Huida tras la baja del
+      Líder.
+  applies_to:
+    profile_ids:
+    - companion
+- id: companion--body-guard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.sorcerous-society-lotd4.companion.body-guard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: intercepting missile fire and charges requires movement and shooting
+        resolution outside the duel scope.
+  name: Body Guard
+  effect: >-
+    If the Companion is within 2 inches of a Wizard and not involved in Hand to Hand combat, he will
+    take all missile fire and intercept any charges directed at the Wizard. If this requires that
+    the model be moved, it is done so immediately, even if out of sequence or if it forces the model
+    to move further than usually allowed in one turn. Note that the Companion must have a logical
+    path to accomplish this goal; if he is within 2 inches of a Wizard but on a lower floor in a
+    building, he will be unable to protect him in this manner.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0-2 Companions / Special Rules / Body Guard
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+  name_i18n:
+    es: Guardaespalda
+  effect_i18n:
+    es: >-
+      Si el Compañero está a 2 pulgadas de un Hechicero y no está envuelto en combate cuerpo a
+      cuerpo, recibirá todo el fuego de misiles e interceptará cualquier carga dirigida contra el
+      Hechicero. Si esto requiere que la miniatura se mueva, se hace de inmediato, incluso fuera de
+      secuencia o si obliga a la miniatura a moverse más de lo habitualmente permitido en un turno.
+      Ten en cuenta que el Compañero debe tener una trayectoria lógica para lograrlo; si está a 2
+      pulgadas de un Hechicero pero en un piso inferior de un edificio, no podrá protegerlo de esta
+      manera.
+  applies_to:
+    profile_ids:
+    - companion
+- id: mage--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.sorcerous-society-lotd4.mage.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem; see sources/2A/catalog/magic-2a.yaml for the Elemental lores.
+  name: Wizard
+  effect: >-
+    The Mage is a wizard, and may randomly generate a spell from any one Elemental list, or from the
+    Lesser Magic list found in the Core Rulebook.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0-2 Mages / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+  name_i18n:
+    es: Hechicero
+  effect_i18n:
+    es: >-
+      El Mago es un hechicero y puede generar aleatoriamente un hechizo de una sola lista Elemental,
+      o de la lista de Magia Menor del libro de reglas básico.
+  applies_to:
+    profile_ids:
+    - mage
+- id: mage--respect-your-betters
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.sorcerous-society-lotd4.mage.respect-your-betters
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the Wizard's Duel is a campaign-resolution mechanic outside the duel scope.
+  name: Respect your betters
+  effect: >-
+    A Mage may never have more spells than the Leader. If a Mage has more spells than the leader he
+    will immediately be challenged to a Wizard's Duel. Have another player take control of the
+    Leader for this match. The loser of the duel must leave the warband.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0-2 Mages / Special Rules / Respect your betters
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+  name_i18n:
+    es: Respeta a tus superiores
+  effect_i18n:
+    es: >-
+      Un Mago nunca puede tener más hechizos que el Líder. Si un Mago tiene más hechizos que el
+      líder, será inmediatamente desafiado a un Duelo de Hechiceros. Haz que otro jugador tome el
+      control del Líder para este duelo. El perdedor del duelo debe abandonar la banda.
+  applies_to:
+    profile_ids:
+    - mage
+- id: untrained--here-hold-this
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.sorcerous-society-lotd4.untrained.here-hold-this
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: equipment-carrying exemption with no direct combat effect.
+  name: Here, hold this
+  effect: Untrained may be equipped with special items (like holy relics or lucky charms).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-5 Untrained / Special Rules / Here, hold this
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+  name_i18n:
+    es: Ten, esto
+  effect_i18n:
+    es: >-
+      Los Adiestrados a Medias pueden ser equipados con objetos especiales (como reliquias sagradas
+      o amuletos de la suerte).
+  applies_to:
+    profile_ids:
+    - untrained
+- id: untrained--harnessed
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.sorcerous-society-lotd4.untrained.harnessed
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the 'Lads Got Talent' advancement roll is a campaign-progression mechanic.
+  name: Harnessed
+  effect: >-
+    Should an Untrained roll a 'Lads Got Talent' roll, they immediately gain the 'Wizard' skill.
+    They may choose to either forgo their additional advancement and randomly generate a spell, or
+    may roll as the Hero advancement dictates.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-5 Untrained / Special Rules / Harnessed
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+  name_i18n:
+    es: Encauzado
+  effect_i18n:
+    es: >-
+      Si un Adiestrado a Medias saca la tirada de 'El Chico Tiene Talento', gana inmediatamente la
+      habilidad de 'Hechicero'. Puede elegir renunciar a su avance adicional y generar
+      aleatoriamente un hechizo, o tirar como indique el avance de Héroe.
+  applies_to:
+    profile_ids:
+    - untrained
+- id: grunt--prove-that-talent
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.sorcerous-society-lotd4.grunt.prove-that-talent
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the 'Lads Got Talent' advancement roll is a campaign-progression mechanic.
+  name: Prove that Talent!
+  effect: >-
+    If 'Lads Got Talent' is rolled the individual Grunt can either become a mundane Hero or may
+    choose to become a 'Grunt Untrained' instead. Therefore, a Grunt who rolls two 'Lads got Talent'
+    may become a wizard.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / Grunts / Special Rules / Prove that Talent!
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+  name_i18n:
+    es: ¡Demuestra ese talento!
+  effect_i18n:
+    es: >-
+      Si se saca 'El Chico Tiene Talento', el Peón puede convertirse en un Héroe corriente o elegir
+      convertirse en un 'Peón Adiestrado a Medias'. Por tanto, un Peón que saque dos veces 'El Chico
+      Tiene Talento' puede convertirse en hechicero.
+  applies_to:
+    profile_ids:
+    - grunt
+- id: band--academic-skill-scribe
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.sorcerous-society-lotd4.band.scribe
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: scroll-making and difficulty-roll bonuses are magic-subsystem interactions.
+  name: Scribe
+  effect: >-
+    The warrior is a natural adept at writing and making scrolls. Any warrior with the ability to
+    cast spells or use prayers may take this skill. It allows them to make a scroll before the
+    battle and inscribe a single spell/prayer upon it that they are versed in. The scroll may be
+    used just before they are about to cast the spell/prayer and allows the caster +2 to his
+    difficulty roll.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Additional Academic Skills / Scribe (Town Cryer 7/2002 Annual)
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+  name_i18n:
+    es: Escriba
+  effect_i18n:
+    es: >-
+      El guerrero tiene una aptitud natural para la escritura y la confección de pergaminos.
+      Cualquier guerrero con capacidad de lanzar hechizos o usar plegarias puede tomar esta
+      habilidad. Le permite confeccionar un pergamino antes de la batalla e inscribir en él un único
+      hechizo/plegaria que domine. El pergamino puede usarse justo antes de lanzar el
+      hechizo/plegaria y otorga al lanzador +2 en su tirada de dificultad.
+  applies_to:
+    band: true
+- id: band--academic-skill-mind-focus
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.sorcerous-society-lotd4.band.mind-focus
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: difficulty-roll re-rolls are magic-subsystem interactions.
+  name: Mind Focus
+  effect: >-
+    The warrior possesses a great strength of mind which allows him to concentrate beyond the levels
+    of most normal men. When using a spell or prayer the warrior with this skill may re-roll one
+    dice roll used in the difficulty roll. Note that this cannot cancel a Miscast.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Additional Academic Skills / Mind Focus (Town Cryer 7/2002 Annual)
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+  name_i18n:
+    es: Enfoque Mental
+  effect_i18n:
+    es: >-
+      El guerrero posee una gran fortaleza mental que le permite concentrarse más allá de los
+      niveles de la mayoría de los hombres normales. Al usar un hechizo o plegaria, el guerrero con
+      esta habilidad puede repetir una tirada de dado usada en la tirada de dificultad. Ten en
+      cuenta que esto no puede cancelar un Fallo de Magia.
+  applies_to:
+    band: true
+- id: band--academic-skill-magical-aptitude
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.sorcerous-society-lotd4.band.magical-aptitude
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: double casting and its Toughness-test cost are magic-subsystem interactions.
+  name: Magical Aptitude
+  effect: >-
+    This skill may only be taken by a warrior capable of casting spells. It may not be used by
+    Sisters of Sigmar or Warrior Priests. The warrior has a keen aptitude for magic and can push
+    himself beyond normal limits to produce a storm of spells. The warrior may attempt to cast two
+    spells each turn as long as he is not in hand-to-hand combat. After attempting the first spell
+    he must take a Toughness test. If he passes he may attempt a second spell that turn or even cast
+    the same spell twice. If he fails, you must roll on the injury table immediately with no saves,
+    treating Out of Action results as Stunned instead.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Additional Academic Skills / Magical Aptitude (Town Cryer 7/2002 Annual)
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+  name_i18n:
+    es: Aptitud Mágica
+  effect_i18n:
+    es: >-
+      Esta habilidad solo puede tomarla un guerrero capaz de lanzar hechizos. No puede ser usada por
+      Hermanas de Sigmar ni Sacerdotes Guerreros. El guerrero tiene una aguda aptitud para la magia
+      y puede sobrepasar sus límites normales para producir una tormenta de hechizos. El guerrero
+      puede intentar lanzar dos hechizos cada turno mientras no esté en combate cuerpo a cuerpo.
+      Tras intentar el primer hechizo debe superar una prueba de Resistencia. Si la supera, puede
+      intentar un segundo hechizo ese turno o incluso lanzar dos veces el mismo hechizo. Si falla,
+      debes tirar inmediatamente en la tabla de heridas sin tiradas de salvación, tratando los
+      resultados Fuera de Combate como Aturdido.
+  applies_to:
+    band: true

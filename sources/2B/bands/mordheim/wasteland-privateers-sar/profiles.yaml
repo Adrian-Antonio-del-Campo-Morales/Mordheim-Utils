@@ -1,0 +1,258 @@
+schema_version: 2
+band_id: wasteland-privateers-sar
+profiles:
+- id: captain
+  name: Pirate Captain
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour.
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  - pirate
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Pirate Captain
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  source_path:
+  - heroes
+  - 1 Pirate Captain
+  name_i18n:
+    es: Capitán Pirata
+  rule_ids:
+  - captain--leader
+  combat_traits: {}
+- id: mates
+  name: Ship's Mates
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour.
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - pirate
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-2 Ship's Mates
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  source_path:
+  - heroes
+  - 0-2 Ship's Mates
+  name_i18n:
+    es: Contramaestres
+  rule_ids: []
+  combat_traits: {}
+- id: cabin-boys
+  name: Cabin Boys
+  type: hero
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour.
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - pirate
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-2 Cabin Boys
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  source_path:
+  - heroes
+  - 0-2 Cabin Boys
+  name_i18n:
+    es: Grumetes
+  rule_ids: []
+  combat_traits: {}
+- id: crew
+  name: Crew
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / Crew
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  source_path:
+  - henchmen
+  - Crew
+  name_i18n:
+    es: Tripulación
+  rule_ids: []
+  combat_traits: {}
+- id: gunners
+  name: Gunners
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - gunner-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-7 Gunners
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  source_path:
+  - henchmen
+  - 0-7 Gunners
+  name_i18n:
+    es: Artilleros
+  rule_ids:
+  - gunners--swivel-guns-are-dangerous
+  - gunners--wasteland-gunners
+  combat_traits: {}
+- id: boatswains
+  name: Boatswains
+  type: henchman
+  cost: 32
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment:
+  - rope_hook
+  equipment_restrictions:
+  - Starts with a Rope & Hook which can never be sold off or given away.
+  - May not wear armour.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / 0-5 Boatswains
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  source_path:
+  - henchmen
+  - 0-5 Boatswains
+  name_i18n:
+    es: Contramaestres de Jarcia
+  rule_ids:
+  - boatswains--expert-riggers
+  combat_traits: {}
+- id: swabbies
+  name: Swabbies
+  type: henchman
+  cost: 0
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - swabbie-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / 0-5 Swabbies
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  source_path:
+  - henchmen
+  - 0-5 Swabbies
+  name_i18n:
+    es: Fregones
+  rule_ids:
+  - swabbies--not-hired
+  - swabbies--never-gain-experience
+  - swabbies--rabble
+  - swabbies--blimey-they-got-away
+  - swabbies--dont-mind-them-mates
+  combat_traits: {}

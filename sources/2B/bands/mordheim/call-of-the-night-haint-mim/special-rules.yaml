@@ -1,0 +1,1767 @@
+schema_version: 2
+band_id: call-of-the-night-haint-mim
+rules:
+- id: band--no-skin-no-service
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.band.no-skin-no-service
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: No Skin, No Service
+  effect: Ethereal models may not enter settlements unless otherwise specified.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: No Skin, No Service
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Sin Piel, Sin Servicio
+  effect_i18n:
+    es: Los modelos etéreos no pueden entrar en asentamientos salvo que se especifique lo contrario.
+  applies_to:
+    band: true
+- id: band--requilary
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.band.requilary
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Requilary
+  effect: >-
+    All Ethereal members start the battle inside the Requilary. At the beginning of each turn make a
+    Ld test using the highest Leadership available; for each point you pass by you may deploy that
+    many members within 6 inches of the Mortis Engine. In missions where the Mortis Engine cannot be
+    brought, the Corpse Master may carry it on his back, impeding his movement (he may not run). If
+    the Requilary is destroyed, the spiritual energy explodes violently: the warband immediately
+    routs and any model within D6+6 inches suffers a S5 hit (magic users suffer D3 hits instead).
+    The Cairn Wraith will create another one and misses D3 games resting after this process.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Requilary
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Relicario
+  effect_i18n:
+    es: >-
+      Todos los miembros etéreos comienzan la batalla dentro del Relicario. Al inicio de cada turno,
+      haz un chequeo de Ld usando el Liderazgo más alto disponible; por cada punto que lo superes
+      puedes desplegar tantos miembros a 6 pulgadas del Motor Mortis. En misiones donde no se pueda
+      llevar el Motor Mortis, el Maestro de Cadáveres puede cargarlo a la espalda, lo que impide su
+      movimiento (no puede correr). Si el Relicario es destruido, la energía espiritual estalla
+      violentamente: la banda huye inmediatamente y cualquier modelo a D6+6 pulgadas sufre un
+      impacto de F5 (los magos sufren D3 impactos en su lugar). El Espectro de Cairn creará otro y
+      pierde D3 partidas descansando tras este proceso.
+  applies_to:
+    band: true
+- id: band--ethereal
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.band.ethereal
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Ethereal
+  effect: >-
+    Spirits have a 4+ unmodifiable save against all attacks, taken after the To Hit roll. It may not
+    be used with Dodge or Step Aside and has no effect against magical attacks. Missile attacks that
+    fail to hit an ethereal model because of the save pass through, hitting the next closest target
+    directly behind. The model is unaffected by terrain and may take a Leadership test in the
+    movement phase to pass through any terrain piece and/or over water; if it starts its next turn
+    inside a terrain piece it must take another Leadership test or be instantly taken out of action.
+    After warband formation all items cost double for Ethereal models; items found are usable by
+    both Ethereal and non-Ethereal models on a D6 roll of 5+, otherwise only by non-Ethereal models.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Ethereal
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Etéreo
+  effect_i18n:
+    es: >-
+      Los espíritus tienen una salvación de 4+ no modificable contra todos los ataques, que se
+      realiza tras la tirada para impactar. No puede usarse con Esquiva ni Apartarse y no tiene
+      efecto contra ataques mágicos. Los ataques de misil que no impacten a un modelo etéreo por la
+      salvación pasan a través, impactando al siguiente objetivo más cercano detrás. El modelo no se
+      ve afectado por el terreno y puede hacer un chequeo de Liderazgo en la fase de movimiento para
+      atravesar cualquier pieza de terreno y/o el agua; si comienza su siguiente turno dentro de una
+      pieza de terreno debe hacer otro chequeo de Liderazgo o quedar Fuera de combate
+      instantáneamente. Tras la formación de la banda, todos los objetos cuestan el doble para los
+      modelos etéreos; los objetos encontrados pueden usarlos etéreos y no etéreos con un 5+ en 1D6;
+      si no, solo los no etéreos.
+  applies_to:
+    band: true
+- id: cairn-wraith--ethereal
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.ethereal
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Ethereal
+  effect: See the band Ethereal rule.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Cairn Wraith / Special Rules / Ethereal
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Etéreo
+  effect_i18n:
+    es: Ver la regla de banda Etéreo.
+  applies_to:
+    profile_ids:
+    - cairn-wraith
+- id: cairn-wraith--causes-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.causes-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Causes Fear
+  effect: The Cairn Wraith causes fear.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Cairn Wraith / Special Rules / Causes Fear
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Causa Miedo
+  effect_i18n:
+    es: El Espectro de Cairn causa miedo.
+  applies_to:
+    profile_ids:
+    - cairn-wraith
+- id: cairn-wraith--may-not-run
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.may-not-run
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: May Not Run
+  effect: The Cairn Wraith may not run.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Cairn Wraith / Special Rules / May not run
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: No Puede Correr
+  effect_i18n:
+    es: El Espectro de Cairn no puede correr.
+  applies_to:
+    profile_ids:
+    - cairn-wraith
+- id: cairn-wraith--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Immune to Psychology
+  effect: The Cairn Wraith is immune to psychology.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Cairn Wraith / Special Rules / Immune to Psychology
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Inmune a la Psicología
+  effect_i18n:
+    es: El Espectro de Cairn es inmune a la psicología.
+  applies_to:
+    profile_ids:
+    - cairn-wraith
+- id: cairn-wraith--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: The Cairn Wraith is immune to poison.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Cairn Wraith / Special Rules / Immune to Poison
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Inmune al Veneno
+  effect_i18n:
+    es: El Espectro de Cairn es inmune al veneno.
+  applies_to:
+    profile_ids:
+    - cairn-wraith
+- id: cairn-wraith--no-pain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.no-pain
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: No Pain
+  effect: The Cairn Wraith treats stunned results as knocked down.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Cairn Wraith / Special Rules / No Pain
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: El Espectro de Cairn trata los resultados aturdido como derribado.
+  applies_to:
+    profile_ids:
+    - cairn-wraith
+- id: cairn-wraith--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Wizard
+  effect: >-
+    The Cairn Wraith was a necromancer in life and starts with one spell from the Necromancy list.
+    All references to Zombies are replaced with Revenants.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Cairn Wraith / Special Rules / Wizard
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Mago
+  effect_i18n:
+    es: >-
+      El Espectro de Cairn fue un nigromante en vida y comienza con un hechizo de la lista de
+      Nigromancia. Todas las referencias a Zombis se sustituyen por Espectros (Revenants).
+  applies_to:
+    profile_ids:
+    - cairn-wraith
+- id: cairn-wraith--warrior-wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.warrior-wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Warrior Wizard
+  effect: The Cairn Wraith is able to wear armour and cast spells without penalty.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Cairn Wraith / Special Rules / Warrior Wizard
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Mago Guerrero
+  effect_i18n:
+    es: El Espectro de Cairn puede llevar armadura y lanzar hechizos sin penalización.
+  applies_to:
+    profile_ids:
+    - cairn-wraith
+- id: cairn-wraith--death-was-merely-the-beginning
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.death-was-merely-the-beginning
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Death Was Merely the Beginning
+  effect: >-
+    Cairn Wraiths cannot die, as they are already dead. Any time the Cairn Wraith rolls 11-15 Dead
+    on the serious injury table, he may be returned to the warband by paying his hiring cost plus
+    two times his experience points, provided an existing Requilary is present. If both the
+    Requilary and the Cairn Wraith are destroyed in one round, the warband is disbanded.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Cairn Wraith / Special Rules / Death Was Merely The Beginning
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: La Muerte Fue Solo el Comienzo
+  effect_i18n:
+    es: >-
+      Los Espectros de Cairn no pueden morir, pues ya están muertos. Siempre que el Espectro de
+      Cairn saque 11-15 Muerto en la tabla de heridas graves, puede volver a la banda pagando su
+      coste de contratación más dos veces sus puntos de experiencia, siempre que exista un
+      Relicario. Si tanto el Relicario como el Espectro de Cairn son destruidos en una misma ronda,
+      la banda se disuelve.
+  applies_to:
+    profile_ids:
+    - cairn-wraith
+- id: corpse-master--magical-void
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.corpse-master.magical-void
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Magical Void
+  effect: >-
+    The Corpse Master is a space void of magic and thus gains a 4+ save against enemy spells and
+    magic weapons.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Corpse Master / Special Rules / Magical Void
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Vacío Mágico
+  effect_i18n:
+    es: >-
+      El Maestro de Cadáveres es un espacio vacío de magia y por tanto obtiene una salvación de 4+
+      contra hechizos enemigos y armas mágicas.
+  applies_to:
+    profile_ids:
+    - corpse-master
+- id: corpse-master--gofer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.corpse-master.gofer
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Gofer
+  effect: >-
+    As the only "Human" member of the warband, the Corpse Master may visit D3+1 places within
+    settlements rather than 1.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Corpse Master / Special Rules / Gofer
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Recadero
+  effect_i18n:
+    es: >-
+      Como único miembro "Humano" de la banda, el Maestro de Cadáveres puede visitar D3+1 lugares
+      dentro de los asentamientos en lugar de 1.
+  applies_to:
+    profile_ids:
+    - corpse-master
+- id: corpse-master--guardian-of-the-requilary
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.corpse-master.guardian-of-the-requilary
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Guardian of the Requilary
+  effect: >-
+    The Corpse Master takes his roll very seriously and will never voluntarily move more than 6
+    inches away from the Requilary.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Corpse Master / Special Rules / Guardian of the Requilary
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Guardián del Relicario
+  effect_i18n:
+    es: >-
+      El Maestro de Cadáveres se toma su papel muy en serio y nunca se alejará voluntariamente más
+      de 6 pulgadas del Relicario.
+  applies_to:
+    profile_ids:
+    - corpse-master
+- id: tomb-banshee--ghostly-howl
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.ghostly-howl
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Ghostly Howl
+  effect: >-
+    Enemies within 6 inches of the Tomb Banshee suffer -D6 to their Leadership when taking fear
+    tests.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Tomb Banshee / Special Rules / Ghostly Howl
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Aullido Espectral
+  effect_i18n:
+    es: >-
+      Los enemigos a 6 pulgadas de la Banshee de Tumba sufren -D6 en su Liderazgo al realizar
+      chequeos de miedo.
+  applies_to:
+    profile_ids:
+    - tomb-banshee
+- id: malignant-spirits--violent-entry
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.malignant-spirits.violent-entry
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Violent Entry
+  effect: >-
+    Malignant Spirits contained within the Requilary thirst for the moment they are released into
+    battle: they gain +1 to hit and +1 Strength if they charge on the turn they were summoned.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-2 Malignant Spirits / Special Rules / Violent Entry
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Entrada Violenta
+  effect_i18n:
+    es: >-
+      Los Espíritus Malignos contenidos en el Relicario ansían el momento de su liberación en
+      batalla: obtienen +1 para impactar y +1 de Fuerza si cargan en el turno en que fueron
+      invocados.
+  applies_to:
+    profile_ids:
+    - malignant-spirits
+- id: revenants--spectral-ascension
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.revenants.spectral-ascension
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Spectral Ascension
+  effect: >-
+    Once a Revenant rolls Lad's Got Talent, they gain the Ethereal rule once they become a hero.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Revenants / Special Rules / Spectral Ascension
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Ascensión Espectral
+  effect_i18n:
+    es: >-
+      Una vez que un Espectro obtiene el Chaval Tiene Talento, gana la regla Etéreo al convertirse
+      en héroe.
+  applies_to:
+    profile_ids:
+    - revenants
+- id: spirit-hosts--spectral-touch
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.spectral-touch
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.spectral-touch
+        parameters:
+          value: true
+  name: Spectral Touch
+  effect: >-
+    If the hit roll for an attack made by a Spirit Host is 6, the spirit's frightful touch stills
+    the victim's beating heart, immediately inflicting 1 additional wound. Roll to wound for the hit
+    as normal.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-2 Spirit Host / Special Rules / Spectral Touch
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Toque Espectral
+  effect_i18n:
+    es: >-
+      Si la tirada para impactar de un ataque de una Hueste de Espíritus es 6, el aterrador toque
+      del espíritu paraliza el corazón de la víctima, infligiendo 1 herida adicional inmediatamente.
+      Tira para herir el impacto con normalidad.
+  applies_to:
+    profile_ids:
+    - spirit-hosts
+- id: poltergeists--incorporeal
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.poltergeists.incorporeal
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Incorporeal
+  effect: >-
+    When a Poltergeist is wounded do not roll for injury; it is immediately taken out of action.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Poltergeists / Special Rules / Incorporeal
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Incorporal
+  effect_i18n:
+    es: >-
+      Cuando un Poltergeist recibe una herida no se tira en la tabla de heridas: queda Fuera de
+      combate inmediatamente.
+  applies_to:
+    profile_ids:
+    - poltergeists
+- id: poltergeists--silent-move
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.poltergeists.silent-move
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Silent Move
+  effect: Poltergeists always remain hidden unless they charge an enemy warrior.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Poltergeists / Special Rules / Silent Move
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Movimiento Silencioso
+  effect_i18n:
+    es: Los Poltergeists permanecen siempre ocultos salvo que carguen contra un guerrero enemigo.
+  applies_to:
+    profile_ids:
+    - poltergeists
+- id: poltergeists--ignored
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.poltergeists.ignored
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Ignored
+  effect: Poltergeists that are taken out of action do not count towards rout tests.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Poltergeists / Special Rules / Ignored
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Ignorados
+  effect_i18n:
+    es: Los Poltergeists puestos Fuera de combate no cuentan para las tiradas de huida.
+  applies_to:
+    profile_ids:
+    - poltergeists
+- id: mourngul--nightmare-birth
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.mourngul.nightmare-birth
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Nightmare Birth
+  effect: >-
+    A huge amount of death is required to pull a Mourngul into the physical realm: it may only be
+    summoned once a Large model has been taken out of action. Once summoned, deploy it in the final
+    resting place of the Large model.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Mourngul / Special Rules / Nightmare Birth
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Nacimiento de Pesadilla
+  effect_i18n:
+    es: >-
+      Se requiere una enorme cantidad de muerte para atraer un Mourngul al reino físico: solo puede
+      ser invocado cuando un modelo Grande queda Fuera de combate. Una vez invocado, despliega en el
+      lugar de reposo final del modelo Grande.
+  applies_to:
+    profile_ids:
+    - mourngul
+- id: mourngul--ravening-onslaught
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.mourngul.ravening-onslaught
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Ravening Onslaught
+  effect: >-
+    Every to hit roll of 6 grants the Mourngul another attack, and further to hit rolls of 6 will
+    generate further attacks.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Mourngul / Special Rules / Ravening Onslaught
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Embestida Devoradora
+  effect_i18n:
+    es: >-
+      Cada tirada para impactar de 6 otorga al Mourngul otro ataque, y nuevas tiradas de 6 generan
+      más ataques.
+  applies_to:
+    profile_ids:
+    - mourngul
+- id: mourngul--haunter-of-the-dark
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.mourngul.haunter-of-the-dark
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Haunter of the Dark
+  effect: The Mourngul's Ethereal save is increased to 3+.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Mourngul / Special Rules / Haunter of the Dark
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Espectro de la Oscuridad
+  effect_i18n:
+    es: La salvación Etérea del Mourngul se incrementa a 3+.
+  applies_to:
+    profile_ids:
+    - mourngul
+- id: tomb-banshee--ethereal
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.ethereal
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Ethereal
+  effect: See the band Ethereal rule.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Tomb Banshee / Special Rules / Ethereal
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Etéreo
+  effect_i18n:
+    es: Ver la regla de banda Etéreo.
+  applies_to:
+    profile_ids:
+    - tomb-banshee
+- id: tomb-banshee--causes-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.causes-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Causes Fear
+  effect: The Tomb Banshee causes fear.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Tomb Banshee / Special Rules / Causes Fear
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Causa Miedo
+  effect_i18n:
+    es: La Banshee de Tumba causa miedo.
+  applies_to:
+    profile_ids:
+    - tomb-banshee
+- id: tomb-banshee--may-not-run
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.may-not-run
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: May Not Run
+  effect: The Tomb Banshee may not run.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Tomb Banshee / Special Rules / May not run
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: No Puede Correr
+  effect_i18n:
+    es: La Banshee de Tumba no puede correr.
+  applies_to:
+    profile_ids:
+    - tomb-banshee
+- id: tomb-banshee--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Immune to Psychology
+  effect: The Tomb Banshee is immune to psychology.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Tomb Banshee / Special Rules / Immune to Psychology
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Inmune a la Psicología
+  effect_i18n:
+    es: La Banshee de Tumba es inmune a la psicología.
+  applies_to:
+    profile_ids:
+    - tomb-banshee
+- id: tomb-banshee--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Tomb Banshee / Special Rules / Immune to Poison
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Inmune al Veneno
+  applies_to:
+    profile_ids:
+    - tomb-banshee
+  rule_ref: shared-rule.immune-to-poison
+- id: tomb-banshee--no-pain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.no-pain
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: No Pain
+  effect: The Tomb Banshee treats stunned results as knocked down.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Tomb Banshee / Special Rules / No Pain
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: La Banshee de Tumba trata los resultados aturdido como derribado.
+  applies_to:
+    profile_ids:
+    - tomb-banshee
+- id: malignant-spirits--ethereal
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.malignant-spirits.ethereal
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Ethereal
+  effect: See the band Ethereal rule.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Malignant Spirits / Special Rules / Ethereal
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Etéreo
+  effect_i18n:
+    es: Ver la regla de banda Etéreo.
+  applies_to:
+    profile_ids:
+    - malignant-spirits
+- id: malignant-spirits--causes-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.malignant-spirits.causes-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Causes Fear
+  effect: Malignant Spirits cause fear.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Malignant Spirits / Special Rules / Causes Fear
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Causa Miedo
+  effect_i18n:
+    es: Los Espíritus Malignos causan miedo.
+  applies_to:
+    profile_ids:
+    - malignant-spirits
+- id: malignant-spirits--may-not-run
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.malignant-spirits.may-not-run
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: May Not Run
+  effect: Malignant Spirits may not run.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Malignant Spirits / Special Rules / May not run
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: No Puede Correr
+  effect_i18n:
+    es: Los Espíritus Malignos no pueden correr.
+  applies_to:
+    profile_ids:
+    - malignant-spirits
+- id: malignant-spirits--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.malignant-spirits.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Immune to Psychology
+  effect: Malignant Spirits are immune to psychology.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Malignant Spirits / Special Rules / Immune to Psychology
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Inmune a la Psicología
+  effect_i18n:
+    es: Los Espíritus Malignos son inmunes a la psicología.
+  applies_to:
+    profile_ids:
+    - malignant-spirits
+- id: malignant-spirits--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Malignant Spirits / Special Rules / Immune to Poison
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Inmune al Veneno
+  applies_to:
+    profile_ids:
+    - malignant-spirits
+  rule_ref: shared-rule.immune-to-poison
+- id: malignant-spirits--no-pain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.malignant-spirits.no-pain
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: No Pain
+  effect: Malignant Spirits treat stunned results as knocked down.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Malignant Spirits / Special Rules / No Pain
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: Los Espíritus Malignos tratan los resultados aturdido como derribado.
+  applies_to:
+    profile_ids:
+    - malignant-spirits
+- id: revenants--causes-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.revenants.causes-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Causes Fear
+  effect: Revenants cause fear.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Revenants / Special Rules / Causes Fear
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Causa Miedo
+  effect_i18n:
+    es: Los Espectros causan miedo.
+  applies_to:
+    profile_ids:
+    - revenants
+- id: revenants--may-not-run
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.revenants.may-not-run
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: May Not Run
+  effect: Revenants may not run.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Revenants / Special Rules / May not run
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: No Puede Correr
+  effect_i18n:
+    es: Los Espectros no pueden correr.
+  applies_to:
+    profile_ids:
+    - revenants
+- id: revenants--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.revenants.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Immune to Psychology
+  effect: Revenants are immune to psychology.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Revenants / Special Rules / Immune to Psychology
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Inmune a la Psicología
+  effect_i18n:
+    es: Los Espectros son inmunes a la psicología.
+  applies_to:
+    profile_ids:
+    - revenants
+- id: revenants--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Revenants / Special Rules / Immune to Poison
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Inmune al Veneno
+  applies_to:
+    profile_ids:
+    - revenants
+  rule_ref: shared-rule.immune-to-poison
+- id: revenants--no-pain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.revenants.no-pain
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: No Pain
+  effect: Revenants treat stunned results as knocked down.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Revenants / Special Rules / No Pain
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: Los Espectros tratan los resultados aturdido como derribado.
+  applies_to:
+    profile_ids:
+    - revenants
+- id: spirit-hosts--ethereal
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.ethereal
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Ethereal
+  effect: See the band Ethereal rule.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Spirit Hosts / Special Rules / Ethereal
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Etéreo
+  effect_i18n:
+    es: Ver la regla de banda Etéreo.
+  applies_to:
+    profile_ids:
+    - spirit-hosts
+- id: spirit-hosts--large
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.large
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Large
+  effect: Spirit Hosts are Large Targets as defined in the shooting rules.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Spirit Hosts / Special Rules / Large
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Grande
+  effect_i18n:
+    es: Las Huestes de Espíritus son Objetivos Grandes según se definen en las reglas de disparo.
+  applies_to:
+    profile_ids:
+    - spirit-hosts
+- id: spirit-hosts--causes-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.causes-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Causes Fear
+  effect: Spirit Hosts cause fear.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Spirit Hosts / Special Rules / Causes Fear
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Causa Miedo
+  effect_i18n:
+    es: Las Huestes de Espíritus causan miedo.
+  applies_to:
+    profile_ids:
+    - spirit-hosts
+- id: spirit-hosts--may-not-run
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.may-not-run
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: May Not Run
+  effect: Spirit Hosts may not run.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Spirit Hosts / Special Rules / May not run
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: No Puede Correr
+  effect_i18n:
+    es: Las Huestes de Espíritus no pueden correr.
+  applies_to:
+    profile_ids:
+    - spirit-hosts
+- id: spirit-hosts--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Immune to Psychology
+  effect: Spirit Hosts are immune to psychology.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Spirit Hosts / Special Rules / Immune to Psychology
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Inmune a la Psicología
+  effect_i18n:
+    es: Las Huestes de Espíritus son inmunes a la psicología.
+  applies_to:
+    profile_ids:
+    - spirit-hosts
+- id: spirit-hosts--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Spirit Hosts / Special Rules / Immune to Poison
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Inmune al Veneno
+  applies_to:
+    profile_ids:
+    - spirit-hosts
+  rule_ref: shared-rule.immune-to-poison
+- id: spirit-hosts--no-pain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.no-pain
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: No Pain
+  effect: Spirit Hosts treat stunned results as knocked down.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Spirit Hosts / Special Rules / No Pain
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: Las Huestes de Espíritus tratan los resultados aturdido como derribado.
+  applies_to:
+    profile_ids:
+    - spirit-hosts
+- id: spirit-hosts--no-brain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.no-brain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: No Brain
+  effect: Spirit Hosts never gain experience.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Spirit Hosts / Special Rules / No Brain
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Sin Cerebro
+  effect_i18n:
+    es: Las Huestes de Espíritus nunca ganan experiencia.
+  applies_to:
+    profile_ids:
+    - spirit-hosts
+- id: poltergeists--ethereal
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.poltergeists.ethereal
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Ethereal
+  effect: See the band Ethereal rule.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Poltergeists / Special Rules / Ethereal
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Etéreo
+  effect_i18n:
+    es: Ver la regla de banda Etéreo.
+  applies_to:
+    profile_ids:
+    - poltergeists
+- id: poltergeists--causes-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.poltergeists.causes-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Causes Fear
+  effect: Poltergeists cause fear.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Poltergeists / Special Rules / Causes Fear
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Causa Miedo
+  effect_i18n:
+    es: Los Poltergeists causan miedo.
+  applies_to:
+    profile_ids:
+    - poltergeists
+- id: poltergeists--may-not-run
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.poltergeists.may-not-run
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: May Not Run
+  effect: Poltergeists may not run.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Poltergeists / Special Rules / May not run
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: No Puede Correr
+  effect_i18n:
+    es: Los Poltergeists no pueden correr.
+  applies_to:
+    profile_ids:
+    - poltergeists
+- id: poltergeists--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.poltergeists.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Immune to Psychology
+  effect: Poltergeists are immune to psychology.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Poltergeists / Special Rules / Immune to Psychology
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Inmune a la Psicología
+  effect_i18n:
+    es: Los Poltergeists son inmunes a la psicología.
+  applies_to:
+    profile_ids:
+    - poltergeists
+- id: poltergeists--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Poltergeists / Special Rules / Immune to Poison
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Inmune al Veneno
+  applies_to:
+    profile_ids:
+    - poltergeists
+  rule_ref: shared-rule.immune-to-poison
+- id: poltergeists--no-pain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.poltergeists.no-pain
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: No Pain
+  effect: Poltergeists treat stunned results as knocked down.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Poltergeists / Special Rules / No Pain
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: Los Poltergeists tratan los resultados aturdido como derribado.
+  applies_to:
+    profile_ids:
+    - poltergeists
+- id: poltergeists--no-brain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.poltergeists.no-brain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: No Brain
+  effect: Poltergeists never gain experience.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Poltergeists / Special Rules / No Brain
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Sin Cerebro
+  effect_i18n:
+    es: Los Poltergeists nunca ganan experiencia.
+  applies_to:
+    profile_ids:
+    - poltergeists
+- id: mourngul--ethereal
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.mourngul.ethereal
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Ethereal
+  effect: See the band Ethereal rule.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Mourngul / Special Rules / Ethereal
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Etéreo
+  effect_i18n:
+    es: Ver la regla de banda Etéreo.
+  applies_to:
+    profile_ids:
+    - mourngul
+- id: mourngul--large
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.mourngul.large
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Large
+  effect: The Mourngul is a Large Target as defined in the shooting rules.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Mourngul / Special Rules / Large
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Grande
+  effect_i18n:
+    es: El Mourngul es un Objetivo Grande según se define en las reglas de disparo.
+  applies_to:
+    profile_ids:
+    - mourngul
+- id: mourngul--causes-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.mourngul.causes-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Causes Fear
+  effect: The Mourngul causes fear.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Mourngul / Special Rules / Causes Fear
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Causa Miedo
+  effect_i18n:
+    es: El Mourngul causa miedo.
+  applies_to:
+    profile_ids:
+    - mourngul
+- id: mourngul--may-not-run
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.mourngul.may-not-run
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: May Not Run
+  effect: The Mourngul may not run.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Mourngul / Special Rules / May not run
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: No Puede Correr
+  effect_i18n:
+    es: El Mourngul no puede correr.
+  applies_to:
+    profile_ids:
+    - mourngul
+- id: mourngul--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.mourngul.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Immune to Psychology
+  effect: The Mourngul is immune to psychology.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Mourngul / Special Rules / Immune to Psychology
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Inmune a la Psicología
+  effect_i18n:
+    es: El Mourngul es inmune a la psicología.
+  applies_to:
+    profile_ids:
+    - mourngul
+- id: mourngul--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Mourngul / Special Rules / Immune to Poison
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Inmune al Veneno
+  applies_to:
+    profile_ids:
+    - mourngul
+  rule_ref: shared-rule.immune-to-poison
+- id: mourngul--no-pain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.mourngul.no-pain
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: No Pain
+  effect: The Mourngul treats stunned results as knocked down.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Mourngul / Special Rules / No Pain
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: El Mourngul trata los resultados aturdido como derribado.
+  applies_to:
+    profile_ids:
+    - mourngul
+- id: mourngul--no-brain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.call-of-the-night-haint-mim.mourngul.no-brain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: No Brain
+  effect: The Mourngul never gains experience.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Mourngul / Special Rules / No Brain
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call Of The Night Haint.pdf
+  name_i18n:
+    es: Sin Cerebro
+  effect_i18n:
+    es: El Mourngul nunca gana experiencia.
+  applies_to:
+    profile_ids:
+    - mourngul

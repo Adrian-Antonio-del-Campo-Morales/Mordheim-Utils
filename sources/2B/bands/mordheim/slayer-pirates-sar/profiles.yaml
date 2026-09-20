@@ -1,0 +1,262 @@
+schema_version: 2
+band_id: slayer-pirates-sar
+profiles:
+- id: slayer-captain
+  name: Slayer Captain
+  type: hero
+  cost: 85
+  experience: 20
+  characteristics:
+    M: 3
+    WS: 5
+    BS: 4
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Slayers may never use armour of any kind.
+  - May not wear armour.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - pirate
+  - special
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 1 Slayer Captain
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Slayer%20Pirates.pdf
+  source_path:
+  - heroes
+  - 1 Slayer Captain
+  name_i18n:
+    es: Capitán Matagigantes
+  rule_ids:
+  - slayer-captain--leader
+  combat_traits: {}
+- id: master-gunner
+  name: Master Gunner
+  type: hero
+  cost: 50
+  experience: 10
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - gunner-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Slayers may never use armour of any kind.
+  - May not wear armour.
+  skill_access:
+  - combat
+  - shooting
+  - pirate
+  - special
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-1 Master Gunner
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Slayer%20Pirates.pdf
+  source_path:
+  - heroes
+  - 0-1 Master Gunner
+  name_i18n:
+    es: Maestro Artillero
+  rule_ids:
+  - master-gunner--expert-weaponsmith
+  combat_traits: {}
+- id: mates
+  name: Dwarf Mates
+  type: hero
+  cost: 50
+  experience: 8
+  characteristics:
+    M: 3
+    WS: 5
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Slayers may never use armour of any kind.
+  - May not wear armour.
+  skill_access:
+  - combat
+  - strength
+  - pirate
+  - special
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-2 Dwarf Mates
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Slayer%20Pirates.pdf
+  source_path:
+  - heroes
+  - 0-2 Dwarf Mates
+  name_i18n:
+    es: Contramaestres Enanos
+  rule_ids: []
+  combat_traits: {}
+- id: sea-trollslayers
+  name: Sea Trollslayers
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Slayers may never use armour of any kind.
+  - May not wear armour.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / Sea Trollslayers
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Slayer%20Pirates.pdf
+  source_path:
+  - henchmen
+  - Sea Trollslayers
+  name_i18n:
+    es: Matatrolls Marinos
+  rule_ids: []
+  combat_traits: {}
+- id: gunners
+  name: Gunners
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - gunner-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Slayers may never use armour of any kind.
+  - May not wear armour.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 Gunners
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Slayer%20Pirates.pdf
+  source_path:
+  - henchmen
+  - 0-5 Gunners
+  name_i18n:
+    es: Artilleros
+  rule_ids:
+  - gunners--skittish
+  combat_traits: {}
+- id: landlubbers
+  name: Landlubbers
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 3
+    BS: 2
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Slayers may never use armour of any kind.
+  - May not wear armour.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / Landlubbers
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Slayer%20Pirates.pdf
+  source_path:
+  - henchmen
+  - Landlubbers
+  name_i18n:
+    es: Grumetes de Tierra
+  rule_ids:
+  - landlubbers--skittish
+  combat_traits: {}
+- id: thaggi
+  name: Thaggi
+  type: henchman
+  cost: 0
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 2
+    BS: 2
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - thaggi-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not have more Thaggi than other Henchmen
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 Thaggi
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Slayer%20Pirates.pdf
+  source_path:
+  - henchmen
+  - 0-5 Thaggi
+  name_i18n:
+    es: Thaggi
+  rule_ids:
+  - thaggi--not-hired
+  - thaggi--never-gain-experience
+  - thaggi--rabble
+  - thaggi--kruk-they-got-away
+  - thaggi--dont-mind-them-mates
+  combat_traits: {}

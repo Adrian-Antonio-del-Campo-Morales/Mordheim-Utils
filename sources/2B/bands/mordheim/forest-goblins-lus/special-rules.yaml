@@ -1,0 +1,511 @@
+schema_version: 2
+band_id: forest-goblins-lus
+rules:
+- id: band--camouflage
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.forest-goblins-lus.band.camouflage
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Camouflage
+  effect: >-
+    Instead of spotting Forest Goblins automatically when hidden within an enemy's Initiative
+    distance, the enemy must first roll equal to or under their Initiative to detect the Goblin.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Camoflague
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Camuflaje
+  effect_i18n:
+    es: >-
+      En lugar de detectar automáticamente a los Goblins del Bosque ocultos dentro de la distancia
+      de Iniciativa de un enemigo, este debe primero sacar igual o menos que su Iniciativa para
+      detectar al Goblin.
+  applies_to:
+    band: true
+- id: band--natives
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.forest-goblins-lus.band.natives
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Natives
+  effect: Forest Goblins suffer no movement penalties from moving through jungle terrain.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Natives
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Nativos
+  effect_i18n:
+    es: >-
+      Los Goblins del Bosque no sufren penalizaciones de movimiento al desplazarse por terreno de
+      selva.
+  applies_to:
+    band: true
+- id: band--animosity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.forest-goblins-lus.band.animosity
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Animosity
+  effect: >-
+    At the start of the Goblin player's turn, roll a D6 for each hero or henchman who suffers from
+    animosity and is not engaged in hand-to-hand combat. On a 1, roll another D6: 1 = "I 'Erd Dat!"
+    the warrior immediately charges the nearest friendly Goblin henchman or Hired Sword within
+    charge reach and fights a round of close combat (afterwards the models move 1 inch apart); if no
+    target is within reach and the warrior has a missile weapon, he shoots the nearest Goblin
+    henchman or hired sword; otherwise treat as 2-5. 2-5 = "Wud Yoo Say?" the warrior spends the
+    turn hurling insults and may do nothing else, though he may defend himself. 6 = "I'll Show Yer!"
+    the warrior must move as quickly as possible towards the nearest enemy, charging if possible; if
+    no enemy is visible he makes an immediate normal move in addition to his regular move; if the
+    extra move brings an enemy within charge reach, he must charge during his regular movement.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Animosity
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Rencor
+  effect_i18n:
+    es: >-
+      Al inicio del turno del jugador goblin, tira 1D6 por cada héroe o secuaz afectado por Rencor
+      que no esté en combate cuerpo a cuerpo. Con un 1, tira otro 1D6: 1 = "¡Yo lo oí!" el guerrero
+      carga inmediatamente contra el secuaz goblin amigo o Espada a Sueldo más cercano dentro de
+      alcance de carga y lucha un asalto (después los modelos se separan 1 pulgada); si no hay
+      objetivo al alcance y tiene arma de misil, dispara al secuaz goblin o Espada a Sueldo más
+      cercano; en otro caso, trata el resultado como 2-5. 2-5 = "¿Qué dijiste?" el guerrero pasa el
+      turno insultando y no puede hacer nada más, aunque puede defenderse. 6 = "¡Ya te enseñaré!" el
+      guerrero debe moverse lo más rápido posible hacia el enemigo más cercano, cargando si es
+      posible; si no hay enemigo visible, realiza un movimiento normal inmediato adicional a su
+      movimiento regular; si ese movimiento extra acerca a un enemigo a alcance de carga, debe
+      cargar durante su movimiento regular.
+  applies_to:
+    band: true
+- id: chieftain--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins-lus.chieftain.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: >-
+    Any models in the warband within 6 inches may use the Chieftain's Leadership instead of their
+    own.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Chieftan / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier modelo de la banda a 6 pulgadas puede usar el Liderazgo del Jefe Tribal en lugar del
+      suyo.
+  applies_to:
+    profile_ids:
+    - chieftain
+- id: bosses--animosity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins-lus.bosses.animosity
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Animosity
+  effect: >-
+    Bosses are subject to the rules for Animosity. A Forest Goblin Boss may choose to remove his
+    Animosity instead of choosing a skill, should he earn one.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-4 Bosses / Special Rules / Animosity
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Rencor
+  effect_i18n:
+    es: >-
+      Los Capataces están sujetos a las reglas de Rencor. Un Capataz goblin puede elegir eliminar su
+      Rencor en lugar de elegir una habilidad, si gana una.
+  applies_to:
+    profile_ids:
+    - bosses
+- id: shaman--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins-lus.shaman.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Wizard
+  effect: >-
+    A Forest Goblin Shaman begins with one spell randomly chosen from the Forest Goblin Spell list.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Forest Goblin Shaman / Special Rules / Wizard
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Mago
+  effect_i18n:
+    es: >-
+      Un Chamán goblin comienza con un hechizo elegido aleatoriamente de la lista de hechizos de los
+      Goblins del Bosque.
+  applies_to:
+    profile_ids:
+    - shaman
+- id: forest-goblins--animosity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins-lus.forest-goblins.animosity
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Animosity
+  effect: Forest Goblins are subject to the rules for Animosity.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Forest Goblins / Special Rules / Animosity
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Rencor
+  effect_i18n:
+    es: Los Goblins del Bosque están sujetos a las reglas de Rencor.
+  applies_to:
+    profile_ids:
+    - forest-goblins
+- id: red-toof-clan-goblins--animosity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins-lus.red-toof-clan-goblins.animosity
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Animosity
+  effect: Red Toof Clan Goblins are subject to the rules for Animosity.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 1-5 Red Toof Clan Goblins / Special Rules / Animosity
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Rencor
+  effect_i18n:
+    es: Los Goblins del Clan Colaroja están sujetos a las reglas de Rencor.
+  applies_to:
+    profile_ids:
+    - red-toof-clan-goblins
+- id: red-toof-clan-goblins--berserkers
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins-lus.red-toof-clan-goblins.berserkers
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Berserkers
+  effect: >-
+    Red Toof Clan Goblins allow themselves to be bitten by poisonous wildlife before battle; the
+    venom makes them extremely ferocious. They are affected by the rules for Frenzy. In addition, if
+    they begin their turn within charge range of an enemy, they are immune to animosity for that
+    turn.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 1-5 Red Toof Clan Goblins / Special Rules / Berserkers
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Berserkers
+  effect_i18n:
+    es: >-
+      Los Goblins del Clan Colaroja se dejan morder por fauna venenosa antes de la batalla; el
+      veneno los vuelve extremadamente feroces. Se ven afectados por las reglas de Frenesí. Además,
+      si comienzan su turno dentro del alcance de carga de un enemigo, son inmunes al Rencor durante
+      ese turno.
+  applies_to:
+    profile_ids:
+    - red-toof-clan-goblins
+- id: sluggas--animosity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins-lus.sluggas.animosity
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Animosity
+  effect: Forest Goblin Sluggas are subject to the rules for Animosity.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-5 Forest Goblin Sluggas / Special Rules / Animosity
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Rencor
+  effect_i18n:
+    es: Los Apedreadores goblins están sujetos a las reglas de Rencor.
+  applies_to:
+    profile_ids:
+    - sluggas
+- id: sluggas--sluggas
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins-lus.sluggas.sluggas
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Sluggas
+  effect: >-
+    In the shooting phase, Sluggas may throw thrown weapons up to three times. This may not be
+    combined with Quick Shot if they are promoted to hero status.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-5 Forest Goblin Sluggas / Special Rules / Sluggas
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Apedreadores
+  effect_i18n:
+    es: >-
+      En la fase de disparo, los Apedreadores pueden lanzar armas arrojadizas hasta tres veces. Esto
+      no puede combinarse con Disparo Rápido si son ascendidos a estatus de héroe.
+  applies_to:
+    profile_ids:
+    - sluggas
+- id: gigantic-spider--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins-lus.gigantic-spider.fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Fear
+  effect: Gigantic Spiders cause fear as described in the Mordheim Rulebook.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Gigantic Spider / Special Rules / Fear
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Las Arañas Gigantescas causan miedo tal como se describe en el reglamento de Mordheim.
+  applies_to:
+    profile_ids:
+    - gigantic-spider
+- id: gigantic-spider--large-monster
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins-lus.gigantic-spider.large-monster
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Large Monster
+  effect: >-
+    Gigantic Spiders are large targets and may always be shot at, regardless of whether they are the
+    closest.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Gigantic Spider / Special Rules / Large Monster
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Monstruo Grande
+  effect_i18n:
+    es: >-
+      Las Arañas Gigantescas son objetivos grandes y siempre pueden ser disparadas, sean o no las
+      más cercanas.
+  applies_to:
+    profile_ids:
+    - gigantic-spider
+- id: gigantic-spider--poisonous
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poisonous-injury
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poisonous-injury
+        parameters:
+          value: true
+  name: Poisonous
+  effect: >-
+    The Gigantic Spider's maw drips with vile poisons. When it wounds an enemy and a roll is made on
+    the injury table: 1 = knocked down, 2-4 = stunned, 5-6 = out of action.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Gigantic Spider / Special Rules / Poisonous
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Venenoso
+  effect_i18n:
+    es: >-
+      El hocico de la Araña Gigantesca gotea venenos repugnantes. Cuando hiere a un enemigo y se
+      tira en la tabla de heridas: 1 = derribado, 2-4 = aturdido, 5-6 = Fuera de combate.
+  applies_to:
+    profile_ids:
+    - gigantic-spider
+- id: gigantic-spider--native
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins-lus.gigantic-spider.native
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Native
+  effect: >-
+    Negotiating jungle terrain is no trouble for spiders; they move through jungle without penalty.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Gigantic Spider / Special Rules / Native
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Nativo
+  effect_i18n:
+    es: El terreno de selva no es problema para las arañas; se mueven por la selva sin penalización.
+  applies_to:
+    profile_ids:
+    - gigantic-spider
+- id: gigantic-spider--may-ride
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins-lus.gigantic-spider.may-ride
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: May Ride
+  effect: >-
+    The Forest Goblin Chieftain may ride the Gigantic Spider using the optional mounts rules. He
+    gains +1 armour save and moves at the spider's rate of 6. Shooting attacks hit the Chieftain on
+    a roll of 1-2 and the spider on 3-6; in close combat the opponent may choose which to hit. The
+    spider no longer checks for Stupidity while ridden.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-1 Gigantic Spider / Special Rules / May Ride
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Montable
+  effect_i18n:
+    es: >-
+      El Jefe Tribal goblin puede montar la Araña Gigantesca usando las reglas opcionales de
+      monturas. Gana +1 a su salvación por armadura y se mueve al ritmo de la araña (6). Los ataques
+      de disparo impactan al Jefe Tribal con un 1-2 y a la araña con un 3-6; en cuerpo a cuerpo el
+      oponente elige a quién golpear. La araña no hace chequeos de Estupidez mientras sea montada.
+  applies_to:
+    profile_ids:
+    - gigantic-spider
+- id: gigantic-spider--nonsentient
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.forest-goblins-lus.gigantic-spider.nonsentient
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Nonsentient
+  effect: >-
+    Spiders are affected by the Stupidity rules. They never gain experience, as they are animals,
+    but they may climb as normal.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-1 Gigantic Spider / Special Rules / Nonsentient
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: No Sintiente
+  effect_i18n:
+    es: >-
+      Las arañas se ven afectadas por las reglas de Estupidez. Nunca ganan experiencia, pues son
+      animales, pero pueden trepar con normalidad.
+  applies_to:
+    profile_ids:
+    - gigantic-spider

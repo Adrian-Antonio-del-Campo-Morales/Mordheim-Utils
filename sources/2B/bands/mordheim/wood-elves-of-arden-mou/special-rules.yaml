@@ -1,0 +1,374 @@
+schema_version: 2
+band_id: wood-elves-of-arden-mou
+rules:
+- id: band--wood-elf-special-skills
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.wood-elves-of-arden-mou.band.wood-elf-special-skills
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Wood Elf Special Skills
+  effect: >-
+    Wood Elf Heroes with the Special skill available to them may choose to use the following Skill
+    list instead of any of the standard Skill tables available to them. Fey: the Wood Elf has a
+    certain understanding of magic and therefore gets a saving throw of 4+ against hostile magic.
+    Elven Luck: once per game, he may reroll any failed roll. Excellent Sight: by training his
+    eyesight for years the Wood Elf can spot hidden enemy models up to 2 x I inch away. Seeker:
+    being an expert Tracker, the Wood Elf is able to spot even hidden treasures; he may modify the
+    result of one exploration die by +/- 1; only one Elven Hero may possess this skill!
+    Infiltration: the Wood Elf is an expert in infiltrating behind enemy lines; therefore he is
+    always deployed last, anywhere out of sight of the enemy; if both players have infiltrate, roll
+    1d6, lowest roll deploys first.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Wood Elf Special Skills
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
+  name_i18n:
+    es: Habilidades Especiales de los Elfos Silvanos
+  effect_i18n:
+    es: >-
+      Los héroes elfos silvanos con la habilidad Especial disponible pueden elegir usar la siguiente
+      lista en lugar de cualquiera de las tablas de habilidades estándar. Feérico: el elfo silvano
+      tiene cierto entendimiento de la magia y obtiene una tirada de salvación de 4+ contra magia
+      hostil. Suerte Élfica: una vez por partida puede repetir cualquier tirada fallida. Vista
+      Excelente: tras años de entrenar su vista, el elfo silvano puede detectar modelos enemigos
+      ocultos hasta 2 x I pulgadas de distancia. Buscador: siendo un rastreador experto, el elfo
+      silvano puede detectar incluso tesoros ocultos; puede modificar el resultado de un dado de
+      exploración en +/- 1; ¡solo un héroe élfico puede poseer esta habilidad! Infiltración: el elfo
+      silvano es experto en infiltrarse tras las líneas enemigas; por eso siempre se despliega el
+      último, en cualquier lugar fuera de la vista del enemigo; si ambos jugadores tienen
+      infiltración, tira 1D6; la tirada más baja despliega primero.
+  applies_to:
+    band: true
+- id: band--woodland-incantations
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.wood-elves-of-arden-mou.band.woodland-incantations
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Woodland Incantations
+  effect: >-
+    A Forest Mage randomly chooses one spell from the Wood Elven spell list. 1. Song of Thorns (diff
+    8): branches strike out to the foe under influence of the singer cadence; if no plants are
+    present wooden chips fly at the victim, as if they want to be thorns; the victim suffers 2D6 S1
+    hits, range 8". 2. Murmuring of the Wind (diff 7): very softly the wind increases around the
+    caster and takes him wherever he wants; the caster may move anywhere within 12", if he gets into
+    HtH it counts as a charge. 3. The Rain Song (diff 9): the air around the caster becomes moist
+    and it starts to rain, until it looks like a major downpour; everything, except Wood Elves,
+    within 6" of the caster suffers -1 to hit and suffers -1 Initiative; lasts until the beginning
+    of the caster's next magic phase. 4. Lyrics of Feral Infatuation (diff 8): this soothing song
+    seems to calm even the most ferocious monsters and sends them into a sort of lethargic state;
+    any animal or monster has to pass a Ld-test, on his own Ld, in order to attack an opponent; if
+    it fails it will do nothing else that turn, not even fighting back if attacked. 5. Song of the
+    Sun (diff 6): while the caster sings his victim thinks he is in a scorching desert; his movement
+    slows and he might suffer from heat stroke; the target within 18" is -1M until the caster's next
+    magic phase, and he also must make a T-test; if he fails, he suffers a S4 hit. 6. Eagle's Cry
+    (diff 8): the caster utters a melodious cry, which sounds like a great eagle; this inspires the
+    elves so much they gain the legendary sight of Thuarindir; all Wood Elves within 6" gain +1 on
+    to hit and +1 on the critical hittable; lasts until the beginning of the caster's next magic
+    phase.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Woodland Incantations
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
+  name_i18n:
+    es: Encantamientos del Bosque
+  effect_i18n:
+    es: >-
+      Un Mago del Bosque elige al azar un hechizo de la lista de hechizos élficos silvanos. 1.
+      Canción de Espinas (dificultad 8): las ramas golpean al enemigo bajo la cadencia del cantor;
+      si no hay plantas, virutas de madera vuelan hacia la víctima como si quisieran ser espinas; la
+      víctima sufre 2D6 impactos de F1, alcance 8 pulgadas. 2. Murmullo del Viento (dificultad 7):
+      el viento aumenta suavemente alrededor del lanzador y lo lleva donde quiera; el lanzador puede
+      moverse a cualquier lugar dentro de 12 pulgadas; si entra en combate cuerpo a cuerpo cuenta
+      como carga. 3. La Canción de la Lluvia (dificultad 9): el aire se vuelve húmedo y empieza a
+      llover hasta parecer un gran diluvio; todo, excepto los Elfos Silvanos, dentro de 6 pulgadas
+      del lanzador sufre -1 para golpear y -1 Iniciativa; dura hasta el principio de la próxima fase
+      de magia del lanzador. 4. Letras de Enamoramiento Feral (dificultad 8): esta canción
+      tranquilizadora calma incluso a los monstruos más feroces y los envía a un estado letárgico;
+      cualquier animal o monstruo debe superar una prueba de Ld, con su propia Ld, para atacar a un
+      oponente; si falla, no hará nada más ese turno, ni siquiera defenderse si es atacado. 5.
+      Canción del Sol (dificultad 6): mientras el lanzador canta, su víctima cree estar en un
+      desierto abrasador; su movimiento se ralentiza y puede sufrir una insolación; el objetivo
+      dentro de 18 pulgadas tiene -1 M hasta la próxima fase de magia del lanzador, y también debe
+      hacer una prueba de F; si falla, sufre un impacto de F4. 6. Grito del Águila (dificultad 8):
+      el lanzador emite un grito melodioso que suena como una gran águila; esto inspira tanto a los
+      elfos que ganan la legendaria vista de Thuarindir; todos los Elfos Silvanos dentro de 6
+      pulgadas obtienen +1 para golpear y +1 al crítico; dura hasta el principio de la próxima fase
+      de magia del lanzador.
+  applies_to:
+    band: true
+- id: protector-of-the-hunt--leader
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.wood-elves-of-arden-mou.protector-of-the-hunt.leader
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Leader
+  effect: >-
+    Any warrior within 6" of the Protector of the Hunt may use his Leadership value when taking
+    Leadership tests.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Protector of the Hunt / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6 pulgadas del Protector de la Caza puede usar su valor de Liderazgo
+      cuando haga pruebas de Liderazgo.
+  applies_to:
+    profile_ids:
+    - protector-of-the-hunt
+- id: elder-scout--sniper
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.wood-elves-of-arden-mou.elder-scout.sniper
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Sniper
+  effect: >-
+    Due to their years of training Elder Scouts can shoot while keeping almost invisible. This
+    allows the character to shoot while hiding. After the shot roll a D6; on a 5+ no one noticed
+    where the arrow came from.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-2 Elder Scouts / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
+  name_i18n:
+    es: Francotirador
+  effect_i18n:
+    es: >-
+      Debido a sus años de entrenamiento, los Exploradores Mayores pueden disparar manteniéndose
+      casi invisibles. Esto permite al personaje disparar mientras está oculto. Tras el disparo tira
+      un D6; con un 5+ nadie advirtió de dónde vino la flecha.
+  applies_to:
+    profile_ids:
+    - elder-scout
+- id: elder-scout--camouflage
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.wood-elves-of-arden-mou.elder-scout.camouflage
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Camouflage
+  effect: >-
+    Elder scouts are experts of camouflage. They wear cloaks of green, brown or grey which are made
+    from leaves sewn together or with incorporated foliage. By painting their faces and bodies with
+    green and brown paint they are almost invisible when hiding. When an Elder Scout is hidden, each
+    enemy model has to make an additional I test to spot him.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-2 Elder Scouts / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
+  name_i18n:
+    es: Camuflaje
+  effect_i18n:
+    es: >-
+      Los Exploradores Mayores son expertos en camuflaje. Llevan capas verdes, marrones o grises
+      hechas de hojas cosidas o con follaje incorporado. Pintando sus caras y cuerpos con pintura
+      verde y marrón son casi invisibles cuando se ocultan. Cuando un Explorador Mayor está oculto,
+      cada modelo enemigo debe hacer una prueba adicional de I para detectarlo.
+  applies_to:
+    profile_ids:
+    - elder-scout
+- id: forest-mage--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.wood-elves-of-arden-mou.forest-mage.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Wizard
+  effect: A Forest Mage can cast spells. Randomly choose one spell from the Wood Elven spell list.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Forest Mage / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
+  name_i18n:
+    es: Hechicero
+  effect_i18n:
+    es: >-
+      Un Mago del Bosque puede lanzar hechizos. Elige al azar un hechizo de la lista de hechizos
+      élficos silvanos.
+  applies_to:
+    profile_ids:
+    - forest-mage
+- id: scout--crossfire
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.wood-elves-of-arden-mou.scout.crossfire
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Crossfire
+  effect: If more than one scout henchman shoots at the same target, they get +1 on the injury roll.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-5 Scouts / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
+  name_i18n:
+    es: Fuego Cruzado
+  effect_i18n:
+    es: >-
+      Si más de un explorador (hombre de tropa) dispara al mismo objetivo, obtienen +1 en la tirada
+      de herida.
+  applies_to:
+    profile_ids:
+    - scout
+- id: ivy-ferret--running-about
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.wood-elves-of-arden-mou.ivy-ferret.running-about
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Running About
+  effect: >-
+    Due to his small size and very quick movement the Ivy ferret is almost impossible to hit. It
+    constantly is all about the place. Therefore nobody can directly attack the ferret. Roll a D6
+    for any hit on the Keeper; on a 6 the Ivy ferret is hit. Once hit and survived the ferret hides
+    for the rest of that combat and cannot be hit, or attack anymore.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-1 Ivy Ferret / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
+  name_i18n:
+    es: Correteando
+  effect_i18n:
+    es: >-
+      Debido a su pequeño tamaño y movimiento muy rápido, el hurón de hiedra es casi imposible de
+      golpear. Está constantemente correteando. Por eso nadie puede atacar directamente al hurón.
+      Tira un D6 por cada golpe que reciba su Guardián; con un 6 el hurón es golpeado. Una vez
+      golpeado y habiendo sobrevivido, el hurón se esconde el resto de ese combate y no puede ser
+      golpeado ni atacar de nuevo.
+  applies_to:
+    profile_ids:
+    - ivy-ferret
+- id: ivy-ferret--immunity-to-poison
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.wood-elves-of-arden-mou.ivy-ferret.immunity-to-poison
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Immunity to Poison
+  effect: Ivy Ferrets are immune to all forms of poison.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-1 Ivy Ferret / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
+  name_i18n:
+    es: Inmunidad al Veneno
+  effect_i18n:
+    es: Los Hurones de Hiedra son inmunes a todas las formas de veneno.
+  applies_to:
+    profile_ids:
+    - ivy-ferret
+- id: ivy-ferret--spirit
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.wood-elves-of-arden-mou.ivy-ferret.spirit
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Spirit
+  effect: The Ivy Ferret is a woodland spirit and therefore gains no experience.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-1 Ivy Ferret / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
+  name_i18n:
+    es: Espíritu
+  effect_i18n:
+    es: El Hurón de Hiedra es un espíritu del bosque y por tanto no gana experiencia.
+  applies_to:
+    profile_ids:
+    - ivy-ferret
+- id: ivy-ferret--poison-teeth
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.wood-elves-of-arden-mou.ivy-ferret.poison-teeth
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Poison Teeth
+  effect: >-
+    Because of their spiritual nature a bite from an Ivy ferret is almost poisonlike in its effect.
+    Treat like black lotus poison. An Ivy ferret is allowed to attack each round its keeper is also
+    allowed.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-1 Ivy Ferret / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
+  name_i18n:
+    es: Dientes Venenosos
+  effect_i18n:
+    es: >-
+      Debido a su naturaleza espiritual, un mordisco de hurón de hiedra tiene un efecto casi
+      venenoso. Trátalo como veneno de loto negro. Un hurón de hiedra puede atacar cada ronda en la
+      que su guardián también pueda hacerlo.
+  applies_to:
+    profile_ids:
+    - ivy-ferret

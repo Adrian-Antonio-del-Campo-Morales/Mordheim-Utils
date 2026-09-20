@@ -1,0 +1,230 @@
+schema_version: 2
+band_id: lost-the-mou
+rules:
+- id: band--leaders-the-lost
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lost-the-mou.band.leaders-the-lost
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Leaders (The Lost)
+  effect: >-
+    The Lost don't follow established leaders. Instead, the Hero with the highest Leadership at the
+    beginning of the game assumes the role, gaining the Leader skill for the duration of the game.
+    If there is no clear leader, then the Hero with the highest Experience will be the leader.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Leaders
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/The%20Lost.pdf
+  name_i18n:
+    es: Líderes (Los Perdidos)
+  effect_i18n:
+    es: >-
+      Los Perdidos no siguen líderes establecidos. En su lugar, el Héroe con el Liderazgo más alto
+      al comienzo de la partida asume el papel, ganando la habilidad Líder durante el resto de la
+      partida. Si no hay un líder claro, será líder el Héroe con más Experiencia.
+  applies_to:
+    band: true
+- id: band--traps
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lost-the-mou.band.traps
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Traps
+  effect: >-
+    The Lost use traps to harm their enemies and catch food. Note down on a piece of paper which
+    buildings contain traps - you may rig one building per Hero or Henchman group with this skill.
+    The first model to enter a rigged building must pass an Initiative test or suffer a single S3
+    hit.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Traps
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/The%20Lost.pdf
+  name_i18n:
+    es: Trampas
+  effect_i18n:
+    es: >-
+      Los Perdidos usan trampas para dañar a sus enemigos y cazar comida. Anota en un papel qué
+      edificios contienen trampas: puedes preparar un edificio por cada Héroe o grupo de Braceros
+      con esta habilidad. El primer modelo que entre en un edificio preparado debe superar una
+      prueba de Iniciativa o sufrir un único impacto de F3.
+  applies_to:
+    band: true
+- id: band--special-skills-the-lost
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lost-the-mou.band.special-skills-the-lost
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Special Skills of the Lost
+  effect: >-
+    Heroes of the Lost with the Special skill available to them may choose to use the following
+    Skill list instead of any of the standard Skill tables available to them. Expert Explorer: the
+    character is an expert at exploring the ruins for food and resources; he may modify one dice in
+    the Exploration phase by +1/-1. Wall Runner: the character doesn't need to take an Initiative
+    test to scale sheer surfaces. Trap Master: the character may lay traps, as described in the
+    Special Rules. Silent Strike: the character may shoot whilst hiding without revealing his
+    position.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Special Skills of the Lost
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/The%20Lost.pdf
+  name_i18n:
+    es: Habilidades Especiales de los Perdidos
+  effect_i18n:
+    es: >-
+      Los Héroes de los Perdidos con acceso a la habilidad Especial pueden elegir usar la siguiente
+      lista de habilidades en lugar de cualquiera de las tablas de habilidades estándar disponibles.
+      Explorador Experto: el personaje es un experto en explorar las ruinas en busca de comida y
+      recursos; puede modificar un dado en la fase de Exploración con +1/-1. Corredor de Muros: el
+      personaje no necesita hacer una prueba de Iniciativa para escalar superficies verticales.
+      Maestro de Trampas: el personaje puede colocar trampas, como se describe en las Reglas
+      Especiales. Golpe Silencioso: el personaje puede disparar mientras está oculto sin revelar su
+      posición.
+  applies_to:
+    band: true
+- id: barons--mob-mentality
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lost-the-mou.barons.mob-mentality
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Mob Mentality (Barons)
+  effect: >-
+    The Lost band together for safety in numbers. For every other member of the warband within 3",
+    the Baron gains +1 Leadership to a maximum of +3.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1-3 Barons / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/The%20Lost.pdf
+  name_i18n:
+    es: Mentalidad de Masa (Barones)
+  effect_i18n:
+    es: >-
+      Los Perdidos se agrupan por seguridad en el número. Por cada otro miembro de la banda a 3" o
+      menos, el Barón gana +1 de Liderazgo hasta un máximo de +3.
+  applies_to:
+    profile_ids:
+    - barons
+- id: elders--advisor
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lost-the-mou.elders.advisor
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Advisor (Elders)
+  effect: >-
+    The Elders know every aspect of the city, having lived and survived for longer than any can
+    remember. A warrior with this skill allows a single Hero within 6" to re-roll one dice per turn.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-2 Elders / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/The%20Lost.pdf
+  name_i18n:
+    es: Consejero (Ancianos)
+  effect_i18n:
+    es: >-
+      Los Ancianos conocen cada aspecto de la ciudad, tras vivir y sobrevivir más tiempo del que
+      cualquiera pueda recordar. Un guerrero con esta habilidad permite que un único Héroe a 6" o
+      menos repita un dado por turno.
+  applies_to:
+    profile_ids:
+    - elders
+- id: greycoats--trap-masters
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lost-the-mou.greycoats.trap-masters
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Trap Masters (Greycoats)
+  effect: >-
+    Greycoats operate outside the normal limits of combat, scouting the ruins and laying traps to
+    capture food and harm enemies. Greycoats may set up traps, as described in the Special Rules.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / 0-2 Greycoats / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/The%20Lost.pdf
+  name_i18n:
+    es: Maestros de Trampas (Grises)
+  effect_i18n:
+    es: >-
+      Los Grises operan fuera de los límites normales del combate, explorando las ruinas y colocando
+      trampas para capturar comida y dañar a los enemigos. Los Grises pueden colocar trampas, como
+      se describe en las Reglas Especiales.
+  applies_to:
+    profile_ids:
+    - greycoats
+- id: mummers--brutes
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lost-the-mou.mummers.brutes
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Brutes (Mummers)
+  effect: >-
+    Mummers are brutish fighters, no longer able to function properly in even the Lost's society,
+    and may never rise to positions of power. Re-roll any 'Lad's Got Talent' results for experience.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / Mummers / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/The%20Lost.pdf
+  name_i18n:
+    es: Brutos (Mimos)
+  effect_i18n:
+    es: >-
+      Los Mimos son luchadores brutos, que ya no pueden funcionar adecuadamente ni siquiera en la
+      sociedad de los Perdidos, y nunca pueden ascender a posiciones de poder. Repite cualquier
+      resultado 'Ese chico tiene talento' por experiencia.
+  applies_to:
+    profile_ids:
+    - mummers

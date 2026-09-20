@@ -1,0 +1,287 @@
+schema_version: 2
+band_id: order-of-the-mare-web
+profiles:
+- id: paragon
+  name: Paragon
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - footman-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Paragon
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  source_path:
+  - heroes
+  - 1 Paragon
+  name_i18n:
+    es: Paradigma
+  rule_ids:
+  - paragon--leader
+  - paragon--knights-virtue
+  - paragon--vow-of-poverty
+  combat_traits: {}
+- id: dame-of-the-mare
+  name: Dame of the Mare
+  type: hero
+  cost: 55
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - dame-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Comes equipped with an ancient armour that may never be removed, traded or stolen. It does not prevent
+    spell casting, and provides a 5+ save that cannot be modified, but doesn't work against magical attacks.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Dame of the Mare
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  source_path:
+  - heroes
+  - 1 Dame of the Mare
+  name_i18n:
+    es: Dama de la Yegua
+  rule_ids:
+  - dame-of-the-mare--prayers
+  - paragon--knights-virtue
+  combat_traits: {}
+- id: gallant
+  name: Gallant
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - footman-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Gallant
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  source_path:
+  - heroes
+  - 0-1 Gallant
+  name_i18n:
+    es: Galán
+  rule_ids:
+  - paragon--knights-virtue
+  combat_traits: {}
+- id: esquiresses
+  name: Esquiresses
+  type: hero
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - archer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Esquiresses
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  source_path:
+  - heroes
+  - 0-2 Esquiresses
+  name_i18n:
+    es: Escuderas
+  rule_ids: []
+  combat_traits: {}
+- id: pilgrims
+  name: Pilgrims
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - footman-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Pilgrims
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  source_path:
+  - henchmen
+  - Pilgrims
+  name_i18n:
+    es: Peregrinos
+  rule_ids:
+  - pilgrims--hatred
+  - pilgrims--peasants
+  combat_traits: {}
+- id: bowmen
+  name: Bowmen
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - archer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-7 Bowmen
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  source_path:
+  - henchmen
+  - 0-7 Bowmen
+  name_i18n:
+    es: Arqueros
+  rule_ids: []
+  combat_traits: {}
+- id: redeemed-knights
+  name: Redeemed Knights
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - footman-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-5 Redeemed Knights
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  source_path:
+  - henchmen
+  - 0-5 Redeemed Knights
+  name_i18n:
+    es: Caballeros Redimidos
+  rule_ids:
+  - paragon--knights-virtue
+  combat_traits: {}
+- id: companion-filly
+  name: Companion Filly
+  type: henchman
+  cost: 45
+  experience: 0
+  characteristics:
+    M: 8
+    WS: 4
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 2
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Fights with its hooves, and suffers no penalty for fighting unarmed. Clad in an odd-looking covering
+    that provides a 5+ save that cannot be modified but doesn't work against magical attacks. May never
+    take any equipment, except for the covering it already carries.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Companion Filly
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  source_path:
+  - henchmen
+  - 0-1 Companion Filly
+  name_i18n:
+    es: Potranca Compañera
+  rule_ids:
+  - companion-filly--horse
+  combat_traits: {}

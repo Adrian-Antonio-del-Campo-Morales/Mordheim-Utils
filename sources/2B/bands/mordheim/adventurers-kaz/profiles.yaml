@@ -1,0 +1,260 @@
+schema_version: 2
+band_id: adventurers-kaz
+profiles:
+- id: wizard
+  name: Wizard
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - wizard-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - academic
+  source:
+    manual: broheim.net
+    printed_page: 21
+    section: 0-1 Wizard
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 0-1 Wizard
+  name_i18n:
+    es: Hechicero
+  rule_ids:
+  - wizard--wizard
+  combat_traits: {}
+- id: elf
+  name: Elf
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - elf-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - shooting
+  - speed
+  source:
+    manual: broheim.net
+    printed_page: 21
+    section: 0-1 Elf
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 0-1 Elf
+  name_i18n:
+    es: Elfo
+  rule_ids:
+  - elf--hatred
+  - elf--seeker
+  combat_traits: {}
+- id: barbarian
+  name: Barbarian
+  type: hero
+  cost: 40
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 10
+  equipment_lists:
+  - barbarian-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Barbarian will never wear armour.
+  skill_access:
+  - combat
+  - strength
+  source:
+    manual: broheim.net
+    printed_page: 22
+    section: 0-1 Barbarian
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 0-1 Barbarian
+  name_i18n:
+    es: Bárbaro
+  rule_ids:
+  - barbarian--frenzy
+  - barbarian--dim-witted
+  combat_traits: {}
+- id: imperial-noble
+  name: Imperial Noble
+  type: hero
+  cost: 30
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - imperial-noble-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  source:
+    manual: broheim.net
+    printed_page: 22
+    section: 0-1 Imperial Noble
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 0-1 Imperial Noble
+  name_i18n:
+    es: Noble Imperial
+  rule_ids:
+  - imperial-noble--honorable
+  - imperial-noble--family-heirloom
+  combat_traits: {}
+- id: dwarf
+  name: Dwarf
+  type: hero
+  cost: 30
+  experience: 8
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - dwarf-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - strength
+  source:
+    manual: broheim.net
+    printed_page: 23
+    section: 0-1 Dwarf
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 0-1 Dwarf
+  name_i18n:
+    es: Enano
+  rule_ids:
+  - dwarf--hard-to-kill
+  - dwarf--hard-head
+  combat_traits: {}
+- id: imperial-captain
+  name: Imperial Captain
+  type: hero
+  cost: 0
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - cannon-fodder-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Promotion only — the warband gets an Imperial Captain when a Cannon Fodder is promoted with
+    the "Lad's got Talent" result; it can never be hired. The source prints no separate profile
+    — the characteristics above are inherited from the Cannon Fodder profile per the Mixed Bunch
+    rule, pending english-review confirmation.
+  - Uses the Cannon Fodder equipment list.
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  source:
+    manual: broheim.net
+    printed_page: 24
+    section: 0-1 Captain / Mixed Bunch
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 0-1 Captain
+  name_i18n:
+    es: Capitán Imperial
+  rule_ids: []
+  combat_traits: {}
+- id: cannon-fodder
+  name: Cannon Fodder
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - cannon-fodder-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 24
+    section: Cannon Fodder
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - henchmen
+  - Cannon Fodder
+  name_i18n:
+    es: Carne de Cañón
+  rule_ids:
+  - cannon-fodder--mixed-bunch
+  combat_traits: {}

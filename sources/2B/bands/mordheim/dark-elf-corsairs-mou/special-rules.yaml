@@ -1,0 +1,343 @@
+schema_version: 2
+band_id: dark-elf-corsairs-mou
+rules:
+- id: band--corsair-special-skills
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dark-elf-corsairs-mou.band.corsair-special-skills
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Corsair Special Skills
+  effect: >-
+    Dark Elf Corsairs with the Special Skills available to them may choose to use the following
+    Skill list instead of any of the standard Skill tables available to them. Fey Quickness: the
+    Dark Elf has inhuman agility and as such can avoid melee or missile attacks on a roll of 6; this
+    save can be combined with Dodge or Step aside for a 4+ save in the relevant area. Furious
+    charge: the Dark Elf feels invincible; he adds one attack when he charges. Excellent Sight: by
+    training his eyesight for years the Dark Elf can spot hidden enemy models up to twice as far
+    away as normal warriors. Looting: once per battle you may try to loot a KD/ST character;
+    determine at random which item he takes (daggers do not count). Infiltration: the Dark Elf is an
+    expert in infiltrating behind enemy lines; therefore he is always deployed last, anywhere out of
+    sight of the enemy; if both players have infiltrate, roll 1d6 - lowest roll deploys first.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Corsair Special Skills
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Dark%20Elf%20Corsairs.pdf
+  name_i18n:
+    es: Habilidades Especiales de Corsario
+  effect_i18n:
+    es: >-
+      Los Corsarios Elfos Oscuros con acceso a Habilidades Especiales pueden elegir usar la
+      siguiente lista en lugar de cualquiera de las tablas de habilidades estándar disponibles.
+      Celeridad Feérica: el Elfo Oscuro tiene una agilidad inhumana y puede evitar ataques cuerpo a
+      cuerpo o de proyectiles con una tirada de 6; esta salvación puede combinarse con Esquiva o
+      Apartar el golpe para una salvación de 4+ en el ámbito correspondiente. Carga Furiosa: el Elfo
+      Oscuro se siente invencible; añade un ataque cuando carga. Vista Excelente: tras años de
+      entrenar su vista, el Elfo Oscuro puede descubrir modelos enemigos ocultos hasta al doble de
+      distancia que los guerreros normales. Saqueo: una vez por batalla puedes intentar saquear a un
+      personaje derribado/aturdido; determina al azar qué objeto toma (las dagas no cuentan).
+      Infiltración: el Elfo Oscuro es un experto en infiltrarse tras las líneas enemigas; por eso
+      siempre se despliega el último, en cualquier punto fuera de la vista del enemigo; si ambos
+      jugadores tienen infiltración, tira 1D6: el resultado más bajo despliega primero.
+  applies_to:
+    band: true
+- id: captain--leader
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elf-corsairs-mou.captain.leader
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Leader (Captain)
+  effect: >-
+    Any warrior within 6" of the Captain may use his Leadership value when taking Leadership tests.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 1 Captain / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Dark%20Elf%20Corsairs.pdf
+  name_i18n:
+    es: Líder (Capitán)
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6" o menos del Capitán puede usar su valor de Liderazgo cuando realice
+      tiradas de Liderazgo.
+  applies_to:
+    profile_ids:
+    - captain
+- id: captain--hardened
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elf-corsairs-mou.captain.hardened
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Hardened
+  effect: Seen everything, done everything... it makes him immune to fear.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 1 Captain / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Dark%20Elf%20Corsairs.pdf
+  name_i18n:
+    es: Endurecido
+  effect_i18n:
+    es: Lo ha visto todo, lo ha hecho todo... eso lo hace inmune al miedo.
+  applies_to:
+    profile_ids:
+    - captain
+- id: captain--slaver
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elf-corsairs-mou.captain.slaver
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Slaver
+  effect: >-
+    Any opponent that has the bad fortune to be captured will await only the whip of the slave
+    master... if he is lucky. Any captured result may only be dealt with in the sold to slavery
+    option.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 1 Captain / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Dark%20Elf%20Corsairs.pdf
+  name_i18n:
+    es: Esclavista
+  effect_i18n:
+    es: >-
+      Cualquier oponente con la mala fortuna de ser capturado solo esperará el látigo del maestro
+      esclavista... si tiene suerte. Cualquier resultado de capturado solo puede resolverse con la
+      opción de venderlo como esclavo.
+  applies_to:
+    profile_ids:
+    - captain
+- id: band--specialist-hiring-fee
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elf-corsairs-mou.specialist.hiring-fee
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Hiring Fee (Specialist)
+  effect: >-
+    A specialist is free to hire before a battle. However, proper payment is expected for the
+    services of the warrior after the battle (with a proportion going to the Witch King himself).
+    Therefore, a warband that employs the services of a specialist must pay half of their earnings
+    (i.e. gold crowns, rounding up) in tax. Furthermore, if something should befall the specialist
+    in question, a fine is levied against the Captain for the loss of such a valuable asset of the
+    Black Ark. This fee is listed after the specialist type, and is payed on top of the 50%
+    contribution. Should a warband not have enough to pay the fine immediately, they may spend no
+    other gold crowns in subsequent battles until the debt is payed off. A warband may not use a
+    Specialist while it is in debt.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-1 Specialist / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Dark%20Elf%20Corsairs.pdf
+  name_i18n:
+    es: Tasa de Contratación (Especialista)
+  effect_i18n:
+    es: >-
+      Un especialista es gratis de contratar antes de la batalla. Sin embargo, se espera un pago
+      adecuado por sus servicios tras la batalla (con una proporción destinada al propio Rey Brujo).
+      Por eso, una banda que emplee los servicios de un especialista debe pagar la mitad de sus
+      ganancias (es decir, coronas de oro, redondeando hacia arriba) en impuestos. Además, si algo
+      le sucede al especialista en cuestión, se impone una multa al Capitán por la pérdida de un
+      bien tan valioso del Arca Negra. Esta tasa se lista tras el tipo de especialista y se paga
+      además de la contribución del 50%. Si la banda no tiene suficiente para pagar la multa de
+      inmediato, no puede gastar otras coronas de oro en batallas posteriores hasta saldar la deuda.
+      Una banda no puede usar un Especialista mientras esté en deuda.
+  applies_to:
+    profile_ids:
+    - assassin
+    - sorceress
+    - beastmaster
+    - witch-elf
+- id: band--specialist-provisory-ally
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elf-corsairs-mou.specialist.provisory-ally
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Provisory Ally (Specialist)
+  effect: >-
+    During battle, a Specialist acts like an ordinary member of the warband (contributing to rout
+    totals, Captain's Ld etc.). A specialist will temporarily add +10 points to the warband (for
+    purposes of underdog and such). They will take part in the exploration phase assuming they
+    survived the battle. However, after the battle the Specialist returns to the Black Ark and
+    effectively leaves the warband. A Captain may not request the same specialist for two raids in a
+    row.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-1 Specialist / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Dark%20Elf%20Corsairs.pdf
+  name_i18n:
+    es: Aliado Temporal (Especialista)
+  effect_i18n:
+    es: >-
+      Durante la batalla, un Especialista actúa como un miembro ordinario de la banda (contribuye al
+      cómputo de huida, al Ld del Capitán, etc.). Un especialista añade temporalmente +10 puntos a
+      la banda (a efectos de inferioridad y similares). Participa en la fase de exploración siempre
+      que sobreviva a la batalla. Sin embargo, tras la batalla el Especialista regresa al Arca Negra
+      y efectivamente deja la banda. Un Capitán no puede solicitar el mismo especialista en dos
+      incursiones seguidas.
+  applies_to:
+    profile_ids:
+    - assassin
+    - sorceress
+    - beastmaster
+    - witch-elf
+- id: band--specialist-in-demand
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elf-corsairs-mou.specialist.in-demand
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: In Demand (Specialist)
+  effect: >-
+    Specialists are highly in demand, and dispatched all over the world to assist with raiding
+    parties. As such, a warband is unlikely to employ the services of the same warrior, rather
+    receiving the aid of another in his or her field. To reflect this, a Specialist will not gain
+    any experience, as it is unlikely to be the same one. Also, a Specialist must be equipped
+    exactly as they are listed.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Heroes / 0-1 Specialist / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Dark%20Elf%20Corsairs.pdf
+  name_i18n:
+    es: Muy Solicitado (Especialista)
+  effect_i18n:
+    es: >-
+      Los especialistas son muy solicitados y se envían por todo el mundo para ayudar a las partidas
+      de incursión. Por eso, es improbable que una banda emplee los servicios del mismo guerrero, y
+      más bien recibirá la ayuda de otro de su campo. Para reflejarlo, un Especialista no gana
+      experiencia, ya que es improbable que sea el mismo. Además, un Especialista debe ir equipado
+      exactamente como se lista.
+  applies_to:
+    profile_ids:
+    - assassin
+    - sorceress
+    - beastmaster
+    - witch-elf
+- id: shades--elite
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dark-elf-corsairs-mou.shades.elite
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Elite (Shades)
+  effect: >-
+    Shades are an elite force of specialists and do not count towards any 'lads got talent' rolls
+    since they will not abandon their occupation to become Heroic.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Shades / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Dark%20Elf%20Corsairs.pdf
+  name_i18n:
+    es: Élite (Sombras)
+  effect_i18n:
+    es: >-
+      Las Sombras son una fuerza de élite de especialistas y no cuentan para ninguna tirada de 'Ese
+      chico tiene talento', ya que no abandonarán su ocupación para convertirse en Héroes.
+  applies_to:
+    profile_ids:
+    - shades
+- id: band--roster
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dark-elf-corsairs-mou.specialists.roster
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Specialists (Roster)
+  effect: >-
+    Assassin: replacement cost 90 gc; profile M5 WS5 BS5 S4 T4 W1 I7 A1 Ld8; same as Hired Sword
+    from TC 12. Sorceress: replacement cost 70 gc; profile M5 WS4 BS4 S3 T3 W1 I5 A1 Ld8; is a
+    wizard and uses Dark Magic, as per TC12, with 2 randomly determined spells; equipped with a dark
+    elven blade and dagger. Beastmaster: replacement cost 110 gc; profile M5 WS4 BS3 S3 T4 W1 I6 A1
+    Ld8; accompanied by two cold one beasthounds; equipped with Light armour, a dark elven blade and
+    a beastlash. Cold One Beasthound: profile M6 WS3 BS- S4 T4 W1 I1 A1 Ld4; causes fear and is
+    stupid; may use the beastmaster's Ld if within 6" of his master; his scaly skin gives an
+    unmodifiable 6+ armour save. Witch Elf: replacement cost 50 gc; profile M5 WS4 BS4 S3 T3 W1 I6
+    A1 Ld8; uses drugs, therefore she is subject to frenzy; equipped with two Dark elven blades
+    coated in dark venom; due to her unsurpassed martial arts she gets a 5+ save against all wounds
+    suffered. Note that a Specialist does not count towards the maximum warband size.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Heroes / 0-1 Specialist / Specialists
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Dark%20Elf%20Corsairs.pdf
+  name_i18n:
+    es: Especialistas (lista)
+  effect_i18n:
+    es: >-
+      Asesino: coste de reposición 90 coronas; perfil M5 HA5 HP5 F4 R4 W1 I7 A1 L8; igual que la
+      Espada a Sueldo de TC 12. Hechicera: coste de reposición 70 coronas; perfil M5 HA4 HP4 F3 R3
+      W1 I5 A1 L8; es una maga y usa Magia Oscura, según TC12, con 2 hechizos determinados al azar;
+      equipada con una hoja élfica oscura y daga. Maestro de Bestias: coste de reposición 110
+      coronas; perfil M5 HA4 HP3 F3 R4 W1 I6 A1 L8; acompañado de dos sabuesos de sangre fría;
+      equipado con armadura ligera, una hoja élfica oscura y un látigo de bestias. Sabueso de Sangre
+      Fría: perfil M6 HA3 HP- F4 R4 W1 I1 A1 L4; causa miedo y es estúpido; puede usar el Ld del
+      maestro de bestias si está a 6" o menos de su señor; su piel escamosa le otorga una salvación
+      por armadura de 6+ no modificable. Elfa Bruja: coste de reposición 50 coronas; perfil M5 HA4
+      HP4 F3 R3 W1 I6 A1 L8; usa drogas, por lo que está sujeta a frenesí; equipada con dos hojas
+      élficas oscuras recubiertas de veneno oscuro; gracias a sus artes marciales insuperables
+      obtiene una salvación de 5+ contra todas las heridas sufridas. Ten en cuenta que un
+      Especialista no cuenta para el tamaño máximo de la banda.
+  applies_to:
+    band: true

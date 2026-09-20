@@ -1,0 +1,56 @@
+schema_version: 2
+id: silent-brotherhood-sc
+canonical_family: silent-brotherhood-sc
+name: Silent Brotherhood
+name_i18n:
+  es: Hermandad Silenciosa
+original_locale: en
+ruleset: mordheim
+categories:
+- 2b
+grade: 2b
+setting: The Sealed City
+publication: The Sealed City Supplement
+status: staging
+sources:
+- manual: Broheim
+  printed_page: 1
+  section: Silent Brotherhood
+  url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
+roster:
+  minimum_models: 3
+  maximum_models: 12
+  starting_gold: 500
+  members:
+  - profile_id: silent-master
+    minimum: 1
+    maximum: 1
+  - profile_id: poisoner
+    minimum: 0
+    maximum: 1
+  - profile_id: assassins
+    minimum: 0
+    maximum: 3
+  - profile_id: brotherhood-agents
+    minimum: 0
+    maximum: 5
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: brotherhood-novices
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: thugs
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+rule_ids:
+- band--assignments
+- band--sworn-brotherhood
+- band--the-silence
+- band--modus-operandi

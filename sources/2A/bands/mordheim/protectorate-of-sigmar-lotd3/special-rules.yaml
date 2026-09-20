@@ -1,0 +1,424 @@
+schema_version: 2
+band_id: protectorate-of-sigmar-lotd3
+rules:
+- id: band--death-of-a-leader
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.protectorate-of-sigmar-lotd3.band.death-of-a-leader
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: leader replacement, promotion of the Acolyte and re-hiring are campaign
+        mechanics outside the duel scope.
+  name: Death of a Leader
+  effect: >-
+    Should the Warrior Priest fall, the Acolyte with the most experience takes up the Mantle of
+    Leader. Transfer all benefits of the Warrior Priest class to the Acolyte, and change his title
+    accordingly. He does not immediately gain a Prayer, as that requires study and experience. With
+    his next advance, he may choose to either take a prayer from the list, or roll for an
+    advancement. All subsequent advancements are done as per the regular rules. Once promoted, the
+    Acolyte becomes a Warrior Priest, thus freeing the Warband to hire another Acolyte.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Death of a Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+  name_i18n:
+    es: Muerte de un Líder
+  effect_i18n:
+    es: >-
+      Si el Sacerdote Guerrero cae, el Acólito con más experiencia toma el Manto de Líder.
+      Transfiere todos los beneficios de la clase Sacerdote Guerrero al Acólito y cambia su título
+      en consecuencia. No gana inmediatamente una Plegaria, ya que eso requiere estudio y
+      experiencia. Con su próximo avance puede elegir tomar una plegaria de la lista o tirar por un
+      avance. Todos los avances posteriores se realizan según las reglas normales. Una vez
+      promovido, el Acólito se convierte en Sacerdote Guerrero, liberando así a la banda para
+      contratar otro Acólito.
+  applies_to:
+    band: true
+- id: band--witch-hunter-hired-swords
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.protectorate-of-sigmar-lotd3.band.witch-hunter-hired-swords
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: hired-sword recruitment eligibility is a campaign/hiring mechanic.
+  name: Selective Hired Swords
+  effect: >-
+    The Protectorates are selective when it comes to which Hired Swords may accompany them. As such,
+    they may recruit Hired Swords as if they were Witch Hunters.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Choice of Warriors / Henchmen (hiring note)
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+  name_i18n:
+    es: Mercenarios Selectos
+  effect_i18n:
+    es: >-
+      Los Protectorados son selectivos en cuanto a qué Espadas Contratadas pueden acompañarlos. Por
+      tanto, pueden reclutar Espadas Contratadas como si fueran Cazadores de Brujas.
+  applies_to:
+    band: true
+- id: band--huntsman-hero-slot
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.protectorate-of-sigmar-lotd3.band.huntsman-hero-slot
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Warband-composition limit: roster-slot rules are validated at warband construction, outside
+        the duel engine scope.
+  name: Huntsman Hero Slot
+  effect: >-
+    A Huntsman takes place of one Templar. Therefore, if a Huntsman is included, the warband may not
+    include more than one Templar.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0 – 1 Huntsman
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+  name_i18n:
+    es: Hueco de Héroe del Cazador
+  effect_i18n:
+    es: >-
+      Un Cazador ocupa el lugar de uno de los Templarios. Por tanto, si se incluye un Cazador, la
+      banda no puede incluir más de un Templario.
+  applies_to:
+    band: true
+- id: warrior-priest--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.protectorate-of-sigmar-lotd3.warrior-priest.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: leadership-radios checks are a morale mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Warrior Priest / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - warrior-priest
+  rule_ref: shared-rule.leader
+- id: warrior-priest--prayers-of-sigmar
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.protectorate-of-sigmar-lotd3.warrior-priest.prayers-of-sigmar
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (divine prayers). The Prayers of Sigmar lore is already
+        modeled by the active KB as lore.prayers-of-sigmar; the page defers to 'the Magic section'
+        and prints no spell text of its own.
+  name: Prayers of Sigmar
+  effect: >-
+    The Warrior Priest has studied the Prayers of Sigmar, and as such begins with one randomly
+    generated prayer. See the Magic section.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Warrior Priest / Special Rules / Prayers of Sigmar
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+  name_i18n:
+    es: Plegarias de Sigmar
+  effect_i18n:
+    es: >-
+      El Sacerdote Guerrero ha estudiado las Plegarias de Sigmar y, como tal, comienza con una
+      plegaria generada aleatoriamente. Ver la sección de Magia.
+  applies_to:
+    profile_ids:
+    - warrior-priest
+- id: templar--zealous
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.protectorate-of-sigmar-lotd3.templar.zealous
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hatred of chaotic warbands is a psychology mechanic (hate tests).
+  name: Zealous
+  effect: >-
+    Strong is the devotion of the Templar. The model hates any model belonging to a chaotic warband.
+    This includes Skaven, Possessed, Carnival of Chaos, Beastmen and any warband that has a Daemon
+    in it.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0-2 Templars / Special Rules / Zealous
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+  name_i18n:
+    es: Fervoroso
+  effect_i18n:
+    es: >-
+      Fuerte es la devoción del Templario. La miniatura odia a cualquier miniatura perteneciente a
+      una banda caótica. Esto incluye Skaven, Posesos, Carnaval del Caos, Hombres Bestia y cualquier
+      banda que tenga un Demonio en ella.
+  applies_to:
+    profile_ids:
+    - templar
+- id: huntsman--beastmaster
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.protectorate-of-sigmar-lotd3.huntsman.beastmaster
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: leadership use by animals and hostile-beast charge tests are
+        psychology/morale mechanics.
+  name: Beastmaster
+  effect: >-
+    A Huntsman is naturally attuned to the earth and beasts around him. Any animal in the warband
+    may use the Huntsman Leadership characteristic if it is within 6 inches of him. Any hostile
+    beast must make a successful Ld Test to charge the Huntsman.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0-1 Huntsman / Special Rules / Beastmaster
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+  name_i18n:
+    es: Domador
+  effect_i18n:
+    es: >-
+      Un Cazador está naturalmente en sintonía con la tierra y las bestias a su alrededor. Cualquier
+      animal de la banda puede usar la característica de Liderazgo del Cazador si está a 6 pulgadas
+      de él. Cualquier bestia hostil debe superar una tirada de Ld para cargar contra el Cazador.
+  applies_to:
+    profile_ids:
+    - huntsman
+- id: hound--animals
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.protectorate-of-sigmar-lotd3.hound.animals
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: experience progression is a campaign mechanic.
+  name: Animals
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-5 Hounds / Special Rules / Animals
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+  name_i18n:
+    es: Animales
+  applies_to:
+    profile_ids:
+    - hound
+  rule_ref: shared-rule.animal
+- id: hound--devoted
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.protectorate-of-sigmar-lotd3.hound.devoted
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: leadership re-rolls are a morale mechanic.
+  name: Devoted
+  effect: >-
+    Trained since pups, these Hounds are devoted beyond what a typical master could expect. A Hound
+    may re-roll a failed Leadership check if within 12 inches of the Warrior Priest.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-5 Hounds / Special Rules / Devoted
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+  name_i18n:
+    es: Devotos
+  effect_i18n:
+    es: >-
+      Adiestrados desde cachorros, estos Sabuesos son devotos más allá de lo que podría esperar un
+      amo corriente. Un Sabueso puede repetir una tirada de Liderazgo fallida si está a 12 pulgadas
+      del Sacerdote Guerrero.
+  applies_to:
+    profile_ids:
+    - hound
+- id: band--special-skill-protection-of-sigmar
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.protectorate-of-sigmar-lotd3.band.protection-of-sigmar
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: spell nullification is a magic-subsystem interaction.
+  name: Protection of Sigmar
+  effect: >-
+    The pious has been blessed by the Church. Any spell which would affect him is nullified on a D6
+    roll of 4+. Note that if the spell is nullified it will not affect any other models either.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Protection of Sigmar
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+  name_i18n:
+    es: Protección de Sigmar
+  effect_i18n:
+    es: >-
+      El piadoso ha sido bendecido por la Iglesia. Cualquier hechizo que le afecte se anula con un
+      resultado de 4+ en un D6. Ten en cuenta que si el hechizo se anula, tampoco afectará a otras
+      miniaturas.
+  applies_to:
+    band: true
+- id: band--special-skill-unshakeable-faith
+  kind: warband_skill
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.protectorate-of-sigmar-lotd3.band.unshakeable-faith
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: immunity to Fear is a psychology mechanic.
+  name: Unshakeable Faith
+  effect: >-
+    Such is the faith of the warrior that there is little room for doubt or hesitation in his
+    actions. When the opportunity arises to smite evil, one must be able to strike! As such, the
+    warrior is hardened and immune to Fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Unshakeable Faith
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+  name_i18n:
+    es: Fe Inquebrantable
+  effect_i18n:
+    es: >-
+      Tal es la fe del guerrero que hay poco espacio para la duda o la vacilación en sus actos.
+      Cuando surge la oportunidad de aplastar el mal, ¡hay que ser capaz de golpear! Por tanto, el
+      guerrero está endurecido y es inmune al Miedo.
+  applies_to:
+    band: true
+- id: band--special-skill-utter-determination
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.protectorate-of-sigmar-lotd3.band.utter-determination
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: rout tests are a campaign-resolution mechanic.
+  name: Utter Determination
+  effect: >-
+    Only the Warrior Priest may have this skill, which allows him to re-roll any failed Rout tests.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Utter Determination
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+  name_i18n:
+    es: Determinación Absoluta
+  effect_i18n:
+    es: >-
+      Solo el Sacerdote Guerrero puede tener esta habilidad, que le permite repetir cualquier tirada
+      de Huida fallida.
+  applies_to:
+    band: true
+- id: band--special-skill-rousing-sermon
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.protectorate-of-sigmar-lotd3.band.rousing-sermon
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: a declared +1 attack aura over a 6-inch radius has no engine subsystem (no
+        aura/buff mechanics modeled).
+  name: Rousing Sermon
+  effect: >-
+    Only the Warrior Priest may have this skill. The Warrior Priest bellows his prayers to Sigmar,
+    beseeching his protector to lend he and his men the strength to forge onwards. A Rousing Sermon
+    must be declared at the beginning of a player's turn. The Warrior Priest and all friendly models
+    within 6 inches gain +1 attack during that Hand to Hand combat phase. There may only be one
+    Rousing Sermon per game.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Rousing Sermon
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+  name_i18n:
+    es: Sermón Exhortativo
+  effect_i18n:
+    es: >-
+      Solo el Sacerdote Guerrero puede tener esta habilidad. El Sacerdote Guerrero voce sus
+      plegarias a Sigmar, implorando a su protector que conceda a él y a sus hombres la fuerza para
+      seguir adelante. Un Sermón Exhortativo debe declararse al principio del turno de un jugador.
+      El Sacerdote Guerrero y todas las miniaturas amigas dentro de 6 pulgadas ganan +1 ataque
+      durante esa fase de combate cuerpo a cuerpo. Solo puede haber un Sermón Exhortativo por
+      partida.
+  applies_to:
+    band: true
+- id: band--special-skill-sigmars-guidance
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.protectorate-of-sigmar-lotd3.band.sigmars-guidance
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: target selection for ranged attacks belongs to the shooting subsystem.
+  name: Sigmar's Guidance
+  effect: >-
+    With the blessed hand of Sigmar guiding his aim, the warrior lets loose his arrow. He may freely
+    choose his target, and not only the closest enemy when declaring ranged attacks.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Sigmar's Guidance
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+  name_i18n:
+    es: Guía de Sigmar
+  effect_i18n:
+    es: >-
+      Con la mano bendecida de Sigmar guiando su puntería, el guerrero suelta su flecha. Puede
+      elegir libremente su objetivo, y no solo al enemigo más cercano, al declarar ataques a
+      distancia.
+  applies_to:
+    band: true

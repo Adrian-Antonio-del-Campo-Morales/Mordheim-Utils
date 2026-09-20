@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/catalog-rules-resolution.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/rules/resolution.yaml",
+  "description": "The numeric local contracts the engines consume: to-hit, to-wound, strength→armour modifier, the injury table, critical hits and parry. Values are data, not prose: changing one changes what the engines roll.",
+  "type": "object",
+  "required": [
+    "schema_version", "ruleset", "scope", "to_hit", "to_wound", "strength_armour_modifier",
+    "injury", "critical_hit", "parry"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 2 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "scope": { "$ref": "defs.schema.json#/$defs/runtime_scope" },
+    "to_hit": {
+      "description": "Weapon-skill comparison to the die result. `defender_ws_zero` is an automatic hit: no die is rolled.",
+      "type": "object",
+      "required": ["defender_ws_zero", "attacker_ws_greater", "defender_ws_more_than_double", "otherwise"],
+      "additionalProperties": false,
+      "properties": {
+        "defender_ws_zero": { "type": "integer" },
+        "attacker_ws_greater": { "type": "integer" },
+        "defender_ws_more_than_double": { "type": "integer" },
+        "otherwise": { "type": "integer" }
+      }
+    },
+    "to_wound": {
+      "description": "Strength-minus-toughness brackets. Each row matches one equality (`strength_minus_toughness`) or one open end (`strength_minus_toughness_min` / `_max`); `target` is null when the hit cannot wound.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["target"],
+        "additionalProperties": false,
+        "properties": {
+          "strength_minus_toughness": { "type": "integer" },
+          "strength_minus_toughness_min": { "type": "integer" },
+          "strength_minus_toughness_max": { "type": "integer" },
+          "target": { "type": ["integer", "null"] }
+        },
+        "oneOf": [
+          { "required": ["strength_minus_toughness"] },
+          { "required": ["strength_minus_toughness_min"] },
+          { "required": ["strength_minus_toughness_max"] }
+        ]
+      }
+    },
+    "strength_armour_modifier": {
+      "description": "Strength from which the armour save is modified, and the modifier as written in the source.",
+      "type": "object",
+      "required": ["starts_at_strength", "modifier"],
+      "additionalProperties": false,
+      "properties": {
+        "starts_at_strength": { "type": "integer" },
+        "modifier": { "type": "string", "minLength": 1 }
+      }
+    },
+    "injury": {
+      "description": "Injury table. `aggregation` documents what happens when several unsaved wounds force more than one roll.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["rolls", "state"],
+        "additionalProperties": false,
+        "properties": {
+          "rolls": { "type": "string", "pattern": "^[0-9]+-[0-9]+$" },
+          "state": { "enum": ["knocked_down", "stunned", "out_of_action"] },
+          "aggregation": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "critical_hit": {
+      "description": "Critical-hit contract: when it triggers, how many it allows per phase, the table it uses and its results.",
+      "type": "object",
+      "required": ["trigger", "maximum_per_attacker_per_phase", "table", "modifiers", "results", "multiple_wounds"],
+      "additionalProperties": false,
+      "properties": {
+        "trigger": { "type": "string", "minLength": 1 },
+        "maximum_per_attacker_per_phase": { "type": "integer", "minimum": 0 },
+        "table": { "type": "string", "minLength": 1 },
+        "modifiers": { "type": "string", "minLength": 1 },
+        "results": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["rolls", "wounds", "armour", "injury_modifier"],
+            "additionalProperties": false,
+            "properties": {
+              "rolls": { "type": "string", "pattern": "^[0-9]+-[0-9]+$" },
+              "wounds": { "type": "integer", "minimum": 0 },
+              "armour": {
+                "description": "When the armour save is taken, relative to the doubled wounds.",
+                "enum": ["before_doubling", "ignored"]
+              },
+              "injury_modifier": { "type": "integer" }
+            }
+          }
+        },
+        "multiple_wounds": { "type": "string", "minLength": 1 }
+      }
+    },
+    "parry": {
+      "description": "Parry contract: success condition, limits, attempts and the skill nuances that change it.",
+      "type": "object",
+      "required": [
+        "success", "natural_6_to_hit_cannot_be_parried", "strength_limit", "attempts",
+        "attempts_note", "reroll", "skill_nuances"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "success": { "type": "string", "minLength": 1 },
+        "natural_6_to_hit_cannot_be_parried": { "type": "boolean" },
+        "strength_limit": { "type": "string", "minLength": 1 },
+        "attempts": { "type": "string", "minLength": 1 },
+        "attempts_note": { "type": "string", "minLength": 1 },
+        "reroll": {
+          "description": "Reroll granted by each weapon combination.",
+          "type": "object",
+          "required": ["sword_and_buckler", "two_swords"],
+          "additionalProperties": false,
+          "properties": {
+            "sword_and_buckler": { "type": "string", "minLength": 1 },
+            "two_swords": { "type": "string", "minLength": 1 }
+          }
+        },
+        "skill_nuances": {
+          "description": "Exceptions introduced by a skill, keyed by its stable id.",
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": { "$ref": "defs.schema.json#/$defs/id" },
+          "additionalProperties": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

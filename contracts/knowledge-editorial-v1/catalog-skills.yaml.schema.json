@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/catalog-skills.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/skills/*.yaml",
+  "description": "Skill definitions of the skill tables: `general.yaml` (skills every warband may learn) and `warband.yaml` (warband-specific skills). A skill is an editorial entry plus, when it has one, its runtime classification — the same `runtime` contract the band rules use.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "scope", "skills"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 2 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "scope": { "$ref": "defs.schema.json#/$defs/runtime_scope" },
+    "skills": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/skill" }
+    }
+  },
+  "$defs": {
+    "skill": {
+      "type": "object",
+      "required": ["id", "name", "name_i18n", "kind", "category", "effect", "effect_i18n", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "kind": {
+          "description": "`general` skills live on the common tables; `warband` skills are gained by one or a few warbands.",
+          "enum": ["general", "warband"]
+        },
+        "category": {
+          "description": "Skill table the skill belongs to; it is the token profiles declare in `skill_access`.",
+          "enum": ["combat", "shooting", "academic", "strength", "speed", "special"]
+        },
+        "effect": {
+          "description": "Editorial text of the skill as printed in its source.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "engine_option": {
+          "description": "Engine option the skill compiles to, when it is executable outside the general mechanism catalogue.",
+          "type": "string",
+          "minLength": 1
+        },
+        "rules_source_url": {
+          "description": "Canonical page of the skill's rules text.",
+          "type": "string",
+          "minLength": 1
+        },
+        "runtime": { "$ref": "defs.schema.json#/$defs/rule_runtime" },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    }
+  }
+}

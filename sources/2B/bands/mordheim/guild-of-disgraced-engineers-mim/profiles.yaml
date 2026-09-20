@@ -1,0 +1,217 @@
+schema_version: 2
+band_id: guild-of-disgraced-engineers-mim
+profiles:
+- id: expelled-engineer
+  name: Expelled Engineer
+  type: hero
+  cost: 85
+  experience: 20
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 5
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - engineer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - academic
+  - speed
+  - special
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Heroes / 1 Expelled Engineer
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  source_path:
+  - heroes
+  - 1 Expelled Engineer
+  name_i18n:
+    es: Ingeniero Expulsado
+  rule_ids:
+  - expelled-engineer--leader
+  - expelled-engineer--inventor
+  combat_traits: {}
+- id: apprentice-engineers
+  name: Apprentice Engineers
+  type: hero
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 3
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - engineer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Heroes / 0-2 Apprentice Engineers
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  source_path:
+  - heroes
+  - 0-2 Apprentice Engineers
+  name_i18n:
+    es: Aprendices de Ingeniero
+  rule_ids:
+  - apprentice-engineers--assistant
+  combat_traits: {}
+- id: sapper
+  name: Sapper
+  type: hero
+  cost: 60
+  experience: 8
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - engineer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Heroes / 0-1 Sapper
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  source_path:
+  - heroes
+  - 0-1 Sapper
+  name_i18n:
+    es: Zapador
+  rule_ids:
+  - sapper--make-explosives
+  - sapper--tunnel-rat
+  combat_traits: {}
+- id: thunderers
+  name: Thunderers
+  type: henchman
+  cost: 50
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 3
+    BS: 4
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - engineer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0-5 Thunderers
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  source_path:
+  - henchmen
+  - 0-5 Thunderers
+  name_i18n:
+    es: Tronadores
+  rule_ids:
+  - thunderers--properly-used
+  combat_traits: {}
+- id: beardlings
+  name: Beardlings
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 3
+    WS: 2
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - engineer-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / Beardlings
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  source_path:
+  - henchmen
+  - Beardlings
+  name_i18n:
+    es: Barbalignas
+  rule_ids: []
+  combat_traits: {}
+- id: gyrocopter
+  name: Gyrocopter
+  type: henchman
+  cost: 100
+  experience: 0
+  characteristics:
+    M: null
+    WS: null
+    BS: null
+    S: null
+    T: 5
+    W: 3
+    I: null
+    A: null
+    Ld: null
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - 'Movement is 2D6 (Fly). Special Rules: Fly, Transport, Full Steam Ahead, Engine Malfunction.'
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0-1 Gyrocopter
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  source_path:
+  - henchmen
+  - 0-1 Gyrocopter
+  name_i18n:
+    es: Autogiro
+  rule_ids:
+  - gyrocopter--space
+  - gyrocopter--full-steam-ahead
+  - gyrocopter--engine-malfunction
+  combat_traits: {}

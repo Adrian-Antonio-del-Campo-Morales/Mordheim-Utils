@@ -1,0 +1,524 @@
+schema_version: 2
+band_id: clan-angrund-kep
+rules:
+- id: band--hard-to-kill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: skill.hard-to-kill
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
+  name: Hard to Kill
+  source:
+    manual: broheim.net
+    printed_page: 16
+    section: Special Rules / Hard to Kill
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Difíciles de Matar
+  applies_to:
+    band: true
+  rule_ref: shared-rule.hard-to-kill
+- id: band--hard-head
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: trait.concussion-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.concussion-immune
+  name: Hard Head
+  source:
+    manual: broheim.net
+    printed_page: 16
+    section: Special Rules / Hard Head
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Cabeza Dura
+  applies_to:
+    band: true
+  rule_ref: shared-rule.hard-head-2
+- id: band--armour
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.clan-angrund-kep.band.armour
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction (same classification as the active KB dwarf bands).
+  name: Armour
+  source:
+    manual: broheim.net
+    printed_page: 16
+    section: Special Rules / Armour
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Armadura
+  applies_to:
+    band: true
+  rule_ref: shared-rule.armour-2
+- id: band--hate-skavens-orcs-and-goblins
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.clan-angrund-kep.band.hate-skavens-orcs-and-goblins
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology. This variant adds Skavens to the standard Dwarf hatred (Orcs
+        and Goblins); resolves against shared-rule.hate-orcs-and-goblins at the equivalence review.
+  name: Hate Skavens, Orcs and Goblins
+  effect: >-
+    All Dwarfs hate Skavens, Orcs and Goblins. See the Psychology section of the Mordheim rules for
+    details on the effects of hatred.
+  source:
+    manual: broheim.net
+    printed_page: 16
+    section: Special Rules / Hate Skavens, Orcs and Goblins
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Odian a los Skaven, Orcos y Goblins
+  effect_i18n:
+    es: >-
+      Todos los Enanos odian a los Skaven, Orcos y Goblins. Consulta la sección de Psicología de las
+      reglas de Mordheim para más detalles sobre los efectos del odio.
+  applies_to:
+    band: true
+- id: band--grudgebearers
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.clan-angrund-kep.band.grudgebearers
+      scope: LATER
+      binding: null
+      reason: >-
+        Recruitment restriction over hired swords; resolves against shared-rule.grudgebearers at the
+        equivalence review.
+  name: Grudgebearers
+  source:
+    manual: broheim.net
+    printed_page: 16
+    section: Special Rules / Grudgebearers
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Portadores del Agravio
+  applies_to:
+    band: true
+  rule_ref: shared-rule.grudgebearers
+- id: band--incomparable-miners
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.clan-angrund-kep.band.incomparable-miners
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: campaign.
+  name: Incomparable Miners
+  source:
+    manual: broheim.net
+    printed_page: 16
+    section: Special Rules / Incomparable Miners
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Mineros Incomparables
+  applies_to:
+    band: true
+  rule_ref: shared-rule.incomparable-miners
+- id: dwarf-noble--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clan-angrund-kep.dwarf-noble.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Leader re-roll aura is a psychology/rout mechanic; the active engine currently binds
+        leadership through roster leader selection instead of an aura rule.
+  name: Leader
+  effect: >-
+    Any models in the warband within 6" of the Dwarf Noble may use his Leadership instead of their
+    own.
+  source:
+    manual: broheim.net
+    printed_page: 18
+    section: Heroes / 1 Dwarf Noble / Special Rules / Leader
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier modelo de la banda a 6" del Noble Enano puede usar su Liderazgo en lugar del propio.
+  applies_to:
+    profile_ids:
+    - dwarf-noble
+- id: dwarf-engineer--expert-weaponsmith
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clan-angrund-kep.dwarf-engineer.expert-weaponsmith
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: shooting (same classification as the active KB dwarf bands).
+  name: Expert Weaponsmith
+  effect: >-
+    A Dwarf Engineer is a master of mechanical devices. By using stronger construction materials and
+    time-tested secrets of Dwarf engineering, a Dwarf Engineer can increase the distance the
+    warband's missile weapons can shoot. All Dwarf missile weapons in the warband have their range
+    increased by 3" for pistols and 6" for crossbows and handguns. Any range increases are only
+    maintained as long as the Dwarf Engineer remains with the warband.
+  source:
+    manual: broheim.net
+    printed_page: 19
+    section: Heroes / 0-1 Dwarf Engineer / Special Rules / Expert Weaponsmith
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Armero Experto
+  effect_i18n:
+    es: >-
+      Un Ingeniero Enano es un maestro de los dispositivos mecánicos. Usando materiales de
+      construcción más resistentes y secretos testificados por el tiempo de la ingeniería Enana, un
+      Ingeniero Enano puede aumentar la distancia a la que disparan las armas de misil de la banda.
+      Todas las armas de misil Enanas de la banda aumentan su alcance en 3" para pistolas y 6" para
+      ballestas y armas de fuego. Los aumentos de alcance solo se mantienen mientras el Ingeniero
+      Enano permanezca con la banda.
+  applies_to:
+    profile_ids:
+    - dwarf-engineer
+- id: dwarf-troll-slayers--deathwish
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clan-angrund-kep.dwarf-troll-slayers.deathwish
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Deathwish
+  source:
+    manual: broheim.net
+    printed_page: 20
+    section: Heroes / 0-1 Dwarf Troll Slayer / Special Rules / Deathwish
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Deseo de Muerte
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayers
+  rule_ref: shared-rule.deathwish
+- id: dwarf-troll-slayers--slayer-skills
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.skill-access
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.skill-access
+        parameters:
+          category: special
+  name: Slayer Skills
+  effect: >-
+    Troll Slayers may choose a kill from the Troll Slayer skill table instead of the normal skill
+    table when they gain a new skill.
+  source:
+    manual: broheim.net
+    printed_page: 20
+    section: Heroes / 0-1 Dwarf Troll Slayer / Special Rules / Slayer Kills
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Habilidades de Matatrolles
+  effect_i18n:
+    es: >-
+      Los Matatrolles pueden escoger una habilidad de la Tabla de Habilidades de Matatrolles en
+      lugar de la tabla de habilidades normal cuando ganan una habilidad nueva.
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayers
+- id: ironbreaker--watch-out
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.clan-angrund-kep.ironbreaker.watch-out
+      scope: LATER
+      binding: null
+      reason: >-
+        Exploration/encounter-table mechanic of the Karak Eight Peaks campaign; outside the current
+        engine scope.
+  name: Watch Out!
+  effect: >-
+    An Ironbreaker knows all about the Underdeep and its perils and so he or any Dwarf 6" away may
+    decide to reroll the result on the Encounter table that affects them.
+  source:
+    manual: broheim.net
+    printed_page: 20
+    section: Heroes / 0-1 Ironbreaker / Special Rules / Watch Out!
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: ¡Cuidado!
+  effect_i18n:
+    es: >-
+      Un Rompehierros conoce todas las profundidades y sus peligros, de modo que él o cualquier
+      Enano a 6" puede decidir repetir el resultado en la tabla de Encuentros que les afecta.
+  applies_to:
+    profile_ids:
+    - ironbreaker
+- id: band--dwarf-special-skills-master-of-blades
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.unbeatable-warrior
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.unbeatable-warrior
+    - id: skill.sword-master
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.sword-master
+  name: Master of Blades
+  effect: >-
+    This Dwarf's martial skills surpass those of a normal warrior; he has fought unscathed against
+    hordes of Orcs and Goblins. When using a weapon that has a Parry special rule, this hero parries
+    successfully if he beats or matches his opponent's highest 'to hit' roll, not just if he beats
+    the roll. In addition, if this warrior is using two weapons that have the Parry special rule, he
+    is allowed to parry two attacks (if his two dice match or beat the two highest Attack dice
+    against him) instead of the normal maximum of one. Note that if this Dwarf has two Dwarf axes
+    (as detailed above) he can reroll any failed parries.
+  source:
+    manual: broheim.net
+    printed_page: 22
+    section: Dwarf Special Skills / Master of Blades
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Maestro de las Hojas
+  effect_i18n:
+    es: >-
+      Las habilidades marciales de este Enano superan a las de un guerrero normal; ha luchado sin un
+      rasguño contra hordas de Orcos y Goblins. Al usar un arma que tenga la regla especial Parada,
+      este héroe para con éxito si iguala o supera la tirada más alta «por impactar» de su oponente,
+      no solo si la supera. Además, si este guerrero usa dos armas que tienen la regla especial
+      Parada, puede parar dos ataques (si sus dos dados igualan o superan los dos dados de Ataque
+      más altos contra él) en lugar del máximo normal de uno. Ten en cuenta que si este Enano lleva
+      dos hachas Enanas (como se detalla arriba) puede repetir cualquier parada fallida.
+  applies_to:
+    band: true
+- id: band--dwarf-special-skills-extra-tough
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.clan-angrund-kep.band.dwarf-special-skills-extra-tough
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
+        construction (same classification as the active KB dwarf bands).
+  name: Extra Tough
+  source:
+    manual: broheim.net
+    printed_page: 22
+    section: Dwarf Special Skills / Extra Tough
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Extra Resistente
+  applies_to:
+    band: true
+  rule_ref: shared-rule.extra-tough
+- id: band--dwarf-special-skills-resource-hunter
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.clan-angrund-kep.band.dwarf-special-skills-resource-hunter
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: campaign (exploration).
+  name: Resource Hunter
+  source:
+    manual: broheim.net
+    printed_page: 22
+    section: Dwarf Special Skills / Resource Hunter
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Cazador de Recursos
+  applies_to:
+    band: true
+  rule_ref: shared-rule.resource-hunter
+- id: band--dwarf-special-skills-true-grit
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.hard-to-kill
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
+  name: True Grit
+  source:
+    manual: broheim.net
+    printed_page: 22
+    section: Dwarf Special Skills / True Grit
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Entereza (True Grit)
+  applies_to:
+    band: true
+  rule_ref: shared-rule.hard-as-steel
+- id: band--dwarf-special-skills-thick-skull
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: trait.concussion-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.concussion-immune
+  name: Thick Skull
+  source:
+    manual: broheim.net
+    printed_page: 22
+    section: Dwarf Special Skills / Thick Skull
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Cabeza dura (Thick Skull)
+  applies_to:
+    band: true
+  rule_ref: shared-rule.thick-skull
+- id: band--slayer-special-skills-ferocious-charge
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.ferocious-charge
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ferocious-charge
+  name: Ferocious Charge
+  effect: >-
+    The Slayer may double his attacks on the turn in which he charges. He the suffers a -1 to hit
+    penalty that turn.
+  source:
+    manual: broheim.net
+    printed_page: 20
+    section: Troll Slayer Skills / Ferocious Charge
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Carga Feroz
+  eligibility:
+  - dwarf-troll-slayers
+  effect_i18n:
+    es: >-
+      El Matatrolles puede doblar sus ataques en el turno en el que carga. Sufre entonces una
+      penalización de -1 por impactar ese turno.
+  applies_to:
+    band: true
+- id: band--slayer-special-skills-monster-slayer
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.monster-slayer
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.monster-slayer
+  name: Monster Slayer
+  effect: >-
+    The Slayer always wounds any opponent on a roll of 4+, regardless of Toughness, unless his own
+    Strength (after all modifiers for weapons used, etc) would mean that a lower roll than this is
+    needed.
+  source:
+    manual: broheim.net
+    printed_page: 20
+    section: Troll Slayer Skills / Monster Slayer
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Matamostro
+  eligibility:
+  - dwarf-troll-slayers
+  effect_i18n:
+    es: >-
+      El Matatrolles siempre hiere a cualquier oponente con una tirada de 4+, independientemente de
+      la Resistencia, a menos que su propia Fuerza (tras todos los modificadores por armas usadas,
+      etc.) signifique que se necesita una tirada menor.
+  applies_to:
+    band: true
+- id: band--slayer-special-skills-berserker
+  kind: warband_skill
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: skill.berserker
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.berserker
+  name: Berserker
+  effect: >-
+    The Slayer may add +1 to his 'close combat to hit' rolls during the turn in which he charges.
+  source:
+    manual: broheim.net
+    printed_page: 20
+    section: Troll Slayer Skills / Berserker
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Berserker
+  eligibility:
+  - dwarf-troll-slayers
+  effect_i18n:
+    es: >-
+      El Matatrolles puede sumar +1 a sus tiradas «por impactar en combate cerrado» durante el turno
+      en el que carga.
+  applies_to:
+    band: true

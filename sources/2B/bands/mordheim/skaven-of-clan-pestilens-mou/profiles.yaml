@@ -1,0 +1,218 @@
+schema_version: 2
+band_id: skaven-of-clan-pestilens-mou
+profiles:
+- id: plague-priest
+  name: Plague Priest
+  type: hero
+  cost: 65
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - clan-pestilence-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - The robes offer protection equal to soft leather and count as light armour when combined with the
+    scattered pieces of chain mail or plate some plague monks wear underneath.
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Plague Priest
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  source_path:
+  - heroes
+  - 1 Plague Priest
+  name_i18n:
+    es: Sacerdote de la Peste
+  rule_ids:
+  - plague-priest--leader
+  - plague-priest--frenzy
+  - plague-priest--resilient
+  combat_traits: {}
+- id: plague-champion
+  name: Plague Champion
+  type: hero
+  cost: 45
+  experience: 11
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - clan-pestilence-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - The robes offer protection equal to soft leather and count as light armour when combined with the
+    scattered pieces of chain mail or plate some plague monks wear underneath.
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Heroes / 0-2 Plague Champions
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  source_path:
+  - heroes
+  - 0-2 Plague Champions
+  name_i18n:
+    es: Campeón de la Peste
+  rule_ids:
+  - plague-champion--frenzy
+  - plague-champion--resilient
+  combat_traits: {}
+- id: monk-initiate
+  name: Monk Initiate
+  type: hero
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - clanrat-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - speed
+  - special
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Heroes / 0-3 Monk Initiates
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  source_path:
+  - heroes
+  - 0-3 Monk Initiates
+  name_i18n:
+    es: Monje Novicio
+  rule_ids: []
+  combat_traits: {}
+- id: plague-monk
+  name: Plague Monk
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - clanrat-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / Plague Monks
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  source_path:
+  - henchmen
+  - Plague Monks
+  name_i18n:
+    es: Monje de la Peste
+  rule_ids: []
+  combat_traits: {}
+- id: plague-rat
+  name: Plague Rat
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 2
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Teeth and Claws.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Plague Rats
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  source_path:
+  - henchmen
+  - 0-5 Plague Rats
+  name_i18n:
+    es: Rata de la Peste
+  rule_ids:
+  - plague-rat--plague-infested
+  - plague-rat--animals
+  combat_traits: {}
+- id: skaven-slave
+  name: Skaven Slave
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 4
+  equipment_lists:
+  - clanrat-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Slaves
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  source_path:
+  - henchmen
+  - 0-5 Slaves
+  name_i18n:
+    es: Esclavo Skaven
+  rule_ids:
+  - skaven-slave--abused
+  combat_traits: {}

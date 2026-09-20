@@ -1,0 +1,821 @@
+schema_version: 2
+band_id: fen-guard-mim
+rules:
+- id: band--immune-to-drugs-and-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Drugs and Poison
+  effect: All Fen Guard are immune to Drugs and Poison, but still affected by Disease.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Immune to Drugs and Poison
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Inmune a Drogas y Veneno
+  effect_i18n:
+    es: >-
+      Toda la Guardia del Ciénaga es inmune a las drogas y al veneno, pero sigue afectada por las
+      enfermedades.
+  applies_to:
+    band: true
+- id: band--fear-of-fire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.fen-guard-mim.band.fear-of-fire
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Fear of Fire
+  effect: >-
+    Active fires, torch wielding enemies or any flame on the battlefield cause fear in Fen Guard.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Fear of Fire
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Miedo al Fuego
+  effect_i18n:
+    es: >-
+      Los fuegos activos, los enemigos con antorchas o cualquier llama en el campo de batalla causan
+      miedo en la Guardia del Ciénaga.
+  applies_to:
+    band: true
+- id: band--hired-swords
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.fen-guard-mim.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Hired Swords
+  effect: >-
+    Fen Guard are reclusive inhuman creatures with little to no way of communicating with the
+    outside world; they are only able to use Elf Hired Swords.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Hired Swords
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Espadas a Sueldo
+  effect_i18n:
+    es: >-
+      La Guardia del Ciénaga son criaturas inhumanas y reclusas, sin casi forma de comunicarse con
+      el mundo exterior; solo pueden usar Espadas a Sueldas elfas.
+  applies_to:
+    band: true
+- id: band--bark-skin
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 6
+  name: Bark Skin
+  effect: >-
+    Fen Guard have a 6+ armour save which can be stacked with regular armour; it cannot be modified
+    beyond 6 by Strength (except by weapons with the Cutting Edge rule), a 'no save' result on the
+    Critical Hit Charts negates it, and fire attacks ignore this rule.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Bark Skin
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Piel de Corteza
+  effect_i18n:
+    es: >-
+      La Guardia del Ciénaga tiene una salvación por armadura de 6+ que puede acumularse con
+      armadura normal; no puede modificarse más allá de 6 por Fuerza (salvo por armas con la regla
+      Filo Cortante), un resultado de 'sin salvación' en las tablas de impacto crítico la anula, y
+      los ataques de fuego la ignoran.
+  applies_to:
+    band: true
+- id: band--hard-to-kill
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.fen-guard-mim.band.hard-to-kill
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Hard to Kill
+  effect: >-
+    Dryads and Spiteborn can only be taken out of action on a roll of 6 instead of 5-6 on the injury
+    chart: treat 1-2 as knocked down, 3-5 as stunned and 6 as out of action. Fire attacks ignore
+    this rule.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Hard to Kill
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Difícil de Matar
+  effect_i18n:
+    es: >-
+      Las Dríadas y los Nacidos del Rencor solo pueden quedar Fuera de combate con un 6 en lugar de
+      5-6 en la tabla de heridas: trata 1-2 como derribado, 3-5 como aturdido y 6 como Fuera de
+      combate. Los ataques de fuego ignoran esta regla.
+  applies_to:
+    band: true
+- id: band--hard-to-rattle
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.fen-guard-mim.band.hard-to-rattle
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Hard to Rattle
+  effect: >-
+    All Fen Guard count as wearing a helmet, which gives a 4+ stun save. Fire attacks ignore this
+    rule.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Hard to Rattle
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Difícil de Aturdir
+  effect_i18n:
+    es: >-
+      Toda la Guardia del Ciénaga cuenta como si llevara casco, lo que otorga una salvación por
+      aturdimiento de 4+. Los ataques de fuego ignoran esta regla.
+  applies_to:
+    band: true
+- id: band--forest-and-swamp-walk
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.fen-guard-mim.band.forest-and-swamp-walk
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Forest and Swamp Walk
+  effect: Fen Guard can move through swamp and forest terrain without penalty.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Forest and Swamp Walk
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Camino de Bosque y Ciénaga
+  effect_i18n:
+    es: La Guardia del Ciénaga puede moverse por terreno de ciénaga y bosque sin penalización.
+  applies_to:
+    band: true
+- id: band--grown-weapons
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.fen-guard-mim.band.grown-weapons
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Grown Weapons
+  effect: >-
+    Weapons purchased grow from within the warrior: Forest Folk cannot be disarmed and captured
+    weapons cannot be taken from them. Weapons cannot be reallocated between troops; taking a weapon
+    loses it (the branch snaps off and a new one grows). Weapons found during the campaign may only
+    be sold and cannot be assigned to warriors.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Grown Weapons
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Armas Crecidas
+  effect_i18n:
+    es: >-
+      Las armas compradas crecen desde el interior del guerrero: los Hijos del Bosque no pueden ser
+      desarmados y sus armas no pueden quitarse si son capturados. Las armas no pueden reasignarse
+      entre guerreros; quitar un arma la pierde (la rama se rompe y crece una nueva). Las armas
+      encontradas durante la campaña solo pueden venderse y no pueden asignarse a los guerreros.
+  applies_to:
+    band: true
+- id: band--regrowth
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.fen-guard-mim.band.regrowth
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Regrowth
+  effect: >-
+    If a Fen Guard ever suffers a serious injury, they can use a future skill advancement to regrow
+    the lost limb or wound, striking it from the roster.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Regrowth
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Rebrote
+  effect_i18n:
+    es: >-
+      Si un miembro de la Guardia del Ciénaga sufre una herida grave, puede usar una mejora de
+      habilidad futura para regenerar el miembro o herida perdida, tachándola del roster.
+  applies_to:
+    band: true
+- id: band--natural-state
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.fen-guard-mim.band.natural-state
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Natural State
+  effect: >-
+    Fen Guard may never wear cloaks, boots or armour other than that listed on their starting
+    profile, and may never visit any post game location within any city.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Natural State
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Estado Natural
+  effect_i18n:
+    es: >-
+      La Guardia del Ciénaga nunca puede llevar capas, botas ni armaduras distintas de las indicadas
+      en su perfil inicial, y nunca puede visitar localizaciones de post-partida dentro de ninguna
+      ciudad.
+  applies_to:
+    band: true
+- id: band--untainted
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.fen-guard-mim.band.untainted
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Untainted
+  effect: >-
+    Anytime a member of the warband receives an actual mutation, they must roll on the serious
+    injury table (ignoring Captured and Sold to the Pits) as the rest of the warband cut the taint
+    from the warrior; remove the mutation from the warrior.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Untainted
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Intachables
+  effect_i18n:
+    es: >-
+      Siempre que un miembro de la banda reciba una mutación real, debe tirar en la tabla de heridas
+      graves (ignorando Capturado y Vendido al Foso) mientras el resto de la banda corta la
+      corrupción del guerrero; elimina la mutación del guerrero.
+  applies_to:
+    band: true
+- id: band--variation
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.fen-guard-mim.band.variation
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Variation
+  effect: >-
+    Warriors may start with a single "Variation" when hired, or choose a new one when rolling
+    doubles when levelling up. Variations come from the mutation list in Corrupted Characters but do
+    not count as mutations for other game rules (e.g. Holy Water). Available: Vine (Tentacle),
+    Branch (Extra Arm), Thick Leaves (Cloud of Flies), Dense Trunk (Hulking Brute), Thorns (Spines),
+    Spores (Black Blood) and possibly Nesting Bird (Beak!); they must be paid for as listed.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Variation
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Variación
+  effect_i18n:
+    es: >-
+      Los guerreros pueden comenzar con una única "Variación" al ser contratados, o elegir una nueva
+      al sacar dobles al subir de nivel. Las Variaciones provienen de la lista de mutaciones de
+      Personajes Corruptos pero no cuentan como mutaciones para otras reglas (p. ej., Agua Bendita).
+      Disponibles: Vid (Tentáculo), Rama (Brazo Extra), Hojas Gruesas (Nube de Moscas), Tronco Denso
+      (Bruto Colosal), Espinas (Púas), Esporas (Sangre Negra) y posiblemente Ave Anidante (¡Pico!);
+      deben pagarse según la lista.
+  applies_to:
+    band: true
+- id: branchwych--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fen-guard-mim.branchwych.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: >-
+    Any warrior within 6 inches of the Branchwych may use her Leadership when taking Leadership
+    tests.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Branchwych / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6 pulgadas de la Bruja de las Ramas puede usar su Liderazgo en los
+      chequeos de Liderazgo.
+  applies_to:
+    profile_ids:
+    - branchwych
+- id: branchwych--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fen-guard-mim.branchwych.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Immune to Psychology
+  effect: A Branchwych is immune to psychology.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Branchwych / Special Rules / Immune to Psychology
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Inmune a la Psicología
+  effect_i18n:
+    es: Una Bruja de las Ramas es inmune a la psicología.
+  applies_to:
+    profile_ids:
+    - branchwych
+- id: branchwych--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fen-guard-mim.branchwych.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Wizard
+  effect: >-
+    A Branchwych is a powerful wizard and starts with two spells from the Utterances of the Oak
+    spell list.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Branchwych / Special Rules / Wizard
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Mago
+  effect_i18n:
+    es: >-
+      Una Bruja de las Ramas es una maga poderosa y comienza con dos hechizos de la lista de
+      hechizos Declaraciones del Roble.
+  applies_to:
+    profile_ids:
+    - branchwych
+- id: branchwych--eternal
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fen-guard-mim.branchwych.eternal
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Eternal
+  effect: >-
+    A Branchwych can ignore any result on the hero's Serious Injury chart except Killed by taking a
+    permanent -1 on her starting Wound profile. A Branchwych getting a Killed result instead takes a
+    permanent -D3 Wounds; if this takes her starting Wounds to 0 or less she is killed as normal.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Branchwych / Special Rules / Eternal
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Eterna
+  effect_i18n:
+    es: >-
+      Una Bruja de las Ramas puede ignorar cualquier resultado de la tabla de Heridas Graves de
+      héroe excepto Muerto, a cambio de un -1 permanente en su perfil inicial de Heridas. Si obtiene
+      un resultado de Muerto, sufre en su lugar -D3 Heridas permanentes; si esto reduce sus Heridas
+      iniciales a 0 o menos, muere con normalidad.
+  applies_to:
+    profile_ids:
+    - branchwych
+- id: branchwych--feed-upon-magic
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fen-guard-mim.branchwych.feed-upon-magic
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Feed Upon Magic
+  effect: >-
+    A Branchwych can perform spells that, with the consumption of D3 Treasures, give her a permanent
+    +1 Wound on her starting profile. This can only be used between battles, and not if she searched
+    for rare items or was put out of action in the previous battle. If the warband lacks the
+    Treasures, they are consumed anyway without gaining the Wound.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Branchwych / Special Rules / Feed Upon Magic
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Alimentarse de Magia
+  effect_i18n:
+    es: >-
+      Una Bruja de las Ramas puede realizar hechizos que, consumiendo D3 Tesoros, le otorgan un +1
+      permanente de Herida en su perfil inicial. Solo puede usarse entre batallas, y no si buscó
+      objetos raros o quedó Fuera de combate en la batalla anterior. Si la banda no tiene Tesoros
+      suficientes, se consumen igualmente y la Bruja no gana la Herida.
+  applies_to:
+    profile_ids:
+    - branchwych
+- id: branchwych--advancement
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fen-guard-mim.branchwych.advancement
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Advancement
+  effect: >-
+    If a Branchwych gets an advance roll of +1 Wound, she may instead pick a new skill from her
+    available lists.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Branchwych / Special Rules / Advancement
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Progresión
+  effect_i18n:
+    es: >-
+      Si una Bruja de las Ramas obtiene una mejora de +1 Herida, puede elegir en su lugar una nueva
+      habilidad de sus listas disponibles.
+  applies_to:
+    profile_ids:
+    - branchwych
+- id: branchnymph--instinctual
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fen-guard-mim.branchnymph.instinctual
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Instinctual
+  effect: >-
+    Branch Nymphs live only to battle in defence of their home: they are immune to psychology and
+    cause Fear, and are too focused on battle to ever become the leader. Note that Fear of Fire
+    still applies.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Branchnymph / Special Rules / Instinctual
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Instintivas
+  effect_i18n:
+    es: >-
+      Las Ninfas de las Ramas viven solo para batallar en defensa de su hogar: son inmunes a la
+      psicología y causan Miedo, y están demasiado centradas en la batalla para llegar a ser
+      líderes. Ten en cuenta que el Miedo al Fuego sigue aplicando.
+  applies_to:
+    profile_ids:
+    - branchnymph
+- id: dryads--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fen-guard-mim.dryads.fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Fear
+  effect: Dryads are a fearsome sight causing fear in their enemies.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Dryads / Special Rules / Fear
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Las Dríadas son un espectáculo temible que causa miedo en sus enemigos.
+  applies_to:
+    profile_ids:
+    - dryads
+- id: dryads--root-walk
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fen-guard-mim.dryads.root-walk
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Root walk
+  effect: >-
+    Dryads may only run in swamp, dirt or forest terrain; on any city terrain a dryad may only walk
+    or charge.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Dryads / Special Rules / Root walk
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Camino de Raíces
+  effect_i18n:
+    es: >-
+      Las Dríadas solo pueden correr en terreno de ciénaga, tierra o bosque; en cualquier terreno
+      urbano solo pueden caminar o cargar.
+  applies_to:
+    profile_ids:
+    - dryads
+- id: dryads--tanglevine
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fen-guard-mim.dryads.tanglevine
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Tanglevine
+  effect: >-
+    For each Dryad a warrior is in combat with after the first, they lose 1 attack, to a minimum of
+    1.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Dryads / Special Rules / Tanglevine
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Vid Enredadera
+  effect_i18n:
+    es: >-
+      Por cada Dríada con la que un guerrero esté en combate más allá de la primera, pierde 1
+      ataque, hasta un mínimo de 1.
+  applies_to:
+    profile_ids:
+    - dryads
+- id: treekin--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fen-guard-mim.treekin.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Immune to Psychology
+  effect: Treekin know no emotion and are immune to psychology.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-2 Treekin / Special Rules / Immune to Psychology
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Inmune a la Psicología
+  effect_i18n:
+    es: Los Hombres Árbol no conocen emoción alguna y son inmunes a la psicología.
+  applies_to:
+    profile_ids:
+    - treekin
+- id: treekin--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fen-guard-mim.treekin.fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Fear
+  effect: Treekin are terrifying and cause fear.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-2 Treekin / Special Rules / Fear
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Los Hombres Árbol son terroríficos y causan miedo.
+  applies_to:
+    profile_ids:
+    - treekin
+- id: treekin--may-not-run
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fen-guard-mim.treekin.may-not-run
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology or mounts.
+  name: May Not Run
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-2 Treekin / Special Rules / May Not Run
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: No Puede Correr
+  applies_to:
+    profile_ids:
+    - treekin
+  rule_ref: shared-rule.may-not-run
+- id: treekin--large
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fen-guard-mim.treekin.large
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Large
+  effect: >-
+    Treekin strike an imposing figure towering above normal men; any warrior may choose to target
+    them, even if they are not the closest model.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-2 Treekin / Special Rules / Large
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Grande
+  effect_i18n:
+    es: >-
+      Los Hombres Árbol presentan una figura imponente que se alza sobre los hombres normales;
+      cualquier guerrero puede elegirlos como objetivo aunque no sean el modelo más cercano.
+  applies_to:
+    profile_ids:
+    - treekin
+- id: treekin--redwood
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 4
+  name: Redwood
+  effect: A Treekin's Bark save is increased to 4+.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-2 Treekin / Special Rules / Redwood
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Secuoya
+  effect_i18n:
+    es: La salvación de corteza de un Hombre Árbol se incrementa a 4+.
+  applies_to:
+    profile_ids:
+    - treekin
+- id: treekin--slow-growing
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.fen-guard-mim.treekin.slow-growing
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Slow Growing
+  effect: Treekin earn experience at half the rate of a normal warrior.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: 0-2 Treekin / Special Rules / Slow Growing
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen Guard.pdf
+  name_i18n:
+    es: Crecimiento Lento
+  effect_i18n:
+    es: Los Hombres Árbol ganan experiencia a la mitad del ritmo de un guerrero normal.
+  applies_to:
+    profile_ids:
+    - treekin

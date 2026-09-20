@@ -1,0 +1,58 @@
+schema_version: 2
+band_id: skaven-of-clan-pestilens-lus
+rules:
+- id: plague-priest--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pestilens-lus.plague-priest.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Leader
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 1 Plague Priest / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - plague-priest
+  rule_ref: shared-rule.leader
+- id: skaven-slaves--doomed
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-pestilens-lus.skaven-slaves.doomed
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Doomed
+  effect: >-
+    If a Skaven Slave becomes a hero (rolls "the lad's got talent"), he is quickly executed by the
+    leader who fears an uprising, regardless of whether the warband has its full quota of heroes.
+    Remove the unfortunate Slave from the roster.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-5 Skaven Slaves / Special Rules / Doomed
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf
+  name_i18n:
+    es: Condenado
+  effect_i18n:
+    es: >-
+      Si un Esclavo Skaven se convierte en héroe (obtiene "el chaval tiene talento"), es ejecutado
+      rápidamente por el líder, que teme una revuelta, independientemente de que la banda haya
+      alcanzado su cupo de héroes. Elimina al desdichado Esclavo del roster.
+  applies_to:
+    profile_ids:
+    - skaven-slaves

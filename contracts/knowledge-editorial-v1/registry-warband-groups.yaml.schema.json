@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/registry-warband-groups.yaml.schema.json",
+  "title": "Mordheim KB registry — registry/warband-groups.yaml",
+  "description": "Cross-band groups by race, alignment, faction or culture. Eligibility and restriction blocks of the campaign catalogues reference these group ids (`warband-group.<slug>`) exactly; `mordheim_knowledge.campaign.load_warband_groups` validates every reference.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "groups"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 2 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "groups": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "band_ids"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "description": "Group id, namespaced `warband-group.<slug>`.",
+            "$ref": "defs.schema.json#/$defs/id"
+          },
+          "kind": {
+            "description": "What the bands share.",
+            "enum": ["race", "alignment", "faction", "culture"]
+          },
+          "band_ids": {
+            "description": "Bands of the group.",
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "defs.schema.json#/$defs/id" }
+          }
+        }
+      }
+    }
+  }
+}

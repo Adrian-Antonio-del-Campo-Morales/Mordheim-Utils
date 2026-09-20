@@ -1,0 +1,316 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/hireling-profile-dramatis-personae.yaml.schema.json",
+  "title": "Mordheim KB catalogue — Dramatis Personae profiles of catalog/hirelings/dramatis-personae",
+  "description": "The canonical identity of a Dramatis Persona, the named special characters a campaign can hire. Same ownership rule as the Hired Swords: this file holds what belongs to the character, while `catalog/campaign/hired-swords-and-dramatis.yaml` holds the campaign-side contract and points back here through `profile_id`. Unlike a Hired Sword, a Dramatis Persona may be published while it cannot be modelled yet: the entry then declares `normalization_status: out_of_scope` and says why, and it is excluded from the hiring catalogue.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "catalog", "grade", "profiles"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "catalog": {
+      "description": "Catalogue id shared by every grade file of the family: `hirelings-dramatis-personae`.",
+      "$ref": "defs.schema.json#/$defs/id"
+    },
+    "grade": {
+      "description": "Grade of the file, mirroring the hiring grades of the campaign catalogue.",
+      "enum": ["core", "1a", "1b", "1c", "2a"]
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/profile" }
+    },
+    "rules": {
+      "description": "The rules of the profiles of the core file. The core Dramatis declare their rules here, with `source_refs`, and their profiles point at them with `rule_ids`; the other grades keep the rules inline in the profile instead.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/catalog_rule" }
+    }
+  },
+  "$defs": {
+    "catalog_rule": {
+      "description": "A rule declared by the document itself and referenced by a profile's `rule_ids`.",
+      "type": "object",
+      "required": ["id", "name", "name_i18n", "effect", "effect_i18n", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "profile": {
+      "description": "One Dramatis Persona. Characteristics and equipment may be absent while the entry is out of scope, but the identity, the publication and the source stay declared: a published entry is never anonymous.",
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "grade",
+        "publication",
+        "name",
+        "name_i18n",
+        "normalization_status",
+        "starting_skill_ids",
+        "source_refs"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable profile id: `hireling.dramatis.<slug>`.",
+          "type": "string",
+          "pattern": "^hireling\\.dramatis\\.[a-z0-9][a-z0-9-]*$"
+        },
+        "kind": { "const": "dramatis-personae" },
+        "grade": {
+          "description": "Grade of the profile; it repeats the file's grade so a record keeps its source when moved.",
+          "enum": ["core", "1a", "1b", "1c", "2a"]
+        },
+        "publication": {
+          "description": "Publication the character was printed in, e.g. `Town Cryer 21, Khemri`.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "characteristics": { "$ref": "defs.schema.json#/$defs/characteristic_map" },
+        "warband_rating": {
+          "description": "The rating the character contributes: a fixed value, or a base plus one point per accumulated Experience point.",
+          "$ref": "#/$defs/warband_rating"
+        },
+        "equipment": {
+          "description": "Intrinsic equipment of the character.",
+          "$ref": "#/$defs/equipment"
+        },
+        "skill_access": {
+          "description": "Skill lists the character may learn from.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[a-z][a-z-]*$"
+          }
+        },
+        "starting_skill_ids": {
+          "description": "Canonical skill ids the character starts with. Empty when the source declares none.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "rules": {
+          "description": "The intrinsic special rules, inline: text that belongs to this character and is not shared.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/inline_rule" }
+        },
+        "rule_ids": {
+          "description": "Ids of rules that live in `dramatis-personae/rules.yaml` or in this file.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "unresolved_references": {
+          "description": "Source concepts this character uses whose canonical catalogue does not exist yet. Never given a guessed canonical id. An empty list is the declared convention for `nothing pending`.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/unresolved_reference" }
+        },
+        "source_notes": {
+          "description": "Editorial notes about the transcription.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "defs.schema.json#/$defs/display_text" }
+        },
+        "normalization_status": {
+          "description": "`normalized` for a character that could be modelled; `out_of_scope` for one that is published but cannot be represented yet, which then must declare `out_of_scope_reason` and is excluded from the hiring catalogue.",
+          "enum": ["normalized", "out_of_scope"]
+        },
+        "out_of_scope_reason": {
+          "description": "Why the character cannot be modelled yet: a composite entity, a random profile, several selectable personas. Required exactly when `normalization_status` is `out_of_scope`.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "normalization_status": { "const": "out_of_scope" } },
+            "required": ["normalization_status"]
+          },
+          "then": { "required": ["out_of_scope_reason"] }
+        }
+      ]
+    },
+    "warband_rating": {
+      "description": "Rating contribution of the character.",
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "description": "`fixed` for a flat contribution; `base_plus_experience` for a base amount plus one point per Experience point.",
+          "enum": ["fixed", "base_plus_experience"]
+        },
+        "value": {
+          "description": "The fixed contribution, when `kind` is `fixed`.",
+          "type": "integer"
+        },
+        "base": {
+          "description": "The base contribution, when `kind` is `base_plus_experience`.",
+          "type": "integer"
+        },
+        "per_experience_point": {
+          "description": "Points added per accumulated Experience point, when `kind` is `base_plus_experience`.",
+          "type": "integer"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "kind": { "const": "fixed" } },
+            "required": ["kind"]
+          },
+          "then": { "required": ["value"] }
+        },
+        {
+          "if": {
+            "properties": { "kind": { "const": "base_plus_experience" } },
+            "required": ["kind"]
+          },
+          "then": { "required": ["base", "per_experience_point"] }
+        }
+      ]
+    },
+    "equipment": {
+      "description": "Intrinsic equipment of a Dramatis Persona: canonical items, plus the equipment that exists only on this character.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fixed_items": {
+          "description": "Items the character always carries.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/fixed_item" }
+        },
+        "unique_equipment": {
+          "description": "Equipment that exists only on this character: named here with its own rules instead of being invented as a catalogue item.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/unique_equipment" }
+        }
+      }
+    },
+    "fixed_item": {
+      "description": "A canonical item with the quantity the character carries.",
+      "type": "object",
+      "required": ["item_id", "quantity"],
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "description": "Canonical `item_id` of `catalog/items/`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "quantity": { "$ref": "defs.schema.json#/$defs/amount" }
+      }
+    },
+    "unique_equipment": {
+      "description": "A piece of equipment that exists only on this character. Its id follows the profile (`hireling.dramatis.<slug>.item.<slug>`).",
+      "type": "object",
+      "required": ["id", "name", "name_i18n"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "counts_as": {
+          "description": "Canonical item this equipment counts as, either named plainly or with the context in which it counts as it.",
+          "oneOf": [
+            { "$ref": "defs.schema.json#/$defs/id" },
+            { "$ref": "#/$defs/counts_as" }
+          ]
+        },
+        "save": {
+          "description": "Save the equipment grants, as printed: `4+`, or `4+ unmodifiable` when the source forbids modifiers.",
+          "type": "string",
+          "pattern": "^[0-9]\\+.*$"
+        },
+        "strength_bonus": {
+          "description": "Strength bonus the equipment grants.",
+          "type": "integer"
+        },
+        "movement_modifier": {
+          "description": "Movement modifier the equipment applies.",
+          "type": "integer"
+        },
+        "rules": {
+          "description": "Ids of the rules of this same profile that describe the equipment.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        }
+      }
+    },
+    "counts_as": {
+      "description": "Canonical item this unique equipment counts as, in a named context.",
+      "type": "object",
+      "required": ["item_id", "context"],
+      "additionalProperties": false,
+      "properties": {
+        "item_id": { "$ref": "defs.schema.json#/$defs/id" },
+        "context": {
+          "description": "Where it counts as that item: `rules` or `close_combat`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "quantity": { "$ref": "defs.schema.json#/$defs/amount" }
+      }
+    },
+    "inline_rule": {
+      "description": "A rule that belongs to one character. Its id follows the profile (`hireling.dramatis.<slug>.rule.<slug>`).",
+      "type": "object",
+      "required": ["id", "name", "name_i18n", "effect", "effect_i18n"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "kind": {
+          "description": "Optional editorial classification of the rule.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "mechanics": {
+          "description": "Optional typed mechanics the rule declares.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["type", "value"],
+            "additionalProperties": false,
+            "properties": {
+              "type": { "$ref": "defs.schema.json#/$defs/id" },
+              "value": { "type": "integer" }
+            }
+          }
+        }
+      }
+    },
+    "unresolved_reference": {
+      "description": "A source concept with no canonical catalogue yet.",
+      "type": "object",
+      "required": ["kind", "source_name"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "description": "Kind of gap, e.g. `mount_profile`, `companion_profile`, `random_profile`, `summoning_procedure`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "source_name": {
+          "description": "The wording of the source, kept verbatim.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "note": {
+          "description": "Why it is unresolved, when the source wording alone does not say.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        }
+      }
+    }
+  }
+}

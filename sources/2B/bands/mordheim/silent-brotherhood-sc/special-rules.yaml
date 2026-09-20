@@ -1,0 +1,289 @@
+schema_version: 2
+band_id: silent-brotherhood-sc
+rules:
+- id: band--assignments
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.silent-brotherhood-sc.band.assignments
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Assignments
+  effect: >-
+    After the game any hero who did not go out of action may fulfil a client's assignment instead of
+    exploring the Sealed City. He neither adds a die when rolling on the Exploration chart nor may
+    he search for rare items. Roll a D6 instead: 1 = Failure (he misses the next game while evading
+    his pursuers); 2-5 = Success (2D6 gold crowns and +1 experience); 6 = Excellent (3D6 gold crowns
+    and D3 experience points).
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Assignments
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
+  name_i18n:
+    es: Encargos
+  effect_i18n:
+    es: >-
+      Tras la partida, cualquier héroe que no haya quedado Fuera de combate puede cumplir el encargo
+      de un cliente en lugar de explorar la Ciudad Sellada. No añade un dado a la tabla de
+      Exploración ni puede buscar objetos raros. Tira 1D6 en su lugar: 1 = Fracaso (se pierde la
+      siguiente partida huyendo de sus perseguidores); 2-5 = Éxito (2D6 coronas de oro y +1 de
+      experiencia); 6 = Excelente (3D6 coronas de oro y D3 puntos de experiencia).
+  applies_to:
+    band: true
+- id: band--sworn-brotherhood
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.silent-brotherhood-sc.band.sworn-brotherhood
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Sworn Brotherhood
+  effect: >-
+    Whenever you want to hire a new hero during a campaign, the warband's leader must first pass a
+    Leadership test. If the test is failed, no new heroes may be hired after the game. This does not
+    affect the warband's creation.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Sworn Brotherhood
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
+  name_i18n:
+    es: Hermandad Jurada
+  effect_i18n:
+    es: >-
+      Siempre que quieras contratar un nuevo héroe durante una campaña, el líder de la banda debe
+      superar primero un chequeo de Liderazgo. Si lo falla, no se pueden contratar nuevos héroes
+      después de la partida. Esto no afecta a la creación de la banda.
+  applies_to:
+    band: true
+- id: band--the-silence
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.silent-brotherhood-sc.band.the-silence
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: The Silence
+  effect: No warband member or hired sword may ever use blackpowder weapons or animals.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / The silence
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
+  name_i18n:
+    es: El Silencio
+  effect_i18n:
+    es: >-
+      Ningún miembro de la banda ni Espada a Sueldo puede usar nunca armas de pólvora negra ni
+      animales.
+  applies_to:
+    band: true
+- id: band--modus-operandi
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.silent-brotherhood-sc.band.modus-operandi
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Modus Operandi
+  effect: >-
+    Every hero may choose one modus operandi when hired (sniper 30 gc, executor 35 gc, lurker 35 gc;
+    costs include a basic equipment set). The choice is fixed; a hero may only have one such trait;
+    heroes without one may take it instead of a skill on an advance. A modus operandi may only be
+    chosen a second time once every different modus operandi is present at least once. Sniper: may
+    shoot while remaining hidden (target Initiative test to spot); +1 BS, -1 WS; no Combat skills;
+    not available to the Silent Master. Executor: +1 Initiative and +1 to hit on the turn he
+    charges; enemies attacking him in return also gain +1 to hit that turn; no Shooting skills.
+    Lurker: may hide even after running; may never use armour.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Modus Operandi
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
+  name_i18n:
+    es: Modus Operandi
+  effect_i18n:
+    es: >-
+      Cada héroe puede elegir un modus operandi al ser contratado (francotirador 30 coronas, verdugo
+      35, acechador 35; el coste incluye un equipo básico). La elección es fija; un héroe solo puede
+      tener un rasgo de este tipo; los héroes sin ninguno pueden tomarlo en lugar de una habilidad
+      al mejorar. Un modus operandi solo puede elegirse por segunda vez cuando todos los demás estén
+      presentes al menos una vez. Francotirador: puede disparar permaneciendo oculto (el objetivo
+      hace un chequeo de Iniciativa para detectarlo); +1 HA, -1 WS; sin habilidades de Combate; no
+      disponible para el Maestro Silencioso. Verdugo: +1 Iniciativa y +1 para impactar en el turno
+      en que carga; los enemigos que le ataquen a cambio también obtienen +1 para impactar ese
+      turno; sin habilidades de Disparo. Acechador: puede ocultarse incluso tras correr; nunca puede
+      usar armadura.
+  applies_to:
+    band: true
+- id: silent-master--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.silent-brotherhood-sc.silent-master.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: >-
+    Any warrior within 6 inches of the Silent Master may use his Leadership instead of his own.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Silent Master / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6 pulgadas del Maestro Silencioso puede usar su Liderazgo en lugar del
+      propio.
+  applies_to:
+    profile_ids:
+    - silent-master
+- id: silent-master--perfect-killer
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.silent-brotherhood-sc.silent-master.perfect-killer
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Perfect Killer
+  effect: >-
+    A Silent Master always has an extra -1 modifier to any armour save the enemy has to take against
+    wounds he inflicted (both with shooting and close combat weapons).
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Silent Master / Special Rules / Perfect Killer
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
+  name_i18n:
+    es: Asesino Perfecto
+  effect_i18n:
+    es: >-
+      El Maestro Silencioso siempre aplica un modificador adicional de -1 a cualquier salvación por
+      armadura que el enemigo deba realizar contra las heridas que él inflige (tanto con armas de
+      disparo como de cuerpo a cuerpo).
+  applies_to:
+    profile_ids:
+    - silent-master
+- id: poisoner--toxic-trades
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.silent-brotherhood-sc.poisoner.toxic-trades
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Toxic Trades
+  effect: >-
+    If the hero doesn't search for rare items, he may make a single dose of Black Lotus instead. The
+    poison must be used in the next battle and cannot be sold or traded to other warbands.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Poisoner / Special Rules / Toxic trades
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
+  name_i18n:
+    es: Tratos Tóxicos
+  effect_i18n:
+    es: >-
+      Si el héroe no busca objetos raros, puede fabricar en su lugar una sola dosis de Loto Negro.
+      El veneno debe usarse en la siguiente batalla y no puede venderse ni intercambiarse con otras
+      bandas.
+  applies_to:
+    profile_ids:
+    - poisoner
+- id: poisoner--master-of-poisons
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.silent-brotherhood-sc.poisoner.master-of-poisons
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Master of Poisons
+  effect: >-
+    When using his toxic trades rule, the Poisoner may make D3-1 doses of Dark Venom instead of
+    Black Lotus. There is a chance of getting none, as the hero doesn't have access to a stable
+    workplace.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Special skills / Master of Poisons
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
+  name_i18n:
+    es: Maestro de Venenos
+  effect_i18n:
+    es: >-
+      Al usar su regla de tratos tóxicos, el Envenenador puede fabricar D3-1 dosis de Veneno Oscuro
+      en lugar de Loto Negro. Existe la posibilidad de no obtener ninguno, pues el héroe no tiene
+      acceso a un lugar de trabajo estable.
+  applies_to:
+    profile_ids:
+    - poisoner
+- id: thugs--loudmouths
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.silent-brotherhood-sc.thugs.loudmouths
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Loudmouths
+  effect: Thugs never become heroes; re-roll all results of 'that lad's got talent'.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Thugs / Special Rules / Loudmouths
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
+  name_i18n:
+    es: Bocazas
+  effect_i18n:
+    es: >-
+      Los Matones nunca se convierten en héroes; repite todos los resultados de 'el chaval tiene
+      talento'.
+  applies_to:
+    profile_ids:
+    - thugs

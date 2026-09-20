@@ -1,0 +1,326 @@
+schema_version: 2
+band_id: underworld-alliance-mim
+profiles:
+- id: goblin-bully
+  name: Goblin Bully
+  type: hero
+  cost: 50
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - greenskin-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - special
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 1 Goblin Bully
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Underworld Alliance.pdf
+  source_path:
+  - heroes
+  - 1 Goblin Bully
+  name_i18n:
+    es: Matón Goblin
+  rule_ids:
+  - goblin-bully--leader
+  - goblin-bully--one-upmanship
+  combat_traits: {}
+- id: skaven-slum-lord
+  name: Skaven Slum Lord
+  type: hero
+  cost: 50
+  experience: 20
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - skaven-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - special
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 1 Skaven Slum Lord
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Underworld Alliance.pdf
+  source_path:
+  - heroes
+  - 1 Skaven Slum Lord
+  name_i18n:
+    es: Señor del Barrio Bajo Skaven
+  rule_ids:
+  - skaven-slum-lord--leader
+  - skaven-slum-lord--sneaky-snark
+  combat_traits: {}
+- id: skaven-slave-champions
+  name: Skaven Slave Champions
+  type: hero
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - skaven-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - special
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 0-2 Skaven Slave Champion
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Underworld Alliance.pdf
+  source_path:
+  - heroes
+  - 0-2 Skaven Slave Champion
+  name_i18n:
+    es: Campeones Esclavos Skaven
+  rule_ids:
+  - skaven-slave-champions--tunnel-rat
+  combat_traits: {}
+- id: goblin-stinky-gits
+  name: Goblin Stinky Gits
+  type: hero
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - greenskin-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - special
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 0-2 Goblin Stinky Git
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Underworld Alliance.pdf
+  source_path:
+  - heroes
+  - 0-2 Goblin Stinky Git
+  name_i18n:
+    es: Apestosos Goblins
+  rule_ids:
+  - goblin-stinky-gits--disgusting
+  combat_traits: {}
+- id: skaven-slaves
+  name: Skaven Slaves
+  type: henchman
+  cost: 10
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 4
+  equipment_lists:
+  - skaven-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Skaven Slaves
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Underworld Alliance.pdf
+  source_path:
+  - henchmen
+  - Skaven Slaves
+  name_i18n:
+    es: Esclavos Skaven
+  rule_ids: []
+  combat_traits: {}
+- id: boglars
+  name: Boglars
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 2
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - greenskin-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-5 Boglars
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Underworld Alliance.pdf
+  source_path:
+  - henchmen
+  - 0-5 Boglars
+  name_i18n:
+    es: Boglars
+  rule_ids:
+  - boglars--largely-insignificant
+  - boglars--bicker
+  - boglars--regeneration
+  combat_traits: {}
+- id: sewer-squigs
+  name: Sewer Squigs
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: null
+    WS: 4
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Squigs never use or need weapons or armour; Movement is 2D6-1 inches on land and 2D6 in water.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-5 Sewer Squigs
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Underworld Alliance.pdf
+  source_path:
+  - henchmen
+  - 0-5 Sewer Squigs
+  name_i18n:
+    es: Squigs de Cloaca
+  rule_ids:
+  - sewer-squigs--movement
+  combat_traits: {}
+- id: giant-rats
+  name: Giant Rats
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 2
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Giant Rats never use any armour or weapons.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Giant Rats
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Underworld Alliance.pdf
+  source_path:
+  - henchmen
+  - Giant Rats
+  name_i18n:
+    es: Ratas Gigantes
+  rule_ids:
+  - giant-rats--pack-size
+  - giant-rats--experience
+  combat_traits: {}
+- id: warpstone-troll
+  name: Warpstone Troll
+  type: henchman
+  cost: 250
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 2
+    S: 4
+    T: 4
+    W: 3
+    I: 2
+    A: 4
+    Ld: 7
+  equipment_lists: []
+  fixed_equipment:
+  - club
+  equipment_restrictions:
+  - Warpstone Trolls do not require weapons to fight but usually carry a big club.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 1 Warpstone Troll
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Underworld Alliance.pdf
+  source_path:
+  - henchmen
+  - 1 Warpstone Troll
+  name_i18n:
+    es: Troll de Piedra Bruja
+  rule_ids:
+  - warpstone-troll--fear
+  - warpstone-troll--stupidity
+  - warpstone-troll--regeneration
+  - warpstone-troll--mutates
+  - warpstone-troll--vomit-attack
+  - warpstone-troll--large-target
+  combat_traits: {}

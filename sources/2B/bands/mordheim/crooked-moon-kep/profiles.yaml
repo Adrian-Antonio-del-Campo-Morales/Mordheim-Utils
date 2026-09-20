@@ -1,0 +1,323 @@
+schema_version: 2
+band_id: crooked-moon-kep
+profiles:
+- id: big-boss
+  name: Big Boss
+  type: hero
+  cost: 45
+  experience: 17
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - night-goblin-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 12
+    section: Heroes / 1 Big Boss
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
+  source_path:
+  - heroes
+  - 1 Big Boss
+  name_i18n:
+    es: Gran Jefe
+  rule_ids:
+  - big-boss--leader
+  combat_traits: {}
+- id: shaman
+  name: Shaman
+  type: hero
+  cost: 50
+  experience: 10
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - night-goblin-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - shooting
+  - academic
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 13
+    section: Heroes / 0-1 Shaman
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
+  source_path:
+  - heroes
+  - 0-1 Shaman
+  name_i18n:
+    es: Chamán
+  rule_ids:
+  - shaman--wizard
+  combat_traits: {}
+- id: bosses
+  name: Bosses
+  type: hero
+  cost: 25
+  experience: 6
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - night-goblin-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  source:
+    manual: broheim.net
+    printed_page: 13
+    section: Heroes / 0-2 Bosses
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
+  source_path:
+  - heroes
+  - 0-2 Bosses
+  name_i18n:
+    es: Jefes
+  rule_ids: []
+  combat_traits: {}
+- id: squig-hopper
+  name: Squig Hopper
+  type: hero
+  cost: 30
+  experience: 6
+  characteristics:
+    M: 2D6
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - night-goblin-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Squig Hopper can't be equipped with any weapon but can pick armour from the Night Goblins list.
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 13
+    section: Heroes / 0-2 Squig Hoppers
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
+  source_path:
+  - heroes
+  - 0-2 Squig Hoppers
+  name_i18n:
+    es: Domador de Squigs
+  rule_ids:
+  - squig-hopper--squig-jump
+  combat_traits: {}
+- id: night-goblins
+  name: Night Goblins
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - night-goblin-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 14
+    section: Henchmen (bought on groups of 1-5) / Night Goblins
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
+  source_path:
+  - henchmen
+  - Night Goblins
+  name_i18n:
+    es: Goblins Nocturnos
+  rule_ids: []
+  combat_traits: {}
+- id: fanatics
+  name: Fanatics
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - fanatic-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 14
+    section: Henchmen / 0-2 Fanatics
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
+  source_path:
+  - henchmen
+  - 0-2 Fanatics
+  name_i18n:
+    es: Fanáticos
+  rule_ids:
+  - fanatics--addict
+  - fanatics--looney
+  - fanatics--frantic
+  combat_traits: {}
+- id: cave-squigs
+  name: Cave Squigs
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 2D6
+    WS: 4
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Big gob and brutality! Cave Squigs never use weapons or armour.
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 14
+    section: Henchmen / 0-5 Cave Squigs
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
+  source_path:
+  - henchmen
+  - 0-5 Cave Squigs
+  name_i18n:
+    es: Squigs de Cueva
+  rule_ids:
+  - cave-squigs--movement
+  - cave-squigs--minderz
+  - cave-squigs--animals
+  combat_traits: {}
+- id: troll
+  name: Troll
+  type: henchman
+  cost: 200
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 1
+    S: 5
+    T: 4
+    W: 3
+    I: 1
+    A: 3
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Trolls do not require weapons to fight but often carry a big club. In any event, Trolls can never
+    be given weapons or armour.
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 15
+    section: Henchmen / 0-1 Troll
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
+  source_path:
+  - henchmen
+  - 0-1 Troll
+  name_i18n:
+    es: Troll
+  rule_ids:
+  - troll--fear
+  - troll--stupidity
+  - troll--regeneration
+  - troll--dumb-monster
+  - troll--always-hungry
+  - troll--vomit-attack
+  combat_traits: {}
+- id: snotling-mob
+  name: Snotling Mob
+  type: henchman
+  cost: 50
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 2
+    T: 2
+    W: 1
+    I: 3
+    A: 1
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Snotlings may only ever use a pointy stick, which they will find for themselves at no cost. This counts
+    as a dagger and gives the enemy a +1 to his armour save or a 6+ save if he had none.
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 15
+    section: Henchmen / 0-1 Snotling Mob (consists of 5 Snotlings)
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
+  source_path:
+  - henchmen
+  - 0-1 Snotling Mob
+  name_i18n:
+    es: Mob de Snotlings
+  rule_ids:
+  - snotling-mob--mob
+  - snotling-mob--weedy
+  - snotling-mob--dodgy
+  combat_traits: {}

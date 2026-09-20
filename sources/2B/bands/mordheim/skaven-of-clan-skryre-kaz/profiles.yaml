@@ -1,0 +1,218 @@
+schema_version: 2
+band_id: skaven-of-clan-skryre-kaz
+profiles:
+- id: master-engineer
+  name: Master Engineer
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 4
+    S: 4
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - skaven-hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 41
+    section: 1 Master Engineer
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 1 Master Engineer
+  name_i18n:
+    es: Ingeniero Maestro
+  rule_ids:
+  - master-engineer--leader
+  - master-engineer--master-engineer
+  combat_traits: {}
+- id: engineers
+  name: Engineers
+  type: hero
+  cost: 40
+  experience: 8
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - skaven-hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 41
+    section: 0-2 Engineers
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 0-2 Engineers
+  name_i18n:
+    es: Ingenieros
+  rule_ids: []
+  combat_traits: {}
+- id: warlock-engineer
+  name: Warlock Engineer
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - skaven-hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - academic
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 42
+    section: 0-1 Warlock Engineer
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 0-1 Warlock Engineer
+  name_i18n:
+    es: Ingeniero Hechicero
+  rule_ids:
+  - warlock-engineer--wizard
+  combat_traits: {}
+- id: engineer-apprentices
+  name: Engineer Apprentices
+  type: hero
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 4
+  equipment_lists:
+  - skaven-hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 42
+    section: 0-2 Engineer Apprentices
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 0-2 Engineer Apprentices
+  name_i18n:
+    es: Aprendices de Ingeniero
+  rule_ids: []
+  combat_traits: {}
+- id: clanrats
+  name: Clanrats
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - skaven-henchmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 42
+    section: Clanrats
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - henchmen
+  - Clanrats
+  name_i18n:
+    es: Ratas de Clan
+  rule_ids: []
+  combat_traits: {}
+- id: skavenslaves
+  name: Skavenslaves
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 5
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 4
+  equipment_lists:
+  - skaven-henchmen-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 42
+    section: Skavenslaves
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - henchmen
+  - Skavenslaves
+  name_i18n:
+    es: Esclavos Skaven
+  rule_ids:
+  - skavenslaves--experience
+  - skavenslaves--all-races
+  - skavenslaves--slavers
+  combat_traits: {}

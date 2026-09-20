@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/equipment-access.yaml.schema.json",
+  "title": "Mordheim KB warband — equipment-access.yaml",
+  "description": "The equipment lists a warband buys from at creation, with the prices printed for the warband. These costs are source data and are never replaced by the Trading Post prices of `catalog/campaign/`. Shared definitions live in defs.schema.json.",
+  "type": "object",
+  "required": ["schema_version", "band_id", "equipment_lists"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 2 },
+    "band_id": {
+      "description": "Band the lists belong to; must match the directory and `band.yaml`.",
+      "$ref": "defs.schema.json#/$defs/id"
+    },
+    "equipment_lists": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/equipment_list" }
+    }
+  },
+  "$defs": {
+    "equipment_list": {
+      "description": "One list a profile buys from, referenced by `profiles.yaml` `equipment_lists`. It offers priced items, named loadouts, or both — never nothing.",
+      "type": "object",
+      "required": ["id", "name", "items", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "items": {
+          "description": "Empty only when the list is made of loadouts alone (Pit Fighter styles).",
+          "type": "array",
+          "items": { "$ref": "#/$defs/equipment_entry" }
+        },
+        "loadouts": {
+          "description": "Named packages of the list (e.g. a chariot with its horses, or the fighting styles of a Pit Fighter).",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/loadout" }
+        },
+        "source": { "$ref": "defs.schema.json#/$defs/source_ref" }
+      },
+      "anyOf": [
+        {
+          "description": "The list offers priced items.",
+          "properties": { "items": { "minItems": 1 } }
+        },
+        {
+          "description": "The list offers loadouts.",
+          "required": ["loadouts"]
+        }
+      ]
+    },
+    "equipment_entry": {
+      "description": "One purchasable line of a list.",
+      "type": "object",
+      "required": ["item_id", "cost"],
+      "additionalProperties": false,
+      "properties": {
+        "item_id": {
+          "description": "Canonical item id resolved against `catalog/items/`.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "cost": {
+          "description": "Creation price in gold crowns. Null when the source prices the item relative to another one (see `notes`), and a dice expression such as `25+1D6` when the price is rolled or the entry carries a rarity premium.",
+          "type": ["integer", "string", "null"],
+          "pattern": "^[0-9]+([+-][0-9]*D[0-9]+)?$"
+        },
+        "notes": {
+          "description": "Editorial note of the price, required whenever `cost` is not a plain integer.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "price_override": {
+          "description": "Explicit exception to the collated price of `catalog/items/`, in gold crowns.",
+          "type": "integer"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "cost": { "type": ["string", "null"] } },
+            "required": ["cost"]
+          },
+          "then": { "required": ["notes"] }
+        }
+      ]
+    },
+    "loadout": {
+      "description": "A named package of the list, priced as a whole.",
+      "type": "object",
+      "required": ["id", "name", "cost", "items"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "cost": { "type": "integer", "minimum": 0 },
+        "items": {
+          "description": "Item ids of the package; an entry may instead offer a choice between options, and an option may bundle several items (`sword + sword`).",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "oneOf": [
+              { "$ref": "defs.schema.json#/$defs/id" },
+              {
+                "type": "object",
+                "required": ["choose_one"],
+                "additionalProperties": false,
+                "properties": {
+                  "choose_one": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "$ref": "#/$defs/loadout_option" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "loadout_option": {
+      "description": "One alternative of a `choose_one`: a single item id, or the items of a bundled option.",
+      "oneOf": [
+        { "$ref": "defs.schema.json#/$defs/id" },
+        { "type": "array", "minItems": 1, "items": { "$ref": "defs.schema.json#/$defs/id" } }
+      ]
+    }
+  }
+}

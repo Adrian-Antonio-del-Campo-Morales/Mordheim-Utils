@@ -1,0 +1,98 @@
+schema_version: 2
+band_id: survivors-of-strigos-sylv
+profiles:
+- id: strigoi-vampire
+  name: Strigoi Vampire
+  type: hero
+  cost: 115
+  experience: 20
+  characteristics: {M: 6, WS: 4, BS: 4, S: 4, T: 4, W: 2, I: 6, A: 2, Ld: 8}
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Strigoi Vampire may not wield any weapons, as it relies upon brute strength,
+    tooth and claw. They do not suffer from any penalties for fighting unarmed.
+  skill_access: [combat, strength, speed, special]
+  source: {manual: mordheimer.net (Sylvania Supplement), printed_page: 0, section: 1 Strigoi Vampire, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos'}
+  source_path: [heroes, 1 Strigoi Vampire]
+  name_i18n: {es: Vampiro Strigoi}
+  rule_ids: [strigoi-vampire--leader, strigoi-vampire--kindred-hatred, strigoi-vampire--cause-fear, strigoi-vampire--immune-to-psychology, strigoi-vampire--immune-to-poison, strigoi-vampire--no-pain]
+  combat_traits: {}
+- id: seer
+  name: Seer
+  type: hero
+  cost: 40
+  experience: 12
+  characteristics: {M: 4, WS: 2, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [hero-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [academic, speed, special]
+  source: {manual: mordheimer.net (Sylvania Supplement), printed_page: 0, section: 0-1 Seer, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos'}
+  source_path: [heroes, 0-1 Seer]
+  name_i18n: {es: Vidente}
+  rule_ids: [seer--seeker, seer--wizard]
+  combat_traits: {}
+- id: domnu
+  name: Domnu
+  type: hero
+  cost: 30
+  experience: 4
+  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 8}
+  equipment_lists: [hero-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, strength, special]
+  source: {manual: mordheimer.net (Sylvania Supplement), printed_page: 0, section: 0-3 Domnu, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos'}
+  source_path: [heroes, 0-3 Domnu]
+  name_i18n: {es: Domnu}
+  rule_ids: [domnu--child-of-darkness, domnu--gypsy-ward]
+  combat_traits: {}
+- id: strigany
+  name: Strigany
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
+  equipment_lists: [henchman-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: mordheimer.net (Sylvania Supplement), printed_page: 0, section: 0-5 Strigany, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos'}
+  source_path: [henchmen, 0-5 Strigany]
+  name_i18n: {es: Strigany}
+  rule_ids: []
+  combat_traits: {}
+- id: ghouls
+  name: Ghouls
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 2, S: 3, T: 4, W: 1, I: 3, A: 2, Ld: 5}
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Ghouls never carry any equipment, apart from a few bones which they use as primitive
+    weapons.
+  skill_access: []
+  source: {manual: mordheimer.net (Sylvania Supplement), printed_page: 0, section: Ghouls, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos'}
+  source_path: [henchmen, Ghouls]
+  name_i18n: {es: Necrófagos}
+  rule_ids: [ghouls--cause-fear]
+  combat_traits: {}
+- id: giant-bats
+  name: Giant Bats
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics: {M: 6, WS: 3, BS: 0, S: 3, T: 3, W: 2, I: 3, A: 1, Ld: 6}
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Jaws and brutality.
+  skill_access: []
+  source: {manual: mordheimer.net (Sylvania Supplement), printed_page: 0, section: 0-2 Giant Bats, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos'}
+  source_path: [henchmen, 0-2 Giant Bats]
+  name_i18n: {es: Murciélagos Gigantes}
+  rule_ids: [giant-bats--animals, giant-bats--flying, giant-bats--large, giant-bats--sonic]
+  combat_traits: {}

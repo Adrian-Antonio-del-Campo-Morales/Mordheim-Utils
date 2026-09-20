@@ -1,0 +1,340 @@
+schema_version: 2
+band_id: skaven-of-clan-mors-kaz
+rules:
+- id: band--rulebook-inheritance
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-of-clan-mors-kaz.band.rulebook-inheritance
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred cross-reference: Skaven weapons as detailed in the rulebook, and Skaven Special
+        Skills for heroes except the Art of Silent Death. Resolves after equivalence review against
+        the active KB skaven bands.
+  name: Rulebook Inheritance
+  effect: >-
+    Skaven Clan Mors may use the Skaven weapons as detailed in the rulebook. Skaven Heroes may use
+    any of the Skaven Special Skills in the rulebook except for the Art of Silent Death.
+  source:
+    manual: broheim.net
+    printed_page: 36
+    section: Special Weapons / Skaven Special Skills
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Herencia del Libro de Reglas
+  effect_i18n:
+    es: >-
+      Los Skaven del Clan Mors pueden usar las armas Skaven tal y como se detallan en el libro de
+      reglas. Los Héroes Skaven pueden usar cualquiera de las Habilidades Especiales Skaven del
+      libro de reglas, excepto el Arte de la Muerte Silenciosa.
+  applies_to:
+    band: true
+- id: claw-leader--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-mors-kaz.claw-leader.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Leader
+  effect: >-
+    Any model in the warband within 6\" of the Claw Leader may use his Leadership instead of their
+    own.
+  source:
+    manual: broheim.net
+    printed_page: 36
+    section: heroes / 1 Claw Leader / Special Rules / Leader
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier modelo de la banda a 6" del Líder Garra puede usar su Liderazgo en lugar del propio.
+  applies_to:
+    profile_ids:
+    - claw-leader
+- id: claw-leader--tactical-genius
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-mors-kaz.claw-leader.tactical-genius
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: setup sequence is outside the close-combat runtime.
+  name: Tactical Genius
+  effect: >-
+    Clan Mors' warlords are trained in the arts of war and are strategic geniuses (in their eyes at
+    least). The Clan Mors player can add +1 to his dice score to see who sets up first.
+  source:
+    manual: broheim.net
+    printed_page: 36
+    section: heroes / 1 Claw Leader / Special Rules / Tactical Genius
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Genio Táctico
+  effect_i18n:
+    es: >-
+      Los señores de la guerra del Clan Mors están entrenados en las artes de la guerra y son genios
+      estratégicos (al menos a sus ojos). El jugador del Clan Mors puede sumar +1 a su tirada de
+      dado para ver quién despliega primero.
+  applies_to:
+    profile_ids:
+    - claw-leader
+- id: mors-sorcerer--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-mors-kaz.mors-sorcerer.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (Magic of the Horned Rat).
+  name: Wizard
+  effect: >-
+    A Mors Sorcerer is a wizard and uses the Magic of the Horned Rat. See the Magic section of the
+    rulebook for details.
+  source:
+    manual: broheim.net
+    printed_page: 37
+    section: heroes / 0-1 Mors Sorcerer / Special Rules / Wizard
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Hechicero
+  effect_i18n:
+    es: >-
+      Un Hechicero de Mors es un Hechicero y usa la Magia de la Rata Cuernuda. Consulta la sección
+      de Magia del libro de reglas para más detalles.
+  applies_to:
+    profile_ids:
+    - mors-sorcerer
+- id: skavenslaves--experience
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-mors-kaz.skavenslaves.experience
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: experience progression is a campaign mechanic.
+  name: Experience
+  effect: Skavenslaves are little better than animals and do not gain experience.
+  source:
+    manual: broheim.net
+    printed_page: 38
+    section: henchmen / Skavenslaves / Special Rules / Experience
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Experiencia
+  effect_i18n:
+    es: Los Esclavos Skaven son poco mejor que animales y no ganan experiencia.
+  applies_to:
+    profile_ids:
+    - skavenslaves
+- id: skavenslaves--all-races
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-mors-kaz.skavenslaves.all-races
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: warband-flavour rule with no combat effect.
+  name: All Races
+  effect: >-
+    Skaven slaves may be from any race including their fellow Skaven. The above profile represents
+    the weakened state of all of them.
+  source:
+    manual: broheim.net
+    printed_page: 38
+    section: henchmen / Skavenslaves / Special Rules / All Races
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Todas las Razas
+  effect_i18n:
+    es: >-
+      Los esclavos Skaven pueden ser de cualquier raza, incluidos sus propios compañeros Skaven. El
+      perfil anterior representa el estado debilitado de todos ellos.
+  applies_to:
+    profile_ids:
+    - skavenslaves
+- id: skavenslaves--slavers
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-mors-kaz.skavenslaves.slavers
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: capture is a campaign mechanic.
+  name: Slavers
+  effect: >-
+    Any enemy warrior who is captured may be added to a Skavenslave group. He will have the above
+    profile and will have to be equipped the same as the rest of the group. Any equipment he carried
+    when he was captured may be kept or sold by the warband.
+  source:
+    manual: broheim.net
+    printed_page: 38
+    section: henchmen / Skavenslaves / Special Rules / Slavers
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Esclavistas
+  effect_i18n:
+    es: >-
+      Cualquier guerrero enemigo que sea capturado puede añadirse a un grupo de Esclavos Skaven.
+      Tendrá el perfil anterior y deberá equiparse igual que el resto del grupo. Cualquier equipo
+      que llevara cuando fue capturado puede quedarse la banda o venderse.
+  applies_to:
+    profile_ids:
+    - skavenslaves
+- id: rat-ogre--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-mors-kaz.rat-ogre.fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (cause fear).
+  name: Fear
+  effect: Rat Ogres are so frightening they cause fear.
+  source:
+    manual: broheim.net
+    printed_page: 38
+    section: henchmen / 0.1 Rat Ogre / Special Rules / Fear
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Los Ogros Rata son tan aterradores que causan miedo.
+  applies_to:
+    profile_ids:
+    - rat-ogre
+- id: rat-ogre--stupidity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-mors-kaz.rat-ogre.stupidity
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (stupidity).
+  name: Stupidity
+  source:
+    manual: broheim.net
+    printed_page: 38
+    section: henchmen / 0.1 Rat Ogre / Special Rules / Stupidity
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Estupidez
+  applies_to:
+    profile_ids:
+    - rat-ogre
+  rule_ref: shared-rule.stupidity
+- id: rat-ogre--experience
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-mors-kaz.rat-ogre.experience
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: experience progression is a campaign mechanic.
+  name: Experience
+  source:
+    manual: broheim.net
+    printed_page: 39
+    section: henchmen / 0.1 Rat Ogre / Special Rules / Experience
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Experiencia
+  applies_to:
+    profile_ids:
+    - rat-ogre
+  rule_ref: shared-rule.experience
+- id: rat-ogre--large
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-mors-kaz.rat-ogre.large
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: shooting-target selection is outside the close-combat runtime.
+  name: Large
+  effect: >-
+    Rat Ogres are huge creatures and therefore make tempting targets for archers. Any model may
+    shoot at a Rat Ogre, even if it is not the closest target.
+  source:
+    manual: broheim.net
+    printed_page: 39
+    section: henchmen / 0.1 Rat Ogre / Special Rules / Large
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Enorme
+  effect_i18n:
+    es: >-
+      Los Ogros Rata son criaturas enormes y por tanto constituyen objetivos tentadores para los
+      arqueros. Cualquier modelo puede disparar a un Ogro Rata, incluso si no es el objetivo más
+      cercano.
+  applies_to:
+    profile_ids:
+    - rat-ogre
+- id: band--wolf-rats-variant
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-of-clan-mors-kaz.band.wolf-rats-variant
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the source marks Rat Ogres and Wolf Rats as alternative list entries to be
+        confirmed; Wolf Rats have no confirmed profile in this version (v1.2).
+  name: Wolf Rats (to be confirmed)
+  effect: >-
+    Note: Rat Ogres and Wolf Rats are alternative list entries to be confirmed. 0-5 Wolf Rats (60
+    gold crowns to hire) are the warped and mutated product of Clan Moulder: M 6, WS 4, BS 0, S 4, T
+    4, W 1, I 4, A 2, Ld 6. Wolf rats are animals and never gain experience. They neither need nor
+    use weapons nor armour.
+  source:
+    manual: broheim.net
+    printed_page: 38
+    section: Note (henchmen) and 0-5 Wolf Rats
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Ratas Lobo (por confirmar)
+  effect_i18n:
+    es: >-
+      Nota: los Ogros Rata y las Ratas Lobo son entradas de lista alternativa por confirmar. 0-5
+      Ratas Lobo (60 coronas de oro por contratarlas) son el producto retorcido y mutado del Clan
+      Moulder: M 6, HA 4, HP 0, F 4, R 4, H 1, I 4, A 2, Ld 6. Las Ratas Lobo son animales y nunca
+      ganan experiencia. No necesitan ni usan armas ni armadura.
+  applies_to:
+    band: true

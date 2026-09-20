@@ -1,0 +1,301 @@
+schema_version: 2
+band_id: pirates-of-the-cathayan-sea-sar
+profiles:
+- id: disgraced-warlord
+  name: Disgraced Warlord
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  - pirate
+  - special
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 1 Disgraced Warlord
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  source_path:
+  - heroes
+  - 1 Disgraced Warlord
+  name_i18n:
+    es: Señor de la Guerra Degradado
+  rule_ids:
+  - disgraced-warlord--leader
+  combat_traits: {}
+- id: shanghaires
+  name: Shanghai'ers
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour.
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - pirate
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-2 Shanghai'ers
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  source_path:
+  - heroes
+  - 0-2 Shanghai'ers
+  name_i18n:
+    es: Shanghaiers
+  rule_ids: []
+  combat_traits: {}
+- id: dragon-monk
+  name: Dragon Monk
+  type: hero
+  cost: 55
+  experience: 15
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - monk-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May never wear armour. Suffers no penalties for fighting unarmed and receives +1 Attack when doing
+    so.
+  - Replaces one Shanghai'er
+  - May not wear armour.
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - special
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-1 Dragon Monk
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  source_path:
+  - heroes
+  - 0-1 Dragon Monk
+  name_i18n:
+    es: Monje Dragón
+  rule_ids:
+  - dragon-monk--art-of-silent-death
+  - dragon-monk--distaste-for-poison
+  combat_traits: {}
+- id: litter-bearers
+  name: Litter Bearers
+  type: hero
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour.
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - pirate
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-2 Litter Bearers
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  source_path:
+  - heroes
+  - 0-2 Litter Bearers
+  name_i18n:
+    es: Cargadores de Palanquín
+  rule_ids: []
+  combat_traits: {}
+- id: deck-hands
+  name: Deck Hands
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / Deck Hands
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  source_path:
+  - henchmen
+  - Deck Hands
+  name_i18n:
+    es: Marinadas
+  rule_ids: []
+  combat_traits: {}
+- id: gunners
+  name: Gunners
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - gunner-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0-7 Gunners
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  source_path:
+  - henchmen
+  - 0-7 Gunners
+  name_i18n:
+    es: Artilleros
+  rule_ids:
+  - gunners--swivel-guns-dangerous-lao-xiong
+  combat_traits: {}
+- id: martial-artists
+  name: Martial Artists
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - pirate-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour.
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 Martial Artists
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  source_path:
+  - henchmen
+  - 0-5 Martial Artists
+  name_i18n:
+    es: Artistas Marciales
+  rule_ids:
+  - martial-artists--agile
+  combat_traits: {}
+- id: floordogs
+  name: Floordogs
+  type: henchman
+  cost: 0
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - floordog-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Never more Floordogs than Deck Hands
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 Floordogs
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  source_path:
+  - henchmen
+  - 0-5 Floordogs
+  name_i18n:
+    es: Perros de Cubierta
+  rule_ids:
+  - floordogs--not-hired
+  - floordogs--never-gain-experience
+  - floordogs--rabble
+  - floordogs--wo-kao-they-got-away
+  - floordogs--dont-mind-them-lao-xiong
+  combat_traits: {}

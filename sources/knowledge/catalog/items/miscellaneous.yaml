@@ -125,6 +125,22 @@ items:
     printed_page: 0
     section: Trading Post / Hand-to-hand Combat Weapons
     url: https://mordheimer.net/docs/trading-post
+  # PROMOTION NOTE (2026-09-14, from the Grade-2b staging sources): the
+  # 'Miracle Workers' chapter (Werekin, Liber Malefic — priest article of the
+  # Mutiny in Marienburg project) prints the trident with an extra special rule
+  # this entry lacks:
+  #   Range: Close combat | Strength: As user | Special Rules: Strike first, Parry.
+  # At promotion, review adding "Strike first" to this effect (the chapter
+  # describes the trident as the sacred weapon of templar marines of Manann and
+  # priest-only in its equipment list). Pricing context from the same source:
+  # 15 gc (matches this item's trading-post price), and Rarity 7 per the MiM
+  # 'Unknowable Cargo' chapter (already applied in
+  # catalog/campaign/trading-post.yaml, restricted there to pit-fighters only —
+  # the Miracle Workers priest equipment list also grants it to Priests of
+  # Manann, see the Grade-2b staging hirelings catalog).
+  # Discrepancy to resolve at review: mordheimer.net wording (Parry only) vs
+  # Miracle Workers wording (Strike first + Parry); the fan supplement postdates
+  # the Town Crier-era trading post and is the more specific source.
   combat_status: out_of_scope
 - id: fist
   kind: close-combat-weapon

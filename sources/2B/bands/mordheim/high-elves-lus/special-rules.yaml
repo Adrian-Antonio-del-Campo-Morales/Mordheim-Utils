@@ -1,0 +1,259 @@
+schema_version: 2
+band_id: high-elves-lus
+rules:
+- id: band--excellent-sight
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.high-elves-lus.band.excellent-sight
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Excellent Sight
+  effect: >-
+    Elves spot hidden enemies from two times as far away as other warriors (twice their Initiative
+    value in inches).
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Excellent Sight
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Vista Excelente
+  effect_i18n:
+    es: >-
+      Los elfos detectan enemigos ocultos desde el doble de distancia que otros guerreros (dos veces
+      su valor de Iniciativa en pulgadas).
+  applies_to:
+    band: true
+- id: band--haughty
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.high-elves-lus.band.haughty
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Haughty
+  effect: >-
+    A High Elf warband may never include hired swords that are not of High Elven blood, nor use
+    equipment of Dwarf origin, including Gromril weapons and armour.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Haughty
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Altivos
+  effect_i18n:
+    es: >-
+      Una banda de Altos Elfos nunca puede incluir Espadas a Sueldo que no sean de sangre de Alto
+      Elfo, ni usar equipo de origen enano, incluidas las armas y armaduras de Gromril.
+  applies_to:
+    band: true
+- id: band--honorable
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.high-elves-lus.band.honorable
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Honorable
+  effect: High Elves can never use poison or drugs of any kind, no matter the circumstance.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Honorable
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Honorables
+  effect_i18n:
+    es: >-
+      Los Altos Elfos nunca pueden usar venenos ni drogas de ningún tipo, sea cual sea la
+      circunstancia.
+  applies_to:
+    band: true
+- id: band--the-old-ways
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.high-elves-lus.band.the-old-ways
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: The Old Ways
+  effect: >-
+    High Elves may never use black powder weapons of any sort; this goes against their ancestors and
+    the traditions of the Old Ways.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / The Old Ways
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Las Viejas Tradiciones
+  effect_i18n:
+    es: >-
+      Los Altos Elfos nunca pueden usar armas de pólvora negra de ningún tipo; ello va contra sus
+      ancestros y las tradiciones de las Viejas Tradiciones.
+  applies_to:
+    band: true
+- id: band--resolve
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.high-elves-lus.band.resolve
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Resolve
+  effect: >-
+    When fighting the Dark Elves, High Elves have Leadership 10 for Rout Tests and can never choose
+    to voluntarily rout.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Resolve
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Resolución
+  effect_i18n:
+    es: >-
+      Al luchar contra los Elfos Oscuros, los Altos Elfos tienen Liderazgo 10 en los chequeos de
+      huida y nunca pueden elegir huir voluntariamente.
+  applies_to:
+    band: true
+- id: loremaster--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.high-elves-lus.loremaster.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: >-
+    Any models in the warband within 6 inches may use the Loremaster's Leadership instead of their
+    own.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Loremaster / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier modelo de la banda a 6 pulgadas puede usar el Liderazgo del Maestro del Saber en
+      lugar del suyo.
+  applies_to:
+    profile_ids:
+    - loremaster
+- id: loremaster--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.high-elves-lus.loremaster.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+  name: Wizard
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Loremaster / Special Rules / Wizard
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Mago
+  applies_to:
+    profile_ids:
+    - loremaster
+  rule_ref: shared-rule.wizard
+- id: sword-wardens--sword-master-protege
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.high-elves-lus.sword-wardens.sword-master-protege
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Sword Master Protégé
+  effect: >-
+    Anyone shooting at a Sword Warden armed with a sword or a Greatsword (not a double-handed sword)
+    must deduct 1 from their roll to hit. This does not include black powder weapons.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-2 Sword Wardens / Special Rules / Sword Master Protégé
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Discípulo de Maestro de la Espada
+  effect_i18n:
+    es: >-
+      Cualquiera que dispare a un Guardián de la Espada armado con espada o Espadón (no un arma a
+      dos manos) debe restar 1 a su tirada para impactar. Esto no incluye las armas de pólvora
+      negra.
+  applies_to:
+    profile_ids:
+    - sword-wardens
+- id: rangers--seeker
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.high-elves-lus.rangers.seeker
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Seeker
+  effect: >-
+    If not taken out of action, when rolling on the Exploration Chart the Ranger allows you to
+    modify one die roll by -1/+1.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-2 Rangers / Special Rules / Seeker
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Buscador
+  effect_i18n:
+    es: >-
+      Si no queda Fuera de combate, al tirar en la Tabla de Exploración el Explorador permite
+      modificar una tirada de dado en -1/+1.
+  applies_to:
+    profile_ids:
+    - rangers

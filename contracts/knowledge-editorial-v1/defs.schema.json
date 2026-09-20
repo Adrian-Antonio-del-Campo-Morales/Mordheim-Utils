@@ -1,0 +1,334 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/defs.schema.json",
+  "title": "Mordheim KB editorial documents — shared definitions",
+  "description": "Pieces shared by the band packages (`band.yaml`, `profiles.yaml`, `equipment-access.yaml`, `special-rules.yaml`), by the hireling catalogue (`catalog/hirelings/`) and by the campaign catalogue (`catalog/campaign/`). The document schemas reference this file with a relative $ref; `mordheim_knowledge.editorial_schemas` merges the definitions before validating, so no external registry is needed at run time. The runtime block mirrors `sources/knowledge/registry/runtime-schema.yaml` and is also enforced at load time by `mordheim_knowledge.loader.validate_rule_runtime`.",
+  "$defs": {
+    "id": {
+      "description": "Stable KB identifier: lowercase letters, digits, dots, underscores and hyphens. IDs are never renamed — semantic scenarios pin sources by id and content digest, and campaign files reference stable KB ids only.",
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+    },
+    "rule_id": {
+      "description": "Rule id of the `<owner>--<name>` grammar, where <owner> is the band, a profile id or a shared-rule id.",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*--[a-z0-9][a-z0-9-]*$"
+    },
+    "display_text": {
+      "description": "Human-readable text: names, prose and section labels.",
+      "type": "string",
+      "minLength": 1
+    },
+    "i18n": {
+      "description": "Translations only. English is canonical and stored once in `name` / `effect`; an `en` mirror is forbidden and `tools/normalize_names.py` strips a locale block left without a real translation.",
+      "type": "object",
+      "required": ["es"],
+      "additionalProperties": false,
+      "properties": {
+        "es": {
+          "description": "Reviewed Spanish translation of the canonical English name or effect.",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "characteristic_name": {
+      "description": "Characteristic key of the Mordheim profile line, declared once for the profile line, the characteristic map and the bindings that name a characteristic.",
+      "type": "string",
+      "enum": ["M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"]
+    },
+    "characteristic_value": {
+      "description": "Characteristic value: a number, null when the creature has none, or a dice expression such as `2D6` when the profile rolls for it.",
+      "type": ["integer", "string", "null"],
+      "pattern": "^[0-9]*D[0-9]+([+-][0-9]+)?$"
+    },
+    "characteristic_map": {
+      "description": "Complete characteristic line: every characteristic is declared, even when its value is null.",
+      "type": "object",
+      "required": ["M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"],
+      "additionalProperties": false,
+      "properties": {
+        "M": { "$ref": "#/$defs/characteristic_value" },
+        "WS": { "$ref": "#/$defs/characteristic_value" },
+        "BS": { "$ref": "#/$defs/characteristic_value" },
+        "S": { "$ref": "#/$defs/characteristic_value" },
+        "T": { "$ref": "#/$defs/characteristic_value" },
+        "W": { "$ref": "#/$defs/characteristic_value" },
+        "I": { "$ref": "#/$defs/characteristic_value" },
+        "A": { "$ref": "#/$defs/characteristic_value" },
+        "Ld": { "$ref": "#/$defs/characteristic_value" }
+      }
+    },
+    "source_ref": {
+      "description": "Editorial provenance of a record: which printed manual or web page it was transcribed from, and where in it.",
+      "type": "object",
+      "required": ["manual", "printed_page", "section"],
+      "additionalProperties": false,
+      "properties": {
+        "manual": {
+          "description": "Where the text comes from: normally a registered source id (`mordheimer.net`, `chaos-in-the-streets`, `lustria`, `khemri`, `trollheim`, `user-ruling` …); a few rules-catalogue records still carry the printed manual name (`Mordheim Rulebook`) instead.",
+          "type": "string",
+          "minLength": 1
+        },
+        "printed_page": {
+          "description": "Page of the printed manual, or 0 when the record comes from a web page. Ranges such as `74-80` travel as text.",
+          "type": ["integer", "string"]
+        },
+        "section": {
+          "description": "Section, heading or table the record was read from.",
+          "$ref": "#/$defs/display_text"
+        },
+        "url": {
+          "description": "Canonical location of the source page, when it has one.",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "source_refs": {
+      "description": "Editorial provenance of a catalogue record: one entry per source it was transcribed from. An empty list means the provenance has not been collated yet.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/source_ref" }
+    },
+    "catalog_status": {
+      "description": "Editorial lifecycle of a catalogue document, declared once for every catalogue that is not a warband package. `published` is real, source-referenced data; `draft` marks a document whose rules are still unconfirmed, as `sources/knowledge/catalog/campaign/README.md` prescribes instead of inventing data. No catalogue document is a draft today.",
+      "enum": ["published", "draft"]
+    },
+    "dice": {
+      "description": "A dice pool: how many dice of how many sides, with the optional flat modifier and multiplier the campaign tables use for expressions such as `2D6+1` or `D6 x 25`.",
+      "type": "object",
+      "required": ["count", "sides"],
+      "additionalProperties": false,
+      "properties": {
+        "count": {
+          "description": "Number of dice rolled.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "sides": {
+          "description": "Faces of each die: 3 or 6 in the campaign tables, 6 in the duel tables.",
+          "type": "integer",
+          "minimum": 2
+        },
+        "modifier": {
+          "description": "Flat amount added to the total, e.g. `2D6+1`.",
+          "type": "integer"
+        },
+        "multiplier": {
+          "description": "Amount the total is multiplied by, e.g. `D6 x 25 gc`.",
+          "type": "integer"
+        }
+      }
+    },
+    "interval": {
+      "description": "Inclusive interval a roll falls in. `min` is always declared; `max` is omitted only when the branch is open-ended (the last cell of a chart, e.g. `36+`).",
+      "type": "object",
+      "required": ["min"],
+      "additionalProperties": false,
+      "properties": {
+        "min": {
+          "description": "Lowest roll of the interval, inclusive.",
+          "type": "integer"
+        },
+        "max": {
+          "description": "Highest roll of the interval, inclusive. Omitted when the interval is open-ended.",
+          "type": "integer"
+        }
+      }
+    },
+    "amount": {
+      "description": "A quantity of a resource: a fixed number or a dice expression. `kind` says which of the two the record carries, so a cancelled or deferred amount is never written as a magic zero.",
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "description": "`fixed` for a number, `dice` for a rolled amount.",
+          "enum": ["fixed", "dice"]
+        },
+        "value": {
+          "description": "The fixed quantity, in whole units of the resource.",
+          "type": "integer"
+        },
+        "dice": {
+          "description": "The dice expression rolled for the quantity.",
+          "$ref": "#/$defs/dice"
+        },
+        "multiplier": {
+          "description": "Amount the rolled quantity is multiplied by, for expressions such as `D6 x 10`.",
+          "type": "integer"
+        },
+        "offset": {
+          "description": "Amount added to the rolled quantity, for expressions such as `D6+1` the source prints outside the dice.",
+          "type": "integer"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "kind": { "const": "fixed" } },
+            "required": ["kind"]
+          },
+          "then": { "required": ["value"] }
+        },
+        {
+          "if": {
+            "properties": { "kind": { "const": "dice" } },
+            "required": ["kind"]
+          },
+          "then": { "required": ["dice"] }
+        }
+      ]
+    },
+    "id_or_parameter": {
+      "description": "A stable KB id, or a `$parameter` the procedure binds at run time (`$requested_item_id`, `$searching_hero` …). A parameter is not an id: it is resolved from the caller's context and never names a catalogue record.",
+      "type": "string",
+      "pattern": "^(\\$[a-z_]+|[a-z0-9][a-z0-9._-]*)$"
+    },
+    "id_list": {
+      "description": "List of stable KB ids of the same kind (band ids, group ids, rule ids …). Order is not significant.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "runtime_scope": {
+      "description": "Runtime scope the document belongs to. Today the duel runtime is one-against-one close combat only; widening it is a contract change.",
+      "const": "close-combat-only"
+    },
+    "runtime_binding": {
+      "description": "The executable link of an effect: equivalence between rules is declared by sharing `kind` + `id` (+ `parameters`) and is never inferred from names or prose.",
+      "type": "object",
+      "required": ["kind", "id"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "description": "`mechanic` and `trait` are shared executable contracts; `profile` is construction data already normalized in `profiles.yaml`; `compiler` is transitional.",
+          "enum": ["mechanic", "trait", "profile", "compiler"]
+        },
+        "id": {
+          "description": "Stable id of the bound mechanic, trait, profile binding or compiler contract.",
+          "$ref": "#/$defs/id"
+        },
+        "parameters": {
+          "description": "Binding parameters that complete the executable link. The vocabulary below is the one the knowledge base uses; the numbers themselves live in the band rule.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "allowed_skill_lists": {
+              "description": "Skill tables a granted access extends.",
+              "type": "array",
+              "items": { "$ref": "#/$defs/id" }
+            },
+            "bonuses": {
+              "description": "Characteristic bonuses the binding grants.",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "initiative": { "type": "integer" },
+                "strength": { "type": "integer" },
+                "toughness": { "type": "integer" },
+                "weapon_skill": { "type": "integer" }
+              }
+            },
+            "categories": {
+              "description": "Item or rule categories the binding covers.",
+              "type": "array",
+              "items": { "$ref": "#/$defs/id" }
+            },
+            "category": {
+              "description": "Single category the binding covers.",
+              "$ref": "#/$defs/id"
+            },
+            "characteristics": {
+              "description": "Characteristics the binding is about. Its values are the profile line's, declared once in `characteristic_name`.",
+              "type": "array",
+              "items": { "$ref": "#/$defs/characteristic_name" }
+            },
+            "forbids": {
+              "description": "Item, category or rule id the binding forbids.",
+              "oneOf": [
+                { "$ref": "#/$defs/id" },
+                { "type": "array", "items": { "$ref": "#/$defs/id" } }
+              ]
+            },
+            "ignore_penalties": {
+              "description": "Whether the binding cancels the usual penalties.",
+              "type": "boolean"
+            },
+            "profile_ids": {
+              "description": "Profiles the binding applies to.",
+              "type": "array",
+              "items": { "$ref": "#/$defs/id" }
+            },
+            "value": {
+              "description": "Magnitude of the binding: a characteristic value or a flag.",
+              "type": ["boolean", "integer"]
+            }
+          }
+        }
+      }
+    },
+    "runtime_effect": {
+      "description": "One classified effect of a rule. Every effect declares its scope and either an executable binding or the reason it has none.",
+      "type": "object",
+      "required": ["id", "scope", "binding"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable effect id: a shared mechanic id or an `unimplemented.<band>.<profile>.<slug>` placeholder.",
+          "$ref": "#/$defs/id"
+        },
+        "scope": {
+          "description": "`YES` belongs to the current duel runtime; `LATER` is a deferred subsystem; `NO` is out of scope.",
+          "enum": ["YES", "NO", "LATER"]
+        },
+        "binding": {
+          "description": "The executable link, or null when the effect has none.",
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/runtime_binding" }
+          ]
+        },
+        "reason": {
+          "description": "Required whenever there is no binding: the audit taxonomy such as `Deferred subsystem: psychology.` or `Out of scope: shooting.`.",
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "binding": { "type": "null" } },
+            "required": ["binding"]
+          },
+          "then": { "required": ["reason"] }
+        }
+      ]
+    },
+    "rule_runtime": {
+      "description": "Runtime classification of a rule. A rule without this block is unclassified, not implemented.",
+      "type": "object",
+      "required": ["scope", "implemented", "grant", "effects"],
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "description": "Widest scope over the rule's effects.",
+          "enum": ["YES", "NO", "LATER"]
+        },
+        "implemented": {
+          "description": "`YES` only when every `YES` effect has an executable binding.",
+          "enum": ["YES", "NO"]
+        },
+        "grant": {
+          "description": "`profile` and `band` are inherent; `selectable` is chosen in play and then declares `kind`; `none` grants nothing by itself.",
+          "enum": ["profile", "band", "selectable", "none"]
+        },
+        "effects": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/runtime_effect" }
+        }
+      }
+    }
+  }
+}

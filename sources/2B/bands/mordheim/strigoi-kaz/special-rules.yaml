@@ -1,0 +1,805 @@
+schema_version: 2
+band_id: strigoi-kaz
+rules:
+- id: band--dead-leader
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.strigoi-kaz.band.dead-leader
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: leader replacement and equipment loss are campaign mechanics; the crumble
+        cascade is an all-models effect outside the duel scope.
+  name: Dead Leader
+  effect: >-
+    If the vampire is killed then he cannot be replaced. All undead creatures will crumble and will
+    be lost along with their equipment. You can then select a new leader from amongst the heroes as
+    described in the Mordheim rulebook. After one game a new vampire can be purchased. He will
+    become the new leader and the 'acting leader' will return to his former position.
+  source:
+    manual: broheim.net
+    printed_page: 51
+    section: Special Rules / Dead Leader
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Líder Muerto
+  effect_i18n:
+    es: >-
+      Si el vampiro muere, no puede ser reemplazado. Todas las criaturas no-muertas se desmoronarán
+      y se perderán junto con su equipo. Entonces puedes seleccionar un nuevo líder entre los
+      héroes, tal y como se describe en el libro de reglas de Mordheim. Tras una partida se puede
+      comprar un nuevo vampiro. Este se convertirá en el nuevo líder y el «líder en funciones»
+      volverá a su posición anterior.
+  applies_to:
+    band: true
+- id: band--corpse-liquor
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.strigoi-kaz.band.corpse-liquor
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: poison on to-hit rolls of 6 is a shooting/weapon-quality interaction outside
+        the current close-combat scope; the item is captured provisionally in
+        sources/2B/catalog/items/corpse-liquor.yaml.
+  name: Corpse Liquor
+  effect: >-
+    The Strigoi distil the liquor that seeps from rotting corpses; see the Corpse Liquor special
+    equipment (Rare 9, 10+D6 gc, Strigoi warbands only). A weapon or claw coated with Corpse Liquor
+    will wound its target automatically on a roll of 6 to hit; a 6 to wound inflicts a critical hit.
+    Each purchase lasts one warrior for one battle.
+  source:
+    manual: broheim.net
+    printed_page: 51
+    section: Special Equipment / Corpse Liquor
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Licor de Cadáver
+  effect_i18n:
+    es: >-
+      Los Strigoi destilan el licor que mana de los cadáveres en putrefacción; ver el equipo
+      especial Licor de Cadáver (Rareza 9, 10+1D6 coronas, solo bandas Strigoi). Un arma o garra
+      recubierta de Licor de Cadáver herirá automáticamente a su objetivo con un 6 por impactar; un
+      6 para herir inflige un impacto crítico. Cada compra sirve para un guerrero durante una
+      batalla.
+  applies_to:
+    band: true
+- id: band--bat-restriction
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.strigoi-kaz.band.bat-restriction
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: recruitment restriction enforced at warband-creation, not in combat.
+  name: Bat Restriction
+  effect: >-
+    Your warband may include either up to 5 Bats or up to 2 Fell Bats. You may not have both types
+    of bat in the warband at the same time.
+  source:
+    manual: broheim.net
+    printed_page: 50
+    section: Choice of Warriors / Bats
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Restricción de Murciélagos
+  effect_i18n:
+    es: >-
+      Tu banda puede incluir hasta 5 Murciélagos o hasta 2 Murciélagos Funestos. No puedes tener
+      ambos tipos de murciélago en la banda al mismo tiempo.
+  applies_to:
+    band: true
+- id: vampire--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.vampire.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Leader
+  effect: >-
+    Any model in the warband within 6\" of the Strigoi may use his Leadership instead of their own.
+  source:
+    manual: broheim.net
+    printed_page: 51
+    section: heroes / 1 Vampire / Special Rules / Leader
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: Cualquier modelo de la banda a 6" del Strigoi puede usar su Liderazgo en lugar del propio.
+  applies_to:
+    profile_ids:
+    - vampire
+- id: vampire--bestial
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.vampire.bestial
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: ward saves are outside the current close-combat damage pipeline.
+  name: Bestial
+  effect: >-
+    The vampire has an innate way of avoiding being hurt. He has a 6+ ward save against all attacks.
+  source:
+    manual: broheim.net
+    printed_page: 51
+    section: heroes / 1 Vampire / Special Rules / Bestial
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Bestial
+  effect_i18n:
+    es: >-
+      El vampiro tiene una forma innata de evitar ser dañado. Tiene una salvación de parada de 6+
+      contra todos los ataques.
+  applies_to:
+    profile_ids:
+    - vampire
+- id: vampire--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.vampire.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (Necromantic magic).
+  name: Wizard
+  effect: >-
+    The Vampire is a wizard and so is able to use Necromantic magic. See the Magic section of the
+    Mordheim rulebook for details.
+  source:
+    manual: broheim.net
+    printed_page: 51
+    section: heroes / 1 Vampire / Special Rules / Wizard
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Hechicero
+  effect_i18n:
+    es: >-
+      El Vampiro es un Hechicero y por tanto puede usar magia Necromántica. Consulta la sección de
+      Magia del libro de reglas de Mordheim para más detalles.
+  applies_to:
+    profile_ids:
+    - vampire
+- id: vampire--bloodline
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.strigoi-kaz.vampire.bloodline
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the twelve Bloodline Abilities are campaign purchases with effects across
+        psychology, movement, and magic; full text is preserved below.
+  name: Bloodline Abilities
+  effect: >-
+    The vampire may take any of the Bloodline Abilities instead of searching for rare equipment. The
+    costs shown are for the first ability only; the second and subsequent abilities will cost
+    double. Each ability may be taken only once unless specified otherwise. Curse Of The Undead (50
+    gc): if the vampire goes OOA then after the battle he may regenerate all of his wounds on a D6
+    roll of 5+; if successful he needn't roll on the serious injury table. Infinite Hatred (75 gc):
+    he may re-roll all failed to hit rolls in the first turn of each combat; he may only re-roll
+    each dice once. Quick Blood (40 gc): may improve his ward save to 5+. Blood Lust (50 gc): he is
+    subject to frenzy. Master Strike (40 gc): he may cause a critical hit on a 5 or 6. Dark Acolyte
+    (35 gc): he gains +1 to the difficulty roll to cast spells. Bat Wings (50 gc): he may fly up to
+    12\" in the movement phase; can ignore terrain and climbing. Revulsion (30 gc): anyone taking a
+    fear test because of the vampire is at -1 Ld. Infected Wound (30 gc): effects as Black Lotus;
+    cannot be combined with Corpse Liquor. Blood Kiss (75 gc): may steal a wound from an enemy who
+    is stunned or taken out of action in combat by the vampire; wounds can be raised above the
+    original starting level but the effect only lasts for the duration of the battle. Iron Sinews
+    (40 gc): the vampire gains +1 Strength, which may take him beyond the racial limit. Hunter (25
+    gc): he can spot hidden models at up to 2 x his Initiative.
+  source:
+    manual: broheim.net
+    printed_page: 54
+    section: Strigoi Vampire Abilities
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Habilidades de Estirpe
+  effect_i18n:
+    es: >-
+      El vampiro puede tomar cualquiera de las Habilidades de Estirpe en lugar de buscar equipo
+      raro. Los costes indicados son solo para la primera habilidad; la segunda y siguientes
+      habilidades costarán el doble. Cada habilidad solo puede tomarse una vez, salvo que se
+      especifique lo contrario. Maldición de los No-Muertos (50 coronas): si el vampiro queda Fuera
+      de Combate, tras la batalla puede regenerar todas sus heridas con una tirada de 5+ en 1D6; si
+      lo logra, no necesita tirar en la tabla de heridas graves. Odio Infinito (75 coronas): puede
+      repetir todas las tiradas por impactar fallidas en el primer turno de cada combate; solo puede
+      repetir cada dado una vez. Sangre Ligera (40 coronas): puede mejorar su salvación de parada a
+      5+. Sed de Sangre (50 coronas): está sujeto a frenesí. Golpe Maestro (40 coronas): puede
+      causar un impacto crítico con un 5 o 6. Acólito Oscuro (35 coronas): obtiene +1 a la tirada de
+      dificultad para lanzar hechizos. Alas de Murciélago (50 coronas): puede volar hasta 12" en la
+      fase de movimiento; puede ignorar el terreno y trepar. Repulsión (30 coronas): cualquiera que
+      haga un chequeo de miedo por el vampiro tiene -1 Ld. Herida Infectada (30 coronas): efectos
+      como Loto Negro; no puede combinarse con Licor de Cadáver. Beso de Sangre (75 coronas): puede
+      robar una herida a un enemigo aturdido o Fuera de Combate en combate por el vampiro; las
+      heridas pueden elevarse por encima del nivel inicial original, pero el efecto solo dura lo que
+      dure la batalla. Tendones de Hierro (40 coronas): el vampiro gana +1 Fuerza, lo que puede
+      llevarlo más allá del límite racial. Cazador (25 coronas): puede detectar modelos ocultos
+      hasta a 2 veces su Iniciativa.
+  applies_to:
+    profile_ids:
+    - vampire
+  kind: profile_ability
+- id: charnel-guard--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.charnel-guard.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (cause fear).
+  name: Cause Fear
+  effect: Charnel Guard are twisted and repulsive creatures and therefore cause fear.
+  source:
+    manual: broheim.net
+    printed_page: 52
+    section: heroes / 0-2 Charnel Guard / Special Rules / Cause Fear
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Causan Miedo
+  effect_i18n:
+    es: La Guardia de Osario son criaturas retorcidas y repugnantes y por tanto causan miedo.
+  applies_to:
+    profile_ids:
+    - charnel-guard
+- id: charnel-guard--cunning
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.charnel-guard.cunning
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred: skill acquisition (Weapons Training / Weapons Expert) is a campaign progression
+        mechanic.
+  name: Cunning
+  effect: >-
+    Unlike ordinary ghouls a Charnel Guard can take the Weapons Training or Weapons Expert skills
+    and learn to use any weapon.
+  source:
+    manual: broheim.net
+    printed_page: 52
+    section: heroes / 0-2 Charnel Guard / Special Rules / Cunning
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Astucia
+  effect_i18n:
+    es: >-
+      A diferencia de los gulles ordinarios, un miembro de la Guardia de Osario puede tomar las
+      habilidades Entrenamiento en Armas o Experto en Armas y aprender a usar cualquier arma.
+  applies_to:
+    profile_ids:
+    - charnel-guard
+- id: strigany--living
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.strigany.living
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: exemption rule with no direct combat effect; the Undead rules themselves are
+        not part of this band's package.
+  name: Living
+  effect: The Strigany are living humans and none of the Undead rules apply.
+  source:
+    manual: broheim.net
+    printed_page: 52
+    section: heroes / 0-2 Strigany / Special Rules / Living
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Vivientes
+  effect_i18n:
+    es: Los Strigany son humanos vivientes y ninguna de las reglas de No-Muertos les afecta.
+  applies_to:
+    profile_ids:
+    - strigany
+- id: ghouls--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.ghouls.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (cause fear).
+  name: Cause Fear
+  effect: Ghouls are twisted and repulsive creatures and therefore cause fear.
+  source:
+    manual: broheim.net
+    printed_page: 53
+    section: henchmen / Ghouls / Special Rules / Cause Fear
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Causan Miedo
+  effect_i18n:
+    es: Los Gulles son criaturas retorcidas y repugnantes y por tanto causan miedo.
+  applies_to:
+    profile_ids:
+    - ghouls
+- id: skeletons--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.skeletons.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (cause fear).
+  name: Cause Fear
+  effect: Skeletons are terrifying Undead creatures and therefore cause fear.
+  source:
+    manual: broheim.net
+    printed_page: 53
+    section: henchmen / Skeletons / Special Rules / Cause Fear
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Causan Miedo
+  effect_i18n:
+    es: Los Esqueletos son criaturas No-Muertas aterradoras y por tanto causan miedo.
+  applies_to:
+    profile_ids:
+    - skeletons
+- id: skeletons--may-not-run
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.skeletons.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+  name: May Not Run
+  effect: Skeletons are slow Undead creatures and may not run (but may charge normally).
+  source:
+    manual: broheim.net
+    printed_page: 53
+    section: henchmen / Skeletons / Special Rules / May not Run
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: No Pueden Correr
+  effect_i18n:
+    es: >-
+      Los Esqueletos son criaturas No-Muertas lentas y no pueden correr (pero pueden cargar con
+      normalidad).
+  applies_to:
+    profile_ids:
+    - skeletons
+- id: skeletons--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.skeletons.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Immune to Psychology
+  effect: Skeletons are not affected by psychology and never leave combat.
+  source:
+    manual: broheim.net
+    printed_page: 53
+    section: henchmen / Skeletons / Special Rules / Immune to Psychology
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Inmunes a la Psicología
+  effect_i18n:
+    es: Los Esqueletos no se ven afectados por la psicología y nunca abandonan el combate.
+  applies_to:
+    profile_ids:
+    - skeletons
+- id: skeletons--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+  name: Immune to Poison
+  effect: Skeletons are not affected by any drug or poison.
+  source:
+    manual: broheim.net
+    printed_page: 53
+    section: henchmen / Skeletons / Special Rules / Immune to Poison
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Inmunes al Veneno
+  effect_i18n:
+    es: Los Esqueletos no se ven afectados por ninguna droga o veneno.
+  applies_to:
+    profile_ids:
+    - skeletons
+- id: skeletons--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  source:
+    manual: broheim.net
+    printed_page: 53
+    section: henchmen / Skeletons / Special Rules / No Pain
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Sin Dolor
+  applies_to:
+    profile_ids:
+    - skeletons
+  rule_ref: shared-rule.no-pain
+- id: skeletons--no-brain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.skeletons.no-brain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: experience progression is a campaign mechanic.
+  name: No Brain
+  source:
+    manual: broheim.net
+    printed_page: 53
+    section: henchmen / Skeletons / Special Rules / No Brain
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Sin Cerebro
+  applies_to:
+    profile_ids:
+    - skeletons
+  rule_ref: shared-rule.brainless
+- id: bats--living
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.bats.living
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: exemption rule with no direct combat effect.
+  name: Living
+  source:
+    manual: broheim.net
+    printed_page: 53
+    section: henchmen / 0-5 Bats / Special Rules / Living
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Vivientes
+  applies_to:
+    profile_ids:
+    - bats
+  rule_ref: shared-rule.living
+- id: bats--animals
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.bats.animals
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: experience progression is a campaign mechanic.
+  name: Animals
+  effect: The Bats are animals and never gain experience.
+  source:
+    manual: broheim.net
+    printed_page: 53
+    section: henchmen / 0-5 Bats / Special Rules / Animals
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Animales
+  effect_i18n:
+    es: Los Murciélagos son animales y nunca ganan experiencia.
+  applies_to:
+    profile_ids:
+    - bats
+- id: bats--flyers
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.bats.flyers
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: movement/terrain and charge-range rules are outside the duel scope.
+  name: Flyers
+  effect: >-
+    The Bats ignore terrain when they move and can freely charge any model that they can see,
+    regardless of height and interceptors.
+  source:
+    manual: broheim.net
+    printed_page: 53
+    section: henchmen / 0-5 Bats / Special Rules / Flyers
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Voladores
+  effect_i18n:
+    es: >-
+      Los Murciélagos ignoran el terreno cuando se mueven y pueden cargar libremente contra
+      cualquier modelo que puedan ver, sin importar la altura ni los interceptores.
+  applies_to:
+    profile_ids:
+    - bats
+- id: bats--squishy
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.bats.squishy
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: alternate injury chart is an out-of-duel/campaign mechanic.
+  name: Squishy
+  effect: >-
+    Bats are not very tough and use the following Injury chart: 1-2 Knocked Down, 3 Stunned, 4-6 Out
+    of Action.
+  source:
+    manual: broheim.net
+    printed_page: 53
+    section: henchmen / 0-5 Bats / Special Rules / Squishy
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Blanditos
+  effect_i18n:
+    es: >-
+      Los Murciélagos no son muy resistentes y usan la siguiente tabla de Heridas: 1-2 Derribado, 3
+      Aturdido, 4-6 Fuera de Combate.
+  applies_to:
+    profile_ids:
+    - bats
+- id: fell-bats--animals
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.fell-bats.animals
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: experience progression is a campaign mechanic.
+  name: Animals
+  effect: The Fell Bats are animals and never gain experience.
+  source:
+    manual: broheim.net
+    printed_page: 54
+    section: henchmen / 0-2 Fell Bats / Special Rules / Animals
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Animales
+  effect_i18n:
+    es: Los Murciélagos Funestos son animales y nunca ganan experiencia.
+  applies_to:
+    profile_ids:
+    - fell-bats
+- id: fell-bats--flyers
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.fell-bats.flyers
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: movement/terrain and charge-range rules are outside the duel scope.
+  name: Flyers
+  effect: >-
+    The Bats ignore terrain when they move and can freely charge any model that they can see,
+    regardless of height and interceptors.
+  source:
+    manual: broheim.net
+    printed_page: 54
+    section: henchmen / 0-2 Fell Bats / Special Rules / Flyers
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Voladores
+  effect_i18n:
+    es: >-
+      Los Murciélagos ignoran el terreno cuando se mueven y pueden cargar libremente contra
+      cualquier modelo que puedan ver, sin importar la altura ni los interceptores.
+  applies_to:
+    profile_ids:
+    - fell-bats
+- id: fell-bats--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.fell-bats.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (cause fear).
+  name: Cause Fear
+  source:
+    manual: broheim.net
+    printed_page: 54
+    section: henchmen / 0-2 Fell Bats / Special Rules / Cause Fear
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Causan Miedo
+  applies_to:
+    profile_ids:
+    - fell-bats
+  rule_ref: shared-rule.cause-fear-2
+- id: fell-bats--may-not-run
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.fell-bats.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
+  name: May Not Run
+  source:
+    manual: broheim.net
+    printed_page: 54
+    section: henchmen / 0-2 Fell Bats / Special Rules / May not Run
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: No Pueden Correr
+  applies_to:
+    profile_ids:
+    - fell-bats
+  rule_ref: shared-rule.may-not-run
+- id: fell-bats--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.strigoi-kaz.fell-bats.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Immune to Psychology
+  source:
+    manual: broheim.net
+    printed_page: 54
+    section: henchmen / 0-2 Fell Bats / Special Rules / Immune to Psychology
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Inmunes a la Psicología
+  applies_to:
+    profile_ids:
+    - fell-bats
+  rule_ref: shared-rule.immune-to-psychology-4
+- id: fell-bats--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+  name: Immune to Poison
+  source:
+    manual: broheim.net
+    printed_page: 54
+    section: henchmen / 0-2 Fell Bats / Special Rules / Immune to Poison
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Inmunes al Veneno
+  applies_to:
+    profile_ids:
+    - fell-bats
+  rule_ref: shared-rule.immune-to-poison-3
+- id: fell-bats--no-pain
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+  name: No Pain
+  source:
+    manual: broheim.net
+    printed_page: 54
+    section: henchmen / 0-2 Fell Bats / Special Rules / No Pain
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Sin Dolor
+  applies_to:
+    profile_ids:
+    - fell-bats
+  rule_ref: shared-rule.no-pain
+- id: band--hired-swords
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.strigoi-kaz.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Hired Swords
+  effect: >-
+    Although they are normally secretive and avoid outside contact, the Strigoi Vampire warband may
+    hire the following Hired Swords and Dramatis Personae in addition to any which specifically
+    mention them: Strigani Seer Necromancer (only if they have no vampire).
+  source:
+    manual: broheim.net
+    printed_page: 51
+    section: Hired Swords
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Espadas a Sueldo
+  effect_i18n:
+    es: >-
+      Aunque normalmente son reservados y evitan el contacto exterior, la banda de Vampiros Strigoi
+      puede contratar las siguientes Espadas a Sueldo y Dramatis Personae además de cualquiera que
+      los mencione específicamente: Adivino Nigromante Strigani (solo si no tienen ningún vampiro).
+  applies_to:
+    band: true

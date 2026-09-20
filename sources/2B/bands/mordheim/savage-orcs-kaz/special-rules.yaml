@@ -1,0 +1,410 @@
+schema_version: 2
+band_id: savage-orcs-kaz
+rules:
+- id: band--animosity
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.savage-orcs-kaz.band.animosity
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: animosity rules live in TC6/WD243 and operate on the turn structure
+        outside the duel resolution. Individual profiles reference this band rule.
+  name: Animosity
+  effect: >-
+    Just like their more sophisticated (?) cousins, Savage Orcs suffer from animosity. See TC6
+    in WD243 for Animosity Rules.
+  source:
+    manual: broheim.net
+    printed_page: 56
+    section: Special Rules / Animosity
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Animadversión
+  effect_i18n:
+    es: >-
+      Igual que sus primos más sofisticados (?), los Orcos Salvajes sufren animosidad. Ver las
+      reglas de Animosidad en TC6 del WD243.
+  applies_to:
+    band: true
+- id: band--orc-special-skills
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.savage-orcs-kaz.band.orc-special-skills
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred cross-reference: Orc special skills live in TC6 (White Dwarf 243), not in this
+        document.
+  name: Orc Special Skills
+  effect: >-
+    Savage Orc heroes may use the Orc special skills from TC6 (White Dwarf 243) instead of any
+    of the standard skill lists available to them.
+  source:
+    manual: broheim.net
+    printed_page: 56
+    section: Orc Special Skills
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Habilidades Especiales de Orcos
+  effect_i18n:
+    es: >-
+      Los héroes Orcos Salvajes pueden usar las habilidades especiales Orcas de TC6 (White Dwarf
+      243) en lugar de cualquiera de las listas de habilidades estándar disponibles para ellos.
+  applies_to:
+    band: true
+- id: band--gobbo-rout-counting
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.savage-orcs-kaz.band.gobbo-rout-counting
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: rout tests are a post-battle/campaign mechanic.
+  name: Ain't Orcz (rout counting)
+  effect: >-
+    Orcs don't expect much from their lesser cousins and are not bothered if they break or get
+    slain in battle. Therefore when testing to see if an Orc warband needs to take a rout test,
+    each Gobbo boy taken out of action counts as half a model.
+  source:
+    manual: broheim.net
+    printed_page: 59
+    section: Gobbo Boyz / Special Rules / Ain't Orcz
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: No son Orcos (recuento de retirada)
+  effect_i18n:
+    es: >-
+      Los Orcos no esperan mucho de sus primos menores y no les importa que rompan o caigan en
+      batalla. Por tanto, al hacer el chequeo para ver si una banda Orca necesita una tirada de
+      Huida, cada Chico Gobbo Fuera de Combate cuenta como medio modelo.
+  applies_to:
+    band: true
+- id: boss--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.savage-orcs-kaz.boss.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Leader
+  effect: >-
+    Any member of the Savage Orc warband within 6\" can use Da Boss's Leadership characteristic
+    when making Leadership tests.
+  source:
+    manual: broheim.net
+    printed_page: 57
+    section: heroes / 1 Boss / Special Rules / Leader
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier miembro de la banda de Orcos Salvajes a 6" puede usar la característica de Liderazgo
+      de Da Jefe al realizar chequeos de Liderazgo.
+  applies_to:
+    profile_ids:
+    - boss
+- id: weirdo--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.savage-orcs-kaz.weirdo.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (Waaagh! Magic, TC6/WD243).
+  name: Wizard
+  effect: >-
+    A Savage Orc Wierdo is a wizard and uses Waagh! Magic. See Waaagh magic in TC6 (WD243).
+  source:
+    manual: broheim.net
+    printed_page: 57
+    section: heroes / 0-1 Wierdo / Special Rules / Wizard
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Hechicero
+  effect_i18n:
+    es: >-
+      Un Rarito Orco Salvaje es un Hechicero y usa magia Waaagh!. Ver la magia Waaagh en TC6
+      (WD243).
+  applies_to:
+    profile_ids:
+    - weirdo
+- id: spottaz--get-out-dere
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.savage-orcs-kaz.spottaz.get-out-dere
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: deployment/infiltration rolls happen outside the duel resolution.
+  name: Get out dere!
+  effect: >-
+    The boss sometimes tells his Spottaz to scout out enemy positions. If the player wants his
+    Spottaz to infiltrate, roll a D6 for each Spotta at the beginning of the game but after all
+    models on both sides (including the Spottaz) have been deployed. If the Boss is within 6\"
+    of the Spotta, subtract -1 from the dice roll. 1-2: Sure thing Boss — the Spotta sneaks
+    forward and may be re-deployed anywhere on the table, but at least 12\" from any enemy
+    model. 3-4: Err…if you're sure boss — the Spotta is worried about going too far away from
+    the rest of the ladz and may be moved up to D6+6\" from his current position. 5-6: No way! —
+    no matter how much da Boss pummels the Spotta he refuses to leave his mates. If the boss is
+    within 6\", the Spotta starts the game knocked down.
+  source:
+    manual: broheim.net
+    printed_page: 57
+    section: heroes / 0-2 Spottaz / Special Rules / Get out dere!
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: ¡Fuera de ahí!
+  effect_i18n:
+    es: >-
+      A veces el jefe ordena a sus Ojeadores explorar las posiciones enemigas. Si el jugador quiere
+      que sus Ojeadores se infiltren, tira 1D6 por cada Ojeador al inicio de la partida, pero
+      después de que todos los modelos de ambos bandos (incluidos los Ojeadores) hayan sido
+      desplegados. Si el Jefe está a 6" del Ojeador, resta -1 a la tirada de dado. 1-2: Lo que
+      digas, Jefe — el Ojeador se escabulle hacia adelante y puede redeployarse en cualquier parte
+      de la mesa, pero al menos a 12" de cualquier modelo enemigo. 3-4: Eh… si tú lo dices, jefe —
+      el Ojeador está preocupado por alejarse demasiado del resto de los chicos y puede moverse
+      hasta 1D6+6" desde su posición actual. 5-6: ¡Ni hablar! — por mucho que Da Jefe le patee al
+      Ojeador, se niega a dejar a sus compañeros. Si el jefe está a 6", el Ojeador comienza la
+      partida derribado.
+  applies_to:
+    profile_ids:
+    - spottaz
+- id: brutes--animosity
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.savage-orcs-kaz.brutes.animosity
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: see band--animosity; turn-structure mechanic.
+  name: Animosity
+  effect: Savage Orc Brutes are subject to the rules for animosity.
+  source:
+    manual: broheim.net
+    printed_page: 58
+    section: henchmen / 0-3 Brutes / Special Rules / Animosity
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Animadversión
+  effect_i18n:
+    es: >-
+      Los Brutos Orcos Salvajes están sujetos a las reglas de animosidad.
+  applies_to:
+    profile_ids:
+    - brutes
+- id: nuttaz--animosity
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.savage-orcs-kaz.nuttaz.animosity
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: see band--animosity; turn-structure mechanic.
+  name: Animosity
+  effect: Savage Orc Nuttaz are subject to the rules for animosity.
+  source:
+    manual: broheim.net
+    printed_page: 58
+    section: henchmen / 0-3 Nuttaz / Special Rules / Animosity
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Animadversión
+  effect_i18n:
+    es: >-
+      Los Chalados Orcos Salvajes están sujetos a las reglas de animosidad.
+  applies_to:
+    profile_ids:
+    - nuttaz
+- id: nuttaz--frenzy
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.frenzy
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.frenzy
+  name: Frenzy
+  effect: >-
+    Savage Orc Nuttaz are subject to the rules for frenzy. Note, when frenzied, they ignore the
+    rules for animosity.
+  source:
+    manual: broheim.net
+    printed_page: 58
+    section: henchmen / 0-3 Nuttaz / Special Rules / Frenzy
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Frenesí
+  effect_i18n:
+    es: >-
+      Los Chalados Orcos Salvajes están sujetos a las reglas de frenesí. Ten en cuenta que, cuando
+      están en frenesí, ignoran las reglas de animosidad.
+  applies_to:
+    profile_ids:
+    - nuttaz
+- id: boyz--animosity
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.savage-orcs-kaz.boyz.animosity
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: see band--animosity; turn-structure mechanic.
+  name: Animosity
+  effect: Savage Orc Boyz are subject to the rules for animosity.
+  source:
+    manual: broheim.net
+    printed_page: 58
+    section: henchmen / Boyz / Special Rules / Animosity
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Animadversión
+  effect_i18n:
+    es: >-
+      Los Chicos Orcos Salvajes están sujetos a las reglas de animosidad.
+  applies_to:
+    profile_ids:
+    - boyz
+- id: gobbo-boyz--animosity
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.savage-orcs-kaz.gobbo-boyz.animosity
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: see band--animosity; turn-structure mechanic.
+  name: Animosity
+  effect: Savage Orc Gobbo Boyz are subject to the rules for animosity.
+  source:
+    manual: broheim.net
+    printed_page: 59
+    section: henchmen / Gobbo Boyz / Special Rules / Animosity
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Animadversión
+  effect_i18n:
+    es: >-
+      Los Chicos Gobbo Orcos Salvajes están sujetos a las reglas de animosidad.
+  applies_to:
+    profile_ids:
+    - gobbo-boyz
+- id: gobbo-boyz--aint-orcz
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.savage-orcs-kaz.gobbo-boyz.aint-orcz
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: profile-level note of the band--gobbo-rout-counting rule; rout tests are a
+        campaign mechanic.
+  name: Ain't Orcz
+  effect: >-
+    Each Gobbo boy taken out of action counts as half a model when testing to see if an Orc
+    warband needs to take a rout test.
+  source:
+    manual: broheim.net
+    printed_page: 59
+    section: henchmen / Gobbo Boyz / Special Rules / Ain't Orcz
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: No son Orcos
+  effect_i18n:
+    es: >-
+      Cada Chico Gobbo Fuera de Combate cuenta como medio modelo al hacer el chequeo para ver si una
+      banda Orca necesita una tirada de Huida.
+  applies_to:
+    profile_ids:
+    - gobbo-boyz
+- id: gobbo-boyz--useless-gitz
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.savage-orcs-kaz.gobbo-boyz.useless-gitz
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: experience progression is a campaign mechanic.
+  name: Useless Gitz
+  effect: Goblins never gain experience.
+  source:
+    manual: broheim.net
+    printed_page: 59
+    section: henchmen / Gobbo Boyz / Special Rules / Useless Gitz
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Inútiles
+  effect_i18n:
+    es: >-
+      Los Goblins nunca ganan experiencia.
+  applies_to:
+    profile_ids:
+    - gobbo-boyz
+- id: band--hired-swords
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.savage-orcs-kaz.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Hired Swords
+  effect: >-
+    A Savage Orc warband may hire the following Hired Swords and Dramatis Personae: Black Orc
+    Bodyguard and Snerik.
+  source:
+    manual: broheim.net
+    printed_page: 56
+    section: Hired Swords
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Espadas a Sueldo
+  effect_i18n:
+    es: >-
+      Una banda de Orcos Salvajes puede contratar las siguientes Espadas a Sueldo y Dramatis
+      Personae: Guardaespaldas Orco Negro y Snerik.
+  applies_to:
+    band: true

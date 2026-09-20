@@ -1,0 +1,318 @@
+schema_version: 2
+band_id: lizardmen-lus
+rules:
+- id: band--scaly-skin
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: compiler.lizardmen-scaly-skin
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.lizardmen-scaly-skin
+  name: Scaly Skin
+  effect: >-
+    All Lizardmen have a natural save thanks to their thick scales: Saurus 5+, Skinks 6+. Strength
+    modifiers cannot alter the save beyond 6, but a "no save" result on the injury chart negates it.
+    Light armour adds +1 to the save, as does a shield.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Scaly Skin
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+  name_i18n:
+    es: Piel Escamosa
+  effect_i18n:
+    es: >-
+      Todos los Hombres Lagarto tienen una salvación natural gracias a sus escamas gruesas: Saurus
+      5+, Skinks 6+. Los modificadores de Fuerza no pueden alterar la salvación más allá de 6, pero
+      un resultado de "sin salvación" en la tabla de heridas la anula. La armadura ligera suma +1 a
+      la salvación, al igual que un escudo.
+  applies_to:
+    band: true
+- id: band--armour-cost
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lizardmen-lus.band.armour-cost
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Armour
+  effect: >-
+    Armour is rare amongst the Lizardmen and the cost of light armour is always 50 gold crowns.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Armour
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+  name_i18n:
+    es: Armadura
+  effect_i18n:
+    es: >-
+      La armadura es rara entre los Hombres Lagarto y la armadura ligera siempre cuesta 50 coronas
+      de oro.
+  applies_to:
+    band: true
+- id: band--cold-blooded
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lizardmen-lus.band.cold-blooded
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Cold Blooded
+  effect: >-
+    Lizardmen roll 3D6 and select the lowest two dice when taking a psychology or Rout test. A
+    Lizardmen warband may never use the Leadership of the Saurus or Kroxigor for a Rout test.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Cold Blooded
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+  name_i18n:
+    es: Sangre Fría
+  effect_i18n:
+    es: >-
+      Los Hombres Lagarto tiran 3D6 y eligen los dos dados más bajos al realizar un chequeo de
+      psicología o de huida. Una banda de Hombres Lagarto nunca puede usar el Liderazgo del Saurus
+      ni del Kroxigor en un chequeo de huida.
+  applies_to:
+    band: true
+- id: band--saurus-rarity
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.lizardmen-lus.band.saurus-rarity
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Saurus Rarity
+  effect: >-
+    You can never have more Saurus Braves than Skink Braves in the warband; the Slann mage-priests
+    would never allow it.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Saurus Rarity
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+  name_i18n:
+    es: Rareza Saurus
+  effect_i18n:
+    es: >-
+      Nunca puede haber más Valientes Saurus que Valientes Skink en la banda; los sacerdotes-mago
+      Slann nunca lo permitirían.
+  applies_to:
+    band: true
+- id: skink-priest--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lizardmen-lus.skink-priest.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: >-
+    The Skink Priest is the leader of the warband; any Lizardmen within 6 inches may use his
+    Leadership for any Leadership test. If he is killed, a new Skink Priest may be recruited, but
+    the warband must play at least one game without a leader first.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Skink Priest / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      El Sacerdote Skink es el líder de la banda; cualquier Hombre Lagarto a 6 pulgadas puede usar
+      su Liderazgo en cualquier chequeo de Liderazgo. Si muere, puede reclutarse un nuevo Sacerdote
+      Skink, pero la banda debe jugar al menos una partida sin líder antes.
+  applies_to:
+    profile_ids:
+    - skink-priest
+- id: skink-priest--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lizardmen-lus.skink-priest.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Wizard
+  effect: The Skink Priest is a Wizard and may use Lizardmen magic.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 1 Skink Priest / Special Rules / Wizard
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+  name_i18n:
+    es: Mago
+  effect_i18n:
+    es: El Sacerdote Skink es un Mago y puede usar la magia de los Hombres Lagarto.
+  applies_to:
+    profile_ids:
+    - skink-priest
+- id: kroxigor--scaly-skin
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 4
+  name: Scaly Skin
+  effect: Kroxigor have a natural save of 4+.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Kroxigor / Special Rules / Scaly Skin
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+  name_i18n:
+    es: Piel Escamosa
+  effect_i18n:
+    es: Los Kroxigor tienen una salvación natural de 4+.
+  applies_to:
+    profile_ids:
+    - kroxigor
+- id: kroxigor--aquatic
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lizardmen-lus.kroxigor.aquatic
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Aquatic
+  effect: >-
+    Kroxigor may move through water with no penalty and count as being in cover while in the water.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Kroxigor / Special Rules / Aquatic
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+  name_i18n:
+    es: Acuático
+  effect_i18n:
+    es: >-
+      Los Kroxigor pueden moverse por el agua sin penalización y cuentan como en cobertura mientras
+      estén en el agua.
+  applies_to:
+    profile_ids:
+    - kroxigor
+- id: kroxigor--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lizardmen-lus.kroxigor.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Cause Fear
+  effect: Kroxigor are large and frightening monsters and cause Fear.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Kroxigor / Special Rules / Cause Fear
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+  name_i18n:
+    es: Causar Miedo
+  effect_i18n:
+    es: Los Kroxigor son monstruos grandes y atemorizantes que causan Miedo.
+  applies_to:
+    profile_ids:
+    - kroxigor
+- id: kroxigor--large
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lizardmen-lus.kroxigor.large
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Large
+  effect: >-
+    Kroxigor stand out amongst the rest of the warband and may be picked out by an archer even if he
+    is not the closest model.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Kroxigor / Special Rules / Large
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+  name_i18n:
+    es: Grande
+  effect_i18n:
+    es: >-
+      Los Kroxigor destacan entre el resto de la banda y pueden ser elegidos como objetivo por un
+      arquero aunque no sean el modelo más cercano.
+  applies_to:
+    profile_ids:
+    - kroxigor
+- id: kroxigor--animal
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.lizardmen-lus.kroxigor.animal
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Animal
+  effect: >-
+    Kroxigor are slow-witted creatures that never learn from their mistakes; they do not gain
+    experience.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-1 Kroxigor / Special Rules / Animal
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+  name_i18n:
+    es: Animal
+  effect_i18n:
+    es: >-
+      Los Kroxigor son criaturas de ingenio lento que nunca aprenden de sus errores; no ganan
+      experiencia.
+  applies_to:
+    profile_ids:
+    - kroxigor

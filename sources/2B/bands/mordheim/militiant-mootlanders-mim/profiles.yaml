@@ -1,0 +1,109 @@
+schema_version: 2
+band_id: militiant-mootlanders-mim
+profiles:
+- id: burgermeister
+  name: Burgermeister
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics: {M: 4, WS: 4, BS: 5, S: 3, T: 3, W: 1, I: 5, A: 2, Ld: 8}
+  equipment_lists: [heroes-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, academic, speed]
+  source: {manual: Broheim, printed_page: 4, section: 1 Burgermeister, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf'}
+  source_path: [heroes, 1 Burgermeister]
+  name_i18n: {es: Burgomaestre}
+  rule_ids: [burgermeister--leader]
+  combat_traits: {}
+- id: quartermaster
+  name: Quartermaster
+  type: hero
+  cost: 40
+  experience: 8
+  characteristics: {M: 4, WS: 3, BS: 4, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 8}
+  equipment_lists: [heroes-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, speed]
+  source: {manual: Broheim, printed_page: 4, section: 0-1 Quartermaster, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf'}
+  source_path: [heroes, 0-1 Quartermaster]
+  name_i18n: {es: Intendente}
+  rule_ids: [quartermaster--long-shot]
+  combat_traits: {}
+- id: chef
+  name: Chef
+  type: hero
+  cost: 50
+  experience: 8
+  characteristics: {M: 4, WS: 2, BS: 4, S: 3, T: 2, W: 1, I: 4, A: 1, Ld: 8}
+  equipment_lists: [heroes-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [academic, special]
+  source: {manual: Broheim, printed_page: 4, section: 0-1 Chef, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf'}
+  source_path: [heroes, 0-1 Chef]
+  name_i18n: {es: Chef}
+  rule_ids: [chef--hot-pot]
+  combat_traits: {}
+- id: raconteurs
+  name: Raconteurs
+  type: hero
+  cost: 10
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 4, S: 2, T: 2, W: 1, I: 4, A: 1, Ld: 7}
+  equipment_lists: [heroes-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, academic, speed]
+  source: {manual: Broheim, printed_page: 4, section: 0-3 Raconteurs, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf'}
+  source_path: [heroes, 0-3 Raconteurs]
+  name_i18n: {es: Raconteurs}
+  rule_ids: []
+  combat_traits: {}
+- id: thieves
+  name: Thieves
+  type: hero
+  cost: 20
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 4, S: 2, T: 2, W: 1, I: 4, A: 1, Ld: 7}
+  equipment_lists: [henchmen-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, academic, speed]
+  source: {manual: Broheim, printed_page: 5, section: 0-3 Thieves, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf'}
+  source_path: [heroes, 0-3 Thieves]
+  name_i18n: {es: Ladrillos (Thieves)}
+  rule_ids: [thieves--uneasy-allies, thieves--infiltration, thieves--pick-locks,
+    thieves--cutpurse]
+  combat_traits: {}
+- id: cooks
+  name: Cooks
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 4, S: 3, T: 2, W: 1, I: 4, A: 1, Ld: 8}
+  equipment_lists: [henchmen-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 5, section: 0-2 Cooks, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf'}
+  source_path: [henchmen, 0-2 Cooks]
+  name_i18n: {es: Cocineros}
+  rule_ids: [cooks--feast]
+  combat_traits: {}
+- id: scouts
+  name: Scouts
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 4, S: 2, T: 2, W: 1, I: 4, A: 1, Ld: 8}
+  equipment_lists: [henchmen-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 5, section: Scouts, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf'}
+  source_path: [henchmen, Scouts]
+  name_i18n: {es: Exploradores}
+  rule_ids: []
+  combat_traits: {}

@@ -1,0 +1,110 @@
+schema_version: 2
+band_id: forest-goblins-lus
+profiles:
+- id: chieftain
+  name: Chieftain
+  type: hero
+  cost: 50
+  experience: 17
+  characteristics: {M: 4, WS: 3, BS: 4, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 7}
+  equipment_lists: [hero-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, academic, speed, special]
+  source: {manual: Broheim, printed_page: 4, section: 1 Chieftan, url: 'https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf'}
+  source_path: [heroes, 1 Chieftan]
+  name_i18n: {es: Jefe Tribal}
+  rule_ids: [chieftain--leader]
+  combat_traits: {}
+- id: bosses
+  name: Bosses
+  type: hero
+  cost: 20
+  experience: 6
+  characteristics: {M: 4, WS: 2, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 6}
+  equipment_lists: [hero-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, academic, speed]
+  source: {manual: Broheim, printed_page: 4, section: 0-4 Bosses, url: 'https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf'}
+  source_path: [heroes, 0-4 Bosses]
+  name_i18n: {es: Capataces}
+  rule_ids: [bosses--animosity]
+  combat_traits: {}
+- id: shaman
+  name: Shaman
+  type: hero
+  cost: 20
+  experience: 6
+  characteristics: {M: 5, WS: 2, BS: 2, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 5}
+  equipment_lists: [hero-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [academic, speed, special]
+  source: {manual: Broheim, printed_page: 4, section: 0-1 Forest Goblin Shaman, url: 'https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf'}
+  source_path: [heroes, 0-1 Forest Goblin Shaman]
+  name_i18n: {es: Chamán}
+  rule_ids: [shaman--wizard]
+  combat_traits: {}
+- id: forest-goblins
+  name: Forest Goblins
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 6}
+  equipment_lists: [henchmen-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 5, section: Forest Goblins, url: 'https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf'}
+  source_path: [henchmen, Forest Goblins]
+  name_i18n: {es: Goblins del Bosque}
+  rule_ids: [forest-goblins--animosity]
+  combat_traits: {}
+- id: red-toof-clan-goblins
+  name: Red Toof Clan Goblins
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 6}
+  equipment_lists: [henchmen-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 5, section: 1-5 Red Toof Clan Goblins, url: 'https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf'}
+  source_path: [henchmen, 1-5 Red Toof Clan Goblins]
+  name_i18n: {es: Goblins del Clan Colaroja}
+  rule_ids: [red-toof-clan-goblins--animosity, red-toof-clan-goblins--berserkers]
+  combat_traits: {}
+- id: sluggas
+  name: Forest Goblin Sluggas
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics: {M: 4, WS: 2, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 6}
+  equipment_lists: [henchmen-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 5, section: 0-5 Forest Goblin Sluggas, url: 'https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf'}
+  source_path: [henchmen, 0-5 Forest Goblin Sluggas]
+  name_i18n: {es: Apedreadores (Sluggas)}
+  rule_ids: [sluggas--animosity, sluggas--sluggas]
+  combat_traits: {}
+- id: gigantic-spider
+  name: Gigantic Spider
+  type: henchman
+  cost: 200
+  experience: 0
+  characteristics: {M: 6, WS: 3, BS: 0, S: 5, T: 5, W: 3, I: 4, A: 2, Ld: 4}
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Gigantic Spider never uses weapons or armour.
+  skill_access: []
+  source: {manual: Broheim, printed_page: 5, section: 0-1 Gigantic Spider, url: 'https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf'}
+  source_path: [henchmen, 0-1 Gigantic Spider]
+  name_i18n: {es: Araña Gigantesca}
+  rule_ids: [gigantic-spider--fear, gigantic-spider--large-monster, gigantic-spider--poisonous,
+    gigantic-spider--native, gigantic-spider--may-ride, gigantic-spider--nonsentient]
+  combat_traits: {}

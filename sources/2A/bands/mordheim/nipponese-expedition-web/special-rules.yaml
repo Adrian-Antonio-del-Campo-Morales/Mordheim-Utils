@@ -1,0 +1,396 @@
+schema_version: 2
+band_id: nipponese-expedition-web
+rules:
+- id: band--may-hire
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.nipponese-expedition-web.band.may-hire
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hired-sword availability is a roster-construction/campaign mechanic
+        outside the duel scope.
+  name: May Hire
+  effect: >-
+    A Nippon warband is allowed the same selection of Hired Swords as Human Mercenary warbands.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / May Hire
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Contrataciones
+  effect_i18n:
+    es: >-
+      Una banda Nipona puede contratar la misma selección de Espadas a Sueldo que las bandas
+      Mercenarias Humanas.
+  applies_to:
+    band: true
+- id: band--strategic-minded
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.nipponese-expedition-web.band.strategic-minded
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: rout-test threshold modification is a rout mechanic outside the duel
+        scope.
+  name: Strategic Minded
+  effect: >-
+    A Nipponese warband must rely on its battlefield experience so far from home. They may choose to
+    rout after suffering 1 fewer casualty than normal.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Strategic Minded
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Mentalidad Estratégica
+  effect_i18n:
+    es: >-
+      Una banda Nipona debe confiar en su experiencia en el campo de batalla, tan lejos de casa.
+      Pueden elegir huir tras sufrir una baja menos de lo normal.
+  applies_to:
+    band: true
+- id: hatamoto--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.nipponese-expedition-web.hatamoto.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
+        psychology/rout mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Hatamoto / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - hatamoto
+  rule_ref: shared-rule.leader
+- id: hatamoto--ride
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.nipponese-expedition-web.hatamoto.ride
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: mounted-movement skill grants are movement mechanics outside the duel
+        scope.
+  name: Ride
+  effect: The Hatamoto has the Ride skill as detailed in the Blazing Saddles article.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Hatamoto / Special Rules / Ride
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Montar
+  effect_i18n:
+    es: >-
+      El Hatamoto tiene la habilidad Montar tal y como se detalla en el artículo Sillas de Fuego
+      (Blazing Saddles).
+  applies_to:
+    profile_ids:
+    - hatamoto
+- id: vim-to-mage--tenants-of-the-order
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.nipponese-expedition-web.vim-to-mage.tenants-of-the-order
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: equipment restrictions are roster-construction mechanics outside the
+        duel scope.
+  name: Tenants of the Order
+  effect: >-
+    The Order of the Vim-To strictly enforces a vow of Poverty, meaning with the exception of a
+    walking staff (club) and a dagger the Vim-To Mage may never have any equipment.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Vim-To Mage / Special Rules / Tenants of the Order
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Preceptos de la Orden
+  effect_i18n:
+    es: >-
+      La Orden del Vim-To impone estrictamente un voto de pobreza, lo que significa que, con la
+      excepción de un bastón (garrote) y una daga, el Mago Vim-To nunca puede tener ningún equipo.
+  applies_to:
+    profile_ids:
+    - vim-to-mage
+- id: vim-to-mage--arcane-vim-toist
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.nipponese-expedition-web.vim-to-mage.arcane-vim-toist
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (Vim-Toist Magic = Arabian Elemental Magic; the Elemental
+        lores are preserved in sources/2A/catalog/magic-2a.yaml).
+  name: Arcane Vim-Toist
+  effect: >-
+    This model is the spiritual and magical leader of the Nippon Warband, they can cast Vim-Toist
+    Magic (Arabian Elemental Magic) and start the game with one spell from this discipline learned.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Vim-To Mage / Special Rules / Arcane Vim-Toist
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Vim-Toista Arcano
+  effect_i18n:
+    es: >-
+      Este modelo es el líder espiritual y mágico de la banda Nipona; puede lanzar Magia Vim-Toista
+      (Magia Elemental Árabe) y comienza la partida con un hechizo de esta disciplina aprendido.
+  applies_to:
+    profile_ids:
+    - vim-to-mage
+- id: shinobi--infiltration
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.nipponese-expedition-web.shinobi.infiltration
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: pre-battle deployment (Infiltrate) is outside the current engine scope.
+  name: Infiltration
+  effect: >-
+    A Shinobi with this skill is always placed on the battlefield after the opposing warband and can
+    be placed anywhere on the table as long as it is out of sight of the opposing warband and more
+    than 12" away from any enemy model. If both players have models that infiltrate, roll a D6 for
+    each, and the lowest roll sets up first.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Shinobi / Special Rules / Infiltration
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Infiltración
+  effect_i18n:
+    es: >-
+      Un Shinobi con esta habilidad siempre se coloca en el campo de batalla después de la banda
+      oponente y puede colocarse en cualquier parte de la mesa, siempre que esté fuera de la vista
+      de la banda oponente y a más de 12" de cualquier modelo enemigo. Si ambos jugadores tienen
+      modelos que se infiltran, tira 1D6 por cada uno, y el que saque el resultado más bajo
+      despliega primero.
+  applies_to:
+    profile_ids:
+    - shinobi
+- id: shinobi--loner
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.nipponese-expedition-web.shinobi.loner
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: leader designation is a roster-construction mechanic outside the duel
+        scope.
+  name: Loner
+  effect: Shinobi may never become the leader of the warband.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Shinobi / Special Rules / Loner
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Solitario
+  effect_i18n:
+    es: Los Shinobi nunca pueden convertirse en el líder de la banda.
+  applies_to:
+    profile_ids:
+    - shinobi
+- id: retainer--ride
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.nipponese-expedition-web.retainer.ride
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: mounted-movement skill grants are movement mechanics outside the duel
+        scope.
+  name: Ride
+  effect: A Retainer has the Ride skill as detailed in the Blazing Saddles article.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Retainers / Special Rules / Ride
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Montar
+  effect_i18n:
+    es: >-
+      Un Vasallo tiene la habilidad Montar tal y como se detalla en el artículo Sillas de Fuego
+      (Blazing Saddles).
+  applies_to:
+    profile_ids:
+    - retainer
+- id: ashigaru--wall-of-steel
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.nipponese-expedition-web.ashigaru.wall-of-steel
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: weapon-grip mode selection (two-handed with parry) is a weapon-mechanics
+        option outside the duel scope.
+  name: Wall of Steel
+  effect: >-
+    Even the most lowly of Ashigaru is a veteran of hours of drill, and because of this if wielding
+    a spear you may choose to wield it two-handed, in which case the spear gains the parry special
+    rule.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ashigaru / Special Rules / Wall of Steel
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Muro de Acero
+  effect_i18n:
+    es: >-
+      Incluso el más humilde de los Ashigaru es un veterano de horas de instrucción, y por esto, si
+      empuña una lanza, puedes elegir empuñarla a dos manos, en cuyo caso la lanza gana la regla
+      especial Parada.
+  applies_to:
+    profile_ids:
+    - ashigaru
+- id: onnabushi--wardens-of-the-castle
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.nipponese-expedition-web.onnabushi.wardens-of-the-castle
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: terrain-conditional Fear is a psychology mechanic outside the duel
+        scope.
+  name: Wardens of the Castle
+  effect: >-
+    Traditionally responsible for the defense of the homeland while the men are at war, the
+    onnabushi have gained a gruesome reputation for urban warfare, while inside buildings or ruins
+    they gain the fear ability. It's a good idea to define which bits of your terrain collection
+    count as 'buildings or ruins' at the start of a battle to avoid confusion later.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Onnabushi / Special Rules / Wardens of the Castle
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Guardianas del Castillo
+  effect_i18n:
+    es: >-
+      Tradicionalmente responsables de la defensa de la patria mientras los hombres están en la
+      guerra, las onnabushi se han ganado una espeluznante reputación en la guerra urbana: dentro de
+      edificios o ruinas, ganan la habilidad de causar miedo. Es buena idea definir qué partes de tu
+      colección de terreno cuentan como "edificios o ruinas" al comienzo de la batalla para evitar
+      confusiones después.
+  applies_to:
+    profile_ids:
+    - onnabushi
+- id: band--nippon-special-skills
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.nipponese-expedition-web.special.nippon-special-skills
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: skill selections on promotion are advancement-time mechanics outside the
+        duel scope (combat-critical parts of Death before Dishonor and Iaijutsu are candidates for
+        later implementation).
+  name: Nippon Special Skills
+  effect: >-
+    Nippon Warband members may choose to use the following skill list instead of the standard skill
+    lists. Death before Dishonor: once per grim engagement, when fate decrees their demise in the
+    swirling melee, they unleash a final barrage of strikes before the void claims them. If this
+    model would be removed from the battlefield as the result of a close combat attack, before
+    removing it make a single close combat attack with them as normal; if these last, desperate
+    blows fell an adversary, the warrior defies death's grasp, standing amidst the carnage with but
+    a single thread of life remaining. Night Fighter (Shinobi only): this model is able to run while
+    remaining hidden, as per hiding rules. Iaijutsu: when this model is charged they gain +1A that
+    they may only use against the charger; this additional attack will 'strike first'. If the
+    wielder is simultaneously charged by two or more opponents they will still only receive a total
+    of +1A. These attacks are resolved at the Strength value of the model, with no further
+    modifiers. Last Stand: if this model would normally take an all-alone test, it may be re-rolled;
+    in addition, at the start of this model's turn, if it is 6" away from friendly models, it can
+    choose to have +1 to WS or BS until the start of its next turn. Tea Ceremony: after a battle, if
+    this hero survives and did not go out of action, they can forgo searching for rare items and
+    spend 10 gold crowns representing the cost of preparations for the tea ceremony; then choose any
+    other hero, and roll a D6 — on a 3+, the chosen hero gains an Experience point from the
+    introspective nature of the ceremony. Blessed by the Kami: when rolling on the Heroes Serious
+    Injury chart for this Hero after a game in which he has been taken out of action, the dice may
+    be re-rolled once; the result of this second dice roll must be accepted, even if it is a worse
+    result.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Nippon Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Habilidades Especiales Niponas
+  effect_i18n:
+    es: >-
+      Los miembros de la banda Nipona pueden elegir usar la siguiente lista de habilidades en lugar
+      de las listas de habilidades estándar. Muerte antes que Deshonor: una vez por sombrío
+      enfrentamiento, cuando el destino decrete su muerte en la melee, descargan una última ráfaga
+      de golpes antes de que el vacío los reclame. Si este modelo fuera retirado del campo de
+      batalla como resultado de un ataque de combate cuerpo a cuerpo, antes de retirarlo haz un
+      único ataque de combate cuerpo a cuerpo con él con normalidad; si estos últimos golpes
+      desesperados derriban a un adversario, el guerrero desafía las garras de la muerte y permanece
+      en pie entre la carnicería con un solo hilo de vida. Luchador Nocturno (solo Shinobi): este
+      modelo puede correr permaneciendo oculto, según las reglas de ocultarse. Iaijutsu: cuando este
+      modelo es cargado gana +1A que solo puede usar contra el cargador; este ataque adicional
+      "golpea primero". Si el portador es cargado simultáneamente por dos o más oponentes, aun así
+      solo recibirá un total de +1A. Estos ataques se resuelven con el valor de Fuerza del modelo,
+      sin más modificadores. Última Posición: si este modelo hiciera normalmente una prueba de estar
+      solo, puede repetirla; además, al comienzo del turno de este modelo, si está a 6" de modelos
+      amistosos, puede elegir tener +1 a HA o HP hasta el comienzo de su siguiente turno. Ceremonia
+      del Té: tras una batalla, si este héroe sobrevive y no quedó Fuera de Combate, puede renunciar
+      a buscar objetos raros y gastar 10 coronas de oro en concepto de los preparativos de la
+      ceremonia del té; después elige a cualquier otro héroe y tira 1D6 — con un 3+, el héroe
+      elegido gana un punto de Experiencia por la naturaleza introspectiva de la ceremonia.
+      Bendecido por los Kami: al tirar en la tabla de Heridas Graves de Héroes para este Héroe tras
+      una partida en la que haya quedado Fuera de Combate, el dado puede repetirse una vez; el
+      resultado de esta segunda tirada debe aceptarse, aunque sea peor.
+  applies_to:
+    band: true

@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/catalog-items.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/items/*.yaml",
+  "description": "Canonical item records, split by category (`weapons-close-combat`, `armour`, `miscellaneous`, `trollheim`, …). Every file of `catalog/items/` carries the same shape: the envelope and its item records. Item ids are stable and reference the executable layer through `mechanic_id`.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "items"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 2 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/item" }
+    }
+  },
+  "$defs": {
+    "item": {
+      "type": "object",
+      "required": ["id", "kind", "name", "name_i18n", "combat_status", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "kind": {
+          "description": "Item category; it matches the file the record lives in (`trollheim-equipment` for the Trollheim catalogue, `out-of-scope` for records kept only for reference).",
+          "enum": [
+            "close-combat-weapon", "ranged-weapon", "armour", "shield-or-defence",
+            "combat-equipment", "material-or-upgrade", "trollheim-equipment", "out-of-scope"
+          ]
+        },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "effect": {
+          "description": "Editorial text of the item as printed in its source.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "combat_status": {
+          "description": "`implemented` items drive the duel runtime through their mechanic; `out_of_scope` items are carried for the campaign runtime and the UI only.",
+          "enum": ["implemented", "out_of_scope"]
+        },
+        "mechanic_id": {
+          "description": "Mechanic of `catalog/mechanics/close-combat.yaml` that implements the item.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      },
+      "allOf": [
+        {
+          "description": "An implemented item must name the mechanic that implements it (`load_simulation_mappings` fails without it).",
+          "if": {
+            "properties": { "combat_status": { "const": "implemented" } },
+            "required": ["combat_status"]
+          },
+          "then": { "required": ["mechanic_id"] }
+        }
+      ]
+    }
+  }
+}

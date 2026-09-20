@@ -1,0 +1,230 @@
+schema_version: 2
+band_id: skaven-of-clan-skryre-kaz
+rules:
+- id: band--rulebook-inheritance
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-kaz.band.rulebook-inheritance
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred cross-reference: Skaven weapons as detailed in the rulebook, and Skaven Special
+        Skills for heroes except the Art of Silent Death. Resolves after equivalence review against
+        the active KB skaven bands.
+  name: Rulebook Inheritance
+  effect: >-
+    Skaven Clan Skryre may use the Skaven weapons as detailed in the rulebook. Skaven Heroes may use
+    any of the Skaven Special Skills in the rulebook except for the Art of Silent Death.
+  source:
+    manual: broheim.net
+    printed_page: 41
+    section: Special Weapons / Skaven Special Skills
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Herencia del Libro de Reglas
+  effect_i18n:
+    es: >-
+      Los Skaven del Clan Skryre pueden usar las armas Skaven tal y como se detallan en el libro de
+      reglas. Los Héroes Skaven pueden usar cualquiera de las Habilidades Especiales Skaven del
+      libro de reglas, excepto el Arte de la Muerte Silenciosa.
+  applies_to:
+    band: true
+- id: band--jezzail
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-kaz.band.jezzail
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the jezzail is a ranged weapon with crew, reload and targeting rules; all of
+        its text is preserved in the provisional item sources/2B/catalog/items/
+        savage-orc-and-skryre-gear.yaml (item id jezzail).
+  name: Jezzail (Skaven Clan Skryre Special Equipment)
+  effect: >-
+    The warplock jezzail is a fiendish invention of the Skaven Clan Skryre. It is a huge and long
+    ranged firearm, more like a small cannon than an ordinary gun. It fires a special missile made
+    of warpstone. Range 36\", Strength 5, armour save modifier -3. Move or fire, Prepare shot, Pick
+    target, Save modifier, Assistant and Pavise rules as item text. 175 gc, Rare 11, heroes only,
+    may be purchased as part of their starting equipment.
+  source:
+    manual: broheim.net
+    printed_page: 40
+    section: Skaven Clan Skryre Special Equipment / Jezzail
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Jezzail (Equipo Especial del Clan Skryre)
+  effect_i18n:
+    es: >-
+      El jezzail de cerrojo urtico es un diabólico invento del Clan Skryre Skaven. Es un arma de
+      fuego enorme y de gran alcance, más parecida a un pequeño cañón que a un arma ordinaria.
+      Dispara un proyectil especial hecho de piedra bruja. Alcance 36", Fuerza 5, modificador de
+      salvación por armadura -3. Reglas de Disparar o Preparar, Apuntar, Modificador de Salvación,
+      Asistente y Pavés tal y como el texto del objeto. 175 coronas, Rareza 11, solo héroes, puede
+      comprarse como parte de su equipo inicial.
+  applies_to:
+    band: true
+- id: master-engineer--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-kaz.master-engineer.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Leader
+  source:
+    manual: broheim.net
+    printed_page: 41
+    section: heroes / 1 Master Engineer / Special Rules / Leader
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - master-engineer
+  rule_ref: shared-rule.leader
+- id: master-engineer--master-engineer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-kaz.master-engineer.master-engineer
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: re-rolling fumbles of blackpowder or wyrdstone-powered weapons is a shooting
+        mechanic.
+  name: Master Engineer
+  effect: >-
+    The Master Engineer may re-roll any fumbles with any blackpowder or wyrdstone-powered weapons he
+    carries. The result of the re-roll must be accepted.
+  source:
+    manual: broheim.net
+    printed_page: 41
+    section: heroes / 1 Master Engineer / Special Rules / Master Engineer
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Ingeniero Maestro
+  effect_i18n:
+    es: >-
+      El Ingeniero Maestro puede repetir cualquier pifia con las armas de pólvora o propulsadas por
+      piedra bruja que lleve. El resultado de la repetición debe aceptarse.
+  applies_to:
+    profile_ids:
+    - master-engineer
+- id: warlock-engineer--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-kaz.warlock-engineer.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (Magic of the Horned Rat).
+  name: Wizard
+  source:
+    manual: broheim.net
+    printed_page: 42
+    section: heroes / 0-1 Warlock Engineer / Special Rules / Wizard
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Hechicero
+  applies_to:
+    profile_ids:
+    - warlock-engineer
+  rule_ref: shared-rule.wizard
+- id: skavenslaves--experience
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-kaz.skavenslaves.experience
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: experience progression is a campaign mechanic.
+  name: Experience
+  source:
+    manual: broheim.net
+    printed_page: 43
+    section: henchmen / Skavenslaves / Special Rules / Experience
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Experiencia
+  applies_to:
+    profile_ids:
+    - skavenslaves
+  rule_ref: shared-rule.experience
+- id: skavenslaves--all-races
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-kaz.skavenslaves.all-races
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: warband-flavour rule with no combat effect.
+  name: All Races
+  effect: >-
+    Skaven slaves may be from any race including their fellow Skaven. The above profile represents
+    the weakened state of all of them.
+  source:
+    manual: broheim.net
+    printed_page: 43
+    section: henchmen / Skavenslaves / Special Rules / All Races
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Todas las Razas
+  effect_i18n:
+    es: >-
+      Los esclavos Skaven pueden ser de cualquier raza, incluidos sus propios compañeros Skaven. El
+      perfil anterior representa el estado debilitado de todos ellos.
+  applies_to:
+    profile_ids:
+    - skavenslaves
+- id: skavenslaves--slavers
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.skaven-of-clan-skryre-kaz.skavenslaves.slavers
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: capture is a campaign mechanic.
+  name: Slavers
+  effect: >-
+    Any enemy warrior who is captured may be added to a Skavenslave group. He will have the above
+    profile and will have to be equipped the same as the rest of the group. Any equipment he carried
+    when he was captured may be kept or sold by the warband.
+  source:
+    manual: broheim.net
+    printed_page: 43
+    section: henchmen / Skavenslaves / Special Rules / Slavers
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Esclavistas
+  effect_i18n:
+    es: >-
+      Cualquier guerrero enemigo que sea capturado puede añadirse a un grupo de Esclavos Skaven.
+      Tendrá el perfil anterior y deberá equiparse igual que el resto del grupo. Cualquier equipo
+      que llevara cuando fue capturado puede quedarse la banda o venderse.
+  applies_to:
+    profile_ids:
+    - skavenslaves

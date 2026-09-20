@@ -1,0 +1,423 @@
+schema_version: 2
+band_id: wood-elves-of-athel-loren-web
+rules:
+- id: band--hate-dark-elves
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.wood-elves-of-athel-loren-web.band.hate-dark-elves
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Hatred is a psychology mechanic not covered by the current engine scope.
+  name: Hate Dark Elves
+  effect: >-
+    All warriors in a Wood Elves Warband (excluding any Hired Swords) have an unyielding Hatred for
+    Dark Elves.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hate Dark Elves
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
+  name_i18n:
+    es: Odio a los Elfos Oscuros
+  effect_i18n:
+    es: >-
+      Todos los guerreros de una banda de Elfos del Bosque (excluyendo cualquier Espada a Sueldo)
+      tienen un implacable Odio a los Elfos Oscuros.
+  applies_to:
+    band: true
+- id: band--excellent-sight
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.wood-elves-of-athel-loren-web.band.excellent-sight
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: spotting Hidden enemies is a hiding/deployment mechanic outside the current
+        engine scope.
+  name: Excellent Sight
+  effect: >-
+    Elves have eyesight unmatched by mere humans. All the Elves in a Wood Elf Warband can spot
+    Hidden enemies from twice as far away as other warriors (i.e. twice their Initiative in inches).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Excellent Sight
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
+  name_i18n:
+    es: Vista Excelente
+  effect_i18n:
+    es: >-
+      Los Elfos tienen una vista sin comparación con la de los meros humanos. Todos los Elfos de una
+      banda de Elfos del Bosque pueden detectar enemigos Ocultos al doble de distancia que otros
+      guerreros (es decir, al doble de su Iniciativa en pulgadas).
+  applies_to:
+    band: true
+- id: band--unforgiving
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.wood-elves-of-athel-loren-web.band.unforgiving
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: multiplayer alliance restrictions are campaign mechanics outside the duel
+        scope.
+  name: Unforgiving
+  effect: >-
+    In addition to their hatred of their corrupt kin, the folk of Athel Loren will not fight
+    alongside the forces of Chaos. In multiplayer games, a Wood Elf warband may never forge an
+    alliance with any Warband of a chaotic nature (Possessed, Skaven, Beastmen, Dark Elves, etc.).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Unforgiving
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
+  name_i18n:
+    es: Implacable
+  effect_i18n:
+    es: >-
+      Además de su odio hacia sus parientes corruptos, el pueblo de Athel Loren no luchará junto a
+      las fuerzas del Caos. En partidas multijugador, una banda de Elfos del Bosque nunca puede
+      forjar una alianza con ninguna banda de naturaleza caótica (Poseídos, Skavens, Hombres Bestia,
+      Elfos Oscuros, etc.).
+  applies_to:
+    band: true
+- id: band--tolerant
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.wood-elves-of-athel-loren-web.band.tolerant
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: hiring Hired Swords is a roster-construction/campaign mechanic outside the
+        duel scope.
+  name: Tolerant
+  effect: >-
+    Due to their outsider status in the world, the Elves of Athel Loren have learned to stifle their
+    distaste for 'lesser races', and have even been known to work alongside them from time to time.
+    A Wood Elf Warband may hire any Hired Sword that is not of a Chaotic or evil bent (so no Skaven,
+    Possessed, Beastmen, Dark Elves, Undead, etc.).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Tolerant
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
+  name_i18n:
+    es: Tolerante
+  effect_i18n:
+    es: >-
+      Debido a su condición de forasteros en el mundo, los Elfos de Athel Loren han aprendido a
+      reprimir su rechazo hacia las 'razas inferiores', e incluso se sabe que han trabajado junto a
+      ellas de vez en cuando. Una banda de Elfos del Bosque puede contratar cualquier Espada a
+      Sueldo que no sea de inclinación caótica o malvada (así que no Skavens, Poseídos, Hombres
+      Bestia, Elfos Oscuros, No Muertos, etc.).
+  applies_to:
+    band: true
+- id: band--skill-fey
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.wood-elves-of-athel-loren-web.skill.fey
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic saves require the magic subsystem, which is outside the current engine
+        scope.
+  name: Fey
+  effect: >-
+    The Wood Elf has a certain understanding of magic and therefore gets a saving throw of 4+
+    against hostile magic.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Fey
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
+  name_i18n:
+    es: Feérico
+  effect_i18n:
+    es: >-
+      El Elfo del Bosque tiene cierta comprensión de la magia y por tanto obtiene una tirada de
+      salvación de 4+ contra la magia hostil.
+  applies_to:
+    band: true
+  kind: warband_skill
+- id: band--skill-elven-luck
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.wood-elves-of-athel-loren-web.skill.elven-luck
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: generic rerolls are a meta-mechanic applying to subsystems outside the current
+        engine scope.
+  name: Elven Luck
+  effect: The Elven Gods favour the Wood Elf. Once per game, he may reroll any failed roll.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Elven Luck
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
+  name_i18n:
+    es: Suerte Élfica
+  effect_i18n:
+    es: >-
+      Los Dioses Élficos favorecen al Elfo del Bosque. Una vez por partida, puede repetir cualquier
+      tirada fallida.
+  applies_to:
+    band: true
+  kind: warband_skill
+- id: band--skill-excellent-sight
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.wood-elves-of-athel-loren-web.skill.excellent-sight
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: spotting Hidden enemies is a hiding/deployment mechanic outside the current
+        engine scope.
+  name: Excellent Sight
+  effect: >-
+    By training his eyesight for years the Wood Elf can spot hidden enemy models up to 2 x I inch
+    away. Note: this is likely an oversight as it is already embedded in their special rules
+    (transcribed with the source's own note verbatim).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Excellent Sight
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
+  name_i18n:
+    es: Vista Excelente
+  effect_i18n:
+    es: >-
+      Entrenando su vista durante años, el Elfo del Bosque puede detectar modelos enemigos ocultos
+      hasta 2 x I pulgadas de distancia. Nota: esto es probablemente un descuido, ya que ya está
+      integrado en sus reglas especiales (transcrito con la nota de la fuente verbatim).
+  applies_to:
+    band: true
+  kind: warband_skill
+- id: band--skill-seeker
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.wood-elves-of-athel-loren-web.skill.seeker
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: exploration dice modification is a post-duel/campaign resolution mechanic
+        outside the current engine scope.
+  name: Seeker
+  effect: >-
+    Being an expert Tracker, the Wood Elf is able to spot even hidden treasures. He may modify the
+    result of one exploration die by +/- 1. Only one Elven Hero may possess this skill!
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Seeker
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
+  name_i18n:
+    es: Buscador
+  effect_i18n:
+    es: >-
+      Al ser un Rastreador experto, el Elfo del Bosque puede detectar incluso tesoros ocultos. Puede
+      modificar el resultado de un dado de exploración en +/- 1. ¡Solo un Héroe Elfo puede poseer
+      esta habilidad!
+  applies_to:
+    band: true
+  kind: warband_skill
+- id: band--skill-infiltration
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.wood-elves-of-athel-loren-web.skill.infiltration
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: pre-battle deployment (Infiltration) is outside the current engine scope.
+  name: Infiltration
+  effect: >-
+    The Wood Elf is an expert in infiltrating behind enemy lines. Therefore he is always deployed
+    last, anywhere out of sight of the enemy. If both players have infiltrate, roll 1d6. Lowest roll
+    deploys first.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Infiltration
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
+  name_i18n:
+    es: Infiltración
+  effect_i18n:
+    es: >-
+      El Elfo del Bosque es un experto en infiltrarse tras las líneas enemigas. Por tanto, siempre
+      se despliega el último, en cualquier lugar fuera de la vista del enemigo. Si ambos jugadores
+      tienen infiltración, tira 1d6. La tirada más baja despliega primero.
+  applies_to:
+    band: true
+  kind: warband_skill
+- id: hunt-master--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.wood-elves-of-athel-loren-web.hunt-master.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
+        psychology/rout mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Hunt Master / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - hunt-master
+  rule_ref: shared-rule.leader
+- id: waywatcher--sniper
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.wood-elves-of-athel-loren-web.waywatcher.sniper
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: shooting while hidden is a shooting/hiding mechanic outside the current engine
+        scope.
+  name: Sniper
+  effect: >-
+    Due to their years of training Waywatchers can shoot while keeping almost invisible. This allows
+    the character to shoot while hiding. After the shot roll a D6, on a 5+ no one noticed where the
+    arrow came from.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Waywatchers / Special Rules / Sniper
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
+  name_i18n:
+    es: Tirador
+  effect_i18n:
+    es: >-
+      Debido a sus años de entrenamiento, los Vigilantes de los Senderos pueden disparar
+      manteniéndose casi invisibles. Esto permite al personaje disparar mientras está oculto. Tras
+      el disparo, tira un D6: con un 5+, nadie notó de dónde vino la flecha.
+  applies_to:
+    profile_ids:
+    - waywatcher
+- id: waywatcher--camouflage
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.wood-elves-of-athel-loren-web.waywatcher.camouflage
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: hiding and spot tests are hiding/deployment mechanics outside the current
+        engine scope.
+  name: Camouflage
+  effect: >-
+    Waywatchers are experts at camouflage. They wear cloaks of green, brown or grey which are made
+    from leaves sewn together. By painting their faces and bodies with green and brown paint they
+    are almost invisible when hiding. When a Waywatcher is hidden, each enemy model has to make an
+    additional I test to spot them.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Waywatchers / Special Rules / Camouflage
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
+  name_i18n:
+    es: Camuflaje
+  effect_i18n:
+    es: >-
+      Los Vigilantes de los Senderos son expertos en camuflaje. Visten capas verdes, marrones o
+      grises hechas de hojas cosidas. Pintando sus caras y cuerpos con pintura verde y marrón son
+      casi invisibles cuando se ocultan. Cuando un Vigilante de los Senderos está oculto, cada
+      modelo enemigo debe hacer una prueba adicional de I para detectarlo.
+  applies_to:
+    profile_ids:
+    - waywatcher
+- id: forest-mage--wizard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.wood-elves-of-athel-loren-web.forest-mage.wizard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (Woodland Incantations; the spell list is preserved in
+        sources/2A/catalog/magic-2a.yaml as lore.woodland-incantations).
+  name: Wizard
+  effect: The Forest Mage is a Wizard and may use the Woodland Incantations spell list.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Forest Mage / Special Rules / Wizard
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
+  name_i18n:
+    es: Hechicero
+  effect_i18n:
+    es: >-
+      El Mago del Bosque es un Hechicero y puede usar la lista de hechizos Encantamientos del
+      Bosque.
+  applies_to:
+    profile_ids:
+    - forest-mage
+- id: deepwood-scout--crossfire
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.wood-elves-of-athel-loren-web.deepwood-scout.crossfire
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: shooting-phase injury-roll bonuses are outside the current engine scope.
+  name: Crossfire
+  effect: If more than one scout henchman shoots at the same target, they get +1 on the injury roll.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Deepwood Scouts / Special Rules / Crossfire
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/wood-elves-of-athel-loren
+  name_i18n:
+    es: Fuego Cruzado
+  effect_i18n:
+    es: >-
+      Si más de un secuaz explorador dispara al mismo objetivo, obtienen +1 en la tirada de herida.
+  applies_to:
+    profile_ids:
+    - deepwood-scout

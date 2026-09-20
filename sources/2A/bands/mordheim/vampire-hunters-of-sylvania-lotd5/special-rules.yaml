@@ -1,0 +1,419 @@
+schema_version: 2
+band_id: vampire-hunters-of-sylvania-lotd5
+rules:
+- id: band--hired-swords
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.band.hired-swords
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: hired-sword recruitment eligibility is a campaign/hiring mechanic.
+  name: Hired Swords
+  effect: >-
+    Vampire Hunters accept nearly all aid that is available. As such, they may recruit Hired Swords
+    as if they were Human Mercenaries.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Rules / Hired Swords
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  name_i18n:
+    es: Espadas Contratadas
+  effect_i18n:
+    es: >-
+      Los Cazadores de Vampiros aceptan casi toda la ayuda disponible. Por tanto, pueden reclutar
+      Espadas Contratadas como si fueran Mercenarios Humanos.
+  applies_to:
+    band: true
+- id: vampire-hunter--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.vampire-hunter.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: leadership-radios checks are a morale mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Vampire Hunter / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - vampire-hunter
+  rule_ref: shared-rule.leader
+- id: vampire-hunter--stake-the-vampire
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.vampire-hunter.stake-the-vampire
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: forced movement towards an enemy type is a movement/psychology interaction
+        outside the duel scope.
+  name: Stake the Vampire!
+  effect: >-
+    A Vampire Hunter Hates Vampires. They must always move towards a Vampire on the field (if he can
+    see them) unless he can shoot (in which case he may choose).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 1 Vampire Hunter / Special Rules / Stake the Vampire!
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  name_i18n:
+    es: ¡Empala al Vampiro!
+  effect_i18n:
+    es: >-
+      Un Cazador de Vampiros Odia a los Vampiros. Siempre debe moverse hacia un Vampiro en el campo
+      (si puede verlo) a menos que pueda disparar (en cuyo caso puede elegir).
+  applies_to:
+    profile_ids:
+    - vampire-hunter
+- id: priest-of-morr--loner
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.priest-of-morr.loner
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the All Alone psychology check is a morale mechanic outside the duel scope.
+  name: Loner
+  effect: >-
+    Few people care to spend any length of time in the company of a priest of Morr - even when it is
+    their duty to do so. As such, a priest of Morr is used to being alone and probably prefers it
+    that way. Priests of Morr do not suffer from the All Alone rules.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0-1 Priest of Morr / Special Rules / Loner
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  name_i18n:
+    es: Solitario
+  effect_i18n:
+    es: >-
+      Poca gente quiere pasar tiempo en compañía de un sacerdote de Morr, aunque sea su deber
+      hacerlo. Por tanto, un sacerdote de Morr está acostumbrado a estar solo y probablemente lo
+      prefiere así. Los sacerdotes de Morr no sufren las reglas de Solo Contra Todos.
+  applies_to:
+    profile_ids:
+    - priest-of-morr
+- id: priest-of-morr--funerary-rites
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.priest-of-morr.funerary-rites
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: magic subsystem (divine rites). This page prints its own variant of the
+        Funerary Rites with different difficulties than the active KB's lore.funerary-rites; the
+        variant is preserved in sources/2A/catalog/magic-2a.yaml without merging.
+  name: Funerary Rites
+  effect: >-
+    Priests of Morr are not wizards, however they do have numerous Funerary Rites which they may
+    perform. As such, priests of Morr may randomly choose a Funerary Rite listed on the following
+    page.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0-1 Priest of Morr / Special Rules / Funerary Rites
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  name_i18n:
+    es: Ritos Funerarios
+  effect_i18n:
+    es: >-
+      Los sacerdotes de Morr no son hechiceros; sin embargo, disponen de numerosos Ritos Funerarios
+      que pueden realizar. Por tanto, los sacerdotes de Morr pueden elegir aleatoriamente un Rito
+      Funerario de los listados en la página siguiente.
+  applies_to:
+    profile_ids:
+    - priest-of-morr
+- id: slayer--stake-the-vampire
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.slayer.stake-the-vampire
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: forced movement towards an enemy type is a movement/psychology interaction
+        outside the duel scope.
+  name: Stake the Vampire!
+  effect: >-
+    A Slayer Hates Vampires. They must always move towards a Vampire on the field (if he can see
+    them) unless he can shoot (in which case he may choose).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: heroes / 0-3 Slayers / Special Rules / Stake the Vampire!
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  name_i18n:
+    es: ¡Empala al Vampiro!
+  effect_i18n:
+    es: >-
+      Un Asesino Odia a los Vampiros. Siempre debe moverse hacia un Vampiro en el campo (si puede
+      verlo) a menos que pueda disparar (en cuyo caso puede elegir).
+  applies_to:
+    profile_ids:
+    - slayer
+- id: pilgrim--fanatical
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.pilgrim.fanatical
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: automatic leadership-test passes and leader eligibility are
+        campaign-resolution mechanics.
+  name: Fanatical
+  effect: >-
+    A Pilgrim of Pain believes that the end of the world is nigh should the undead threat not be
+    stopped. As such, nothing holds any terror for them in the mortal world. Pilgrims automatically
+    pass any leadership-based tests they are required to take. A Pilgrim may never become a Warband
+    leader.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-4 Pilgrims / Special Rules / Fanatical
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  name_i18n:
+    es: Fanático
+  effect_i18n:
+    es: >-
+      Un Peregrino del Dolor cree que el fin del mundo está cerca si la amenaza no-muerta no se
+      detiene. Por tanto, nada le causa terror en el mundo mortal. Los Peregrinos superan
+      automáticamente cualquier prueba basada en Liderazgo que deban realizar. Un Peregrino nunca
+      puede convertirse en líder de la banda.
+  applies_to:
+    profile_ids:
+    - pilgrim
+- id: pilgrim--blunt
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.pilgrim.blunt
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: equipment-choice restriction with no direct combat effect; the Pilgrim
+        Equipment List already models the allowed options.
+  name: Blunt
+  effect: >-
+    Due to bludgeoning weapons having a much more profound effect upon the undead, Pilgrims ignore
+    all bladed and ranged weapons in favor of maces, hammers and staffs. The only exception to this
+    is the silver-tip stake, for it's incredible destructive powers against Vampires.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-4 Pilgrims / Special Rules / Blunt
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  name_i18n:
+    es: Contundentes
+  effect_i18n:
+    es: >-
+      Dado que las armas contundentes tienen un efecto mucho más profundo sobre los no-muertos, los
+      Peregrinos ignoran todas las armas de hoja y a distancia en favor de mazas, martillos y
+      bastones. La única excepción es la estaca de punta de plata, por su increíble poder
+      destructivo contra los Vampiros.
+  applies_to:
+    profile_ids:
+    - pilgrim
+- id: wolfhound--animal
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.wolfhound.animal
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: experience progression is a campaign mechanic.
+  name: Animal
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: henchmen / 0-4 Wolfhounds / Special Rules / Animal
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  name_i18n:
+    es: Animal
+  applies_to:
+    profile_ids:
+    - wolfhound
+  rule_ref: shared-rule.animal
+- id: band--special-skill-iron-will
+  kind: warband_skill
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.band.iron-will
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: immunity to Fear is a psychology mechanic.
+  name: Iron Will
+  effect: >-
+    Such is the work of Slayers that there is little room for hesitation. When the opportunity
+    arises, one must be able to strike! As such, the warrior is hardened and immune to Fear.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Iron Will
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  name_i18n:
+    es: Voluntad de Hierro
+  effect_i18n:
+    es: >-
+      Tal es la labor de los Asesinos que hay poco espacio para la vacilación. Cuando surge la
+      oportunidad, ¡hay que ser capaz de golpear! Por tanto, el guerrero está endurecido y es inmune
+      al Miedo.
+  applies_to:
+    band: true
+- id: band--special-skill-righteous-aura
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.band.righteous-aura
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: attack-count manipulation against specific opponent types has no engine
+        subsystem (no aura/attack-denial mechanics modeled).
+  name: Righteous Aura
+  effect: >-
+    Carrying many talismans from various gods, the warrior heads into battle assured of victory.
+    Possessed or Undead opponents lose their first attack against the warrior in the first round of
+    hand-to-hand combat (down to a minimum of 1).
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Righteous Aura
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  name_i18n:
+    es: Aura Justa
+  effect_i18n:
+    es: >-
+      Llevando muchos talismanes de varios dioses, el guerrero entra en batalla seguro de la
+      victoria. Los oponentes Posesos o No Muertos pierden su primer ataque contra el guerrero en la
+      primera ronda de combate cuerpo a cuerpo (hasta un mínimo de 1).
+  applies_to:
+    band: true
+- id: band--special-skill-thirst-for-vengeance
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.band.thirst-for-vengeance
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: hatred plus a charge-triggered attack bonus interacts with psychology and
+        movement-phase state outside the duel scope.
+  name: Thirst for Vengeance
+  effect: >-
+    The warrior Hates all undead. In his quest for revenge, he gains +1 attack in a turn where he
+    has charged.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Thirst for Vengeance
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  name_i18n:
+    es: Sed de Venganza
+  effect_i18n:
+    es: >-
+      El guerrero Odia a todos los no-muertos. En su búsqueda de venganza, gana +1 ataque en un
+      turno en el que haya cargado.
+  applies_to:
+    band: true
+- id: band--special-skill-blessing-of-morr
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.band.blessing-of-morr
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: injury-roll modification is a post-hit resolution mechanic outside the duel
+        scope.
+  name: Blessing of Morr
+  effect: >-
+    The warrior has the Death god's blessing in his work. Add +1 to all injury rolls against the
+    undead.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Blessing of Morr
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  name_i18n:
+    es: Bendición de Morr
+  effect_i18n:
+    es: >-
+      El guerrero cuenta con la bendición del dios de la Muerte en su labor. Suma +1 a todas las
+      tiradas de herida contra los no-muertos.
+  applies_to:
+    band: true
+- id: band--special-skill-touch-of-darkness
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.band.touch-of-darkness
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: darkness/visibility penalties belong to the shooting and movement subsystems.
+  name: Touch of Darkness
+  effect: >-
+    Long has the Slayer been dealing in death. Perhaps too long. Due to his heightened intuition, he
+    ignores darkness penalties.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills / Touch of Darkness
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  name_i18n:
+    es: Toque de Oscuridad
+  effect_i18n:
+    es: >-
+      Mucho tiempo ha llevado el Asesino tratando con la muerte. Quizá demasiado. Debido a su
+      aguzada intuición, ignora las penalizaciones por oscuridad.
+  applies_to:
+    band: true

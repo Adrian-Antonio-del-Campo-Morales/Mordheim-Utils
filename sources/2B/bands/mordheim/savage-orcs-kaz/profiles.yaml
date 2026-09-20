@@ -1,0 +1,252 @@
+schema_version: 2
+band_id: savage-orcs-kaz
+profiles:
+- id: boss
+  name: Boss
+  type: hero
+  cost: 75
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - savage-orc-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 57
+    section: 1 Boss
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 1 Boss
+  name_i18n:
+    es: Jefe
+  rule_ids:
+  - boss--leader
+  combat_traits: {}
+- id: weirdo
+  name: Wierdo
+  type: hero
+  cost: 40
+  experience: 10
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - savage-orc-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Savage Orc Wierdo cannot wear armour.
+  skill_access:
+  - combat
+  - academic
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 57
+    section: 0-1 Wierdo
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 0-1 Wierdo
+  name_i18n:
+    es: Rarito
+  rule_ids:
+  - weirdo--wizard
+  combat_traits: {}
+- id: spottaz
+  name: Spottaz
+  type: hero
+  cost: 15
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - savage-orc-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 57
+    section: 0-2 Spottaz
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - heroes
+  - 0-2 Spottaz
+  name_i18n:
+    es: Ojeadores
+  rule_ids:
+  - spottaz--get-out-dere
+  combat_traits: {}
+- id: brutes
+  name: Brutes
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - savage-orc-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 58
+    section: 0-3 Brutes
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - henchmen
+  - 0-3 Brutes
+  name_i18n:
+    es: Brutos
+  rule_ids:
+  - brutes--animosity
+  combat_traits: {}
+- id: nuttaz
+  name: Nuttaz
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - savage-orc-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Savage Orc Nuttaz can use any equipment except missile weapons from the Savage Orc Equipment list.
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 58
+    section: 0-3 Nuttaz
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - henchmen
+  - 0-3 Nuttaz
+  name_i18n:
+    es: Chalados
+  rule_ids:
+  - nuttaz--animosity
+  - nuttaz--frenzy
+  combat_traits: {}
+- id: boyz
+  name: Boyz
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - savage-orc-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 58
+    section: Boyz
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - henchmen
+  - Boyz
+  name_i18n:
+    es: Chicos
+  rule_ids:
+  - boyz--animosity
+  combat_traits: {}
+- id: gobbo-boyz
+  name: Gobbo Boyz
+  type: henchman
+  cost: 10
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - savage-orc-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - 'Bow (not Gobbo Boyz): Savage Gobbos may not take the Bow.'
+  skill_access: []
+  source:
+    manual: broheim.net
+    printed_page: 59
+    section: Gobbo Boyz
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  source_path:
+  - henchmen
+  - Gobbo Boyz
+  name_i18n:
+    es: Chicos Gobbo
+  rule_ids:
+  - gobbo-boyz--animosity
+  - gobbo-boyz--aint-orcz
+  - gobbo-boyz--useless-gitz
+  combat_traits: {}

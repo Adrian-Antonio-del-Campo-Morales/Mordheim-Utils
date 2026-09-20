@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/catalog-rules-racial-maximums.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/rules/racial-maximums.yaml",
+  "description": "The only source of racial characteristic maximums. Warband rules and campaign advances reference these entries by id (`campaign.limit.racial-maximum.*`) instead of inlining statlines. The characteristics are named in full English (`weapon_skill`), not by the profile keys.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "catalog", "status", "racial_maximums"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 2 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "catalog": {
+      "description": "Self-describing catalogue id (`rules-racial-maximums`).",
+      "$ref": "defs.schema.json#/$defs/id"
+    },
+    "status": {
+      "description": "Editorial status of the catalogue. Currently `published`.",
+      "type": "string",
+      "minLength": 1
+    },
+    "racial_maximums": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/racial_maximum" }
+    }
+  },
+  "$defs": {
+    "racial_maximum": {
+      "type": "object",
+      "required": ["id", "applies_to", "profile", "characteristics", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "applies_to": {
+          "description": "What the maximums apply to. Currently always the profile itself.",
+          "enum": ["profile"]
+        },
+        "profile": {
+          "description": "Profile or race the maximums describe (`human`, `elf`, `orc`, …).",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "characteristics": { "$ref": "#/$defs/maximum_characteristics" },
+        "note": {
+          "description": "Editorial note when the maximums need one (exceptions, sources).",
+          "type": "string",
+          "minLength": 1
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "maximum_characteristics": {
+      "description": "Maximum of every characteristic, named in full.",
+      "type": "object",
+      "required": [
+        "movement", "weapon_skill", "ballistic_skill", "strength", "toughness", "wounds",
+        "initiative", "attacks", "leadership"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "movement": { "type": "integer", "minimum": 0 },
+        "weapon_skill": { "type": "integer", "minimum": 0 },
+        "ballistic_skill": { "type": "integer", "minimum": 0 },
+        "strength": { "type": "integer", "minimum": 0 },
+        "toughness": { "type": "integer", "minimum": 0 },
+        "wounds": { "type": "integer", "minimum": 0 },
+        "initiative": { "type": "integer", "minimum": 0 },
+        "attacks": { "type": "integer", "minimum": 0 },
+        "leadership": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

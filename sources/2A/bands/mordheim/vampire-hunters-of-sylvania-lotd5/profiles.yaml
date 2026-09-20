@@ -1,0 +1,223 @@
+schema_version: 2
+band_id: vampire-hunters-of-sylvania-lotd5
+profiles:
+- id: vampire-hunter
+  name: Vampire Hunter
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - vampire-hunters-hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Vampire Hunter may be armed with weapons and armour from the Vampire Hunters Equipment
+    List.
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 1 Vampire Hunter
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  source_path:
+  - heroes
+  - 1 Vampire Hunter
+  name_i18n:
+    es: Cazador de Vampiros
+  rule_ids:
+  - vampire-hunter--leader
+  - vampire-hunter--stake-the-vampire
+  combat_traits: {}
+- id: priest-of-morr
+  name: Priest of Morr
+  type: hero
+  cost: 35
+  experience: 12
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 9
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - As priests of Morr seldom engage in martial activities, they may only be armed with a Dagger
+    and a Scythe as weapons. Priests of Morr may never wear Armour.
+  skill_access:
+  - academic
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0-1 Priest of Morr
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  source_path:
+  - heroes
+  - 0-1 Priest of Morr
+  name_i18n:
+    es: Sacerdote de Morr
+  rule_ids:
+  - priest-of-morr--loner
+  - priest-of-morr--funerary-rites
+  combat_traits: {}
+- id: slayer
+  name: Slayer
+  type: hero
+  cost: 25
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - vampire-hunters-hero-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Slayer may be armed with weapons and armour from the Vampire Hunters Equipment List.
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Heroes / 0-3 Slayers
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  source_path:
+  - heroes
+  - 0-3 Slayers
+  name_i18n:
+    es: Asesino
+  rule_ids:
+  - slayer--stake-the-vampire
+  combat_traits: {}
+- id: villager
+  name: Villager
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - villager-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Villager may be equipped with weapons and armour chosen from the Villager Equipment list.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / Villagers
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  source_path:
+  - henchmen
+  - Villagers
+  name_i18n:
+    es: Aldeano
+  rule_ids: []
+  combat_traits: {}
+- id: pilgrim
+  name: Pilgrim
+  type: henchman
+  cost: 40
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 10
+  equipment_lists:
+  - pilgrim-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - A Pilgrim may be equipped with weapons and armour chosen from the Pilgrim Equipment list.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0-4 Pilgrims
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  source_path:
+  - henchmen
+  - 0-4 Pilgrims
+  name_i18n:
+    es: Peregrino
+  rule_ids:
+  - pilgrim--fanatical
+  - pilgrim--blunt
+  combat_traits: {}
+- id: wolfhound
+  name: Wolfhound
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions:
+  - Jaws and brutality. A Wolfhound never use nor need weapons or armour.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Henchmen / 0-4 Wolfhounds
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+  source_path:
+  - henchmen
+  - 0-4 Wolfhounds
+  name_i18n:
+    es: Sabueso
+  rule_ids:
+  - wolfhound--animal
+  combat_traits: {}

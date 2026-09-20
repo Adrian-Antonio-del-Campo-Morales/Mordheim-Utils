@@ -1,0 +1,268 @@
+schema_version: 2
+band_id: bretonnian-brigands-mou
+rules:
+- id: band--look-out-behind-you
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.bretonnian-brigands-mou.band.look-out-behind-you
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Look Out Behind You!
+  effect: >-
+    Brigand warband members (but not hired swords) are adept at ambushes and evasion. Subtract 1
+    from the initiative of a model attempting to spot a hidden Brigand warband member.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Brigand Special Rule / Look Out Behind You!
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian%20Brigands.pdf
+  name_i18n:
+    es: ¡Cuidado a tu espalda!
+  effect_i18n:
+    es: >-
+      Los miembros de la banda bandida (pero no las espadas a sueldo) son expertos en emboscadas y
+      evasión. Resta 1 a la iniciativa de un modelo que intente descubrir a un miembro oculto de la
+      banda bandida.
+  applies_to:
+    band: true
+- id: band--men-of-low-character
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.bretonnian-brigands-mou.band.men-of-low-character
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Men of Low Character
+  effect: >-
+    Brigands are justly suspicious of outsiders, fearing they may be agents of the law. They may not
+    hire any warrior that has knightly/noble, or law-enforcing associations. This would be for now:
+    a High Elf character (elven ranger), the free lance.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Brigand Special Rule / Men of Low Character
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian%20Brigands.pdf
+  name_i18n:
+    es: Hombres de Baja Estofa
+  effect_i18n:
+    es: >-
+      Los bandidos son justificadamente desconfiados con los forasteros, temiendo que sean agentes
+      de la ley. No pueden contratar a ningún guerrero con asociaciones caballerescas/nobles o de
+      aplicación de la ley. Esto sería por ahora: un personaje de Alto Elfo (guardabosques élfico) y
+      el lanzador libre.
+  applies_to:
+    band: true
+- id: band--the-boss
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.bretonnian-brigands-mou.band.the-boss
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: The Boss
+  effect: >-
+    The leader of the brigands is often the meanest and baddest from the lot. He rules by fear and
+    the promise of loot. So the warband leader always must cause fear (if possible). This means that
+    if the leader dies and a successor is needed, you first choose between the heroes that are
+    horribly scarred, or are fearsome. If that is not possible you choose like normal, but the new
+    'leader' must get the fearsome skill as soon as he gets a skill-advance. This automatically
+    disqualifies all heroes with no strength skills.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Brigand Special Rule / The boss
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian%20Brigands.pdf
+  name_i18n:
+    es: El Jefe
+  effect_i18n:
+    es: >-
+      El líder de los bandidos suele ser el más malvado y temible de la partida. Gobierna por el
+      miedo y la promesa de botín. Así que el líder de la banda siempre debe causar miedo (si es
+      posible). Esto significa que si el líder muere y hace falta un sucesor, eliges primero entre
+      los héroes horriblemente cicatrizados o temibles. Si no es posible, eliges con normalidad,
+      pero el nuevo 'líder' debe conseguir la habilidad temible en cuanto obtenga una mejora de
+      habilidad. Esto descalifica automáticamente a todos los héroes sin habilidades de Fuerza.
+  applies_to:
+    band: true
+- id: band--knights-feats
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.bretonnian-brigands-mou.band.knights-feats
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Knights Feats
+  effect: >-
+    A Fallen Noble may choose from the Knight's Feats skill list in addition to his ordinary skills.
+    1 - Combat charge: the character gains +1 attack and +1 WS when he charges. 2 - Lancer: the
+    character can use this skill only on horseback; may not be combined with combat charge; if the
+    character's first opponent(s) suffer an unsaved wound, the character may continue his charge;
+    opponents are not allowed to strike back; the charge may then be continued another 4", and any
+    enemy within 2" of that charge line can be charged; if the character does charge another enemy
+    he counts as charging in the next combat round. 3 - Sword master: when using a sword the
+    character may parry, with reroll at equal or higher. 4 - Armour specialist: when using Heavy
+    armour and shield the subject ignores the standard movement penalty and his armour save cannot
+    be modified beyond 5+ due to strength; this does not work on horseback.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Heroes / 0-1 Fallen Noble / Knights Feats
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian%20Brigands.pdf
+  name_i18n:
+    es: Hazañas de Caballería
+  effect_i18n:
+    es: >-
+      Un Noble Caído puede elegir de la lista de habilidades Hazañas de Caballería además de sus
+      habilidades ordinarias. 1 - Carga de combate: el personaje gana +1 ataque y +1 HA cuando
+      carga. 2 - Lancero: el personaje solo puede usar esta habilidad a caballo; no puede combinarse
+      con carga de combate; si el primer oponente o oponentes del personaje sufren una herida no
+      salvada, el personaje puede continuar su carga; los oponentes no pueden devolver los golpes;
+      la carga puede continuarse otros 4", y cualquier enemigo a 2" o menos de esa línea de carga
+      puede ser cargado; si el personaje carga contra otro enemigo, cuenta como cargando en la
+      siguiente ronda de combate. 3 - Maestro de la espada: al usar una espada el personaje puede
+      detener golpes, repitiendo la tirada con igual o mayor. 4 - Especialista en armaduras: al usar
+      armadura pesada y escudo, el sujeto ignora la penalización estándar de movimiento y su
+      salvación por armadura no puede modificarse por debajo de 5+ por fuerza; esto no funciona a
+      caballo.
+  applies_to:
+    band: true
+- id: scarface--leader
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.bretonnian-brigands-mou.scarface.leader
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Leader (Scarface)
+  effect: >-
+    Any warrior within 6" of the Scarface may use his Leadership value when taking Leadership tests.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Scarface / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian%20Brigands.pdf
+  name_i18n:
+    es: Líder (Cicatriz)
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6" o menos del Cicatriz puede usar su valor de Liderazgo cuando realice
+      tiradas de Liderazgo.
+  applies_to:
+    profile_ids:
+    - scarface
+- id: scarface--horribly-scarred
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.bretonnian-brigands-mou.scarface.horribly-scarred
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Horribly Scarred
+  effect: >-
+    Due to many fights the character is scarred deeply, either on the outside, or the inside. In
+    either case, this makes him very fearsome. The Scarface causes fear.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Scarface / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian%20Brigands.pdf
+  name_i18n:
+    es: Horriblemente Cicatrizado
+  effect_i18n:
+    es: >-
+      Debido a tantas peleas, el personaje está profundamente cicatrizado, ya sea por fuera o por
+      dentro. En cualquier caso, esto lo hace muy temible. El Cicatriz causa miedo.
+  applies_to:
+    profile_ids:
+    - scarface
+- id: fallen-noble--old-connections
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.bretonnian-brigands-mou.fallen-noble.old-connections
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Old Connections
+  effect: >-
+    Due to his former life, he still is well connected. This gives him an edge in acquiring all
+    kinds of exotic items. The character gains a +1 on rarity rolls.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Heroes / 0-1 Fallen Noble / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian%20Brigands.pdf
+  name_i18n:
+    es: Viejas Conexiones
+  effect_i18n:
+    es: >-
+      Gracias a su vida anterior, sigue bien relacionado. Esto le da ventaja para conseguir todo
+      tipo de objetos exóticos. El personaje gana +1 en las tiradas de rareza.
+  applies_to:
+    profile_ids:
+    - fallen-noble
+- id: fallen-noble--knights-feats
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.bretonnian-brigands-mou.fallen-noble.knights-feats
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Knights Feats (Fallen Noble)
+  effect: >-
+    A Fallen Noble may choose from the Knight's Feats skill list in addition to his ordinary skills
+    (see Knights Feats).
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Heroes / 0-1 Fallen Noble / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian%20Brigands.pdf
+  name_i18n:
+    es: Hazañas de Caballería (Noble Caído)
+  effect_i18n:
+    es: >-
+      Un Noble Caído puede elegir de la lista de habilidades Hazañas de Caballería además de sus
+      habilidades ordinarias (ver Hazañas de Caballería).
+  applies_to:
+    profile_ids:
+    - fallen-noble

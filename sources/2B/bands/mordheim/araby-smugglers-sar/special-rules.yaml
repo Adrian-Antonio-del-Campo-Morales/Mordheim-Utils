@@ -1,0 +1,156 @@
+schema_version: 2
+band_id: araby-smugglers-sar
+rules:
+- id: band--slavers
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.araby-smugglers-sar.band.slavers
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Slavers
+  effect: >-
+    Captured warriors who willingly join become Crew; unwilling captives become Slaves and do not
+    follow the normal Swabbies rules. After rolling for captures, Slaves may be sold for 2D6 gold
+    crowns each. Captures may temporarily exceed the normal warband and Slave limits, provided the
+    excess is sold or dismissed before selling cargo.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Slavers
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf
+  name_i18n:
+    es: Esclavistas
+  effect_i18n:
+    es: >-
+      Los guerreros capturados que se unan voluntariamente se convierten en Tripulación; los
+      cautivos involuntarios se convierten en Esclavos y no siguen las reglas normales de Grumetes.
+      Tras tirar por las capturas, los Esclavos pueden venderse por 2D6 coronas de oro cada uno. Las
+      capturas pueden superar temporalmente los límites normales, siempre que el exceso se venda o
+      despida antes de vender la carga.
+  applies_to:
+    band: true
+- id: rais--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.araby-smugglers-sar.rais.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: Any warrior within 6 inches of the Rais may use his Leadership for Leadership tests.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 1 Rais / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6 pulgadas del Rais puede usar su Liderazgo para los chequeos de
+      Liderazgo.
+  applies_to:
+    profile_ids:
+    - rais
+- id: merchant--fine-craftsmanship
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.araby-smugglers-sar.merchant.fine-craftsmanship
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Fine Craftsmanship
+  effect: >-
+    Once per turn, reroll any dice roll made by the Merchant. If he is not taken out of action, roll
+    two exploration dice after the battle and choose either result.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 0-1 Merchant / Special Rules / Fine Craftmenship
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf
+  name_i18n:
+    es: Artesanía Fina
+  effect_i18n:
+    es: >-
+      Una vez por turno, repite cualquier tirada de dados realizada por el Comerciante. Si no queda
+      Fuera de combate, tira dos dados de exploración después de la batalla y elige uno de los
+      resultados.
+  applies_to:
+    profile_ids:
+    - merchant
+- id: janissaries--not-pirates
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.araby-smugglers-sar.janissaries.not-pirates
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Not Pirates
+  effect: >-
+    Janissaries may not use the Leader's Leadership and heroes cannot learn Pirate skills or become
+    warband leader.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 0-5 Janissaries / Special Rules / Not Pirates
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf
+  name_i18n:
+    es: No son Piratas
+  effect_i18n:
+    es: >-
+      Los Jenízaros no pueden usar el Liderazgo del Líder; los héroes no pueden aprender habilidades
+      de Pirata ni convertirse en líder de la banda.
+  applies_to:
+    profile_ids:
+    - janissaries
+- id: slaves--life-of-slavery
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.araby-smugglers-sar.slaves.life-of-slavery
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Life of Slavery
+  effect: >-
+    A Slave may gain experience, but if he rolls Lad's got Talent the leader executes him and
+    removes him from the roster; the rest of the group may reroll their advance.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 0-5 Slaves / Special Rules / Life of Slavery
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf
+  name_i18n:
+    es: Vida de Esclavitud
+  effect_i18n:
+    es: >-
+      Un Esclavo puede ganar experiencia, pero si obtiene Chaval con Talento el líder lo ejecuta y
+      lo elimina del roster; el resto del grupo puede repetir su mejora.
+  applies_to:
+    profile_ids:
+    - slaves

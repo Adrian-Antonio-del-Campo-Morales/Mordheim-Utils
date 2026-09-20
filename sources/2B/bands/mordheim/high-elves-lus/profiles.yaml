@@ -1,0 +1,81 @@
+schema_version: 2
+band_id: high-elves-lus
+profiles:
+- id: loremaster
+  name: Loremaster
+  type: hero
+  cost: 80
+  experience: 20
+  characteristics: {M: 5, WS: 4, BS: 4, S: 3, T: 3, W: 1, I: 6, A: 1, Ld: 9}
+  equipment_lists: [hero-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions:
+  - Bound by the traditions of the Tower of Hoeth, he may only use a sword, dagger, or Mage Staff
+    in battle.
+  skill_access: [combat, academic, special]
+  source: {manual: Broheim, printed_page: 4, section: 1 Loremaster, url: 'https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf'}
+  source_path: [heroes, 1 Loremaster]
+  name_i18n: {es: Maestro del Saber}
+  rule_ids: [loremaster--leader, loremaster--wizard]
+  combat_traits: {}
+- id: sword-wardens
+  name: Sword Wardens
+  type: hero
+  cost: 50
+  experience: 11
+  characteristics: {M: 5, WS: 5, BS: 4, S: 3, T: 3, W: 1, I: 6, A: 1, Ld: 8}
+  equipment_lists: [hero-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions:
+  - Honorable warriors; they may never use missile weapons of any sort.
+  skill_access: [combat, shooting, academic, strength, speed]
+  source: {manual: Broheim, printed_page: 4, section: 0-2 Sword Wardens, url: 'https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf'}
+  source_path: [heroes, 0-2 Sword Wardens]
+  name_i18n: {es: Guardianes de la Espada}
+  rule_ids: [sword-wardens--sword-master-protege]
+  combat_traits: {}
+- id: rangers
+  name: Rangers
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics: {M: 5, WS: 4, BS: 4, S: 3, T: 3, W: 1, I: 6, A: 1, Ld: 8}
+  equipment_lists: [cadets-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: [combat, shooting, academic]
+  source: {manual: Broheim, printed_page: 4, section: 0-2 Rangers, url: 'https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf'}
+  source_path: [heroes, 0-2 Rangers]
+  name_i18n: {es: Exploradores}
+  rule_ids: [rangers--seeker]
+  combat_traits: {}
+- id: seaguard
+  name: Seaguard
+  type: henchman
+  cost: 35
+  experience: 0
+  characteristics: {M: 5, WS: 4, BS: 4, S: 3, T: 3, W: 1, I: 6, A: 1, Ld: 8}
+  equipment_lists: [hero-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 5, section: Seaguard, url: 'https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf'}
+  source_path: [henchmen, Seaguard]
+  name_i18n: {es: Guardia del Mar}
+  rule_ids: []
+  combat_traits: {}
+- id: cadets
+  name: Cadets
+  type: henchman
+  cost: 30
+  experience: 0
+  characteristics: {M: 5, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 5, A: 1, Ld: 8}
+  equipment_lists: [cadets-equipment-list]
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source: {manual: Broheim, printed_page: 5, section: 0-5 Cadets, url: 'https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf'}
+  source_path: [henchmen, 0-5 Cadets]
+  name_i18n: {es: Cadetes}
+  rule_ids: []
+  combat_traits: {}

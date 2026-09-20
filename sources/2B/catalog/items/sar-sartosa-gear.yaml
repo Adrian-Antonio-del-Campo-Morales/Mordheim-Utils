@@ -1,0 +1,282 @@
+schema_version: 2
+ruleset: mordheim
+items:
+- id: booma_pistol
+  kind: ranged-weapon
+  name: Booma Pistol
+  name_i18n:
+    es: Pistola Booma
+  effect: >-
+    Maximum range: special; Strength: 5; special rules: volatile, prepare shot, hand-to-hand,
+    varying range, never superior. Volatile: when firing the Booma Pistol in hand to hand combat it
+    suffers a Blackpowder Misfire on a natural roll of 1; when firing in the shooting phase it
+    misfires on a roll of "Misfire" on the Artillery Dice; if a Booma Pistol explodes it deals a S5
+    attack to the firer instead of Strength 4. Prepare shot: a pistol takes a whole turn to reload
+    so you may only fire every other turn (a brace may fire every turn). Hand-to-hand: a model
+    armed with a pistol and another close combat weapon gains +1 Attack resolved at Strength 5,
+    usable once per combat. Varying range: the range of the weapon is randomly determined each
+    shot by an artillery dice roll. Never superior: Booma Pistols are barely able to handle the
+    crudest gunpowder; it may never use Superior Gunpowder (Refined Gunpowder is allowed). Booma
+    Tweaker: during any game that includes your Enjuneer, any time you roll for the range of a
+    Booma Pistol and do NOT roll a Misfire result you may re-roll the result once. 20 gc (40 for a
+    brace), common, greenskins only (Enjuneer only in the Enjuneer list).
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Orc Pirates & Savage Orcs special equipment / Booma Pistol
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  - manual: broheim.net
+    printed_page: 2
+    section: Orc Pirates equipment list / Booma Pistol
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  combat_status: out_of_scope
+- id: cathayan_plate_armour
+  kind: armour
+  name: Cathayan Plate Armour
+  name_i18n:
+    es: Coraza Catajana
+  effect: >-
+    The Cathayan blacksmiths forge these heavy armours for the noble knights that protect the
+    farmsteads; especially among the Palace Guard of the Cathayan Emperor the plate armour is very
+    common. The armour covers not only its wearer's torso but also his upper arms and parts of his
+    legs. Save: a warrior wearing Cathayan plate armour has a basic D6 saving throw of 4+.
+    Movement: a warrior equipped with both plate armour and a shield suffers a -1 Movement penalty.
+    120 gold crowns, Rare 11.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Pirates of the Cathayan Sea special equipment / Cathayan Plate Armor
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  rarity: Rare 11
+  combat_status: out_of_scope
+- id: katana
+  kind: close-combat-weapon
+  name: Katana
+  name_i18n:
+    es: Katana
+  effect: >-
+    Katanas are great-swords that are usually used by Cathayan Soldiers and Ronins. Range: Close
+    Combat; Strength: as user +1; special rules: two-handed, parry. Two-handed: a model armed with
+    a katana may not use a shield, buckler or additional weapon in close combat; however it gets an
+    additional +1 armour save bonus against ranged attacks if it carries a shield. Parry: katanas,
+    despite their great size, can be used for parrying like a sword — when his opponent rolls to
+    hit, the model armed with a katana may roll a D6; if the score is greater than the highest to
+    hit score of his opponent the blow is parried and discarded; a model may not parry attacks made
+    with double or more its own Strength. 20 gold crowns, Rare 10 (Heroes only).
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Pirates of the Cathayan Sea special equipment / Katana
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  rarity: Rare 10
+  combat_status: out_of_scope
+- id: dueling_pistol
+  kind: ranged-weapon
+  name: Dueling Pistol
+  name_i18n:
+    es: Pistola de Duelo
+  effect: >-
+    Range 10", Strength 4, accuracy: built for accuracy as a skilled duellist is able to hit a
+    coin from twenty paces; prepare shot; hand-to-hand. Bretonnian special rule: when shooting with
+    Pistols and Dueling Pistols a Bretonnian hero treats the initial 6"/10" respectively as Short
+    range (with Eagle Eye the additional 6" counts as Long range); at warband creation Bretonnians
+    may purchase dueling pistols for 25 gc each (50 for a brace). NOTE: the active KB already
+    contains the identical core-rulebook weapon as `duelling_pistol` — at promotion, re-point band
+    lists to the KB id and keep this entry's source refs there instead of creating a duplicate.
+    30 gc (60 for a brace); 25 gc for Bretonnians.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Human Pirates equipment list / Dueling Pistol
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  - manual: broheim.net
+    printed_page: 2
+    section: Ghost Pirates equipment list / Dueling Pistol
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  - manual: broheim.net
+    printed_page: 2
+    section: Pirates of the Cathayan Sea equipment list / Dueling Pistol
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  - manual: broheim.net
+    printed_page: 3
+    section: Slayer Pirates equipment list / Dueling Pistol
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Slayer%20Pirates.pdf
+  - manual: broheim.net
+    printed_page: 3
+    section: Wasteland Privateers equipment list / Dueling Pistol
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Wasteland%20Privateers.pdf
+  combat_status: out_of_scope
+- id: dwarven_pistol
+  kind: ranged-weapon
+  name: Dwarven Pistol
+  name_i18n:
+    es: Pistola Enana
+  effect: >-
+    Masterwork dwarf-crafted pistol of the Slayer Pirates lists (30 gc / 60 for a brace). No
+    separate special-rules paragraph is printed in the source beyond the list entry; treat as a
+    pistol (prepare shot, hand-to-hand) unless the review pass finds otherwise.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Slayer Pirates equipment list / Dwarven Pistol
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Slayer%20Pirates.pdf
+  combat_status: out_of_scope
+- id: double_barreled_blunderbuss
+  kind: ranged-weapon
+  name: Double-barreled Blunderbuss
+  name_i18n:
+    es: Tronera de Doble Cañón
+  effect: >-
+    Heroes only. Twin-barrelled blunderbuss of the Slayer Pirates; no separate special-rules
+    paragraph is printed beyond the list entry (the standard blunderbuss rules of the Mordheim
+    rulebook apply, with two shots per volley instead of one). 60 gc.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Slayer Pirates equipment list / Double-barreled Blunderbuss
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Slayer%20Pirates.pdf
+  combat_status: out_of_scope
+- id: hellblade
+  kind: close-combat-weapon
+  name: Hellblade
+  name_i18n:
+    es: Hoja Infernal
+  effect: >-
+    A rare blade charged with the power of Khorne himself. On land it is rare to see them out of
+    the hands of a Bloodletter, but on the high seas the stability of Demons ebbs and flows with
+    the tide; Khorne instead sends his signature weapons in the hands of worthy pirates, so they
+    may paint the seas red. Range: Close Combat; Strength: as user +1; special rules: soulseeking,
+    two-handed, deadly, magical. Soulseeking: all attacks made with a Hellblade are at +1 to hit —
+    this does not work on Undead or Demon models. Two-handed: a model armed with a Hellblade may
+    not use a shield, buckler or additional weapon in close combat (a shield still gives +1 armour
+    save against shooting). Deadly: a Hellblade causes critical hits on rolls of 5 or 6 — this rule
+    does not apply if the warrior requires 5s or higher to wound. Magical: all attacks count as
+    magical; a Hellblade cannot be made of Gromril, Ithilmar or similar mortal metals. 35 gc, Rare
+    8, Khorne warbands only (Captain only in the Pirate equipment list).
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Khorne Raiders special equipment / Hellblade
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Khorne%20Raiders.pdf
+  rarity: Rare 8
+  combat_status: out_of_scope
+- id: harpoon
+  kind: close-combat-weapon
+  name: Harpoon (Javelin)
+  name_i18n:
+    es: Arpón (Jabalina)
+  effect: >-
+    Whaling harpoon usable as a thrown javelin; listed as "Harpoon (Javelin)" in the Khorne
+    Raiders and Slayer Pirates missile weapons sections. Thrown weapon rules apply. 5 gc.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Khorne Raiders Missile Weapons / Harpoon (Javelin)
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Khorne%20Raiders.pdf
+  - manual: broheim.net
+    printed_page: 2
+    section: Slayer Pirates Missile Weapons / Harpoon (Javelin)
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Slayer%20Pirates.pdf
+  combat_status: out_of_scope
+- id: cursed_pistol
+  kind: ranged-weapon
+  name: Cursed Pistol
+  name_i18n:
+    es: Pistola Maldita
+  effect: >-
+    A pistol that has been dragged into the depths of the ocean, clasped tight in the death grip of
+    its former master. It's not very reliable, but never seems to run out of shot or powder; the
+    black metal is always chilly to the touch, even on the hottest of days. Range 6", Strength 4,
+    special rules: prepare shot, save modifier, hand-to-hand, cursed aim, inhuman. Save modifier: a
+    model wounded must take its armour save with a -2 modifier. Hand-to-hand: a model armed with a
+    cursed pistol and another close combat weapon gains +1 Attack resolved at Strength 4 with a -2
+    save modifier, once per combat; a brace fights with 2 Attacks in the first turn, requiring
+    natural 6s to hit but may be parried by a warrior with Cutlass Master or Master of Blades.
+    Cursed aim: the gun will only hit targets on a natural roll of 6 to hit, but receives no
+    positive or negative modifiers from any source, including cover, range, moving or ballistic
+    skill; it will never misfire, and water and rain has no penalty on the gunpowder; it may only
+    fire at non-Hiding models that it can see. Inhuman: the inner workings of the gun are
+    supernatural — it may not use Fine Powder, Superior Gunpowder, Silver Bullets or any other type
+    of enhancer, and no living model may ever fire it. 5 gc (10 for a brace), common (Ghosts only
+    in the Ghost equipment list).
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Ghost Pirates special equipment / Cursed Pistol
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  combat_status: out_of_scope
+- id: swivel_gun_ball_shot
+  kind: ranged-weapon
+  name: Swivel Gun — Ball Shot
+  name_i18n:
+    es: Cañón Giratorio — Bala
+  effect: >-
+    Ammunition for the Swivel Gun (Town Crier 'Pirate Warband' by Tim Huckelbery — the Swivel Gun
+    itself and its firing rules are defined there and are not reprinted in these warband lists).
+    Ball shot is the standard heavy roundshot load. One per warband; Swivel Gun 65 gc (Rare 8;
+    non-Sartosans pay an extra 2D6 gc). 5 gc per shot.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Wasteland Privateers / Swivel Gun Ammo / Ball Shot
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Wasteland%20Privateers.pdf
+  - manual: broheim.net
+    printed_page: 3
+    section: Pirates of the Cathayan Sea / Swivel Gun Ammo / Ball Shot
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  combat_status: out_of_scope
+- id: swivel_gun_chain_shot
+  kind: ranged-weapon
+  name: Swivel Gun — Chain Shot
+  name_i18n:
+    es: Cañón Giratorio — Bala en Cadena
+  effect: >-
+    Ammunition for the Swivel Gun (Town Crier 'Pirate Warband' — firing rules not reprinted in the
+    warband lists). Linked pair of balls intended to foul rigging and limbs. 2 gc per shot.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Wasteland Privateers / Swivel Gun Ammo / Chain Shot
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Wasteland%20Privateers.pdf
+  - manual: broheim.net
+    printed_page: 3
+    section: Pirates of the Cathayan Sea / Swivel Gun Ammo / Chain Shot
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  combat_status: out_of_scope
+- id: swivel_gun_grape_shot
+  kind: ranged-weapon
+  name: Swivel Gun — Grape Shot
+  name_i18n:
+    es: Cañón Giratorio — Metralla
+  effect: >-
+    Ammunition for the Swivel Gun (Town Crier 'Pirate Warband' — firing rules not reprinted in the
+    warband lists). Canister of musket balls for anti-crew work. 2 gc per shot.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Wasteland Privateers / Swivel Gun Ammo / Grape Shot
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Wasteland%20Privateers.pdf
+  - manual: broheim.net
+    printed_page: 3
+    section: Pirates of the Cathayan Sea / Swivel Gun Ammo / Grape Shot
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  combat_status: out_of_scope
+- id: throwing_axe_sar
+  kind: ranged-weapon
+  name: Throwing Axes
+  name_i18n:
+    es: Hachas de Lanzamiento
+  effect: >-
+    Thrown hand-axes as listed in the Khorne Raiders missile weapons (also in the Slayer Pirates
+    list as Throwing Axe). NOTE: the active KB already contains `throwing_axe` — at promotion
+    re-point band lists to the KB id rather than keeping this variant. 15 gc.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Khorne Raiders Missile Weapons / Throwing Axes
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Khorne%20Raiders.pdf
+  - manual: broheim.net
+    printed_page: 2
+    section: Slayer Pirates Missile Weapons / Throwing Axe
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Slayer%20Pirates.pdf
+  combat_status: out_of_scope

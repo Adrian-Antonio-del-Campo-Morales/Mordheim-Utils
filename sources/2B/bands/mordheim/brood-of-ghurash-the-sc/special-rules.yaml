@@ -1,0 +1,429 @@
+schema_version: 2
+band_id: brood-of-ghurash-the-sc
+rules:
+- id: band--fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.brood-of-ghurash-the-sc.band.fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Fear
+  effect: All Heroes cause fear.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Fear
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
+  name_i18n:
+    es: Miedo
+  effect_i18n:
+    es: Todos los héroes causan miedo.
+  applies_to:
+    band: true
+- id: band--large
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.brood-of-ghurash-the-sc.band.large
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Large
+  effect: All Heroes are large targets.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Large
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
+  name_i18n:
+    es: Grandes
+  effect_i18n:
+    es: Todos los héroes son objetivos grandes.
+  applies_to:
+    band: true
+- id: band--slow-witted
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.brood-of-ghurash-the-sc.band.slow-witted
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Slow Witted
+  effect: Brood members only gain half the experience normal models would get.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Slow witted
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
+  name_i18n:
+    es: Torpes
+  effect_i18n:
+    es: >-
+      Los miembros de la Cría solo ganan la mitad de la experiencia que obtendrían los modelos
+      normales.
+  applies_to:
+    band: true
+- id: band--always-hungry
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.brood-of-ghurash-the-sc.band.always-hungry
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Always Hungry
+  effect: Every Hero counts as two models when selling moonstones.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Always hungry
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
+  name_i18n:
+    es: Siempre Hambrientos
+  effect_i18n:
+    es: Cada héroe cuenta como dos modelos al vender piedras lunares.
+  applies_to:
+    band: true
+- id: band--brood-mentality
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.brood-of-ghurash-the-sc.band.brood-mentality
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Brood Mentality
+  effect: >-
+    All Brood members suffer from stupidity, but trolls taking stupidity tests add 1 point to their
+    Leadership for every warband member within 6 inches. The family never uses any Hired Swords.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Brood Mentality
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
+  name_i18n:
+    es: Mentalidad de Cría
+  effect_i18n:
+    es: >-
+      Todos los miembros de la Cría sufren estupidez, pero los trolls que hagan chequeos de
+      estupidez suman 1 punto a su Liderazgo por cada miembro de la banda a 6 pulgadas. La familia
+      nunca contrata Espadas a Sueldo.
+  applies_to:
+    band: true
+- id: band--hoard
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.brood-of-ghurash-the-sc.band.hoard
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Hoard
+  effect: >-
+    These greedy fellows never sell any rare items, even if no Brood member is able to use them.
+    They may nonetheless exchange stored items for captured brood members, and they suffer -2 on any
+    rarity rolls due to their poor bargaining skills.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Hoard
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
+  name_i18n:
+    es: Tesoro
+  effect_i18n:
+    es: >-
+      Estos avaros nunca venden objetos raros, aunque ningún miembro de la Cría pueda usarlos. Sin
+      embargo, pueden intercambiar objetos almacenados por miembros de cría capturados, y sufren -2
+      en las tiradas de rareza debido a sus pobres habilidades de regateo.
+  applies_to:
+    band: true
+- id: band--regenerate
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.brood-of-ghurash-the-sc.band.regenerate
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Regenerate
+  effect: >-
+    When rolling for serious injuries after being taken out of action, treat any results of 16-35 as
+    full recovery; Henchmen survive on a 2+ if taken out of action during a game. If the last wound
+    was caused by fire, the Brood member cannot regenerate after the game.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Regenerate
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
+  name_i18n:
+    es: Regeneración
+  effect_i18n:
+    es: >-
+      Al tirar en la tabla de heridas graves tras quedar Fuera de combate, trata cualquier resultado
+      de 16-35 como recuperación total; los secuaces sobreviven con un 2+ si quedan Fuera de combate
+      durante la partida. Si la última herida fue causada por fuego, el miembro de la Cría no puede
+      regenerarse después de la partida.
+  applies_to:
+    band: true
+- id: band--aquatic
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.brood-of-ghurash-the-sc.band.aquatic
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Aquatic
+  effect: >-
+    Brood members may move through water terrain without penalty and count as being in cover whilst
+    they are in the water.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Aquatic
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
+  name_i18n:
+    es: Acuáticos
+  effect_i18n:
+    es: >-
+      Los miembros de la Cría pueden moverse por terreno de agua sin penalización y cuentan como en
+      cobertura mientras estén en el agua.
+  applies_to:
+    band: true
+- id: broodmother--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.brood-of-ghurash-the-sc.broodmother.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: Any warrior within 6 inches of the Broodmother may use her Leadership instead of his own.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 1 Broodmother / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6 pulgadas de la Madre de Cría puede usar su Liderazgo en lugar del
+      propio.
+  applies_to:
+    profile_ids:
+    - broodmother
+- id: broodmother--mother-knows-best
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.brood-of-ghurash-the-sc.broodmother.mother-knows-best
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Mother Knows Best
+  effect: When taking rout tests, this model may use the bonus of Brood Mentality.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Special skills / Mother knows best
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
+  name_i18n:
+    es: La Madre Sabe Mejor
+  effect_i18n:
+    es: Al realizar chequeos de huida, este modelo puede usar el bono de Mentalidad de Cría.
+  applies_to:
+    profile_ids:
+    - broodmother
+- id: newborns--nestlings
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.brood-of-ghurash-the-sc.newborns.nestlings
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Nestlings
+  effect: >-
+    If a Newborn is taken out of action by an enemy warrior in close combat, every Brood hero with
+    line of sight to the poor Newborn hates the causing model until the end of the game. Heroes must
+    always try to intercept charges at Newborns.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-2 Newborns / Special Rules / Nestlings
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
+  name_i18n:
+    es: Polluelos
+  effect_i18n:
+    es: >-
+      Si un Recién Nacido queda Fuera de combate por un guerrero enemigo en combate cuerpo a cuerpo,
+      todos los héroes de la Cría con línea de visión al pobre Recién Nacido odian al modelo
+      causante hasta el final de la partida. Los héroes siempre deben intentar interceptar cargas
+      contra los Recién Nacidos.
+  applies_to:
+    profile_ids:
+    - newborns
+- id: newborns--too-little
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.brood-of-ghurash-the-sc.newborns.too-little
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Too Little
+  effect: Newborns never become heroes; re-roll all results of 'that lad's got talent'.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-2 Newborns / Special Rules / Too little
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
+  name_i18n:
+    es: Demasiado Pequeños
+  effect_i18n:
+    es: >-
+      Los Recién Nacidos nunca se convierten en héroes; repite todos los resultados de 'el chaval
+      tiene talento'.
+  applies_to:
+    profile_ids:
+    - newborns
+- id: baneworms--mer-creature
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.brood-of-ghurash-the-sc.baneworms.mer-creature
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Mer-Creature
+  effect: >-
+    Baneworms live underwater but are able to wriggle on solid ground. See the Stygian Mutations for
+    further information.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-5 Baneworms / Special Rules / Mer-creature
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
+  name_i18n:
+    es: Criatura Marina
+  effect_i18n:
+    es: >-
+      Los Gusanos de Ruina viven bajo el agua, pero pueden serpear en tierra firme. Consulta las
+      Mutaciones Estigias para más información.
+  applies_to:
+    profile_ids:
+    - baneworms
+- id: baneworms--lurker
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.brood-of-ghurash-the-sc.baneworms.lurker
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Lurker
+  effect: >-
+    When charging while hidden in the previous turn, Baneworms may perform a "diving charge" even if
+    they don't charge from above.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-5 Baneworms / Special Rules / Lurker
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
+  name_i18n:
+    es: Acechador
+  effect_i18n:
+    es: >-
+      Al cargar habiendo estado oculto el turno anterior, los Gusanos de Ruina pueden realizar una
+      "carga en inmersión" aunque no carguen desde arriba.
+  applies_to:
+    profile_ids:
+    - baneworms
+- id: baneworms--animal
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.brood-of-ghurash-the-sc.baneworms.animal
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Animal
+  effect: >-
+    Baneworms gain no experience and may not climb. They do not benefit or suffer from any of the
+    Brood's special rules like Regenerate or Brood Mentality.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-5 Baneworms / Special Rules / Animal
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf
+  name_i18n:
+    es: Animal
+  effect_i18n:
+    es: >-
+      Los Gusanos de Ruina no ganan experiencia y no pueden trepar. No se benefician ni sufren
+      ninguna de las reglas especiales de la Cría, como Regeneración o Mentalidad de Cría.
+  applies_to:
+    profile_ids:
+    - baneworms

@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/catalog-rules-implemented-canonical-families.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/rules/implemented-canonical-families.yaml",
+  "description": "Tracker of the shared executable families and the band rules that belong to each one. It records which rule ids share a compiler, trait or mechanic binding; update it when bindings evolve.",
+  "type": "object",
+  "required": ["schema_version", "status", "note", "counts", "families"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "description": "This tracker kept version 1 when the other editorial documents moved to 2.",
+      "const": 1
+    },
+    "status": {
+      "description": "Editorial status of the tracker. Currently `executable`.",
+      "type": "string",
+      "minLength": 1
+    },
+    "note": {
+      "description": "What the tracker covers.",
+      "type": "string",
+      "minLength": 1
+    },
+    "counts": {
+      "description": "Size of the tracker, by family and by binding kind. It must agree with `families`.",
+      "type": "object",
+      "required": ["families", "rules", "kinds"],
+      "additionalProperties": false,
+      "properties": {
+        "families": { "type": "integer", "minimum": 0 },
+        "rules": { "type": "integer", "minimum": 0 },
+        "kinds": {
+          "type": "object",
+          "required": ["compiler", "mechanic", "trait"],
+          "additionalProperties": false,
+          "properties": {
+            "compiler": { "type": "integer", "minimum": 0 },
+            "mechanic": { "type": "integer", "minimum": 0 },
+            "trait": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "families": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/family" }
+    }
+  },
+  "$defs": {
+    "family": {
+      "type": "object",
+      "required": ["id", "kind", "implemented", "basis", "members"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "description": "Stable id of the shared binding (`compiler.*`, `mechanic.*` or `trait.*`).",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "kind": {
+          "description": "Binding kind shared by every member of the family.",
+          "enum": ["compiler", "mechanic", "trait"]
+        },
+        "implemented": {
+          "description": "Whether the family has an executable implementation.",
+          "enum": ["YES", "NO"]
+        },
+        "basis": {
+          "description": "Why the rules are considered equivalent: identical effect, equivalent effects, or a shared effect.",
+          "enum": ["unique-effect", "equivalent-effects", "shared-effect"]
+        },
+        "members": {
+          "description": "Band rules of the family, as `<band-id>/<rule-id>`.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]*/[a-z0-9][a-z0-9._-]*$"
+          }
+        }
+      }
+    }
+  }
+}

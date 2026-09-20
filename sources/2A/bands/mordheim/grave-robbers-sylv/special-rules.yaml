@@ -1,0 +1,393 @@
+schema_version: 2
+band_id: grave-robbers-sylv
+rules:
+- id: band--grave-goods
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.grave-robbers-sylv.band.grave-goods
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Exploration-phase income modification: campaign content, out of engine scope.
+  name: Grave Goods
+  effect: >-
+    Grave Robbers gain +1 Gold Crown for each enemy model taken Out of Action in the Exploration
+    Phase (once per battle).
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Rules / Grave Goods
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+  name_i18n:
+    es: Botín de Tumba
+  effect_i18n:
+    es: >-
+      Los Saqueadores de Tumbas ganan +1 Corona de Oro por cada miniatura enemiga dejada Fuera de
+      combate en la Fase de Exploración (una vez por batalla).
+  applies_to:
+    band: true
+- id: band--shady-reputation
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.grave-robbers-sylv.band.shady-reputation
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Hired-sword eligibility restriction: campaign content, out of engine scope.
+  name: Shady Reputation
+  effect: >-
+    Grave Robber warbands may not hire the following Hired Swords: Bounty Hunter, Roadwarden,
+    Law-Enforcer, Holy Man, or any Follower of Morr.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Rules / Shady Reputation
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+  name_i18n:
+    es: Reputación Sospechosa
+  effect_i18n:
+    es: >-
+      Las bandas de Saqueadores de Tumbas no pueden contratar las siguientes Espadas a Sueldo:
+      Cazarrecompensas, Alguacil, Guardia de la Ley, Hombre Santo, ni ningún Seguidor de Morr.
+  applies_to:
+    band: true
+- id: band--undead-foes
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.grave-robbers-sylv.band.undead-foes
+      scope: LATER
+      binding: null
+      reason: >-
+        Psychology subsystem (hatred): not covered by the current engine scope.
+  name: Undead Foes
+  effect: Grave Robbers hate Undead models.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Rules / Undead Foes
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+  name_i18n:
+    es: Enemigos No Muertos
+  effect_i18n:
+    es: Los Saqueadores de Tumbas odian a las miniaturas No Muertas.
+  applies_to:
+    band: true
+- id: junior-medic--sawbones
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.grave-robbers-sylv.junior-medic.sawbones
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Serious-injury re-roll: post-battle subsystem, out of engine scope.
+  name: Sawbones
+  effect: >-
+    You can re-roll the Serious Injury result for one friendly Hero. The second result stands. You
+    may not use this ability if the Junior Medic was taken Out of Action during the battle.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Heroes / 0-1 Junior Medic / Special Rules / Sawbones
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+  name_i18n:
+    es: practicante
+  effect_i18n:
+    es: >-
+      Puedes repetir el resultado de Herida Grave de un Héroe amigo. El segundo resultado se
+      mantiene. No puedes usar esta habilidad si el Médico Novel quedó Fuera de combate durante la
+      batalla.
+  applies_to:
+    profile_ids:
+    - junior-medic
+- id: band--special-skill-darkstalker
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.grave-robbers-sylv.special-skill.darkstalker
+      scope: LATER
+      binding: null
+      reason: >-
+        Psychology and hidden-model subsystems: not covered by the current engine scope.
+  name: Darkstalker
+  effect: >-
+    The warrior is accustomed to darkness and has almost cat-like sight. Ignores All Alone tests and
+    may double his Initiative when looking for Hidden models.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Skills / Darkstalker
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+  name_i18n:
+    es: Acechador de la Oscuridad
+  effect_i18n:
+    es: >-
+      El guerrero está acostumbrado a la oscuridad y tiene un vista casi felina. Ignora las tiradas
+      de Todo Solo y puede doblar su Iniciativa al buscar miniaturas Ocultas.
+  applies_to:
+    band: true
+  kind: warband_skill
+- id: band--special-skill-instinctual-violence
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.grave-robbers-sylv.special-skill.instinctual-violence
+      scope: LATER
+      binding: null
+      reason: >-
+        Psychology (fear) and strike-first binding: deferred to the close-combat milestone.
+  name: Instinctual Violence
+  effect: >-
+    Having experienced countless encounters with the Undead, this warrior is hardened to terror.
+    When charged by any Undead models, he does not have to take a Fear test. Additionally, he may
+    nominate one of his attacks to Strike First.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Skills / Instinctual Violence
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+  name_i18n:
+    es: Violencia Instintiva
+  effect_i18n:
+    es: >-
+      Tras contarles incontables encuentros con los No Muertos, este guerrero está curtido contra el
+      terror. Cuando es cargado por miniaturas No Muertas, no tiene que hacer una tirada de Miedo.
+      Además, puede designar uno de sus ataques para Golpear Primero.
+  applies_to:
+    band: true
+  kind: warband_skill
+- id: band--special-skill-de-animator
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.grave-robbers-sylv.special-skill.de-animator
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: interaction with the No Pain rule pending scope refinement.
+  name: De-animator
+  effect: >-
+    The warrior is adept at fighting animated corpses. He ignores the No Pain rule for Undead and
+    may stun them as normal.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Skills / De-animator
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+  name_i18n:
+    es: Desanimador
+  effect_i18n:
+    es: >-
+      El guerrero es adepto a luchar contra cadáveres animados. Ignora la regla Sin Dolor de los No
+      Muertos y puede aturdirlos con normalidad.
+  applies_to:
+    band: true
+  kind: warband_skill
+- id: band--special-skill-hardy-constitution
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+      reason: >-
+        Immunity to diseases and poisons maps directly onto the engine poison-immune trait.
+  name: Hardy Constitution
+  effect: >-
+    Veteran of many grave-robbing escapades, the warrior is completely immune to all diseases and
+    poisons.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Skills / Hardy Constitution
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+  name_i18n:
+    es: Constitución Recia
+  effect_i18n:
+    es: >-
+      Veterano de muchas escapadas saqueando tumbas, el guerrero es completamente inmune a todas las
+      enfermedades y venenos.
+  applies_to:
+    band: true
+  kind: warband_skill
+- id: band--special-skill-body-dealer
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.grave-robbers-sylv.special-skill.body-dealer
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Serious-injury-phase recovery mechanic: post-battle subsystem, out of engine scope.
+  name: Body Dealer
+  effect: >-
+    This warrior is skilled at salvaging the bodies of the dead for profit. On a 4+, you may recover
+    the body (and gear) of a friendly model slain in the Serious Injury phase. You may also attempt
+    to do the same for enemy models by comparing Initiative rolls between the Body Dealer and enemy
+    leader (or their most experienced model). On a tie, nothing is recovered; if the enemy wins,
+    your Body Dealer is captured.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Skills / Body Dealer
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+  name_i18n:
+    es: Negociante de Cadáveres
+  effect_i18n:
+    es: >-
+      Este guerrero es hábil recuperando los cuerpos de los muertos para sacar beneficio. Con un 4+,
+      puedes recuperar el cuerpo (y el equipo) de una miniatura amigo muerta en la fase de Heridas
+      Graves. También puedes intentarlo con miniaturas enemigas comparando tiradas de Iniciativa
+      entre el Negociante de Cadáveres y el líder enemigo (o su miniatura más experimentada). En
+      empate no se recupera nada; si gana el enemigo, tu Negociante de Cadáveres es capturado.
+  applies_to:
+    band: true
+  kind: warband_skill
+- id: band--special-equipment-hooded-lantern-rig
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.grave-robbers-sylv.item.hooded-lantern-rig
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Visibility/lighting mechanics: scenario-level content, out of engine scope.
+  name: Hooded Lantern and Rig
+  effect: >-
+    Cost: 15 + D6 gold crowns. Availability: Rare 9. Allowing a Grave Robber to do his work in
+    private and free-handed whilst provided a source of light. Concealed Light: Provides light like
+    a regular Lantern, but removes the visibility for enemy models. Free-hand: The Rig that the
+    Hooded Lantern attaches to allows the Graver free hands with which to ply his trade.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Equipment / Hooded Lantern and Rig
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+  name_i18n:
+    es: Farol con Capucha y Arnés
+  effect_i18n:
+    es: >-
+      Coste: 15 + D6 coronas de oro. Disponibilidad: Raro 9. Permite al Saqueador de Tumbas realizar
+      su trabajo en privado y con las manos libres mientras dispone de una fuente de luz. Luz
+      Oculta: proporciona luz como un Farol normal, pero elimina la visibilidad para las miniaturas
+      enemigas. Manos Libres: el Arnés al que se sujeta el Farol con Capucha deja al Saqueador las
+      manos libres para ejercer su oficio.
+  applies_to:
+    band: true
+- id: band--special-equipment-pry-bar
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.grave-robbers-sylv.item.pry-bar
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: parry binding pending engine weapon binding.
+  name: Pry Bar
+  effect: >-
+    Cost: 10 gold crowns. Availability: Grave Robbers only. Whilst acting as a club in every sense,
+    the pry bar allows the Graver to parry attacks. Range: Close Combat. Strength: As User. Special
+    Rules: Parry.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Equipment / Pry Bar
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+  name_i18n:
+    es: Palanqueta
+  effect_i18n:
+    es: >-
+      Coste: 10 coronas de oro. Disponibilidad: solo Saqueadores de Tumbas. Aunque actúa como un
+      garrote en todos los sentidos, la palanqueta permite al Saqueador parar ataques. Alcance:
+      combate cuerpo a cuerpo. Fuerza: la del usuario. Reglas especiales: Parada.
+  applies_to:
+    band: true
+- id: band--special-equipment-surgeons-journal
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.grave-robbers-sylv.item.surgeons-journal
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Serious-injury modification: post-battle subsystem, out of engine scope.
+  name: Surgeon's Journal
+  effect: >-
+    Cost: 80 + 4D6 gold crowns. Availability: Rare 11. Written by those who have cut into far too
+    many injured, the Journal provides the Medic with further insight. Skilled Hand: A Medic
+    equipped with the Journal may modify a single dice rolled for Serious Injury for one friendly
+    model by +/- 1 instead of using his Sawbones skill.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Equipment / Surgeon's Journal
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+  name_i18n:
+    es: Diario del Cirujano
+  effect_i18n:
+    es: >-
+      Coste: 80 + 4D6 coronas de oro. Disponibilidad: Raro 11. Escrito por quienes han abierto en
+      canal a demasiados heridos, el Diario proporciona al Médico una mayor perspicacia. Mano Hábil:
+      un Médico equipado con el Diario puede modificar un único dado lanzado para Herida Grave de
+      una miniatura amiga en +/- 1 en lugar de usar su habilidad practicante.
+  applies_to:
+    band: true
+- id: band--special-equipment-finger-pendant
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.grave-robbers-sylv.item.finger-pendant
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Magic-phase content: ward save vs magic is out of engine scope.
+  name: Finger Pendant
+  effect: >-
+    Cost: 15 gold crowns. Availability: Grave Robbers only. Death-Ward: Gives a one-time 5+ save vs.
+    Necromantic or Dark Arts magic.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Equipment / Finger Pendant
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+  name_i18n:
+    es: Colgante de Dedo
+  effect_i18n:
+    es: >-
+      Coste: 15 coronas de oro. Disponibilidad: solo Saqueadores de Tumbas. Contrahechizo: concede
+      una salvación de 5+ de un solo uso contra la magia Necromántica o de Artes Oscuras.
+  applies_to:
+    band: true

@@ -1,0 +1,776 @@
+schema_version: 2
+band_id: masters-of-horror-sylv
+rules:
+- id: band--hired-swords
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.band.hired-swords
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: hiring rules are campaign mechanics outside the duel scope.
+  name: Hired Swords
+  effect: Masters of Horror warbands may hire the same Hired Swords as an Undead warband.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Rules / Hired Swords
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Espadas a Sueldo
+  effect_i18n:
+    es: >-
+      Las bandas de Maestros del Horror pueden contratar las mismas Espadas a Sueldo que una banda
+      de No Muertos.
+  applies_to:
+    band: true
+- id: band--no-promotion
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.band.no-promotion
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Lads Got Talent promotion is a post-duel/campaign progression mechanic.
+  name: No Promotion
+  effect: Neither Zombies nor Flesh Constructs may become Heroes through Lads Got Talent.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Rules / No Promotion
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Sin Ascenso
+  effect_i18n:
+    es: >-
+      Ni los Zombis ni los Construidos de Carne pueden convertirse en Héroes mediante el talento de
+      los muchachos (Lads Got Talent).
+  applies_to:
+    band: true
+- id: band--wolfman-max-stats
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.band.wolfman-max-stats
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: characteristic-increase caps on advancement are outside the duel scope.
+  name: Wolfman max stats
+  effect: >-
+    The Wolfman's characteristics may never be increased beyond the following maximums: M 6, WS 4,
+    BS 3, S 5, T 4, W 3, I 7, A 4, Ld 8.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Rules / Wolfman max stats
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Máximos del Hombre Lobo
+  effect_i18n:
+    es: >-
+      Las características del Hombre Lobo nunca pueden aumentarse más allá de los siguientes
+      máximos: M 6, HA 4, HP 3, F 5, R 4, H 3, I 7, A 4, L 8.
+  applies_to:
+    band: true
+- id: mad-scientist--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.mad-scientist.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
+        psychology/rout mechanic outside the duel scope.
+  name: Leader
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 1 Mad Scientist / Special Rules / Leader
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Líder
+  applies_to:
+    profile_ids:
+    - mad-scientist
+  rule_ref: shared-rule.leader
+- id: mad-scientist--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.mad-scientist.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (Fear, etc.) is not covered by the current engine scope.
+  name: Immune to Psychology
+  effect: >-
+    Mad Scientists are not affected by psychology (such as fear) due to the shattered state of their
+    minds.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 1 Mad Scientist / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Inmune a la Psicología
+  effect_i18n:
+    es: >-
+      Los Científicos Locos no se ven afectados por la psicología (como el miedo) debido al estado
+      destrozado de sus mentes.
+  applies_to:
+    profile_ids:
+    - mad-scientist
+- id: thrall--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.thrall.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Cause Fear
+  effect: Vampires are terrifying Undead creatures and therefore cause Fear.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-1 Thrall / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Causa Miedo
+  effect_i18n:
+    es: Los vampiros son criaturas no muertas aterradoras y por tanto causan Miedo.
+  applies_to:
+    profile_ids:
+    - thrall
+- id: thrall--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.thrall.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (Fear, never leaving combat) is not covered by the current
+        engine scope.
+  name: Immune to Psychology
+  effect: Vampires are not affected by psychology (such as fear) and never leave combat.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-1 Thrall / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Inmune a la Psicología
+  effect_i18n:
+    es: >-
+      Los vampiros no se ven afectados por la psicología (como el miedo) y nunca abandonan el
+      combate.
+  applies_to:
+    profile_ids:
+    - thrall
+- id: thrall--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Vampires are not affected by any poison.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-1 Thrall / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Inmune al Veneno
+  effect_i18n:
+    es: Los vampiros no se ven afectados por ningún veneno.
+  applies_to:
+    profile_ids:
+    - thrall
+- id: thrall--no-pain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.thrall.no-pain
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: injury-table result conversion is a post-duel/campaign resolution
+        mechanic.
+  name: No Pain
+  effect: Vampires treat a Stunned result on the Injury chart as Knocked Down.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-1 Thrall / Special Rules / No Pain
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: Los vampiros tratan un resultado Aturdido de la tabla de heridas como Derribado.
+  applies_to:
+    profile_ids:
+    - thrall
+- id: zombies--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.zombies.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Cause Fear
+  effect: Zombies are terrifying Undead creatures and therefore cause Fear.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Zombies / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Causa Miedo
+  effect_i18n:
+    es: Los zombis son criaturas no muertas aterradoras y por tanto causan Miedo.
+  applies_to:
+    profile_ids:
+    - zombies
+- id: zombies--may-not-run
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.zombies.may-not-run
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: movement/restrictions on running are outside the current engine scope.
+  name: May not Run
+  effect: Zombies are slow Undead creatures and may not run (but may charge normally).
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Zombies / Special Rules / May not Run
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: No Puede Correr
+  effect_i18n:
+    es: >-
+      Los zombis son criaturas no muertas lentas y no pueden correr (pero pueden cargar con
+      normalidad).
+  applies_to:
+    profile_ids:
+    - zombies
+- id: zombies--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.zombies.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology is not covered by the current engine scope.
+  name: Immune to Psychology
+  effect: Zombies are not affected by psychology.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Zombies / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Inmune a la Psicología
+  effect_i18n:
+    es: Los zombis no se ven afectados por la psicología.
+  applies_to:
+    profile_ids:
+    - zombies
+- id: zombies--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Zombies are immune to poisons.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Zombies / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Inmune al Veneno
+  effect_i18n:
+    es: Los zombis son inmunes a los venenos.
+  applies_to:
+    profile_ids:
+    - zombies
+- id: zombies--no-pain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.zombies.no-pain
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: injury-table result conversion is a post-duel/campaign resolution
+        mechanic.
+  name: No Pain
+  effect: Zombies treat Stunned results on the Injury table as Knocked Down.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Zombies / Special Rules / No Pain
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: Los zombis tratan los resultados Aturdido de la tabla de heridas como Derribado.
+  applies_to:
+    profile_ids:
+    - zombies
+- id: zombies--no-brain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.zombies.no-brain
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: experience gain is a post-duel/campaign progression mechanic.
+  name: No Brain
+  effect: Zombies do not gain experience.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Zombies / Special Rules / No Brain
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Sin Cerebro
+  effect_i18n:
+    es: Los zombis no ganan experiencia.
+  applies_to:
+    profile_ids:
+    - zombies
+- id: flesh-construct--cause-fear
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.flesh-construct.cause-fear
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Cause Fear
+  effect: Flesh Constructs are terrifying Undead creatures and therefore cause Fear.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-1 Flesh Construct / Special Rules / Cause Fear
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Causa Miedo
+  effect_i18n:
+    es: Los Construidos de Carne son criaturas no muertas aterradoras y por tanto causan Miedo.
+  applies_to:
+    profile_ids:
+    - flesh-construct
+- id: flesh-construct--immune-to-psychology
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.flesh-construct.immune-to-psychology
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology is not covered by the current engine scope.
+  name: Immune to Psychology
+  effect: Flesh Constructs are not affected by psychology.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-1 Flesh Construct / Special Rules / Immune to Psychology
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Inmune a la Psicología
+  effect_i18n:
+    es: Los Construidos de Carne no se ven afectados por la psicología.
+  applies_to:
+    profile_ids:
+    - flesh-construct
+- id: flesh-construct--immune-to-poison
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+  name: Immune to Poison
+  effect: Flesh Constructs are immune to poisons.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-1 Flesh Construct / Special Rules / Immune to Poison
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Inmune al Veneno
+  effect_i18n:
+    es: Los Construidos de Carne son inmunes a los venenos.
+  applies_to:
+    profile_ids:
+    - flesh-construct
+- id: flesh-construct--no-pain
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.flesh-construct.no-pain
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: injury-table result conversion is a post-duel/campaign resolution
+        mechanic.
+  name: No Pain
+  effect: Flesh Constructs treat Stunned results as Knocked Down.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-1 Flesh Construct / Special Rules / No Pain
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Sin Dolor
+  effect_i18n:
+    es: Los Construidos de Carne tratan los resultados Aturdido como Derribado.
+  applies_to:
+    profile_ids:
+    - flesh-construct
+- id: flesh-construct--a-bit-unhinged
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.flesh-construct.a-bit-unhinged
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: experience gain with a Leadership gate is a post-duel/ campaign
+        progression mechanic.
+  name: A Bit Unhinged
+  effect: >-
+    Flesh Constructs do not gain experience normally. They must make a successful Leadership test in
+    order to gain the experience for surviving the game; dead brains can only be expected to learn
+    so much, after all.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-1 Flesh Construct / Special Rules / A Bit Unhinged
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Un Poco Desquiciado
+  effect_i18n:
+    es: >-
+      Los Construidos de Carne no ganan experiencia con normalidad. Deben superar una prueba de
+      Liderazgo para ganarse la experiencia por sobrevivir a la partida; al fin y al cabo, a los
+      cerebros muertos solo se les puede exigir que aprendan cierto.
+  applies_to:
+    profile_ids:
+    - flesh-construct
+- id: flesh-construct--its-only-a-flesh-wound
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.flesh-construct.its-only-a-flesh-wound
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: post-battle injury rolls and repair costs are post-duel/campaign
+        resolution mechanics.
+  name: Its only a flesh wound
+  effect: >-
+    When a Flesh Construct is taken OOA, roll on the Henchmen Injury table as normal. On a roll of
+    1-2, the player is able to repair the damage to the golem for D6x5gc (to represent the time and
+    effort it takes to obtain new parts). If the warband is unable to pay for the extra part
+    immediately, the Construct is not able to participate in the next battle. It will remain on the
+    roster until abandoned or repaired.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-1 Flesh Construct / Special Rules / Its only a flesh wound
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Solo es un rasguño
+  effect_i18n:
+    es: >-
+      Cuando un Construido de Carne queda Fuera de Combate, tira en la tabla de heridas de los
+      secuaces con normalidad. Con un resultado de 1-2, el jugador puede reparar los daños del gólem
+      por D6x5 coronas (para representar el tiempo y esfuerzo que cuesta conseguir las piezas
+      nuevas). Si la banda no puede pagar la pieza adicional inmediatamente, el Construido no podrá
+      participar en la próxima batalla. Permanecerá en la plantilla hasta que sea abandonado o
+      reparado.
+  applies_to:
+    profile_ids:
+    - flesh-construct
+- id: flesh-construct--cannot-run
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.flesh-construct.cannot-run
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: movement/restrictions on running are outside the current engine scope.
+  name: Cannot Run
+  effect: >-
+    After being pieced together from various stiffs, ones legs are often, well, stiff. Constructs
+    may still charge normally.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-1 Flesh Construct / Special Rules / Cannot Run
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: No Puede Correr
+  effect_i18n:
+    es: >-
+      Después de ser ensamblado con varios cadáveres, las piernas suelen estar, bueno, rígidas. Los
+      Construidos pueden seguir cargando con normalidad.
+  applies_to:
+    profile_ids:
+    - flesh-construct
+- id: the-bitten--transform
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.the-bitten.transform
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: per-turn transformation with Frenzy/Sprint grants and equipment dropping
+        is outside the current engine scope.
+  name: Transform
+  effect: >-
+    Roll a D6 each turn and consult the following. Once transformed, the Bitten cast off all
+    equipment (save for a dagger) and suffer no penalties for fighting unarmed. 1: Madness: your
+    Bitten suffers from Stupidity this turn. If Transformed, they revert to human form. 2 to 5: Act
+    as normal 6: Transformed: your Bitten gains Frenzy and Sprint. This lasts until a 1 is rolled.
+    Transformed do not roll when in combat.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: 0-3 The Bitten / Special Rules / Transform
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Transformación
+  effect_i18n:
+    es: >-
+      Tira un D6 en cada turno y consulta lo siguiente. Una vez transformados, los Mordidos se
+      deshacen de todo su equipo (salvo una daga) y no sufren penalizaciones por luchar desarmados.
+      1: Locura: tu Mordido sufre Estupidez este turno. Si estaba Transformado, vuelve a su forma
+      humana. 2 a 5: Actúa con normalidad. 6: Transformado: tu Mordido gana Frenesí y Esprintar.
+      Esto dura hasta que se saque un 1. Los Transformados no tiran cuando están en combate.
+  applies_to:
+    profile_ids:
+    - the-bitten
+- id: mad-scientist--surgeon
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.special.surgeon
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: post-injury rerolls are post-duel/campaign resolution mechanics.
+  name: Surgeon
+  effect: >-
+    The Mad Scientist can attempt to operate upon an injured minion. Reroll one dice of a single
+    injury roll. You must accept the second roll.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Skills / Surgeon
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Cirujano
+  effect_i18n:
+    es: >-
+      El Científico Loco puede intentar operar a un secuaz herido. Repite un dado de una única
+      tirada de herida. Debes aceptar la segunda tirada.
+  applies_to:
+    profile_ids:
+    - mad-scientist
+- id: mad-scientist--alchemist
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.special.alchemist
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: game-start random potion table with out-of-combat addiction effects is
+        outside the current engine scope.
+  name: Alchemist
+  effect: >-
+    The Mad Scientist fancies himself an alchemist and brews all sorts of concoctions and potions to
+    guzzle down prior to battle. Roll a D6 at game-start and consult the following table. 1: Potion
+    of Resilience — Add +1 to Toughness for duration of game. 2: Brew of Strength — Add +1 to
+    Strength for duration of game. 3-4: Quicksilver — Add +1 to Movement for duration of game. 5:
+    Backley's Brew — Remove -1 from both Strength and Initiative until a Toughness test is passed.
+    6: Aberrantius Vigortia — Adds +1 to both Strength and Toughness. Highly addictive. Roll D6
+    after battle. On 5+, Scientist becomes addicted and will not engage in any other activity during
+    a game until he has had his Aberrantius Vigortia potion. He will stand and brew potions until a
+    6 is rolled.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Skills / Alchemist
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Alquimista
+  effect_i18n:
+    es: >-
+      El Científico Loco se las da de alquimista y destila todo tipo de brebajes y pócimas que se
+      bebe antes de la batalla. Tira un D6 al comienzo de la partida y consulta la siguiente tabla.
+      1: Poción de Resistencia — Añade +1 a Resistencia durante la partida. 2: Brebaje de Fuerza —
+      Añade +1 a Fuerza durante la partida. 3-4: Azogue — Añade +1 a Movimiento durante la partida.
+      5: Brebaje de Backley — Elimina el -1 de Fuerza e Iniciativa hasta superar una prueba de
+      Resistencia. 6: Aberrantius Vigortia — Añade +1 a Fuerza y Resistencia. Muy adictivo. Tira un
+      D6 después de la batalla. Con 5+, el Científico se vuelve adicto y no realizará ninguna otra
+      actividad durante una partida hasta que haya tomado su poción de Aberrantius Vigortia. Se
+      quedará de pie preparando pócimas hasta sacar un 6.
+  applies_to:
+    profile_ids:
+    - mad-scientist
+- id: mad-scientist--apt-revitalist
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.special.apt-revitalist
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: experience gain rules are post-duel/campaign progression mechanics.
+  name: Apt Revitalist
+  effect: >-
+    The Mad Scientist has gone above and beyond the understanding of most men, and has gained the
+    ability to recreate life from death. Simply animating meat-puppets who parody life has bored
+    him; he has moved on to reanimating dead cells. Any zombies within the warband now gain exp as
+    normal human henchmen.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Skills / Apt Revitalist
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Revitalista Aptos
+  effect_i18n:
+    es: >-
+      El Científico Loco ha ido mucho más allá del entendimiento de la mayoría de los hombres y ha
+      adquirido la capacidad de devolver la vida a los muertos. Limitarse a animar títeres de carne
+      que parodian la vida le ha aburrido; ha pasado a reanimar células muertas. Cualquier zombi de
+      la banda gana experiencia como los secuaces humanos normales.
+  applies_to:
+    profile_ids:
+    - mad-scientist
+- id: mad-scientist--lunatic
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.masters-of-horror-sylv.special.lunatic
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology (Fear) and Leadership-test rerolls are not covered by the
+        current engine scope.
+  name: Lunatic
+  effect: >-
+    Giving in to ones insanity is quite rewarding. The model causes Fear and may reroll any
+    Leadership Test.
+  source:
+    manual: mordheimer.net (Sylvania Supplement)
+    printed_page: 0
+    section: Special Skills / Lunatic
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+  name_i18n:
+    es: Lunático
+  effect_i18n:
+    es: >-
+      Ceder ante la propia locura tiene su recompensa. El modelo causa Miedo y puede repetir
+      cualquier prueba de Liderazgo.
+  applies_to:
+    profile_ids:
+    - mad-scientist
+    - thrall
+    - wolfman
+    - hunchbacks

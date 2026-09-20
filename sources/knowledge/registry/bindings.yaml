@@ -1,0 +1,55 @@
+schema_version: 1
+status: registry
+purpose: >-
+  Binding vocabulary introduced by staged warbands (the Grade 2a and 2b staging trees) that
+  the active KB does not carry yet. Every binding id used by a staged rule must be declared here until
+  promotion, when the id enters the KB through the promoted band and this entry is retired.
+  Gate: tests/knowledge/test_binding_registry.py.
+method: >-
+  A staging binding is only registered after the KB's binding vocabulary has been searched
+  for an equivalent mechanic (sources/knowledge/bands/*/*/special-rules.yaml, plus
+  catalog/mechanics/*). Registration means: the mechanic is genuinely new, its EN definition
+  and ES translation are recorded here, and kb_equivalents_checked names what was compared
+  and why it is not the same mechanic.
+bindings:
+- id: trait.spectral-touch
+  kind: trait
+  status: pending-promotion
+  definition: >-
+    If the hit roll for an attack made by a Spirit Host is 6, the spirit's frightful touch
+    stills the victim's beating heart, immediately inflicting 1 additional wound. Roll to
+    wound for the hit as normal.
+  definition_i18n:
+    es: >-
+      Si la tirada para impactar de un ataque de una Hueste de Espíritus es 6, el aterrador
+      toque del espíritu paraliza el corazón de la víctima, infligiendo 1 herida adicional
+      inmediatamente. Tira para herir el impacto con normalidad.
+  introduced_by:
+    tree: 2B
+    band: call-of-the-night-haint-mim
+    rule: spirit-hosts--spectral-touch
+    profiles:
+    - spirit-hosts
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: 0-2 Spirit Host / Special Rules / Spectral Touch
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Call%20Of%20The%20Night%20Haint.pdf
+  kb_equivalents_checked:
+  - id: trait.perfect-killer
+    verdict: different
+    why: >-
+      Perfect Killer adds a -1 modifier to the victim's armour save; Spectral Touch adds a
+      wound on a natural 6 to hit without touching armour.
+  - id: skill.crushing-blow
+    verdict: different
+    why: Crushing Blow makes attacks unparryable; it does not add wounds.
+  - id: mechanic.death-blow
+    verdict: different
+    why: >-
+      Death Blow replaces a fighter's attacks with one attack at +1 to hit/wound/injury;
+      Spectral Touch leaves the attack profile untouched and only adds a wound on a 6.
+  notes: >-
+    Kept at scope YES / implemented YES in the staged rule because the mechanic is a single
+    damage step. Promotion must register the id as an executable contract before the band
+    enters the KB.

@@ -1,0 +1,367 @@
+schema_version: 2
+band_id: house-guard-sc
+rules:
+- id: band--chain-of-command
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.house-guard-sc.band.chain-of-command
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Chain of Command
+  effect: >-
+    If the warband's leader is taken out of action, immediately determine a new temporary leader as
+    if the leader had been killed permanently. The new leader temporarily gains the "Leader" ability
+    until the end of the game or until he is taken out of action, in which case the process repeats.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Chain of Command
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
+  name_i18n:
+    es: Cadena de Mando
+  effect_i18n:
+    es: >-
+      Si el líder de la banda queda Fuera de combate, determina inmediatamente un nuevo líder
+      temporal como si el líder hubiera muerto permanentemente. El nuevo líder asume el mando y gana
+      temporalmente la habilidad "Líder" hasta el final de la partida o hasta que él también quede
+      Fuera de combate, en cuyo caso se repite el proceso.
+  applies_to:
+    band: true
+- id: band--personal-guard
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.house-guard-sc.band.personal-guard
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Personal Guard
+  effect: >-
+    Every hero and henchman in a House Guard has a range of 3 inches instead of the normal 2 inches
+    for intercepting charges at friendly heroes. In the 'Assassination' scenario they may ignore the
+    attacker's 'evasive' rule if their protégé is the target.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Personal Guard
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
+  name_i18n:
+    es: Guardia Personal
+  effect_i18n:
+    es: >-
+      Cada héroe y secuaz de una Guardia de Casa tiene un alcance de 3 pulgadas en lugar de las 2
+      habituales para interceptar cargas contra héroes amigos. En el escenario de 'Asesinato' pueden
+      ignorar la regla 'evasiva' del atacante si su protegido es el objetivo.
+  applies_to:
+    band: true
+- id: band--houses
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.house-guard-sc.band.houses
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Houses
+  effect: >-
+    As a House Guard warband you must decide which of the expedition's financiers you fight for.
+    Warbands from different houses vary in many respects, offering different benefits as well as a
+    unique appearance and character.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special rules / Houses
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
+  name_i18n:
+    es: Casas
+  effect_i18n:
+    es: >-
+      Como banda de Guardia de Casa debes decidir por cuál de los financiadores de la expedición
+      luchas. Las bandas de distintas casas varían en muchos aspectos, ofreciendo beneficios
+      diferentes además de una apariencia y carácter únicos.
+  applies_to:
+    band: true
+- id: band--dueling-pride
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: trait.re-roll-hits-vs-heroes
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred: hero-vs-hero re-roll needs a target-type filter not yet exposed by the trait
+        bindings.
+  name: Dueling Pride (House Fierezza)
+  effect: >-
+    Fierezza Heroes may re-roll failed hits during the first round of combat when fighting enemy
+    heroes.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: House Fierezza / Additional special rules / Dueling Pride
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
+  name_i18n:
+    es: Orgullo de Duelo (Casa Fierezza)
+  effect_i18n:
+    es: >-
+      Los héroes de Fierezza pueden repetir los impactos fallidos durante el primer asalto de
+      combate cuando luchan contra héroes enemigos.
+  applies_to:
+    band: true
+- id: band--martial-finesse
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.house-guard-sc.band.martial-finesse
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Martial Finesse (House Fierezza)
+  effect: The Commander starts with the 'Web of Steel' skill.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: House Fierezza / Additional special rules / Martial Finesse
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
+  name_i18n:
+    es: Destreza Marcial (Casa Fierezza)
+  effect_i18n:
+    es: El Comandante comienza con la habilidad 'Telón de Acero' (Web of Steel).
+  applies_to:
+    band: true
+- id: band--sharp-aim
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.house-guard-sc.band.sharp-aim
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: no effect applies to the current engine scope.
+  name: Sharp Aim (House Halcon)
+  effect: >-
+    All warriors from House Halcon ignore modifiers for long range when firing missile weapons.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: House Halcon / Additional special rules / Sharp Aim
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
+  name_i18n:
+    es: Puntería Certera (Casa Halcon)
+  effect_i18n:
+    es: >-
+      Todos los guerreros de la Casa Halcon ignoran los modificadores por alcance largo al disparar
+      armas de misil.
+  applies_to:
+    band: true
+- id: band--merchantry
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.house-guard-sc.band.merchantry
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Merchantry (House Halcon)
+  effect: The Commander starts with the 'Haggle' skill.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: House Halcon / Additional special rules / Merchantry
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
+  name_i18n:
+    es: Comercio (Casa Halcon)
+  effect_i18n:
+    es: El Comandante comienza con la habilidad 'Regateo' (Haggle).
+  applies_to:
+    band: true
+- id: band--baluardo-armour
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.house-guard-sc.band.baluardo-armour
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Armour (House Baluardo)
+  effect: Baluardo Heroes do not suffer movement penalties for wearing armour.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: House Baluardo / Additional special rules / Armour
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
+  name_i18n:
+    es: Armadura (Casa Baluardo)
+  effect_i18n:
+    es: Los héroes de Baluardo no sufren penalizaciones de movimiento por llevar armadura.
+  applies_to:
+    band: true
+- id: band--battle-seasoned
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.house-guard-sc.band.battle-seasoned
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Battle Seasoned (House Baluardo)
+  effect: The Commander starts with the 'Battle Tongue' skill.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: House Baluardo / Additional special rules / Battle Seasoned
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
+  name_i18n:
+    es: Curtido en la Batalla (Casa Baluardo)
+  effect_i18n:
+    es: El Comandante comienza con la habilidad 'Lengua de Guerra' (Battle Tongue).
+  applies_to:
+    band: true
+- id: commander--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.house-guard-sc.commander.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: Any warrior within 6 inches of the Commander may use his Leadership instead of his own.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: 1 Commander / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: Cualquier guerrero a 6 pulgadas del Comandante puede usar su Liderazgo en lugar del propio.
+  applies_to:
+    profile_ids:
+    - commander
+- id: adjutant--relay-orders
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.house-guard-sc.adjutant.relay-orders
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Relay Orders
+  effect: >-
+    As long as the Adjutant is able to use his leader's Leadership, any warrior within 6 inches of
+    the Adjutant may use the leader's Leadership instead of his own. The Adjutant may take the
+    Battle Tongue skill to increase his range to 12 inches.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-1 Adjutant / Special Rules / Relay orders
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
+  name_i18n:
+    es: Transmitir Órdenes
+  effect_i18n:
+    es: >-
+      Mientras el Ayudante pueda usar el Liderazgo de su líder, cualquier guerrero a 6 pulgadas del
+      Ayudante puede usar el Liderazgo del líder en lugar del propio. El Ayudante puede adquirir la
+      habilidad Lengua de Guerra para ampliar su alcance a 12 pulgadas.
+  applies_to:
+    profile_ids:
+    - adjutant
+- id: pikemen--pikewall
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.re-roll-hits-when-charged
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred: requires a conditional re-roll tied to being charged and a first-strike weapon,
+        not yet expressible with current trait bindings.
+  name: Pikewall
+  effect: >-
+    Charging a skilled Pikeman is always dangerous, as they may re-roll any failed hits when getting
+    charged while wielding a weapon with first strike.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-4 Pikemen / Special Rules / Pikewall
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
+  name_i18n:
+    es: Muro de Picas
+  effect_i18n:
+    es: >-
+      Cargar contra un Piquero experto siempre es peligroso, pues puede repetir los impactos
+      fallidos cuando le cargan mientras empuña un arma con golpe primero.
+  applies_to:
+    profile_ids:
+    - pikemen
+- id: warhounds--animals
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.house-guard-sc.warhounds.animals
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Animals
+  effect: Warhounds are animals and thus do not gain experience.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: 0-4 Warhounds / Special Rules / Animals
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/House Guard.pdf
+  name_i18n:
+    es: Animales
+  effect_i18n:
+    es: Los Perros de Guerra son animales y por tanto no ganan experiencia.
+  applies_to:
+    profile_ids:
+    - warhounds

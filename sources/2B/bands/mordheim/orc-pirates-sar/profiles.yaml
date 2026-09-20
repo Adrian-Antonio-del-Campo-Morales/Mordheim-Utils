@@ -1,0 +1,245 @@
+schema_version: 2
+band_id: orc-pirates-sar
+profiles:
+- id: orc-boss
+  name: Boss
+  type: hero
+  cost: 80
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 4
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - orc-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 1 Boss - Same as Da Mob
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  source_path:
+  - heroes
+  - 1 Boss - Same as Da Mob
+  name_i18n:
+    es: Jefe
+  rule_ids: []
+  combat_traits: {}
+- id: goblin-enjuneer
+  name: Goblin Enjuneer
+  type: hero
+  cost: 35
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - goblin-swabbie-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Replaces Orc Shaman
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-1 Goblin Enjuneer
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  source_path:
+  - heroes
+  - 0-1 Goblin Enjuneer
+  name_i18n:
+    es: Ingeniero Goblin
+  rule_ids:
+  - goblin-enjuneer--glass-ceiling
+  - goblin-enjuneer--booma-tweaker
+  - goblin-enjuneer--mad-bomba
+  combat_traits: {}
+- id: orc-big-uns
+  name: Big Uns
+  type: hero
+  cost: 40
+  experience: 15
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - orc-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-2 Big Uns - Same as Da Mob
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  source_path:
+  - heroes
+  - 0-2 Big Uns - Same as Da Mob
+  name_i18n:
+    es: Grandes
+  rule_ids: []
+  combat_traits: {}
+- id: orc-boyz
+  name: Orc Boyz
+  type: henchman
+  cost: 25
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - orc-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / Orc Boyz - same as Da Mob
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  source_path:
+  - henchmen
+  - Orc Boyz - same as Da Mob
+  name_i18n:
+    es: Chicos Orcos
+  rule_ids: []
+  combat_traits: {}
+- id: goblin-swabbies
+  name: Goblin Swabbies
+  type: henchman
+  cost: 12
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - goblin-swabbie-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - Replaces Goblin Warriors in the henchmen list
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0+ Goblin Swabbies
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  source_path:
+  - henchmen
+  - 0+ Goblin Swabbies
+  name_i18n:
+    es: Fregones Goblins
+  rule_ids:
+  - goblin-swabbies--under-der-thumb
+  - goblin-swabbies--spendible
+  - goblin-swabbies--never-gain-experience
+  - goblin-swabbies--rabble
+  - goblin-swabbies--blimey-they-got-away
+  - goblin-swabbies--dont-mind-them-mates
+  combat_traits: {}
+- id: sea-squigs
+  name: Sea Squigs
+  type: henchman
+  cost: 15
+  experience: 0
+  characteristics:
+    M: 2D6-1
+    WS: 4
+    BS: 0
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 Sea Squigs
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  source_path:
+  - henchmen
+  - 0-5 Sea Squigs
+  name_i18n:
+    es: Squigs Marinos
+  rule_ids:
+  - sea-squigs--stats-like-da-mob
+  - sea-squigs--movement
+  - sea-squigs--cats-of-nine-tails
+  combat_traits: {}
+- id: sea-troll
+  name: Sea Troll
+  type: henchman
+  cost: 200
+  experience: 0
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 1
+    S: 5
+    T: 4
+    W: 3
+    I: 1
+    A: 3
+    Ld: 4
+  equipment_lists: []
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-1 Sea Troll
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Orc%20Pirates%20%26%20Savage%20Orcs.pdf
+  source_path:
+  - henchmen
+  - 0-1 Sea Troll
+  name_i18n:
+    es: Troll Marino
+  rule_ids:
+  - sea-troll--aquatic
+  - sea-troll--slimy
+  - sea-troll--loses-vomit
+  combat_traits: {}

@@ -1,0 +1,242 @@
+schema_version: 2
+band_id: dwarf-slayers-kaz
+rules:
+- id: band--town-crier-6-inheritance
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-slayers-kaz.band.town-crier-6-inheritance
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred cross-reference: Dwarf Axe usage, Dwarf Special Skills for Dwarf heroes, and
+        Slayer Special Skills for Slayer heroes (all from Town Crier 6 or Best of Town Crier),
+        except Incomparable Miners. Resolves after equivalence review against the active KB
+        dwarf bands.
+  name: Town Crier 6 Inheritance
+  effect: >-
+    All of the special rules from Town Crier 6 (or Best of Town Crier) apply apart from
+    Incomparable Miners. Dwarfs may use the Dwarf Axe as detailed in Town Crier 6 (or Best of
+    Town Crier). Dwarf Heroes may use any of the Dwarf Special Skills and Slayer heroes may also
+    use the Slayer Special Skills, all as listed in Town Crier 6 (or Best of Town Crier).
+  source:
+    manual: broheim.net
+    printed_page: 32
+    section: Special Rules / Special Weapons / Dwarf Special Skills
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Herencia de Town Crier 6
+  effect_i18n:
+    es: >-
+      Todas las reglas especiales de Town Crier 6 (o Best of Town Crier) se aplican, excepto Mineros
+      Incomparables. Los Enanos pueden usar el Hacha Enana tal y como se detalla en Town Crier 6 (o
+      Best of Town Crier). Los Héroes Enanos pueden usar cualquiera de las Habilidades Especiales de
+      Enanos y los héroes Matatrolles también pueden usar las Habilidades Especiales de Matatrolles,
+      todo tal y como se recoge en Town Crier 6 (o Best of Town Crier).
+  applies_to:
+    band: true
+- id: band--mighty-doom
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-slayers-kaz.band.mighty-doom
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: rout tests are a campaign/post-battle mechanic, though the 50%
+        threshold interacts with combat results.
+  name: Mighty Doom
+  effect: >-
+    All every slayer seeks is an honourable death. A Slayer warband does not have to take Rout
+    Tests until 50% of the warband has been taken Out of Action. A Slayer warband may not
+    voluntarily route.
+  source:
+    manual: broheim.net
+    printed_page: 32
+    section: Special Rules / Mighty Doom
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Destino Imponente
+  effect_i18n:
+    es: >-
+      Todo lo que busca un Matatrolles es una muerte honorable. Una banda de Matatrolles no tiene
+      que hacer tiradas de Huida hasta que el 50% de la banda haya quedado Fuera de Combate. Una
+      banda de Matatrolles no puede huir voluntariamente.
+  applies_to:
+    band: true
+- id: band--shame
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-slayers-kaz.band.shame
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: campaign progression and psychology (Immune to Psychology, Slayer
+        conversion of heroes).
+  name: Shame
+  effect: >-
+    If a Dwarf hero (who isn't already a slayer) is taken OOA in any of the following
+    circumstances the Dwarf is so ashamed by his failure that he takes his vows and becomes a
+    Slayer. The Dwarf loses any special abilities, e.g. \"Leader\", but keeps any skills he has.
+    The Dwarf is Immune to Psychology. The Dwarf has also access to the special Trollslayer
+    skills in the Mordheim rulebook. A Dwarf hero will consider any of the following to be
+    shameful: to be taken OOA in the Dwarf player's first or second turn; to be taken OOA in
+    single combat against an opponent with WS 2 or S 2 or by an animal (e.g. dogs, rats or
+    squirrels).
+  source:
+    manual: broheim.net
+    printed_page: 32
+    section: Special Rules / Shame
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Vergüenza
+  effect_i18n:
+    es: >-
+      Si un héroe Enano (que aún no sea un Matatrolles) queda Fuera de Combate en cualquiera de las
+      siguientes circunstancias, el Enano se siente tan avergonzado por su fracaso que pronuncia sus
+      votos y se convierte en Matatrolles. El Enano pierde cualquier habilidad especial, p. ej.
+      «Líder», pero conserva las habilidades que tenga. El Enano es Inmune a la Psicología. El Enano
+      también tiene acceso a las habilidades especiales de Matatroll del libro de reglas de
+      Mordheim. Un héroe Enano considerará vergonzoso lo siguiente: quedar Fuera de Combate en el
+      primer o segundo turno del jugador Enano; quedar Fuera de Combate en combate singular contra
+      un oponente con HA 2 o F 2 o por un animal (p. ej. perros, ratas o ardillas).
+  applies_to:
+    band: true
+- id: band--slayer-special-skills
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.dwarf-slayers-kaz.band.slayer-special-skills
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred cross-reference: the Slayer skill column and the Slayer Special Skills list
+        live in Town Crier 6 (or Best of Town Crier), not in this document.
+  name: Slayer Skill Column
+  effect: >-
+    The Dwarf Skill Table of the warband includes a dedicated Slayer column: Giant Slayer and
+    Troll Slayer have access to Combat, Strength, Special and Slayer skills; a Dwarf Rememberer
+    to Combat, Shooting, Academic and Special; a Human Rememberer to Combat, Shooting, Academic
+    and Speed. Slayer heroes may also use the Slayer Special Skills as listed in Town Crier 6
+    (or Best of Town Crier).
+  source:
+    manual: broheim.net
+    printed_page: 32
+    section: Dwarf Skill Table
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Columna de Habilidades de Matacollectiones
+  effect_i18n:
+    es: >-
+      La Tabla de Habilidades de Enanos de la banda incluye una columna dedicada a los Matatrolles:
+      el Gran Matatrolles y el Matatroll tienen acceso a las habilidades de Combate, Fuerza,
+      Especiales y de Matatroll; un Memoralista Enano a Combate, Disparo, Académicas y Especiales;
+      un Memoralista Humano a Combate, Disparo, Académicas y Velocidad. Los héroes Matatrolles
+      también pueden usar las Habilidades Especiales de Matatrolles tal y como se recogen en Town
+      Crier 6 (o Best of Town Crier).
+  applies_to:
+    band: true
+- id: giant-slayer--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-slayers-kaz.giant-slayer.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: psychology.
+  name: Leader
+  effect: >-
+    Any model in the warband within 6\" of the Giant Slayer may use his Leadership instead of
+    their own.
+  source:
+    manual: broheim.net
+    printed_page: 33
+    section: heroes / 1 Giant Slayer / Special Rules / Leader
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier modelo de la banda a 6" del Gran Matatrolles puede usar su Liderazgo en lugar del
+      propio.
+  applies_to:
+    profile_ids:
+    - giant-slayer
+- id: rememberer--hard-to-find
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-slayers-kaz.rememberer.hard-to-find
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: recruitment roll is a warband-creation mechanic.
+  name: Hard to find
+  effect: >-
+    It is not easy to find a suitable Rememberer. When you decide to recruit one roll a D6;
+    1-4 he is a Dwarf, 5-6 he is a Human. If you do not wish to hire whichever race you roll
+    then you must wait until after your next game before trying again.
+  source:
+    manual: broheim.net
+    printed_page: 34
+    section: heroes / 0-1 Rememberer / Special Rules / Hard to find
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Difícil de Encontrar
+  effect_i18n:
+    es: >-
+      No es fácil encontrar un Memoralista adecuado. Cuando decidas reclutar uno, tira 1D6; con un
+      1-4 es un Enano, con un 5-6 es un Humano. Si no deseas contratar a la raza que te salga,
+      deberás esperar hasta después de tu siguiente partida antes de volver a intentarlo.
+  applies_to:
+    profile_ids:
+    - rememberer
+- id: rememberer--rememberer
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.dwarf-slayers-kaz.rememberer.rememberer
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred: conditional to-hit re-roll (large creature, once per game) needs a dedicated
+        mechanic that does not exist in the engine yet; no binding is invented.
+  name: Rememberer
+  effect: >-
+    The Rememberer's task is to record the doom of each of the slayers. When he is close by, the
+    slayers will fight even harder to make their death more honourable. Once per game, any
+    Slayer Hero fighting against a large creature (such as a troll or ogre) and within 6\" of
+    the Rememberer, may re-roll any failed To Hit rolls once only.
+  source:
+    manual: broheim.net
+    printed_page: 34
+    section: heroes / 0-1 Rememberer / Special Rules / Rememberer
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Memoralista
+  effect_i18n:
+    es: >-
+      La tarea del Memoralista es registrar la perdición de cada uno de los Matatrolles. Cuando está
+      cerca, los Matatrolles lucharán aún con más ahínco para hacer su muerte más honorable. Una vez
+      por partida, cualquier Héroe Matatrolles que luche contra una criatura grande (como un troll o
+      un ogro) y que esté a 6" del Memoralista puede repetir una sola vez cualquier tirada por
+      impactar fallida.
+  applies_to:
+    profile_ids:
+    - rememberer

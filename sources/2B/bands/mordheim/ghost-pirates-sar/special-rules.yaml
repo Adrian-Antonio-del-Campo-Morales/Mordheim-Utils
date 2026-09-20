@@ -1,0 +1,809 @@
+schema_version: 2
+band_id: ghost-pirates-sar
+rules:
+- id: band--ghost-pirate-rules
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.ghost-pirates-sar.band.ghost-pirate-rules
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Swabbies (Ghost Pirates)
+  effect: >-
+    Ghost Pirates may capture models, using the Swabbies rules. Willing members join the Crew,
+    unwilling members become Bloated Zombies (see The Bloated).
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Swabbies
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Fregones (Piratas Fantasma)
+  effect_i18n:
+    es: >-
+      Los Piratas Fantasma pueden capturar modelos, usando las reglas de Fregones. Los miembros
+      voluntarios se unen a la Tripulación; los que no, se convierten en Zombis Hinchados (ver Los
+      Hinchos).
+  applies_to:
+    band: true
+- id: band--ethereal
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.ghost-pirates-sar.band.ethereal
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Ethereal
+  effect: >-
+    Ghost Pirates and Screaming Ghosts have the ability 'Ethereal', which gives a 4+ unmodifiable
+    save against all attacks. It may not be used with Dodge or Step Aside, and has no effect against
+    magical attacks (Spells, Prayers, Artifacts, Gromril, Ithilmar, & Silver Bullets). Also, the
+    model may take a Leadership test in the movement phase: if successful, they may move through any
+    terrain piece and/or on top of water. If the model starts his next turn in the middle of a
+    terrain piece or on top of water, they must take another Leadership test in the movement phase:
+    if the test fails, the model is instantly taken out of action. However, after warband formation,
+    all items cost double to purchase for Ethereal models. If the crew finds any items, roll a D6:
+    on 5+ they can be used by both Ethereal and Non-Ethereal models. On 1-4, it can only be used by
+    Non-Ethereal models (mark it as such on your roster).
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Ethereal
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Etéreo
+  effect_i18n:
+    es: >-
+      Los Piratas Fantasma y los Espectros Aullantes tienen la habilidad 'Etéreo', que otorga una
+      tirada de salvación de 4+ no modificable contra todos los ataques. No puede usarse con Esquiva
+      ni Apartar el golpe, y no tiene efecto contra ataques mágicos (hechizos, plegarias,
+      artefactos, gromril, ithilmar y balas de plata). Además, el modelo puede hacer una tirada de
+      Liderazgo en la fase de movimiento: si la supera, puede atravesar cualquier terreno y/o
+      moverse sobre el agua. Si el modelo comienza su siguiente turno dentro de un terreno o sobre
+      el agua, debe superar otra tirada de Liderazgo en la fase de movimiento: si falla, el modelo
+      queda fuera de combate al instante. Sin embargo, tras la formación de la banda, todos los
+      objetos cuestan el doble para los modelos Etéreos. Si la tripulación encuentra objetos, tira
+      1D6: con 5+ pueden usarlos tanto modelos Etéreos como no Etéreos; con 1-4, solo pueden usarlos
+      modelos no Etéreos (márcalo en tu lista).
+  applies_to:
+    band: true
+- id: band--cursed-pistol
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.ghost-pirates-sar.item.cursed-pistol
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Cursed Pistol
+  effect: >-
+    5 gc (10 gc for a Brace) - Common. A pistol dragged into the depths of the ocean, clasped tight
+    in the death grip of its former master. Range: 6", Strength: 4. Special Rules: Prepare Shot
+    (takes a whole turn to reload, so you may only fire every other turn; with a brace you may fire
+    every turn), Save Modifier (-2 armour save), Hand-to-hand (+1 Attack in close combat, resolved
+    at Strength 4 with -2 save modifier, once per combat; with a brace the model fights with 2
+    Attacks in the first turn of close combat, hitting only on natural 6s which may be parried by
+    Cutlass Master or Master of Blades), Cursed Aim (only hits on a natural 6 to hit, receives no
+    positive or negative modifiers from any source - including cover, range, moving or ballistic
+    skill; never misfires; water and rain have no penalty; may only fire at non-Hiding models that
+    they can see), Inhuman (may not use Fine Powder, Superior Gunpowder, Silver Bullets or any other
+    enhancer; no living model may ever fire it; Ghosts may purchase Cursed Guns after warband
+    creation at normal price, as they are easily used by Ethereal models).
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Special Equipment / Cursed Pistol
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Pistola Maldita
+  effect_i18n:
+    es: >-
+      5 coronas (10 por una pareja) - Común. Una pistola arrastrada a las profundidades del océano,
+      aferrada en el puño de la muerte de su antiguo dueño. Alcance: 6", Fuerza: 4. Reglas
+      especiales: Prepara el disparo (tarda un turno entero en recargarse, así que solo puedes
+      disparar en turnos alternos; con una pareja puedes disparar cada turno), Modificador de
+      salvación (-2 a la tirada de armadura), Cuerpo a cuerpo (+1 Ataque en combate, resuelto a
+      Fuerza 4 con -2 al salvamento, una vez por combate; con una pareja el modelo pelea con 2
+      Ataques en el primer turno, golpeando solo con 6 naturales que pueden ser detenidos con
+      Maestro del Sable o Maestro de las Hojas), Punta Maldita (solo golpea con un 6 natural, sin
+      modificadores positivos ni negativos de ninguna fuente -incluyendo cobertura, alcance,
+      movimiento o Combate a Distancia-; nunca falla el disparo; la lluvia y el agua no penalizan la
+      pólvora; solo puede disparar a modelos visibles que no estén Ocultos), Inhumana (no puede usar
+      pólvora fina, pólvora superior, balas de plata ni otro potenciador; ningún modelo vivo puede
+      dispararla; los Fantasmas pueden comprar Pistolas Malditas tras la creación de la banda a
+      precio normal, pues los modelos Etéreos las usan con facilidad).
+  applies_to:
+    band: true
+- id: ghost-captain--leader
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.ghost-captain.leader
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Leader
+  effect: >-
+    Any pirate within 6" of the Ghost Captain may use his Leadership characteristic when taking any
+    Leadership tests.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 1 Ghost Captain / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier pirata a 6" o menos del Capitán Fantasma puede usar su característica de Liderazgo
+      cuando realice cualquier tirada de Liderazgo.
+  applies_to:
+    profile_ids:
+    - ghost-captain
+- id: ghost-captain--undead
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.ghost-captain.undead
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Undead (Ghost Captain)
+  effect: A Ghost Captain is Immune to Poison, Immune to Psychology, and causes Fear.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 1 Ghost Captain / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: No Muerto (Capitán Fantasma)
+  effect_i18n:
+    es: Un Capitán Fantasma es inmune al veneno, inmune a la psicología y causa miedo.
+  applies_to:
+    profile_ids:
+    - ghost-captain
+- id: screaming-ghosts--undead
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.screaming-ghosts.undead
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Undead (Screaming Ghosts)
+  effect: Screaming Ghosts are Immune to Poison, Immune to Psychology, and cause Fear.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-2 Screaming Ghosts / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: No Muerto (Espectros Aullantes)
+  effect_i18n:
+    es: Los Espectros Aullantes son inmunes al veneno, inmunes a la psicología y causan miedo.
+  applies_to:
+    profile_ids:
+    - screaming-ghosts
+- id: skeleton-mates--undead
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.skeleton-mates.undead
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Undead (Skeleton Mates)
+  effect: Skeleton Mates are Immune to Poison, Immune to Psychology, and cause Fear.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-2 Skeleton Mates / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: No Muerto (Contramaestres Esqueletos)
+  effect_i18n:
+    es: Los Contramaestres Esqueletos son inmunes al veneno, inmunes a la psicología y causan miedo.
+  applies_to:
+    profile_ids:
+    - skeleton-mates
+- id: skeleton-mates--no-pain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.skeleton-mates.no-pain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: No Pain (Skeleton Mates)
+  effect: Skeleton Mates treat a 'stunned' result on the injury chart as 'knocked down'.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-2 Skeleton Mates / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Sin Dolor (Contramaestres Esqueletos)
+  effect_i18n:
+    es: >-
+      Los Contramaestres Esqueletos tratan un resultado 'aturdido' en la tabla de heridas como
+      'derribado'.
+  applies_to:
+    profile_ids:
+    - skeleton-mates
+- id: skeleton-mates--may-not-run
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.skeleton-mates.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: May Not Run (Skeleton Mates)
+  effect: >-
+    Skeleton Mates are slow moving creatures, and may not run, though they may charge as normal.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-2 Skeleton Mates / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: No Pueden Correr (Contramaestres Esqueletos)
+  effect_i18n:
+    es: >-
+      Los Contramaestres Esqueletos son criaturas lentas y no pueden correr, aunque pueden cargar
+      con normalidad.
+  applies_to:
+    profile_ids:
+    - skeleton-mates
+- id: sea-singer--spells
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.sea-singer.spells
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Spells (Sea Singer)
+  effect: >-
+    A Sea Singer starts with one spell from the Songs of Sorrow spell list (see Songs of Sorrow): 1
+    Siren's Call (D10), 2 March of Sorrow (D7), 3 Wraith's Dirge (D9), 4 Lover's Lament (D6, D8 to
+    resurrect a Gibbet), 5 Song of Discord (D9), 6 Hymn of Rebirth (D5).
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-1 Sea Singer / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Hechizos (Cantora del Mar)
+  effect_i18n:
+    es: >-
+      Una Cantora del Mar empieza con un hechizo de la lista Cantos del Pesar (ver Cantos del
+      Pesar): 1 Llamado de la Sirena (D10), 2 Marcha del Pesar (D7), 3 Endecha del Espectro (D9), 4
+      Lamento del Amante (D6, D8 para resucitar a una Jaula de Hierro), 5 Canción de la Discordia
+      (D9), 6 Himno del Renacimiento (D5).
+  applies_to:
+    profile_ids:
+    - sea-singer
+- id: sea-singer--beauty-of-the-sea
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.sea-singer.beauty-of-the-sea
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Beauty of the Sea
+  effect: >-
+    In order for a male, non-animal enemy to charge a Sea Singer, he must pass a Leadership test, or
+    else be dazzled at her beauty and remain in place. If charged by a Sea Singer, the model may not
+    attack back in combat until he passes a Leadership Test in the beginning of the Combat Phase.
+    Once a test is passed, the model doesn't need to test for the rest of the combat. The Sea Singer
+    causes Fear in female models. The Singer's 'Beauty' counts as a form of Psychology.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-1 Sea Singer / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Belleza del Mar
+  effect_i18n:
+    es: >-
+      Para cargar contra una Cantora del Mar, un enemigo varón no animal debe superar una tirada de
+      Liderazgo o, si la falla, queda deslumbrado por su belleza y se queda en su sitio. Si es
+      cargado por una Cantora del Mar, el modelo no puede devolver el ataque en combate hasta
+      superar una tirada de Liderazgo al comienzo de la fase de combate. Una vez superada la tirada,
+      el modelo no necesita repetirla durante el resto del combate. La Cantora del Mar causa miedo a
+      los modelos femeninos. La 'Belleza' de la Cantora cuenta como una forma de Psicología.
+  applies_to:
+    profile_ids:
+    - sea-singer
+- id: gibbets--undead
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.gibbets.undead
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Undead (Gibbets)
+  effect: >-
+    Gibbets count as skeletons, and are Immune to Poison, Immune to Psychology, and cause Fear.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 The Gibbets / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: No Muerto (Jaulas de Hierro)
+  effect_i18n:
+    es: >-
+      Las Jaulas de Hierro cuentan como esqueletos, y son inmunes al veneno, inmunes a la psicología
+      y causan miedo.
+  applies_to:
+    profile_ids:
+    - gibbets
+- id: gibbets--no-pain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.gibbets.no-pain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: No Pain (Gibbets)
+  effect: Gibbets treat a 'stunned' result on the injury chart as 'knocked down'.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 The Gibbets / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Sin Dolor (Jaulas de Hierro)
+  effect_i18n:
+    es: Las Jaulas de Hierro tratan un resultado 'aturdido' en la tabla de heridas como 'derribado'.
+  applies_to:
+    profile_ids:
+    - gibbets
+- id: gibbets--no-brain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.gibbets.no-brain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: No Brain (Gibbets)
+  effect: Gibbets do not gain experience.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 The Gibbets / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Sin Cerebro (Jaulas de Hierro)
+  effect_i18n:
+    es: Las Jaulas de Hierro no ganan experiencia.
+  applies_to:
+    profile_ids:
+    - gibbets
+- id: gibbets--may-not-run
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.gibbets.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: May Not Run (Gibbets)
+  effect: Gibbets are slow moving creatures, and may not run, though they may charge as normal.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 The Gibbets / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: No Pueden Correr (Jaulas de Hierro)
+  effect_i18n:
+    es: >-
+      Las Jaulas de Hierro son criaturas lentas y no pueden correr, aunque pueden cargar con
+      normalidad.
+  applies_to:
+    profile_ids:
+    - gibbets
+- id: gibbets--iron-cage
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.gibbets.iron-cage
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Iron Cage
+  effect: >-
+    The gibbet cage fastened around the skeleton forms a makeshift protection. Gibbets receive a 5+
+    armour save, as if they wear Heavy Armor. This may not be lost, stolen, or given to other
+    models.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 The Gibbets / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Jaula de Hierro
+  effect_i18n:
+    es: >-
+      La jaula sujeta alrededor del esqueleto forma una protección improvisada. Las Jaulas de Hierro
+      obtienen una tirada de salvación por armadura de 5+, como si llevaran Armadura Pesada. Esta no
+      puede perderse, robarse ni cederse a otros modelos.
+  applies_to:
+    profile_ids:
+    - gibbets
+- id: gibbets--sink
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.gibbets.sink
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Sink
+  effect: >-
+    In their heavy cages, Gibbets sink to the bottom of any water they move through. The river or
+    ocean bed counts as difficult terrain (1/2 speed), but while sunk, they are at -2 to hit and -2
+    to be hit in combat or by missiles. When boarding ships, it is assumed they find a way to the
+    surface (ex. climbing the anchor) and board the craft using the normal rules. They are immune to
+    any water or drowning based damage.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 The Gibbets / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Hundirse
+  effect_i18n:
+    es: >-
+      Con sus pesadas jaulas, las Jaulas de Hierro se hunden en el fondo de cualquier agua que
+      atraviesen. El lecho del río o del mar cuenta como terreno difícil (velocidad 1/2), pero
+      mientras están sumergidas reciben -2 para golpear y -2 para ser golpeadas en combate o por
+      proyectiles. Al abordar barcos, se asume que encuentran el modo de salir a la superficie (p.
+      ej., trepando por el ancla) y abordan con las reglas normales. Son inmunes a cualquier daño
+      basado en agua o ahogamiento.
+  applies_to:
+    profile_ids:
+    - gibbets
+- id: the-bloated--undead
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.the-bloated.undead
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Undead (The Bloated)
+  effect: As Zombies, the Bloated are Immune to Poison, Immune to Psychology, and cause Fear.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 The Bloated / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: No Muerto (Los Hinchos)
+  effect_i18n:
+    es: Como zombis, los Hinchos son inmunes al veneno, inmunes a la psicología y causan miedo.
+  applies_to:
+    profile_ids:
+    - the-bloated
+- id: the-bloated--no-pain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.the-bloated.no-pain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: No Pain (The Bloated)
+  effect: >-
+    The Bloated treat a 'stunned' result on the injury chart as 'knocked down'. (Note: the PDF also
+    lists 'Squishy', below, which states the opposite.)
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 The Bloated / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Sin Dolor (Los Hinchos)
+  effect_i18n:
+    es: >-
+      Los Hinchos tratan un resultado 'aturdido' en la tabla de heridas como 'derribado'. (Nota: el
+      PDF también lista 'Blanditos', más abajo, que dice lo contrario.)
+  applies_to:
+    profile_ids:
+    - the-bloated
+- id: the-bloated--may-not-run
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.the-bloated.may-not-run
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: May Not Run (The Bloated)
+  effect: The Bloated are slow moving creatures, and may not run, though they may charge as normal.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 The Bloated / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: No Pueden Correr (Los Hinchos)
+  effect_i18n:
+    es: Los Hinchos son criaturas lentas y no pueden correr, aunque pueden cargar con normalidad.
+  applies_to:
+    profile_ids:
+    - the-bloated
+- id: the-bloated--no-brain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.the-bloated.no-brain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: No Brain (The Bloated)
+  effect: The Bloated do not gain experience.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 The Bloated / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Sin Cerebro (Los Hinchos)
+  effect_i18n:
+    es: Los Hinchos no ganan experiencia.
+  applies_to:
+    profile_ids:
+    - the-bloated
+- id: the-bloated--squishy
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.the-bloated.squishy
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Squishy
+  effect: >-
+    While the Bloated are far beyond feeling pain, they are slightly easier to break than normal
+    Zombies. They do NOT treat rolls of 'stunned' as knocked down.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 The Bloated / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Blanditos
+  effect_i18n:
+    es: >-
+      Aunque los Hinchos están muy lejos de sentir dolor, son algo más fáciles de quebrantar que los
+      zombis normales. NO tratan las tiradas de 'aturdido' como 'derribado'.
+  applies_to:
+    profile_ids:
+    - the-bloated
+- id: the-bloated--dead-mans-float
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.the-bloated.dead-mans-float
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Dead Man's Float
+  effect: >-
+    The Bloated can float on the water, and thus can use this to their advantage. While in the
+    water, the Bloated may move up to 4" as their movement, without penalty (They may do this as a
+    charge, but the max move is still 4").
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 The Bloated / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Flote del Hombre Muerto
+  effect_i18n:
+    es: >-
+      Los Hinchos pueden flotar en el agua y usarlo a su favor. Mientras estén en el agua, pueden
+      mover hasta 4" como su movimiento, sin penalización (pueden hacerlo como carga, pero el máximo
+      sigue siendo 4").
+  applies_to:
+    profile_ids:
+    - the-bloated
+- id: the-bloated--weak-magic
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.the-bloated.weak-magic
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Weak Magic
+  effect: >-
+    If the Ghost Pirate Warband itself Routs, any Bloated who have already left the table in
+    previous turns are presumed to have fallen apart, and are never seen (or smelt!). Remove them
+    from your warband roster as if they had been killed.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 The Bloated / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Magia Débil
+  effect_i18n:
+    es: >-
+      Si la banda de Piratas Fantasma huye de la partida, se asume que los Hinchos que ya hayan
+      salido de la mesa en turnos anteriores se han desmoronado, y nunca más volverán a verse (¡ni a
+      olerse!). Retíralos de la lista de la banda como si hubieran muerto.
+  applies_to:
+    profile_ids:
+    - the-bloated
+- id: the-bloated--plenty-more-with-the-next-tide
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.the-bloated.plenty-more-with-the-next-tide
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Plenty more with the next tide!
+  effect: >-
+    The rest of the crew barely notice if any Bloated go Out of Action - they know they'll find them
+    plenty more in a few days time! Any Bloated who have been taken out of action do not count
+    towards the need to take a Rout test for the warband.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 The Bloated / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: ¡Habrá más con la próxima marea!
+  effect_i18n:
+    es: >-
+      Al resto de la tripulación apenas le importa que los Hinchos queden fuera de combate: ¡saben
+      que encontrarán muchos más en unos días! Los Hinchos que queden fuera de combate no cuentan a
+      la hora de hacer la tirada de Huida de la banda.
+  applies_to:
+    profile_ids:
+    - the-bloated
+- id: the-bloated--bloated-unarmed
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghost-pirates-sar.item.bloated-unarmed
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Unarmed Bloated
+  effect: >-
+    The Bloated do not REQUIRE equipment, and may make a single unarmed attack with no penalties.
+    Alternatively, you choose to arm it with weapons from the Bloated equipment list. If you do, the
+    Bloated requires two weapons to receive an additional hand attack.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-5 The Bloated / Weapons & Equipment
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+  name_i18n:
+    es: Hinchos desarmados
+  effect_i18n:
+    es: >-
+      Los Hinchos NO NECESITAN equipo y pueden hacer un único ataque desarmado sin penalizaciones.
+      Alternativamente, puedes armalos con armas de la lista de equipo de los Hinchos. Si lo haces,
+      el Hincho necesita dos armas para recibir un ataque de mano adicional.
+  applies_to:
+    profile_ids:
+    - the-bloated

@@ -1,0 +1,182 @@
+schema_version: 2
+ruleset: mordheim
+# Hireling-specific gear that previously existed only as dangling item_id
+# references in the hirelings catalogs (REL anthology + MiM Specialists).
+# Defined 2026-09-14 to close the sweep's dangling-refs decision.
+#
+# Fidelity rule applied: where the source prints mechanics, they are quoted
+# verbatim (angel_wings, fire_stick, arcane_candelabrum, shovel); where the
+# source only names the item (stickfire, vermin_pot) or grants it no effect
+# (wolf_cloak, diving_bell_helmet), the effect text says so instead of
+# inventing mechanics.
+items:
+- id: angel_wings
+  kind: out-of-scope
+  name: Angel Wings
+  name_i18n:
+    es: Alas de Ángel
+  effect: >-
+    Armen Abbas' huge batwing cloak. The Angel Wings grant Armen the ability to glide through
+    the air (see the Angel Wings rule of the Armen Abbas Dramatis Personae profile for the full
+    glide mechanics: 1"-wide, 24"-long flight line, fear tests for susceptible enemies beneath
+    the line, always fires first during the shooting phase).
+  effect_i18n:
+    es: >-
+      La enorme capa de alas de murciélago de Armen Abbas. Las Alas de Ángel otorgan a Armen la
+      capacidad de planear por el aire (ver la regla Alas de Ángel del perfil de Dramatis
+      Personae de Armen Abbas para la mecánica completa de planeo: línea de vuelo de 1" de ancho
+      y 24" de largo, tiradas de Miedo para los enemigos susceptibles bajo la línea, siempre
+      dispara primero en la fase de disparo).
+  source_refs:
+  - manual: broheim.net
+    printed_page: 16
+    section: Dramatis Personae / Armen Abbas / Angel Wings
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  availability_note: Armen Abbas starting equipment only (unique).
+  combat_status: out_of_scope
+- id: stickfire
+  kind: out-of-scope
+  name: Stickfire
+  name_i18n:
+    es: Varillas de Fuego
+  effect: >-
+    Araby incendiary sticks carried by Armen Abbas. The source prints no game rules for them
+    beyond the equipment note that he carries "enough stickfire and vermin pots to last for the
+    entire battle".
+  effect_i18n:
+    es: >-
+      Varillas incendiarias de Araby que lleva Armen Abbas. La fuente no imprime reglas de juego
+      para ellas más allá de la nota de equipo de que lleva "suficientes varillas de fuego y
+      ollas de bichos para toda la batalla".
+  source_refs:
+  - manual: broheim.net
+    printed_page: 16
+    section: Dramatis Personae / Armen Abbas / Equipment
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  availability_note: Armen Abbas starting equipment only (no purchase rules printed).
+  combat_status: out_of_scope
+- id: vermin_pot
+  kind: out-of-scope
+  name: Vermin Pot
+  name_i18n:
+    es: Olla de Bichos
+  effect: >-
+    Pot of vermin carried by Armen Abbas. The source prints no game rules for it beyond the
+    equipment note that he carries "enough stickfire and vermin pots to last for the entire
+    battle".
+  effect_i18n:
+    es: >-
+      Olla de bichos que lleva Armen Abbas. La fuente no imprime reglas de juego para ella más
+      allá de la nota de equipo de que lleva "suficientes varillas de fuego y ollas de bichos
+      para toda la batalla".
+  source_refs:
+  - manual: broheim.net
+    printed_page: 16
+    section: Dramatis Personae / Armen Abbas / Equipment
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  availability_note: Armen Abbas starting equipment only (no purchase rules printed).
+  combat_status: out_of_scope
+- id: diving_bell_helmet
+  kind: out-of-scope
+  name: Diving Bell Helmet
+  name_i18n:
+    es: Casco de Campana de Buceo
+  effect: >-
+    Rusted diving equipment including a diving bell for a helmet, worn by the Ogre
+    Treasure-Hunter. Flavour gear: the source grants it no effect of its own — the water
+    movement and breathing benefit is covered by the Ogre's Diver rule (counts as aquatic).
+  effect_i18n:
+    es: >-
+      Equipo de buceo oxidado que incluye una campana de buceo a modo de casco, que viste el
+      Cazatesoros Ogro. Equipamiento de sabor: la fuente no le concede efecto propio; el
+      beneficio de moverse y respirar en el agua queda cubierto por la regla Buceador del ogro
+      (cuenta como Acuático).
+  source_refs:
+  - manual: broheim.net
+    printed_page: 1
+    section: Specialists / Ogre Treasure-Hunter / Equipment
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+  availability_note: Ogre Treasure-Hunter starting equipment only.
+  combat_status: out_of_scope
+- id: shovel
+  kind: combat-equipment
+  name: Shovel
+  name_i18n:
+    es: Pala
+  effect: >-
+    A digging shovel carried by Grave Wardens. Counts as an axe in close combat.
+  effect_i18n:
+    es: >-
+      Una pala de excavar que llevan los Guardianes de los Jardines. Cuenta como un hacha en
+      combate cuerpo a cuerpo.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Specialists / Grave Warden / Equipment
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+  availability_note: Grave Warden starting equipment only (no purchase price printed).
+  combat_status: out_of_scope
+- id: fire_stick
+  kind: ranged-weapon
+  name: Fire-Stick
+  name_i18n:
+    es: Palo de Fuego
+  effect: >-
+    Being almost perfectly trained in mystical arts, the Fire-Eater spits fire upon his enemies
+    in the shooting phase. Use the teardrop shaped flame template to determine which models
+    suffer an automatic Strength 4 hit. In addition, any models hit are set on fire on a roll of
+    4+ (see Fire Rules). Fire-Eaters can use this breath attack even when engaged in close
+    combat.
+  effect_i18n:
+    es: >-
+      Al estar entrenado casi a la perfección en las artes místicas, el Traga Fuego escupe fuego
+      sobre sus enemigos en la fase de disparo. Usa la plantilla de llamas con forma de lágrima
+      para determinar qué miniaturas sufren un impacto automático de Fuerza 4. Además, cualquier
+      miniatura alcanzada se incendia con un resultado de 4+ (ver Reglas de Fuego). Los Traga
+      Fuego pueden usar este ataque de aliento incluso cuando estén trabados en combate cuerpo a
+      cuerpo.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 4
+    section: Specialists / Fire-Eater / Fire-Stick
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+  availability_note: Fire-Eater starting equipment only (innate breath attack, not purchasable).
+  combat_status: out_of_scope
+- id: arcane_candelabrum
+  kind: combat-equipment
+  name: Arcane Candelabrum
+  name_i18n:
+    es: Candelabro Arcano
+  effect: >-
+    An Arcane Candelabrum from a holy temple. Counts as a holy relic, brazier iron and lantern
+    that is used one-handed.
+  effect_i18n:
+    es: >-
+      Un Candelabro Arcano de un templo sagrado. Cuenta como reliquia sagrada, brasero de
+      hierro y farol que se usa a una mano.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 4
+    section: Specialists / Sister of Sigmar / Candle Tree
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+  availability_note: Sister of Sigmar starting equipment only.
+  combat_status: out_of_scope
+- id: wolf_cloak
+  kind: combat-equipment
+  name: Wolf Cloak
+  name_i18n:
+    es: Capa de Lobo
+  effect: >-
+    A cloak made from the pelt of a wolf. The source grants it no game effect.
+  effect_i18n:
+    es: >-
+      Una capa hecha con la piel de un lobo. La fuente no le concede ningún efecto de juego.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Specialists / Norse Bearman Bodyguard / Equipment
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+  availability_note: Norse Bearman Bodyguard starting equipment only. Distinct from the KB
+    `wolfcloak` (Middenheim hunt cloak, +1 armour saves vs shooting) and from the MW White Wolf
+    Pelt Cloak (6+ saving throw).
+  combat_status: out_of_scope

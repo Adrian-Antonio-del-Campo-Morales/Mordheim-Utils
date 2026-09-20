@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/campaign-warband-rating.yaml.schema.json",
+  "title": "Mordheim KB catalogue — catalog/campaign/warband-rating.yaml",
+  "description": "The warband rating formula: which components add to it, how each one is applied and what is left out. The formula is rule knowledge; the computed rating of a concrete warband is derived campaign state and is never persisted here.",
+  "type": "object",
+  "required": ["schema_version", "ruleset", "catalog", "status", "formula", "effect_ids"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
+    "catalog": { "$ref": "defs.schema.json#/$defs/id" },
+    "status": { "$ref": "defs.schema.json#/$defs/catalog_status" },
+    "formula": { "$ref": "#/$defs/formula" },
+    "effect_ids": {
+      "description": "Effects of the formula a warband's own special rules may modify.",
+      "$ref": "defs.schema.json#/$defs/id_list"
+    }
+  },
+  "$defs": {
+    "formula": {
+      "description": "The rating formula.",
+      "type": "object",
+      "required": ["id", "components", "exclusions", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "components": {
+          "description": "What the rating is made of.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/component" }
+        },
+        "exclusions": {
+          "description": "What the rating deliberately leaves out. Empty today: the source declares no exclusion, and the list is declared rather than implied so an exclusion is added as data, not as prose.",
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "component": {
+      "description": "One component of the formula.",
+      "type": "object",
+      "required": ["id", "applies_to", "operation", "value", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "applies_to": {
+          "description": "What the component is counted over.",
+          "enum": ["warrior", "large_creature"]
+        },
+        "operation": {
+          "description": "`add_per_model` adds the value once per model of `applies_to`; `add_experience` adds the value once per accumulated Experience point.",
+          "enum": ["add_per_model", "add_experience"]
+        },
+        "value": {
+          "description": "The amount the operation adds.",
+          "type": "integer"
+        },
+        "note": {
+          "description": "Editorial clarification of the component, e.g. that a large creature is also worth its accumulated Experience.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    }
+  }
+}

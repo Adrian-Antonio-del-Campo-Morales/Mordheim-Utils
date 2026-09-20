@@ -1,0 +1,200 @@
+schema_version: 2
+band_id: ghutani-rel
+rules:
+- id: band--bitter-enmity
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.ghutani-rel.band.bitter-enmity
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Bitter Enmity (Blood Must Be Repaid with Blood)
+  effect: >-
+    The Ghutani live by their ancient code of honour that demands that blood must be repaid with
+    blood. Any injured Ghutani hero that rolls 51-56 on the injury chart counts as gaining the
+    Bitter Enmity result.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Arabian Tribes / Ghutani / Special Rules
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Rencor Amargo (sangre debe pagarse con sangre)
+  effect_i18n:
+    es: >-
+      Los Ghutani viven según su antiguo código de honor que exige que la sangre debe pagarse con
+      sangre. Cualquier héroe Ghutani herido que saque 51-56 en la tabla de heridas cuenta como
+      obteniendo el resultado de Rencor Amargo.
+  applies_to:
+    band: true
+- id: band--ghutani-flagellants
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.ghutani-rel.band.ghutani-flagellants
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Flagellants
+  effect: >-
+    A Ghutani that has seen too much dishonour heaped upon his people may become slightly unhinged.
+    Therefore a Ghutani warband may hire up to 5 Flagellants as henchmen and they can choose
+    equipment from the Townsmen equipment list.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Arabian Tribes / Ghutani / Special Rules
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Flagelantes
+  effect_i18n:
+    es: >-
+      Un Ghutani que ha visto demasiado deshonor acumulado sobre su gente puede volverse ligeramente
+      desquiciado. Por tanto, una banda Ghutani puede contratar hasta 5 Flagelantes como secuaces y
+      estos pueden elegir equipo de la lista de equipo de los Ciudadanos.
+  applies_to:
+    band: true
+- id: band--ghutani-scholar-fields
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.ghutani-rel.band.ghutani-scholar-fields
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Scholar Fields of Study
+  effect: Ghutani scholar fields of study may only be poetry or theology.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Arabian Tribes / Ghutani / Special Rules
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Campos de estudio de los eruditos
+  effect_i18n:
+    es: Los campos de estudio de los eruditos Ghutani solo pueden ser poesía o teología.
+  applies_to:
+    band: true
+- id: band--slaves-can-lead
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.ghutani-rel.band.slaves-can-lead
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Slaves May Become Warband Leader
+  effect: >-
+    The honour code of the Arabian tribes demands that they treat slaves fairly. It is a regular
+    occurrence for slaves, or the sons of slaves, to gain high positions in Araby, especially if
+    they can prove themselves on the battlefield. Therefore, it is possible for a slave in an
+    Arabian warband to become a warband leader.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Arabian Tribes / Ghutani / Special Rules
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Los esclavos pueden llegar a líderes de banda
+  effect_i18n:
+    es: >-
+      El código de honor de las tribus arábigas exige que traten a los esclavos con justicia. Es
+      habitual que los esclavos, o los hijos de esclavos, alcancen posiciones elevadas en Araby,
+      sobre todo si demuestran su valía en el campo de batalla. Por tanto, es posible que un esclavo
+      de una banda árabe se convierta en el líder de la banda.
+  applies_to:
+    band: true
+- id: emir--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghutani-rel.emir.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: >-
+    Any warrior within 6" of the Emir may use his Leadership characteristic when taking Leadership
+    tests.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Emir / Special Rules / Leader
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6" del Emir puede usar su característica de Liderazgo al realizar
+      chequeos de Liderazgo.
+  applies_to:
+    profile_ids:
+    - emir
+- id: scholar--field-of-scholarship
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.ghutani-rel.scholar.field-of-scholarship
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Field of Scholarship
+  effect: >-
+    When joining a warband, the scholar must choose the area of knowledge he specialises in. Choose
+    one of the following. Cartography: the Scholar keeps a detailed map of where you have been; you
+    may add or deduct 1 from a D6 when exploring. Physiology: after all serious injuries have been
+    resolved you may select a hero to re-roll his result. Poetry: the Scholar writes grand poems
+    that increase the reputation of the warband throughout the land and inspires them to great
+    deeds; your leader adds +1 to his Leadership for his first leadership test in a scenario if your
+    warband won the last battle they fought; also, for one turn during a scenario the poet grants
+    any friendly model within 6" +1 WS and +1 A. Theology: this Scholar is a devoted servant of The
+    One and has access to Holy Skills. The Occult: the scholar is versed in the arts of magic and is
+    a wizard that can use Lesser magic (see the Magic section of the Core Rules).
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-1 Scholar / Special Rules / Field of Scholarship
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Campo de Erudición
+  effect_i18n:
+    es: >-
+      Al unirse a una banda, el erudito debe elegir el área de conocimiento en la que se
+      especializa. Elige una de las siguientes. Cartografía: el Erudito conserva un mapa detallado
+      de los lugares visitados; puedes sumar o restar 1 a un D6 al explorar. Fisiología: una vez
+      resueltas todas las heridas graves, puedes elegir un héroe para que repita su resultado.
+      Poesía: el Erudito escribe grandes poemas que aumentan la reputación de la banda por toda la
+      tierra y los inspiran a grandes hazañas; tu líder suma +1 a su Liderazgo en su primer chequeo
+      de liderazgo de un escenario si tu banda ganó la última batalla; además, durante un turno de
+      un escenario, el poeta otorga a cualquier modelo amigable a 6" +1 HA y +1 A. Teología: este
+      Erudito es un devoto servidor de El Uno y tiene acceso a Habilidades Sagradas. Lo Oculto: el
+      erudito está versado en las artes de la magia y es un mago que puede usar Magia Menor (ver la
+      sección de Magia de las reglas básicas).
+  applies_to:
+    profile_ids:
+    - scholar

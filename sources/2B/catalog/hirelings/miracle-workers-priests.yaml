@@ -1,0 +1,1078 @@
+schema_version: 1
+ruleset: mordheim
+catalog: hirelings-2b-priests
+grade: 2b
+status: staging
+profiles:
+- id: hireling.priest.mariner-priest-of-manann
+  kind: priest
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Mariner-Priest of Manann
+  name_i18n:
+    es: Sacerdote Marinero de Manann
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  starting_experience: 12
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  hire_fee:
+    kind: base_plus_upkeep
+    hire: 40
+    upkeep: 0
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+    choice_groups:
+    - id: hireling.priest.mariner-priest-of-manann.choice.equipment
+      choose:
+        kind: fixed
+        value: 1
+      options:
+      - kind: item
+        item_id: trident
+        quantity:
+          kind: fixed
+          value: 1
+        notes: Priest of Manann only; 15 gc in the chapter's priest equipment list; Strike first, Parry;
+          Rarity 7 per Unknowable Cargo.
+  skill_access:
+  - combat
+  - academic
+  - speed
+  starting_skill_ids: []
+  lore_assignments:
+  - lore.prayers-of-manann
+  available_to:
+  - source: miracle-workers
+    note: Any human, elf or dwarf warband may hire a Mariner-Priest of Manann (or Olovald). Priests may
+      not be hired by followers of Chaos, Orcs & Goblins, Dark Elves, Skaven and Undead warbands unless
+      specified elsewhere; only one Priest per warband; the Priest counts as a Hero (see the chapter errata
+      note above about replacing a starting Hero).
+  rules:
+  - id: hireling.priest.mariner-priest-of-manann.rule.prayers
+    name: Prayers
+    effect: >-
+      A Priest of Manann is a servant of Manann and may use the Prayers of Manann as detailed
+      elsewhere in the Miracle Workers chapter (ingested as lore.prayers-of-manann in
+      sources/2B/catalog/magic-2b.yaml). In addition, Manannan Priests can receive a Mark of Manann
+      instead of choosing a new skill if a double was rolled on the advance roll.
+    effect_i18n:
+      es: >-
+        Un Sacerdote de Manann es un sirviente de Manann y puede usar las Plegarias de Manann como
+        se detalla en el capítulo Trabajadores de Milagros (ingerido como lore.prayers-of-manann en
+        sources/2B/catalog/magic-2b.yaml). Además, los Sacerdotes de Manann pueden recibir una Marca
+        de Manann en lugar de elegir una nueva habilidad si se saca un doble en la tirada de avance.
+    name_i18n:
+      es: Plegarias
+  - id: hireling.priest.mariner-priest-of-manann.rule.seafaring
+    name: Seafaring
+    effect: >-
+      Priests of Manann are seafaring people and spend much of their time rowing boats. To represent
+      this, all Priests of Manann get +2 to Strength when they row a boat.
+    effect_i18n:
+      es: >-
+        Los Sacerdotes de Manann son gente de mar y pasan gran parte de su tiempo remando. Para
+        representarlo, todos los Sacerdotes de Manann obtienen +2 a su Fuerza cuando reman en una
+        embarcación.
+    name_i18n:
+      es: Navegante de Mar
+  - id: hireling.priest.mariner-priest-of-manann.rule.navigator
+    name: Navigator
+    effect: >-
+      His maritime intuition means the Priest can influence the exploration outcome of a battle
+      fought at sea. When rolling on the Nautical Exploration chart, the Priest allows you to modify
+      one dice roll by -1/+1.
+    effect_i18n:
+      es: >-
+        Su intuición marítima permite al Sacerdote influir en el resultado de la exploración de una
+        batalla librada en el mar. Al tirar en la tabla de Exploración Náutica, el Sacerdote permite
+        modificar una tirada de dado en -1/+1.
+    name_i18n:
+      es: Navegante
+  - id: hireling.priest.mariner-priest-of-manann.rule.priest-hero-slot
+    name: Priest Hero Slot (chapter errata)
+    effect: >-
+      The Priest counts as a Hero and starts with 12 experience. Chapter errata (author ruling, TBMF
+      t8634): the Priest must replace one of the warband's starting Heroes; the original PDF wording
+      allowed exceeding the Hero limit, which was never corrected in the published file.
+    effect_i18n:
+      es: >-
+        El Sacerdote cuenta como Héroe y comienza con 12 puntos de experiencia. Errata del capítulo
+        (decisión del autor, TBMF t8634): el Sacerdote debe sustituir a uno de los Héroes iniciales
+        de la banda; la redacción original del PDF permitía superar el límite de Héroes, y nunca se
+        corrigió en el archivo publicado.
+    name_i18n:
+      es: Plaza de Héroe Sacerdotal (errata del capítulo)
+  - id: hireling.priest.mariner-priest-of-manann.rule.marks-of-manann
+    name: Marks of Manann
+    effect: >-
+      One with the Sea: if the Priest falls into water then regardless of the injury roll the Priest
+      cannot be drowned. Webbed: the fingers and toes of the Priest develop webbed skin and he
+      becomes Aquatic.
+    effect_i18n:
+      es: >-
+        Uno con el Mar: si el Sacerdote cae al agua, independientemente de la tirada de herida, el
+        Sacerdote no puede ahogarse. Palmeado: los dedos de las manos y los pies del Sacerdote
+        desarrollan membranas y se convierte en Acuático.
+    name_i18n:
+      es: Marcas de Manann
+  source_refs:
+  - manual: Liber Malefic (Miracle Workers, Werekin)
+    printed_page: 3
+    section: Priests for Every Occasion / Mariner-Priest of Manann
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  - manual: broheim.net
+    printed_page: 3
+    section: Heroes / 0-1 Mutant-Priest / Special Rules / Prayers
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf
+- id: hireling.priest.priest-of-morr
+  kind: priest
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Priest of Morr
+  name_i18n:
+    es: Sacerdote de Morr
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  starting_experience: 12
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  hire_fee:
+    kind: base_plus_upkeep
+    hire: 35
+    upkeep: 0
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+    - item_id: scythe
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Scythe (chapter special weapon — Close combat, As user +1, Difficult to use, Two-handed;
+        no cost/rarity printed in the article). Resolves to the KB item `scythe` (catalog/items/trollheim.yaml);
+        the chapter's +1 Strength variant is noted for promotion merge.
+  skill_access:
+  - academic
+  - speed
+  starting_skill_ids: []
+  lore_assignments:
+  - lore.prayers-of-morr
+  available_to:
+  - source: miracle-workers
+    note: Any human or elf warband may hire a Priest of Morr.
+  rules:
+  - id: hireling.priest.priest-of-morr.rule.prayers
+    name: Prayers
+    effect: >-
+      A Priest of Morr is a servant of the Death God and may use the Prayers of Morr as detailed
+      elsewhere in the Miracle Workers chapter. In addition, Morrian Priests can receive a Mark of
+      Morr instead of choosing a new skill if a double was rolled on the advance roll. Only one Mark
+      of Morr can be chosen by Priests of Morr.
+    effect_i18n:
+      es: >-
+        Un Sacerdote de Morr es un sirviente del Dios de la Muerte y puede usar las Plegarias de
+        Morr como se detalla en el capítulo Trabajadores de Milagros. Además, los Sacerdotes de Morr
+        pueden recibir una Marca de Morr en lugar de elegir una nueva habilidad si se saca un doble
+        en la tirada de avance. Los Sacerdotes de Morr solo pueden elegir una Marca de Morr.
+    name_i18n:
+      es: Plegarias
+  - id: hireling.priest.priest-of-morr.rule.strictures
+    name: Strictures
+    effect: >-
+      Priests of the Death God seldom engage in martial activities. Priests of Morr always begin
+      equipped with a scythe and a dagger. They may only be armed with a scythe and dagger. Priests
+      of Morr may never wear armour.
+    effect_i18n:
+      es: >-
+        Los sacerdotes del Dios de la Muerte rara vez se dedican a actividades marciales. Los
+        Sacerdotes de Morr siempre comienzan equipados con una hoz y una daga. Solo pueden ir
+        armados con hoz y daga. Los Sacerdotes de Morr nunca pueden llevar armadura.
+    name_i18n:
+      es: Preceptos
+  - id: hireling.priest.priest-of-morr.rule.loner
+    name: Loner
+    effect: >-
+      Few people care to spend any length of time in the company of a Priest of Morr, even when it
+      is their duty to do so. As such, a Priest of Morr is used to being alone and probably prefers
+      it that way. Priests of Morr do not suffer from the All Alone rules.
+    effect_i18n:
+      es: >-
+        Poca gente desea pasar tiempo en compañía de un Sacerdote de Morr, aunque sea su deber. Por
+        eso, un Sacerdote de Morr está acostumbrado a estar solo y probablemente lo prefiere así.
+        Los Sacerdotes de Morr no sufren las reglas de Estar Solo.
+    name_i18n:
+      es: Solitario
+  - id: hireling.priest.priest-of-morr.rule.morrs-servant
+    name: Morr's Servant
+    effect: >-
+      Undead creatures shy away from the Priest's presence. Any Undead creature declaring a charge
+      against the Priest or being charged by the Priest must pass a Leadership test or be treated as
+      suffering the effects of fear. This ignores all the exemptions for Psychology which are
+      normally applied to Undead models.
+    effect_i18n:
+      es: >-
+        Las criaturas no muertas rehúyen la presencia del Sacerdote. Cualquier criatura no muerta
+        que declare una carga contra el Sacerdote o sea cargada por él debe superar una tirada de
+        Liderazgo o se trata como si sufriera los efectos del miedo. Esto ignora todas las
+        exenciones de Psicología que normalmente se aplican a las miniaturas de No Muertos.
+    name_i18n:
+      es: Siervo de Morr
+  - id: hireling.priest.priest-of-morr.rule.protected-by-morr
+    name: Protected by Morr
+    effect: >-
+      Morr has a special purpose in mind for His Priests, or so it seems. He, or some other
+      mysterious benefactor, is protecting them from serious harm. As such, when rolling for serious
+      injuries, ignore rolls of 'Dead' and 'Sold to the Pits'. Simply apply the next injury after
+      the relevant entry (ie, for 'Dead' use 'Multiple Injuries' and for 'Sold to the Pits' use
+      'Survives Against the Odds').
+    effect_i18n:
+      es: >-
+        Morr tiene un propósito especial reservado a sus Sacerdotes, o eso parece. Él, o algún otro
+        benefactor misterioso, los protege de daños graves. Por tanto, al tirar en la tabla de
+        heridas graves, ignora los resultados 'Muerto' y 'Vendido a losfosos'; aplica simplemente la
+        herida siguiente ('Heridas Múltiples' en lugar de 'Muerto' y 'Sobrevive contra todo
+        pronóstico' en lugar de 'Vendido a los fosos').
+    name_i18n:
+      es: Protegido por Morr
+  - id: hireling.priest.priest-of-morr.rule.marks-of-morr
+    name: Marks of Morr
+    effect: >-
+      Augur: inured to fear by long exposure to death, the Priest becomes Immune to Psychology and
+      may re-roll any one dice roll he makes during a battle, but suffers -1 Strength permanently.
+      Haunted Mien: the Priest enters into the martial career of the Black Guard; strictures are
+      ignored by a Black Guardsman, who may choose skills from the Combat and Strength skills lists
+      but may not determine a new prayer from the Prayers of Morr list.
+    effect_i18n:
+      es: >-
+        Augur: curtido en el miedo por la larga exposición a la muerte, el Sacerdote se vuelve
+        Inmune a la Psicología y puede repetir una tirada de dado que realice durante una batalla,
+        pero sufre -1 de Fuerza permanentemente. Rostro Embrujado: el Sacerdote inicia la carrera
+        marcial de la Guardia Negra; los preceptos son ignorados por un Guardia Negro, que puede
+        elegir habilidades de las listas de Combate y Fuerza, pero no puede determinar una plegaria
+        nueva de la lista de Plegarias de Morr.
+    name_i18n:
+      es: Marcas de Morr
+  source_refs:
+  - manual: Liber Malefic (Miracle Workers, Werekin)
+    printed_page: 5
+    section: Priests for Every Occasion / Priest of Morr
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+- id: hireling.priest.war-priestess-of-myrmidia
+  kind: priest
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: War-Priestess of Myrmidia
+  name_i18n:
+    es: Sacerdotisa de Guerra de Myrmidia
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  starting_experience: 12
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  hire_fee:
+    kind: base_plus_upkeep
+    hire: 40
+    upkeep: 0
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  starting_skill_ids: []
+  lore_assignments:
+  - lore.prayers-of-myrmidia
+  available_to:
+  - source: miracle-workers
+    note: Marienburgers, Tileans, Watchmen and Merchants Caravans may hire a War-Priestess of Myrmidia.
+  rules:
+  - id: hireling.priest.war-priestess-of-myrmidia.rule.prayers
+    name: Prayers
+    effect: >-
+      A War-Priestess of Myrmidia is a servant of Myrmidia and may use the Prayers of Myrmidia as
+      detailed elsewhere in the Miracle Workers chapter. In addition, Myrmidian Priestesses can
+      receive a Mark of Myrmidia instead of choosing a new skill if a double was rolled on the
+      advance roll.
+    effect_i18n:
+      es: >-
+        Una Sacerdotisa de Guerra de Myrmidia es una sirviente de Myrmidia y puede usar las
+        Plegarias de Myrmidia como se detalla en el capítulo Trabajadores de Milagros. Además, las
+        Sacerdotisas de Myrmidia pueden recibir una Marca de Myrmidia en lugar de elegir una nueva
+        habilidad si se saca un doble en la tirada de avance.
+    name_i18n:
+      es: Plegarias
+  - id: hireling.priest.war-priestess-of-myrmidia.rule.war-honed
+    name: War-honed
+    effect: >-
+      The Priestess is a warrior of stout heart and ignores the effects of fear. In addition, the
+      War-Priestess may re-roll her first failed Leadership test of every battle.
+    effect_i18n:
+      es: >-
+        La Sacerdotisa es una guerrera de corazón templado e ignora los efectos del miedo. Además,
+        la Sacerdotisa de Guerra puede repetir su primera tirada de Liderazgo fallida de cada
+        batalla.
+    name_i18n:
+      es: Templada en la Guerra
+  - id: hireling.priest.war-priestess-of-myrmidia.rule.marks-of-myrmidia
+    name: Marks of Myrmidia
+    effect: >-
+      Oracle: the Priestess may re-roll any one dice roll she makes during a battle. Eagle Friend:
+      the Priestess attracts an eagle companion; the mark can be gained multiple times. The eagle
+      has a range of 24"; when shooting, roll to hit using the Priestess's Ballistic Skill; in close
+      combat eagles strike first and use her Weapon Skill, each successful eagle attack inflicts a
+      Strength 3 hit. If the Priestess is taken out of action the eagle flies away, returning after
+      the battle; eagles cannot be attacked or slain, but if the Priestess is slain the eagles are
+      lost like any other equipment.
+    effect_i18n:
+      es: >-
+        Oráculo: la Sacerdotisa puede repetir una tirada de dado que realice durante una batalla.
+        Amiga de las Águilas: la Sacerdotisa atrae a un compañero águila; la marca puede obtenerse
+        varias veces. El águila tiene un alcance de 24"; al disparar, tira por impactar usando la
+        Habilidad de Combate a Distancia de la Sacerdotisa; en cuerpo a cuerpo las águilas golpean
+        primero y usan su Habilidad de Combate, cada impacto exitoso del águila inflige un golpe de
+        Fuerza 3. Si la Sacerdotisa queda Fuera de combate, el águila vuela y regresa tras la
+        batalla; las águilas no pueden ser atacadas ni abatidas, pero si la Sacerdotisa muere, las
+        águilas se pierden como cualquier otro equipo.
+    name_i18n:
+      es: Marcas de Myrmidia
+  source_refs:
+  - manual: Liber Malefic (Miracle Workers, Werekin)
+    printed_page: 6
+    section: Priests for Every Occasion / War-Priestess of Myrmidia
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+- id: hireling.priest.trickster-priest-of-ranald
+  kind: priest
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Trickster-Priest of Ranald
+  name_i18n:
+    es: Sacerdote Tramposo de Ranald
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  starting_experience: 12
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  hire_fee:
+    kind: base_plus_upkeep
+    hire: 55
+    upkeep: 0
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+    - item_id: throwing_knives
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Stricture armament — see rules. Resolves to KB item throwing_knives (catalog/items/weapons-ranged.yaml).
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Stiletto (counts as a sword per the chapter); stricture armament. The KB has no stiletto
+        item (only mechanic weapon.stiletto), so the chapter's own equivalence is used.
+  skill_access:
+  - academic
+  - speed
+  starting_skill_ids:
+  - skill.haggle
+  - skill.streetwise
+  lore_assignments:
+  - lore.prayers-of-ranald-and-handrich
+  available_to:
+  - source: miracle-workers
+    note: Any human or dwarf warband may hire a Priest of Ranald or Handrich (or Gunndred).
+  rules:
+  - id: hireling.priest.trickster-priest-of-ranald.rule.prayers
+    name: Prayers
+    effect: >-
+      A Priest of Ranald is a servant of Ranald and may use the Prayers of Ranald as detailed
+      elsewhere in the Miracle Workers chapter. Priests of Handrich use the same prayers. In
+      addition, Ranaldan Priests can receive a Mark of Ranald instead of choosing a new skill if a
+      double was rolled on the advance roll.
+    effect_i18n:
+      es: >-
+        Un Sacerdote de Ranald es un sirviente de Ranald y puede usar las Plegarias de Ranald como
+        se detalla en el capítulo Trabajadores de Milagros. Los Sacerdotes de Handrich usan las
+        mismas plegarias. Además, los Sacerdotes de Ranald pueden recibir una Marca de Ranald en
+        lugar de elegir una nueva habilidad si se saca un doble en la tirada de avance.
+    name_i18n:
+      es: Plegarias
+  - id: hireling.priest.trickster-priest-of-ranald.rule.strictures
+    name: Strictures
+    effect: >-
+      Trickster-Priests habitually avoid engaging in martial activity. They may only be armed with a
+      dagger, throwing knives and a stiletto (counts as a sword). Priests of Ranald may never wear
+      armour. The Priest has both the skills Haggle and Streetwise.
+    effect_i18n:
+      es: >-
+        Los Sacerdotes Tramposos evitan habitualmente dedicarse a actividades marciales. Solo pueden
+        ir armados con daga, cuchillos arrojadizos y un estilete (cuenta como espada). Los
+        Sacerdotes de Ranald nunca pueden llevar armadura. El Sacerdote tiene las habilidades
+        Regateo y Callejeo.
+    name_i18n:
+      es: Preceptos
+  - id: hireling.priest.trickster-priest-of-ranald.rule.grifter
+    name: Grifter
+    effect: >-
+      Priests of Ranald are practiced swindlers! Like a merchant, a Trickster-Priest allows (dodgy!)
+      trading deals to be arranged with other warbands.
+    effect_i18n:
+      es: >-
+        ¡Los Sacerdotes de Ranald son timadores consumados! Como un mercader, un Sacerdote Tramposo
+        permite concertar tratos comerciales (¡poco fiables!) con otras bandas.
+    name_i18n:
+      es: Estafador
+  - id: hireling.priest.trickster-priest-of-ranald.rule.marks-of-ranald
+    name: Marks of Ranald
+    effect: >-
+      Ranald's Luck: once during each battle the Priest may influence the result of any dice roll he
+      makes by +1 or -1; in addition, he ducks past any hits on a 6+ regardless of strength or
+      source (including magical attacks) — an unmodifiable roll made before critical hit effects are
+      determined. Cat Friend: the Priest attracts a cat companion (the mark can be gained multiple
+      times); cats cannot attack or be attacked but can intercept a charge made against the Priest;
+      if the Priest is taken out of action the cat runs away, returning after the battle; if the
+      Priest is slain the cats are lost like any other equipment.
+    effect_i18n:
+      es: >-
+        Suerte de Ranald: una vez por batalla, el Sacerdote puede influir en el resultado de
+        cualquier tirada de dado que realice en +1 o -1; además, esquiva cualquier impacto con un 6+
+        sin importar fuerza u origen (incluidos ataques mágicos): tirada no modificable que se hace
+        antes de determinar los efectos de golpe crítico. Amigo de los Gatos: el Sacerdote atrae a
+        un compañero gato (la marca puede obtenerse varias veces); los gatos no pueden atacar ni ser
+        atacados, pero pueden interceptar una carga contra el Sacerdote; si el Sacerdote queda Fuera
+        de combate, el gato huye y regresa tras la batalla; si el Sacerdote muere, los gatos se
+        pierden como cualquier otro equipo.
+    name_i18n:
+      es: Marcas de Ranald
+  source_refs:
+  - manual: Liber Malefic (Miracle Workers, Werekin)
+    printed_page: 8
+    section: Priests for Every Occasion / Trickster-Priest of Ranald
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+- id: hireling.priest.priestess-of-shallya
+  kind: priest
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Priestess of Shallya
+  name_i18n:
+    es: Sacerdotisa de Shallya
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 2
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  starting_experience: 12
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  hire_fee:
+    kind: base_plus_upkeep
+    hire: 50
+    upkeep: 0
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+    - item_id: staff
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Walking staff (counts as a staff); stricture armament.
+  skill_access:
+  - academic
+  starting_skill_ids: []
+  lore_assignments:
+  - lore.prayers-of-shallya
+  available_to:
+  - source: miracle-workers
+    note: Any human, elf or dwarf warband may hire a Priestess of Shallya.
+  rules:
+  - id: hireling.priest.priestess-of-shallya.rule.prayers
+    name: Prayers
+    effect: >-
+      A Priestess of Shallya is a servant of Shallya and may use the Prayers of Shallya as detailed
+      elsewhere in the Miracle Workers chapter. In addition, Shallyan Priestesses can receive a Mark
+      of Shallya instead of choosing a new skill if a double was rolled on the advance roll.
+    effect_i18n:
+      es: >-
+        Una Sacerdotisa de Shallya es una sirviente de Shallya y puede usar las Plegarias de Shallya
+        como se detalla en el capítulo Trabajadores de Milagros. Además, las Sacerdotisas de Shallya
+        pueden recibir una Marca de Shallya en lugar de elegir una nueva habilidad si se saca un
+        doble en la tirada de avance.
+    name_i18n:
+      es: Plegarias
+  - id: hireling.priest.priestess-of-shallya.rule.strictures
+    name: Strictures
+    effect: >-
+      Priestesses of Shallya avoid engaging in martial activities. Followers of Shallya may only
+      charge in hand-to-hand combat against warriors from a Carnival of Chaos warband or other
+      servants of Onogal the Fly Lord. Priestesses of Shallya always begin equipped with a walking
+      staff (counts as a staff). They may only be armed with a walking staff. Priestesses of Shallya
+      may never wear armour.
+    effect_i18n:
+      es: >-
+        Las Sacerdotisas de Shallya evitan dedicarse a actividades marciales. Los seguidores de
+        Shallya solo pueden cargar en combate cuerpo a cuerpo contra guerreros de una banda de
+        Carnaval del Caos u otros sirvientes de Onogal el Señor de las Moscas. Las Sacerdotisas de
+        Shallya siempre comienzan equipadas con un bastón de paseo (cuenta como bastón). Solo pueden
+        ir armadas con un bastón de paseo. Las Sacerdotisas de Shallya nunca pueden llevar armadura.
+    name_i18n:
+      es: Preceptos
+  - id: hireling.priest.priestess-of-shallya.rule.mercy
+    name: Mercy
+    effect: >-
+      The Priestess may heal a wounded warrior once during battle. Any model in contact with the
+      Priestess immediately recovers 1 Wound. In addition, she may accompany another Hero visiting
+      an Apothecary which allows a +1 modifier when rolling on the Surgery charts.
+    effect_i18n:
+      es: >-
+        La Sacerdotisa puede curar a un guerrero herido una vez durante la batalla. Cualquier
+        miniatura en contacto con la Sacerdotisa recupera inmediatamente 1 Herida. Además, puede
+        acompañar a otro Héroe que visite un Botica lo que permite un modificador de +1 al tirar en
+        las tablas de Cirugía.
+    name_i18n:
+      es: Misericordia
+  - id: hireling.priest.priestess-of-shallya.rule.cure-poison
+    name: Cure Poison
+    effect: >-
+      At the beginning of the post battle sequence the Priestess and any other model in the warband
+      is healed from the effects of a poison. The disease is removed from the subject model and all
+      ill-effects are nullified.
+    effect_i18n:
+      es: >-
+        Al comienzo de la secuencia posterior a la batalla, la Sacerdotisa y cualquier otra
+        miniatura de la banda quedan curadas de los efectos de un veneno. La enfermedad se elimina
+        del modelo afectado y todos sus efectos negativos quedan anulados.
+    name_i18n:
+      es: Curar Veneno
+  - id: hireling.priest.priestess-of-shallya.rule.marks-of-shallya
+    name: Marks of Shallya
+    effect: >-
+      Healing Hands: the Priestess may heal a grievously wounded warrior once during battle; any
+      model in contact immediately recovers 2 Wounds, and she grants a +2 modifier on Surgery
+      charts. Tranquil Aura: all models within 2" of the Priestess suffer -1 Weapon Skill and -1
+      Ballistic Skill; the aura has no effect on Daemons or Undead.
+    effect_i18n:
+      es: >-
+        Manos Sanadoras: la Sacerdotisa puede curar una vez durante la batalla a un guerrero
+        gravemente herido; cualquier miniatura en contacto recupera inmediatamente 2 Heridas, y
+        otorga un modificador de +2 en las tablas de Cirugía. Aura de Serenidad: todas las
+        miniaturas dentro de 2" de la Sacerdotisa sufren -1 Habilidad de Combate y -1 Habilidad de
+        Combate a Distancia; el aura no afecta a Demonios ni No Muertos.
+    name_i18n:
+      es: Marcas de Shallya
+  source_refs:
+  - manual: Liber Malefic (Miracle Workers, Werekin)
+    printed_page: 10
+    section: Priests for Every Occasion / Priestess of Shallya
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+- id: hireling.priest.warrior-priest-of-sigmar
+  kind: priest
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Warrior-Priest of Sigmar
+  name_i18n:
+    es: Sacerdote Guerrero de Sigmar
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  starting_experience: 12
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  hire_fee:
+    kind: base_plus_upkeep
+    hire: 40
+    upkeep: 0
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  starting_skill_ids: []
+  lore_assignments:
+  - lore.prayers-of-sigmar
+  available_to:
+  - source: miracle-workers
+    note: Any human warband may hire a Warrior-Priest of Sigmar except Witch Hunters (they already have
+      this choice!), Pit Fighters, Pirates, Norse, Kislevites, Tileans, Arabyans and Middenheim mercenaries.
+  rules:
+  - id: hireling.priest.warrior-priest-of-sigmar.rule.prayers
+    name: Prayers
+    effect: >-
+      A Warrior-Priest of Sigmar is a servant of Sigmar and may use the Prayers of Sigmar as
+      detailed in the Magic section of the Mordheim rulebook. In addition, Sigmarite Priests can
+      receive a Mark of Sigmar instead of choosing a new skill if a double was rolled on the advance
+      roll.
+    effect_i18n:
+      es: >-
+        Un Sacerdote Guerrero de Sigmar es un sirviente de Sigmar y puede usar las Plegarias de
+        Sigmar como se detalla en la sección de Magia del libro de Mordheim. Además, los Sacerdotes
+        de Sigmar pueden recibir una Marca de Sigmar en lugar de elegir una nueva habilidad si se
+        saca un doble en la tirada de avance.
+    name_i18n:
+      es: Plegarias
+  - id: hireling.priest.warrior-priest-of-sigmar.rule.marks-of-sigmar
+    name: Marks of Sigmar
+    effect: >-
+      Enlightened: divine purpose washes over the Priest; he automatically passes all Leadership
+      based tests taken while fighting against Orcs & Goblins or the followers of Chaos. Symbol of
+      Unity: the Priest inspires citizens of the Empire with nationalistic pride; his symbolic
+      presence affects encounters with Witch Hunters, Sisters of Sigmar or any mercenary warband
+      except Marienburg and Middenheim mercenaries; if an enemy warrior within 3" of the Priest
+      strikes or shoots at a warrior within 3" of the Priest they suffer -1 on all rolls to hit.
+    effect_i18n:
+      es: >-
+        Iluminado: el propósito divino envuelve al Sacerdote; supera automáticamente todas las
+        tiradas basadas en Liderazgo mientras lucha contra Orcos y Goblins o los seguidores del
+        Caos. Símbolo de Unidad: el Sacerdote inspira a los ciudadanos del Imperio con orgullo
+        nacionalista; su presencia simbólica afecta los encuentros con Cazadores de Brujas, Hermanas
+        de Sigmar o cualquier banda mercenaria salvo mercenarios de Mariemburgo y Middenheim; si un
+        guerrero enemigo dentro de 3" del Sacerdote golpea o dispara a un guerrero dentro de 3" del
+        Sacerdote, sufre -1 en todas las tiradas por impactar.
+    name_i18n:
+      es: Marcas de Sigmar
+  source_refs:
+  - manual: Liber Malefic (Miracle Workers, Werekin)
+    printed_page: 12
+    section: Priests for Every Occasion / Warrior-Priest of Sigmar
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+- id: hireling.priest.druid-priest-of-taal
+  kind: priest
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Druid-Priest of Taal
+  name_i18n:
+    es: Sacerdote Druida de Taal
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  starting_experience: 12
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  hire_fee:
+    kind: base_plus_upkeep
+    hire: 45
+    upkeep: 0
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  starting_skill_ids: []
+  lore_assignments:
+  - lore.prayers-of-taal
+  available_to:
+  - source: miracle-workers
+    note: Any human warband may hire a Priest of Taal or Rhya (or Karog) except Witch Hunters, Sisters
+      of Sigmar, Pit Fighters, Norse, Kislevites, Tileans, Arabyans and Middenheim mercenaries.
+  rules:
+  - id: hireling.priest.druid-priest-of-taal.rule.prayers
+    name: Prayers
+    effect: >-
+      A Priest of Taal is a servant of Taal and may use the Prayers of Taal as detailed elsewhere in
+      the Miracle Workers chapter. In addition, Taalite Priests can receive a Mark of Taal instead
+      of choosing a new skill if a double was rolled on the advance roll.
+    effect_i18n:
+      es: >-
+        Un Sacerdote de Taal es un sirviente de Taal y puede usar las Plegarias de Taal como se
+        detalla en el capítulo Trabajadores de Milagros. Además, los Sacerdotes de Taal pueden
+        recibir una Marca de Taal en lugar de elegir una nueva habilidad si se saca un doble en la
+        tirada de avance.
+    name_i18n:
+      es: Plegarias
+  - id: hireling.priest.druid-priest-of-taal.rule.strictures
+    name: Strictures
+    effect: >-
+      Priests of Taal may never wear heavy armour. Druid-Priests may never be equipped with
+      blackpowder weapons.
+    effect_i18n:
+      es: >-
+        Los Sacerdotes de Taal nunca pueden llevar armadura pesada. Los Sacerdotes Druidas nunca
+        pueden equiparse con armas de pólvora.
+    name_i18n:
+      es: Preceptos
+  - id: hireling.priest.druid-priest-of-taal.rule.marks-of-taal
+    name: Marks of Taal
+    effect: >-
+      Tranquil Fauna: animals are calmed by the presence of the Priest and will never attack him;
+      animals controlled by a warrior with an Animal Handler skill or large predatory beasts must
+      pass a Leadership test (taken using the handler's Leadership) or they may not attack the
+      Priest; a failed test does not result in a failed charge. Enlivened Flora: once during each
+      battle, models (friend as well as foe) except friendly Taalites within 3" of the Priest are
+      pushed directly away from him by a wall of blooms, standing no closer than 3" away; the living
+      barrier wilts during the recovery phase after D3 turns have elapsed.
+    effect_i18n:
+      es: >-
+        Fauna Tranquila: los animales se calman ante la presencia del Sacerdote y nunca lo atacarán;
+        los animales controlados por un guerrero con la habilidad de Adiestrador de Animales o las
+        grandes bestias depredadoras deben superar una tirada de Liderazgo (con el Liderazgo del
+        adiestrador) o no podrán atacar al Sacerdote; una tirada fallida no provoca una carga
+        fallida. Flora Vivificada: una vez por batalla, las miniaturas (amigas y enemigas) salvo los
+        Taalitas amigos dentro de 3" del Sacerdote son empujadas directamente lejos de él por una
+        muralla de flores, quedando a no menos de 3"; la barrera viva se marchita en la fase de
+        recuperación después de que transcurran D3 turnos.
+    name_i18n:
+      es: Marcas de Taal
+  source_refs:
+  - manual: Liber Malefic (Miracle Workers, Werekin)
+    printed_page: 13
+    section: Priests for Every Occasion / Warrior-Priest of Sigmar and Taal
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+- id: hireling.priest.wolf-priest-of-ulric
+  kind: priest
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Wolf-Priest of Ulric
+  name_i18n:
+    es: Sacerdote Lobo de Ulric
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  starting_experience: 12
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  hire_fee:
+    kind: base_plus_upkeep
+    hire: 60
+    upkeep: 0
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+    - item_id: wolf_pelt_cloak
+      quantity:
+        kind: fixed
+        value: 1
+      notes: White wolf pelt cloak — 6+ saving throw. Item defined in the Grade-2b
+        staging catalog (miracle-workers-gear.yaml) from this chapter's strictures;
+        not equivalent to the KB `wolfcloak` (Middenheim hunt cloak, shooting-only
+        save) — keep both items and review any merge at promotion.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  starting_skill_ids: []
+  lore_assignments:
+  - lore.prayers-of-ulric-miracle-workers
+  available_to:
+  - source: miracle-workers
+    note: Middenheim mercenaries may hire a Wolf-Priest of Ulric.
+  rules:
+  - id: hireling.priest.wolf-priest-of-ulric.rule.prayers
+    name: Prayers
+    effect: >-
+      A Wolf-Priest of Ulric is a servant of Ulric and may use the Prayers of Ulric as detailed
+      elsewhere in the Miracle Workers chapter. In addition, Ulrican Priests can receive a Mark of
+      Ulric instead of choosing a new skill if a double was rolled on the advance roll.
+    effect_i18n:
+      es: >-
+        Un Sacerdote Lobo de Ulric es un sirviente de Ulric y puede usar las Plegarias de Ulric como
+        se detalla en el capítulo Trabajadores de Milagros. Además, los Sacerdotes de Ulric pueden
+        recibir una Marca de Ulric en lugar de elegir una nueva habilidad si se saca un doble en la
+        tirada de avance.
+    name_i18n:
+      es: Plegarias
+  - id: hireling.priest.wolf-priest-of-ulric.rule.strictures
+    name: Strictures
+    effect: >-
+      Wolf-Priests of Ulric may never wear armour, trusting in Ulric's protection. The only
+      exception is that every Wolf-Priest is garbed in a cloak made from the pelt of a white wolf;
+      the pelt allows a 6+ saving throw. Black powder weapons, crossbows and helmets are not
+      favoured by Ulric; use of them shows a lack of courage. Wolf-Priests of Ulric may never be
+      equipped with blackpowder weapons.
+    effect_i18n:
+      es: >-
+        Los Sacerdotes Lobo de Ulric nunca pueden llevar armadura, confiando en la protección de
+        Ulric. La única excepción es que todo Sacerdote Lobo viste una capa hecha con la piel de un
+        lobo blanco; la piel otorga una tirada de salvación de 6+. Las armas de pólvora, las
+        ballestas y los yelmos no son del agrado de Ulric; usarlos demuestra falta de valor. Los
+        Sacerdotes Lobo de Ulric nunca pueden equiparse con armas de pólvora.
+    name_i18n:
+      es: Preceptos
+  - id: hireling.priest.wolf-priest-of-ulric.rule.intense-rivals
+    name: Intense Rivals
+    effect: >-
+      A Wolf-Priest hates all Witch Hunters, Warrior-Priests of Sigmar, Sigmarite Matriarchs and
+      Sisters of Sigmar as they are the agents of an opposing cult.
+    effect_i18n:
+      es: >-
+        Un Sacerdote Lobo odia a todos los Cazadores de Brujas, Sacerdotes Guerreros de Sigmar,
+        Matriarcas de Sigmar y Hermanas de Sigmar por ser los agentes de un culto rival.
+    name_i18n:
+      es: Rivalidad Intensa
+  - id: hireling.priest.wolf-priest-of-ulric.rule.marks-of-ulric
+    name: Marks of Ulric
+    effect: >-
+      Son of Ulric: the Priest is a direct descendent of Ulric's bloodline; his teeth sharpen and
+      become elongated and wicked claws manifest, suffering -1 Ballistic Skill; he can fight unarmed
+      without the usual penalties so he cannot be disarmed, and becomes immune to the harmful
+      effects of cold except when triggered by magic. Wolf Friend: the Priest attracts a wolf
+      companion (the mark can be gained multiple times); if the Priest is taken out of action the
+      wolf runs away, returning after the battle; if a wolf companion is taken out of action use the
+      serious injury chart for Henchmen to determine what happens to it. Wolf Friend profile: M9 WS3
+      BS0 S3 T3 W1 I3 A1 Ld5.
+    effect_i18n:
+      es: >-
+        Hijo de Ulric: el Sacerdote es descendiente directo de la estirpe de Ulric; sus dientes se
+        afilan y alargan y aparecen garras crueles, sufriendo -1 Habilidad de Combate a Distancia;
+        puede luchar desarmado sin las penalizaciones habituales, por lo que no puede ser desarmado,
+        y se vuelve inmune a los efectos nocivos del frío salvo cuando los provoca la magia. Amigo
+        de los Lobos: el Sacerdote atrae a un compañero lobo (la marca puede obtenerse varias
+        veces); si el Sacerdote queda Fuera de combate, el lobo huye y regresa tras la batalla; si
+        un compañero lobo queda Fuera de combate, usa la tabla de heridas graves de Peones para
+        determinar qué le ocurre. Perfil del Amigo de los Lobos: M9 HA3 HD0 F3 R3 H1 I3 A1 L5.
+    name_i18n:
+      es: Marcas de Ulric
+  source_refs:
+  - manual: Liber Malefic (Miracle Workers, Werekin)
+    printed_page: 14
+    section: Priests for Every Occasion / Wolf-Priest of Ulric
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+- id: hireling.priest.priest-of-verena
+  kind: priest
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Priest of Verena
+  name_i18n:
+    es: Sacerdote de Verena
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  starting_experience: 12
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  hire_fee:
+    kind: base_plus_upkeep
+    hire: 45
+    upkeep: 0
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Stricture — Priests of Verena may only be armed with a sword.
+  skill_access:
+  - academic
+  starting_skill_ids: []
+  lore_assignments:
+  - lore.prayers-of-verena-and-solkan
+  available_to:
+  - source: miracle-workers
+    note: Any human warband may hire a Priest of Verena (or War-Priest of Solkan) except Witch Hunters,
+      Sisters of Sigmar, Pit Fighters, Pirates, Norse, Kislevites, Arabyans and Middenheim mercenaries.
+  rules:
+  - id: hireling.priest.priest-of-verena.rule.prayers
+    name: Prayers
+    effect: >-
+      A Priest of Verena is a servant of Verena and may use the Prayers of Verena as detailed
+      elsewhere in the Miracle Workers chapter. War-Priests of Solkan can invoke the divine power of
+      Law using the same prayers. In addition, Verenan Priests can receive a Mark of Verena instead
+      of choosing a new skill if a double was rolled on the advance roll.
+    effect_i18n:
+      es: >-
+        Un Sacerdote de Verena es un sirviente de Verena y puede usar las Plegarias de Verena como
+        se detalla en el capítulo Trabajadores de Milagros. Los Sacerdotes de Guerra de Solkan
+        pueden invocar el poder divino de la Ley usando las mismas plegarias. Además, los Sacerdotes
+        de Verena pueden recibir una Marca de Verena en lugar de elegir una nueva habilidad si se
+        saca un doble en la tirada de avance.
+    name_i18n:
+      es: Plegarias
+  - id: hireling.priest.priest-of-verena.rule.strictures
+    name: Strictures
+    effect: Priests of Verena may only be armed with a sword.
+    effect_i18n:
+      es: Los Sacerdotes de Verena solo pueden ir armados con una espada.
+    name_i18n:
+      es: Preceptos
+  - id: hireling.priest.priest-of-verena.rule.marks-of-verena
+    name: Marks of Verena
+    effect: >-
+      Librarian: the Priest has studied forbidden tomes of the Unseen Library; whenever a prayer is
+      successfully cast on an individual model, select another target within 3" of the original
+      target to share in the Priest's wisdom — roll again for the casting of the same prayer,
+      applying +1 to the Difficulty (a further +1 each repeat, never exceeding 12). Owl Friend: the
+      Priest attracts an owl companion; the controlling player may declare a warrior at the start of
+      the shooting phase who may then re-roll any failed dice rolls to hit with missiles; the owl
+      never settles on the same warrior twice in succession; if the Priest is taken out of action
+      the owl flies away, returning after the battle; owls cannot be attacked or slain, but if the
+      Priest is slain the owl is lost like any other equipment.
+    effect_i18n:
+      es: >-
+        Bibliotecario: el Sacerdote ha estudiado tomos prohibidos de la Biblioteca Invisible; cada
+        vez que una plegaria se lance con éxito sobre una miniatura individual, selecciona otro
+        objetivo dentro de 3" del objetivo original para que comparta la sabiduría del Sacerdote:
+        tira de nuevo el lanzamiento de la misma plegaria aplicando +1 a la Dificultad (un +1
+        adicional en cada repetición, sin superar nunca 12). Amigo del Búho: el Sacerdote atrae a un
+        compañero búho; el jugador controlador puede declarar a un guerrero al comienzo de la fase
+        de disparo, que podrá repetir las tiradas fallidas por impactar con armas de misiles; el
+        búho nunca se posa dos veces seguidas en el mismo guerrero; si el Sacerdote queda Fuera de
+        combate, el búho vuela y regresa tras la batalla; los búhos no pueden ser atacados ni
+        abatidos, pero si el Sacerdote muere, el búho se pierde como cualquier otro equipo.
+    name_i18n:
+      es: Marcas de Verena
+  - id: hireling.priest.priest-of-verena.rule.marks-of-solkan
+    name: Marks of Solkan (War-Priest variant)
+    effect: >-
+      War-Priests of Solkan may choose skills from the Strength skills list and can receive a Mark
+      of Solkan instead of choosing a new skill on a double advance roll. Witch-finder: the Priest
+      possesses a sixth sense alerting him to the presence of the minions of Chaos and warlocks; he
+      must declare a charge against any follower of Chaos, warlock, necromancer, sorcerer or
+      warp-tainted character, even if he cannot see them. Inquisitor: the Priest becomes an
+      Inquisitor of Solkan; at the beginning of a new round of combat with the Priest, roll a D6 for
+      an enemy warrior who is not Undead or a follower of Chaos — on a roll of 6 the warrior is
+      judged corrupt: roll on the Random mutation chart and apply the result as its brand.
+      Inquisitors may never leave combat and are Immune to Psychology.
+    effect_i18n:
+      es: >-
+        Los Sacerdotes de Guerra de Solkan pueden elegir habilidades de la lista de Fuerza y pueden
+        recibir una Marca de Solkan en lugar de elegir una nueva habilidad con un doble en la tirada
+        de avance. Buscador de Brujas: el Sacerdote posee un sexto sentido que le alerta de la
+        presencia de los secuaces del Caos y los hechiceros; debe declarar una carga contra
+        cualquier seguidor del Caos, hechicero, nigromante, brujo o personaje corrompido por la
+        urde, aunque no pueda verlo. Inquisidor: el Sacerdote se convierte en Inquisidor de Solkan;
+        al comienzo de una nueva ronda de combate con el Sacerdote, tira un D6 por cada guerrero
+        enemigo que no sea No Muerto o seguidor del Caos: con un 6 el guerrero es declarado
+        corrupto: tira en la tabla de mutaciones aleatorias y aplica el resultado como su marca. Los
+        Inquisidores nunca pueden abandonar el combate y son Inmunes a la Psicología.
+    name_i18n:
+      es: Marcas de Solkan (variante Sacerdote de Guerra)
+  source_refs:
+  - manual: Liber Malefic (Miracle Workers, Werekin)
+    printed_page: 16
+    section: Priests for Every Occasion / Priest of Verena
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim

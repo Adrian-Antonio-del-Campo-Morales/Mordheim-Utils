@@ -1,0 +1,336 @@
+schema_version: 2
+band_id: low-kings-mim
+rules:
+- id: band--underworld-contacts
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.low-kings-mim.band.underworld-contacts
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Underworld Contacts
+  effect: >-
+    A Hero visiting a bordello, casino, dream parlour etc (see Infamous Haunts) can re-roll any dice
+    rolls made. The second result must always be accepted.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Special rules / Underworld Contacts
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf
+  name_i18n:
+    es: Contactos del Bajo Mundo
+  effect_i18n:
+    es: >-
+      Un héroe que visite un burdel, casino, salón de sueños, etc. (ver Guaridas Infames) puede
+      repetir cualquier tirada de dado. El segundo resultado debe aceptarse siempre.
+  applies_to:
+    band: true
+- id: band--mobsmen-special-skills
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.low-kings-mim.band.mobsmen-special-skills
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Mobsmen Special Skills
+  effect: >-
+    Mobsmen may choose to use the following skill list instead of the standard skill lists:
+    Backstabber (may charge an opponent he cannot see as long as the target is within his charge
+    reach; he surprises his opponent and receives +1 to hit with all attacks and any rolls on the
+    Serious Injuries chart are at +1; the bonus lasts for the first round of combat only); Pick
+    Locks (when testing to open a locked door, the Hero just needs to make an Initiative test);
+    Poisoner (the Hero starts each game with his weapons coated with Black Lotus or Dark Venom; the
+    controlling player decides which poison before the game starts and the poison does not need to
+    be traded for; the Hero cannot poison other warrior's weapons, nor will he loan his out); Slaver
+    (any Hero or Henchman put out of action by the Slaver in hand-to-hand combat is automatically
+    captured unless the warband is routed; captured warriors must be sold or exchanged to another
+    warband during the post battle sequence, otherwise they are sold into slavery and removed from
+    the roster; never more than two warriors with this skill in the warband); Stealthy (the Hero can
+    hide even after running, and can run while within 8" of enemy models if he starts and ends his
+    move hidden); Cutpurse (at the end of the game when the warband rolls to find Treasures, they
+    receive one additional Treasure as long as the Hero was in the battle and wasn't taken out of
+    action).
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Mobsmen special skills
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf
+  name_i18n:
+    es: Habilidades Especiales de los Matones
+  effect_i18n:
+    es: >-
+      Los Matones pueden usar la siguiente lista de habilidades en lugar de las listas estándar:
+      Puñalero (puede cargar contra un oponente que no vea mientras el objetivo esté dentro de su
+      alcance de carga; sorprende a su oponente y recibe +1 para impactar con todos los ataques y
+      las tiradas en la tabla de Heridas Graves se hacen con +1; la bonificación solo dura la
+      primera ronda de combate); Forzar Cerraduras (para abrir una puerta cerrada, el héroe solo
+      necesita superar un chequeo de Iniciativa); Envenenador (el héroe comienza cada partida con
+      sus armas recubiertas de Loto Negro o Veneno Oscuro; el jugador decide qué veneno antes de
+      empezar y no hace falta comerciar por él; el héroe no puede envenenar las armas de otros
+      guerreros ni prestar las suyas); Esclavista (cualquier héroe o secuaz dejado fuera de combate
+      por el Esclavista en cuerpo a cuerpo queda automáticamente capturado salvo que la banda huya;
+      los capturados deben venderse o intercambiarse con otra banda durante la secuencia posterior a
+      la batalla; en caso contrario se venden como esclavos y se retiran de la lista; nunca más de
+      dos guerreros con esta habilidad en la banda); Sigiloso (el héroe puede ocultarse incluso tras
+      correr, y puede correr a menos de 8" de modelos enemigos si empieza y termina su movimiento
+      oculto); Carterista (al final de la partida, cuando la banda tira para buscar Tesoros, reciben
+      un Tesoro adicional mientras el héroe participara en la batalla y no quedara fuera de
+      combate).
+  applies_to:
+    band: true
+- id: band--mobsmen-special-equipment
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.low-kings-mim.band.mobsmen-special-equipment
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Mobsmen Special Equipment
+  effect: >-
+    This equipment is only available to Criminal Gangs, and no other warband may purchase it.
+    Knuckledusters (5 gc, Rare 6): Pair (used in pairs, one in each hand; the warrior gets an
+    additional attack) and Concealable (small enough to stow away in any pocket; they do not count
+    towards the two close combat weapons a model may carry; may be used in any scenario which
+    prohibits use of weapons, such as 'Last Orders!' or 'Pit of Blood'). Spiked gauntlet (15 gc,
+    Rare 7, Enforcer only): Parry, Chain glove (counts as a hand weapon and a buckler; does not
+    count as having a second weapon or buckler in hand when using another weapon that is 'Difficult
+    to use'; may be used in any pit-fight scenario which prohibits weapons, such as 'Pit of Blood').
+    Thief's cloak (15 gc, Rare 9): the distance required to spot a warrior wearing a Thief's cloak
+    when hidden is doubled. Fence's iron strongbox (30 gc, Rare 10, Fence only): a hidden
+    compartment provides storage space for one item to be smuggled past watch patrols and excise
+    men; a wyrdstone item can be sealed in this way so its hazardous side-effects may be ignored by
+    the bearer; the strongbox never leaves the possession of the warband but cannot be used unless
+    the warband includes a Fence; two models are required to move it. Sham (Fence special rule): all
+    items purchased through the Fence are at their base price (no random gold modifier) and at half
+    price, but once the item is first used roll a D6; on a roll of 1 the item breaks and is useless
+    - an elaborate fake! At the end of each battle (with or without the Halfling Fence taking part)
+    roll a D6: 1 Halfling cookbook; 2 Ithilmar weapon; 3 Gromril weapon; 4 Tome of magic or Holy
+    tome; 5 Hunting rifle or Elven bow; 6 Brace of duelling pistols.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Mobsmen special equipment
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf
+  name_i18n:
+    es: Equipo Especial de los Matones
+  effect_i18n:
+    es: >-
+      Este equipo solo está disponible para las Bandas Criminales; ninguna otra banda puede
+      comprarlo. Nueces de acero (5 coronas, Rareza 6): Pareja (se usan en parejas, una en cada
+      mano; el guerrero obtiene un ataque adicional) y Disimulables (lo bastante pequeñas para
+      guardarlas en cualquier bolsillo; no cuentan entre las dos armas de cuerpo a cuerpo que puede
+      llevar un modelo; pueden usarse en cualquier escenario que prohíba el uso de armas, como
+      '¡Última Ronda!' o 'Foso de Sangre'). Guantelete con púas (15 coronas, Rareza 7, solo Matón de
+      Élite): Parada, Guante de malla (cuenta como arma de mano y escudo pequeño; no cuenta como
+      segunda arma ni escudo pequeño en la otra mano cuando use otra arma 'Difícil de usar'; puede
+      usarse en cualquier escenario de lucha en foso que prohíba armas, como 'Foso de Sangre'). Capa
+      de ladrón (15 coronas, Rareza 9): la distancia necesaria para detectar a un guerrero oculto
+      con Capa de ladrón se duplica. Caja fuerte de hierro del Receptor (30 coronas, Rareza 10, solo
+      Receptor): un compartimento secreto permite ocultar un objeto para pasarlo de contrabando ante
+      las patrullas y los recaudadores; un objeto de piedra bruja puede sellarse así, pudiendo el
+      portador ignorar sus peligrosos efectos secundarios; la caja nunca abandona a la banda pero no
+      puede usarse si la banda no incluye un Receptor; se necesitan dos modelos para moverla. Farlsa
+      (regla especial del Receptor): todos los objetos comprados a través del Receptor están a su
+      precio base (sin el modificador aleatorio de oro) y a mitad de precio, pero la primera vez que
+      se use el objeto tira 1D6; con un 1 el objeto se rompe y queda inservible, ¡una falsificación
+      elaborada! Al final de cada batalla (participe o no el Receptor mediano) tira 1D6: 1 Libro de
+      cocina de los medianos; 2 Arma de ithilmar; 3 Arma de gromril; 4 Tomo de magia o Tomo sagrado;
+      5 Rifle de caza o Arco élfico; 6 Pareja de pistolas de duelo.
+  applies_to:
+    band: true
+- id: racketeer--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.low-kings-mim.racketeer.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: >-
+    Any warrior within 6" of the Racketeer may use his Leadership value instead of his own when
+    taking Leadership tests.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / Racketeer / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6" del Tirono puede usar su valor de Liderazgo en los chequeos de
+      Liderazgo.
+  applies_to:
+    profile_ids:
+    - racketeer
+- id: racketeer--looter
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.low-kings-mim.racketeer.looter
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Looter
+  effect: >-
+    The Hero is an expert in finding valuables on a victim before moving on. If the Hero takes any
+    warriors of the enemy warband out of action (and he was not taken out of action himself), the
+    Hero's warband receives one additional Treasure, in addition to the normal +1 Treasure he might
+    already add through the Cutpurse skill. This does not affect the opposing warband's number of
+    Treasures.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / Racketeer / Special Rules / Looter
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf
+  name_i18n:
+    es: Saqueador
+  effect_i18n:
+    es: >-
+      El héroe es un experto en encontrar objetos de valor en una víctima antes de seguir adelante.
+      Si el héroe deja fuera de combate a guerreros de la banda enemiga (y él no fue dejado fuera de
+      combate), la banda recibe un Tesoro adicional, además del +1 Tesoro que ya pudiera añadir con
+      la habilidad Carterista. Esto no afecta al número de Tesoros de la banda rival.
+  applies_to:
+    profile_ids:
+    - racketeer
+- id: fence--sham
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.low-kings-mim.fence.sham
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Sham
+  effect: >-
+    A Fence has an eclectic range of items procured from sources best left unspoken. Offered at
+    incredible prices, traders should be wary for their word is not their bond and such items are
+    often flawed... All of the items purchased through the Fence are at their base price (ie, do not
+    add the random gold modifier for items). All items bought from the Fence are also at half price
+    but once the item is first used roll a D6. On a roll of 1 the item breaks and is useless - an
+    elaborate fake! At the end of each battle (whether or not the Halfling Fence actually took
+    part), roll a D6: 1 Halfling cookbook; 2 Ithilmar weapon; 3 Gromril weapon; 4 Tome of magic or
+    Holy tome; 5 Hunting rifle or Elven bow; 6 Brace of duelling pistols.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-1 Fence / Special Rules / Sham
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf
+  name_i18n:
+    es: Farlsa
+  effect_i18n:
+    es: >-
+      El Receptor dispone de una ecléctica gama de objetos obtenidos de fuentes mejor no
+      mencionadas. Ofrecidos a precios increíbles, los comerciantes deberían desconfiar, pues su
+      palabra no es su vínculo y tales objetos a menudo tienen defectos... Todos los objetos
+      comprados a través del Receptor están a su precio base (es decir, no se añade el modificador
+      aleatorio de oro) y a mitad de precio, pero la primera vez que se use el objeto tira 1D6. Con
+      un 1 el objeto se rompe y queda inservible, ¡una falsificación elaborada! Al final de cada
+      batalla (participe o no el Receptor mediano), tira 1D6: 1 Libro de cocina de los medianos; 2
+      Arma de ithilmar; 3 Arma de gromril; 4 Tomo de magia o Tomo sagrado; 5 Rifle de caza o Arco
+      élfico; 6 Pareja de pistolas de duelo.
+  applies_to:
+    profile_ids:
+    - fence
+- id: guttersnipes--tea-leaf
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.low-kings-mim.guttersnipes.tea-leaf
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Tea-Leaf!
+  effect: >-
+    Naturally thieves are most adept at picking pockets! A Guttersnipe may attempt to steal one item
+    during the post battle sequence. Choose any item; if it is a common item the Guttersnipe
+    successfully steals it on a 2+ on a D6. Rare items are successfully stolen by rolling higher
+    than the availability number on 2D6. Any items stolen may be used in exactly the same way as one
+    that was bought. If the Guttersnipe fails to steal the item roll a D6. On a score of 1-5 the
+    thief is chased out of the trading post and escapes. On the score of a 6 the thief is caught by
+    whatever authorities there may be and is hung. Remove him from the warband roster.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Heroes / 0-2 Guttersnipes / Special Rules / Tea-Leaf!
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf
+  name_i18n:
+    es: ¡Ratero!
+  effect_i18n:
+    es: >-
+      ¡Naturalmente, los ladrones son maestros en el arte de cartear! Un Pelagatos puede intentar
+      robar un objeto durante la secuencia posterior a la batalla. Elige cualquier objeto; si es
+      común, el Pelagatos lo roba con un resultado de 2+ en 1D6. Los objetos raros se roban con
+      éxito obteniendo un resultado superior al número de rareza en 2D6. Los objetos robados pueden
+      usarse exactamente igual que uno comprado. Si el Pelagatos fracasa al robar el objeto, tira
+      1D6. Con 1-5 el ladrón es perseguido hasta expulsarlo del puesto comercial y escapa. Con un 6
+      el ladrón es atrapado por las autoridades que haya y es ahorcado. Retíralo de la lista de la
+      banda.
+  applies_to:
+    profile_ids:
+    - guttersnipes
+- id: rapscallions--hide-in-shadows
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.low-kings-mim.rapscallions.hide-in-shadows
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Hide in Shadows
+  effect: >-
+    Rapscallions can blend into the shadows so that opponents will not see them before a mugging. As
+    long as they are within 1" of a wall or other linear obstacle (hedge, fence, well etc), opposing
+    models must pass an Initiative test in order to charge or shoot at them.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Henchmen / 0-4 Rapscallions / Special Rules / Hide In Shadows
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf
+  name_i18n:
+    es: Ocultarse en las Sombras
+  effect_i18n:
+    es: >-
+      Los Canallas pueden fundirse con las sombras para que sus oponentes no los vean antes de un
+      atraco. Mientras estén a 1" de un muro u otro obstáculo lineal (seto, valla, pozo, etc.), los
+      modelos rivales deben superar un chequeo de Iniciativa para cargar o dispararles.
+  applies_to:
+    profile_ids:
+    - rapscallions

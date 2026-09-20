@@ -1,0 +1,852 @@
+schema_version: 2
+band_id: blood-dragons-mou
+rules:
+- id: band--balance-warning
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.blood-dragons-mou.band.balance-warning
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Balance Warning (Blood Dragons)
+  effect: >-
+    As they are, the Blood Dragons are far too powerful and end up dominating any campaign. The
+    authors suggest either not using the Blood Dragon Warband or limiting the bloodline abilities to
+    1 per vampire.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Warning
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Aviso de balance (Dragones de Sangre)
+  effect_i18n:
+    es: >-
+      Tal como están, los Dragones de Sangre son demasiado poderosos y acaban dominando cualquier
+      campaña. Los autores sugieren o no usar la banda de Dragones de Sangre o limitar las
+      habilidades de linaje a 1 por vampiro.
+  applies_to:
+    band: true
+- id: band--bloodline-abilities
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.blood-dragons-mou.band.bloodline-abilities
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Bloodline Abilities
+  effect: >-
+    A vampire may choose one or more of the following bloodline abilities at the beginning of the
+    game (when he is created). The first ability is at normal cost, every subsequent costs twice
+    (i.e. 80 gc instead of 40). Every time he gains a new skill, he may choose a bloodline ability
+    instead of a skill at double cost. Red Fury (30 gc): the vampire falls in a horrible blood-rage;
+    he gains one additional Attack to his profile. Killing Blow (30 gc): every time he rolls a
+    natural 6 on the to hit roll, he automatically wounds his opponent; no parries are allowed,
+    although the opponent may make an armour or saving throw. Blood Lust (50 gc): he is subject to
+    frenzy. Master Strike (40 gc): he may cause a critical hit on a 5 or 6. Curse of the Undead (50
+    gc): if the vampire goes OOA then after the battle he may regenerate all of his wounds on a D6
+    roll of 5+; if he is successful then he needn't roll on the serious injury table. Strength of
+    the Dragon (40 gc): he gains a +1 Strength bonus. Gift of Abhorash (30 gc): he permanently
+    raises the maximum number of Members in the warband by one.
+  source:
+    manual: Broheim
+    printed_page: 7
+    section: Bloodline Abilities
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Habilidades de Linaje
+  effect_i18n:
+    es: >-
+      Un vampiro puede elegir una o más de las siguientes habilidades de linaje al comienzo del
+      juego (cuando se crea). La primera habilidad cuesta lo normal, cada una posterior cuesta el
+      doble (p. ej. 80 en vez de 40 coronas). Cada vez que gana una nueva habilidad, puede elegir
+      una habilidad de linaje en lugar de una habilidad, al doble de coste. Furia Roja (30 coronas):
+      el vampiro cae en una horrible furia de sangre; gana un Ataque adicional a su perfil. Golpe
+      Asesino (30 coronas): cada vez que saca un 6 natural para golpear, hiere automáticamente a su
+      oponente; no se permiten paradas, aunque el oponente puede hacer tirada de armadura o
+      salvación. Sed de Sangre (50 coronas): está sujeto a frenesí. Golpe Maestro (40 coronas):
+      puede causar un impacto crítico con un 5 o 6. Maldición de los No Muertos (50 coronas): si el
+      vampiro queda fuera de combate, tras la batalla puede regenerar todas sus heridas con una
+      tirada de 5+ en 1D6; si lo consigue, no tira en la tabla de heridas graves. Fuerza del Dragón
+      (40 coronas): gana +1 de Fuerza. Don de Abhorash (30 coronas): eleva permanentemente en uno el
+      número máximo de miembros de la banda.
+  applies_to:
+    band: true
+- id: vampire--leader
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.vampire.leader
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Leader (Vampire)
+  effect: >-
+    Any warrior within 6" of the Vampire may use his Leadership value when taking Leadership tests.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Vampire / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Líder (Vampiro)
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6" o menos del Vampiro puede usar su valor de Liderazgo cuando realice
+      tiradas de Liderazgo.
+  applies_to:
+    profile_ids:
+    - vampire
+- id: vampire--fear
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.vampire.fear
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Fear (Vampire)
+  effect: A Vampire causes Fear in his opponents.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Vampire / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Miedo (Vampiro)
+  effect_i18n:
+    es: Un Vampiro causa miedo en sus oponentes.
+  applies_to:
+    profile_ids:
+    - vampire
+- id: vampire--immune-to-psychology
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.vampire.immune-to-psychology
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Immune to Psychology (Vampire)
+  effect: A vampire is immune to all forms of psychology and needs not to roll all-alone tests.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Vampire / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Inmune a la Psicología (Vampiro)
+  effect_i18n:
+    es: >-
+      Un vampiro es inmune a todas las formas de psicología y no necesita hacer tiradas de lucha en
+      solitario.
+  applies_to:
+    profile_ids:
+    - vampire
+- id: vampire--immune-to-poisons
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.vampire.immune-to-poisons
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Immune to Poisons (Vampire)
+  effect: A vampire is immune to all forms of poison.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Vampire / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Inmune al Veneno (Vampiro)
+  effect_i18n:
+    es: Un vampiro es inmune a todas las formas de veneno.
+  applies_to:
+    profile_ids:
+    - vampire
+- id: vampire--no-pain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.vampire.no-pain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: No Pain (Vampire)
+  effect: In combat treat 'Stunned' results as 'Knocked Down'.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Vampire / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Sin Dolor (Vampiro)
+  effect_i18n:
+    es: En combate, trata los resultados 'Aturdido' como 'Derribado'.
+  applies_to:
+    profile_ids:
+    - vampire
+- id: vampire--summoner
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.vampire.summoner
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Summoner
+  effect: >-
+    All the undead in the Warband were summoned by the arcane powers of the vampire. When the
+    Vampire goes out of action, roll each round a Ld test for every undead model in the warband. If
+    the roll is missed, the model also goes out of action.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Vampire / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Invocador
+  effect_i18n:
+    es: >-
+      Todos los no muertos de la banda fueron invocados por los poderes arcanos del vampiro. Cuando
+      el Vampiro queda fuera de combate, tira cada ronda una prueba de Ld por cada modelo no muerto
+      de la banda. Si la tirada falla, el modelo también queda fuera de combate.
+  applies_to:
+    profile_ids:
+    - vampire
+- id: vampire--bloodline-abilities
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.vampire.bloodline-abilities
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Bloodline Abilities (Vampire)
+  effect: >-
+    The Vampire may start the game with one or more Bloodline abilities (see Bloodline Abilities).
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 1 Vampire / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Habilidades de Linaje (Vampiro)
+  effect_i18n:
+    es: >-
+      El Vampiro puede empezar la partida con una o más habilidades de linaje (ver Habilidades de
+      Linaje).
+  applies_to:
+    profile_ids:
+    - vampire
+- id: wights--fear
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.wights.fear
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Fear (Wights)
+  effect: A Wight causes Fear in his opponents.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-2 Wights / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Miedo (Espectros)
+  effect_i18n:
+    es: Un Espectro causa miedo en sus oponentes.
+  applies_to:
+    profile_ids:
+    - wights
+- id: wights--immune-to-psychology
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.wights.immune-to-psychology
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Immune to Psychology (Wights)
+  effect: A Wight is immune to all forms of psychology and needs not to roll all-alone tests.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-2 Wights / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Inmune a la Psicología (Espectros)
+  effect_i18n:
+    es: >-
+      Un Espectro es inmune a todas las formas de psicología y no necesita hacer tiradas de lucha en
+      solitario.
+  applies_to:
+    profile_ids:
+    - wights
+- id: wights--immune-to-poisons
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.wights.immune-to-poisons
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Immune to Poisons (Wights)
+  effect: A Wight is immune to all forms of poison.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-2 Wights / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Inmune al Veneno (Espectros)
+  effect_i18n:
+    es: Un Espectro es inmune a todas las formas de veneno.
+  applies_to:
+    profile_ids:
+    - wights
+- id: wights--no-pain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.wights.no-pain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: No Pain (Wights)
+  effect: In combat treat 'Stunned' results as 'Knocked Down'.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-2 Wights / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Sin Dolor (Espectros)
+  effect_i18n:
+    es: En combate, trata los resultados 'Aturdido' como 'Derribado'.
+  applies_to:
+    profile_ids:
+    - wights
+- id: wights--killing-blow
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.wights.killing-blow
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Killing Blow (Wights)
+  effect: >-
+    A natural rolled 6 on the to-hit roll wounds automatically; the strike might not be parried, but
+    armour and saving throws are allowed.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Heroes / 0-2 Wights / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Golpe Asesino (Espectros)
+  effect_i18n:
+    es: >-
+      Un 6 natural en la tirada para golpear hiere automáticamente; el golpe no puede ser detenido,
+      pero se permiten las tiradas de armadura y salvación.
+  applies_to:
+    profile_ids:
+    - wights
+- id: skeleton-warriors--fear
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.skeletons.fear
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Fear (Skeleton Warriors)
+  effect: A skeleton causes Fear in his opponents.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / Skeleton Warriors / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Miedo (Guerreros Esqueleto)
+  effect_i18n:
+    es: Un esqueleto causa miedo en sus oponentes.
+  applies_to:
+    profile_ids:
+    - skeleton-warriors
+- id: skeleton-warriors--immune-to-psychology
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.skeletons.immune-to-psychology
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Immune to Psychology (Skeleton Warriors)
+  effect: A skeleton is immune to all forms of psychology and needs not to roll all-alone tests.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / Skeleton Warriors / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Inmune a la Psicología (Guerreros Esqueleto)
+  effect_i18n:
+    es: >-
+      Un esqueleto es inmune a todas las formas de psicología y no necesita hacer tiradas de lucha
+      en solitario.
+  applies_to:
+    profile_ids:
+    - skeleton-warriors
+- id: skeleton-warriors--immune-to-poisons
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.skeletons.immune-to-poisons
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Immune to Poisons (Skeleton Warriors)
+  effect: A skeleton is immune to all forms of poison.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / Skeleton Warriors / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Inmune al Veneno (Guerreros Esqueleto)
+  effect_i18n:
+    es: Un esqueleto es inmune a todas las formas de veneno.
+  applies_to:
+    profile_ids:
+    - skeleton-warriors
+- id: skeleton-warriors--no-pain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.skeletons.no-pain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: No Pain (Skeleton Warriors)
+  effect: In combat treat 'Stunned' results as 'Knocked Down'.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / Skeleton Warriors / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Sin Dolor (Guerreros Esqueleto)
+  effect_i18n:
+    es: En combate, trata los resultados 'Aturdido' como 'Derribado'.
+  applies_to:
+    profile_ids:
+    - skeleton-warriors
+- id: skeleton-warriors--slow
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.skeletons.slow
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Slow (Skeleton Warriors)
+  effect: >-
+    Consisting just of old bones, skeletons are moving very slow. Therefore they might not run,
+    although they are allowed to charge normally.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / Skeleton Warriors / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Lentos (Guerreros Esqueleto)
+  effect_i18n:
+    es: >-
+      Formados solo de huesos viejos, los esqueletos se mueven muy lentos. Por eso no pueden correr,
+      aunque se les permite cargar con normalidad.
+  applies_to:
+    profile_ids:
+    - skeleton-warriors
+- id: skeleton-warriors--no-brain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.skeletons.no-brain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: No Brain (Skeleton Warriors)
+  effect: Skeletons never gain experience.
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Henchmen / Skeleton Warriors / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Sin Cerebro (Guerreros Esqueleto)
+  effect_i18n:
+    es: Los esqueletos nunca ganan experiencia.
+  applies_to:
+    profile_ids:
+    - skeleton-warriors
+- id: grave-guards--immune-to-psychology
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.grave-guards.immune-to-psychology
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Immune to Psychology (Grave Guards)
+  effect: A grave guard is immune to all forms of psychology and needs not to roll all-alone tests.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Grave Guards / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Inmune a la Psicología (Guardianes de Tumba)
+  effect_i18n:
+    es: >-
+      Un guardián de tumba es inmune a todas las formas de psicología y no necesita hacer tiradas de
+      lucha en solitario.
+  applies_to:
+    profile_ids:
+    - grave-guards
+- id: grave-guards--immune-to-poisons
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.grave-guards.immune-to-poisons
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Immune to Poisons (Grave Guards)
+  effect: A grave guard is immune to all forms of poison.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Grave Guards / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Inmune al Veneno (Guardianes de Tumba)
+  effect_i18n:
+    es: Un guardián de tumba es inmune a todas las formas de veneno.
+  applies_to:
+    profile_ids:
+    - grave-guards
+- id: grave-guards--no-pain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.grave-guards.no-pain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: No Pain (Grave Guards)
+  effect: In combat treat 'Stunned' results as 'Knocked Down'.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Grave Guards / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Sin Dolor (Guardianes de Tumba)
+  effect_i18n:
+    es: En combate, trata los resultados 'Aturdido' como 'Derribado'.
+  applies_to:
+    profile_ids:
+    - grave-guards
+- id: grave-guards--slow
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.grave-guards.slow
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Slow (Grave Guards)
+  effect: >-
+    Grave Guards are very slow when walking in their rusty armours. They may not run, although they
+    are allowed to charge normally.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Grave Guards / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Lentos (Guardianes de Tumba)
+  effect_i18n:
+    es: >-
+      Los Guardianes de Tumba son muy lentos al caminar con sus armaduras oxidadas. No pueden
+      correr, aunque se les permite cargar con normalidad.
+  applies_to:
+    profile_ids:
+    - grave-guards
+- id: grave-guards--killing-blow
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.grave-guards.killing-blow
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Killing Blow (Grave Guards)
+  effect: >-
+    A natural rolled 6 on the to-hit roll wounds automatically; the strike might not be parried, but
+    armour and saving throws are allowed.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Grave Guards / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Golpe Asesino (Guardianes de Tumba)
+  effect_i18n:
+    es: >-
+      Un 6 natural en la tirada para golpear hiere automáticamente; el golpe no puede ser detenido,
+      pero se permiten las tiradas de armadura y salvación.
+  applies_to:
+    profile_ids:
+    - grave-guards
+- id: hell-hounds--fear
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.hell-hounds.fear
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Fear (Hell Hounds)
+  effect: A Hell Hound causes Fear in his opponents.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Hell Hounds / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Miedo (Sabuesos Infernales)
+  effect_i18n:
+    es: Un Sabueso Infernal causa miedo en sus oponentes.
+  applies_to:
+    profile_ids:
+    - hell-hounds
+- id: hell-hounds--immune-to-psychology
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.hell-hounds.immune-to-psychology
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Immune to Psychology (Hell Hounds)
+  effect: A Hell Hound is immune to all forms of psychology and needs not to roll all-alone tests.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Hell Hounds / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Inmune a la Psicología (Sabuesos Infernales)
+  effect_i18n:
+    es: >-
+      Un Sabueso Infernal es inmune a todas las formas de psicología y no necesita hacer tiradas de
+      lucha en solitario.
+  applies_to:
+    profile_ids:
+    - hell-hounds
+- id: hell-hounds--immune-to-poisons
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.hell-hounds.immune-to-poisons
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Immune to Poisons (Hell Hounds)
+  effect: A Hell Hound is immune to all forms of poison.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Hell Hounds / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Inmune al Veneno (Sabuesos Infernales)
+  effect_i18n:
+    es: Un Sabueso Infernal es inmune a todas las formas de veneno.
+  applies_to:
+    profile_ids:
+    - hell-hounds
+- id: hell-hounds--no-pain
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.hell-hounds.no-pain
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: No Pain (Hell Hounds)
+  effect: In combat treat 'Stunned' results as 'Knocked Down'.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Hell Hounds / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Sin Dolor (Sabuesos Infernales)
+  effect_i18n:
+    es: En combate, trata los resultados 'Aturdido' como 'Derribado'.
+  applies_to:
+    profile_ids:
+    - hell-hounds
+- id: hell-hounds--animal
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.blood-dragons-mou.hell-hounds.animal
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Animal (Hell Hounds)
+  effect: Hell Hounds never gain experience. They are animals and cannot use weapons or armour.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Henchmen / 0-5 Hell Hounds / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Blood%20Dragons.pdf
+  name_i18n:
+    es: Animales (Sabuesos Infernales)
+  effect_i18n:
+    es: >-
+      Los Sabuesos Infernales nunca ganan experiencia. Son animales y no pueden usar armas ni
+      armaduras.
+  applies_to:
+    profile_ids:
+    - hell-hounds

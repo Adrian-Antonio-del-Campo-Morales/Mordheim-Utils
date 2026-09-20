@@ -1,0 +1,258 @@
+schema_version: 2
+band_id: nipponese-expedition-web
+profiles:
+- id: hatamoto
+  name: Hatamoto
+  type: hero
+  cost: 60
+  experience: 20
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - nippon-noble-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Hatamoto
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  source_path:
+  - heroes
+  - 1 Hatamoto
+  name_i18n:
+    es: Hatamoto
+  rule_ids:
+  - hatamoto--leader
+  - hatamoto--ride
+  combat_traits: {}
+- id: vim-to-mage
+  name: Vim-To Mage
+  type: hero
+  cost: 45
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists: []
+  fixed_equipment:
+  - club
+  - dagger
+  equipment_restrictions:
+  - 'Tenants of the Order: with the exception of a walking staff (club) and a dagger the Vim-To Mage may
+    never have any equipment.'
+  - Walking staff (club)
+  skill_access:
+  - academic
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Vim-To Mage
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  source_path:
+  - heroes
+  - 0-1 Vim-To Mage
+  name_i18n:
+    es: Mago Vim-To
+  rule_ids:
+  - vim-to-mage--tenants-of-the-order
+  - vim-to-mage--arcane-vim-toist
+  combat_traits: {}
+- id: shinobi
+  name: Shinobi
+  type: hero
+  cost: 70
+  experience: 15
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - shinobi-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-1 Shinobi
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  source_path:
+  - heroes
+  - 0-1 Shinobi
+  name_i18n:
+    es: Shinobi
+  rule_ids:
+  - shinobi--infiltration
+  - shinobi--loner
+  combat_traits: {}
+- id: retainer
+  name: Retainer
+  type: hero
+  cost: 40
+  experience: 8
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - nippon-noble-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Retainers
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  source_path:
+  - heroes
+  - 0-2 Retainers
+  name_i18n:
+    es: Vasallo
+  rule_ids:
+  - retainer--ride
+  combat_traits: {}
+- id: ashigaru
+  name: Ashigaru
+  type: henchman
+  cost: 20
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - nippon-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Ashigaru
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  source_path:
+  - henchmen
+  - Ashigaru
+  name_i18n:
+    es: Ashigaru
+  rule_ids:
+  - ashigaru--wall-of-steel
+  combat_traits: {}
+- id: onnabushi
+  name: Onnabushi
+  type: henchman
+  cost: 30
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - nippon-warrior-equipment-list
+  fixed_equipment: []
+  equipment_restrictions: []
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-2 Onnabushi
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  source_path:
+  - henchmen
+  - 0-2 Onnabushi
+  name_i18n:
+    es: Onnabushi
+  rule_ids:
+  - onnabushi--wardens-of-the-castle
+  combat_traits: {}
+- id: warrior-monks
+  name: Warrior Monks
+  type: henchman
+  cost: 30
+  experience: 0
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - monk-equipment-list
+  fixed_equipment: []
+  equipment_restrictions:
+  - May not wear armour.
+  skill_access: []
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-3 Warrior Monks
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  source_path:
+  - henchmen
+  - 0-3 Warrior Monks
+  name_i18n:
+    es: Monjes Guerreros
+  rule_ids: []
+  combat_traits: {}

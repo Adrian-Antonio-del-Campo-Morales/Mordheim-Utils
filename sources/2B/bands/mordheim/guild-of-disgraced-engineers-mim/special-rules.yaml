@@ -1,0 +1,833 @@
+schema_version: 2
+band_id: guild-of-disgraced-engineers-mim
+rules:
+- id: band--hard-to-kill
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.band.hard-to-kill
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Hard to Kill
+  effect: >-
+    Dwarfs are tough, resilient individuals who can only be taken out of action on a roll of 6
+    instead of 5-6 when rolling on the Injury chart. Treat a roll of 1-2 as knocked down, 3-5 as
+    stunned, and 6 as out of action.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Hard to Kill
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Difícil de Matar
+  effect_i18n:
+    es: >-
+      Los enanos son individuos duros y resistentes que solo pueden ser dejados fuera de combate con
+      un resultado de 6 en lugar de 5-6 al tirar en la tabla de Heridas. Trata un resultado de 1-2
+      como derribado, 3-5 como aturdido y 6 como fuera de combate.
+  applies_to:
+    band: true
+- id: band--hard-head
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.band.hard-head
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Hard Head
+  effect: Dwarfs ignore the special rules for clubs, maces, etc. They too are not easy to knock out!
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Hard Head
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Cabeza Dura
+  effect_i18n:
+    es: >-
+      Los enanos ignoran las reglas especiales de garrotes, mazas, etc. ¡Ellos tampoco son fáciles
+      de dejar K.O.!
+  applies_to:
+    band: true
+- id: band--armour
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.band.armour
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Armour
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Armour
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Armadura
+  applies_to:
+    band: true
+  rule_ref: shared-rule.armour-2
+- id: band--field-test
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.band.field-test
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Field Test
+  effect: >-
+    The Engineer and Apprentices can use any weapon or armour created through the Inventions table.
+    Lads that get talent will also be forced to partake in this risky endeavour. The Sapper being a
+    bit more wary will only wear armour based inventions.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Field Test
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Prueba de Campo
+  effect_i18n:
+    es: >-
+      El Ingeniero y los Aprendices pueden usar cualquier arma o armadura creada mediante la tabla
+      de Inventos. Los muchachos con talento también se verán forzados a participar en esta
+      arriesgada tarea. El Zapador, algo más cauto, solo llevará inventos basados en armaduras.
+  applies_to:
+    band: true
+- id: band--death-of-a-leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.band.death-of-a-leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Death of a Leader
+  effect: >-
+    In the event the Expelled Engineer dies, he will pass the Book of Bad Ideas onto an Apprentice
+    Engineer, who will take over the Title of Engineer, allowing him to take the inventor special
+    rule and hire a new apprentice.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Special Rules / Death of a Leader
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Muerte de un Líder
+  effect_i18n:
+    es: >-
+      En caso de que el Ingeniero Expulsado muera, legará el Libro de Malas Ideas a un Aprendiz de
+      Ingeniero, que asumirá el título de Ingeniero, lo que le permitirá obtener la regla especial
+      de inventor y contratar un nuevo aprendiz.
+  applies_to:
+    band: true
+- id: band--characteristic-maximums
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.band.characteristic-maximums
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Characteristic Increase (Dwarf Maximums)
+  effect: >-
+    Dwarf characteristics may not be increased beyond the maximum profile limits: M3, WS7, BS6, S4,
+    T5, W3, I5, A4, Ld10. If a characteristic is at its maximum, take the other option or roll again
+    if you can only add one characteristic. If both are already at their maximum, you may increase
+    any other by +1 instead. Remember that Henchmen can only add +1 to any characteristic.
+  source:
+    manual: Broheim
+    printed_page: 1
+    section: Characteristic Increase
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Aumento de Características (Máximos de Enano)
+  effect_i18n:
+    es: >-
+      Las características de los enanos no pueden aumentarse más allá de los límites máximos de
+      perfil: M3, HA7, HP6, F4, R5, W3, I5, A4, L10. Si una característica está en su máximo, toma
+      la otra opción o vuelve a tirar si solo puedes añadir una característica. Si ambas están en su
+      máximo, puedes aumentar cualquier otra en +1 en su lugar. Recuerda que los secuaces solo
+      pueden añadir +1 a cualquier característica.
+  applies_to:
+    band: true
+- id: band--dwarf-engineer-skills
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.band.dwarf-engineer-skills
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Dwarf Engineer Skill List
+  effect: >-
+    Dwarfs may choose to use the following skill list instead of the standard skill lists: True Grit
+    (when rolling on the Injury Table for this hero, a roll of 1-3 is treated as Knocked Down, 4-5
+    as Stunned and 6 is Taken Out); Thick Skull (special 3+ save on a D6 to avoid being Stunned; if
+    the save is made, treat a Stunned result as Knocked Down instead; if the Dwarf also wears a
+    Helmet, this save is 2+ instead of 3+, taking the place of the normal Helmet special rule);
+    Extra Tough (when rolling on the Heroes Serious Injury Chart for this hero after a game in which
+    he has been taken Out of Action, the dice may be re-rolled once; the second result must be
+    accepted, even if it is worse); Tunneler (Sapper only: if equipped with a cinderblast charge and
+    underground, the Sapper may use the charge to blow a hole to the surface; any model standing
+    directly above the charge suffers a S4 hit and a new opening to the surface is made in that
+    spot); Tinkerer (in the post game the dwarf may roll on the customisation chart to try and
+    improve the gyrocopter; if they have chosen to tinker they may not do any other action post
+    game); Quick Thinker (the dwarf may add +1 to any roll on the experimental weapons chart);
+    Master Inventor (Expelled Engineer only: may attempt D3+1 inventions in the post-game phase
+    rather than 1).
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Dwarf Engineer Skill List
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Lista de Habilidades de Ingeniero Enano
+  effect_i18n:
+    es: >-
+      Los enanos pueden usar la siguiente lista de habilidades en lugar de las listas estándar:
+      Entereza (al tirar en la tabla de Heridas para este héroe, 1-3 se trata como Derribado, 4-5
+      como Aturdido y 6 es Fuera de Combate); Cráneo Espeso (salvación especial de 3+ en 1D6 para
+      evitar quedar Aturdido; si la salvación tiene éxito, trata el resultado Aturdido como
+      Derribado; si el enano además lleva Yelmo, la salvación es de 2+ en lugar de 3+, sustituyendo
+      a la regla especial normal del yelmo); Muy Duro (al tirar en la tabla de Heridas Graves de
+      Héroes para este héroe tras una partida en la que quedara Fuera de Combate, el dado puede
+      repetirse una vez; el segundo resultado debe aceptarse, aunque sea peor); Tunelero (solo
+      Zapador: si lleva una carga de detonación de cinderita y está bajo tierra, el Zapador puede
+      usar la carga para abrir un agujero hasta la superficie; cualquier modelo situado justo encima
+      de la carga sufre un impacto de F4 y se abre una nueva salida a la superficie en ese punto);
+      Manitas (tras la partida el enano puede tirar en la tabla de personalización para intentar
+      mejorar el autogiro; si elige trastear no puede realizar ninguna otra acción tras la partida);
+      Despierto (el enano puede sumar +1 a cualquier tirada en la tabla de armas experimentales);
+      Maestro Inventor (solo Ingeniero Expulsado: puede intentar 1D3+1 inventos en la fase posterior
+      a la partida en lugar de 1).
+  applies_to:
+    band: true
+- id: band--customisation-chart
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.band.customisation-chart
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Customisation Chart (Gyrocopter)
+  effect: >-
+    2D6 result: 2 - That didn't go well! Over-enthusiastic tinkering coupled with a wobbly ladder
+    means that something important has been sliced off! Roll again on this chart (rerolling any
+    further instances of 'That didn't go well!' and 'Breakthrough!') but instead of increasing the
+    characteristic rolled, decrease it/lose the upgrade!; 3 - Bomber: the gyrocopter has been modded
+    with a hatch below it to drop mortar-like bombs onto unsuspecting warriors below; any time
+    during your movement phase you may choose to drop a bomb (first roll an artillery dice, then
+    move a small blast template that far back along your movement path; anyone under the template
+    suffers a Strength 4 hit; on a misfire result the gyrocopter and the steam engine suffer the hit
+    instead as the shell explodes inside the hull; bombs must be individually purchased for 25 gold
+    each); 4 - Every Gear and Gizmo: the extra gears give the Gyrocopter +2 Movement; 5 - Room for
+    Activities: the cleared out hull gives the gyrocopter the ability to carry +1 passenger; 6 -
+    Stabilizers: new stabilizing wings and fins allow smoother and more controlled descents in case
+    of accidents; when a result on the Engine Malfunction or Wheel Damage causes the Gyrocopter to
+    come to a halt and/or land, it can always choose to glide up to 2D6" away from its accident site
+    (in any direction) before plunging down and landing; 7 - More Reliable: the engineer has tuned
+    the engine to perfection, allowing a reroll on the Engine Malfunction table (reroll this result
+    if gotten multiple times); 8 - Steam Cloud: the Gyrocopter is -1 to hit with Missile Weapons
+    (this result can only be gained once); 9 - Weapons Mount: a smartly placed weapons mount allows
+    the gyrocopter to attach an artillery weapon on the frame without taking up precious seating
+    space (you may purchase any swivel-mounted artillery weapon, which can be manned by either the
+    Pilot if the Gyrocopter is stationary or another passenger); 10 - Reinforced Hull: armoured
+    plating lines the inside of the gyrocopter giving it +4 Armour Save; 11 - Steel propellers: a
+    propeller frame gives the Gyrocopter +1 Wound; 12 - Breakthrough! Roll a further D3 times on
+    this chart, ignoring any further rolls of 'Breakthrough!'.
+  source:
+    manual: Broheim
+    printed_page: 4
+    section: Customisation chart
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Tabla de Personalización (Autogiro)
+  effect_i18n:
+    es: >-
+      Resultado de 2D6: 2 - ¡Eso no fue bien! Un trasteo demasiado entusiasta unido a una escalera
+      coja hace que se haya seccionado algo importante. Tira de nuevo en esta tabla (repitiendo
+      cualquier otra aparición de '¡Eso no fue bien!' y '¡Avance!'), pero en lugar de aumentar la
+      característica obtenida, ¡redúcela/pierde la mejora!; 3 - Bombardero: el autogiro se ha
+      modificado con una escotilla inferior para soltar bombas de mortero sobre guerreros
+      desprevenidos; en cualquier momento de tu fase de movimiento puedes soltar una bomba (primero
+      tira el dado de artillería y luego mueve una plantilla pequeña de explosión esa distancia
+      hacia atrás por tu trayectoria de movimiento; quien esté bajo la plantilla sufre un impacto de
+      Fuerza 4; con un fallo catastrófico el autogiro y el motor de vapor sufren el impacto, ya que
+      el proyectil explota dentro del casco; las bombas deben comprarse individualmente a 25 de oro
+      cada una); 4 - Engranajes y Chismes: los engranajes extra dan al Autogiro +2 Movimiento; 5 -
+      Espacio para Todo: el casco despejado permite al autogiro llevar +1 pasajero; 6 -
+      Estabilizadores: las nuevas alas y aletas estabilizadoras permiten descensos más suaves y
+      controlados en caso de accidente; cuando un resultado de Avería de Motor o Daño en las Ruedas
+      provoque que el Autogiro se detenga y/o aterrice, siempre puede elegir planear hasta 2D6"
+      lejos del lugar del accidente (en cualquier dirección) antes de caer en picado y aterrizar; 7
+      - Más Fiable: el ingeniero ha afinado el motor a la perfección, permitiendo repetir la tirada
+      en la tabla de Averías de Motor (repite este resultado si sale varias veces); 8 - Nube de
+      Vapor: el Autogiro es impactado por armas de proyectil con -1 (este resultado solo puede
+      obtenerse una vez); 9 - Soporte de Armas: un soporte bien colocado permite al autogiro acoplar
+      un arma de artillería al bastidor sin ocupar valioso asiento (puedes comprar cualquier arma de
+      artillería giratoria, tripulada por el Piloto si el Autogiro está quieto o por otro pasajero);
+      10 - Casco Reforzado: el blindaje interior del autogiro le otorga +4 a la Salvación por
+      Armadura; 11 - Hélices de acero: un bastidor de hélice da al Autogiro +1 Herida; 12 - ¡Avance!
+      Tira 1D3 veces más en esta tabla, ignorando cualquier nueva aparición de '¡Avance!'.
+  applies_to:
+    band: true
+- id: band--inventions
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.band.inventions
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Inventions
+  effect: >-
+    Inventions are created by the Engineer; all the blueprints necessary are in the Book of Bad
+    Ideas, the only limits are resources and how bad an idea it is! All inventions suffer from being
+    experimental: when rolling to hit, a 1 means something has gone drastically wrong (roll on the
+    experimental weapons chart); for items that do not have to roll to hit, roll a D6 when used and
+    on a result of 1 the device still works but you must then roll on the experimental weapons
+    chart. When rolling for building an Invention, a roll of 2 on the difficulty test is a critical
+    failure! All ingredients are lost. Master Key (Difficulty 8; components: Blunderbuss + Handgun):
+    makes a handgun fire a small blast template once per game; auto opens doors, and the blast
+    template extends through the hole where the door once was; does not affect large gates. Boom
+    Hammer (Difficulty 10; components: Double Handed Hammer + Superior Black Powder): Strength as
+    user +2, Strike Last, Full Steam (once per close combat the dwarf may choose to attack with an
+    additional +2 Strength, +4 total; this mighty black powder assisted swing will throw them off
+    balance and the next time they are attacked they are at +1 to hit). Launching Vertical
+    Assistance Rope (Difficulty 7; components: Pistol + Rope and Hook): pass all climbing and diving
+    checks on a 3+. Stand and Deliver (Difficulty 7; components: Handgun + Spear): counts as a
+    Handgun and a spear; Point Blank (strike first in the first round of combat with a rifle shot
+    and a spear attack). Repeaterbuss (Difficulty 10; components: 4x Blunderbuss + Repeater
+    Handgun): can fire 4 blunderbuss shots all at once, roll for misfire on each shot. Escape pod
+    (Difficulty 8; components: Any Armour + Toughened leathers + sacrificial Goat for the grease):
+    counts as whatever armour type it is made out of; Greasy escape (after a failed armour save the
+    dwarf may launch himself from his armour D6" breaking combat without hits against him; the
+    armour is retrieved after the match and the pod must be restocked with grease, i.e. a goat). Hug
+    Thrower (Difficulty 6; components: Crossbow + Net): Range 30", Move or Fire; allows the Dwarf to
+    launch a net at the full range of a crossbow; enemies have a -1 penalty to their strength test
+    when trying to escape the net; on a to-hit roll of 1 the net fails to clear the firing rail and
+    wraps around the dwarf! Auto-Stand (Difficulty 10; components: Heavy Armour + Superior black
+    powder): the Dwarf gains the Jump up skill whilst wearing the armour. Golden Gun (Difficulty 10;
+    components: Double Barrelled Hunting Rifle + Flash Powder): counts as a Double Barrelled Long
+    Rifle; Payday (the Dwarf stuffs as many gold coins as he can bear to part with down the
+    specially modified barrel; every 5 GC constitutes a +1 Strength slug, e.g. 25 GC = S5; no more
+    than 30 GC can fit in the barrel at one time). Para-Pillow (Difficulty 10; components: 5x
+    Cathayan Silks + 2x Rope and Hook): the Dwarf can leap off a tall building and sail gracefully
+    to the ground; the Dwarf may glide as described in the wings mutation from Corrupted Characters.
+    Siege Breaker (Difficulty 11; components: Treasure Cart + Powder Keg + 10x Belaying Pins +
+    Superior Black Powder + Gromril Hammer): a modified piece of mining apparatus; the cart takes 2
+    units to move at half speed, or 4 at regular speed; place against a wall or barred door and roll
+    on the chart (1: She's gonna blow! It explodes causing a S4 hit to all models within 4"; 2-4:
+    Here's Johnny! It creates a hole in the surface big enough that models can shoot through it; if
+    this is the 2nd time this result is rolled count it as a 5-6; 5-6: Party time! It completely
+    destroys the door; if breaking through a wall it creates a hole 1" wide, enough for non-large
+    models to move through). Full Metal Jacket (Difficulty 12; components: Handheld Mortar + Heavy
+    Armour + Net): Range 24"; a stronger version of the hug launcher that fires a straitjacket-like
+    armour at the target; the trapped victim will be at -2 Strength to escape; if it hits a model in
+    the water they automatically sink and are out of action, even aquatic models; if it hits a large
+    model it wraps around their head, leaving them blinded and moving 2D6" in a random direction
+    each turn until they free themselves. Back Off Armour (Difficulty 12; components: Heavy Armour +
+    powder keg): counts as heavy armour; Get off! (once per game, all models in base contact suffer
+    a S3 hit and are knocked back D6"; a new powder keg must be purchased after each use). Death
+    Roller (Difficulty 12; components: Cart + 6x Axe + 6x Sword + Steam Engine + Armoured Plating):
+    acts as a cart with all the associated special rules for steam engine and armoured plating, but
+    will cause D6 impact hits at a Strength equal to the distance it travelled that turn to any
+    model that stands in its way. Goblin Hewer (Difficulty 12, Troll Slayer engineer only;
+    components: 12x Axe, 6x Rope and hook, Bolt Thrower): Range 6-26", Strength 4, Hard to Fire,
+    Cumbersome Movement, Reload, Aim, Broadside Shooting, Carve em up (fires 2D6 shots each time it
+    is fired: nominate a target model and roll 2D6; spread the shots evenly between the target model
+    and another model within 6", friend or foe!, then roll to hit and to wound as normal for each
+    shot).
+  source:
+    manual: Broheim
+    printed_page: 5
+    section: Inventions
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Inventos
+  effect_i18n:
+    es: >-
+      Los inventos son creados por el Ingeniero; todos los planos necesarios están en el Libro de
+      Malas Ideas; ¡los únicos límites son los recursos y lo mala que sea la idea! Todos los
+      inventos sufren por ser experimentales: al tirar para impactar, un 1 significa que algo ha ido
+      drásticamente mal (tira en la tabla de armas experimentales); para objetos que no requieren
+      tirar para impactar, tira 1D6 al usarlos y con un resultado de 1 el artilugio funciona pero
+      debes tirar en la tabla de armas experimentales. Al tirar para construir un invento, ¡un
+      resultado de 2 en la tirada de dificultad es un fallo crítico! Todos los ingredientes se
+      pierden. Llave Maestra (Dificultad 8; componentes: Trabuco + Pistola): hace que una pistola
+      dispare una plantilla pequeña de explosión una vez por partida; abre puertas automáticamente y
+      la plantilla se extiende por el agujero donde estaba la puerta; no afecta a puertas grandes.
+      Martillo Estruendo (Dificultad 10; componentes: Martillo a Dos Manos + Pólvora Negra
+      Superior): Fuerza como usuario +2, Golpear al Final, A Todo Vapor (una vez por combate cuerpo
+      a cuerpo el enano puede atacar con +2 Fuerza adicionales, +4 en total; este poderoso golpe
+      asistido por pólvora desequilibra al rival y la próxima vez que sea atacado se le impacta con
+      +1). Cuerda de Asistencia de Escalada Vertical (Dificultad 7; componentes: Pistola + Cuerda y
+      Garfio): supera todas las pruebas de trepar y descender con un 3+. Alto y Claro (Dificultad 7;
+      componentes: Pistola + Lanza): cuenta como Pistola y lanza; a Quemarropa (golpea primero en la
+      primera ronda de combate con un disparo de fusil y un ataque de lanza). Repetitrabuco
+      (Dificultad 10; componentes: 4x Trabuco + Fusil de Repetición): dispara 4 tiros de trabuco a
+      la vez, tira encasquillamiento en cada disparo. Cápsula de Escape (Dificultad 8; componentes:
+      Cualquier Armadura + Cuero Endurecido + Cabra sacrificial para la grasa): cuenta como el tipo
+      de armadura con que esté hecha; Escape Resbaladizo (tras una salvación por armadura fallida el
+      enano puede lanzarse fuera de su armadura 1D6" rompiendo el combate sin recibir impactos; la
+      armadura se recupera tras el combate y la cápsula debe reabastecerse de grasa, es decir, una
+      cabra). Lanzarredes (Dificultad 6; componentes: Ballesta + Red): Alcance 30", Disparar o
+      Mover; permite al enano lanzar una red al alcance completo de una ballesta; los enemigos
+      sufren -1 en su prueba de Fuerza al intentar escapar de la red; ¡con un 1 al impactar la red
+      no supera el riel de disparo y se enreda en el enano!. Auto-Izquierda (Dificultad 10;
+      componentes: Armadura Pesada + Pólvora Negra Superior): el enano gana la habilidad Levantarse
+      mientras lleve la armadura. Pistola Dorada (Dificultad 10; componentes: Fusil de Caza de Doble
+      Cañón + Polvo de Destello): cuenta como Fusil Largo de Doble Cañón; Día de Paga (el enano mete
+      por el cañón modificado todas las monedas de oro que pueda soportar desprenderse; cada 5
+      coronas constituye un proyectil de +1 Fuerza, p. ej. 25 coronas = F5; no caben más de 30
+      coronas en el cañón a la vez). Almohada-Paracaídas (Dificultad 10; componentes: 5x Sedas de
+      Cathay + 2x Cuerda y Garfio): el enano puede saltar de un edificio alto y planear grácilmente
+      hasta el suelo; el enano puede planear como se describe en la mutación de alas de Personajes
+      Corruptos. Rompedora de Asedios (Dificultad 11; componentes: Carreta del Tesoro + Barril de
+      Pólvora + 10x Pasadores de Amarre + Pólvora Negra Superior + Martillo de Gromril): un ingenio
+      minero modificado; la carreta necesita 2 unidades para moverse a media velocidad, o 4 a
+      velocidad normal; colócala contra un muro o puerta atrancada y tira en la tabla (1: ¡Va a
+      explotar! Explota causando un impacto de F4 a todos los modelos a 4"; 2-4: ¡Hola Johnny! Crea
+      un agujero en la superficie lo bastante grande para disparar a través de él; si es la 2ª vez
+      que sale este resultado, cuenta como 5-6; 5-6: ¡Fiesta! Destruye completamente la puerta; si
+      rompes un muro, crea un agujero de 1" de ancho, por el que pueden pasar modelos no grandes).
+      Coraza de Plomo (Dificultad 12; componentes: Mortero de Mano + Armadura Pesada + Red): Alcance
+      24"; una versión mejorada del lanzarredes que dispara una especie de camisa de fuerza
+      acorazada al objetivo; la víctima atrapada tendrá -2 Fuerza para escapar; si impacta a un
+      modelo en el agua, se hunde automáticamente y queda fuera de combate, incluso los modelos
+      acuáticos; si impacta a un modelo grande, se enrolla en su cabeza, dejándolo ciego y
+      moviéndose 2D6" en dirección aleatoria cada turno hasta liberarse. Armadura del Abajo
+      (Dificultad 12; componentes: Armadura Pesada + barril de pólvora): cuenta como armadura
+      pesada; ¡Fuera de aquí! (una vez por partida, todos los modelos en contacto base sufren un
+      impacto de F3 y son empujados 1D6" hacia atrás; debe comprarse un nuevo barril de pólvora tras
+      cada uso). Aplanadora de la Muerte (Dificultad 12; componentes: Carreta + 6x Hacha + 6x Espada
+      + Motor de Vapor + Planchas Blindadas): actúa como carreta con todas las reglas especiales
+      asociadas al motor de vapor y al blindaje, pero causa 1D6 impactos de impacto a una Fuerza
+      igual a la distancia recorrida ese turno a cualquier modelo que se interponga en su camino.
+      Tajadora de Goblins (Dificultad 12, solo ingeniero Cazatrolles; componentes: 12x Hacha, 6x
+      Cuerda y Garfio, Balista): Alcance 6-26", Fuerza 4, Difícil de Disparar, Movimiento Engorroso,
+      Recarga, Apuntar, Disparo de Andanada, Repicar (dispara 2D6 tiros cada vez que dispara:
+      designa un modelo objetivo y tira 2D6; reparte los disparos equitativamente entre el objetivo
+      y otro modelo a 6", ¡amigo o enemigo!, y tira para impactar y herir con normalidad con cada
+      disparo).
+  applies_to:
+    band: true
+- id: band--experimental-weapons-chart
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.band.experimental-weapons-chart
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Experimental Weapons Chart
+  effect: >-
+    D6 result: 1 - Scrap: the weapon is mangled beyond repair; it must be removed from the warband's
+    roster; they may choose to either add 1 club to the roster or add 3 gold crowns for the scrap
+    metal value; 2-4 - Badly Mangled: the weapon is a pile of bits; you can either not risk it and
+    add the bits to the warband's parts pile, counting as gaining 1 item used in the construction of
+    the device, or try to repair it (D6, on 3+ repaired; otherwise the weapon is useless and removed
+    from the roster); 5-6 - Few Bits Missing: apart from cosmetic damage, the weapon can be used as
+    normal from now on.
+  source:
+    manual: Broheim
+    printed_page: 6
+    section: Experimental Weapons Chart
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Tabla de Armas Experimentales
+  effect_i18n:
+    es: >-
+      Resultado de 1D6: 1 - Chatarra: el arma queda destrozada sin remedio; debe retirarse de la
+      lista de la banda; pueden añadir 1 garrote a la lista o sumar 3 coronas de oro por su valor
+      como chatarra; 2-4 - Muy Destrozada: el arma es un montón de piezas; puedes no arriesgarte y
+      añadir las piezas al montón de recambios de la banda (contando como obtener 1 objeto usado en
+      la construcción del artilugio), o intentar repararla (1D6, con 3+ queda reparada; en cualquier
+      otro resultado es inservible y se retira de la lista); 5-6 - Faltan Algunas Piezas: salvo
+      daños cosméticos, el arma puede usarse con normalidad a partir de ahora.
+  applies_to:
+    band: true
+- id: band--cinderblast-bomb
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.item.cinderblast-bomb
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Cinderblast Bomb
+  effect: >-
+    45+3D6 gold crowns, Rare 10, Sapper only. Range: 2-8", Strength: 6 (under hole), 3 in area.
+    Blast Charge: the Cinderblast uses a small blast template as its radius; any model hit directly
+    by a Cinderblast suffers D3 Strength 6 hits; any model under the rest of the template suffers 1
+    Strength 3 hit. Scatter: if the Sapper fails the BS to hit roll, the charge misses the target
+    and scatters a random direction D6 inches from the Sapper.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Heroes / 0-1 Sapper / Cinderblast Bomb
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Bomba de Cinderita
+  effect_i18n:
+    es: >-
+      45+3D6 coronas de oro, Rareza 10, solo Zapador. Alcance: 2-8", Fuerza: 6 (bajo el agujero), 3
+      en el área. Carga de Explosión: la bomba de cinderita usa una plantilla pequeña de explosión
+      como radio; cualquier modelo impactado directamente sufre 1D3 impactos de Fuerza 6; cualquier
+      modelo bajo el resto de la plantilla sufre 1 impacto de Fuerza 3. Dispersión: si el Zapador
+      falla la tirada de HP para impactar, la carga pierde el objetivo y se dispersa 1D6 pulgadas en
+      una dirección aleatoria desde el Zapador.
+  applies_to:
+    band: true
+- id: expelled-engineer--leader
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.expelled-engineer.leader
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Leader
+  effect: >-
+    Any warrior within 6" of the Expelled Engineer may use his leadership characteristic when taking
+    any Leadership tests.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Heroes / 1 Expelled Engineer / Special Rules / Leader
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Líder
+  effect_i18n:
+    es: >-
+      Cualquier guerrero a 6" del Ingeniero Expulsado puede usar su característica de Liderazgo al
+      realizar cualquier chequeo de Liderazgo.
+  applies_to:
+    profile_ids:
+    - expelled-engineer
+- id: expelled-engineer--inventor
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.expelled-engineer.inventor
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Inventor
+  effect: >-
+    In the Trading phase, instead of searching for rare items or visiting a location, the Engineer
+    may instead attempt to create a new invention from the book of bad ideas. The Engineer needs the
+    book and the listed ingredients to do this, and must pass the difficulty test stated on the
+    invention.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Heroes / 1 Expelled Engineer / Special Rules / Inventor
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Inventor
+  effect_i18n:
+    es: >-
+      En la fase de comercio, en lugar de buscar objetos raros o visitar un lugar, el Ingeniero
+      puede intentar crear un nuevo invento del libro de malas ideas. El Ingeniero necesita el libro
+      y los ingredientes listados para hacerlo, y debe superar la prueba de dificultad indicada en
+      el invento.
+  applies_to:
+    profile_ids:
+    - expelled-engineer
+- id: apprentice-engineers--assistant
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.apprentice-engineers.assistant
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Assistant
+  effect: >-
+    An Apprentice will assist the Expelled Engineer with his inventions; for each apprentice
+    dedicated to the project post game the Expelled Engineer adds +1 to his roll to create.
+    Alternatively an apprentice may search for rare items in place of the Engineer, gaining any
+    bonuses to rarity rolls the Engineer may benefit from.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Heroes / 0-2 Apprentice Engineers / Special Rules / Assistant
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Ayudante
+  effect_i18n:
+    es: >-
+      Un Aprendiz asistirá al Ingeniero Expulsado con sus inventos; por cada aprendiz dedicado al
+      proyecto tras la partida, el Ingeniero Expulsado suma +1 a su tirada de creación.
+      Alternativamente, un aprendiz puede buscar objetos raros en lugar del Ingeniero, obteniendo
+      cualquier bonificación a las tiradas de rareza de la que se beneficie el Ingeniero.
+  applies_to:
+    profile_ids:
+    - apprentice-engineers
+- id: sapper--make-explosives
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.sapper.make-explosives
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Make Explosives
+  effect: >-
+    A Sapper may spend the post-game phase making explosives instead of searching for Rare items.
+    Roll a Ld test: if the Sapper succeeds you can craft up to two Blast Charges for 9 GC each, up
+    to two doses of Flash Powder for 11 GC each, a Fire Bomb for 21 GC or a Cinderblast bomb for 27
+    GC (pick one and spend GC before rolling).
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Heroes / 0-1 Sapper / Special Rules / Make Explosives
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Fabricar Explosivos
+  effect_i18n:
+    es: >-
+      Un Zapador puede emplear la fase posterior a la partida fabricando explosivos en lugar de
+      buscar objetos raros. Tira un chequeo de L: si el Zapador tiene éxito, puedes fabricar hasta
+      dos Cargas de Explosión a 9 coronas cada una, hasta dos dosis de Polvo de Destello a 11
+      coronas cada una, una Bomba de Fuego por 21 coronas o una bomba de Cinderita por 27 coronas
+      (elige una y gasta las coronas antes de tirar).
+  applies_to:
+    profile_ids:
+    - sapper
+- id: sapper--tunnel-rat
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.sapper.tunnel-rat
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Tunnel Rat
+  effect: Re-roll characteristics tests when underground.
+  source:
+    manual: Broheim
+    printed_page: 2
+    section: Heroes / 0-1 Sapper / Special Rules / Tunnel Rat
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Rata de Túnel
+  effect_i18n:
+    es: Repite las pruebas de características bajo tierra.
+  applies_to:
+    profile_ids:
+    - sapper
+- id: thunderers--properly-used
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.thunderers.properly-used
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: not covered by the current engine scope; to be revisited with the
+        corresponding engine milestone.
+  name: Properly Used
+  effect: >-
+    Any Thunderer worth their beard knows their weapon inside and out. When using the optional
+    Misfire rules, if a one is rolled, roll a second dice. On a 3+ the misfire is ignored (the shot
+    still misses, but the weapon does NOT explode).
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0-5 Thunderers / Special Rules / Properly Used
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Uso Adecuado
+  effect_i18n:
+    es: >-
+      Todo Tronador que se precie conoce su arma de dentro hacia fuera. Al usar las reglas
+      opcionales de Encasquillamiento, si se saca un 1, tira un segundo dado. Con un 3+ el
+      encasquillamiento se ignora (el disparo sigue fallando, pero el arma NO explota).
+  applies_to:
+    profile_ids:
+    - thunderers
+- id: gyrocopter--space
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.gyrocopter.space
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Space
+  effect: The gyrocopter starts with 1 seat available. This may be improved via Tinker.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0-1 Gyrocopter / Special Rules / Space
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Espacio
+  effect_i18n:
+    es: El autogiro comienza con 1 asiento disponible. Puede mejorarse mediante Trasteo.
+  applies_to:
+    profile_ids:
+    - gyrocopter
+- id: gyrocopter--full-steam-ahead
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.gyrocopter.full-steam-ahead
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Full Steam Ahead!
+  effect: >-
+    The Gyrocopter can achieve a burst of speed, moving only in a straight line, but at a risk. Roll
+    a D6: if the result is 6 you must roll on the Engine malfunction chart, otherwise add the result
+    of the dice to the Copter's total speed. A warrior with the Driver skill can re-roll results on
+    the Engine Malfunction chart (the new result must be accepted). When a Gyrocopter equipped with
+    a Steam Engine is hit with a result of Draft Creature, it has hit the engine; the engine has a
+    toughness of 6 and if wounded, roll on the Engine Malfunction chart.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0-1 Gyrocopter / Special Rules / Full Steam Ahead
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: ¡A Todo Vapor!
+  effect_i18n:
+    es: >-
+      El Autogiro puede lograr una ráfaga de velocidad, moviéndose solo en línea recta, pero con
+      riesgo. Tira 1D6: si el resultado es 6 debes tirar en la tabla de Avería de Motor; en caso
+      contrario, suma el resultado del dado a la velocidad total del Autogiro. Un guerrero con la
+      habilidad Conductor puede repetir los resultados en la tabla de Averías de Motor (el nuevo
+      resultado debe aceptarse). Cuando un Autogiro equipado con un Motor de Vapor recibe un impacto
+      con resultado de Criatura de Corriente, ha golpeado el motor; el motor tiene una Resistencia
+      de 6 y, si es herido, tira en la tabla de Averías de Motor.
+  applies_to:
+    profile_ids:
+    - gyrocopter
+- id: gyrocopter--engine-malfunction
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: unimplemented.guild-of-disgraced-engineers-mim.gyrocopter.engine-malfunction
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Provisional classification: no engine effect assigned yet; pending scope refinement and
+        equivalence review before promotion.
+  name: Engine Malfunction
+  effect: >-
+    1 - Kaboom! The engine explodes spectacularly, dealing D6 wounds to the Copter hull; any model
+    within 4" of the bow takes a S5 flaming hit and the copter is now on fire and immediately
+    swerves 45 degrees in a random direction and crash-lands straight down (suffering a further D3
+    S5 hits to the hull, and causing D3 S5 hits to anyone underneath!); 2 - Dangerous Overpressure!
+    The Gyrocopter suffers 1 wound and plunges 6" forwards and lands (taking damage if it collides
+    with anything); 3-4 - Emergency Vent: any models within 4" of the bow take D3 S2 flaming hits
+    and the Gyrocopter immediately lands in the nearest available free space beneath it; the
+    Gyrocopter cannot move next turn; 5 - Minor Leak: the Gyrocopter immediately lands in the
+    nearest available free space beneath it and cannot move next turn; 6 - Valve Locked: the
+    Gyrocopter can only move 2D3" this turn, but cannot turn.
+  source:
+    manual: Broheim
+    printed_page: 3
+    section: Henchmen / 0-1 Gyrocopter / Engine Malfunction
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Guild Of Disgraced Engineers.pdf
+  name_i18n:
+    es: Avería de Motor
+  effect_i18n:
+    es: >-
+      1 - ¡Kaboom! El motor explota de forma espectacular, causando 1D6 heridas al casco del
+      Autogiro; cualquier modelo a 4" de la proa sufre un impacto de F5 ígneo, el autogiro arde e
+      inmediatamente se desvía 45 grados en una dirección aleatoria y se estrella contra el suelo
+      (sufriendo 1D3 impactos de F5 adicionales al casco, ¡y causando 1D3 impactos de F5 a
+      cualquiera que esté debajo!); 2 - ¡Sobrepresión Peligrosa! El Autogiro sufre 1 herida y se
+      precipita 6" hacia delante y aterriza (sufriendo daños si choca con algo); 3-4 - Venteo de
+      Emergencia: los modelos a 4" de la proa sufren 1D3 impactos ígneos de F2 y el Autogiro
+      aterriza inmediatamente en el espacio libre más cercano debajo de él; el Autogiro no puede
+      moverse el siguiente turno; 5 - Fuga Menor: el Autogiro aterriza inmediatamente en el espacio
+      libre más cercano debajo de él y no puede moverse el siguiente turno; 6 - Válvula Atascada: el
+      Autogiro solo puede moverse 2D3" este turno, pero no puede girar.
+  applies_to:
+    profile_ids:
+    - gyrocopter
