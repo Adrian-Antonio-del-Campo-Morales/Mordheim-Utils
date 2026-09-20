@@ -1,13 +1,13 @@
-# Auditoría de corrección de 2A (Hilo B, 2026-09-15)
+# Auditoría de corrección de 2A (2026-09-15)
 
 Alcance: las **19 bandas** de `sources/2A` contra los patrones de la **KB activa**
 (`sources/knowledge`). Objetivo: que cada documento siga el esquema KB al pie de la letra,
 sin campos ni etiquetas inventados, y que ninguna corrección de forma haya borrado texto
 de la fuente sin dejarlo en otro sitio.
 
-Este informe cierra la pasada de conformidad de 2A: los pendientes que
-`sources/COORDINATION.md` dejaba abiertos, la divergencia de forma que sobrevivía en 2A y
-2B y que el usuario decidió corregir, y el estado verificado al final.
+Este informe cierra la pasada de conformidad de 2A: los pendientes que quedaban abiertos
+en el árbol, la divergencia de forma que sobrevivía en 2A y 2B y que el usuario decidió
+corregir, y el estado verificado al final.
 
 ## Método
 
@@ -290,7 +290,7 @@ Los 13 adjudicados son los 12 anteriores más el `special-price-mismatch` del
 Silver-tip Stake, adjudicado en el propio auditor con el verdicto 1 de
 `discrepancy-verdicts.md`.
 
-## Estado verificado (2026-09-15 23:15)
+## Estado verificado (2026-09-16)
 
 ```
 derive_kb_contract.py --tree 2A     → 0 claves, 0 formas y 0 dominios de valor fuera de la KB
@@ -299,35 +299,15 @@ audit_kb_conformance.py --tree 2A   → 0 desviaciones (+0 informativas)
 audit_kb_conformance.py --tree 2B   → 0 desviaciones (+1 informativa: trait.spectral-touch,
                                       declarado en registry/bindings.yaml de la KB)
 audit_2a.py                         → 19 bandas, 0 problemas
-  audit_2a_sources.py               → 0 hallazgos abiertos, 13 adjudicados; cobertura 47
+  audit_2a_sources.py               → 0 hallazgos abiertos, 14 adjudicados; cobertura 47
                                       listas / 558 filas / 34 precios de eq. especial /
-                                      3 filas de perfil de ítem / 20 aclaraciones de regla
+                                      3 filas de perfil de ítem / 22 aclaraciones de regla
 ingest_2a.py validate               → 19 filas, 0 problemas
 ingest_2b.py validate               → 60 filas, 0 problemas
-format_yaml.py --check 2A + 2B      → 356 ficheros, 2 would change (ficheros que Hilo A
-                                      está escribiendo; ver nota de coordinación)
-pytest tests/knowledge tests/web    → 481 pasan, 4 fallan por trabajo en vuelo de Hilo A
-                                      (ver nota de coordinación)
+format_yaml.py --check 2A + 2B      → 356 ficheros, 0 would change, 0 failures
+pytest tests/knowledge tests/web    → 503 pasan, 2 fallan en tests/web/parity
+                                      (port desktop→web, ajeno a 2A/2B)
 ```
-
-### Nota de coordinación (no son defectos de 2A/2B)
-
-Al cierre de esta auditoría, Hilo A está escribiendo a la vez la KB activa y 2B
-(`tests/knowledge/test_editorial_schemas.py` 23:10, `tests/knowledge/test_binding_registry.py`
-23:03, `sources/knowledge/registry/bindings.yaml` 23:02, `sources/2B/bands/mordheim/savage-orcs-sar/**`
-y `sources/2B/manifest.yaml` 23:10-23:11). Las 4 pruebas en rojo son suyas y por trabajo en
-vuelo, no por los datos de 2A/2B:
-
-1. `test_2a_staging.py::test_staging_is_isolated_from_active_kb` y su gemela de 2B — el
-   nuevo `sources/knowledge/registry/bindings.yaml` menciona en prosa «sources/2A,
-   sources/2B», y la prueba prohíbe que la KB activa contenga esa cadena.
-2. `test_editorial_schemas.py::test_every_catalogue_and_registry_document_is_covered_exactly_once`
-   — el documento nuevo `registry/bindings.yaml` (y dos documentos de `catalog/hirelings`)
-   no están reclamados por ningún esquema editorial.
-3. `test_editorial_schemas.py::test_every_post_battle_step_resolves_a_document_of_its_directory`
-   — falla en la corrida completa y pasa en aislamiento (dependencia de orden/estado).
-
-No se han tocado: son ficheros que Hilo A está escribiendo y su ámbito declarado.
 
 ## Reproducir
 

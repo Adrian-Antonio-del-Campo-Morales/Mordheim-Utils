@@ -1,11 +1,11 @@
 """Deep certification: archetype-matrix six-sigma samples and a bounded
 modular oracle budget.
 
-``parity --deep`` extends the standard certification in two directions:
+``parity --level deep`` extends the standard certification in two directions:
 
 - **Matrix samples** — every archetype pair of ``deep_test_scenarios("full")``
   (or the smaller ``"fast"`` set) is compared statistically (same six-sigma
-  gate as ``--statistical``) between the modular oracle and each optimized
+  gate as ``--level statistical``) between the modular oracle and each optimized
   backend. The oracle sample per pair
   is deliberately bounded (``simulations``, default 100,000, or 25,000 for
   the long 75-round pair): statistical resolution is capped by the smaller

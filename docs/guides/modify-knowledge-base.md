@@ -22,7 +22,17 @@ that guide's last section.
    and its HOWTO — the KB declares rules and tables, never a concrete
    campaign's state.
 5. Run `python tools/format_yaml.py --check sources/knowledge` (or `--write`,
-   then re-check), then `python tools/mordheim-utils.py validate`.
+   then re-check), then `python tools/mordheim-utils.py verify --structural`.
+   That gate also checks every maintained document against
+   [`contracts/knowledge-editorial-v1`](../../contracts/knowledge-editorial-v1/README.md):
+   when a document gains, renames or drops a field, extend its schema in the
+   same change or the validation fails. A new YAML under a covered tree needs a
+   schema of its own — `tests/knowledge/test_editorial_schemas.py` fails when a
+   document escapes the contract. The same suite refuses a schema that admits
+   more than the documents hold and a declaration the documents never exercise
+   unless `tools/knowledge/audit_schema_strictness.py` can name the contract
+   behind it, so a field added "just in case" is a review question, not a
+   silent allowance.
 6. If you change a reviewed obligation, review its scenario and footprint:
    semantic specs pin KB targets by path and content digest, so a text edit
    invalidates them loudly (`verify` reports the exact mismatch). Refresh
@@ -63,7 +73,7 @@ Para una fusión destructiva autorizada:
 - documenta qué IDs se retiran y qué versiones de campaña se aceptan;
 - prueba ausencia de IDs retirados, resolución de referencias, destinatarios,
   bindings, reglas de campaña afectadas y lectura/escritura del formato;
-- ejecuta formato, `validate`, evidencia semántica y paridad antes de publicar.
+- ejecuta formato, `verify --structural`, evidencia semántica y paridad antes de publicar.
 
 No fusiones si cambia el destinatario, existe una excepción contextual, los
 parámetros del binding difieren o la compatibilidad de datos no está decidida.

@@ -4,8 +4,8 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from mordheim_combat_lab.verification.test_reporting import TECHNICAL_COLUMNS
-from mordheim_combat_lab.verification.test_reporting import write_csv
+from mordheim_combat_lab.verification.reporting import TECHNICAL_COLUMNS
+from mordheim_combat_lab.verification.reporting import write_csv
 
 
 def pytest_configure(config):
