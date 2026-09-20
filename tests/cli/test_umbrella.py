@@ -10,13 +10,12 @@ CLI_SCRIPT = REPO_ROOT / "tools" / "mordheim-utils.py"
 COMMANDS = (
     "combat-lab",
     "warband-manager",
+    "verify",
+    "report",
     "benchmark",
     "parity",
-    "test-report",
     "coverage-gate",
-    "verify",
-    "audit",
-    "validate",
+    "calibrate",
     "tests",
     "run-ci",
     "combine-kb",
@@ -24,8 +23,7 @@ COMMANDS = (
     "doctor",
 )
 
-LAB_COMMANDS = ("benchmark", "parity", "test-report", "coverage-gate",
-                "verify", "audit", "validate")
+LAB_COMMANDS = ("benchmark", "parity", "coverage-gate", "verify", "calibrate")
 
 
 @pytest.fixture()
@@ -80,6 +78,15 @@ def test_warband_manager_launches_the_campaign_app(cli, monkeypatch):
     assert calls == [[sys.executable, "-m", "mordheim_desktop"]]
 
 
+@pytest.mark.parametrize("name", ("combat-lab", "warband-manager", "doctor", "build-native"))
+def test_help_is_answered_without_running_anything(cli, monkeypatch, capsys, name):
+    """`<command> --help` prints usage; it never launches an app or installs."""
+    calls = _record_run(cli, monkeypatch)
+    assert cli.main([name, "--help"]) == 0
+    assert f"mordheim-utils.py {name}" in capsys.readouterr().out
+    assert calls == []
+
+
 @pytest.mark.parametrize("name", LAB_COMMANDS)
 def test_lab_commands_are_forwarded_to_the_lab_cli(cli, monkeypatch, name):
     calls = _record_run(cli, monkeypatch)
@@ -93,6 +100,34 @@ def test_lab_command_forwards_arguments_verbatim(cli, monkeypatch):
     assert calls == [
         [sys.executable, "-m", "mordheim_combat_lab", "benchmark", "-n", "1000", "--json"]
     ]
+
+
+def test_report_rules_forwards_to_the_audit_command(cli, monkeypatch):
+    calls = _record_run(cli, monkeypatch)
+    assert cli.main(["report", "rules", "--review-status", "needs_ruling",
+                     "--output", "outputs/audit/questions"]) == 0
+    assert calls == [[
+        sys.executable, "-m", "mordheim_combat_lab", "audit",
+        "--review-status", "needs_ruling", "--output", "outputs/audit/questions",
+    ]]
+
+
+def test_report_tests_forwards_to_the_test_report_command(cli, monkeypatch):
+    calls = _record_run(cli, monkeypatch)
+    assert cli.main(["report", "tests", "--json"]) == 0
+    assert calls == [[sys.executable, "-m", "mordheim_combat_lab", "test-report", "--json"]]
+
+
+def test_report_without_a_kind_prints_its_usage(cli, capsys):
+    assert cli.main(["report"]) == 0
+    output = capsys.readouterr().out
+    assert "report <rules|tests>" in output
+    assert "rules" in output and "tests" in output
+
+
+def test_report_rejects_unknown_kinds(cli, capsys):
+    assert cli.main(["report", "nope"]) == 2
+    assert "unknown kind" in capsys.readouterr().err
 
 
 def test_tests_forwards_pytest_flags_without_double_dash(cli, monkeypatch):
@@ -143,6 +178,12 @@ def test_run_ci_executes_the_ci_validation_gates(cli, monkeypatch):
         [sys.executable, str(cli.KNOWLEDGE_GENERATOR), "--check"],
         ["npm", "run", "typecheck"],
         ["npm", "test"],
+        ["npx", "vitest", "run", "--pool=forks", "--maxWorkers=1",
+         "--testTimeout=200000",
+         "src/features/campaign/knowledge-display-coverage.test.tsx",
+         "src/features/campaign/ui_i18n.test.ts",
+         "src/features/campaign/displayText.test.ts",
+         "src/features/campaign/KnowledgeHint.test.tsx"],
         ["npm", "run", "typecheck"],
         ["npm", "run", "lint"],
         ["npm", "test"],
@@ -229,9 +270,16 @@ def test_completion_introspects_lab_options_and_choices(cli):
     options = cli._command_candidates(["benchmark", ""])
     assert "--deep" in options
     assert "--simulation-sizes" in options
-    assert "--deep-simulation-sizes" in cli._command_candidates(["benchmark", "--deep-"])
+    assert "--deep-modular-simulations" in cli._command_candidates(["benchmark", "--deep-"])
     assert cli._command_candidates(["benchmark", "--backend", "nat"]) == ["native"]
     assert cli._command_candidates(["benchmark", "--backend", ""]) == ["modular", "numpy", "native"]
+
+
+def test_completion_offers_the_report_kinds_and_their_options(cli):
+    assert cli._command_candidates(["report", ""]) == ["rules", "tests"]
+    assert cli._command_candidates(["report", "ru"]) == ["rules"]
+    assert "--review-status" in cli._command_candidates(["report", "rules", ""])
+    assert cli._command_candidates(["report", "tests", "--json"]) == []
 
 
 def test_completion_covers_tests_scope_values(cli):

@@ -30,7 +30,7 @@ by side. A `PENDING` status is not a divergence: it may mean the vectorized
 adapter is missing or that the native backend is not yet available. The
 per-operator cases do not apply to the native engine (`NOT_APPLICABLE`, a
 complete duel engine): its certification lives in the per-scenario statistical
-rows and in `parity --statistical`, where it shares the modular-oracle sample
+rows and in `parity --level statistical`, where it shares the modular-oracle sample
 with NumPy and must pass the same six-sigma gate.
 
 Full options and status meanings:

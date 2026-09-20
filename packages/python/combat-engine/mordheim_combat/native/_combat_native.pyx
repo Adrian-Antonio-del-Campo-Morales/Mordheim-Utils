@@ -22,6 +22,7 @@ from libc.stdint cimport int8_t
 from libc.stdint cimport uint32_t
 from libc.stdint cimport uint64_t
 from libc.stdlib cimport free
+from libc.stdlib cimport calloc
 from libc.stdlib cimport malloc
 from libc.string cimport memcpy
 from libc.string cimport memset
@@ -2504,7 +2505,7 @@ cdef int resolve_attacks_c(DuelC* d, int atk_side, const int* rows, int rows_n,
                 row_p2[i] = -1
             for index in range(prepared_count):
                 tmp_prep = prepared[index][0]
-                remove_flags[index] = <int8_t*>malloc(tmp_prep.hit_n) if tmp_prep.hit_n else NULL
+                remove_flags[index] = <int8_t*>calloc(tmp_prep.hit_n, sizeof(int8_t)) if tmp_prep.hit_n else NULL
                 for i in range(tmp_prep.hit_n):
                     row = tmp_prep.hit_rows[i]
                     if row_occ[row] == 0:

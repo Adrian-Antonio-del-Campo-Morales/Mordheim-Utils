@@ -446,10 +446,14 @@ def _batch_seed(seed: int, batch_index: int) -> int:
     return (seed + batch_index * _BATCH_STREAM_SALT) % (1 << 32)
 
 
-def _batch_sizes(simulations: int, batch_size: int) -> tuple[int, ...]:
+def batch_plan(simulations: int, batch_size: int) -> tuple[int, ...]:
     """Canonical per-batch duel counts: full batches plus a final partial."""
     full, remainder = divmod(simulations, batch_size)
     return (batch_size,) * full + ((remainder,) if remainder else ())
+
+
+#: Historical internal alias (the canonical name is the public ``batch_plan``).
+_batch_sizes = batch_plan
 
 
 def _run_one_batch(first: CompiledFighter, second: CompiledFighter, count: int,
@@ -477,11 +481,16 @@ def _simulate_duel_numpy(request: DuelRequest) -> DuelResult:
     return DuelResult(first_wins, second_wins, unresolved, request.simulations)
 
 
-def _run_batch_segment(first: CompiledFighter, second: CompiledFighter,
-                       start: int, stop: int, simulations: int,
-                       batch_size: int, seed: int, maximum_rounds: int,
-                       decisions: DecisionPolicy | None) -> tuple[int, int, int]:
-    """Run whole batches ``[start, stop)`` of the canonical plan (worker)."""
+def batch_segment(first: CompiledFighter, second: CompiledFighter,
+                  start: int, stop: int, simulations: int,
+                  batch_size: int, seed: int, maximum_rounds: int,
+                  decisions: DecisionPolicy | None) -> tuple[int, int, int]:
+    """Run whole batches ``[start, stop)`` of the canonical plan.
+
+    Process-pool entry point for parallel execution over the batch plan:
+    callers (``simulate_duel_parallel``, benchmark pools) submit contiguous
+    ``[start, stop)`` plan ranges and sum the returned totals.
+    """
     sizes = _batch_sizes(simulations, batch_size)
     first_wins = second_wins = unresolved = 0
     for batch_index in range(start, stop):
@@ -493,6 +502,10 @@ def _run_batch_segment(first: CompiledFighter, second: CompiledFighter,
         second_wins += y
         unresolved += z
     return first_wins, second_wins, unresolved
+
+
+#: Historical internal alias (the canonical name is the public ``batch_segment``).
+_run_batch_segment = batch_segment
 
 
 def simulate_duel_parallel(request: DuelRequest, *,

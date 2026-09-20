@@ -19,6 +19,7 @@ from statistics import median
 from time import perf_counter
 from typing import Callable
 from typing import Iterable
+from typing import Sequence
 
 import numpy as np
 
@@ -65,6 +66,7 @@ class BenchmarkGate:
 
 BENCHMARK_SCHEMA = "mordheim-combat-benchmark/v1"
 SWEEP_SCHEMA = "mordheim-combat-benchmark-sweep/v1"
+TTS_SCHEMA = "mordheim-combat-benchmark-tts/v1"
 
 ENGINE_LABELS = {"modular": "Modular", "numpy": "Vectorized", "native": "Native"}
 
@@ -279,6 +281,458 @@ def run_benchmark(
     )
 
 
+# ---------------------------------------------------------------------------
+# Time-to-solution (--tts): the workload is fixed and whole execution
+# strategies are compared by the wall time of solving it completely —
+# throughput rows diagnose *why* one strategy wins, this mode decides *which*
+# one to use. Every strategy runs the same per-batch streams, so the
+# deterministic win/loss/unresolved totals double as a correctness gate.
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True, slots=True)
+class TtsStrategyResult:
+    """One full workload pass under one execution strategy and backend.
+
+    ``wall_seconds`` covers everything from pool startup to the reduced
+    result (spawns included) — it is the number a user waits for; with
+    ``repeats > 1`` it is the median of the repeat walls. ``engine_seconds``
+    sums the per-scenario pass times. ``totals`` are the workload's
+    deterministic (first_wins, second_wins, unresolved) counts.
+    """
+    strategy: str
+    mode: str  # "sequential" | "scenario-pool" | "batch-pool"
+    processes: int
+    wall_seconds: float
+    engine_seconds: float
+    totals: tuple[int, int, int]
+    per_scenario_seconds: tuple[tuple[str, float], ...]
+    backend: str = "numpy"
+    repeat_walls: tuple[float, ...] = ()
+
+    @property
+    def overhead_seconds(self) -> float:
+        return max(0.0, self.wall_seconds - self.engine_seconds)
+
+    @property
+    def label(self) -> str:
+        return f"{self.backend}/{self.strategy}"
+
+
+def parse_tts_strategies(value: str | None) -> tuple[str, ...]:
+    """Parse the ``--tts`` strategy list into canonical strategy tokens.
+
+    Accepts ``sequential``, ``processes=N`` and ``parallel=N`` (N >= 2; N=1
+    canonicalizes to ``sequential``). Defaults to the three-way comparison.
+    """
+    if value is None or not value.strip():
+        return ("sequential", "processes=4", "parallel=4")
+    strategies: list[str] = []
+    for token in value.split(","):
+        token = token.strip().lower()
+        if not token:
+            continue
+        if token == "sequential":
+            strategies.append(token)
+            continue
+        mode, separator, number = token.partition("=")
+        number = number.strip()
+        if (not separator or mode not in {"processes", "parallel"}
+                or not number.isdigit() or int(number) < 1):
+            raise ValueError(
+                f"invalid TTS strategy {token!r}; use 'sequential', "
+                f"'processes=N' or 'parallel=N'")
+        if int(number) == 1:
+            strategies.append("sequential")
+            continue
+        strategies.append(f"{mode}={int(number)}")
+    if not strategies:
+        raise ValueError("no TTS strategies provided")
+    return tuple(dict.fromkeys(strategies))
+
+
+def _tts_sequential_worker(
+    scenario: BenchmarkScenario, *, simulations: int, batch_size: int, seed: int,
+    backend: str = "numpy",
+) -> tuple[float, tuple[int, int, int]]:
+    """One workload pass for one scenario in-process; returns (wall, totals).
+
+    Module-level so the scenario-pool strategy can submit it directly.
+    """
+    first, second = compile_benchmark_fighters(scenario)
+    request = DuelRequest(
+        first, second, simulations, seed=seed, batch_size=batch_size,
+        maximum_rounds=scenario.maximum_rounds,
+    )
+    started = perf_counter()
+    result = simulate_duel(request, backend=backend)
+    return perf_counter() - started, (
+        result.first_wins, result.second_wins, result.unresolved)
+
+
+def _tts_parallel_scenario_worker(
+    scenario: BenchmarkScenario, *, simulations: int, batch_size: int, seed: int,
+    processes: int,
+) -> tuple[float, tuple[int, int, int]]:
+    """One workload pass for one scenario split over a batch pool.
+
+    Wall-timed end to end (pool startup included) and reduced to the same
+    deterministic totals as the sequential worker.
+    """
+    from concurrent.futures import ProcessPoolExecutor
+    from mordheim_combat.vectorized import batch_plan, batch_segment
+
+    first, second = compile_benchmark_fighters(scenario)
+    sizes = batch_plan(simulations, batch_size)
+    workers = max(1, min(processes, len(sizes)))
+    base, extra = divmod(len(sizes), workers)
+    segments = []
+    start = 0
+    for index in range(workers):
+        count = base + (1 if index < extra else 0)
+        segments.append((start, start + count))
+        start += count
+    totals = [0, 0, 0]
+    started = perf_counter()
+    with ProcessPoolExecutor(max_workers=workers) as pool:
+        futures = [
+            pool.submit(
+                batch_segment, first, second, first_batch, stop,
+                simulations, batch_size, seed, scenario.maximum_rounds, None,
+            )
+            for first_batch, stop in segments if stop > first_batch
+        ]
+        for future in futures:
+            wins, losses, unresolved = future.result()
+            totals[0] += wins
+            totals[1] += losses
+            totals[2] += unresolved
+    return perf_counter() - started, tuple(totals)
+
+
+def run_tts_strategy(
+    strategy: str, scenarios: Sequence[BenchmarkScenario], *,
+    simulations: int, batch_size: int, seed: int,
+    on_progress: Callable[[], None] | None = None,
+    backend: str = "numpy", repeats: int = 1,
+) -> TtsStrategyResult:
+    """Run the whole workload under ``strategy``, wall-timed end to end.
+
+    Each repeat is one full pass per scenario (no warmups: TTS compares
+    total solving time, not per-sample stability); ``wall_seconds`` reports
+    the median of the repeat walls. The strategy token selects how the
+    workload parallelizes: not at all (``sequential``), scenario by scenario
+    in a process pool (``processes=N``), or — NumPy only — each scenario's
+    batch plan split over a pool (``parallel=N``).
+    """
+    if repeats < 1:
+        raise ValueError("repeats must be >= 1")
+
+    def one_pass() -> tuple[float, list[tuple[str, float]], list[int]]:
+        if strategy == "sequential":
+            per_scenario = []
+            totals = [0, 0, 0]
+            started = perf_counter()
+            for scenario in scenarios:
+                seconds, counts = _tts_sequential_worker(
+                    scenario, simulations=simulations, batch_size=batch_size,
+                    seed=seed, backend=backend,
+                )
+                per_scenario.append((scenario.id, seconds))
+                for index, value in enumerate(counts):
+                    totals[index] += value
+                if on_progress is not None:
+                    on_progress()
+            return perf_counter() - started, per_scenario, totals
+        mode, _, number = strategy.partition("=")
+        processes = int(number)
+        if mode == "processes":
+            from concurrent.futures import ProcessPoolExecutor
+            started = perf_counter()
+            with ProcessPoolExecutor(max_workers=processes) as pool:
+                futures = {
+                    pool.submit(
+                        _tts_sequential_worker, scenario,
+                        simulations=simulations, batch_size=batch_size,
+                        seed=seed, backend=backend,
+                    ): scenario
+                    for scenario in scenarios
+                }
+                per_scenario = []
+                totals = [0, 0, 0]
+                for future in futures:
+                    seconds, counts = future.result()
+                    per_scenario.append((futures[future].id, seconds))
+                    for index, value in enumerate(counts):
+                        totals[index] += value
+                    if on_progress is not None:
+                        on_progress()
+            return perf_counter() - started, per_scenario, totals
+        if mode == "parallel":
+            per_scenario = []
+            totals = [0, 0, 0]
+            started = perf_counter()
+            for scenario in scenarios:
+                seconds, counts = _tts_parallel_scenario_worker(
+                    scenario, simulations=simulations, batch_size=batch_size,
+                    seed=seed, processes=processes,
+                )
+                per_scenario.append((scenario.id, seconds))
+                for index, value in enumerate(counts):
+                    totals[index] += value
+                if on_progress is not None:
+                    on_progress()
+            return perf_counter() - started, per_scenario, totals
+        raise ValueError(f"unknown TTS strategy: {strategy!r}")
+
+    walls = []
+    per_scenario = totals = None
+    engine = 0.0
+    for _ in range(repeats):
+        wall, per_scenario, totals = one_pass()
+        walls.append(wall)
+        engine += sum(seconds for _name, seconds in per_scenario)
+    assert totals is not None and per_scenario is not None
+    mode_label = ("sequential" if strategy == "sequential"
+                  else strategy.partition("=")[0] + "-pool")
+    return TtsStrategyResult(
+        strategy, mode_label,
+        1 if strategy == "sequential" else int(strategy.partition("=")[2]),
+        median(walls), engine / repeats,
+        tuple(totals), tuple(per_scenario),
+        backend=backend, repeat_walls=tuple(walls),
+    )
+
+
+def tts_determinism_gate(
+    results: Sequence[TtsStrategyResult],
+) -> dict[str, object] | None:
+    """All strategies must agree on the workload's deterministic totals.
+
+    Every strategy executes the same per-batch streams, so any disagreement
+    is a correctness bug, not a timing artifact. ``None`` with fewer than two
+    strategies (nothing to cross-check).
+    """
+    if len(results) < 2:
+        return None
+    distinct = sorted({result.totals for result in results})
+    return {
+        "passed": len(distinct) == 1,
+        "distinct_totals": [list(totals) for totals in distinct],
+    }
+
+
+def tts_ranking(
+    results: Sequence[TtsStrategyResult], *, baseline: str = "sequential",
+) -> list[dict[str, object]]:
+    """Rank strategies by wall time; speedup against the baseline wall."""
+    reference = next(
+        (item.wall_seconds for item in results if item.strategy == baseline), None)
+    rows = []
+    for item in sorted(results, key=lambda entry: entry.wall_seconds):
+        rows.append({
+            "strategy": item.strategy, "mode": item.mode,
+            "processes": item.processes, "wall_seconds": item.wall_seconds,
+            "engine_seconds": item.engine_seconds,
+            "overhead_seconds": item.overhead_seconds,
+            "speedup_vs_sequential": (
+                reference / item.wall_seconds
+                if reference and item.wall_seconds > 0 else None),
+        })
+    return rows
+
+
+def tts_strategy_label(result: TtsStrategyResult) -> str:
+    """Cell-unique combination label: backend + strategy."""
+    return result.label
+
+
+def tts_backend_parity(results: Sequence[TtsStrategyResult]) -> dict[str, object]:
+    """Determinism gate per backend, across that backend's strategies.
+
+    Strategies of the same backend execute identical per-batch streams, so
+    their totals must agree bit for bit. Totals are deliberately NOT
+    compared across backends: each engine derives its per-batch streams from
+    the seed in its own way, so equal totals are not expected between numpy
+    and native — rate parity between engines is the parity command's job,
+    not a wall-time benchmark's.
+    """
+    backends: dict[str, object] = {}
+    passed = True
+    for backend in dict.fromkeys(item.backend for item in results):
+        same = [item for item in results if item.backend == backend]
+        distinct = sorted({item.totals for item in same})
+        backend_passed = len(distinct) == 1
+        passed = passed and backend_passed
+        backends[backend] = {
+            "passed": backend_passed,
+            "distinct_totals": [list(totals) for totals in distinct],
+        }
+    return {"passed": passed, "backends": backends}
+
+
+def tts_backend_rates(
+    results: Sequence[TtsStrategyResult], *, simulations: int,
+    scenario_count: int,
+) -> list[dict[str, float | str]]:
+    """Informational win/loss/unresolved rates per backend (one cell).
+
+    Cross-backend rates should land within sampling noise of each other;
+    anything larger is a parity problem the parity command certifies.
+    """
+    rates: list[dict[str, float | str]] = []
+    for backend in dict.fromkeys(item.backend for item in results):
+        same = [item for item in results if item.backend == backend]
+        # Every result repeats the whole workload, so the denominator scales
+        # with the number of summed results.
+        total = max(1, simulations * scenario_count * len(same))
+        wins = sum(item.totals[0] for item in same)
+        losses = sum(item.totals[1] for item in same)
+        unresolved = sum(item.totals[2] for item in same)
+        rates.append({
+            "backend": backend, "first": wins / total,
+            "second": losses / total, "unresolved": unresolved / total,
+        })
+    return rates
+
+
+def run_tts_study_cell(
+    strategies: Sequence[str], backends: Sequence[str],
+    scenarios: Sequence[BenchmarkScenario], *, simulations: int, batch_size: int,
+    seed: int, repeats: int,
+    on_progress: Callable[[], None] | None = None,
+) -> tuple[TtsStrategyResult, ...]:
+    """Run every (strategy, backend) combination on one workload cell.
+
+    ``parallel=N`` is skipped for non-NumPy backends (it is a NumPy-driver
+    pool); the results are the rows of the cell's ranking. All combinations
+    execute the same per-batch streams, so their totals must agree — the
+    caller cross-checks them as a parity gate.
+    """
+    results: list[TtsStrategyResult] = []
+    for backend in backends:
+        for strategy in strategies:
+            if strategy.startswith("parallel=") and backend != "numpy":
+                continue
+            results.append(run_tts_strategy(
+                strategy, scenarios, simulations=simulations,
+                batch_size=batch_size, seed=seed, backend=backend,
+                repeats=repeats, on_progress=on_progress,
+            ))
+    return tuple(results)
+
+
+def tts_study_payload(
+    cells: Sequence[dict[str, object]], *, simulations: Sequence[int],
+    batch_sizes: Sequence[int], seed: int, strategies: Sequence[str],
+    backends: Sequence[str], repeats: int, scenario_count: int,
+    pair_set: str | None = None, elapsed_seconds: float | None = None,
+    parity: dict[str, object] | None = None,
+) -> dict[str, object]:
+    """Build the durable time-to-solution *study* artifact.
+
+    One JSON document with a cell per (simulations, batch size): every cell
+    carries the strategy x backend ranking plus the winners summary.
+    """
+    payload: dict[str, object] = {
+        "schema": TTS_SCHEMA,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "environment": _environment(),
+        "configuration": {
+            "simulation_sizes": list(simulations),
+            "batch_sizes": list(batch_sizes), "seed": seed,
+            "strategies": list(strategies), "backends": list(backends),
+            "repeats": repeats, "scenarios": scenario_count,
+        },
+        "cells": list(cells),
+    }
+    if pair_set is not None:
+        payload["pair_set"] = pair_set
+    if parity is not None:
+        payload["parity"] = parity
+    if elapsed_seconds is not None:
+        payload["elapsed_seconds"] = elapsed_seconds
+    return payload
+
+
+def tts_cell_payload(cell: dict[str, object]) -> dict[str, object]:
+    """JSON-safe projection of one study cell's results."""
+    results: Sequence[TtsStrategyResult] = cell["results"]  # type: ignore[assignment]
+    return {
+        "simulations": cell["simulations"], "batch_size": cell["batch_size"],
+        "winners": cell["winners"],
+        "rates": cell.get("rates", []),
+        "results": [{
+            "backend": item.backend, "strategy": item.strategy,
+            "mode": item.mode, "processes": item.processes,
+            "wall_seconds": item.wall_seconds,
+            "repeat_walls_seconds": list(item.repeat_walls),
+            "engine_seconds": item.engine_seconds,
+            "totals": list(item.totals),
+            "per_scenario_seconds": [
+                [name, seconds] for name, seconds in item.per_scenario_seconds
+            ],
+        } for item in results],
+    }
+
+
+def tts_cell_winners(
+    results: Sequence[TtsStrategyResult], *, scenario_count: int,
+    simulations: int,
+) -> list[dict[str, object]]:
+    """Per-backend winners (first by wall time) plus the overall champion."""
+    winners: list[dict[str, object]] = []
+    ordered = sorted(results, key=lambda item: item.wall_seconds)
+    for backend in dict.fromkeys(item.backend for item in ordered):
+        best = next(item for item in ordered if item.backend == backend)
+        throughput = (scenario_count * simulations / best.wall_seconds
+                      if best.wall_seconds > 0 else 0.0)
+        winners.append({
+            "backend": backend, "strategy": best.strategy,
+            "wall_seconds": best.wall_seconds,
+            "suite_sim_per_second": throughput,
+        })
+    best = ordered[0]
+    winners.append({
+        "backend": best.backend, "strategy": best.strategy,
+        "wall_seconds": best.wall_seconds, "overall": True,
+    })
+    return winners
+
+
+def print_tts_study_summary(
+    cells: Sequence[dict[str, object]], *, pair_set: str | None = None,
+) -> None:
+    """Final console table: one row per study cell with its winners."""
+    scope = f" ({pair_set} pair set)" if pair_set else ""
+    print(f"Time-to-solution study{scope}: "
+          f"{len(cells)} cell(s), winners per cell:")
+    headers = ["Simulations", "Batch", "Winner", "Wall (s)",
+               "Runner-up", "Wall (s)"]
+    rows = []
+    for cell in cells:
+        winners: list[dict[str, object]] = cell["winners"]  # type: ignore[assignment]
+        overall = next(
+            (item for item in winners if item.get("overall")), winners[0])
+        runner_up = next(
+            (item for item in winners
+             if item is not overall and item.get("backend") != overall["backend"]),
+            None)
+        if runner_up is None:
+            runner_up = next(
+                (item for item in winners if item is not overall), None)
+        rows.append([
+            f"{cell['simulations']:,}", f"{cell['batch_size']:,}",
+            f"{overall['backend']}/{overall['strategy']}",
+            f"{overall['wall_seconds']:.2f}",
+            (f"{runner_up['backend']}/{runner_up['strategy']}"
+             if runner_up is not None else "-"),
+            (f"{runner_up['wall_seconds']:.2f}"
+             if runner_up is not None else "-"),
+        ])
+    _print_ascii_table(headers, rows)
+
+
 def benchmark_payload(
     results: tuple[BenchmarkResult, ...] | list[BenchmarkResult],
     unavailable: tuple[dict[str, str], ...] | list[dict[str, str]], *,
@@ -295,6 +749,146 @@ def benchmark_payload(
         },
         "results": [asdict(item) for item in results],
         "unavailable": list(unavailable),
+    }
+
+
+@dataclass(frozen=True, slots=True)
+class BenchmarkUnit:
+    """One parallelizable benchmark work unit: a scenario measurement.
+
+    Everything the worker needs is embedded (fighters are compiled there, so
+    the payload stays plain data). ``batch`` names the unit in the speedup
+    report and reuses the request's ``batch_size`` semantics.
+    """
+    scenario: BenchmarkScenario
+    backend: str
+    simulations: int
+    batch_size: int
+    seed: int
+    warmups: int
+    repeats: int
+    batch: str = ""
+
+
+def _unit_worker(unit: BenchmarkUnit) -> BenchmarkResult:
+    """Process-pool entry point; spawns import the CLI entry module first."""
+    return run_benchmark(
+        unit.scenario, simulations=unit.simulations, batch_size=unit.batch_size,
+        seed=unit.seed, backend=unit.backend, warmups=unit.warmups,
+        repeats=unit.repeats,
+    )
+
+
+def run_benchmark_units(
+    units: Sequence[BenchmarkUnit], *, processes: int = 1,
+    on_progress: Callable[[], None] | None = None,
+) -> tuple[tuple[BenchmarkResult, ...], tuple[tuple[str, float], ...]]:
+    """Run units sequentially, or through a process pool when ``processes > 1``.
+
+    Returns ``(results, timings, failures)``. ``timings`` pairs ``unit.batch`` names with
+    each unit's measured wall seconds (sum of its samples; 0.0 if the unit
+    failed) — in pool mode the pool transport (pickling + IPC) is included,
+    so reported speedup is what the machine actually delivered.
+    ``failures`` pairs the failed units with their ``RuntimeError`` message so
+    callers can report them like the sequential path does.
+
+    Workers run ``unit.simulations`` duels; every unit gets the same ``seed`",
+    so a unit measured sequentially and in pool mode produces the same
+    ``BenchmarkResult`` (identical deterministic totals — only the timing
+    metadata may differ between runs).
+    """
+    if processes < 1:
+        raise ValueError("processes must be >= 1")
+    if processes == 1:
+        results = []
+        timings = []
+        failures = []
+        for unit in units:
+            try:
+                result = run_benchmark(
+                    unit.scenario, simulations=unit.simulations,
+                    batch_size=unit.batch_size, seed=unit.seed,
+                    backend=unit.backend, warmups=unit.warmups,
+                    repeats=unit.repeats,
+                    on_progress=on_progress,
+                )
+            except RuntimeError as error:
+                failures.append((unit, str(error)))
+                timings.append((unit.batch, 0.0))
+                continue
+            results.append(result)
+            timings.append((unit.batch, sum(result.samples_seconds)))
+        return (
+            tuple(item for item in results if item is not None),
+            tuple(timings), tuple(failures),
+        )
+    from concurrent.futures import ProcessPoolExecutor
+    from concurrent.futures import as_completed
+
+    if not units:
+        return (), (), ()
+    workers = max(1, min(processes, len(units)))
+    results: list[BenchmarkResult | None] = [None] * len(units)
+    timings: list[tuple[str, float]] = [("", 0.0)] * len(units)
+    failures: list[tuple[BenchmarkUnit, str]] = []
+    with ProcessPoolExecutor(max_workers=workers) as pool:
+        futures = {
+            pool.submit(_unit_worker, unit): index
+            for index, unit in enumerate(units)
+        }
+        try:
+            for future in as_completed(futures):
+                index = futures[future]
+                unit = units[index]
+                try:
+                    result = future.result()
+                except RuntimeError as error:
+                    failures.append((unit, str(error)))
+                    continue
+                results[index] = result
+                timings[index] = (unit.batch, sum(result.samples_seconds))
+                if on_progress is not None:
+                    on_progress()
+        finally:
+            for future in futures:
+                future.cancel()
+    return (
+        tuple(item for item in results if item is not None),
+        tuple(timings), tuple(failures),
+    )
+
+
+def speedup_payload(
+    timings: Sequence[tuple[str, float]], *, pool_wall: float, processes: int,
+) -> dict[str, object] | None:
+    """Assemble the real-speedup report from pooled per-unit worker samples.
+
+    ``timings`` carries each unit's measured engine seconds (worker-side);
+    ``pool_wall`` is the measured wall time of the whole pooled execution.
+    The sequential equivalent of every unit is estimated by splitting the
+    wall by each unit's share of the total worker samples — re-running the
+    identical sweep sequentially would double the wall time of full deep
+    profiles, so the estimate is reused instead. Returns ``None`` when there
+    is no comparable timing data (all units failed, or zero wall time).
+    """
+    worker_totals = {
+        name: seconds for name, seconds in timings if name and seconds > 0
+    }
+    total = sum(worker_totals.values())
+    if total <= 0 or pool_wall <= 0:
+        return None
+    rows = []
+    for name, seconds in sorted(worker_totals.items()):
+        sequential_estimate = pool_wall * seconds / total
+        rows.append({
+            "unit": name, "worker_seconds": seconds,
+            "estimated_sequential_seconds": sequential_estimate,
+            "speedup": seconds / sequential_estimate,
+        })
+    return {
+        "mode": "worker-estimate-vs-wall", "processes": processes,
+        "wall_seconds": pool_wall, "speedup": total / pool_wall,
+        "rows": rows,
     }
 
 
@@ -534,6 +1128,30 @@ def print_gate(gate: BenchmarkGate, *, improvement: float, regression: float) ->
             f"[{item.status}]"
         )
     print(f"Performance gate: {'PASS' if gate.passed else 'FAIL'} - {gate.detail}")
+
+
+def print_elapsed_summary(
+    *, elapsed_seconds: float, engine_seconds: float, processes: int = 1,
+) -> None:
+    """Console summary of the whole command's wall time vs engine samples.
+
+    ``engine_seconds`` sums every timed repeat execution (warmups are not
+    recorded in ``samples_seconds``). Sequentially it can never exceed the
+    wall time, so the remainder is genuine setup/overhead; in pool mode the
+    samples ran concurrently and may legitimately exceed it.
+    """
+    if processes > 1:
+        print(
+            f"Total wall time: {elapsed_seconds:.2f}s ({processes} processes; "
+            f"the {engine_seconds:.2f}s of engine samples ran concurrently)."
+        )
+        return
+    overhead = max(0.0, elapsed_seconds - engine_seconds)
+    print(
+        f"Total wall time: {elapsed_seconds:.2f}s (sequential; "
+        f"{engine_seconds:.2f}s in engine samples, "
+        f"{overhead:.2f}s setup and overhead)."
+    )
 
 
 class BenchmarkProgress:

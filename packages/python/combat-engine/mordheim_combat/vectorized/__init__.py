@@ -90,6 +90,8 @@ from mordheim_combat.vectorized._driver import (
     _simulate_duel_numpy,
     _sustain_force_of_will,
     available_backends,
+    batch_plan,
+    batch_segment,
     simulate_batch,
     simulate_batch_observed,
     simulate_duel,
