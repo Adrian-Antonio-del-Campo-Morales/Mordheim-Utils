@@ -3,6 +3,9 @@ from __future__ import annotations
 
 from mordheim_combat_lab.application.catalogue import CombatCatalogue
 from mordheim_combat_lab.application.settings import DuelExecutionSettings
+from mordheim_combat_lab.application.settings import apply_calibration
+from mordheim_combat_lab.persistence.calibration import load_calibration
+from mordheim_combat_lab.persistence.usage_log import append_usage_record
 from mordheim_combat_lab.persistence.preferences import load_preferences
 from mordheim_combat_lab.persistence.preferences import save_preferences
 from mordheim_combat_lab.persistence.workbooks import CombatLabWorkbookError
@@ -52,6 +55,10 @@ class CombatLabApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self._preferences = load_preferences()
+        # Machine profile measured by ``mordheim-combat-lab calibrate``: the
+        # resolved engine defaults, pool workers and spawn cost come from this
+        # machine when a profile is installed (reference constants otherwise).
+        apply_calibration(load_calibration())
         # Display locale of KB names and interface strings: the saved
         # preference wins, otherwise MORDHEIM_LOCALE, otherwise English.
         from mordheim_knowledge.i18n import set_locale as set_kb_locale
@@ -77,6 +84,7 @@ class CombatLabApp(tk.Tk):
         }
         self.status = tk.StringVar(value=tr("Configure the candidate and enemy, then use an analysis tab."))
         self._last_result = None
+        self._usage_sink = append_usage_record
         self.enemy_editor = None
         self._build_gui()
         self._restore_geometry()
@@ -151,6 +159,7 @@ class CombatLabApp(tk.Tk):
             enemy_editor,
             self._analysis_settings(tab_key),
             self.analysis_simulations[tab_key],
+            self._log_usage,
         )
         view.pack(fill="both", expand=True)
 
@@ -225,6 +234,44 @@ class CombatLabApp(tk.Tk):
         resized = geometry[2:] != previous[2:]
         if moved and not resized:
             time.sleep(WINDOW_MOVE_THROTTLE_MS / 1000.0)
+
+    def _usage_fields(self) -> dict:
+        """Telemetry fields shared by every tab: sizes, seed and rounds.
+
+        Read from the main thread when a run starts; the enemy identity is
+        recorded by profile when one is selected.
+        """
+        fields = {
+            "simulations": int(self.simulations.get()),
+            "batch": int(self.batch_size.get()),
+            "seed": int(self.seed.get()),
+            "maximum_rounds": int(self.maximum_rounds.get()),
+        }
+        if self.enemy_editor is not None:
+            try:
+                build = self.enemy_editor.build()
+            except (KeyError, TypeError, ValueError):
+                return fields
+            fields["enemy"] = {
+                "profile_id": getattr(build, "profile_id", None),
+                "main_weapon_id": getattr(build, "main_weapon_id", None),
+            }
+        return fields
+
+    def _log_usage(self, tab: str, selection=None):
+        """Observer factory for one analysis tab; snapshots the settings.
+
+        ``selection`` records the tab-specific run size (improvement count,
+        selected weapons, compared configurations).
+        """
+        fields = {"tab": tab, **self._usage_fields()}
+        if selection is not None:
+            fields["selection"] = selection
+        sink = self._usage_sink
+
+        def _observe(payload: dict) -> None:
+            sink({**fields, **payload})
+        return _observe
 
     def _editor_changed(self) -> None:
         self.status.set(tr("Ready for an analysis with the selected fighters."))
