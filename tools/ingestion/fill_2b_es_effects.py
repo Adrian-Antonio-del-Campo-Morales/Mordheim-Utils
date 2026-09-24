@@ -8,8 +8,8 @@ chequeo de Liderazgo, Fuera de Combate, ...).
 
 Usage::
 
-    python tools/knowledge/fill_2b_es_effects.py           # dry run
-    python tools/knowledge/fill_2b_es_effects.py --write   # apply
+    python tools/ingestion/fill_2b_es_effects.py           # dry run
+    python tools/ingestion/fill_2b_es_effects.py --write   # apply
 """
 from __future__ import annotations
 
@@ -252,7 +252,8 @@ def fill_file(path: Path, band: str, write: bool) -> list[str]:
         out.append(line)
         i += 1
     if filled and write:
-        path.write_text("\n".join(out) + "\n", encoding="utf-8")
+        # newline="\n": the maintained YAML is LF-only (see .gitattributes).
+        path.write_text("\n".join(out) + "\n", encoding="utf-8", newline="\n")
     return filled
 
 

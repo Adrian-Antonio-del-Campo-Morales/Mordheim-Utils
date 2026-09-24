@@ -9,8 +9,8 @@ commas, colons and exclamation marks.
 
 Usage::
 
-    python tools/knowledge/repair_2b_flow_i18n.py            # dry run
-    python tools/knowledge/repair_2b_flow_i18n.py --write    # apply
+    python tools/ingestion/repair_2b_flow_i18n.py            # dry run
+    python tools/ingestion/repair_2b_flow_i18n.py --write    # apply
 """
 from __future__ import annotations
 
@@ -61,7 +61,8 @@ def repair_file(path: Path, write: bool) -> list[str]:
         else:
             out.append(line)
     if repaired and write:
-        path.write_text("".join(out), encoding="utf-8")
+        # newline="\n": the maintained YAML is LF-only (see .gitattributes).
+        path.write_text("".join(out), encoding="utf-8", newline="\n")
     return repaired
 
 

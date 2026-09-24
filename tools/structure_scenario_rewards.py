@@ -119,4 +119,8 @@ def build() -> dict:
 
 
 if __name__ == "__main__":
-    TARGET.write_text(yaml.safe_dump(build(), sort_keys=False, allow_unicode=True, width=110), encoding="utf-8")
+    TARGET.write_text(
+        yaml.safe_dump(build(), sort_keys=False, allow_unicode=True, width=110),
+        encoding="utf-8",
+        newline="\n",
+    )

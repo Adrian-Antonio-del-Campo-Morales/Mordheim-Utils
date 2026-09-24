@@ -7,6 +7,7 @@ source; they are ignored and must not be hand-edited.
 """
 from __future__ import annotations
 
+import hashlib
 import argparse
 import json
 import sys
@@ -63,6 +64,10 @@ CAMPAIGN_CATALOGUE_STEMS = (
     "mutations", "hired-swords-and-dramatis", "scenario-rewards",
     "warband-rating", "recruitment-and-veterans", "trading-and-rarity",
 )
+
+
+sys.path.insert(0, str(REPO_ROOT))
+from tools.knowledge.presentation_contract import build_presentation_entries, presentation_issues
 
 
 class GenerationError(RuntimeError):
@@ -298,23 +303,11 @@ def _build_items(ruleset: str) -> list[dict]:
         if item and base and not item.get("effect") and not item.get("effects"):
             if base.get("effect"): item["effect"] = base["effect"]
             if base.get("effects"): item["effects"] = base["effects"]
-    kind_es = {
-        "armour": "armadura", "close-combat-weapon": "arma de combate cuerpo a cuerpo",
-        "combat-equipment": "equipo", "material-or-upgrade": "material o mejora",
-        "out-of-scope": "equipo de campaña", "ranged-weapon": "arma de proyectiles",
-        "shield-or-defence": "escudo o defensa", "trollheim-equipment": "equipo de suplemento",
-    }
     for item in items:
         if item.get("effect") or item.get("effects"):
             continue
-        source = next((str(ref.get("section") or ref.get("manual") or "").strip()
-                       for ref in item.get("source_refs") or () if isinstance(ref, dict)), "Mordheimer")
-        name = (item.get("names") or {}).get("en") or item["item_id"]
-        spanish = (item.get("names") or {}).get("es") or name
-        item["effects"] = {
-            "en": f"{name}: campaign equipment. Rules reference: {source}.",
-            "es": f"{spanish}: {kind_es.get(str(item.get('kind')), 'equipo de campaña')}. Referencia de reglas: {source}.",
-        }
+        # A generated reference sentence is not a translated rules description.
+        item["effects"] = {"en": "TODO-TRANSLATE", "es": "TODO-TRANSLATE"}
     return sorted(items, key=_sort_key)
 
 
@@ -481,8 +474,9 @@ def _build_campaign_section(ruleset: str, item_ids: set[str]) -> dict:
     )
     # Post-battle sequence: step ids and their resolved catalogue references.
     sequence = load_post_battle_sequence(ruleset)
+    step_rows = {row["id"]: row for row in catalogue.catalogue("post-battle-sequence")["sequence"]["steps"]}
     section["post_battle_sequence"] = [
-        {"id": step.id, "name": step.name, "resolves": step.resolves,
+        {"id": step.id, "name": step.name, "names": _names(step_rows[step.id]), "resolves": step.resolves,
          "order": step.order, "repeatability": step.repeatability}
         for step in sorted(sequence.steps, key=lambda step: step.order)
     ]
@@ -526,6 +520,8 @@ def generate(ruleset: str = DEFAULT_RULESET) -> dict:
         artefact["profiles"] = _build_profiles(ruleset)
         artefact["items"] = _build_items(ruleset)
         artefact["skills"] = _build_skills(ruleset)
+        artefact["mechanics"] = {family: [_row(row) for row in rows if isinstance(row, dict)]
+                                  for family, rows in load_mechanics(ruleset).items() if isinstance(rows, list)}
         artefact["weapon_hands"] = _build_weapon_hands(ruleset)
         artefact["rules_prose"] = _build_rules_prose(ruleset)
         artefact["display_names"] = _build_display_names(ruleset, artefact["skills"], artefact["rules_prose"])
@@ -553,6 +549,7 @@ def generate(ruleset: str = DEFAULT_RULESET) -> dict:
         },
     }
     _validate_references(artefact, {str(row["id"]) for row in load_items(ruleset)})
+    artefact["presentation_entries"] = build_presentation_entries(artefact)
     return artefact
 
 
@@ -561,6 +558,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--ruleset", default=DEFAULT_RULESET)
     parser.add_argument("--output", type=Path, default=None,
                         help="output JSON path (default: <repo>/build/generated/knowledge-web/knowledge-web.json)")
+    parser.add_argument("--check-translations", action="store_true", help="reject every untranslated presentation field")
     parser.add_argument("--check", action="store_true",
                         help="generate and compare against the existing artefact instead of writing")
     args = parser.parse_args(argv)
@@ -568,13 +566,25 @@ def main(argv: list[str] | None = None) -> int:
     output = Path(output).resolve()
 
     artefact = generate(args.ruleset)
+    if args.check_translations:
+        issues = presentation_issues(artefact["presentation_entries"])
+        if issues:
+            raise GenerationError("Missing presentation translations:\n" + "\n".join(issues))
+    digest = hashlib.sha256(json.dumps(artefact, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
+    artefact["presentation_digest"] = digest
     rules_prose = artefact.pop("rules_prose")
+    artefact["rules_prose_digest"] = hashlib.sha256(json.dumps(rules_prose, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
+    todos = [{"status": "TODO-TRANSLATE", "location": location} for location in presentation_issues(artefact["presentation_entries"])]
     display_text = {
+        "translation_todos": todos,
+        "presentation_digest": digest,
+        "presentation_entries": artefact.pop("presentation_entries"),
         "display_names": artefact.pop("display_names"),
         "display_effects": artefact.pop("display_effects"),
     }
     artefact["rules_prose_url"] = RULES_PROSE_FILENAME
     artefact["display_text_url"] = DISPLAY_TEXT_FILENAME
+    artefact["display_text_digest"] = hashlib.sha256(json.dumps(display_text, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
     text = json.dumps(artefact, ensure_ascii=False, separators=(",", ":")) + "\n"
     rules_text = json.dumps(rules_prose, ensure_ascii=False, separators=(",", ":")) + "\n"
     display_text_text = json.dumps(display_text, ensure_ascii=False, separators=(",", ":")) + "\n"

@@ -8,11 +8,11 @@ and the ignored local cache ``build/cache/2a-sources/``.
 
 Commands::
 
-    python tools/knowledge/ingest_2a.py discover    # index table + dedicated pages
-    python tools/knowledge/ingest_2a.py download    # snapshot pages (and cited PDFs)
-    python tools/knowledge/ingest_2a.py extract     # draft text extraction into the cache
-    python tools/knowledge/ingest_2a.py validate    # validate the staging tree
-    python tools/knowledge/ingest_2a.py report      # progress by band and source
+    python tools/ingestion/ingest_2a.py discover    # index table + dedicated pages
+    python tools/ingestion/ingest_2a.py download    # snapshot pages (and cited PDFs)
+    python tools/ingestion/ingest_2a.py extract     # draft text extraction into the cache
+    python tools/ingestion/ingest_2a.py validate    # validate the staging tree
+    python tools/ingestion/ingest_2a.py report      # progress by band and source
 
 Unlike the 2B flow (PDF-first), the **primary source document of every 2A band
 is its dedicated page** at ``https://mordheimer.net/docs/warbands/grade-2a-warbands/<slug>``.

@@ -52,7 +52,9 @@ exploration:
   - id: campaign.exploration.result.11-well
     dice_pattern: '1,1'
     outcome: Well
-    description: "Choose a Hero and roll a D6. If it is no higher than their Toughness, gain one wyrdstone shard; otherwise the Hero misses the next battle."
+    description: >-
+      Choose a Hero and roll a D6. If it is no higher than their Toughness, gain one wyrdstone
+      shard; otherwise the Hero misses the next battle.
     description_i18n: { es: "Elige un Héroe y tira 1D6. Si no supera su Resistencia, obtienes un fragmento de piedra bruja; si falla, el Héroe se pierde la próxima batalla." }
     follow_up:
       type: sequence
@@ -147,7 +149,9 @@ exploration:
   - id: campaign.exploration.result.44-straggler
     dice_pattern: '4,4'
     outcome: Straggler
-    description: "The reward depends on the warband: Skaven gain 2D6 gc, Possessed gain +1 XP for their leader, Undead gain a Zombie, and others gain an extra die to discard in their next exploration."
+    description: >-
+      The reward depends on the warband: Skaven gain 2D6 gc, Possessed gain +1 XP for their leader,
+      Undead gain a Zombie, and others gain an extra die to discard in their next exploration.
     description_i18n: { es: "La recompensa depende de la banda: los Skaven obtienen 2D6 co, el líder de los Poseídos gana +1 XP, los No Muertos obtienen un Zombi y las demás bandas tiran y descartan un dado adicional en su próxima exploración." }
     follow_up:
       type: conditional
@@ -234,7 +238,9 @@ exploration:
   - id: campaign.exploration.result.111-tavern
     dice_pattern: '1,1,1'
     outcome: Tavern
-    description: "Test the leader's Leadership: gain 4D6 gc on success or D6 gc on failure. Undead, Witch Hunters and Sisters of Sigmar succeed automatically."
+    description: >-
+      Test the leader's Leadership: gain 4D6 gc on success or D6 gc on failure. Undead, Witch
+      Hunters and Sisters of Sigmar succeed automatically.
     description_i18n: { es: "Haz una prueba de Liderazgo con el líder: obtienes 4D6 co si tiene éxito o 1D6 co si falla. No Muertos, Cazadores de Brujas y Hermanas de Sigmar superan la prueba automáticamente." }
     follow_up:
       type: conditional
@@ -316,7 +322,9 @@ exploration:
     dice_pattern: '3,3,3'
     outcome: Prisoners
     outcome_i18n: { es: Prisioneros }
-    description: "The reward depends on the warband: XP for Possessed, Zombies for Undead, gold for Skaven, or 2D6 gc and a possible free human Henchman for others."
+    description: >-
+      The reward depends on the warband: XP for Possessed, Zombies for Undead, gold for Skaven, or
+      2D6 gc and a possible free human Henchman for others.
     description_i18n: { es: "La recompensa depende de la banda: XP para los Poseídos, Zombis para los No Muertos, oro para los Skaven, o 2D6 co y un posible Secuaz humano gratuito para las demás." }
     follow_up:
       type: conditional
@@ -477,7 +485,9 @@ exploration:
   - id: campaign.exploration.result.2222-shrine
     dice_pattern: '2,2,2,2'
     outcome: Shrine
-    description: "Gain 3D6 gc. Sisters of Sigmar and Witch Hunters also bless one weapon, which wounds Undead and Possessed on 2+."
+    description: >-
+      Gain 3D6 gc. Sisters of Sigmar and Witch Hunters also bless one weapon, which wounds Undead
+      and Possessed on 2+.
     description_i18n: { es: "Obtienes 3D6 co. Las Hermanas de Sigmar y los Cazadores de Brujas también bendicen un arma, que hiere a No Muertos y Poseídos con 2+." }
     follow_up:
       type: sequence
@@ -575,7 +585,9 @@ exploration:
   - id: campaign.exploration.result.5555-graveyard
     dice_pattern: '5,5,5,5'
     outcome: Graveyard
-    description: "Sisters of Sigmar and Witch Hunters seal the graves and distribute D6 XP. Other warbands loot D6x10 gc but will be hated by those bands in their next battle."
+    description: >-
+      Sisters of Sigmar and Witch Hunters seal the graves and distribute D6 XP. Other warbands loot
+      D6x10 gc but will be hated by those bands in their next battle.
     description_i18n: { es: "Las Hermanas de Sigmar y los Cazadores de Brujas sellan las tumbas y reparten 1D6 XP. Las demás bandas saquean 1D6×10 co, pero serán odiadas por esas bandas en su próximo enfrentamiento." }
     follow_up:
       type: conditional
@@ -609,7 +621,9 @@ exploration:
   - id: campaign.exploration.result.6666-catacombs
     dice_pattern: '6,6,6,6'
     outcome: Catacombs
-    description: "Choose up to three eligible fighters to deploy through the tunnels at the end of your first turn in the next battle."
+    description: >-
+      Choose up to three eligible fighters to deploy through the tunnels at the end of your first
+      turn in the next battle.
     description_i18n: { es: "Elige hasta tres guerreros válidos para desplegarlos desde los túneles al final de tu primer turno de la próxima batalla." }
     follow_up:
       type: choose_warriors
@@ -673,7 +687,9 @@ exploration:
   - id: campaign.exploration.result.33333-jewelsmith
     dice_pattern: '3,3,3,3,3'
     outcome: Jewelsmith
-    description: "Choose whether to sell the gems for a random value or give them to a Hero for +1 when locating rare items."
+    description: >-
+      Choose whether to sell the gems for a random value or give them to a Hero for +1 when locating
+      rare items.
     description_i18n: { es: "Elige entre vender las gemas por un valor aleatorio o dárselas a un Héroe para obtener +1 al localizar objetos raros." }
     follow_up:
       type: choose_option
@@ -820,7 +836,9 @@ exploration:
   - id: campaign.exploration.result.222222-hidden-treasure
     dice_pattern: '2,2,2,2,2,2'
     outcome: Hidden Treasure
-    description: "Gain 5D6x5 gc and roll separately for wyrdstone, gems, armour, relics, tomes, an Elven cloak and a magical artefact."
+    description: >-
+      Gain 5D6x5 gc and roll separately for wyrdstone, gems, armour, relics, tomes, an Elven cloak
+      and a magical artefact.
     description_i18n: { es: "Obtienes 5D6×5 co y tiras por separado para conseguir piedra bruja, gemas, armaduras, reliquias, tomos, una capa élfica y un artefacto mágico." }
     follow_up:
       type: sequence
@@ -945,7 +963,9 @@ exploration:
   - id: campaign.exploration.result.444444-slaughtered-warband
     dice_pattern: '4,4,4,4,4,4'
     outcome: Slaughtered Warband
-    description: "Gain 3D6x5 gc and D6 daggers automatically, then roll separately for armour, weapons, bows, helmets and a Mordheim Map."
+    description: >-
+      Gain 3D6x5 gc and D6 daggers automatically, then roll separately for armour, weapons, bows,
+      helmets and a Mordheim Map.
     description_i18n: { es: "Obtienes automáticamente 3D6×5 co y 1D6 dagas; después tiras por separado para conseguir armaduras, armas, arcos, yelmos y un Mapa de Mordheim." }
     follow_up:
       type: sequence
@@ -1039,7 +1059,9 @@ exploration:
   - id: campaign.exploration.result.555555-fighting-arena
     dice_pattern: '5,5,5,5,5,5'
     outcome: Fighting Arena
-    description: "Sell the training manual for 100 gc or give it to a Hero for Combat skill access and +1 to their maximum Weapon Skill."
+    description: >-
+      Sell the training manual for 100 gc or give it to a Hero for Combat skill access and +1 to
+      their maximum Weapon Skill.
     description_i18n: { es: "Vende el manual de entrenamiento por 100 co o dáselo a un Héroe para que acceda a habilidades de Combate y aumente en +1 su HA máxima." }
     follow_up:
       type: choose_option
@@ -1321,7 +1343,9 @@ magical_artefacts:
       including vertical surfaces, with no Initiative test needed (except to jump across gaps).
     effect_i18n:
       es: >-
-        El portador puede moverse con normalidad (incluyendo correr, cargar, etc.) sobre cualquier tipo de terreno, incluso superficies verticales, sin necesidad de superación de Iniciativa (excepto para saltar huecos).
+        El portador puede moverse con normalidad (incluyendo correr, cargar, etc.) sobre cualquier
+        tipo de terreno, incluso superficies verticales, sin necesidad de superación de Iniciativa
+        (excepto para saltar huecos).
   - id: campaign.magical-artefact.count-of-ventimiglias-misericordia
     roll: '2'
     result: The Count of Ventimiglia's Misericordia
@@ -1330,8 +1354,8 @@ magical_artefacts:
       down as normal) and put out of action on a 4-6.
     effect_i18n:
       es: >-
-        Se considera una espada.
-        Los oponentes heridos por ella quedan aturdidos con un resultado de 1-3 (los No Muertos son derribados con normalidad) y fuera de combate con un 4-6.
+        Se considera una espada. Los oponentes heridos por ella quedan aturdidos con un resultado de
+        1-3 (los No Muertos son derribados con normalidad) y fuera de combate con un 4-6.
   - id: campaign.magical-artefact.attlas-plate-mail
     roll: '3'
     result: Att'la's Plate Mail
@@ -1341,7 +1365,9 @@ magical_artefacts:
       maximum).
     effect_i18n:
       es: >-
-        Una coraza de gromril con Runa de Devorahechizos (inmune a todos los hechizos), Runa del Pasaje (atraviesa objetos sólidos) y Runa de Fortaleza (una herida adicional, posiblemente por encima del máximo de la raza).
+        Una coraza de gromril con Runa de Devorahechizos (inmune a todos los hechizos), Runa del
+        Pasaje (atraviesa objetos sólidos) y Runa de Fortaleza (una herida adicional, posiblemente
+        por encima del máximo de la raza).
   - id: campaign.magical-artefact.bow-of-seeking
     roll: '4'
     result: Bow of Seeking
@@ -1351,9 +1377,10 @@ magical_artefacts:
       not just the closest. Cannot be used to shoot at Elves.
     effect_i18n:
       es: >-
-        Se considera un Arco Élfico que siempre impacta con un 2+, sin importar los modificadores al impactar; todas las flechas cuentan como Flechas de Caza (+1 en todas las tiradas de herida).
-        Puede elegir cualquier miniatura enemiga visible al alcance, no solo la más cercana.
-        No puede dispararse contra Elfos.
+        Se considera un Arco Élfico que siempre impacta con un 2+, sin importar los modificadores al
+        impactar; todas las flechas cuentan como Flechas de Caza (+1 en todas las tiradas de
+        herida). Puede elegir cualquier miniatura enemiga visible al alcance, no solo la más
+        cercana. No puede dispararse contra Elfos.
   - id: campaign.magical-artefact.executioners-hood
     roll: '5'
     result: Executioner's Hood
@@ -1376,7 +1403,10 @@ magical_artefacts:
       in close combat that is not modified by Strength or weapon modifiers.
     effect_i18n:
       es: >-
-        El portador puede ver todas las miniaturas de la mesa, puede tirar dos dados tras la batalla al tirar en la tabla de Exploración, y tiene una tirada de salvación adicional de 6+ contra todos los ataques de disparo y golpes en combate cerrado que no se ve modificada por la Fuerza ni por modificadores de armas.
+        El portador puede ver todas las miniaturas de la mesa, puede tirar dos dados tras la batalla
+        al tirar en la tabla de Exploración, y tiene una tirada de salvación adicional de 6+ contra
+        todos los ataques de disparo y golpes en combate cerrado que no se ve modificada por la
+        Fuerza ni por modificadores de armas.
 effect_ids:
 - campaign.exploration.dice
 - campaign.exploration.reroll

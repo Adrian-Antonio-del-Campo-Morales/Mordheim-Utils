@@ -14,8 +14,8 @@
       "$ref": "defs.schema.json#/$defs/id"
     },
     "grade": {
-      "description": "Grade of the file. `core` is the Mordheim Rulebook roster; `1a`, `1b`, `1c` and `2a` are the fan and supplement grades, kept apart so a source change stays auditable.",
-      "enum": ["core", "1a", "1b", "1c", "2a"]
+      "description": "Grade of the file. `core` is the Mordheim Rulebook roster; `1a`, `1b`, `1c`, `2a` and `2b` are the fan and supplement grades, kept apart so a source change stays auditable.",
+      "enum": ["core", "1a", "1b", "1c", "2a", "2b"]
     },
     "profiles": {
       "type": "array",
@@ -89,7 +89,7 @@
         "kind": { "const": "hired-sword" },
         "grade": {
           "description": "Grade of the profile; it repeats the file's grade so a record keeps its source when moved.",
-          "enum": ["core", "1a", "1b", "1c", "2a"]
+          "enum": ["core", "1a", "1b", "1c", "2a", "2b"]
         },
         "publication": {
           "description": "Publication the profile was printed in, e.g. `Mordheim Rulebook` or `Town Cryer 13`.",
@@ -98,6 +98,11 @@
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "characteristics": { "$ref": "defs.schema.json#/$defs/characteristic_map" },
+        "experience": {
+          "description": "Starting Experience the profile begins with, when the source grants any. It is the field a band profile carries (`profiles.yaml`), under the same name and with the same meaning, so a veteran Hired Sword keeps his starting advance count. Absent when the profile starts at zero, which is the common case.",
+          "type": "integer",
+          "minimum": 0
+        },
         "warband_rating": {
           "description": "The rating a Hired Sword contributes. It is either a fixed value, or a base plus one point per accumulated Experience point.",
           "$ref": "#/$defs/warband_rating"
@@ -232,7 +237,11 @@
           "description": "Canonical `item_id` of `catalog/items/`. Existing ids are referenced, never duplicated.",
           "$ref": "defs.schema.json#/$defs/id"
         },
-        "quantity": { "$ref": "defs.schema.json#/$defs/amount" }
+        "quantity": { "$ref": "defs.schema.json#/$defs/amount" },
+        "notes": {
+          "description": "Editorial note on the reference, not on the item: how the source's wording resolves to this canonical id (`Harpoon gun counts as harpoon crossbow`), or what the printed entry says about carrying it. The same field the band equipment lists carry on their entries.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        }
       }
     },
     "optional_item": {

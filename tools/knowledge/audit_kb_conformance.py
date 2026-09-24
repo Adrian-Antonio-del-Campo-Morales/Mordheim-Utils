@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Audit a staging tree's shape against the active KB patterns.
+"""Audit a knowledge tree's shape against the active KB patterns.
 
-Read-only. Reports every deviation class the KB contract defines, so a
-correction pass has one reproducible checklist instead of ad-hoc greps.
+Read-only, and permanent: point it at the active KB to prove the published
+documents still match the contract (0 deviations is the expected baseline), or
+at a staging tree to check it before promotion. Reports every deviation class
+the KB contract defines, so a correction pass has one reproducible checklist
+instead of ad-hoc greps.
 
 Checks
 ------
@@ -20,7 +23,8 @@ Checks
 
 Usage::
 
-    python tools/knowledge/audit_kb_conformance.py --tree 2A
+    python tools/knowledge/audit_kb_conformance.py                 # the active KB
+    python tools/knowledge/audit_kb_conformance.py --tree 2A       # a staging tree
     python tools/knowledge/audit_kb_conformance.py --tree 2B --json
 """
 from __future__ import annotations
@@ -110,11 +114,61 @@ def kb_rule_refs() -> set[str]:
     return out
 
 
+def kb_key_sets() -> dict[str, set[str]]:
+    """Every key the active KB itself carries, per document context.
+
+    The hand-written sets above are the baseline; the KB is the contract as it
+    exists today, so a key its own documents use must never be reported as
+    invented (``chaos-streets-undead-bloodlines`` carries ``profile.bloodline``
+    and ``roster.requires_variant_selection``, and its summoning rules carry
+    ``summoned_count`` / ``summoned_profile_id``). Measured once per run from
+    ``sources/knowledge``; the tree under audit contributes nothing, so a
+    staging tree still cannot smuggle in a key the KB does not use.
+    """
+    out: dict[str, set[str]] = {
+        name: set() for name in ('band', 'roster', 'member', 'profile', 'rule',
+                                 'eq-doc', 'eq-list', 'eq-item')
+    }
+    for path in glob.glob(f'{KB_BANDS}/*/*/band.yaml'):
+        doc = docs(path)[0]
+        out['band'] |= set(doc)
+        roster = doc.get('roster') or {}
+        out['roster'] |= set(roster)
+        for member in roster.get('members') or []:
+            out['member'] |= set(member)
+    for path in glob.glob(f'{KB_BANDS}/*/*/profiles.yaml'):
+        for doc in docs(path):
+            for profile in doc.get('profiles') or []:
+                out['profile'] |= set(profile)
+    for path in glob.glob(f'{KB_BANDS}/*/*/special-rules.yaml'):
+        for doc in docs(path):
+            for rule in doc.get('rules') or []:
+                out['rule'] |= set(rule)
+    for path in glob.glob(f'{KB_BANDS}/*/*/equipment-access.yaml'):
+        for doc in docs(path):
+            out['eq-doc'] |= set(doc)
+            for entry in doc.get('equipment_lists') or []:
+                out['eq-list'] |= set(entry)
+                for item in entry.get('items') or []:
+                    if isinstance(item, dict):
+                        out['eq-item'] |= set(item)
+    return out
+
+
 def audit(tree: str) -> dict:
     report: dict[str, list] = defaultdict(list)
     bindings = kb_bindings()
     pending_bindings = registered_bindings()
     refs = kb_rule_refs()
+    known = kb_key_sets()
+    band_keys = KB_BAND_KEYS | known['band']
+    roster_keys = KB_ROSTER_KEYS | known['roster']
+    member_keys = KB_MEMBER_KEYS | known['member']
+    profile_keys = KB_PROFILE_KEYS | known['profile']
+    rule_keys = KB_RULE_KEYS | known['rule']
+    eq_doc_keys = KB_EQ_DOC_KEYS | known['eq-doc']
+    eq_list_keys = KB_EQ_LIST_KEYS | known['eq-list']
+    item_keys = KB_ITEM_KEYS | known['eq-item']
     bands = sorted(os.path.basename(os.path.dirname(p))
                    for p in glob.glob(f'sources/{tree}/bands/*/*/band.yaml'))
     for band in bands:
@@ -123,13 +177,13 @@ def audit(tree: str) -> dict:
         if not band_path:
             continue
         band_doc = docs(band_path[0])[0]
-        for key in sorted(set(band_doc) - KB_BAND_KEYS):
+        for key in sorted(set(band_doc) - band_keys):
             report['band-key'].append(f'{band}: band.yaml key {key!r}')
         roster = band_doc.get('roster') or {}
-        for key in sorted(set(roster) - KB_ROSTER_KEYS):
+        for key in sorted(set(roster) - roster_keys):
             report['roster-key'].append(f'{band}: roster.{key}')
         for member in roster.get('members') or []:
-            for key in sorted(set(member) - KB_MEMBER_KEYS):
+            for key in sorted(set(member) - member_keys):
                 report['member-key'].append(f'{band}/{member.get("profile_id")}: member.{key}')
 
         rules_path = glob.glob(f'{root}/special-rules.yaml')
@@ -153,7 +207,7 @@ def audit(tree: str) -> dict:
                 for profile in doc.get('profiles') or []:
                     profile_ids.add(str(profile.get('id')))
                     pid = profile.get('id')
-                    for key in sorted(set(profile) - KB_PROFILE_KEYS):
+                    for key in sorted(set(profile) - profile_keys):
                         report['profile-key'].append(f'{band}/{pid}: profile key {key!r}')
                     if profile.get('type') not in KB_TYPES:
                         report['profile-type'].append(f'{band}/{pid}: type {profile.get("type")!r}')
@@ -177,21 +231,21 @@ def audit(tree: str) -> dict:
         access_path = glob.glob(f'{root}/equipment-access.yaml')
         if access_path:
             for doc in docs(access_path[0]):
-                for key in sorted(set(doc) - KB_EQ_DOC_KEYS):
+                for key in sorted(set(doc) - eq_doc_keys):
                     report['eq-doc-key'].append(f'{band}: equipment-access.{key}')
                 for lst in doc.get('equipment_lists') or []:
-                    for key in sorted(set(lst) - KB_EQ_LIST_KEYS):
+                    for key in sorted(set(lst) - eq_list_keys):
                         report['eq-list-key'].append(f'{band}/{lst.get("id")}: list.{key}')
                     for item in lst.get('items') or []:
                         if not isinstance(item, dict):
                             continue
-                        for key in sorted(set(item) - KB_ITEM_KEYS):
+                        for key in sorted(set(item) - item_keys):
                             report['eq-item-key'].append(
                                 f'{band}/{lst.get("id")}/{item.get("item_id")}: item key {key!r}')
 
         for rule in rules:
             rule_id = str(rule.get('id'))
-            for key in sorted(set(rule) - KB_RULE_KEYS):
+            for key in sorted(set(rule) - rule_keys):
                 report['rule-key'].append(f'{band}/{rule_id}: rule key {key!r}')
             if 'effects' in rule:
                 report['rule-effects-sibling'].append(f'{band}/{rule_id}')
@@ -265,7 +319,8 @@ def audit(tree: str) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--tree', default='2A')
+    parser.add_argument('--tree', default='knowledge',
+                        help="tree under sources/ to audit (default: knowledge, the active KB)")
     parser.add_argument('--json', action='store_true')
     parser.add_argument('--show', type=int, default=8, help='examples per class')
     args = parser.parse_args()

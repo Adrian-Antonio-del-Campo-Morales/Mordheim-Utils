@@ -6,11 +6,15 @@ aliases, and all non-text YAML syntax. Descriptive prose is canonicalised to
 folded blocks: `effect` / `effect_i18n.es` values are never quoted and never
 left continuation-wrapped — quoted scalars (single- or multi-line) and plain
 values that spill over lines or exceed the target width are rewritten as `>-`
-blocks rewrapped to the target width. `reason` strings always fold (quoted or
-plain, any length) so the audit-taxonomy metadata shares one style; the other
-descriptive keys (`description`, `notes`, ...) fold when they need wrapping
-(multi-line quoted scalars, content beyond the target width, or a physical
-line past the 120 maximum) and short values keep their single-line quotes.
+blocks rewrapped to the target width. A folded block whose body carries a
+physical line past the 120 maximum is rewrapped too: writers that emit one
+physical line per value leave prose that the check flags and can repair, so
+the warning and the repair are the same policy. `reason` strings always fold
+(quoted or plain, any length) so the audit-taxonomy metadata shares one style;
+the other descriptive keys (`description`, `notes`, ...) fold when they need
+wrapping (multi-line quoted scalars, content beyond the target width, or a
+physical line past the 120 maximum) and short values keep their single-line
+quotes.
 Rule prose lives under exactly one key — `effect` (never `summary`); see
 `tools/rename_summary_keys.py`. Parsed values are checked for semantic
 equivalence after whitespace normalization.
@@ -194,6 +198,30 @@ def plain_scalar_end(lines: list[str], index: int, indent: int) -> int:
     return end
 
 
+def folded_block_end(lines: list[str], index: int, indent: int) -> int:
+    """Index just past a folded block opened at ``lines[index]``.
+
+    Unlike a plain scalar, a block may hold blank lines of its own: they are
+    part of its value, so the walk continues past them while the block does.
+    """
+    end = index + 1
+    while end < len(lines):
+        candidate = lines[end]
+        if not candidate.strip():
+            look = end
+            while look < len(lines) and not lines[look].strip():
+                look += 1
+            if look < len(lines) and len(lines[look]) - len(lines[look].lstrip()) > indent:
+                end = look
+                continue
+            break
+        if len(candidate) - len(candidate.lstrip()) > indent:
+            end += 1
+            continue
+        break
+    return end
+
+
 def normalize_lines(original: str) -> tuple[str, list[str]]:
     lines = original.replace("\r\n", "\n").replace("\r", "\n").split("\n")
     output: list[str] = []
@@ -247,6 +275,18 @@ def normalize_lines(original: str) -> tuple[str, list[str]]:
                         or len(indent) + len(key) + 2 + len(value) + 2 > MAX_WIDTH):
                     fold = True
 
+            if not fold and rest.startswith(">"):
+                # An already folded block can still carry one physical line per
+                # value: that is the shape the staged writers emit, and the line
+                # past the hard maximum is exactly what the check flags. The
+                # block's value is unchanged by rewrapping, so the guard below
+                # makes this safe for any folded scalar (a block whose value
+                # carries paragraph breaks simply fails the round-trip and is
+                # left alone).
+                body = lines[index + 1 : folded_block_end(lines, index, len(indent))]
+                if any(over_long(item) for item in body):
+                    fold = True
+
             if fold:
                 if quoted:
                     if multiline_quoted:
@@ -262,6 +302,8 @@ def normalize_lines(original: str) -> tuple[str, list[str]]:
                             continue
                     else:
                         last = index
+                elif rest.startswith(">"):
+                    last = folded_block_end(lines, index, len(indent)) - 1
                 else:
                     last = plain_scalar_end(lines, index, len(indent)) - 1
                 scalar_source = "x: " + rest + "\n" + "\n".join(lines[index + 1 : last + 1])
@@ -295,6 +337,20 @@ def normalize_lines(original: str) -> tuple[str, list[str]]:
     return "\n".join(output) + "\n", changed_fields
 
 
+def over_long(line: str) -> bool:
+    """Whether a physical line breaks the maintained maximum width.
+
+    Lines carrying a URL are exempt: a URL is one token, so rewrapping cannot
+    shorten it and the warning would never clear.
+    """
+    return (
+        len(line) > MAX_WIDTH
+        and "url:" not in line
+        and "http://" not in line
+        and "https://" not in line
+    )
+
+
 def iter_yaml(root: Path) -> list[Path]:
     if root.is_file():
         return [root]
@@ -308,7 +364,7 @@ def diagnostics(text: str) -> list[str]:
             result.append(f"line {number}: tab used for indentation")
         if line.rstrip() != line:
             result.append(f"line {number}: trailing whitespace")
-        if len(line) > MAX_WIDTH and "url:" not in line and "http://" not in line and "https://" not in line:
+        if over_long(line):
             result.append(f"line {number}: {len(line)} characters (max {MAX_WIDTH})")
     return result
 
@@ -324,7 +380,9 @@ def main() -> int:
     failures = 0
     changed = 0
     for path in sum((iter_yaml(root) for root in paths), []):
-        original = path.read_text(encoding="utf-8")
+        # Read the raw bytes: universal-newline translation would hide CRLF, and
+        # the maintained sources are LF-only (the knowledge base has no CRLF).
+        original = path.read_bytes().decode("utf-8")
         formatted, fields = normalize_lines(original)
         try:
             before = load(path)
@@ -345,7 +403,10 @@ def main() -> int:
             changed += 1
             if args.write:
                 path.write_text(formatted, encoding="utf-8", newline="\n")
-                print(f"formatted {path} ({', '.join(sorted(set(fields))) or 'whitespace'})")
+                label = ", ".join(sorted(set(fields)))
+                if "\r" in original:
+                    label = f"{label}, CRLF" if label else "CRLF line endings"
+                print(f"formatted {path} ({label or 'whitespace'})")
     if not args.write:
         print(f"checked {len(sum((iter_yaml(root) for root in paths), []))} YAML files; {changed} would change; {failures} failures")
     else:

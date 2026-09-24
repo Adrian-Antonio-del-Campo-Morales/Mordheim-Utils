@@ -30,9 +30,9 @@ reported as an open finding and makes the exit code 1.
 
 Usage::
 
-    python tools/knowledge/audit_2a_sources.py
-    python tools/knowledge/audit_2a_sources.py --json
-    python tools/knowledge/audit_2a_sources.py --band druchii-mic --show 40
+    python tools/ingestion/audit_2a_sources.py
+    python tools/ingestion/audit_2a_sources.py --json
+    python tools/ingestion/audit_2a_sources.py --band druchii-mic --show 40
 """
 from __future__ import annotations
 
@@ -44,9 +44,23 @@ import os
 import re
 import sys
 import unicodedata
-from collections import defaultdict
 
 import yaml
+
+# El lector de entradas impresas: encabezados, tramos y tablas por estructura. Es
+# el mismo que coteja los hirelings y los Dramatis Personae, y sustituye aquí a las
+# expresiones regulares sobre el HTML (que perdían las celdas con etiquetas dentro
+# y los encabezados con enlaces).
+import printed_entries as reader
+
+# Las palabras con que la página imprime el nombre de un objeto que el catálogo
+# registra con otro, adjudicadas fila por fila contra la página y registradas en
+# sources/2A/discrepancy-verdicts.md §9. Viven en un solo registro compartido con los
+# otros dos cotejos (``printed_wordings``), con el sitio donde se leyó cada una; aquí se
+# leen por banda y lista. Una fila que coincide con una de esas palabras cuenta como la
+# misma fila y su precio se compara como cualquier otro: el cotejo **nunca** infiere un
+# sinónimo por un deletreo parecido.
+import printed_wordings as wordings
 
 PAGES = 'build/cache/2a-sources/pages'
 TEXT = 'build/cache/2a-sources/text'
@@ -56,9 +70,14 @@ BANDS = 'sources/2A/bands/mordheim'
 # scope (the validator does not resolve band equipment against them either).
 CATALOG_DIRS = ('sources/knowledge/catalog/items', 'sources/2A/catalog/items',
                 'sources/2B/catalog/items')
-# The provisional catalogue of the 2A bands, whose items carry the price the
-# Special Equipment sections print (kept separate so a test can point it at a copy).
+# The provisional catalogue of the 2A bands, whose items carry the identity, the
+# text and the mechanic the Special Equipment sections print (kept separate so a
+# test can point it at a copy).
 CATALOG_DIR = 'sources/2A/catalog/items'
+# The price and availability of those items live in the market catalogue of the
+# same tree, in the shape of the KB trading post: the item record keeps no
+# `availability_note` and no `rarity` for the audit to read.
+MARKET_FILE = 'sources/2A/catalog/trading-post-2a.yaml'
 
 
 def catalog_roots() -> tuple[str, ...]:
@@ -96,24 +115,6 @@ KNOWN: list[tuple[str, str | None, str | None, str]] = [
      'under a similar name (Ogre Slave Master, 90 gc, hireable by Possessed/Carnival of '
      'Chaos/Beastmen), so this is a hireling-catalog gap rather than a naming variant'),
 ]
-
-# Printed wording that names an item the catalogue registers under another name,
-# adjudicated row by row against the page and recorded in
-# sources/2A/discrepancy-verdicts.md. Key: (band, list, item_id) -> the names the
-# page prints for that item. A row that matches one of these counts as the same
-# row, so its price is compared like any other; the check never infers a synonym
-# from a similar spelling.
-SOURCE_WORDING: dict[tuple[str, str, str], list[str]] = {
-    ('protectorate-of-sigmar-lotd3', 'protectorate-equipment-list', 'blessed_water'):
-        ['Holy Water'],
-    ('protectorate-of-sigmar-lotd3', 'protectorate-equipment-list', 'sigmarite_hammer'):
-        ['Sigmarite Warhammer'],
-    ('vampire-hunters-of-sylvania-lotd5', 'vampire-hunters-hero-equipment-list',
-     'blessed_water'): ['Holy Water'],
-    # The Outlaws page merges the row's availability into its name cell.
-    ('outlaws-of-stirwood-forest-redux-fbg', 'outlaws-equipment-list', 'long_bow'):
-        ['Long Bow Heroes only'],
-}
 
 # Every currency the 2A pages price their lists in: gold crowns written gc / Gold
 # Crowns / Crowns, and the warp tokens (wt) of the Clan Moulder Skaven lists.
@@ -294,13 +295,20 @@ def plain(value: object) -> str:
     return re.sub(r'[^a-z0-9]+', ' ', text).strip()
 
 
-# Coverage counters, printed by --all / --stats: "0 findings" must never be the
-# only evidence, so the run reports how much it actually compared.
-STATS: dict[str, int] = {}
-
-
-def bump(key: str, amount: int = 1) -> None:
-    STATS[key] = STATS.get(key, 0) + amount
+# Cobertura por chequeo, impresa al final de cada corrida: «0 hallazgos» nunca
+# puede ser la única evidencia, así que el cotejo declara cuántas unidades cubrió y
+# cuántos valores comparó en cada chequeo, y qué no pudo comparar. Es el hermano
+# agregado del informe de los hirelings (allí por personaje, aquí por banda).
+LEDGER = reader.Ledger({
+    'skills': ('bandas', 'etiquetas'),
+    'special-equipment': ('bandas', 'secciones'),
+    'lists': ('listas', 'filas'),
+    'special-price': ('ítems', 'precios'),
+    'item-profiles': ('secciones', 'filas'),
+    'rules': ('bandas', 'nombres'),
+    'clarifications': ('bandas', 'aclaraciones'),
+    'magic': ('secciones', 'conjuros'),
+})
 
 
 MANIFEST_NAMES: dict[str, str] = {}
@@ -331,6 +339,50 @@ def catalog_items() -> dict[str, str]:
                     if isinstance(item, dict) and item.get('id'):
                         out.setdefault(str(item['id']), str(item.get('name') or item['id']))
     return out
+
+
+def printed_price(entry: dict) -> str:
+    """The price text of a market entry, as the source prints it.
+
+    The source wording is the first reader: the entry keeps the buying rule
+    verbatim, and that text is the price the page prints whenever it prints one
+    (a rolled amount, a free row, a price in warp tokens). Only when the entry
+    keeps no such note is the structured ``price`` — the KB's ``base_gc`` plus an
+    optional dice surcharge, or a multiplier of the base item — printed back
+    (``15 + D6 gc``, ``3 x base weapon price``); that is the case for the plain
+    amounts, whose note says nothing beyond the price.
+    """
+    for restriction in entry.get('restrictions') or ():
+        if price_shape(restriction.get('note')):
+            return ' '.join(str(restriction.get('note') or '').split())
+    price = entry.get('price')
+    if isinstance(price, dict):
+        if 'multiplier' in price:
+            return f"{price['multiplier']} x base weapon price"
+        base = price.get('base_gc')
+        if base is None:
+            return ''
+        dice = (price.get('optional_variable_cost') or {}).get('dice') or {}
+        if dice:
+            count = int(dice.get('count') or 1)
+            die = f"D{dice.get('sides')}" if count == 1 else f"{count}D{dice.get('sides')}"
+            return f"{base} + {die} gc"
+        return f"{base} gc"
+    # No structured price and no note that prints one: the entry records that the
+    # pack prints no market price for the item.
+    return ''
+
+
+def market_price_shapes() -> dict[str, tuple]:
+    """item_id -> the price shape the tree's market catalogue records."""
+    if not os.path.exists(MARKET_FILE):
+        return {}
+    document = yaml.safe_load(open(MARKET_FILE, encoding='utf-8')) or {}
+    return {
+        str(entry['item_id']): price_shape(printed_price(entry))
+        for entry in document.get('items') or ()
+        if entry.get('item_id')
+    }
 
 
 def catalog_item_records() -> dict[str, dict]:
@@ -529,16 +581,24 @@ def parse_difficulty(match: re.Match | None) -> int | str | None:
     return 'auto' if value == 'auto' else int(value)
 
 
-def spell_entries(fragment: str, section_name: str = '') -> list[dict]:
+def spell_entries(doc: reader.HtmlDocument, heads: list[tuple[int, str, int]], index: int,
+                  section_name: str = '') -> list[dict]:
     """Spell rows of a magic section, whatever markup the page uses.
 
-    The 2A pages publish spell lists five different ways: numbered ``h3`` headings
+    The 2A pages publish spell lists four different ways: numbered ``h3`` headings
     (Necrarchs), a ``D6 | Spell | Difficulty | Description`` table (Druchii), an
-    ordered list of ``<strong>Name:</strong>`` items (Snotlings), numbered
-    ``<p><strong>N. Name</strong>`` paragraphs (Order of the Mare) and plain
-    ``<strong>`` runs. Every strategy is tried and the first that yields names wins,
-    so an unparsed list is visible instead of silently passing.
+    ordered list of ``Name:`` items (Snotlings, with the name in bold) and numbered
+    paragraphs (Order of the Mare). Every strategy is tried and the first that
+    yields names wins, so an unparsed list is visible instead of silently passing.
+
+    The four read the same span of the shared reader's block stream —the section's
+    heading and its descendants—: a spell is a child heading, a row of a table whose
+    header names the column, a paragraph whose first bold run is the name, or a list
+    item of the same shape. Reading by structure is what keeps a name that carries
+    its difficulty in the same paragraph from swallowing it.
     """
+    start, end = section_of(heads, index)
+    end = len(doc.blocks) if end is None else end
     entries: list[dict] = []
 
     def add(name: str, difficulty: int | None = None, roll: str | None = None) -> None:
@@ -552,62 +612,61 @@ def spell_entries(fragment: str, section_name: str = '') -> list[dict]:
 
     # A) child headings — numbered ("1 – Soulcage") or not ("Song of Thorns"), with
     #    the difficulty taken from the prose that follows the heading.
-    inner = headings(fragment)
-    for position, (level, text, _pos) in enumerate(inner):
-        if level < 3:
+    for position, heading in enumerate(doc.headings):
+        if not (start <= heading.index < end) or heading.index == start:
             continue
-        if section_name and squash(text) == squash(section_name):
-            continue  # the section's own heading (it lives in the slice it opens)
-        match = re.match(r'^\s*(\d+)\s*[\u2013\u2014-]\s*(.+)$', text)
-        name = match.group(2) if match else text
-        body = norm(re.sub(r'<[^>]+>', ' ', slice_of(fragment, inner, position)))
-        found_diff = DIFFICULTY_RE.search(body)
-        add(name, difficulty=parse_difficulty(found_diff),
+        if heading.level < 3:
+            continue
+        if section_name and squash(heading.text) == squash(section_name):
+            continue  # the section's own heading
+        match = re.match(r'^\s*(\d+)\s*[\u2013\u2014-]\s*(.+)$', heading.text)
+        name = match.group(2) if match else heading.text
+        body_start, body_end = doc.span(position)
+        body = norm(doc.text(body_start, min(body_end, end)))
+        add(name, difficulty=parse_difficulty(DIFFICULTY_RE.search(body)),
             roll=match.group(1) if match else None)
     if entries:
         return entries
 
     # B) a table whose header names a Spell column
-    for table in re.findall(r'<table.*?</table>', fragment, re.S):
-        header = [norm(re.sub(r'<[^>]+>', '', cell))
-                  for cell in re.findall(r'<th[^>]*>(.*?)</th>', table, re.S)]
-        if not any('spell' in cell for cell in header):
+    rows = doc.rows(start, end)
+    for table in dict.fromkeys(row.table for row in rows):
+        table_rows_ = [row for row in rows if row.table == table]
+        header = next((row for row in table_rows_ if row.header), None)
+        if header is None:
             continue
-        spell_at = next(i for i, cell in enumerate(header) if 'spell' in cell)
-        diff_at = next((i for i, cell in enumerate(header) if 'difficult' in cell), None)
-        for row in re.findall(r'<tr.*?</tr>', table, re.S):
-            if '<th' in row:
-                continue
-            cells = [html_mod.unescape(re.sub(r'<[^>]+>', '', cell)).strip()
-                     for cell in re.findall(r'<td[^>]*>(.*?)</td>', row, re.S)]
-            if len(cells) <= spell_at:
+        header_cells = [norm(cell) for cell in header.cells]
+        if not any('spell' in cell for cell in header_cells):
+            continue
+        spell_at = next(i for i, cell in enumerate(header_cells) if 'spell' in cell)
+        diff_at = next((i for i, cell in enumerate(header_cells) if 'difficult' in cell),
+                       None)
+        for row in table_rows_:
+            if row.header or len(row.cells) <= spell_at:
                 continue
             difficulty = None
-            if diff_at is not None and len(cells) > diff_at:
-                match = re.search(r'(\d+)', cells[diff_at])
-                difficulty = parse_difficulty(match)
-            add(cells[spell_at], difficulty=difficulty, roll=cells[0] if cells else None)
+            if diff_at is not None and len(row.cells) > diff_at:
+                difficulty = parse_difficulty(re.search(r'(\d+)', row.cells[diff_at]))
+            add(row.cells[spell_at], difficulty=difficulty,
+                roll=row.cells[0] if row.cells else None)
     if entries:
         return entries
 
-    # C) ordered-list items: <li><p><strong>Name:</strong> <em>Difficulty N</em>
-    for item in re.findall(r'<li[^>]*>(.*?)</li>', fragment, re.S):
-        match = re.search(r'<strong>\s*([^<]{2,90}?)\s*[:.]?\s*</strong>', item)
-        if not match:
+    # C) paragraphs and list items whose first bold run is the name — numbered
+    #    ("<strong>1. Name</strong>") or not ("<strong>Name:</strong>").
+    for block in doc.blocks[start:end]:
+        if block.kind != 'line' or not block.strongs:
             continue
-        text = norm(re.sub(r'<[^>]+>', ' ', item))
-        add(match.group(1), difficulty=parse_difficulty(DIFFICULTY_RE.search(text)))
-    if entries:
-        return entries
-
-    # D) numbered paragraphs: <p><strong>N. Name</strong> <strong>Difficulty: N</strong>
-    for para in re.findall(r'<p[^>]*>(.*?)</p>', fragment, re.S):
-        match = re.match(r'\s*<strong>\s*(\d+)[.)]?\s*([^<]{2,90}?)\s*</strong>', para)
-        if not match:
+        first = block.strongs[0]
+        # El nombre abre el bloque: una página que pone una frase en negrita a mitad
+        # de un párrafo no está nombrando un conjuro.
+        if not block.text.startswith(first.rstrip(':')):
             continue
-        text = norm(re.sub(r'<[^>]+>', ' ', para))
-        add(match.group(2), difficulty=parse_difficulty(DIFFICULTY_RE.search(text)),
-            roll=match.group(1))
+        match = re.match(r'^\s*(\d+)\s*[.)]?\s*(.+)$', first)
+        add(match.group(2) if match else first,
+            difficulty=parse_difficulty(
+                DIFFICULTY_RE.search(norm(block.text + ' ' + ' '.join(block.strongs)))),
+            roll=match.group(1) if match else None)
     return entries
 
 
@@ -624,52 +683,89 @@ def access_statements(text: str) -> list[str]:
     return out
 
 
-def headings(page: str) -> list[tuple[int, str, int]]:
-    out = []
-    for match in re.finditer(r'<h([1-6])[^>]*>(.*?)</h\1>', page, re.S):
-        text = html_mod.unescape(re.sub(r'<[^>]+>', '', match.group(2)))
-        # mordheimer appends a zero-width space to every heading (the anchor link)
-        text = text.replace('\u200b', '')
-        text = re.sub(r'\s+', ' ', text).strip()
-        if text:
-            out.append((int(match.group(1)), text, match.start()))
-    return out
+# La última página leída, por si el mismo HTML se pide varias veces: los sondeos de
+# ``build/cache`` piden ``headings`` y ``slice_of`` en un bucle sobre la misma página.
+_LAST_PAGE: tuple[str, reader.HtmlDocument] | None = None
+
+
+def document(page: str) -> reader.HtmlDocument:
+    """La página leída por su estructura: encabezados, tramos y tablas.
+
+    La lectura la hace el lector compartido (``printed_entries``), el mismo que
+    coteja los hirelings y los Dramatis Personae: sus encabezados, el texto de un
+    tramo y las filas de una tabla con sus celdas en el orden de las columnas.
+    Sustituye a las expresiones regulares que había aquí, que perdían una celda con
+    etiquetas dentro, una entidad escapada y un encabezado con enlaces, y que
+    atribuían a una sección la tabla que le siguiera fuera de su tramo.
+    """
+    global _LAST_PAGE
+    if _LAST_PAGE is None or _LAST_PAGE[0] != page:
+        _LAST_PAGE = (page, reader.HtmlDocument(page))
+    return _LAST_PAGE[1]
+
+
+def headings(page: str | reader.HtmlDocument) -> list[tuple[int, str, int]]:
+    """Encabezados de la página, con el bloque que abre cada uno.
+
+    El tercer campo es el índice del bloque que abre el encabezado en el flujo del
+    documento —no una posición en el HTML—, que es con lo que ``section_of``
+    recorta el tramo de una sección.
+    """
+    doc = page if isinstance(page, reader.HtmlDocument) else document(page)
+    return [(heading.level, heading.text, heading.index) for heading in doc.headings]
+
+
+def section_of(heads: list[tuple[int, str, int]], index: int) -> tuple[int, int | None]:
+    """Tramo de bloques de un encabezado: el suyo y el de sus descendientes.
+
+    Termina donde empieza el siguiente encabezado del mismo nivel o de uno
+    superior, y al final del documento cuando no hay ninguno (``None``).
+    """
+    return heads[index][2], next((heads[j][2] for j in range(index + 1, len(heads))
+                                  if heads[j][0] <= heads[index][0]), None)
+
+
+def section_text(doc: reader.HtmlDocument, heads: list[tuple[int, str, int]],
+                 index: int) -> str:
+    """El texto de un tramo, normalizado como el resto del cotejo."""
+    return norm(doc.text(*section_of(heads, index)))
 
 
 def slice_of(page: str, heads: list[tuple[int, str, int]], index: int) -> str:
-    level, _text, start = heads[index]
-    end = len(page)
-    for lvl, _t, pos in heads[index + 1:]:
-        if lvl <= level:
-            end = pos
-            break
-    return page[start:end]
+    """El texto del tramo de un encabezado, sin etiquetas.
+
+    Se conserva la firma que usaban los sondeos de ``build/cache`` (a la que se le
+    pasaba el HTML de la página y que devolvía su trozo de HTML); el texto que
+    devuelve ya viene sin etiquetas, así que el ``re.sub(r'<[^>]+>', ' ', …)`` que
+    hacían encima es inocuo.
+    """
+    return document(page).text(*section_of(heads, index))
 
 
-def table_rows(fragment: str) -> list[tuple[str, str]]:
-    rows = []
-    for table in re.findall(r'<table.*?</table>', fragment, re.S):
-        for row in re.findall(r'<tr.*?</tr>', table, re.S):
-            if '<th' in row:
-                continue
-            cells = [html_mod.unescape(re.sub(r'<[^>]+>', '', c)).strip()
-                     for c in re.findall(r'<td[^>]*>(.*?)</td>', row, re.S)]
-            if len(cells) >= 2 and cells[0]:
-                rows.append((cells[0], cells[1]))
-    return rows
+def table_rows(doc: reader.HtmlDocument, heads: list[tuple[int, str, int]],
+               index: int) -> list[tuple[str, str]]:
+    """Las filas ``Item / Cost`` que publica un encabezado, por estructura.
+
+    Una fila de encabezado (``<th>``) no es un dato, y una fila sin nombre tampoco:
+    el resto son pares (nombre, coste) como la fuente los imprime.
+    """
+    out: list[tuple[str, str]] = []
+    for row in doc.rows(*section_of(heads, index)):
+        cells = [cell.strip() for cell in row.cells]
+        if row.header or len(cells) < 2 or not cells[0]:
+            continue
+        out.append((cells[0], cells[1]))
+    return out
 
 
-def find(look: str, haystack: str) -> int:
-    return haystack.find(look)
-
-
-def check_special_equipment_prices(band_id: str, page: str, heads: list[tuple[int, str, int]],
+def check_special_equipment_prices(band_id: str, doc: reader.HtmlDocument,
+                                   heads: list[tuple[int, str, int]],
                                    list_prices: dict[str, object], note) -> None:
     """Compare each Special Equipment price the catalogue records with the page's own.
 
     The equipment lists are not the only place a page prices an item: its Special
     Equipment sections price the band's own objects too, and those prices live in
-    the provisional catalogue as prose in ``availability_note`` (or as
+    the provisional catalogue as prose in the market catalogue's entry (or as
     ``cost``/``price_override``). Nothing compared the two, so an item could be
     recorded at the wrong price — or at no price — with no check noticing.
 
@@ -698,8 +794,7 @@ def check_special_equipment_prices(band_id: str, page: str, heads: list[tuple[in
             section = ''
             for index, (level, head, _pos) in enumerate(heads):
                 if level == 3 and norm(head).lower().startswith(name[:12]):
-                    section = norm(re.sub(r'<[^>]+>', ' ',
-                                          slice_of(page, heads, index)))
+                    section = section_text(doc, heads, index)
                     break
             recorded = item.get('cost')
             if isinstance(recorded, int):
@@ -707,29 +802,36 @@ def check_special_equipment_prices(band_id: str, page: str, heads: list[tuple[in
             elif isinstance(recorded, str):
                 recorded_shape = price_shape(recorded)
             else:
-                recorded_shape = price_shape(item.get('availability_note'))
+                recorded_shape = market_price_shapes().get(item_id, ())
             page_shape = price_shape(section) if section else ()
             listed = list_prices.get(item_id)
-            bump('special_items_checked')
+            LEDGER.cover('special-price')
             if section and page_shape:
-                bump('special_prices_compared')
-                if not same_price(page_shape, recorded_shape):
+                agrees = same_price(page_shape, recorded_shape)
+                if not agrees:
                     # The catalogue may record no price at all for an item the
                     # band's own list prices: the list is then the operative one
                     # and it has to agree with the section.
                     if (not recorded_shape and listed is not None
                             and same_price(page_shape, (listed, '', ''))):
-                        continue
-                    note('special-price-mismatch',
-                         f'{item_id} ({item.get("name")}): page={page_shape} '
-                         f'catalogue={recorded_shape}')
+                        agrees = True
+                    else:
+                        note('special-price-mismatch',
+                             f'{item_id} ({item.get("name")}): page={page_shape} '
+                             f'catalogue={recorded_shape}')
+                LEDGER.count('special-price', ok=agrees)
                 continue
             if listed is not None:
-                continue              # the band's own list carries and verifies the price
+                # The band's own list carries the price and the lists check compares it;
+                # here there is nothing to compare against the catalogue record.
+                LEDGER.unobtainable('special-price')
+                continue
             if page_shape and not recorded_shape:
+                LEDGER.count('special-price', ok=False)
                 note('special-price-unrecorded',
                      f'{item_id} ({item.get("name")}): page={page_shape}, no price recorded')
             elif not page_shape:
+                LEDGER.unobtainable('special-price')
                 note('special-price-unverifiable',
                      f'{item_id} ({item.get("name")}): the page has no section and no list '
                      f'prices it (catalogue={recorded_shape})')
@@ -769,7 +871,8 @@ def equipment_list_sections(heads: list[tuple[int, str, int]]) -> list[dict]:
     return sections
 
 
-def check_equipment_lists(band_id: str, page: str, heads: list[tuple[int, str, int]],
+def check_equipment_lists(band_id: str, doc: reader.HtmlDocument,
+                          heads: list[tuple[int, str, int]],
                           lists: list[dict], items: dict[str, str], raw: str,
                           note) -> None:  # noqa: C901 - one linear pass, kept whole
     """Verify every equipment list against the page, in both directions.
@@ -798,12 +901,12 @@ def check_equipment_lists(band_id: str, page: str, heads: list[tuple[int, str, i
         for child_index in section['children']:
             child = by_index.get(child_index)
             if child is not None:
-                out += table_rows(slice_of(page, heads, child['index']))
+                out += table_rows(doc, heads, child['index'])
         return out
 
     def rows_of(section: dict) -> list[tuple[str, str]]:
         """The rows this heading owns: its tables minus its children's tables."""
-        remaining = list(table_rows(slice_of(page, heads, section['index'])))
+        remaining = list(table_rows(doc, heads, section['index']))
         for row in child_rows(section):
             if row in remaining:
                 remaining.remove(row)
@@ -817,16 +920,16 @@ def check_equipment_lists(band_id: str, page: str, heads: list[tuple[int, str, i
         """The list entries this printed row could be, best match first."""
         out = [i for i, _how in candidate_ids(item_name, items) if i in yaml_items]
         printed = norm(item_name)
-        for (band, lid, item_id), names in SOURCE_WORDING.items():
-            if (band == band_id and lid == list_id and item_id in yaml_items
-                    and any(norm(n) == printed for n in names)):
-                out.insert(0, item_id)
+        for entry in wordings.pairs_at('2A', band_id, list_id):
+            if (entry.item_id in yaml_items
+                    and any(norm(name) == printed for name in entry.words)):
+                out.insert(0, entry.item_id)
         return out
 
     def flat_price(item_id: str, list_id: str) -> str | None:
         """Price cell the flat-text extraction prints for this row, if any."""
         names = [str(items.get(item_id) or item_id).replace('_', ' ')]
-        names += SOURCE_WORDING.get((band_id, list_id, item_id), [])
+        names += list(wordings.words_at('2A', band_id, list_id, item_id))
         for name in names:
             key = norm(name)
             if not key:
@@ -842,8 +945,11 @@ def check_equipment_lists(band_id: str, page: str, heads: list[tuple[int, str, i
     def verify_pair(section: dict, lst: dict) -> None:
         head = section['head']
         list_id = str(lst.get('id'))
-        bump('lists_verified')
-        bump('list_levels_h2' if heads[section['index']][0] == 2 else 'list_levels_other')
+        LEDGER.cover('lists')
+        if heads[section['index']][0] == 2:
+            # La página publica estas listas bajo un h2 y no bajó al h3 que el resto
+            # usa: se declara para que siga siendo una cobertura y no un silencio.
+            LEDGER.detail('lists', 'bajo un h2')
         yaml_items = yaml_items_of(lst)
         # (a) every printed row is in the list, with a matching price. The list
         # itself decides which candidate row is the ingested one, so a naming
@@ -860,12 +966,11 @@ def check_equipment_lists(band_id: str, page: str, heads: list[tuple[int, str, i
                     note('source-row-unmatched', f'{head}: {item_name} ({cost_cell})')
                 continue
             source_ids |= set(candidates)
-            bump('rows_priced')
             verdict = cost_agrees(yaml_items[candidates[0]].get('cost'), cost_cell)
             if verdict is None:
-                bump('rows_without_a_price_cell')
-            elif verdict:
-                bump('rows_price_verified')
+                LEDGER.unobtainable('lists')
+            else:
+                LEDGER.count('lists', ok=bool(verdict))
             if verdict is False:
                 note('item-cost', f'{head}: {item_name} source={cost_cell} '
                      f'yaml={yaml_items[candidates[0]].get("cost")}')
@@ -874,10 +979,10 @@ def check_equipment_lists(band_id: str, page: str, heads: list[tuple[int, str, i
         for item_id, entry in yaml_items.items():
             if item_id in source_ids:
                 continue
-            bump('rows_checked_against_page')
             cell = flat_price(item_id, list_id)
-            if cell is not None and cost_agrees(entry.get('cost'), cell) is not False:
-                bump('rows_verified_from_flat_text')
+            agrees = cell is not None and cost_agrees(entry.get('cost'), cell) is not False
+            LEDGER.count('lists', ok=agrees)
+            if agrees:
                 continue
             note('item-not-in-source',
                  f'{head}: {item_id} ({items.get(item_id)}) cost={entry.get("cost")}')
@@ -926,7 +1031,7 @@ def check_equipment_lists(band_id: str, page: str, heads: list[tuple[int, str, i
             child = by_index.get(child_index)
             if child is None or child_index not in matched:
                 continue
-            for row in table_rows(slice_of(page, heads, child['index'])):
+            for row in table_rows(doc, heads, child['index']):
                 if row in remaining:
                     remaining.remove(row)
         for item_name, cost_cell in remaining:
@@ -955,7 +1060,8 @@ def carries_in_order(needle: list[str], haystack: list[str]) -> bool:
     return index == len(needle)
 
 
-def check_item_profiles(band_id: str, page: str, heads: list[tuple[int, str, int]],
+def check_item_profiles(band_id: str, doc: reader.HtmlDocument,
+                        heads: list[tuple[int, str, int]],
                         items: dict[str, str], records: dict[str, dict], note) -> None:
     """A profile row printed in a Special Equipment section must be transcribed.
 
@@ -974,9 +1080,7 @@ def check_item_profiles(band_id: str, page: str, heads: list[tuple[int, str, int
                 break
             if lvl != 3:
                 continue
-            fragment = html_mod.unescape(re.sub(r'<[^>]+>', ' ',
-                                               slice_of(page, heads, child_index)))
-            section = re.sub(r'\s+', ' ', norm(fragment))
+            section = section_text(doc, heads, child_index)
             match = STAT_HEADER.search(section)
             if not match:
                 continue
@@ -991,10 +1095,12 @@ def check_item_profiles(band_id: str, page: str, heads: list[tuple[int, str, int
             candidates = [item_id for item_id, _how in candidate_ids(item_heading, items)]
             if not candidates:
                 continue   # an item that does not exist is already reported
-            bump('item_profiles_checked')
-            if not any(carries_in_order(printed, re.findall(
-                    r'\d+', item_prose(records.get(item_id) or {})))
-                       for item_id in candidates):
+            LEDGER.cover('item-profiles')
+            carried = any(carries_in_order(printed, re.findall(
+                r'\d+', item_prose(records.get(item_id) or {})))
+                for item_id in candidates)
+            LEDGER.count('item-profiles', ok=carried)
+            if not carried:
                 note('item-profile-absent', f'{candidates[0]}: {" ".join(printed)}')
 
 
@@ -1041,7 +1147,8 @@ def number_words(text: str) -> str:
                   lambda m: NUMBER_WORDS.get(m.group(1), m.group(0)), text)
 
 
-def check_rule_clarifications(band_id: str, page: str, heads: list[tuple[int, str, int]],
+def check_rule_clarifications(band_id: str, doc: reader.HtmlDocument,
+                              heads: list[tuple[int, str, int]],
                               rules: list[dict], note) -> None:
     """A clarification the page writes inside rule prose must survive transcription.
 
@@ -1051,6 +1158,7 @@ def check_rule_clarifications(band_id: str, page: str, heads: list[tuple[int, st
     magic sections are covered too, because their prose is ingested into the lore
     catalog rather than into a rule.
     """
+    LEDGER.cover('clarifications')
     written = [str(rule.get('effect') or '') for rule in rules]
     written += [str(s.get('effect') or '') for rule in rules
                 for s in rule.get('special_rules') or []]
@@ -1067,13 +1175,12 @@ def check_rule_clarifications(band_id: str, page: str, heads: list[tuple[int, st
         index = rule_prose_section(heads, rule)
         if index is None:
             continue
-        fragment = html_mod.unescape(re.sub(r'<[^>]+>', ' ', slice_of(page, heads, index)))
-        section = re.sub(r'\s+', ' ', norm(fragment))
+        section = section_text(doc, heads, index)
         for match in CLARIFICATION.finditer(section):
             text = number_words(re.sub(r'\s+', ' ', match.group(1)).strip())
             if EXAMPLE_LEAD.match(text):
                 continue     # a worked example: dropped by convention
-            bump('clarifications_checked')
+            LEDGER.count('clarifications', ok=text in haystack)
             if text not in haystack:
                 note('clarification-absent',
                      f'{rule.get("id")} [{heads[index][1]}]: ({text[:80]})')
@@ -1100,7 +1207,11 @@ def check_band(band_id: str, items: dict[str, str]) -> list[dict]:
     page = open(page_path, encoding='utf-8').read()
     raw = open(os.path.join(TEXT, f'{band_id}.txt'), encoding='utf-8').read()
     flat = norm(raw)
-    heads = headings(page)
+    # ``page_doc`` y no ``doc``: este orquestador usa ``doc`` para cada documento
+    # YAML que lee, y el nombre del documento de la página no puede confundirse con
+    # el de los paquetes.
+    page_doc = document(page)
+    heads = headings(page_doc)
 
     band_doc = docs(f'{BANDS}/{band_id}/band.yaml')[0]
     rules: list[dict] = []
@@ -1136,6 +1247,7 @@ def check_band(band_id: str, items: dict[str, str]) -> list[dict]:
     for index, (level, head, _pos) in enumerate(heads):
         if level != 2 or norm(head) != 'special skills':
             continue
+        LEDGER.cover('skills')
         end = next((j for j in range(index + 1, len(heads)) if heads[j][0] <= 2), len(heads))
         for lvl, skill, _p in heads[index + 1:end]:
             if lvl != 3:
@@ -1146,28 +1258,34 @@ def check_band(band_id: str, items: dict[str, str]) -> list[dict]:
                 continue
             if any(squash(skill) == squash(rn) or set(tokens(skill)) == set(tokens(rn))
                    for rn in rule_names):
+                LEDGER.count('skills', ok=True)
                 continue
             if plain(skill) and f' {plain(skill)} ' in rule_prose_plain:
+                LEDGER.count('skills', ok=True)
                 continue
+            LEDGER.count('skills', ok=False)
             note('skill-not-ingested', skill)
 
     # --- 3. special equipment ------------------------------------------------
     for index, (level, head, _pos) in enumerate(heads):
         if level != 2 or norm(head) != 'special equipment':
             continue
+        LEDGER.cover('special-equipment')
         for lvl, item, pos in heads[index + 1:]:
             if lvl <= level:
                 break
             if lvl != 3:
                 continue
-            if match_item(item, items)[0] is None:
+            known = match_item(item, items)[0] is not None
+            LEDGER.count('special-equipment', ok=known)
+            if not known:
                 note('equipment-not-ingested', item)
 
     # --- 3b. profile rows printed inside a Special Equipment section ----------
-    check_item_profiles(band_id, page, heads, items, catalog_item_records(), note)
+    check_item_profiles(band_id, page_doc, heads, items, catalog_item_records(), note)
 
     # --- 4. equipment lists, both directions ---------------------------------
-    check_equipment_lists(band_id, page, heads, lists, items, raw, note)
+    check_equipment_lists(band_id, page_doc, heads, lists, items, raw, note)
 
     # --- 4b. special-equipment prices (the sections' own printed prices) ------
     list_prices: dict[str, object] = {}
@@ -1175,7 +1293,7 @@ def check_band(band_id: str, items: dict[str, str]) -> list[dict]:
         for entry in lst.get('items') or ():
             if isinstance(entry, dict) and entry.get('item_id') is not None:
                 list_prices.setdefault(str(entry['item_id']), entry.get('cost'))
-    check_special_equipment_prices(band_id, page, heads, list_prices, note)
+    check_special_equipment_prices(band_id, page_doc, heads, list_prices, note)
 
     # --- 5. rule names traceable to the page ---------------------------------
     # Compared on alphanumerics only: the pages punctuate freely ("Achilles'
@@ -1183,19 +1301,24 @@ def check_band(band_id: str, items: dict[str, str]) -> list[dict]:
     # identity. A name absent even then is only accepted when the rule cites a
     # source section that does exist on the page.
     flat_plain = f' {plain(flat)} '
+    if rules:
+        LEDGER.cover('rules')
     for rule in rules:
         rname = str(rule.get('name') or '')
         if rname and f' {plain(rname)} ' in flat_plain:
+            LEDGER.count('rules', ok=True)
             continue
         section = str((rule.get('source') or {}).get('section') or '')
         if section and f' {plain(section.split("/")[-1])} ' in flat_plain:
+            LEDGER.count('rules', ok=True)
             note('rule-name-paraphrased', f'{rule.get("id")}: {rname} [source section present]')
             continue
         if rname:
+            LEDGER.count('rules', ok=False)
             note('rule-name-absent', f'{rule.get("id")}: {rname}')
 
     # --- 5b. parenthetical clarifications inside rule prose -------------------
-    check_rule_clarifications(band_id, page, heads, rules, note)
+    check_rule_clarifications(band_id, page_doc, heads, rules, note)
 
     # --- 6. spell lists (one lore per magic section) --------------------------
     for lore in magic_lores():
@@ -1213,14 +1336,16 @@ def check_band(band_id: str, items: dict[str, str]) -> list[dict]:
         if index is None:
             note('lore-section-absent', f'{lore.get("id")}: no heading for {lname!r}')
             continue
-        fragment = slice_of(page, heads, index)
-        found = spell_entries(fragment, heads[index][1])
+        LEDGER.cover('magic')
+        found = spell_entries(page_doc, heads, index, heads[index][1])
         if not found:
+            LEDGER.unobtainable('magic')
             note('magic-section-unparsed', f'{lore.get("id")}: {heads[index][1]}')
             continue
         for spell in lore.get('spells') or []:
             sname = str(spell.get('name') or '')
             hit = next((e for e in found if spells_match(sname, e['name'])), None)
+            LEDGER.count('magic', ok=hit is not None)
             if hit is None:
                 note('spell-absent-from-source', f'{lore.get("id")}: {sname}')
                 continue
@@ -1319,6 +1444,7 @@ def check_band(band_id: str, items: dict[str, str]) -> list[dict]:
 
 
 def main() -> int:
+    LEDGER.reset()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--band', help='audit a single band id')
     parser.add_argument('--json', action='store_true')
@@ -1343,23 +1469,10 @@ def main() -> int:
 
     print(f'sources/2A vs cached pages: {len(open_rows)} open finding(s),'
           f' {len(known)} adjudicated')
-    stats = defaultdict(int, STATS)
-    print('equipment coverage: {lists} list(s) matched ({h2} published under an h2);'
-          ' {priced} printed row(s) compared ({matching} matching, {no_cell} without a'
-          ' price cell); {absent} list entr(y/ies) absent from the tables ({flat} of'
-          ' them confirmed by the flat-text extraction)'.format(
-              lists=stats['lists_verified'], h2=stats['list_levels_h2'],
-              priced=stats['rows_priced'], matching=stats['rows_price_verified'],
-              no_cell=stats['rows_without_a_price_cell'],
-              absent=stats['rows_checked_against_page'],
-              flat=stats['rows_verified_from_flat_text']))
-    print('rule prose: {clar} parenthetical clarification(s) of the rule sections compared'
-          ' with the rule and lore texts'.format(clar=stats['clarifications_checked']))
-    print('special-equipment coverage: {items} catalogue item(s) of the 19 bands, {priced}'
-          ' with a price on the page compared against the recorded one; {rows} profile'
-          ' row(s) printed inside those sections compared with the item text'.format(
-              items=stats['special_items_checked'], priced=stats['special_prices_compared'],
-              rows=stats['item_profiles_checked']))
+    # La cobertura por chequeo, como en el cotejo de hirelings: cuánto se comparó en
+    # cada uno y qué no se pudo comparar, para que «0 hallazgos» no sea la única
+    # evidencia.
+    LEDGER.print()
     by_kind: dict[str, list[dict]] = {}
     for row in (report if args.all else open_rows):
         by_kind.setdefault(row['kind'], []).append(row)

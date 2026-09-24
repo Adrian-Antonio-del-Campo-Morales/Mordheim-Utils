@@ -162,6 +162,10 @@ UI_EXCLUSIONS: dict[str, tuple[str, str, str]] = {
         "test_workbooks.py",        # Combat Lab workbooks
         "test_free_selection.py",   # Combat Lab free selection
         "test_improvements.py",     # Combat Lab improvements
+        "test_checklist_popover.py", # mordheim_combat_lab Tkinter widget
+        "test_choice_widgets.py",   # mordheim_combat_lab Tkinter ChoiceBox
+        "test_editors_catalogue_sweep.py", # Combat Lab fighter editor selectors
+        "test_weapons_tab.py",      # Combat Lab weapon analysis UI
         "test_preferences.py",      # Tkinter preferences persistence
         "test_app_preferences.py",  # Tkinter app preferences
         "test_no_untranslated_literals.py",  # Tkinter STRINGS scan

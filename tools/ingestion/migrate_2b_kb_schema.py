@@ -12,8 +12,8 @@ Ported from the active KB (``sources/knowledge``) and from the contract in
 
 Usage::
 
-    python tools/knowledge/migrate_2b_kb_schema.py            # dry run
-    python tools/knowledge/migrate_2b_kb_schema.py --tree 2B --write
+    python tools/ingestion/migrate_2b_kb_schema.py            # dry run
+    python tools/ingestion/migrate_2b_kb_schema.py --tree 2B --write
 """
 from __future__ import annotations
 
@@ -238,7 +238,8 @@ def migrate(path: Path, write: bool) -> list[str]:
         lines[start:end] = new_block
 
     if write and notes:
-        path.write_text('\n'.join(lines), encoding='utf-8')
+        # newline='\n': the maintained YAML is LF-only (see .gitattributes).
+        path.write_text('\n'.join(lines), encoding='utf-8', newline='\n')
     return notes
 
 

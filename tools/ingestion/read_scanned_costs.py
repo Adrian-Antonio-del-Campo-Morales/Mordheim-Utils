@@ -13,7 +13,7 @@ The readings it prints are the evidence behind ``READ_OFF_PAGE`` in
 ``audit_2b.py``; the auditor itself does not depend on this tool (RapidOCR is a
 user-level install, not a project dependency), it only records what was read.
 
-Usage: python tools/knowledge/read_scanned_costs.py [band-id ...]
+Usage: python tools/ingestion/read_scanned_costs.py [band-id ...]
 """
 
 from __future__ import annotations

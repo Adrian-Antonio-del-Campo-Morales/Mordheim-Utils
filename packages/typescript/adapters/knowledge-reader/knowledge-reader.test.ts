@@ -53,17 +53,9 @@ function syntheticArtefact() {
       },
       { item_id: "mace", name: "Mace", kind: "close-combat-weapon" },
     ],
-    skills: [{ id: "skill.acrobat", name: "Acrobat", category: "speed" }],
-    display_names: {
-      "skill.acrobat": { en: "Acrobat", es: "Acróbata" },
-      "augur--blessed-sight": { en: "Blessed Sight", es: "Vista Bendecida" },
-      "skill.blessed-sight": { en: "Blessed Sight", es: "Vista Bendecida" },
-    },
-    display_effects: {
-      "skill.acrobat": { en: "May fall safely.", es: "Puede caer sin sufrir daño." },
-      "augur--blessed-sight": { en: "May re-roll failed tests.", es: "Puede repetir chequeos fallidos." },
-      "skill.blessed-sight": { en: "May re-roll failed tests.", es: "Puede repetir chequeos fallidos." },
-    },
+    skills: [{ id: "skill.acrobat", name: "Acrobat", name_i18n: { es: "Acróbata" }, category: "speed", effects: { en: "May fall safely.", es: "Puede caer sin sufrir daño." } }],
+    rules_prose: { "profile-special-rules": [{ id: "augur--blessed-sight", names: { en: "Blessed Sight", es: "Vista Bendecida" }, effects: { es: "Puede repetir chequeos fallidos." }, band_id: "sisters-of-sigmar", applies_to: { profile_ids: ["augur"] } }] },
+    mechanics: { skills: [{ id: "skill.blessed-sight", names: { en: "Blessed Sight", es: "Vista Bendecida" }, effects: { es: "Puede repetir chequeos fallidos." } }] },
     campaign: {
       scenarios: {
         scenarios: [
@@ -163,26 +155,24 @@ describe("locale resolution chain", () => {
     expect(resolveName({ id: "sisters-of-sigmar", name: "Sisters of Sigmar", name_i18n: { es: "Hermanas de Sigmar" } }, "es")).toBe("Hermanas de Sigmar");
   });
 
-  it("falls back to canonical English when the locale is missing", () => {
-    expect(resolveName({ id: "mace", name: "Mace" }, "es")).toBe("Mace");
+  it("reports unavailable when the locale is missing", () => {
+    expect(resolveName({ id: "mace", name: "Mace" }, "es")).toBe("Información no disponible");
   });
 
-  it("falls back to any translated entry, then the id", () => {
-    expect(resolveName({ id: "x", name: "", name_i18n: { es: "Hola" } }, "en")).toBe("Hola");
-    expect(resolveName({ id: "x" }, "en")).toBe("X");
+  it("never substitutes another locale or the identifier", () => {
+    expect(resolveName({ id: "x", name: "", name_i18n: { es: "Hola" } }, "en")).toBe("Information unavailable");
+    expect(resolveName({ id: "x" }, "en")).toBe("Information unavailable");
   });
 });
 
 describe("central display names", () => {
-  it("resolves skills, profile rules, mechanics and an unknown id from one API", () => {
-    expect(reader.displayName("skill.acrobat", "es")).toBe("Acróbata");
-    expect(reader.displayName("augur--blessed-sight", "es")).toBe("Vista Bendecida");
-    expect(reader.displayName("skill.blessed-sight", "es")).toBe("Vista Bendecida");
-    expect(reader.displayName("missing.skill", "es")).toBe("Missing Skill");
-    expect(reader.displayDescription("skill.acrobat", "es")).toBe("Puede caer sin sufrir daño.");
-    expect(reader.displayDescription("augur--blessed-sight", "es")).toBe("Puede repetir chequeos fallidos.");
-    expect(reader.displayDescription("skill.blessed-sight", "es")).toBe("Puede repetir chequeos fallidos.");
-    expect(reader.displayDescription("missing.skill", "es")).toBeUndefined();
+  it("requires typed references and keeps contextual rules exact", () => {
+    expect(reader.resolveKbText({ kind: "skill", id: "skill.acrobat" }, "name", "es")).toMatchObject({ ok: true, text: "Acróbata" });
+    const rule = { kind: "rule" as const, id: "augur--blessed-sight", bandId: "sisters-of-sigmar", profileId: "augur" };
+    expect(reader.resolveKbText(rule, "name", "es")).toMatchObject({ ok: true, text: "Vista Bendecida" });
+    expect(reader.resolveKbText({ kind: "skill", id: "skill.blessed-sight", scope: "global" }, "effect", "es")).toMatchObject({ ok: true, text: "Puede repetir chequeos fallidos." });
+    expect(reader.resolveKbText({ ...rule, bandId: "wrong" }, "name", "es")).toMatchObject({ ok: false, reason: "unknown-reference" });
+    expect(reader.resolveKbText({ kind: "skill", id: "missing.skill" }, "name", "es")).toMatchObject({ ok: false, reason: "unknown-reference" });
   });
 });
 

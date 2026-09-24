@@ -12,8 +12,8 @@ secuencia posterior a la batalla, tirada de Liderazgo.
 
 Usage::
 
-    python tools/knowledge/fill_2b_prayer_lores.py          # apply
-    python tools/knowledge/fill_2b_prayer_lores.py --check  # dry run
+    python tools/ingestion/fill_2b_prayer_lores.py          # apply
+    python tools/ingestion/fill_2b_prayer_lores.py --check  # dry run
 """
 from __future__ import annotations
 
@@ -325,10 +325,11 @@ def main() -> int:
         return 0
     if added:
         data['lores'].extend(added)
+    # newline="\n": the maintained YAML is LF-only (see .gitattributes).
     MAGIC.write_text(yaml.safe_dump(data, sort_keys=False, allow_unicode=True, width=100),
-                     encoding='utf-8')
+                     encoding='utf-8', newline='\n')
     PRIESTS.write_text(yaml.safe_dump(pdata, sort_keys=False, allow_unicode=True, width=100),
-                       encoding='utf-8')
+                       encoding='utf-8', newline='\n')
     print('written:', MAGIC, PRIESTS)
     return 0
 

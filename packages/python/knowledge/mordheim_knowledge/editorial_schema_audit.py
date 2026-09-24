@@ -238,6 +238,56 @@ JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str] = {
         "unused_property",
         "#/$defs/rarity",
     ): "provenance is optional on the rarity table; the records below it carry their own",
+    # -- shape the staged trees already use -------------------------------
+    # `grade: 2b`, `fixed_item.notes`, the starting `experience` of a hireling
+    # profile and the printed `eligibility.note` are the four extensions the
+    # promotion of `sources/2B` needs. Each one follows a pattern the KB already
+    # has (the grade vocabulary, the equipment-list `notes`, the `experience` of
+    # `profiles.yaml`, the `restriction.note` of the trading post), and each one is
+    # exercised by a staged document today: the gate that pins what the staged
+    # catalogues extend is the same decision. They show up here because the audit
+    # measures the contract against the *committed* knowledge base only; the
+    # staging trees are the documents that will carry them at promotion.
+    (
+        "hireling-profile-dramatis-personae.yaml.schema.json",
+        "unused_enum_value",
+        "#/$defs/profile.grade",
+    ): "grade of the 2B sources, exercised by the staged catalogues",
+    (
+        "hireling-profile-dramatis-personae.yaml.schema.json",
+        "unused_enum_value",
+        "$.grade",
+    ): "grade of the 2B sources, exercised by the staged catalogues",
+    (
+        "hireling-profile-hired-sword.yaml.schema.json",
+        "unused_enum_value",
+        "#/$defs/profile.grade",
+    ): "grade of the 2B sources, exercised by the staged catalogues",
+    (
+        "hireling-profile-hired-sword.yaml.schema.json",
+        "unused_enum_value",
+        "$.grade",
+    ): "grade of the 2B sources, exercised by the staged catalogues",
+    (
+        "hireling-profile-dramatis-personae.yaml.schema.json",
+        "unused_property",
+        "#/$defs/fixed_item",
+    ): "`notes` is what the 2B hirelings write on a referenced item today",
+    (
+        "hireling-profile-hired-sword.yaml.schema.json",
+        "unused_property",
+        "#/$defs/fixed_item",
+    ): "`notes` is what the 2B hirelings write on a referenced item today",
+    (
+        "hireling-profile-hired-sword.yaml.schema.json",
+        "unused_property",
+        "#/$defs/profile",
+    ): "starting `experience`, the name `profiles.yaml` gives the same field",
+    (
+        "campaign-hired-swords-and-dramatis.yaml.schema.json",
+        "unused_property",
+        "#/$defs/eligibility",
+    ): "printed hiring rule, the role `restriction.note` plays in the trading post",
 }
 
 #: How many document labels a finding prints before summarising the rest.

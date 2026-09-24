@@ -9,7 +9,18 @@ import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { ArtefactKnowledgeReader } from "../../adapters/knowledge-reader/index";
-import { RulesCatalogue } from "./rules-catalogue";
+import { RulesCatalogue, type RuleEntry, type RulesCategory, type ProfileLink } from "./rules-catalogue";
+import type { CatalogueText } from "./catalogue-text";
+
+// @ts-expect-error A raw string is not a catalogue presentation value.
+const rawCatalogueText: CatalogueText = "unreviewed";
+// @ts-expect-error The catalogue cannot expose a raw entry name.
+const rawEntryName: RuleEntry["name"] = "unreviewed";
+// @ts-expect-error Category labels must come from fixed vocabulary.
+const rawCategoryLabel: RulesCategory["label"] = "unreviewed";
+// @ts-expect-error Profile relations must come from fixed vocabulary.
+const rawRelation: ProfileLink["relation"] = "unreviewed";
+void [rawCatalogueText, rawEntryName, rawCategoryLabel, rawRelation];
 
 const ARTEFACT_PATH = resolve(__dirname, "../../../../apps/warband-manager-web/public/knowledge/knowledge-web.json");
 const ARTEFACT = JSON.parse(
@@ -60,7 +71,7 @@ describe("desktop test_rules_catalogue.py → web RulesCatalogue", () => {
     expect(hungry?.name).toBe("Siempre Hambriento");
     expect(c.entry("skills", "skill.acrobat", "es")?.effect).toContain("Iniciativa");
     expect(c.entry("equipment", "sword", "es")?.effect).toContain("Cuerpo a cuerpo");
-    expect(c.entry("injuries", "campaign.serious-injuries.hero", "es")?.effect).toContain("11-15 — Muerto");
+    expect(c.entry("injuries", "campaign.serious-injuries.hero", "es")?.effect).toContain("11-15 — Información no disponible");
     expect(c.entry("injuries", "campaign.serious-injuries.hero", "es")?.name).toBe("Tabla de Heridas Graves de Héroes");
     expect(c.entry("injuries", "campaign.serious-injuries.henchman", "es")?.name).toBe("Tabla de Heridas Graves de Secuaces");
     expect(c.entry("scenarios", "scenario.hidden-treasure", "es")?.effect).toContain("Experiencia:");
@@ -148,5 +159,25 @@ describe("desktop test_rules_catalogue.py → web RulesCatalogue", () => {
     const c = catalogue();
     const [first] = c.entries("conditions");
     expect(c.profileLinks("conditions", first)).toEqual([]);
+  });
+
+  it("never substitutes English or identifiers for missing Spanish catalogue text", () => {
+    const data = structuredClone(ARTEFACT);
+    const rules = data.rules_prose as Record<string, Record<string, unknown>[]>;
+    rules["special-rules"] = [{ id: "technical_rule_id", names: { en: "English only" }, effect: "Untranslated prose" }];
+    const c = new RulesCatalogue(ArtefactKnowledgeReader.from(data));
+    const entry = c.entry("special-rules", "technical_rule_id", "es");
+    expect(entry?.name).toBe("Información no disponible");
+    expect(entry?.effect).toBe("Información no disponible");
+    expect(c.categories("es").find((category) => category.category_id === "special-rules")?.label).toBe("Reglas compartidas");
+  });
+
+  it("localizes scenario enums and rule relations instead of displaying internal values", () => {
+    const c = catalogue();
+    const scenario = c.entry("scenarios", "scenario.hidden-treasure", "es");
+    expect(scenario?.effect).toContain("Uno contra uno");
+    expect(scenario?.effect).not.toContain("1v1");
+    const rule = c.entry("special-rules", "shared-rule.leader", "es")!;
+    expect(c.profileLinks("special-rules", rule, "es").every((link) => link.relation === "regla especial")).toBe(true);
   });
 });

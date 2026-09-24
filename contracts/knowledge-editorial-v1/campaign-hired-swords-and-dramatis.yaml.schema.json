@@ -216,6 +216,10 @@
         "expression": {
           "description": "Complete static predicate for the cases that need boolean composition; when it is present the allow and forbid lists are not used for that entry.",
           "$ref": "#/$defs/eligibility_expression"
+        },
+        "note": {
+          "description": "The source wording of the hiring rule, verbatim, for what the lists cannot express: a warband that 'contains non-humans', a condition that lives in the band's own rules. The lists carry what is modelled and this keeps what is only printed, exactly as `restriction.note` does in the trading post.",
+          "$ref": "defs.schema.json#/$defs/display_text"
         }
       },
       "not": { "required": ["expression", "allow_band_ids"] }

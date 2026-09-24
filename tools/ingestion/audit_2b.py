@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 """Cross-audit of sources/2B staging packages against extracted PDF texts.
 
-Every check is evaluated against both extraction forms of the source PDF: the
-cached plain text and a layout-preserving ``pdftotext -layout`` run (cached
-under ``build/cache/2b-pdfs/layout``). The plain form is complete but collapses
-two-column price tables; the layout form keeps column order but can lose lines
-to interleaving. A row counts as verified when *either* form carries it, and is
-only reported as a problem when neither form can confirm it.
+Every check is evaluated against two readings of the source document: the
+cached plain text and the geometry reading of the shared reader
+(``printed_entries``: words by their coordinates, the gutter between columns,
+the reading order, and the cells each line prints). The plain form is complete
+but collapses two-column tables; the geometry form keeps every column apart, so
+a price list and a table row are read from the row that prints them instead of
+from a window of flattened text. A row counts as verified when *either* reading
+carries it, and is only reported as a problem when neither can confirm it.
 
 Checks per band:
   1. Profile names appear in the extracted text (case/diacritic-insensitive).
@@ -24,7 +26,7 @@ Checks per band:
      have no text layer at all - are compared with the readings recorded in
      ``READ_OFF_PAGE`` (read off the page image, see
      ``sources/2B/discrepancy-verdicts.md`` sections 5 and 6, reproducible with
-     ``tools/knowledge/read_scanned_costs.py``).
+     ``tools/ingestion/read_scanned_costs.py``).
   3. Roster: min/max models are anchored to the band's own "CHOICE OF WARRIORS"
      section (the match whose leading words overlap the band name; last match
      as fallback) instead of the first match in the document. Both the
@@ -35,10 +37,10 @@ Checks per band:
      access.
   5. Every rule_id referenced by profiles/band exists in special-rules.yaml.
   6. Every equipment list referenced by profiles exists in equipment-access.yaml.
-  7. Equipment rows: printed name + price (both extraction forms, every
-     currency the supplements use, formula prices by their base figure, and the
-     lists the document delegates to the rulebook resolved against the KB copy
-     of the same list).
+  7. Equipment rows: printed name + price (the prices read row by row from the
+     page's own geometry, every currency the supplements use, formula prices by
+     their base figure, and the lists the document delegates to the rulebook
+     resolved against the KB copy of the same list).
   8. Rule fidelity: every rule of the package is traceable to its source - its
      name appears in the text, or every significant word of the section it
      cites does. Rules that resolve neither way are reported, except in the two
@@ -47,12 +49,13 @@ Checks per band:
      headings are decoded for the cost lines above, but its rule prose is set in
      a face that cannot be read back).
   9. Skill tables: the source prints each hero's skill lists as a table of X
-     marks. The marks are read from the layout extraction by column offset and
-     compared with the package's ``skill_access``.
+     marks. The marks are read from the page's own geometry - each row's cells
+     aligned with the headings of the table's heading row - and compared with
+     the package's ``skill_access``.
  10. Spell / prayer lists: every spell of ``catalog/magic-2b.yaml`` must appear
-     in the document its lore cites, with the printed difficulty; the source is
-     either one of the 60 manifest documents or a cached extra source
-     (``build/cache/2b-pdfs/extra``).
+     in the document its lore cites, with the printed difficulty; the document is
+     read by geometry (one of the 60 manifest rows or a cached extra source under
+     ``build/cache/2b-pdfs/extra``), never from a flattened layout run.
  11. Hired Sword / Dramatis Personae access: every band-scoped access sentence
      of the source must be reflected by a rule, the hirelings it names must be
      in the package's prose, and every one of them must exist in a hireling
@@ -66,8 +69,6 @@ from __future__ import annotations
 import glob
 import json
 import re
-import subprocess
-import html
 import sys
 import unicodedata
 from collections.abc import Sequence
@@ -76,10 +77,26 @@ from urllib.parse import unquote
 
 import yaml
 
+# La lectura de la página —geometría, celdas, filas y listas de precio— vive en el
+# lector compartido con los cotejos de catálogo; aquí vive lo que es de este árbol:
+# qué documento imprime cada paquete, qué se considera un hallazgo y su adjudicación.
+from printed_entries import PdfCorpus, cells, price_rows  # noqa: F401
+
+# Las palabras que la fuente imprime para un objeto del catálogo cuando no son las
+# suyas —la errata, el nombre del reglamento, la celda que funde la disponibilidad—
+# viven en un solo registro compartido con los otros dos cotejos (``printed_wordings``),
+# con el sitio donde se leyó cada una y con las listas que el documento delega al
+# reglamento en vez de imprimirlas. Aquí se leen por banda.
+import printed_wordings as wordings
+
 ROOT = Path(__file__).resolve().parents[2]
 STAGING = ROOT / "sources" / "2B" / "bands" / "mordheim"
 CACHE = ROOT / "build" / "cache" / "2b-pdfs"
 TEXTS = CACHE / "text"
+# El documento leído por geometría: las palabras con su coordenada (``word_lines``),
+# la página partida en líneas y celdas (``lines``), y las páginas ya leídas en
+# memoria durante la corrida (el XML se cachea en disco, página por página).
+CORPUS = PdfCorpus(CACHE, CACHE / "words", CACHE / "text-geometry")
 MANIFEST = ROOT / "sources" / "2B" / "manifest.yaml"
 # Every catalogue a staging package may point at (a 2B band may reuse a 2A or KB item).
 CATALOG_GLOBS = (
@@ -94,6 +111,8 @@ VALID_SKILL_TOKENS = {
 }
 
 EXTRA = CACHE / "extra"
+# Los documentos extra se leen con el mismo lector, con su propia caché de página.
+EXTRA_CORPUS = PdfCorpus(EXTRA, CACHE / "words-extra", CACHE / "text-geometry-extra")
 MAGIC = ROOT / "sources" / "2B" / "catalog" / "magic-2b.yaml"
 # Every catalogue that carries hireling stat blocks (2B has no monopoly: a 2B
 # band may reuse a hireling of the active KB, exactly as it may reuse an item).
@@ -161,44 +180,6 @@ NOTE_IS_NOT_A_NAME = re.compile(
     re.I)
 
 
-# Printed wordings that differ from the catalogue name, adjudicated row by row
-# against the source (see sources/2B/discrepancy-verdicts.md). The source's own
-# wording is added as a candidate name; the price is still read from the source,
-# so the adjudication never replaces the evidence.
-SOURCE_WORDING: dict[tuple[str, str], list[str]] = {
-    ("forest-goblins-lus", "halberd"): ["Halbard"],                    # source typo
-    ("bretonnian-knights-errant-mou", "warhound"): ["Wardog"],
-    ("bretonnian-knights-errant-mou", "great_weapon"): ["Double-handed weapon"],
-    ("dwarf-guildsmen-kaz", "great_weapon"): ["Double Handed Weapon"],
-    ("dwarf-slayers-kaz", "great_weapon"): ["Double Handed Weapon"],
-    ("channel-rats-mim", "two_handed_weapon"): ["Double-handed weapon"],
-    ("knights-of-the-bitter-moors-mim", "horsemans_hammer"): ["Horsemens Hammer"],
-    ("silent-brotherhood-sc", "toughened_leathers"): ["Toughened leather"],
-    ("guild-of-disgraced-engineers-mim", "rope_hook"): ["Rope and Hook"],
-    ("guild-of-disgraced-engineers-mim", "superior_blackpowder"): ["Superiour Black Powder"],
-    ("underworld-alliance-mim", "ball_chain"): ["Ball and Chain"],
-    # The source prints the list row as "Plague Censor" (sic) on both pages.
-    ("skaven-of-clan-pestilens-lus", "plague_censer"): ["Plague Censor"],
-    ("skaven-of-clan-pestilens-mou", "plague_censer"): ["Plague Censor"],
-    ("skaven-of-clan-skryre-kaz", "jezzail"): ["Jezzail"],   # source prints "Jezzail 175GC"
-}
-
-# Lists the source document delegates to the Mordheim rulebook ("All of the
-# equipment lists from the rulebook apply", Karak Azgal's Skaven sections). Their
-# rows cannot appear in the PDF text; they are verified against the rulebook list
-# with the same id in the active KB, which is the transcription of that list.
-RULEBOOK_DELEGATED: dict[tuple[str, str], str] = {
-    ("skaven-of-clan-mors-kaz", "skaven-hero-equipment-list"):
-        "KAZ prints no Skaven list: 'All of the equipment lists from the rulebook apply'.",
-    ("skaven-of-clan-skryre-kaz", "skaven-hero-equipment-list"):
-        "KAZ prints no Skaven list: 'All of the equipment lists from the rulebook apply'.",
-    ("dwarf-guildsmen-kaz", "thunderer-equipment-list"):
-        "KAZ references the list by name ('Dwarf Thunderers may be equipped with weapons "
-        "and armour from the Dwarf Thunderers equipment list') but prints no handgun price; "
-        "the rulebook list of the same id carries it.",
-}
-
-
 _KB_LISTS: dict[str, dict[str, int]] = {}
 
 
@@ -263,7 +244,7 @@ def source_names_for(entry: dict, item_names: dict[str, str], band_id: str = "")
     availability ("Heroes only") are not names. The catalogue name is always a
     candidate, so a row is only flagged when neither wording carries its price.
     """
-    names: list[str] = list(SOURCE_WORDING.get((band_id, str(entry.get("item_id"))), []))
+    names: list[str] = list(wordings.words_at("2B", band_id, "", str(entry.get("item_id"))))
     raw = str(entry.get("notes") or "").strip().split(";")[0]
     # The source may print a composed label ("Swivel Gun Ammo: Ball Shot",
     # "Weapon — Ball Shot"); every dash/paren segment is a candidate name.
@@ -288,26 +269,15 @@ def source_names_for(entry: dict, item_names: dict[str, str], band_id: str = "")
     return names
 
 
-LAYOUT_DIR = CACHE / "layout"
+def document_text(band_id: str) -> str:
+    """El documento leído por geometría, con sus marcadores de página.
 
-
-def layout_text(band_id: str) -> str | None:
-    """Layout-preserving extraction of a cached PDF, memoised on disk."""
-    out = LAYOUT_DIR / f"{band_id}.txt"
-    if out.exists():
-        return out.read_text(encoding="utf-8", errors="replace")
-    pdf = CACHE / f"{band_id}.pdf"
-    if not pdf.exists():
-        return None
-    done = subprocess.run(
-        ["pdftotext", "-layout", str(pdf), "-"],
-        capture_output=True, text=True, encoding="utf-8", errors="replace",
-    )
-    if not done.stdout:
-        return None
-    LAYOUT_DIR.mkdir(parents=True, exist_ok=True)
-    out.write_text(done.stdout, encoding="utf-8")
-    return done.stdout
+    Es la segunda lectura de todo el auditor, la que sustituye a la extracción
+    con ``pdftotext -layout``: aquélla conservaba el orden de las columnas a costa
+    de comprimir sus desplazamientos y perder líneas al intercalarlas, mientras
+    que aquí cada columna se lee entera y en su orden.
+    """
+    return CORPUS.text(band_id)
 
 
 def raw_plain(band_id: str) -> str:
@@ -321,14 +291,13 @@ def raw_plain(band_id: str) -> str:
 
 
 def load_texts(band_id: str) -> dict[str, str]:
-    """Both extraction forms of the source document, keyed by form name."""
+    """Ambas lecturas del documento fuente: la plana y la de geometría."""
     forms: dict[str, str] = {}
     p = TEXTS / f"{band_id}.txt"
     if p.exists():
         forms["plain"] = squash(p.read_text(encoding="utf-8", errors="replace"))
-    lay = layout_text(band_id)
-    if lay:
-        forms["layout"] = lay
+    if CORPUS.pdf_for(band_id) is not None:
+        forms["geometry"] = document_text(band_id)
     return forms
 
 
@@ -622,7 +591,8 @@ def check_band(band_id: str, mrow: dict) -> list[dict]:
                                "profile": pr["name"], "list_id": lid})
 
     # ---- 7. equipment rows: source name + price --------------------------
-    issues.extend(check_equipment_prices(band_id, eq_doc, forms, ocr_degraded, STATS))
+    issues.extend(check_equipment_prices(band_id, str(mrow["id"]), eq_doc, forms,
+                                         ocr_degraded, STATS))
 
     # ---- 8. rule fidelity ------------------------------------------------
     flat = " " + " ".join(presence(t) for t in forms.values()) + " "
@@ -743,7 +713,6 @@ def section_anchor_pattern(section: object) -> str | None:
 # from pricing one warband's fighter with its neighbour's figure.
 COST_COLUMN_TOLERANCE = 30   # pt: a heading starts on the cost line's own margin
 COST_HEADING_GAP = 240       # pt: how far above a cost line its heading may sit
-COST_RUN_GAP = 45            # pt: on one line, this much space separates columns
 COST_HEADINGS = 4            # how many lines above a figure are offered as its heading
 
 
@@ -823,35 +792,22 @@ def document_pages(row_id: str) -> list[int]:
 
 
 def printed_page_runs(row_id: str, page: int) -> list[dict]:
-    """One page's lines, each split into the column its words occupy.
+    """Las columnas impresas de una página, con su tipografía descifrada.
 
-    A two-column page prints a line of the left column and a line of the right
-    one at the same height (the MIM and MOU supplements do); the words are put
-    together only while they are on the same line *and* follow on from each
-    other, so the two columns stay apart.
+    Una página a dos columnas imprime una línea de la izquierda y otra de la
+    derecha a la misma altura (los suplementos MIM y MOU lo hacen), y una tabla
+    de equipo, varias listas en la misma línea: la lectura que las separa es la
+    del lector compartido, que corta la línea donde el hueco es de columna. Aquí
+    sólo se descifra la fuente que esos suplementos usan en sus cifras.
     """
-    words = page_words(row_id, page)
-    if not words:
-        return []
     runs: list[dict] = []
-    ordered = sorted(words, key=lambda w: (w[0], w[1]))
-    for top, left, width, text in ordered:
-        text = symbol_font_text(text)
-        host = None
-        for run in reversed(runs[-8:]):
-            if abs(run["top"] - top) > 6 or left < run["left"]:
+    for line in CORPUS.physical_lines(row_id, page):
+        for cell in cells(line):
+            text = symbol_font_text(cell.text).strip()
+            if not text:
                 continue
-            if left - run["right"] <= COST_RUN_GAP:
-                host = run
-                break
-        if host is None:
-            runs.append({"top": top, "left": left, "right": left + width,
-                         "words": [text]})
-        else:
-            host["right"] = max(host["right"], left + width)
-            host["words"].append(text)
-    for run in runs:
-        run["text"] = " ".join(run["words"])
+            runs.append({"top": line["top"], "left": cell.left, "right": cell.right,
+                         "text": text, "words": text.split()})
     return runs
 
 
@@ -1016,16 +972,9 @@ def hero_cost_candidates(forms: dict[str, str], name: str, section: object,
     return sorted(found)
 
 
-# Every currency the 2B sources price lists in: gold crowns (gc), warp tokens
-# (wt/tc, the Skaven lists), dinars (Arabian lists) and crowns/coronas.
-PRICE_NUMBER = re.compile(
-    r"(\d{1,4})\s*(?:/\s*\d{1,4}\s*)?"
-    r"(?:gcs?|gold\s*crowns?|gold|coronas?|crowns?|gold\s*cronws?|wt|tc|dinars?)\b",
-    re.I)
-FORMULA_TOKEN = re.compile(r"\bD6\b|\bCost\b|\bx\s+the\s+price\b|\+\s*D6", re.I)
-# A printed formula price carries a base figure ("75+5D6 gold crowns",
-# "100 + D6x10"): the base is the operative recruiting cost.
-FORMULA_BASE = re.compile(r"(\d{1,4})\s*(?:\+|x)\s*(?:\d+\s*)?D6", re.I)
+# La divisa de una lista de precios («gc», «wt/tc» de los skaven, «dinars» de las
+# árabes) y la cifra base de un precio de fórmula («75+5D6 gold crowns», que es el
+# que guarda el catálogo) los lee ``printed_entries``, junto con la fila.
 
 
 def name_pattern(name: str) -> re.Pattern:
@@ -1042,23 +991,118 @@ def name_pattern(name: str) -> re.Pattern:
     return re.compile(r"(?<![A-Za-z0-9])" + r"[\W_]{0,4}".join(parts), re.I)
 
 
-def check_equipment_prices(band_id: str, eq_doc: dict, forms: dict[str, str],
+_PRICE_ROWS: dict[str, list[dict]] = {}
+
+
+def printed_price_rows(row_id: str, pages: Sequence[int] | None = None) -> list[dict]:
+    """Las filas que tasan un ítem en las páginas leídas, una vez por corrida.
+
+    Cada fila es lo que la página imprime en una columna: el nombre y su precio
+    en la misma celda, o el nombre en la celda de arriba que cubre su horizontal
+    (las listas a dos columnas y las tablas de equipo parten la celda). El precio
+    no puede venir de otra fila, que es lo que una ventana de texto admitía.
+
+    Por defecto se leen las páginas del tramo de la banda, que es donde el lector
+    sabe qué lista imprime cada documento; el cotejo de precios pide además el
+    documento entero (``document_price_rows``).
+    """
+    key = (row_id, None if pages is None else tuple(pages))
+    if key not in _PRICE_ROWS:
+        rows: list[dict] = []
+        tail: list[dict] = []
+        # La lista de equipo puede cruzar la página: el nombre cierra una (p3 de los
+        # corsarios oscuros) y su tarifa abre la siguiente. Las últimas líneas de la
+        # página anterior se leen como contexto de la que empieza, y sólo las filas
+        # cuya tarifa se imprime en la página se le apuntan.
+        for page in (document_pages(row_id) if pages is None else pages):
+            lines = CORPUS.physical_lines(row_id, page)
+            for row in price_rows(tail + lines, context=len(tail)):
+                rows.append({**row, "page": page})
+            tail = lines[-2:]
+        _PRICE_ROWS[key] = rows
+    return _PRICE_ROWS[key]
+
+
+def document_price_rows(row_id: str) -> list[dict]:
+    """Las filas que tasan en **todo** el documento, leídas una vez por corrida.
+
+    El anuario de Karak Azgal imprime las listas de equipo de sus ocho bandas en
+    una sección común, fuera del tramo que el manifiesto asigna a cada una: esas
+    páginas son de este documento igual que las suyas, y sin ellas la tarifa
+    quedaría sin comparar teniéndola la fuente delante.
+    """
+    return printed_price_rows(row_id, CORPUS.pages(row_id))
+
+
+# La forma con la que una lista tasa una fila sin cifra: un múltiplo del precio de
+# otra cosa («Gromril Weapon 3x the cost», «Ithilmar Weapon .... 2 x Cost*»).
+MULTIPLIER = re.compile(r"(\d{1,2})\s*[x\u00d7]\s*(?:the\s*)?cost\b", re.I)
+
+
+def price_multiplier(row_id: str, patterns: Sequence[re.Pattern]) -> int | None:
+    """El múltiplo con el que la fuente tasa la fila, cuando no imprime una cifra.
+
+    Se lee de la línea impresa que nombra al ítem, que es donde la fuente lo
+    declara («Gromril Weapon 3x the cost»), y en el documento entero: la lista
+    puede estar fuera del tramo de la banda, como sus precios.
+    """
+    for line in CORPUS.document_lines(row_id):
+        text = str(line.get("text") or "")
+        hit = MULTIPLIER.search(text)
+        if hit and any(pattern.search(text) for pattern in patterns):
+            return int(hit.group(1))
+    return None
+
+
+def price_rows_for_name(row_id: str, patterns: Sequence[re.Pattern]) -> tuple[set[int], bool]:
+    """Los precios que el documento imprime junto a ese nombre, y si es fórmula.
+
+    Se leen primero las filas del tramo de la banda y, sólo si ahí no hay ninguna
+    que nombre al ítem, las del documento entero: la fila se acepta cuando su
+    celda —la del precio, la de su izquierda o la de arriba que la cubre— nombra
+    al ítem, así que ensanchar las páginas no afloja el cotejo, sólo lo hace
+    alcanzar la lista que el documento imprime más allá de su tramo.
+    """
+    for rows in (printed_price_rows(row_id), document_price_rows(row_id)):
+        prices: set[int] = set()
+        formula = False
+        for price_row in rows:
+            # La fila imprime el nombre en su celda o lo deja en la de arriba
+            # («Short» / «Bow . . . 10 gc»): las dos formas son la misma fila.
+            labels = [price_row["name"], price_row["above"],
+                      f"{price_row['above']} {price_row['name']}".strip(),
+                      *(price_row.get("names") or [])]
+            if not any(pattern.search(label) for pattern in patterns
+                       for label in labels if label):
+                continue
+            prices |= set(price_row["prices"])
+            # A formula counts only when it sits in this row's own price cell:
+            # a neighbouring row's D6 must not downgrade a plain price into
+            # "formula" and hide a wrong figure.
+            if price_row["formula"]:
+                formula = True
+        if prices:
+            return prices, formula
+    return set(), False
+
+
+def check_equipment_prices(band_id: str, row_id: str, eq_doc: dict, forms: dict[str, str],
                            ocr_degraded: bool, stats: dict) -> list[dict]:
     """Every priced row must show its price on a source price line.
 
-    Price tables read "<name> . . . . <price>", so only occurrences whose next
-    characters are dots/spaces followed by a number count as a price line ("1st
-    free/2 gc" yields the later-purchase price, which is what the YAML stores).
-    A row is accepted when any occurrence in any extraction form agrees (the same
-    item is printed in several band sections, and each form loses different
-    lines); a row with priced lines but no agreement anywhere is a candidate
-    error, and a row whose name never appears is unverifiable from the extraction.
+    Price tables read "<name> . . . . <price>", so a price is what a cell (or the
+    cell above it, when the list wraps) prints after the item's own name and a
+    currency ("1st free/2 gc" yields the later-purchase price, which is what the
+    YAML stores). A row is accepted when any occurrence on any page agrees (the
+    same item is printed in several band sections); a row with priced lines but no
+    agreement anywhere is a candidate error, and a row whose name the document
+    never prints is unverifiable from the extraction.
     """
     issues: list[dict] = []
     item_names = load_item_names()
     # The extractor punctuates leader dots with spaces ("Dagger .. .. .. .. 1st
-    # free/2 gc"), pushing the price past any sane window; collapsing each leader
-    # run restores the original line structure without moving any digit.
+    # free/2 gc"): collapsing each leader run restores the line structure for the
+    # name-presence check without moving any digit.
     texts = {form: re.sub(r"(?:\s*\.\s*){3,}", " ......... ", text)
              for form, text in forms.items()}
     for lst in eq_doc.get("equipment_lists") or []:
@@ -1079,36 +1123,17 @@ def check_equipment_prices(band_id: str, eq_doc: dict, forms: dict[str, str],
             names = source_names_for(entry, item_names, band_id)
             if not names:
                 continue
-            found = False
-            agreed = False
-            formula = False
-            prices: set[int] = set()
-            for text in texts.values():
-                for source_name in names:
-                    if len(norm(source_name)) < 3:
-                        continue
-                    for m in name_pattern(source_name).finditer(text):
-                        found = True
-                        window = text[m.end():m.end() + 140]
-                        prices |= {int(x) for x in PRICE_NUMBER.findall(window)}
-                        # Extractions split printed numbers ("10 0gc", "3 5 gc").
-                        prices |= {int(x) for x in PRICE_NUMBER.findall(
-                            re.sub(r"(?<=\d) (?=\d)", "", window))}
-                        # "75+5D6 gold crowns": the base figure is the row's price.
-                        compact = re.sub(r"\s+", "", window)
-                        prices |= {int(x) for x in FORMULA_BASE.findall(compact)}
-                        # A formula counts only when it sits on this row's own price
-                        # position: a neighbouring row's D6 must not downgrade a
-                        # plain price into "formula" and hide a wrong figure.
-                        if FORMULA_TOKEN.search(text[m.end():m.end() + 30]):
-                            formula = True
-                if cost in prices:
-                    agreed = True
+            patterns = [name_pattern(source_name) for source_name in names
+                        if len(norm(source_name)) >= 3]
+            found = any(pattern.search(text) for pattern in patterns
+                        for text in texts.values())
+            prices, formula = price_rows_for_name(row_id, patterns)
+            agreed = cost in prices
             stats["priced_rows"] = stats.get("priced_rows", 0) + 1
             if agreed or (formula and cost in (0, None)):
                 stats["price_verified"] = stats.get("price_verified", 0) + 1
                 continue
-            delegated = RULEBOOK_DELEGATED.get((band_id, list_id))
+            delegated = wordings.delegated_reason("2B", band_id, list_id)
             if delegated:
                 # The document delegates this list to the rulebook: fall back to the
                 # KB transcription of the rulebook list with the same id.
@@ -1131,10 +1156,26 @@ def check_equipment_prices(band_id: str, eq_doc: dict, forms: dict[str, str],
             issue = {
                 "band": band_id, "list": list_id, "item": entry.get("item_id"),
                 "source_names": names, "yaml": cost}
+            # La fila que la fuente tasa con un múltiplo del precio de otra cosa
+            # («Gromril Weapon 3x the cost», «Ithilmar Weapon 2 x Cost*») no tiene
+            # cifra propia: el paquete guarda ese múltiplo cuando la fuente lo
+            # declara uno a uno —3 por «3x the cost»— o 0 cuando la tarifa es la de
+            # otra cosa, que es no guardar cifra ninguna. Las dos formas quedan
+            # verificadas por la que la fuente imprime y se cuentan aparte, para
+            # que el total de las de cifra no las esconda.
+            multiple = None if prices else price_multiplier(row_id, patterns)
             if not found:
                 issues.append({**issue, "kind": ("equipment-name-ocr-unverifiable"
                                                  if ocr_degraded
                                                  else "equipment-name-not-in-text")})
+            elif multiple is not None and cost in (0, multiple):
+                stats["price_verified"] = stats.get("price_verified", 0) + 1
+                stats["price_multiplier"] = stats.get("price_multiplier", 0) + 1
+            elif multiple is not None:
+                issues.append({**issue, "kind": "equipment-price-multiplier-mismatch",
+                               "pdf_candidates": [multiple],
+                               "detail": f"the source prices it as a multiple, not with a "
+                                         f"figure: {multiple}x the cost"})
             elif not prices:
                 issues.append({**issue, "kind": ("equipment-price-ocr-unverifiable"
                                                  if ocr_degraded
@@ -1217,54 +1258,19 @@ SKILL_TOKENS = ("combat", "shooting", "academic", "strength", "speed", "special"
 SKILL_LABEL = re.compile(r"\b(" + "|".join(t.capitalize() for t in SKILL_TOKENS) + r")\b", re.I)
 SKILL_HEADING = re.compile(r"(?:SPECIAL\s+)?SKILLS?(?:\s+TABLE)?", re.I)
 PAGE_MARKER = re.compile(r"=====\s*page\s+(\d+)\s*=====")
-SKILL_WORDS_DIR = CACHE / "words"
 
 
-def page_words(row_id: str, page: int) -> list[tuple[int, int, float, str]] | None:
-    """The words of one PDF page with their coordinates, or None if unreadable.
+def printed_words(line: dict) -> list[tuple[float, float, str]]:
+    """Las palabras de una línea física con su tramo: (izquierda, derecha, texto).
 
-    Skill tables are read here rather than from the text extractions because
-    neither of those can answer the question: the plain form keeps the rows but
-    loses the columns ("Elf Ranger X X" does not say which two of the five
-    lists are ticked), and the layout form's character offsets are compressed
-    against the printed columns, which puts a mark under the neighbouring
-    heading. ``pdftohtml -xml`` reports every word's own position; the dump is
-    cached, one file per document page.
+    Una tabla de habilidades reparte sus columnas entre *palabras* —cada encabezado
+    es una— y no entre celdas: la fuente imprime varios encabezados juntos, con
+    menos hueco del que separa dos columnas, y una celda los abarca todos
+    («Shooting Academic Strength»). Leerla por palabra es lo que mantiene cada
+    marca bajo su propia lista; la página, la fila y sus celdas las lee el lector
+    compartido.
     """
-    pdf = CACHE / f"{row_id}.pdf"
-    if not pdf.exists():
-        return None
-    out = SKILL_WORDS_DIR / f"{row_id}.p{page}.xml"
-    if not out.exists():
-        SKILL_WORDS_DIR.mkdir(parents=True, exist_ok=True)
-        try:
-            subprocess.run(
-                ["pdftohtml", "-xml", "-hidden", "-f", str(page), "-l", str(page),
-                 str(pdf), str(out.with_suffix(""))],
-                capture_output=True, text=True, encoding="utf-8", errors="replace")
-        except OSError:
-            return None
-        if not out.exists():
-            return None
-    xml = out.read_text(encoding="utf-8", errors="replace")
-    words: list[tuple[int, int, float, str]] = []
-    pattern = re.compile(r'<text top="(-?\d+)" left="(-?\d+)" width="(-?\d+)"[^>]*>(.*?)</text>',
-                         re.S)
-    for match in pattern.finditer(xml):
-        top, left, width = int(match.group(1)), int(match.group(2)), int(match.group(3))
-        # The dump escapes what it must (``&gt;``, ``&#34;``): the page prints
-        # the character, and a heading in the display face is unreadable while
-        # its own letters are still entities.
-        text = html.unescape(re.sub(r"<[^>]+>", "", match.group(4))).strip()
-        if not text:
-            continue
-        parts = text.split()
-        for index, part in enumerate(parts):
-            # A node may carry several words; their positions are spread evenly
-            # across the node's own box, which is how a line of a table reads.
-            words.append((top, int(left + width * index / len(parts)),
-                          width / len(parts), part))
-    return words
+    return [(left, right, text) for left, _top, right, text in line.get("spans") or []]
 
 
 def printed_skill_tables(row_id: str, plain: str) -> list[dict]:
@@ -1293,34 +1299,30 @@ def printed_skill_tables(row_id: str, plain: str) -> list[dict]:
         labels = {m.group(1).lower() for m in SKILL_LABEL.finditer(lines[index + 1])}
         if len(labels) < 2 or not re.search(r"\bX\b", lines[index + 2], re.I):
             continue
-        words = page_words(row_id, page)
-        if not words:
+        page_lines = CORPUS.physical_lines(row_id, page)
+        if not page_lines:
             tables.append({"subject": line.strip(), "page": page, "rows": [],
                            "why": "page coordinates unavailable (pdftohtml)"})
             continue
-        # The heading row: the line whose words carry the skill labels. A page can
+        # The heading row: the line whose cells carry the skill labels. A page can
         # print several tables, so the heading row is taken from *below* the
         # table's own title; without that anchor the marks of one table would be
         # compared against the profile of the next.
-        lines_by_top: dict[int, list[tuple[float, float, str]]] = {}
-        for top, left, width, text in words:
-            lines_by_top.setdefault(top, []).append((left, width, text))
         title_key = presence(line.strip())
         title_top = None
-        for top in sorted(lines_by_top):
-            joined = presence(" ".join(text for _l, _w, text in
-                                      sorted(lines_by_top[top], key=lambda e: e[0])))
+        for entry in page_lines:
+            joined = presence(" ".join(cell.text for cell in cells(entry)))
             if joined == title_key:
-                title_top = top
+                title_top = entry["top"]
                 break
         header_top = None
-        for top in sorted(lines_by_top):
-            if title_top is not None and top <= title_top:
+        for entry in page_lines:
+            if title_top is not None and entry["top"] <= title_top:
                 continue
-            labels_on_line = {m.group(1).lower() for _l, _w, text in lines_by_top[top]
-                              for m in SKILL_LABEL.finditer(text)}
+            labels_on_line = {m.group(1).lower() for cell in cells(entry)
+                              for m in SKILL_LABEL.finditer(cell.text)}
             if len(labels_on_line) >= 2:
-                header_top = top
+                header_top = entry["top"]
                 break
         if header_top is None:
             tables.append({"subject": line.strip(), "page": page, "rows": [],
@@ -1329,11 +1331,12 @@ def printed_skill_tables(row_id: str, plain: str) -> list[dict]:
             continue
         columns: list[tuple[str, float]] = []
         seen: set[str] = set()
-        for left, width, text in lines_by_top[header_top]:
+        header = next(entry for entry in page_lines if entry["top"] == header_top)
+        for left, right, text in printed_words(header):
             match = SKILL_LABEL.fullmatch(text)
             if match and match.group(1).lower() not in seen:
                 seen.add(match.group(1).lower())
-                columns.append((match.group(1).lower(), left + max(width, 4.0 * len(text)) / 2))
+                columns.append((match.group(1).lower(), (left + right) / 2))
         columns.sort(key=lambda entry: entry[1])
         if len(columns) < 2:
             tables.append({"subject": line.strip(), "page": page, "rows": [],
@@ -1341,22 +1344,23 @@ def printed_skill_tables(row_id: str, plain: str) -> list[dict]:
             continue
         leftmost = min(centre for _token, centre in columns)
         rows: list[dict] = []
-        for top in sorted(lines_by_top):
-            if top == header_top or abs(top - header_top) > 140:
+        for entry in page_lines:
+            if entry["top"] == header_top or abs(entry["top"] - header_top) > 140:
                 continue
-            row_words = lines_by_top[top]
-            marks_on_line = [entry for entry in row_words if re.fullmatch(r"X+", entry[2], re.I)]
+            row_words = printed_words(entry)
+            marks_on_line = [word for word in row_words
+                             if re.fullmatch(r"X+", word[2], re.I)]
             if not marks_on_line:
                 continue
-            for left, width, text in marks_on_line:
-                centre = left + width / 2
+            for left, right, text in marks_on_line:
+                centre = (left + right) / 2
                 ranked = sorted((abs(c - centre), token) for token, c in columns)
                 if len(ranked) > 1 and ranked[1][0] - ranked[0][0] < 12:
                     rows.append({"name": "", "marks": [],
                                  "why": "a mark sits between two columns"})
                     continue
                 name = ""
-                for rleft, _rwidth, rtext in row_words:
+                for rleft, _rright, rtext in row_words:
                     if rleft < leftmost - 20 and not SKILL_LABEL.fullmatch(rtext):
                         if presence(rtext) and not re.fullmatch(r"\d+", rtext):
                             name = rtext if not name else f"{name} {rtext}"
@@ -1587,24 +1591,18 @@ def slug_index(rows: list[dict]) -> dict[str, str]:
 
 
 def extra_document(slug: str) -> str | None:
-    """Layout text of a cached source that is not one of the 60 manifest rows.
+    """Geometry reading of a cached source that is not one of the 60 manifest rows.
 
-    Some material a 2B package cites lives outside the 60 graded documents
-    (the Miracle Workers chapter); it is cached under ``2b-pdfs/extra`` and read
-    the same way, so the same evidence standard applies to it.
+    Some material a 2B package cites lives outside the 60 graded documents (the
+    Miracle Workers chapter); it is cached under ``2b-pdfs/extra`` and read with
+    the same reader, so the evidence that sustains a spell list is the same as
+    that of a manifest document.
     """
     want = norm(slug)
     for path in sorted(EXTRA.glob("*.pdf")):
         stem = norm(path.stem)
         if stem and (stem in want or want in stem):
-            out = LAYOUT_DIR / f"extra-{path.stem}.txt"
-            if not out.exists():
-                done = subprocess.run(["pdftotext", "-layout", str(path), "-"],
-                                      capture_output=True, text=True, encoding="utf-8",
-                                      errors="replace")
-                LAYOUT_DIR.mkdir(parents=True, exist_ok=True)
-                out.write_text(done.stdout or "", encoding="utf-8")
-            return out.read_text(encoding="utf-8", errors="replace")
+            return EXTRA_CORPUS.text(path.stem)
     return None
 
 
@@ -1867,7 +1865,8 @@ def check_hireling_access(band_id: str, band: dict, profiles: list[dict],
 # adjudicated. Every other kind is informational (an extraction that cannot be
 # read, a table that belongs to another warband of the same document).
 PROBLEM_KINDS = {
-    "equipment-price-mismatch", "cost-mismatch", "experience-mismatch",
+    "equipment-price-mismatch", "equipment-price-multiplier-mismatch",
+    "cost-mismatch", "experience-mismatch",
     "min-models-mismatch", "max-models-mismatch", "starting-gold-mismatch",
     "profile-name-not-in-text", "equipment-name-not-in-text", "rule-id-dangling",
     "equipment-list-dangling", "package-missing", "text-missing",
@@ -1932,6 +1931,7 @@ def main() -> int:
         "total_bands": len(rows),
         "equipment_rows_priced": STATS.get("priced_rows", 0),
         "equipment_rows_price_verified": STATS.get("price_verified", 0),
+        "equipment_rows_price_multiplier": STATS.get("price_multiplier", 0),
         "equipment_rows_price_adjudicated": STATS.get("price_adjudicated", 0),
         "equipment_rows_price_rulebook": STATS.get("price_rulebook", 0),
         "hero_costs_priced": STATS.get("hero_costs", 0),
