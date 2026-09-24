@@ -7,7 +7,7 @@ registro de veredictos aquí.
 
 ## Herramienta
 
-Nueva herramienta de solo lectura `tools/knowledge/review_2a.py` (adaptada de
+Nueva herramienta de solo lectura `tools/ingestion/review_2a.py` (adaptada de
 `review_2b.py`): re-deriva límites de roster, costes/XP/perfiles, precios de equipo y
 cifras citadas en textos de reglas desde `build/cache/2a-sources/text/<id>.txt`
 (borradores de las páginas dedicadas de mordheimer.net). Adaptaciones 2A: los marcadores

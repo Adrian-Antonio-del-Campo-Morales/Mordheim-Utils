@@ -6,7 +6,12 @@ and gaming groups") sin modificar la KB activa hasta que la ingesta completa hay
 revisada, traducida y validada.
 
 El plan es una adaptación del plan de Grade 2b (`sources/2B/README.md`), ya ejecutado
-con éxito, a las particularidades de esta categoría. Los principios, los estados y el
+con éxito, a las particularidades de esta categoría.
+
+**Herramientas:** todo el utillaje de ingesta vive junto en `tools/ingestion/` (temporal:
+se borra cuando la fase termine). El inventario, los caches que necesita y las órdenes
+habituales están en `tools/ingestion/README.md`; los guards que se quedan en la KB están
+documentados en `docs/reference/knowledge-base.md`. Los principios, los estados y el
 formato de los paquetes son idénticos; lo que cambia es la **fuente de alcance**, la
 **naturaleza heterogénea de los documentos fuente** y las **reglas de desambiguación**
 frente a las otras categorías.
@@ -125,10 +130,28 @@ sources/2A/
 │           └── special-rules.yaml
 ├── catalog/
 │   ├── items/                        objetos nuevos aún no promovidos
+│   ├── magic-2a.yaml                 listas de hechizos de las bandas 2A
 │   ├── skills/                       habilidades nuevas aún no promovidas
-│   └── rules/                        reglas compartidas candidatas, tras revisión
+│   ├── rules/                        reglas compartidas candidatas, tras revisión
+│   └── trading-post-2a.yaml          mercado de esos objetos, forma del trading-post KB
 └── promotion-merge-notes.md          notas de fusión con KB y con staging 2B
 ```
+
+El **catálogo de mercado** (`catalog/trading-post-2a.yaml`) es el destino KB del precio,
+la rareza y la restricción de compra de cada objeto: el objeto de `items/` se queda con
+identidad, texto impreso, `kind` y procedencia, y el mercado lleva una entrada por objeto
+en la forma de `sources/knowledge/catalog/campaign/trading-post.yaml`. Lo genera
+`tools/ingestion/normalize_staging_for_promotion.py` (idempotente) desde los objetos y las
+listas de equipo de las bandas.
+
+El **documento de magia** (`catalog/magic-2a.yaml`) lleva la envoltura del destino KB
+(`casting_rules`, `lore_assignments` con sus filas, `pending_lores`, `effect_ids`): las
+filas de asignación wizard→lore son la tabla declarada en
+`mordheim_knowledge.magic_promotion.MAGIC_ASSIGNMENTS` —incluidos los magos que lanzan
+lores que la KB ya tiene— y una variante que solo renumera conjuros se conserva con la
+relación en su `note`. La **tabla de fallo mágico** de la Sociedad Hechicera no vive aquí:
+vive con la regla `band--vagaries-of-magic` que tira en ella, en la prosa de su `effect`,
+que es donde la KB guarda sus tablas de banda. Lo aplica el pase `magic`.
 
 Cada paquete de banda debe tener los cuatro YAML. La ausencia de un documento significa
 que la transcripción está incompleta y no se puede marcar la banda como promocionable.
@@ -232,7 +255,7 @@ Crear los cuatro documentos de banda exactamente con el contrato de 2B (sección
 
 Igual que 2B (sección 3.5): segunda revisión independiente contra el documento fuente,
 con verificación automatizada de todos los números mediante una herramienta de
-verificación cruzada equivalente a `tools/knowledge/review_2b.py` (lecciones aprendidas:
+verificación cruzada equivalente a `tools/ingestion/review_2b.py` (lecciones aprendidas:
 interleave de marcadores de página, monedas no estándar, unidades gratuitas, fórmulas D6).
 
 ### 3.6 `translated`
@@ -275,12 +298,12 @@ Mismo procedimiento que 2B (sección 5 de su README) con el orden de resolución
 ```text
 python tools/format_yaml.py --check sources/2A
 python tools/normalize_names.py --check sources/2A
-python tools/knowledge/ingest_2a.py report
-python tools/knowledge/ingest_2a.py validate
+python tools/ingestion/ingest_2a.py report
+python tools/ingestion/ingest_2a.py validate
 python -m pytest tests/knowledge/test_2a_staging.py
 ```
 
-La herramienta `tools/knowledge/ingest_2a.py` se implementa adaptando `ingest_2b.py`:
+La herramienta `tools/ingestion/ingest_2a.py` se implementa adaptando `ingest_2b.py`:
 
 - `discover`: parser de la tabla Grade 2a de mordheimer.net + construcción de la URL
   dedicada de cada banda a partir de su slug (patrón verificado:

@@ -1,6 +1,5 @@
 schema_version: 2
 ruleset: mordheim
-status: staging
 items:
 - id: shield_of_sigmar
   kind: armour
@@ -12,7 +11,9 @@ items:
     An aura surrounds these shields, granting their bearer uncanny protection. Anyone protected by a
     Shield of Sigmar has a special 6+ save versus all ranged attacks. Furthermore, the weight of the
     shield seems diminished: the -1 penalty for bearing a shield with Heavy Armour does not apply.
-    Armour Save: 6.
+    Armour Save: 6. Shield of Faith: Anyone protected by a Shield of Sigmar has a special 6+ save
+    versus all ranged attacks, and the -1 penalty for bearing a shield with Heavy Armour does not
+    apply.
   effect_i18n:
     es: >-
       Transmitidos a través de la iglesia, estos escudos fueron portados por los hombres que lideró
@@ -20,30 +21,17 @@ items:
       protección sobrenatural. Quien se proteja con un Escudo de Sigmar tiene una salvación especial
       de 6+ contra todos los ataques a distancia. Además, el peso del escudo parece disminuir: no se
       aplica la penalización de -1 por llevar escudo con Armadura Pesada. Salvación por Armadura: 6.
+      Escudo de Fe: Quien se proteja con un Escudo de Sigmar tiene una salvación especial de 6+
+      contra todos los ataques a distancia, y no se aplica la penalización de -1 por llevar escudo
+      con Armadura Pesada.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Special Equipment / Shield of Sigmar
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
-  rarity: 9
-  availability_note: Heroes only (Protectorate of Sigmar Equipment List). Cost 20 gold
-    crowns.
   combat_status: out_of_scope
-  special_rules:
-  - id: shield-of-faith
-    name: Shield of Faith
-    effect: >-
-      Anyone protected by a Shield of Sigmar has a special 6+ save versus all ranged attacks, and
-      the -1 penalty for bearing a shield with Heavy Armour does not apply.
-    effect_i18n:
-      es: >-
-        Quien se proteja con un Escudo de Sigmar tiene una salvación especial de 6+ contra todos los
-        ataques a distancia, y no se aplica la penalización de -1 por llevar escudo con Armadura
-        Pesada.
-    name_i18n:
-      es: Escudo de Fe
 - id: blessed_bolts
-  kind: ammunition
+  kind: material-or-upgrade
   name: Blessed Bolts
   name_i18n:
     es: Saetas Bendecidas
@@ -51,31 +39,21 @@ items:
     Blessed by the Warrior Priest and his Acolytes, the Blessed Bolts may be fired against the
     enemies of Sigmar. Any Chaotic being, be they Undead, Chaos-infused (mutants or Possessed) or
     Twister of Magic suffers greatly from these missiles: add +1S to the weapon when fired against
-    such a target. Range: As Weapon. Strength: As Weapon. Special Rules: Holy.
+    such a target. Range: As Weapon. Strength: As Weapon. Special Rules: Holy. Holy: Add +1S to the
+    weapon when fired against any Chaotic being (Undead, Chaos-infused mutants or Possessed, or
+    Twisters of Magic).
   effect_i18n:
     es: >-
       Bendecidas por el Sacerdote Guerrero y sus Acólitos, las Saetas Bendecidas pueden dispararse
       contra los enemigos de Sigmar. Cualquier ser Caótico, ya sea No Muerto, infundido por el Caos
       (mutantes o Endemoniados) o Retorcedor de la Magia, sufre enormemente con estos proyectiles:
       suma +1F al arma cuando se dispara contra ese tipo de objetivo. Alcance: como el arma. Fuerza:
-      como el arma. Reglas Especiales: Sagrada.
+      como el arma. Reglas Especiales: Sagrada. Sagrado: Suma +1F al arma cuando se dispara contra
+      cualquier ser Caótico (No Muertos, mutantes infundidos por el Caos o Endemoniados, o
+      Retorcedores de la Magia).
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Special Equipment / Blessed Bolts
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
-  rarity: null
-  availability_note: Common (25 gc). Heroes only in the Protectorate Equipment List.
   combat_status: out_of_scope
-  special_rules:
-  - id: holy
-    name: Holy
-    effect: >-
-      Add +1S to the weapon when fired against any Chaotic being (Undead, Chaos-infused mutants or
-      Possessed, or Twisters of Magic).
-    effect_i18n:
-      es: >-
-        Suma +1F al arma cuando se dispara contra cualquier ser Caótico (No Muertos, mutantes
-        infundidos por el Caos o Endemoniados, o Retorcedores de la Magia).
-    name_i18n:
-      es: Sagrado

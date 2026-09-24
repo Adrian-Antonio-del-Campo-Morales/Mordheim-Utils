@@ -1,0 +1,650 @@
+schema_version: 1
+ruleset: mordheim
+catalog: campaign-trading-post
+status: draft
+source:
+  manual: mordheim-facebook-group
+  printed_page: 0
+  section: Band equipment lists and item catalogues of the pack (market availability)
+items:
+- id: campaign.trading-post.bearcloak
+  item_id: bearcloak
+  price:
+    base_gc: 10
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - mazzalupo-web
+  - type: condition
+    note: Special. To acquire a bearcloak, a Sheepherder must pay 10 gc (to represent expense of taking
+      part to the hunt). In addition, the Sheepherder must roll equal to or under his Strength on a D6.
+      If successful, the Sheepherder finds and slays the bear and can wear its cloak as a mark of skill
+      and prowess. Sheepherders may buy bearcloaks when starting their warband without making a test for
+      availability.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Bearcloak
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+- id: campaign.trading-post.beastwhip
+  item_id: beastwhip
+  price: null
+  availability:
+    kind: rare
+    rarity: 8
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - skaven-of-clan-moulder-web
+  - type: condition
+    note: Clan Moulder only. 25 Warp Tokens.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Beastwhip
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+- id: campaign.trading-post.black-gold-wristbands
+  item_id: black_gold_wristbands
+  price:
+    base_gc: 35
+    optional_variable_cost:
+      dice:
+        count: 2
+        sides: 6
+  availability:
+    kind: rare
+    rarity: 10
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - survivors-of-strigos-sylv
+  source_refs:
+  - manual: sylvania-supplement
+    printed_page: 0
+    section: Special Equipment / Black Gold Wristbands
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+- id: campaign.trading-post.blessed-bolts
+  item_id: blessed_bolts
+  price:
+    base_gc: 25
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - protectorate-of-sigmar-lotd3
+  - type: heroes_only
+  - type: condition
+    note: Common (25 gc). Heroes only in the Protectorate Equipment List.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Blessed Bolts
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+- id: campaign.trading-post.chainsaw-sword
+  item_id: chainsaw_sword
+  price:
+    base_gc: 15
+    optional_variable_cost:
+      dice:
+        count: 1
+        sides: 6
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - masters-of-horror-sylv
+  - type: condition
+    note: Masters of Horror only. Cost 15 + D6 gc.
+  source_refs:
+  - manual: sylvania-supplement
+    printed_page: 0
+    section: Special Equipment / Chainsaw Sword
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+- id: campaign.trading-post.chest-talon
+  item_id: chest_talon
+  price:
+    base_gc: 15
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - survivors-of-strigos-sylv
+  - type: condition
+    note: Strigany only. Cost 15 gc.
+  source_refs:
+  - manual: sylvania-supplement
+    printed_page: 0
+    section: Special Equipment / Chest Talon
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+- id: campaign.trading-post.cursed-book
+  item_id: cursed_book
+  price:
+    base_gc: 50
+    optional_variable_cost:
+      dice:
+        count: 3
+        sides: 6
+  availability:
+    kind: rare
+    rarity: 11
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - survivors-of-strigos-sylv
+  source_refs:
+  - manual: sylvania-supplement
+    printed_page: 0
+    section: Special Equipment / Cursed Book
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+- id: campaign.trading-post.damned-book
+  item_id: damned_book
+  price:
+    base_gc: 45
+    optional_variable_cost:
+      dice:
+        count: 3
+        sides: 6
+  availability:
+    kind: rare
+    rarity: 11
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - necrarchs-the-soul-stealers-lotd1
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Damned Book
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+- id: campaign.trading-post.darksteel-blade
+  item_id: darksteel_blade
+  price:
+    multiplier: 3
+  availability:
+    kind: rare
+    rarity: 9
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - druchii-mic
+  - type: condition
+    note: Cost 3 x base weapon price.
+  source_refs:
+  - manual: mordheim-index-catalog
+    printed_page: 0
+    section: Special Equipment / Darksteel Blade
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+- id: campaign.trading-post.electric-trident
+  item_id: electric_trident
+  price:
+    base_gc: 15
+    optional_variable_cost:
+      dice:
+        count: 1
+        sides: 6
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - masters-of-horror-sylv
+  - type: condition
+    note: Masters of Horror only. Cost 15 + D6 gc.
+  source_refs:
+  - manual: sylvania-supplement
+    printed_page: 0
+    section: Special Equipment / Electric Trident
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+- id: campaign.trading-post.finger-pendant
+  item_id: finger_pendant
+  price:
+    base_gc: 15
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - grave-robbers-sylv
+  - type: heroes_only
+  - type: condition
+    note: Grave Robbers only. Cost 15 gold crowns.
+  source_refs:
+  - manual: sylvania-supplement
+    printed_page: 0
+    section: Special Equipment / Finger Pendant
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+- id: campaign.trading-post.hooded-lantern-rig
+  item_id: hooded_lantern_rig
+  price:
+    base_gc: 15
+    optional_variable_cost:
+      dice:
+        count: 1
+        sides: 6
+  availability:
+    kind: rare
+    rarity: 9
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - grave-robbers-sylv
+  - type: heroes_only
+  source_refs:
+  - manual: sylvania-supplement
+    printed_page: 0
+    section: Special Equipment / Hooded Lantern and Rig
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+- id: campaign.trading-post.horo
+  item_id: horo
+  price:
+    base_gc: 10
+  availability:
+    kind: rare
+    rarity: 6
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - nipponese-expedition-web
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Nippon Special Equipment / Horo
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+- id: campaign.trading-post.kanabo
+  item_id: kanabo
+  price:
+    base_gc: 15
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - nipponese-expedition-web
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Nippon Special Equipment / Kanabo
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+- id: campaign.trading-post.kusarigama
+  item_id: kusarigama
+  price:
+    base_gc: 20
+  availability:
+    kind: rare
+    rarity: 8
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - nipponese-expedition-web
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Nippon Special Equipment / Kusarigama
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+- id: campaign.trading-post.pigback-mount
+  item_id: pigback_mount
+  price:
+    base_gc: 50
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - ogre-hunting-party-web
+  - type: heroes_only
+  - type: condition
+    note: Common (Gnoblar Heroes Only). 50 gold crowns.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Pigback Mount
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+- id: campaign.trading-post.power-squig
+  item_id: power_squig
+  price:
+    base_gc: 20
+    optional_variable_cost:
+      dice:
+        count: 1
+        sides: 6
+  availability:
+    kind: rare
+    rarity: 8
+  restrictions: []
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: New Equipment / Power Squig
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+- id: campaign.trading-post.pry-bar
+  item_id: pry_bar
+  price:
+    base_gc: 10
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - grave-robbers-sylv
+  - type: heroes_only
+  - type: condition
+    note: Grave Robbers only. Cost 10 gold crowns.
+  source_refs:
+  - manual: sylvania-supplement
+    printed_page: 0
+    section: Special Equipment / Pry Bar
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+- id: campaign.trading-post.repeater-pistol-moh
+  item_id: repeater_pistol_moh
+  price:
+    base_gc: 25
+    optional_variable_cost:
+      dice:
+        count: 3
+        sides: 6
+  availability:
+    kind: common
+  restrictions:
+  - type: condition
+    note: Masters of Horror only. Cost 25 + 3D6 gc.
+  source_refs:
+  - manual: sylvania-supplement
+    printed_page: 0
+    section: Special Equipment / Repeater Pistol
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
+- id: campaign.trading-post.ring-of-strigos
+  item_id: ring_of_strigos
+  price:
+    base_gc: 20
+    optional_variable_cost:
+      dice:
+        count: 1
+        sides: 6
+  availability:
+    kind: rare
+    rarity: 9
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - survivors-of-strigos-sylv
+  source_refs:
+  - manual: sylvania-supplement
+    printed_page: 0
+    section: Special Equipment / Ring of Strigos
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/survivors-of-strigos
+- id: campaign.trading-post.sashimono
+  item_id: sashimono
+  price:
+    base_gc: 15
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - nipponese-expedition-web
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Nippon Special Equipment / Sashimono
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+- id: campaign.trading-post.sharp-stuff
+  item_id: sharp_stuff
+  price:
+    base_gc: 0
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - ogre-hunting-party-web
+  - type: condition
+    note: Common (Gnoblars only). 1st free / second 3 gc.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Sharp Stuff
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+- id: campaign.trading-post.shield-of-sigmar
+  item_id: shield_of_sigmar
+  price:
+    base_gc: 20
+  availability:
+    kind: rare
+    rarity: 9
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - protectorate-of-sigmar-lotd3
+  - type: heroes_only
+  - type: condition
+    note: Heroes only (Protectorate of Sigmar Equipment List). Cost 20 gold crowns.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Shield of Sigmar
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+- id: campaign.trading-post.silver-tip-stake
+  item_id: silver_tip_stake
+  price:
+    base_gc: 10
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - vampire-hunters-of-sylvania-lotd5
+  - type: condition
+    note: 'Common. 10 gc (operative cost per editorial decision 2026-09-15; see sources/2A/discrepancy-verdicts.md
+      case 1). SOURCE CONFLICT (RESOLVED): the Special Equipment section prints ''Cost: 15 gc'' while
+      both the Hero Equipment List and the Pilgrim Equipment List print 10 gc for the same item — the
+      15 gc figure is an internal erratum of the original LotD #5 PDF (both prices verified verbatim on
+      p.10 of LOD5.pdf).'
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Silver-tip Stake
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+- id: campaign.trading-post.slingshot
+  item_id: slingshot
+  price:
+    base_gc: 2
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - snotlings-web
+  - type: condition
+    note: Common (Snotling Warband Only). Cost 2 gc.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: New Equipment / Slingshot
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+- id: campaign.trading-post.small-pebble
+  item_id: small_pebble
+  price:
+    base_gc: 0
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - snotlings-web
+  - type: condition
+    note: Common (Snotling Warband Only). Free.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: New Equipment / Small Pebble
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
+- id: campaign.trading-post.society-familiar
+  item_id: society_familiar
+  price:
+    base_gc: 20
+    optional_variable_cost:
+      dice:
+        count: 2
+        sides: 6
+  availability:
+    kind: rare
+    rarity: 9
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - sorcerous-society-lotd4
+  - type: heroes_only
+  - type: condition
+    note: 20+2D6 gc; Heroes only; one per Wizard.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Familiar
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+- id: campaign.trading-post.staff-of-damnation
+  item_id: staff_of_damnation
+  price:
+    base_gc: 25
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - necrarchs-the-soul-stealers-lotd1
+  - type: condition
+    note: Necrarch only. Cost 25 gc.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Staff of Damnation
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+- id: campaign.trading-post.surgeons-journal
+  item_id: surgeons_journal
+  price:
+    base_gc: 80
+    optional_variable_cost:
+      dice:
+        count: 4
+        sides: 6
+  availability:
+    kind: rare
+    rarity: 11
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - grave-robbers-sylv
+  - type: heroes_only
+  source_refs:
+  - manual: sylvania-supplement
+    printed_page: 0
+    section: Special Equipment / Surgeon's Journal
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
+- id: campaign.trading-post.thingcatcher
+  item_id: thingcatcher
+  price: null
+  availability:
+    kind: rare
+    rarity: 9
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - skaven-of-clan-moulder-web
+  - type: condition
+    note: Clan Moulder only. 20 Warp Tokens.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Thingcatcher
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+- id: campaign.trading-post.throat-guard
+  item_id: throat_guard
+  price:
+    base_gc: 10
+  availability:
+    kind: rare
+    rarity: 7
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - vampire-hunters-of-sylvania-lotd5
+  - type: heroes_only
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Throat Guard
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
+- id: campaign.trading-post.unholy-relic
+  item_id: unholy_relic
+  price:
+    base_gc: 15
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - necrarchs-the-soul-stealers-lotd1
+  - type: heroes_only
+  - type: condition
+    note: Heroes only (Necrarch Hero Equipment List). Cost 15 gc.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Necrarch equipment lists / Hero Equipment List / Miscellaneous Equipment (Heroes Only)
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+- id: campaign.trading-post.whirling-blades
+  item_id: whirling_blades
+  price:
+    base_gc: 30
+  availability:
+    kind: rare
+    rarity: 9
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - dwarf-slayer-cult-web
+  - type: condition
+    note: 30 gold crowns per pair; Slayers only.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Whirling Blades
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
+- id: campaign.trading-post.wizards-staff
+  item_id: wizards_staff
+  price:
+    base_gc: 10
+  availability:
+    kind: common
+  restrictions:
+  - type: warband_only
+    band_ids:
+    - sorcerous-society-lotd4
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Wizard's Staff
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
+- id: campaign.trading-post.wolf-rat-mount
+  item_id: wolf_rat_mount
+  price: null
+  availability:
+    kind: rare
+    rarity: 11
+  restrictions:
+  - type: condition
+    note: Clan Moulder only. 90 Warp Tokens.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Special Equipment / Wolf Rat Mount
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+effect_ids:
+- campaign.trading.buy-common-item
+- campaign.trading.rarity-test
+- campaign.trading.modify-rarity-test
+- campaign.trading.buy-rare-item

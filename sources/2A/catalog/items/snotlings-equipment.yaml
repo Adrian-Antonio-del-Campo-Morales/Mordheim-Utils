@@ -1,6 +1,5 @@
 schema_version: 2
 ruleset: mordheim
-status: staging
 items:
 - id: small_pebble
   kind: ranged-weapon
@@ -9,86 +8,54 @@ items:
     es: Piedrecita
   effect: >-
     Range: 6". Strength: As user. Special Rule: Thrown weapon, +1 Enemy Armour Piercing, Easy to
-    Find.
+    Find. Thrown Weapon: Models using pebbles do not suffer penalties for range or moving as these
+    weapons are perfectly balanced for throwing. They cannot be used in close combat. +1 Enemy
+    Armour Piercing: Any model wounded with a Pebble gains +1 to its armour save. Easy to Find:
+    Finding a Pebble is easy! They are free for Snotling warband members. If lost, they can easily
+    be found for no cost. Also, Pebbles do NOT count towards the maximum number of missile weapons a
+    warrior can carry.
   effect_i18n:
     es: >-
       Alcance: 6". Fuerza: como el usuario. Regla Especial: Arma arrojadiza, +1 Perforación de
-      Armadura Enemiga, Fácil de Encontrar.
+      Armadura Enemiga, Fácil de Encontrar. Arma Arrojadiza: Las miniaturas que usan piedrecitas no
+      sufren penalizaciones por alcance ni por movimiento, ya que estas armas están perfectamente
+      equilibradas para el lanzamiento. No pueden usarse en combate cuerpo a cuerpo. +1 de
+      Perforación de Armadura Enemiga: Cualquier miniatura herida con una Piedrecita obtiene +1 a su
+      salvación por armadura. Fácil de Encontrar: ¡Encontrar una Piedrecita es fácil! Son gratis
+      para los miembros de la banda Snotling. Si se pierde, puede encontrarse otra sin coste.
+      Además, las Piedrecitas NO cuentan para el número máximo de armas de misil que un guerrero
+      puede llevar.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: New Equipment / Small Pebble
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
-  rarity: null
-  availability_note: Common (Snotling Warband Only). Free.
   combat_status: out_of_scope
-  special_rules:
-  - id: thrown-weapon
-    name: Thrown weapon
-    effect: >-
-      Models using pebbles do not suffer penalties for range or moving as these weapons are
-      perfectly balanced for throwing. They cannot be used in close combat.
-    effect_i18n:
-      es: >-
-        Las miniaturas que usan piedrecitas no sufren penalizaciones por alcance ni por movimiento,
-        ya que estas armas están perfectamente equilibradas para el lanzamiento. No pueden usarse en
-        combate cuerpo a cuerpo.
-    name_i18n:
-      es: Arma arrojadiza
-  - id: enemy-armour-piercing
-    name: +1 Enemy Armour Piercing
-    effect: Any model wounded with a Pebble gains +1 to its armour save.
-    effect_i18n:
-      es: Cualquier miniatura herida con una Piedrecita obtiene +1 a su salvación por armadura.
-    name_i18n:
-      es: +1 de Perforación de Armadura Enemiga
-  - id: easy-to-find
-    name: Easy to Find
-    effect: >-
-      Finding a Pebble is easy! They are free for Snotling warband members. If lost, they can easily
-      be found for no cost. Also, Pebbles do NOT count towards the maximum number of missile weapons
-      a warrior can carry.
-    effect_i18n:
-      es: >-
-        ¡Encontrar una Piedrecita es fácil! Son gratis para los miembros de la banda Snotling. Si se
-        pierde, puede encontrarse otra sin coste. Además, las Piedrecitas NO cuentan para el número
-        máximo de armas de misil que un guerrero puede llevar.
-    name_i18n:
-      es: Fácil de Encontrar
 - id: slingshot
   kind: ranged-weapon
   name: Slingshot
   name_i18n:
     es: Hondita
   effect: >-
-    Maximum Range: 18". Strength: 2. Special Rule: Fire twice at half range.
+    Maximum Range: 18". Strength: 2. Special Rule: Fire twice at half range. Fire Twice at Half
+    Range: A sling-shooter may fire twice in the shooting phase if he does not move in the movement
+    phase. He cannot shoot over half range (9") though, if he fires twice. If the model fires twice
+    then each shot is at -1 to hit.
   effect_i18n:
     es: >-
-      Alcance máximo: 18". Fuerza: 2. Regla Especial: Disparar dos veces a media distancia.
+      Alcance máximo: 18". Fuerza: 2. Regla Especial: Disparar dos veces a media distancia. Dispara
+      Dos Veces a Media Distancia: Un tirador con hondita puede disparar dos veces en la fase de
+      Disparo si no se mueve en la fase de Movimiento. Pero no puede disparar a más de media
+      distancia (9") si dispara dos veces. Si la miniatura dispara dos veces, cada disparo recibe -1
+      por impactar.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: New Equipment / Slingshot
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
-  rarity: null
-  availability_note: Common (Snotling Warband Only). Cost 2 gc.
   combat_status: out_of_scope
-  special_rules:
-  - id: fire-twice-at-half-range
-    name: Fire twice at half range
-    effect: >-
-      A sling-shooter may fire twice in the shooting phase if he does not move in the movement
-      phase. He cannot shoot over half range (9") though, if he fires twice. If the model fires
-      twice then each shot is at -1 to hit.
-    effect_i18n:
-      es: >-
-        Un tirador con hondita puede disparar dos veces en la fase de Disparo si no se mueve en la
-        fase de Movimiento. Pero no puede disparar a más de media distancia (9") si dispara dos
-        veces. Si la miniatura dispara dos veces, cada disparo recibe -1 por impactar.
-    name_i18n:
-      es: Dispara dos veces a media distancia
 - id: power_squig
-  kind: miscellaneous
+  kind: out-of-scope
   name: Power Squig
   name_i18n:
     es: Squig de Poder
@@ -104,6 +71,4 @@ items:
     printed_page: 0
     section: New Equipment / Power Squig
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings
-  rarity: 8
-  availability_note: Cost 20 + D6 gc.
   combat_status: out_of_scope
