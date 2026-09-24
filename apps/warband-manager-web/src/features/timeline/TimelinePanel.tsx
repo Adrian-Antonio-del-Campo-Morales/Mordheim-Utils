@@ -1,3 +1,7 @@
+import { presentationOutput } from "../campaign/presentation-output";
+import { textJoin, textNumber, textSymbol, opponentPersonalName } from "../campaign/presentation-values";
+import { translate } from "../campaign/i18n-core";
+import { useLocale } from "../campaign/i18n-context";
 /**
  * Campaign timeline navigation UI.
  *
@@ -12,7 +16,7 @@
  */
 import type { CampaignDocument, MomentSelection } from "../campaign/types";
 import { enumerateMoments, momentLabel } from "./moments";
-import { titleCaseDisplay, type ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { knowledgeName } from "../campaign/displayText";
 
 interface TimelinePanelProps {
@@ -22,7 +26,8 @@ interface TimelinePanelProps {
   readonly knowledge?: ArtefactKnowledgeReader;
 }
 
-export function TimelinePanel({ document, onSelect, locale = "en", knowledge }: TimelinePanelProps) {
+export function TimelinePanel({ document, onSelect, locale: requestedLocale, knowledge }: TimelinePanelProps) {
+  const locale = useLocale(requestedLocale);
   const { campaign, view } = document;
   const moments = enumerateMoments(campaign);
   const selected = (view.selected_moment ?? "draft:0") as string;
@@ -30,9 +35,9 @@ export function TimelinePanel({ document, onSelect, locale = "en", knowledge }: 
   const completed = Math.max(0, campaign.states.length - (campaign.configuration.is_draft ? 0 : 1));
 
   return (
-    <nav aria-label={locale === "es" ? "Cronología" : "Timeline"} className="campaign-timeline">
-      <header><h3>{locale === "es" ? "CRONOLOGÍA DE CAMPAÑA" : "CAMPAIGN TIMELINE"}</h3><p>{campaign.configuration.is_draft ? (locale === "es" ? "La campaña todavía no ha comenzado" : "Campaign has not started yet") : locale === "es" ? `${completed} estados de batalla completados` : `${completed} completed battle states`}</p></header>
-      <label className="mobile-timeline-picker"><span>{locale === "es" ? "Momento de campaña" : "Campaign moment"}</span><select aria-label={locale === "es" ? "Elegir momento de campaña" : "Choose campaign moment"} value={selectedMoment} onChange={(event) => onSelect(event.target.value as MomentSelection)}>{moments.map((moment) => <option key={moment} value={moment}>{momentLabel(moment, campaign, locale)}</option>)}</select></label>
+    <nav aria-label={presentationOutput(translate({ key: "ui.d77ec83a8d1d" }, locale))} className="campaign-timeline">
+      <header><h3>{presentationOutput(translate({ key: "ui.5402e494dc86" }, locale))}</h3><p>{presentationOutput(campaign.configuration.is_draft ? (translate({ key: "ui.19d4ed8b537c" }, locale)) : translate({ key: "timeline.completed", args: { count: completed } }, locale))}</p></header>
+      <label className="mobile-timeline-picker"><span>{presentationOutput(translate({ key: "ui.4507edf1d4e1" }, locale))}</span><select aria-label={presentationOutput(translate({ key: "ui.b51e84524689" }, locale))} value={selectedMoment} onChange={(event) => onSelect(event.target.value as MomentSelection)}>{moments.map((moment) => <option key={moment} value={moment}>{presentationOutput(momentLabel(moment, campaign, locale, knowledgeName(knowledge, "scenario", campaign.battles.find((battle) => `battle:${battle.number}` === moment)?.scenario, locale)))}</option>)}</select></label>
       <ol>
         {moments.map((moment) => {
           const isCurrent = moment === selected;
@@ -41,8 +46,11 @@ export function TimelinePanel({ document, onSelect, locale = "en", knowledge }: 
           const state = kind === "state" ? campaign.states.find((row) => row.number === number) : undefined;
           const battle = kind === "battle" ? campaign.battles.find((row) => row.number === number) : undefined;
           const post = kind === "post" ? campaign.post_battles.find((row) => row.battle_number === number) : undefined;
-          const scenarioName = battle ? knowledgeName(knowledge, "scenario", battle.scenario, locale, titleCaseDisplay(battle.scenario)) : undefined;
-          const detail = state ? `${locale === "es" ? "Valoración" : "Rating"} ${state.rating} · ${state.models}/${state.max_models} ${locale === "es" ? "miniaturas" : "models"}` : battle ? `${scenarioName} vs. ${battle.opponent}` : post && !post.complete ? `${locale === "es" ? "Paso" : "Step"} ${post.active_step + 1}/8` : kind === "new-battle" ? (locale === "es" ? "Registra los resultados para continuar" : "Record the results to continue") : "";
+          const scenarioName = battle ? knowledgeName(knowledge, "scenario", battle.scenario, locale) : undefined;
+          const detail = state ? textJoin([translate({ key: "ui.f60eeb2b86e6" }, locale), textNumber(state.rating, locale), textJoin([textNumber(state.models, locale), textSymbol("/"), textNumber(state.max_models, locale)], ""), translate({ key: "ui.e9882ce840bb" }, locale)])
+            : battle ? textJoin([scenarioName ?? translate({ key: "knowledge.unavailable" }, locale), textSymbol("vs."), opponentPersonalName(battle, locale)])
+            : post && !post.complete ? textJoin([translate({ key: "ui.b3b55860db42" }, locale), textJoin([textNumber(post.active_step + 1, locale), textSymbol("/"), textNumber(8, locale)], "")])
+            : kind === "new-battle" ? translate({ key: "ui.1defb9c60306" }, locale) : undefined;
           return (
             <li key={moment} data-kind={kind}>
               <button
@@ -51,7 +59,7 @@ export function TimelinePanel({ document, onSelect, locale = "en", knowledge }: 
                 style={isCurrent ? { fontWeight: "bold" } : undefined}
                 onClick={() => onSelect(moment)}
               >
-                <span>{momentLabel(moment, campaign, locale, scenarioName)}</span>{detail && <small>{detail}</small>}{kind === "new-battle" && <b className="timeline-action">{locale === "es" ? "AÑADIR BATALLA" : "ADD BATTLE"}</b>}
+                <span>{presentationOutput(momentLabel(moment, campaign, locale, scenarioName))}</span>{detail && <small>{presentationOutput(detail)}</small>}{kind === "new-battle" && <b className="timeline-action">{presentationOutput(translate({ key: "ui.1daf9ad17eec" }, locale))}</b>}
               </button>
             </li>
           );

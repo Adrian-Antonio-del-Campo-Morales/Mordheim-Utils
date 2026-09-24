@@ -63,7 +63,7 @@ describe("P5.2 acceptance — real KB loading", () => {
     await waitFor(() => {
       expect(screen.getByRole("alert")).toHaveTextContent("No se pudo cargar la base de conocimiento.");
     });
-    expect(screen.getByRole("alert")).toHaveTextContent("offline");
+    expect(screen.getByRole("alert")).not.toHaveTextContent("offline");
   });
 
   it("announces an HTTP failure", async () => {
@@ -72,7 +72,7 @@ describe("P5.2 acceptance — real KB loading", () => {
     await waitFor(() => {
       expect(screen.getByRole("alert")).toHaveTextContent("No se pudo cargar la base de conocimiento.");
     });
-    expect(screen.getByRole("alert")).toHaveTextContent("HTTP 404");
+    expect(screen.getByRole("alert")).not.toHaveTextContent("HTTP 404");
   });
 
   it("retries a transient KB failure and restores the shell", async () => {
@@ -85,7 +85,7 @@ describe("P5.2 acceptance — real KB loading", () => {
     }));
     render(<ProductApp />);
     const alert = await screen.findByRole("alert");
-    expect(alert).toHaveTextContent("offline");
+    expect(alert).not.toHaveTextContent("offline");
     fireEvent.click(screen.getByRole("button", { name: "Reintentar" }));
     await waitFor(() =>
       expect(screen.getAllByRole("button", { name: "Nueva Campaña" })[0].hasAttribute("disabled")).toBe(false),

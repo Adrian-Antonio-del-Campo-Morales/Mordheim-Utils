@@ -13,9 +13,10 @@ describe("PostBattleHistory", () => {
     expect(screen.getByText("+19 gc")).toBeInTheDocument();
     expect(screen.getByText("-2")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Injuries and recovery" })).toBeInTheDocument();
-    expect(screen.getByText("Sigrid made a full recovery.")).toBeInTheDocument();
-    expect(screen.getByText("Found 4 wyrdstone shards.")).toBeInTheDocument();
-    expect(screen.getByText("Bought a sword for 10 gc.")).toBeInTheDocument();
+    expect(screen.queryByText("Sigrid made a full recovery.")).not.toBeInTheDocument();
+    expect(screen.getAllByText("Information unavailable").length).toBeGreaterThan(0);
+    expect(screen.getByText("4 wyrdstone shard(s) found.")).toBeInTheDocument();
+    expect(screen.queryByText("Bought a sword for 10 gc.")).not.toBeInTheDocument();
   });
 
   it("states when a completed sequence has no detailed events", () => {

@@ -48,12 +48,22 @@ describe("published KB display coverage", () => {
     it(`resolves every published name and description in ${locale}`, () => {
       const knowledge = reader();
       for (const entry of entries(knowledge)) {
-        const name = knowledgeText(knowledge, entry.kind, entry.id, locale, undefined, entry.profileId, entry.bandId);
-        expect(name.status, `${entry.kind}:${entry.id} name`).not.toBe("missing");
+        const name = knowledgeText(knowledge, entry.kind, entry.id, locale, entry.profileId, entry.bandId);
+        const resolvedName = knowledge.resolveKbText(entry, "name", locale);
+        if (resolvedName.ok) expect(name.text).toBe(resolvedName.text);
+        else {
+          expect(resolvedName.reason, `${entry.kind}:${entry.id} name`).toBe("missing-translation");
+          expect(name.text).toBe(locale === "es" ? "Información no disponible" : "Information unavailable");
+        }
         expect(name.text).not.toBe(entry.id);
         if (!NO_TOOLTIP_KINDS.has(entry.kind)) {
           const description = knowledgeDescription(knowledge, entry, locale);
-          expect(description.status, `${entry.kind}:${entry.id} description`).not.toBe("missing");
+          const fields = (["effect", "description", "text", "note"] as const).map((field) => knowledge.resolveKbText(entry, field, locale));
+          if (description.status === "missing") {
+            const declared = fields.find((result) => result.ok || result.reason !== "missing-field");
+            if (declared) expect(declared, `${entry.kind}:${entry.id} description`).toMatchObject({ ok: false, reason: "missing-translation" });
+            expect(description.text).toBe(locale === "es" ? "No hay una descripción disponible para este elemento." : "No description is available for this entry.");
+          } else expect(fields.some((result) => result.ok && result.text === description.text)).toBe(true);
           expect(description.text.trim(), `${entry.kind}:${entry.id} description`).not.toBe("");
         }
       }

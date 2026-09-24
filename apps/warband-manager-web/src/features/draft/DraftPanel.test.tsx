@@ -1,3 +1,5 @@
+import { I18nContext } from "../campaign/i18n-context";
+import { translate } from "../campaign/i18n-core";
 /**
  * P6.2 component tests: the draft panel composes a warband draft through the
  * real kernel workflow with the artefact-shaped fake knowledge reader:
@@ -16,6 +18,18 @@ import type { CampaignDocument } from "@domain/campaign/index";
 afterEach(cleanup);
 
 describe("P6.2 DraftPanel", () => {
+  it("updates the legacy draft route and KB options when locale changes", () => {
+    const view = (locale: "es" | "en") => <I18nContext.Provider value={{ locale, t: (message) => translate(message, locale) }}><DraftPanel onCommitted={() => undefined} /></I18nContext.Provider>;
+    const { rerender } = render(view("es"));
+    expect(screen.getByRole("option", { name: "Hermanas de Sigmar" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Crear borrador" })).toBeTruthy();
+    rerender(view("en"));
+    expect(screen.getByRole("option", { name: "Sisters of Sigmar" })).toBeTruthy();
+    expect(screen.queryByText("Hermanas de Sigmar")).toBeNull();
+    rerender(view("es"));
+    expect(screen.getByRole("option", { name: "Hermanas de Sigmar" })).toBeTruthy();
+  });
+
   it("lists only warband candidates the KB resolves", () => {
     render(<DraftPanel onCommitted={() => undefined} />);
     const select = screen.getByLabelText(/warband/i) as HTMLSelectElement;

@@ -1,3 +1,4 @@
+import { unavailableText } from "../../../../adapters/knowledge-reader/presentation";
 /**
  * P6.4 acceptance tests: the battle workflow drives readiness → record →
  * post-battle steps through the real kernel use cases with an
@@ -149,7 +150,7 @@ describe("P6.4 recording battles", () => {
     const { document } = makeCommitted();
     const ordinaryHero = { ...document.campaign.warriors[0], id: "hero-first", skills: [] };
     const leader = { ...document.campaign.warriors[0], id: "hero-leader", skills: ["captain--leader"] };
-    const awards = calculatedAwards([{ id: "winning-leader", label: "Winning leader", amount: 1, trigger: "warband_won_battle", manual: false, selection: "single" }], [ordinaryHero, leader], "win", {}, {});
+    const awards = calculatedAwards([{ id: "winning-leader", label: unavailableText("en"), amount: 1, trigger: "warband_won_battle", manual: false, selection: "single" }], [ordinaryHero, leader], "win", {}, {});
     expect(awards).toEqual({ "hero-leader": 1 });
   });
 
@@ -157,7 +158,7 @@ describe("P6.4 recording battles", () => {
     const { document } = makeCommitted();
     const hero = { ...document.campaign.warriors.find((warrior) => warrior.kind === "hero")!, id: "hero" };
     const henchmen = { ...document.campaign.warriors.find((warrior) => warrior.kind === "henchman")!, id: "henchmen", quantity: 3 };
-    const row = { id: "chest", label: "Chest", amount: 2, amountWhenMultiple: 1, trigger: "manual", manual: true, selection: "multiple" as const };
+    const row = { id: "chest", label: unavailableText("en"), amount: 2, amountWhenMultiple: 1, trigger: "manual", manual: true, selection: "multiple" as const };
 
     expect(calculatedAwards([row], [hero, henchmen], "win", {}, { chest: { hero: 2 } })).toEqual({ hero: 2 });
     expect(calculatedAwards([row], [hero, henchmen], "win", {}, { chest: { hero: 2, henchmen: 2 } })).toEqual({ hero: 1, henchmen: 1 });

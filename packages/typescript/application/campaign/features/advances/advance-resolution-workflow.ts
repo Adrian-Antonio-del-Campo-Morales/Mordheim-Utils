@@ -6,6 +6,11 @@ interface CatalogueReader extends KnowledgeReader {
   list?(kind: "profile" | "skill" | "warband_group" | "racial_maximum"): readonly Readonly<Record<string, unknown>>[];
 }
 type Result = { ok: true; document: CampaignDocument; needs_subroll?: boolean } | { ok: false; message: string };
+function appendHistory(row: OpenPayload, event: OpenPayload, legacy: string): OpenPayload {
+  const old = Array.isArray(row["roll_history"]) ? row["roll_history"] : [];
+  const facts = Array.isArray(row["roll_history_events"]) ? row["roll_history_events"] : old.map((text) => ({ kind: "legacy", text }));
+  return { roll_history: [...old, legacy], roll_history_events: [...facts, event] };
+}
 const CHARACTERISTICS: Record<string, string> = { movement:"M", weapon_skill:"WS", ballistic_skill:"BS", strength:"S", toughness:"T", wounds:"W", initiative:"I", attacks:"A", leadership:"Ld" };
 const BAND_RACE: Record<string,string> = { "warband-group.human":"human", "warband-group.chaos-human":"human", "warband-group.human-mercenary":"human", "warband-group.elf":"elf", "warband-group.high-elf":"elf", "warband-group.dark-elf":"elf", "warband-group.dwarf":"dwarf", "warband-group.chaos-dwarf":"dwarf", "warband-group.skaven":"skaven", "warband-group.ogre":"ogre", "warband-group.goblin":"goblin", "warband-group.orc":"orc", "warband-group.halfling":"halfling", "warband-group.beastmen":"other_beastmen", "warband-group.undead":"human" };
 
@@ -58,12 +63,12 @@ function applyCharacteristic(document: CampaignDocument, reader: CatalogueReader
   const base=profile?.ok ? Number((profile.record.data["characteristics"] as Record<string,unknown>)?.[key] ?? NaN) : NaN;
   const cap=warrior.kind==="henchman" && Number.isFinite(base) ? base+1 : maximum(reader,document,key);
   if(cap !== null && Number.isFinite(cap) && current>=cap) {
-    const reset={...row,roll_total:null,subroll:null,advance_options:[],roll_history:[...((row["roll_history"] as string[] | undefined)??[]),`Result rejected: ${key} is at its advance cap (${cap}).`]};
+    const reset={...row,roll_total:null,subroll:null,advance_options:[],...appendHistory(row,{kind:"advance-cap",characteristic:key,cap},`Result rejected: ${key} is at its advance cap (${cap}).`)};
     const post=document.campaign.post_battles.find((item)=>!item.complete)!;
     return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?reset:item))};
   }
   const amount=Number(option["amount"] ?? 1); const changed={...warrior,stats:{...warrior.stats,[key]:current+amount},stat_advances:{...(warrior.stat_advances??{}),[key]:(warrior.stat_advances?.[key]??0)+amount}};
-  const committed={...row,committed:true,applied_label:`+${amount} ${key}`}; const post=document.campaign.post_battles.find((item)=>!item.complete)!;
+  const committed={...row,committed:true,applied_result:{kind:"characteristic",characteristic:key,amount},applied_label:`+${amount} ${key}`}; const post=document.campaign.post_battles.find((item)=>!item.complete)!;
   return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?committed:item),document.campaign.warriors.map((item)=>item.id===warrior.id?changed:item))};
 }
 
@@ -73,7 +78,7 @@ export function resolveAdvanceRoll(document: CampaignDocument, reader: Catalogue
   if(row["promotion_setup_pending"]) return {ok:false,message:"Choose two Hero skill lists before rolling this advance."};
   if(!Number.isInteger(input.roll_total)||input.roll_total<2||input.roll_total>12) return {ok:false,message:"Advance roll must be between 2 and 12."};
   if(row["reroll_exclude_promotion"] && input.roll_total>=10) {
-    const reset={...row,roll_total:null,subroll:null,advance_options:[],roll_history:[...((row["roll_history"] as string[]|undefined)??[]),`Rolled ${input.roll_total}: the remaining Henchmen must reroll results 10-12.`]};
+    const reset={...row,roll_total:null,subroll:null,advance_options:[],...appendHistory(row,{kind:"henchmen-reroll",total:input.roll_total},`Rolled ${input.roll_total}: the remaining Henchmen must reroll results 10-12.`)};
     return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?reset:item))};
   }
   const result=outcome(reader,String(row["table"]??"hero"),input.roll_total,input.subroll);
@@ -96,7 +101,7 @@ export function commitAdvanceChoice(document: CampaignDocument, reader: Catalogu
     const skill=input.skill_id ? reader.queryKnowledge({id:{kind:"skill_id",value:input.skill_id}}):null; if(!skill?.ok||!offered.some((item)=>item["kind"]==="choose_skill")) return {ok:false,message:"That skill is not offered."};
     const category=String(skill.record.data["category"]??""); if(warrior.skill_access?.length&&!warrior.skill_access.includes(category)) return {ok:false,message:"That skill is outside this Hero's skill tables."};
     const name=String(skill.record.names["en"]??input.skill_id); if(warrior.skills.includes(name)) return {ok:false,message:"The warrior already knows that skill."};
-    const post=document.campaign.post_battles.find((item)=>!item.complete)!; const committed={...row,committed:true,applied_label:`Skill: ${name}`};
+    const post=document.campaign.post_battles.find((item)=>!item.complete)!; const committed={...row,committed:true,applied_result:{kind:"skill",id:input.skill_id},applied_label:`Skill: ${name}`};
     return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?committed:item),document.campaign.warriors.map((item)=>item.id===warrior.id?{...item,skills:[...item.skills,name]}:item))};
   }
   if(input.kind==="generate_spell" || input.kind==="duplicate_spell") {
@@ -108,12 +113,12 @@ export function commitAdvanceChoice(document: CampaignDocument, reader: Catalogu
     if(input.kind==="generate_spell"&&duplicate) return {ok:false,message:"The warrior already knows that spell; commit it as a duplicate."};
     if(input.kind==="duplicate_spell"&&!duplicate) return {ok:false,message:"The warrior does not know that spell yet."};
     const changed=input.kind==="generate_spell" ? {...warrior,skills:[...warrior.skills,name]} : {...warrior,spell_difficulty_modifiers:{...(warrior.spell_difficulty_modifiers??{}),[input.skill_id]:(warrior.spell_difficulty_modifiers?.[input.skill_id]??0)-1}};
-    const label=input.kind==="generate_spell"?`Spell: ${name}`:`Duplicated spell: ${name} (difficulty -1)`; const post=document.campaign.post_battles.find((item)=>!item.complete)!; const committed={...row,committed:true,applied_label:label};
+    const label=input.kind==="generate_spell"?`Spell: ${name}`:`Duplicated spell: ${name} (difficulty -1)`; const post=document.campaign.post_battles.find((item)=>!item.complete)!; const committed={...row,committed:true,applied_result:{kind:input.kind==="generate_spell"?"spell":"duplicate-spell",id:input.skill_id,modifier:-1},applied_label:label};
     return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?committed:item),document.campaign.warriors.map((item)=>item.id===warrior.id?changed:item))};
   }
   if(input.kind==="external_resolution" && offered.some((item)=>item["kind"]==="external_resolution")) {
     const post=document.campaign.post_battles.find((item)=>!item.complete)!;
-    const committed={...row,committed:true,applied_label:"Resolved outside the application"};
+    const committed={...row,committed:true,applied_result:{kind:"external"},applied_label:"Resolved outside the application"};
     return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?committed:item))};
   }
   return {ok:false,message:"This desktop advance option is not implemented yet."};
@@ -131,7 +136,7 @@ export function promoteHenchman(document: CampaignDocument, input:{warrior_id:st
   if(!offered||warrior.kind!=="henchman") return {ok:false,message:"The Lad's Got Talent is not offered for this warrior."};
   const heroes=document.campaign.warriors.reduce((total,item)=>total+(item.kind==="hero"?(item.quantity??1):0),0);
   if(heroes>=document.campaign.configuration.hero_limit) {
-    const reset={...row,roll_total:null,subroll:null,advance_options:[],promotion_offer:false,roll_history:[...((row["roll_history"] as string[]|undefined)??[]),`Hero maximum reached (${document.campaign.configuration.hero_limit}); reroll this advance.`]};
+    const reset={...row,roll_total:null,subroll:null,advance_options:[],promotion_offer:false,...appendHistory(row,{kind:"hero-limit",limit:document.campaign.configuration.hero_limit},`Hero maximum reached (${document.campaign.configuration.hero_limit}); reroll this advance.`)};
     return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?reset:item))};
   }
   const quantity=warrior.quantity??1; const nonUniform=warrior.equipment.filter((item)=>item.per_model&&item.quantity%quantity!==0);
@@ -143,7 +148,7 @@ export function promoteHenchman(document: CampaignDocument, input:{warrior_id:st
     ? document.campaign.warriors.map((item)=>item.id===warrior.id?{...item,quantity:remaining,equipment:groupEquipment}:item).concat(hero)
     : document.campaign.warriors.filter((item)=>item.id!==warrior.id).concat(hero);
   let pending=(post.pending_advances??[]).filter((item)=>remaining>0||item!==row);
-  if(remaining>0) pending=pending.map((item)=>item===row?{...item,roll_total:null,subroll:null,advance_options:[],promotion_offer:false,reroll_exclude_promotion:true,roll_history:[...((item["roll_history"] as string[]|undefined)??[]),"Rolled 10-12: one member became a Hero; remaining group rerolls."]}:item);
+  if(remaining>0) pending=pending.map((item)=>item===row?{...item,roll_total:null,subroll:null,advance_options:[],promotion_offer:false,reroll_exclude_promotion:true,...appendHistory(item,{kind:"group-promoted"},"Rolled 10-12: one member became a Hero; remaining group rerolls.")}:item);
   else pending=pending.map((item)=>item["warrior_id"]===warrior.id?{...item,warrior_id:hero.id,warrior_name:hero.name,table:"hero"}:item);
   pending=[...pending,{warrior_id:hero.id,warrior_name:hero.name,table:"hero",threshold:null,roll_total:null,subroll:null,committed:false,applied_label:"",promotion_immediate:true,promotion_setup_pending:true,promotion_tables:[]}];
   return {ok:true,document:update(document,post.battle_number,pending,warriors)};

@@ -145,6 +145,7 @@ export function buyWeaponUpgrade(
         type: "upgrade_weapon",
         item_id: input.item_id,
         base_item_id: baseId,
+        gold: input.unit_price,
         description: `${target.name} upgraded to ${upgradedName} for ${input.unit_price} gc.`,
       },
     ],

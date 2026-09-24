@@ -1,3 +1,5 @@
+import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import { presentationEntries, type PresentationEntry } from "@adapters/knowledge-reader/presentation";
 /**
  * P6.4 component tests: the battle panel records a battle against a real
  * committed campaign document (built through the draft workflow) and walks
@@ -40,8 +42,29 @@ const idleService = {
   run: async () => ({ ok: true }),
 } as unknown as CampaignAppService;
 
-function renderBattle(document: CampaignDocument, knowledge?: object) {
-  return render(<CampaignAppProvider service={idleService}><BattlePanel document={document} knowledge={knowledge as never} /></CampaignAppProvider>);
+function presentationReader(source?: { list(kind: string): readonly Record<string, unknown>[]; campaignSection?(section: string): Record<string, unknown> }) {
+  if (!source) return undefined;
+  const scenarios = source.list("scenario");
+  const sections = Object.fromEntries(["scenarios", "scenario-rewards", "experience-and-advances"].map((section) => [section, source.campaignSection?.(section) ?? {}]));
+  const sourceScenarios = (sections.scenarios.scenarios ?? []) as Record<string, unknown>[];
+  sections.scenarios = { scenarios: scenarios.map((row) => ({ ...row, ...sourceScenarios.find((entry) => entry.id === row.id) })) };
+  const artefact = { schema_version: 1, ruleset: "test", bands: [], profiles: [], items: [], skills: [], campaign: sections };
+  const entries: PresentationEntry[] = [...presentationEntries(artefact)];
+  const nested = (value: unknown, source: string) => {
+    if (!value || typeof value !== "object") return;
+    if (Array.isArray(value)) { value.forEach((row, index) => nested(row, `${source}/${index}`)); return; }
+    const row = value as Record<string, unknown>;
+    const fields: PresentationEntry["fields"] = {};
+    if (typeof row.label === "string") fields.label = { en: row.label };
+    if (typeof row.effect === "string") fields.effect = { en: row.effect };
+    if (Object.keys(fields).length) entries.push({ ref: { kind: "record", id: source }, source, fields });
+    for (const [key, child] of Object.entries(row)) nested(child, `${source}/${key}`);
+  };
+  nested(sections, "campaign");
+  return ArtefactKnowledgeReader.from({ ...artefact, presentation_entries: entries });
+}
+function renderBattle(document: CampaignDocument, knowledge?: Parameters<typeof presentationReader>[0]) {
+  return render(<CampaignAppProvider service={idleService}><BattlePanel document={document} knowledge={presentationReader(knowledge)} /></CampaignAppProvider>);
 }
 
 describe("P6.4 BattlePanel", () => {
@@ -132,7 +155,7 @@ describe("P6.4 BattlePanel", () => {
       },
     } as unknown as CampaignAppService;
     const { rerender } = render(
-      <CampaignAppProvider service={service}><BattlePanel document={current} knowledge={uiKnowledge as never} /></CampaignAppProvider>,
+      <CampaignAppProvider service={service}><BattlePanel document={current} knowledge={presentationReader(uiKnowledge)} /></CampaignAppProvider>,
     );
 
     await user.selectOptions(screen.getByLabelText("Scenario"), "skirmish");
@@ -140,7 +163,7 @@ describe("P6.4 BattlePanel", () => {
     await user.click(screen.getByRole("button", { name: /record battle/i }));
 
     expect(current.campaign.battles).toHaveLength(1);
-    rerender(<CampaignAppProvider service={service}><BattlePanel document={current} knowledge={uiKnowledge as never} /></CampaignAppProvider>);
+    rerender(<CampaignAppProvider service={service}><BattlePanel document={current} knowledge={presentationReader(uiKnowledge)} /></CampaignAppProvider>);
     // The pending post-battle navigation replaces the form.
     expect(await screen.findByText(/Post-battle #1/)).toBeTruthy();
     expect(screen.getByRole("status")).toHaveTextContent("Step 1/8");

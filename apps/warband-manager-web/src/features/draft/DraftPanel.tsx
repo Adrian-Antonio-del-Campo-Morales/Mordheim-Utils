@@ -1,3 +1,6 @@
+import { presentationOutput } from "../campaign/presentation-output";
+import { translate } from "../campaign/i18n-core";
+import { useLocale } from "../campaign/i18n-context";
 /**
  * Draft and initial composition UI. Shown beside/instead of the
  * campaign slice when the user starts a new warband: warband selection,
@@ -18,6 +21,7 @@ export interface DraftPanelProps {
 }
 
 export function DraftPanel({ onCommitted }: DraftPanelProps) {
+  const locale = useLocale();
   const workflow = useDraftWorkflow(onCommitted);
   const [bandId, setBandId] = useState<string>("");
   const [campaignName, setCampaignName] = useState("");
@@ -26,8 +30,8 @@ export function DraftPanel({ onCommitted }: DraftPanelProps) {
   const canCommit = status !== null && status.legal;
 
   return (
-    <section aria-label="Draft">
-      <h2>New warband draft</h2>
+    <section aria-label={presentationOutput(translate({ key: "draft.landmark" }, locale))}>
+      <h2>{presentationOutput(translate({ key: "draft.title" }, locale))}</h2>
 
       {status === null && (
         <form
@@ -36,31 +40,31 @@ export function DraftPanel({ onCommitted }: DraftPanelProps) {
             if (bandId) void workflow.startDraft(bandId, campaignName.trim() || undefined);
           }}
         >
-          <label htmlFor="warband-select">Warband</label>
+          <label htmlFor="warband-select">{presentationOutput(translate({ key: "draft.band" }, locale))}</label>
           <select
             id="warband-select"
             value={bandId}
             onChange={(event) => setBandId(event.target.value)}
           >
-            <option value="">Select a warband…</option>
+            <option value="">{presentationOutput(translate({ key: "draft.select" }, locale))}</option>
             {[...workflow.options].sort((a,b)=>a.name.localeCompare(b.name)).map((option) => (
               <option key={option.band_id} value={option.band_id}>
-                {option.name}
+                {presentationOutput(option.name)}
               </option>
             ))}
           </select>
 
-          <label htmlFor="campaign-name">Campaign name</label>
+          <label htmlFor="campaign-name">{presentationOutput(translate({ key: "draft.campaign" }, locale))}</label>
           <input
             id="campaign-name"
             type="text"
             value={campaignName}
             onChange={(event) => setCampaignName(event.target.value)}
-            placeholder="New Mordheim Campaign"
+            placeholder={presentationOutput(translate({ key: "draft.placeholder" }, locale))}
           />
 
-          <button type="submit" disabled={!bandId} data-disabled-reason={!bandId ? "Select a warband first." : undefined}>
-            Start draft
+          <button type="submit" disabled={!bandId} data-disabled-reason={!bandId ? presentationOutput(translate({ key: "draft.select-first" }, locale)) : undefined}>
+            {presentationOutput(translate({ key: "draft.start" }, locale))}
           </button>
         </form>
       )}
@@ -68,34 +72,31 @@ export function DraftPanel({ onCommitted }: DraftPanelProps) {
       {status !== null && (
         <>
           <output role="status" style={{ display: "block" }}>
-            Models {status.models}/{status.maximum_models} (min{" "}
-            {status.minimum_models}) · Heroes {status.heroes}/{status.hero_limit}{" "}
-            · Treasury {status.treasury} gold
+            {presentationOutput(translate({ key: "draft.status", args: { count: status.models, limit: status.maximum_models, cap: status.minimum_models, amount: status.heroes, total: status.hero_limit, gold: status.treasury } }, locale))}
           </output>
 
           {!status.legal && (
             <output role="status" style={{ display: "block" }}>
-              The draft is not legal yet: it needs at least {status.minimum_models}{" "}
-              models, one hero, and a non-negative treasury.
+              {presentationOutput(translate({ key: "draft.illegal" }, locale))}
             </output>
           )}
 
           <button
             type="button"
             disabled={!canCommit}
-            data-disabled-reason={!canCommit ? "The draft needs the required models, a Hero, and a non-negative treasury." : undefined}
+            data-disabled-reason={!canCommit ? presentationOutput(translate({ key: "draft.illegal" }, locale)) : undefined}
             onClick={() => void workflow.commit()}
           >
-            Commit initial warband (State #0)
+            {presentationOutput(translate({ key: "draft.commit" }, locale))}
           </button>
         </>
       )}
 
       {workflow.error && (
         <output role="alert" style={{ color: "crimson", display: "block" }}>
-          {workflow.error}{" "}
+          {presentationOutput(workflow.error)}
           <button type="button" onClick={workflow.clearError}>
-            Dismiss
+            {presentationOutput(translate({ key: "ui.0c99ad9060fa" }, locale))}
           </button>
         </output>
       )}

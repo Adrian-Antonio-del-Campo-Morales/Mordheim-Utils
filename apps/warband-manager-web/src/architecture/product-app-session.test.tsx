@@ -43,6 +43,7 @@ describe("ProductApp session removal", () => {
     prepareExport.mockResolvedValue({ ok: false, message: "Export failed" });
     vi.mocked(loadKnowledge).mockResolvedValue({
       list: () => [{ id: "mercenaries", names: { es: "Mercenarios" }, collection: "mordheim", grade: "core" }],
+      recordText: (row: { names: { es: string } }) => row.names.es,
     } as never);
     vi.mocked(createService).mockReturnValue({
       createCampaign: vi.fn().mockResolvedValue({ ok: true }),
@@ -89,7 +90,7 @@ describe("ProductApp session removal", () => {
     Object.defineProperty(file, "text", { value: async () => "not a campaign" });
     fireEvent.change(input, { target: { files: [file] } });
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("No se pudo importar broken.mordheim: la campaña no es válida.");
+    expect(await screen.findByRole("alert")).toHaveTextContent("No se pudo importar el archivo: la campaña no es válida.");
     expect(rejectImport).toHaveBeenCalledTimes(1);
     expect(screen.getByText("Campaign workspace")).toBeInTheDocument();
   });
@@ -124,6 +125,10 @@ describe("ProductApp session removal", () => {
     expect(screen.getByText("Banda de prueba")).toBeInTheDocument();
     const importedCard = screen.getByText("Banda importada").closest("article");
     expect(importedCard).toHaveClass("active");
+    expect(importedCard).toHaveTextContent("Importada");
+    expect(importedCard).not.toHaveTextContent("imported.mordheim");
+    expect(container.querySelector(".mobile-context")).toHaveAttribute("data-title", "Campaña importada");
+    expect(container.querySelector(".mobile-context")).toHaveAttribute("aria-label", expect.stringContaining("Campaña importada"));
   });
 
   it("reads a newly selected version of the same file name", async () => {
@@ -263,10 +268,10 @@ describe("ProductApp session removal", () => {
     fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
     fireEvent.click(screen.getByRole("button", { name: "Renombrar" }));
     fireEvent.change(screen.getByLabelText("Nombre de Campaña"), { target: { value: "Renombrada" } });
-    fireEvent.click(screen.getByRole("button", { name: "OK" }));
+    fireEvent.click(screen.getByRole("button", { name: "Aceptar" }));
 
     await waitFor(() => expect(run).toHaveBeenCalledWith("renameCampaign", { name: "Renombrada" }));
-    await waitFor(() => expect(screen.queryByRole("button", { name: "OK" })).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByRole("button", { name: "Aceptar" })).not.toBeInTheDocument());
   });
 
   it("keeps the rename form open and announces a rejected action", async () => {
@@ -280,9 +285,9 @@ describe("ProductApp session removal", () => {
     fireEvent.click(screen.getByRole("button", { name: "Campañas" }));
     fireEvent.click(screen.getByRole("button", { name: "Renombrar" }));
     fireEvent.change(screen.getByLabelText("Nombre de Campaña"), { target: { value: "Renombrada" } });
-    fireEvent.click(screen.getByRole("button", { name: "OK" }));
+    fireEvent.click(screen.getByRole("button", { name: "Aceptar" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent("No se pudo cambiar el nombre.");
-    expect(screen.getByRole("button", { name: "OK" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Aceptar" })).toBeInTheDocument();
   });
 });

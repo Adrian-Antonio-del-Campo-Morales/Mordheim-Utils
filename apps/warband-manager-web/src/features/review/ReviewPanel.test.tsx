@@ -1,3 +1,4 @@
+import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 /**
  * P6.8 component tests: the review panel renders the pre-export summary,
  * surfaces pending work through the status seam, and triggers the auxiliary
@@ -88,7 +89,7 @@ const document = {
 
 const idleService = { current: () => null, isDirty: () => false, subscribe: () => () => {}, run: async () => ({ ok: true }) } as never;
 function renderReview(props: React.ComponentProps<typeof ReviewPanel>) {
-  return render(<CampaignAppProvider service={idleService}><ReviewPanel {...props} /></CampaignAppProvider>);
+  return render(<CampaignAppProvider service={idleService}><ReviewPanel knowledge={presentationKnowledge} {...props} /></CampaignAppProvider>);
 }
 
 describe("ReviewPanel", () => {
@@ -170,3 +171,5 @@ describe("ReviewPanel", () => {
     vi.unstubAllGlobals();
   });
 });
+
+const presentationKnowledge = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", items: [], bands: [{ id: "witch_hunters", names: { en: "Witch Hunters", es: "Cazadores de Brujas" } }], profiles: [], skills: [] });

@@ -10,7 +10,7 @@ describe("WarriorCard hireling abilities", () => {
   it("resolves a Hired Sword subtitle from the hireling catalogue", () => {
     const profileId = "hireling.hired-sword.ogre-bodyguard";
     const warrior = { id: `${profileId}#1`, name: "Ogro Guardaespaldas", profile_name: "Ogre Bodyguard", profile_id: profileId, kind: "hireling", stats: {}, equipment: [], skills: [], experience: 0, cost: 80 } as Warrior;
-    const knowledge = { list: (kind: string) => kind === "hireling" ? [{ id: profileId, names: { en: "Ogre Bodyguard", es: "Ogro Guardaespaldas" } }] : [], rulesDocument: () => [], campaignSection: () => ({ rules: [] }) } as never;
+    const knowledge = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", bands: [], profiles: [], items: [], skills: [], campaign: { hirelings: { profiles: [{ id: profileId, names: { en: "Ogre Bodyguard", es: "Ogro Guardaespaldas" } }] } } });
 
     render(<WarriorCard warrior={warrior} knowledge={knowledge} locale="es" />);
     expect(screen.getAllByText("Ogro Guardaespaldas")).toHaveLength(2);
@@ -22,14 +22,13 @@ describe("WarriorCard hireling abilities", () => {
     const ruleId = `${profileId}.rule.seeker`;
     const sightId = `${profileId}.rule.excellent-sight`;
     const warrior = { id: `${profileId}#1`, name: "Elf Ranger", profile_name: "Elf Ranger", profile_id: profileId, kind: "hireling", stats: {}, equipment: [], skills: ["Hireling.hired-Sword.elf-Ranger.rule.excellent-Sight"], experience: 0, cost: 40 } as Warrior;
-    const knowledge = {
-      list: (kind: string) => kind === "hireling" ? [{ id: profileId, rule_ids: [ruleId, sightId, `${profileId}.rule.campaign-eligibility`] }] : [],
-      rulesDocument: () => [],
-      campaignSection: () => ({ rules: [
+    const knowledge = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", bands: [], profiles: [], items: [], skills: [], campaign: { hirelings: {
+      profiles: [{ id: profileId, rule_ids: [ruleId, sightId, `${profileId}.rule.campaign-eligibility`] }],
+      rules: [
         { id: ruleId, name: "Seeker", names: { en: "Seeker", es: "Buscador" }, effects: { es: "Permite modificar un dado de exploración." } },
         { id: sightId, name: "Excellent Sight", names: { en: "Excellent Sight", es: "Vista Excepcional" }, effects: { es: "Detecta enemigos ocultos al doble de distancia." } },
-      ] }),
-    } as never;
+      ],
+    } } });
 
     render(<WarriorCard warrior={warrior} knowledge={knowledge} locale="es" />);
     expect(screen.getByText("Buscador")).toHaveAttribute("data-tooltip", "Permite modificar un dado de exploración.");
@@ -42,10 +41,10 @@ describe("WarriorCard hireling abilities", () => {
 describe("WarriorCard canonical ability labels", () => {
   it("shows Blessed Sight once through either profile-rule or mechanic id", () => {
     const warrior = { id: "augur#1", name: "Augur", profile_name: "Augur", profile_id: "augur", kind: "hero", stats: {}, equipment: [], skills: ["augur--blessed-sight", "skill.blessed-sight"], experience: 0, cost: 40 } as Warrior;
-    const knowledge = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "mordheim", bands: [], profiles: [], items: [], skills: [], display_names: {
-      "augur--blessed-sight": { en: "Blessed Sight", es: "Vista Bendecida" },
-      "skill.blessed-sight": { en: "Blessed Sight", es: "Vista Bendecida" },
-    } });
+    const knowledge = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "mordheim", bands: [], profiles: [], items: [],
+      skills: [{ id: "skill.blessed-sight", names: { en: "Blessed Sight", es: "Vista Bendecida" } }],
+      rules_prose: { "profile-special-rules": [{ id: "augur--blessed-sight", applies_to: { profile_ids: ["augur"] }, names: { en: "Blessed Sight", es: "Vista Bendecida" } }] },
+    });
 
     render(<WarriorCard warrior={warrior} knowledge={knowledge} locale="es" />);
     expect(screen.getAllByText("Vista Bendecida")).toHaveLength(1);
@@ -53,9 +52,9 @@ describe("WarriorCard canonical ability labels", () => {
   });
 
   it("shows an active absence and the battles remaining on the roster", () => {
-    const warrior = { id: "sigrid", name: "Sigrid", profile_name: "Sister", kind: "hero", stats: {}, equipment: [], skills: [], experience: 0, cost: 40, games_to_miss: 2, absence_reason: "Herida profunda" } as Warrior;
+    const warrior = { id: "sigrid", name: "Sigrid", profile_name: "Sister", kind: "hero", stats: {}, equipment: [], skills: [], experience: 0, cost: 40, games_to_miss: 2, absence_reason: "deep_wound" } as Warrior;
     render(<WarriorCard warrior={warrior} locale="es" />);
     expect(screen.getByText("AUSENCIA")).toBeInTheDocument();
-    expect(screen.getByText("Herida profunda · se pierde 2 batalla(s) más")).toBeInTheDocument();
+    expect(screen.getByText("Herida Profunda · se pierde 2 batalla(s) más")).toBeInTheDocument();
   });
 });

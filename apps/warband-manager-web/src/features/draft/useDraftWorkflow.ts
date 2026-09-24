@@ -1,3 +1,7 @@
+import { useLocale } from "../campaign/i18n-context";
+import { localizeErrorMessage } from "../campaign/useCampaignApp";
+import { knowledgeName } from "../campaign/displayText";
+import type { PresentationValue } from "../campaign/presentation-values";
 /**
  * React wiring for the isolated draft workflow component.
  *
@@ -11,7 +15,6 @@ import { useCallback, useMemo, useState } from "react";
 
 import {
   createDraftWorkflow,
-  type WarbandOption,
 } from "@app/campaign/features/draft/draft-workflow";
 import { createDefaultUseCases } from "@domain/campaign/kernel/default-usecases";
 import type { CampaignDocument } from "@domain/campaign/index";
@@ -36,11 +39,11 @@ const BAND_CANDIDATES = [
 
 export interface DraftWorkflowView {
   /** Warband options resolvable from the KB (filtered candidates). */
-  options: WarbandOption[];
+  options: { band_id: string; name: PresentationValue }[];
   /** Live composition status, or null when no draft is in progress. */
   status: ReturnType<ReturnType<typeof createDraftWorkflow>["status"]> | null;
   isDraft: boolean;
-  error: string | null;
+  error: PresentationValue | null;
   /** Creates a draft document; it becomes the hook's working document. */
   startDraft(bandId: string, campaignName?: string): Promise<boolean>;
   /** Appends one composition row to the working draft. */
@@ -58,6 +61,7 @@ export interface DraftWorkflowView {
 export function useDraftWorkflow(
   onCommitted: (document: CampaignDocument) => void,
 ): DraftWorkflowView {
+  const locale = useLocale();
   const knowledge = useMemo(() => new FakeKnowledgeReader(), []);
   const workflow = useMemo(
     () => createDraftWorkflow({ knowledge, useCases: createDefaultUseCases(knowledge) }),
@@ -74,8 +78,8 @@ export function useDraftWorkflow(
   );
 
   const options = useMemo(
-    () => workflow.resolveWarbandOptions(BAND_CANDIDATES),
-    [workflow],
+    () => workflow.resolveWarbandOptions(BAND_CANDIDATES).map((option) => ({ band_id: option.band_id, name: knowledgeName(knowledge, "band", option.band_id, locale) })),
+    [workflow, knowledge, locale],
   );
 
   const startDraft = useCallback(
@@ -135,7 +139,7 @@ export function useDraftWorkflow(
     options,
     status,
     isDraft,
-    error,
+    error: error ? localizeErrorMessage(error, locale) : null,
     startDraft,
     addRow,
     commit,

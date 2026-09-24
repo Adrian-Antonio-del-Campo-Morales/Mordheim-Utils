@@ -12,16 +12,17 @@ vi.mock("./features/campaign/default-deps", () => ({
 }));
 
 const bands = [
-  { id: "mercenaries", name: "Mercenaries", collection: "mordheim", grade: "core", variants: [{ id: "reikland", names: { en: "Reikland", es: "Reikland" }, rule_ids: [] }] },
-  { id: "grade-1a-band", name: "Grade 1A Band", collection: "mordheim", grade: "1a" },
-  { id: "tileans", name: "Tileans", collection: "mordheim", grade: "1b", variants: [{ id: "trantios", names: { en: "Trantios", es: "Trantinos" }, rule_ids: [] }] },
-  { id: "trollheim-band", name: "Trollheim Band", collection: "trollheim", grade: null },
+  { id: "mercenaries", names: { en: "Mercenaries", es: "Mercenarios" }, collection: "mordheim", grade: "core", variants: [{ id: "reikland", names: { en: "Reikland", es: "Reikland" }, rule_ids: [] }] },
+  { id: "grade-1a-band", names: { en: "Grade 1A Band", es: "Banda 1A" }, collection: "mordheim", grade: "1a" },
+  { id: "tileans", names: { en: "Tileans", es: "Tileanos" }, collection: "mordheim", grade: "1b", variants: [{ id: "trantios", names: { en: "Trantios", es: "Trantinos" }, rule_ids: [] }] },
+  { id: "trollheim-band", names: { en: "Trollheim Band", es: "Banda de Trollheim" }, collection: "trollheim", grade: null },
 ];
 
 describe("warband set settings", () => {
   beforeEach(() => {
     vi.mocked(loadKnowledge).mockResolvedValue({
       list: () => bands,
+      recordText: (row: { names: { es: string } }) => row.names.es,
       queryKnowledge: ({ id }: { id: { value: string } }) => {
         const band = bands.find((row) => row.id === id.value);
         return band ? { ok: true, record: { data: band } } : { ok: false, reason: "not_found" };
@@ -41,17 +42,18 @@ describe("warband set settings", () => {
 
     await user.click(screen.getAllByRole("button", { name: "Nueva Campaña" })[0]);
     const picker = screen.getByRole("group", { name: "Lista de Banda" });
-    expect(within(picker).queryByRole("radio", { name: /Grade 1A Band/ })).not.toBeInTheDocument();
-    expect(within(picker).getByRole("radio", { name: /Mercenaries.*Core/ })).toBeInTheDocument();
-    expect(within(picker).getByRole("radio", { name: /Trollheim Band.*Trollheim/ })).toBeInTheDocument();
+    expect(within(picker).queryByRole("radio", { name: /Banda 1A/ })).not.toBeInTheDocument();
+    expect(within(picker).getByRole("radio", { name: /Mercenarios.*Básicas/ })).toBeInTheDocument();
+    expect(within(picker).getByRole("radio", { name: /Banda de Trollheim.*Trollheim/ })).toBeInTheDocument();
+    await user.click(within(picker).getByRole("radio", { name: /Mercenarios.*Básicas/ }));
     expect(screen.getByRole("combobox", { name: "Variante de banda" })).toHaveValue("");
     expect(screen.getByRole("button", { name: "Crear" })).toBeDisabled();
     await user.selectOptions(screen.getByRole("combobox", { name: "Variante de banda" }), "reikland");
     expect(screen.getByRole("button", { name: "Crear" })).toBeEnabled();
-    await user.click(within(picker).getByRole("radio", { name: /Tileans.*1B/ }));
+    await user.click(within(picker).getByRole("radio", { name: /Tileanos.*1B/ }));
     expect(screen.getByRole("combobox", { name: "Variante de banda" })).toHaveValue("");
     expect(screen.getByRole("button", { name: "Crear" })).toBeDisabled();
-    await user.click(within(picker).getByRole("radio", { name: /Trollheim Band.*Trollheim/ }));
+    await user.click(within(picker).getByRole("radio", { name: /Banda de Trollheim.*Trollheim/ }));
     expect(screen.queryByRole("combobox", { name: "Variante de banda" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Crear" })).toBeEnabled();
   });

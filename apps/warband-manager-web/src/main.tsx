@@ -9,7 +9,6 @@ if (!container) {
   throw new Error("Root container #root not found in index.html");
 }
 
-const disabledReason = "Acción no disponible: completa los campos obligatorios o los pasos anteriores.";
 const explainDisabledControls = () => {
   document.querySelectorAll<HTMLElement>("button, input, select").forEach((control) => {
     // Anything carrying the app's own knowledge tooltip must not also grow a
@@ -19,11 +18,10 @@ const explainDisabledControls = () => {
       return;
     }
     const disabled = control.matches(":disabled");
-    if (disabled) {
-      const reason = control.dataset.disabledReason || disabledReason;
+    if (disabled && control.dataset.disabledReason) {
       control.removeAttribute("title");
-      control.dataset.disabledTooltip = reason;
-      control.setAttribute("aria-description", reason);
+      control.dataset.disabledTooltip = control.dataset.disabledReason;
+      control.setAttribute("aria-description", control.dataset.disabledReason);
     } else if (control.dataset.disabledTooltip) {
       control.removeAttribute("aria-description");
       delete control.dataset.disabledTooltip;
@@ -31,7 +29,7 @@ const explainDisabledControls = () => {
   });
 };
 
-new MutationObserver(explainDisabledControls).observe(container, { attributes: true, childList: true, subtree: true, attributeFilter: ["disabled"] });
+new MutationObserver(explainDisabledControls).observe(container, { attributes: true, childList: true, subtree: true, attributeFilter: ["disabled", "data-disabled-reason"] });
 
 createRoot(container).render(
   <StrictMode>

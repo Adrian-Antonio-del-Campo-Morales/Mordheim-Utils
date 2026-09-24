@@ -1,3 +1,4 @@
+import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 /**
  * P6.3 acceptance tests at the component level: the equipment panel renders
  * the stash/equipped split, the assign action moves units through the real
@@ -127,7 +128,7 @@ function Harness({ service }: { service: CampaignAppService }) {
   useEffect(() => service.subscribe(() => setDoc(service.current()!)), [service]);
   return (
     <CampaignAppProvider service={service}>
-      <EquipmentPanel document={doc} />
+      <EquipmentPanel knowledge={presentationKnowledge} document={doc} />
     </CampaignAppProvider>
   );
 }
@@ -148,11 +149,25 @@ describe("P6.3 EquipmentPanel", () => {
     expect(service.isDirty()).toBe(true);
   });
 
+  it("re-resolves visible and accessible names after import when the language changes", async () => {
+    const service = await loadedService();
+    const view = (locale: "es" | "en") => <CampaignAppProvider service={service} locale={locale}><EquipmentPanel knowledge={presentationKnowledge} document={service.current()!} locale={locale} /></CampaignAppProvider>;
+    const { rerender, container } = render(view("es"));
+    expect(screen.getByText("Maza")).toBeTruthy();
+    rerender(view("en"));
+    expect(screen.getByLabelText(/Assign Mace to warrior/)).toBeTruthy();
+    expect(screen.queryByText("Maza")).toBeNull();
+    rerender(view("es"));
+    expect(screen.getByText("Maza")).toBeTruthy();
+    expect(screen.queryByLabelText(/Assign Mace to warrior/)).toBeNull();
+    expect(container.textContent).not.toContain("mace");
+  });
+
   it("renders inventory without mutation controls in read-only mode", async () => {
     const service = await loadedService();
     render(
       <CampaignAppProvider service={service}>
-        <EquipmentPanel document={service.current()!} readOnly />
+        <EquipmentPanel knowledge={presentationKnowledge} document={service.current()!} readOnly />
       </CampaignAppProvider>,
     );
 
@@ -161,3 +176,5 @@ describe("P6.3 EquipmentPanel", () => {
     expect(screen.queryByRole("button", { name: /return|transfer/i })).toBeNull();
   });
 });
+
+const presentationKnowledge = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", items: [{ item_id: "mace", names: { en: "Mace", es: "Maza" } }, { item_id: "dagger", names: { en: "Dagger", es: "Daga" } }], bands: [], profiles: [], skills: [] });

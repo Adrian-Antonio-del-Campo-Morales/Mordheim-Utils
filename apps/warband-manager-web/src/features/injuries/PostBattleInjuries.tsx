@@ -1,3 +1,7 @@
+import { presentationOutput } from "../campaign/presentation-output";
+import { textJoin, textNumber, textSymbol, warriorPersonalName, battleParticipantName } from "../campaign/presentation-values";
+import { translate } from "../campaign/i18n-core";
+import { useLocale } from "../campaign/i18n-context";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { useState } from "react";
 import { DiceResolver } from "../dice/DiceResolver";
@@ -7,7 +11,7 @@ import {
   injuryEffects,
   injuryFollowUpDice,
 } from "@app/campaign/features/injuries/injury-followup-workflow";
-import { knowledgeName, readableValue } from "../campaign/displayText";
+import { knowledgeName, knowledgeDescription } from "../campaign/displayText";
 import { KnowledgeHint } from "../campaign/KnowledgeHint";
 import { NumberStepper } from "../common/NumberStepper";
 
@@ -19,21 +23,13 @@ function inRange(spec: unknown, value: number): boolean {
   );
 }
 
-function followUpLabel(follow: Record<string, unknown>, locale: "es" | "en"): string {
-  const phase = String(follow.resolution_phase ?? "");
-  const number = Number(follow.repeat_index ?? 0) + 1;
-  if (locale === "es") {
-    if (phase === "effect_roll") return "Duración o intensidad del efecto";
-    if (phase === "repeat_count") return "Cuántas heridas adicionales sufre";
-    if (phase === "repeat_result") return `Herida adicional ${number} · D66`;
-    if (phase === "subtable") return "Resultado secundario de la herida";
-    return "Tirada necesaria para completar la herida";
-  }
-  if (phase === "effect_roll") return "Effect duration or severity";
-  if (phase === "repeat_count") return "Number of additional injuries";
-  if (phase === "repeat_result") return `Additional injury ${number} · D66`;
-  if (phase === "subtable") return "Secondary injury result";
-  return "Roll required to complete the injury";
+function followUpLabel(follow: Record<string, unknown>, locale: "es" | "en") {
+  const phase = follow.resolution_phase;
+  if (phase === "effect_roll") return translate({ key: "injury.effect-roll" }, locale);
+  if (phase === "repeat_count") return translate({ key: "injury.repeat-count" }, locale);
+  if (phase === "repeat_result") return translate({ key: "injury.repeat-result", args: { number: typeof follow.repeat_index === "number" ? follow.repeat_index + 1 : NaN } }, locale);
+  if (phase === "subtable") return translate({ key: "injury.subtable" }, locale);
+  return translate({ key: "injury.followup" }, locale);
 }
 
 const injuryFollowUpTypes = new Set([
@@ -48,12 +44,13 @@ const injuryFollowUpTypes = new Set([
 export function PostBattleInjuries({
   document,
   knowledge,
-  locale = "en",
+  locale: requestedLocale,
 }: {
   document: CampaignDocument;
   knowledge: ArtefactKnowledgeReader;
   locale?: "es" | "en";
 }) {
+  const locale = useLocale(requestedLocale);
   const app = useCampaignApp();
   const post = document.campaign.post_battles.find((row) => !row.complete);
   const battle =
@@ -69,53 +66,7 @@ export function PostBattleInjuries({
   };
   if (!post || !battle) return null;
   const t =
-    locale === "es"
-      ? {
-          title: "Heridas graves",
-          none: "No se registraron guerreros fuera de combate.",
-          hero: "Herida grave D66",
-          henchman: "Herida de secuaz D6",
-          warrior: "Guerrero",
-          result: "Resultado y efectos",
-          action: "Tiradas y decisiones pendientes",
-          pits: "Vendido a los pozos",
-          won: "Ganó",
-          lost: "Perdió · herida grave D66",
-          chooseEye: "Elige ojo",
-          left: "Izquierdo",
-          right: "Derecho",
-          hatred: "Objetivo del odio",
-          setHatred: "Establecer odio",
-          ransom: "Rescate",
-          exchange: "Intercambiar",
-          lostPrisoner: "Perdido",
-          follow: "Resolver seguimiento",
-          resolved: "Sin acciones pendientes",
-          roll: "Tirada",
-        }
-      : {
-          title: "Serious injuries",
-          none: "No warriors were recorded out of action.",
-          hero: "D66 serious injury",
-          henchman: "D6 henchman injury",
-          warrior: "Warrior",
-          result: "Result and effects",
-          action: "Pending rolls and decisions",
-          pits: "Sold to the Pits",
-          won: "Won",
-          lost: "Lost · D66 serious injury",
-          chooseEye: "Choose eye",
-          left: "Left",
-          right: "Right",
-          hatred: "Hatred target",
-          setHatred: "Set hatred",
-          ransom: "Ransom",
-          exchange: "Exchange",
-          lostPrisoner: "Lost",
-          follow: "Resolve follow-up",
-          resolved: "No pending actions",
-          roll: "Roll",
-        };
+    ({ title: translate({ key: "ui.a85e541108d0" }, locale), none: translate({ key: "ui.ba72332d810c" }, locale), hero: translate({ key: "ui.4caea46c1c58" }, locale), henchman: translate({ key: "ui.57eda620bad4" }, locale), warrior: translate({ key: "ui.dca4e7aa700c" }, locale), result: translate({ key: "ui.3c7693f6bfc5" }, locale), action: translate({ key: "ui.e9906fb3a302" }, locale), pits: translate({ key: "ui.b8186d7b387a" }, locale), won: translate({ key: "ui.b18621baa101" }, locale), lost: translate({ key: "ui.7d24c8a2c0c3" }, locale), chooseEye: translate({ key: "ui.17e3fa4785d9" }, locale), left: translate({ key: "ui.36adf04d7f2b" }, locale), right: translate({ key: "ui.0a2ae3aa3354" }, locale), hatred: translate({ key: "ui.3c53af8123bf" }, locale), setHatred: translate({ key: "ui.7469a45bc53f" }, locale), ransom: translate({ key: "ui.7e7a8b47c298" }, locale), exchange: translate({ key: "ui.81c7a226f100" }, locale), lostPrisoner: translate({ key: "ui.0d3818cf8a9c" }, locale), follow: translate({ key: "ui.9e22865da3ed" }, locale), resolved: translate({ key: "ui.d28ca6d8d54c" }, locale), roll: translate({ key: "ui.9a5040b02281" }, locale) });
   const seen = new Map<string, number>();
   const participants = new Map(
     (battle.participants ?? []).map((row) => [String(row.id), row]),
@@ -133,7 +84,7 @@ export function PostBattleInjuries({
       live ??
       ({
         id,
-        name: String(participant?.name ?? id),
+        name: String(participant?.name ?? (translate({ key: "ui.85ac9cd8b1b8" }, locale))),
         profile_name: String(participant?.profile_name ?? id),
         kind: participant?.kind === "henchman" ? "henchman" : "hero",
         stats: {},
@@ -146,18 +97,18 @@ export function PostBattleInjuries({
   });
   const injuries = knowledge.list("injury");
   return (
-    <section aria-label={t.title}>
-      <h3>01 · {t.title}</h3>
+    <section aria-label={presentationOutput(t.title)}>
+      <h3>{presentationOutput(textJoin([textNumber(1, locale, 2), t.title], " · "))}</h3>
       {warriors.length === 0 ? (
-        <p role="status">{t.none}</p>
+        <p role="status">{presentationOutput(t.none)}</p>
       ) : (
         <table className="mobile-cards injury-results">
-          <caption>{t.title}</caption>
+          <caption>{presentationOutput(t.title)}</caption>
           <thead>
             <tr>
-              <th>{t.warrior}</th>
-              <th>{t.result}</th>
-              <th>{t.action}</th>
+              <th>{presentationOutput(t.warrior)}</th>
+              <th>{presentationOutput(t.result)}</th>
+              <th>{presentationOutput(t.action)}</th>
             </tr>
           </thead>
           <tbody>
@@ -178,46 +129,40 @@ export function PostBattleInjuries({
               );
               const usesHeroTable = warrior.kind !== "henchman";
               const resultId = String(record?.result_id ?? "");
-              const injury = injuries.find(
-                (row) => String(row.id) === resultId,
-              );
-              const effect =
-                (injury?.effects as Record<string, unknown> | undefined)?.[
-                  locale
-                ] ?? injury?.effect;
+              const effect = knowledgeDescription(knowledge, { kind: "injury", id: resultId }, locale).text;
               return (
                 <tr key={`${warrior.id}:${casualtyIndex}`}>
-                  <td data-label={t.warrior}>
-                    {warrior.name}
-                    {casualtyIndex > 1 ? ` · ${casualtyIndex}` : ""}
+                  <td data-label={presentationOutput(t.warrior)}>
+                    {presentationOutput(live ? warriorPersonalName(warrior, locale) : battleParticipantName(battle, warrior.id, locale))}
+                    {presentationOutput(casualtyIndex > 1 ? textJoin([textSymbol(""), textNumber(casualtyIndex, locale)], " · ") : textSymbol(""))}
                   </td>
-                  <td data-label={t.result}>
+                  <td data-label={presentationOutput(t.result)}>
                     {record ? (
                       <>
                         <strong>
                           <KnowledgeHint knowledge={knowledge} kind="injury" id={resultId} locale={locale}>
-                            {knowledgeName(knowledge, "injury", resultId, locale, record.result)}
+                            {presentationOutput(knowledgeName(knowledge, "injury", resultId, locale))}
                           </KnowledgeHint>
                         </strong>
-                        {effect && <small>{String(effect)}</small>}
+                        {effect && <small>{presentationOutput(effect)}</small>}
                         {warrior.games_to_miss ? (
                           <small>
-                            {locale === "es" ? "Pierde" : "Misses"}{" "}
-                            {warrior.games_to_miss}{" "}
-                            {locale === "es" ? "batalla(s)" : "game(s)"}
+                            {presentationOutput(translate({ key: "ui.0346a4b9846d" }, locale))}{presentationOutput(textJoin([textSymbol(""), textSymbol("")], " "))}
+                            {presentationOutput(textNumber(warrior.games_to_miss, locale))}{presentationOutput(textJoin([textSymbol(""), textSymbol("")], " "))}
+                            {presentationOutput(translate({ key: "ui.d30ff704135d" }, locale))}
                           </small>
                         ) : null}
                         {warrior.condition_detail && (
                           <small>
-                            {knowledgeName(knowledge, "injury", warrior.condition_detail, locale, readableValue(warrior.condition_detail, locale))}
+                            {presentationOutput(knowledgeName(knowledge, "injury", warrior.condition_detail, locale))}
                           </small>
                         )}
                       </>
-                    ) : (
-                      "—"
-                    )}
+                    ) : presentationOutput((
+                      textSymbol("—")
+                    ))}
                   </td>
-                  <td data-label={t.action}>
+                  <td data-label={presentationOutput(t.action)}>
                     {!record && !followUps.length && live ? (
                       <DiceResolver
                         key={`initial:${warrior.id}:${casualtyIndex}`}
@@ -256,11 +201,11 @@ export function PostBattleInjuries({
                         )
                           return (
                             <span key={id}>
-                              <b>{t.pits}</b>
+                              <b>{presentationOutput(t.pits)}</b>
                               <button
                                 className="primary"
                                 disabled={busy}
-                                data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : undefined}
+                                data-disabled-reason={(busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined) === undefined ? undefined : presentationOutput((busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined)!)}
                                 onClick={() =>
                                   void run("resolveSoldToPits", {
                                     follow_up_id: id,
@@ -268,7 +213,7 @@ export function PostBattleInjuries({
                                   })
                                 }
                               >
-                                {t.won}
+                                {presentationOutput(t.won)}
                               </button>
                               <DiceResolver
                                 count={2}
@@ -289,10 +234,10 @@ export function PostBattleInjuries({
                         if (type === "eye_injury")
                           return (
                             <span key={id}>
-                              {t.chooseEye}:{" "}
+                              {presentationOutput(t.chooseEye)} {presentationOutput(textSymbol(":"))} {presentationOutput(textJoin([textSymbol(""), textSymbol("")], " "))}
                               <button
                                 disabled={busy}
-                                data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : undefined}
+                                data-disabled-reason={(busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined) === undefined ? undefined : presentationOutput((busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined)!)}
                                 onClick={() =>
                                   void run("resolveEyeInjury", {
                                     follow_up_id: id,
@@ -300,11 +245,11 @@ export function PostBattleInjuries({
                                   })
                                 }
                               >
-                                {t.left}
+                                {presentationOutput(t.left)}
                               </button>
                               <button
                                 disabled={busy}
-                                data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : undefined}
+                                data-disabled-reason={(busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined) === undefined ? undefined : presentationOutput((busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined)!)}
                                 onClick={() =>
                                   void run("resolveEyeInjury", {
                                     follow_up_id: id,
@@ -312,7 +257,7 @@ export function PostBattleInjuries({
                                   })
                                 }
                               >
-                                {t.right}
+                                {presentationOutput(t.right)}
                               </button>
                             </span>
                           );
@@ -320,7 +265,7 @@ export function PostBattleInjuries({
                           return (
                             <span key={id}>
                               <input
-                                aria-label={`${t.hatred} ${id}`}
+                                aria-label={presentationOutput(t.hatred)}
                                 value={targets[id] ?? ""}
                                 onChange={(event) =>
                                   setTargets((current) => ({
@@ -331,7 +276,7 @@ export function PostBattleInjuries({
                               />
                               <button
                                 disabled={busy || !(targets[id] ?? "").trim()}
-                                data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : !(targets[id] ?? "").trim() ? (locale === "es" ? "Introduce primero el objetivo del odio." : "Enter the hatred target first.") : undefined}
+                                data-disabled-reason={(busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : !(targets[id] ?? "").trim() ? (translate({ key: "disabled.3662b59095" }, locale)) : undefined) === undefined ? undefined : presentationOutput((busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : !(targets[id] ?? "").trim() ? (translate({ key: "disabled.3662b59095" }, locale)) : undefined)!)}
                                 onClick={() =>
                                   void run("resolveHatred", {
                                     follow_up_id: id,
@@ -339,14 +284,14 @@ export function PostBattleInjuries({
                                   })
                                 }
                               >
-                                {t.setHatred}
+                                {presentationOutput(t.setHatred)}
                               </button>
                             </span>
                           );
                         if (type === "prisoner")
                           return (
                             <span key={id}>
-                              <NumberStepper label={`${t.ransom} ${id}`} value={ransoms[id] ?? 0} onChange={(value) => setRansoms((current) => ({ ...current, [id]: value }))} />
+                              <NumberStepper locale={locale} label={translate({ key: "number.ransom" }, locale)} value={ransoms[id] ?? 0} onChange={(value) => setRansoms((current) => ({ ...current, [id]: value }))} />
                               {(
                                 [
                                   ["ransom", t.ransom],
@@ -357,7 +302,7 @@ export function PostBattleInjuries({
                                 <button
                                   key={resolution}
                                   disabled={busy}
-                                  data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : undefined}
+                                  data-disabled-reason={(busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined) === undefined ? undefined : presentationOutput((busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined)!)}
                                   onClick={() =>
                                     void run("resolvePrisoner", {
                                       follow_up_id: id,
@@ -370,7 +315,7 @@ export function PostBattleInjuries({
                                     })
                                   }
                                 >
-                                  {label}
+                                  {presentationOutput(label)}
                                 </button>
                               ))}
                             </span>
@@ -401,7 +346,7 @@ export function PostBattleInjuries({
                           <button
                             key={id}
                             disabled={busy}
-                            data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : undefined}
+                            data-disabled-reason={(busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined) === undefined ? undefined : presentationOutput((busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined)!)}
                             onClick={() =>
                               void run("resolveInjuryFollowUp", {
                                 follow_up_id: id,
@@ -414,14 +359,14 @@ export function PostBattleInjuries({
                               })
                             }
                           >
-                            {t.follow}
+                            {presentationOutput(t.follow)}
                           </button>
                         );
                       })
                     ) : (
-                      <>{<span>{Array.isArray(record?.rolled_dice) && record.rolled_dice.length > 0
-                        ? `${t.roll}: ${record.rolled_dice.join(", ")}${Number.isInteger(record.roll) && record.rolled_dice.length > 1 ? ` → ${record.roll}` : ""}`
-                        : t.resolved}</span>}{followUpRolls.map((entry,index)=>{const dice=Array.isArray(entry.dice)?entry.dice.map(Number):[];return <small key={index}>{followUpLabel({resolution_phase:entry.phase},locale)}: {t.roll} {dice.join(", ")}{Number.isInteger(entry.roll)&&dice.length>1?` → ${entry.roll}`:""}</small>})}</>
+                      <>{<span>{presentationOutput(Array.isArray(record?.rolled_dice) && record.rolled_dice.length > 0
+                        ? textJoin([textJoin([t.roll, textSymbol(":")], ""), textJoin(record.rolled_dice.map((die) => textNumber(die, locale)), ", "), ...(Number.isInteger(record.roll) && record.rolled_dice.length > 1 ? [textSymbol("→"), textNumber(record.roll, locale)] : [])])
+                        : t.resolved)}</span>}{followUpRolls.map((entry,index)=>{const dice=Array.isArray(entry.dice)?entry.dice:[];return <small key={index}>{presentationOutput(textJoin([textJoin([followUpLabel({resolution_phase:entry.phase},locale), textSymbol(":")], ""), t.roll, textJoin(dice.map((die) => textNumber(die, locale)), ", "), ...(Number.isInteger(entry.roll)&&dice.length>1 ? [textSymbol("→"), textNumber(entry.roll, locale)] : [])]))}</small>})}</>
                     )}
                   </td>
                 </tr>

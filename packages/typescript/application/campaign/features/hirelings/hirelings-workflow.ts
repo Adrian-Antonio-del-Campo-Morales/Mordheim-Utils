@@ -1,3 +1,4 @@
+import { unavailableText, type ResolvedKbText } from "../../../../adapters/knowledge-reader/presentation";
 /**
  * Hireling, exploration, search and trading workflows in the application
  * feature layer. *
@@ -33,6 +34,8 @@ import type { ArtefactRow } from "../../../../adapters/knowledge-reader/artefact
 
 /** What a listing-capable knowledge source provides (P4.3 adapter, or a fake). */
 export interface KnowledgeListings {
+  resolveKbText?(ref: import("../../../../adapters/knowledge-reader/presentation").TextReference, field: import("../../../../adapters/knowledge-reader/presentation").TextField, locale: "es" | "en"): import("../../../../adapters/knowledge-reader/presentation").TextResolution;
+  recordText?(row: Readonly<Record<string, unknown>> | undefined, field: import("../../../../adapters/knowledge-reader/presentation").TextField, locale: "es" | "en"): ResolvedKbText;
   campaignRows(section: string): readonly ArtefactRow[];
   campaignSection(section: string): Readonly<Record<string, unknown>>;
   itemName(itemId: string, locale?: string): string;
@@ -82,7 +85,7 @@ export interface TradingOfferRow {
   readonly price_multiplier: number;
   readonly availability: string;
   readonly limit_per_warband: number | null;
-  readonly restriction_notes: readonly string[];
+  readonly restriction_notes: readonly ResolvedKbText[];
 }
 
 /** Why a workflow step failed (stable reasons for the UI). */
@@ -314,7 +317,7 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
     },
 
     /** Trading-post offers resolved to display names. */
-    tradingOffers(document: CampaignDocument): TradingOfferRow[] {
+    tradingOffers(document: CampaignDocument, locale: "es" | "en" = "en"): TradingOfferRow[] {
       const items = listings.campaignSection("trading-post")["items"];
       const bandGroups = groupIdsOf(listings.campaignRows("warband_groups"), document.campaign.identity.band_id);
       const rows: TradingOfferRow[] = [];
@@ -342,11 +345,13 @@ export function createHirelingsWorkflow(deps: HirelingsWorkflowDeps) {
         const inferredOne = restrictions.some((restriction) => restriction["type"] === "profile_only" && String(restriction["note"] ?? "").toLocaleLowerCase().startsWith("one "));
         const declaredLimit = restrictions.find((restriction) => restriction["type"] === "limit_per_warband")?.["value"];
         const limit = Number.isInteger(declaredLimit) ? Number(declaredLimit) : inferredOne ? 1 : null;
-        const notes = restrictions.filter((restriction) => ["condition", "profile_only"].includes(String(restriction["type"])) && restriction["note"]).map((restriction) => String(restriction["note"]));
+        const notes = restrictions.filter((restriction) => ["condition", "profile_only"].includes(String(restriction["type"])) && restriction["note"]).map((restriction) => {
+          return listings.recordText?.(restriction, "note", locale) ?? unavailableText(locale);
+        });
         rows.push({
           offer_id: typeof entry["id"] === "string" ? entry["id"] : itemId,
           item_id: itemId,
-          name: listings.itemName(itemId),
+          name: listings.itemName(itemId, locale),
           base_price: base,
           price_base: Number(price?.["base_gc"]??0),
           price_dice: priceDice,

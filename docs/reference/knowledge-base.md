@@ -344,6 +344,34 @@ effect value ends up as either a plain single line or a `>-` block.
 `python tools/format_yaml.py --check sources/knowledge` reports zero residual
 quoted or continuation-wrapped effect prose, and the pass is idempotent.
 
+A `>-` block already in that shape is rewrapped when its body carries a line
+past the 120 maximum: a writer that folds prose without wrapping it leaves one
+physical line per value, and `--write` wraps those lines at the target width,
+so what `--check` reports as too long is what it repairs. The block's value is
+verified by the same round-trip guard as every other scalar, so a block whose
+line breaks are content (paragraphs) is left untouched. Scalars the policy
+keeps plain — flow collections and single-line values of keys outside the
+descriptive set — are not folded for width.
+
+The formatter is deliberately lexical, so it preserves a flow collection instead
+of rewriting it; the **collection shape** is a separate rule. The KB writes eight
+keys as block collections and never as a non-empty flow collection:
+`source_path`, `equipment_lists`, `rule_ids` and `skill_access` as block
+sequences (dashes at the indent of their key), and `source`, `characteristics`,
+`name_i18n` and `combat_traits` as block mappings (children two columns in). An
+empty `[]` / `{}` stays as it is: that is the KB's shape for "nothing".
+`mordheim_knowledge.staging_promotion` writes the flow form back to the block
+form (`normalize_staging_for_promotion.py --write --passes shape`, idempotent and
+document-verified), `audit_staging_contract.py --only shape` measures the drift
+and `tests/knowledge/test_staging_collection_shape.py` is the gate.
+
+Line endings are part of the policy: the maintained YAML is LF-only (`.gitattributes`
+declares `*.yaml text eol=lf`), and `--check` reads raw bytes so a CRLF file is
+reported as needing reformatting instead of being hidden by newline translation.
+The same check gates the staging trees (`python tools/format_yaml.py --check
+sources/2A` / `sources/2B`), so a band package already looks like a
+knowledge-base document before it is promoted.
+
 `reason` strings — the audit-taxonomy metadata such as `Deferred subsystem:
 psychology.`, `Out of scope: campaign.` or `dead` — are uniformly folded `>-`
 blocks, quoted or plain, short or long, so every reason value shares one
@@ -365,6 +393,52 @@ python tools/format_yaml.py --check sources/knowledge
 `--write` changes only formatting. Review its diff before committing. It does
 not format `tests/specs/`, `outputs/`, generated files, or engine code. Do not
 run combat tests, parity, or benchmarks for a formatting-only change.
+
+## Contract guards
+
+These read-only tools measure the knowledge base against itself. They are permanent
+(promoted out of the Grade 2a/2b ingestion pass) and each one takes `--tree` to check a
+staging tree with exactly the same rules before promotion.
+
+```powershell
+python tools/knowledge/audit_kb_conformance.py           # the KB; 0 deviations is the baseline
+python tools/knowledge/audit_kb_conformance.py --tree 2B # a staging tree, same checklist
+python tools/knowledge/derive_kb_contract.py             # re-measure the contract, then self-check
+python tools/knowledge/audit_schema_strictness.py        # editorial JSON Schemas vs the documents
+python tools/knowledge/audit_staging_contract.py         # the staged 2A/2B packages vs the same schemas
+python tools/knowledge/strip_rule_ref_restatements.py    # rule_ref rules must not restate their effect
+python tools/format_yaml.py --check sources/knowledge    # canonical formatting (LF, folded prose)
+```
+
+* `audit_kb_conformance.py` checks document, roster, profile, equipment-list and rule
+  shapes, the runtime contract, the binding vocabulary, `rule_ref` resolution and the
+  `rule_ids` listing. Its accepted key sets are the hand-written baseline **unioned with
+  the keys the KB itself carries**, so a key the KB legitimately uses is never reported as
+  invented; the tree under audit contributes nothing to that union.
+* `derive_kb_contract.py` re-measures those shapes from `sources/knowledge` and diffs a
+  tree against the measurement, catching a checklist that drifted from the data.
+* `audit_schema_strictness.py` reports how the editorial JSON Schemas relate to the
+  committed documents: loose nodes, unreachable definitions, unused enums.
+* `audit_staging_contract.py` validates the four documents of every *staged* band package
+  with those same schemas, names the fields the contract deliberately leaves open
+  (`sources[].manual`, `categories`, `grade`, `profiles[].source_path`) whose
+  values the knowledge base never uses, checks the staged catalogues — items, Hired Sword
+  and Dramatis profiles, market, magic and campaign documents — against the schema of the
+  KB document that will claim them at promotion (the classes
+  `sources/2B/promotion-schema-plan.md` decides on, now none in either tree), and lists the
+  files `normalize_names.py` would rewrite. A file promotion declares it leaves behind
+  (`staging_contract_audit.NOT_PROMOTED`) is named as a decision, not as a gap. Every pass
+  is a gate that stays green: `tools/ingestion/normalize_staging_for_promotion.py` closes
+  the catalogue one, the way `normalize_open_fields.py` and `normalize_names.py` close the
+  vocabulary and the naming.
+* `strip_rule_ref_restatements.py` enforces the shared-rule invariant above. It defaults
+  to every maintained tree and archives any retracted wording in
+  `sources/<tree>/retired-rule-restatements.md`.
+
+The Grade 2a/2b ingestion tooling (pipelines, source cross-audits, migrations, staged
+translation fillers) lives in `tools/ingestion/` and is **temporary**: that directory is
+deleted when the ingestion phase ends. See its README for the inventory, the caches it
+needs and the commands.
 
 ## Where is the evidence?
 

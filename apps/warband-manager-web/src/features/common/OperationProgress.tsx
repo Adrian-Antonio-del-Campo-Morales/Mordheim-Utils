@@ -1,3 +1,5 @@
+import { translate } from "../campaign/i18n-core";
+import { presentationOutput } from "../campaign/presentation-output";
 import { useEffect, useState } from "react";
 
 import { OPERATION_EVENT } from "./operationProgressEvents";
@@ -12,6 +14,6 @@ export function OperationProgress({ locale }: { locale: "es" | "en" }) {
   }, []);
 
   if (!pending) return null;
-  const label = locale === "es" ? "Procesando…" : "Processing…";
-  return <div className="operation-progress" role="status" aria-live="polite" aria-label={label}><span className="operation-spinner" aria-hidden="true" />{label}</div>;
+  const label = translate({ key: "ui.fcad3ddee56a" }, locale);
+  return <div className="operation-progress" role="status" aria-live="polite" aria-label={presentationOutput(label)}><span className="operation-spinner" aria-hidden="true" />{presentationOutput(label)}</div>;
 }
