@@ -56,7 +56,7 @@ sources/knowledge/
 Group IDs are namespaced `warband-group.<slug>`; eligibility and restriction
 blocks of the campaign catalogues reference them exactly by that id
 (`mordheim_knowledge.campaign.load_warband_groups` validates all references;
-tests in `tests/knowledge/test_campaign_loaders.py`).
+tests in `tests/python/knowledge/test_campaign_loaders.py`).
 
 ### Runtime classification (`runtime-schema.yaml`)
 
@@ -119,7 +119,7 @@ campaign catalogue (the thirteen documents of `catalog/campaign/`, including the
 typed campaign effects and the exploration procedure tree).
 `mordheim_knowledge.editorial_schemas` validates them all, the structural
 layer of `verify` fails on any mismatch, and
-`tests/knowledge/test_editorial_schemas.py` keeps the schemas
+`tests/python/knowledge/test_editorial_schemas.py` keeps the schemas
 in step with the code contracts they mirror (`EffectSet`, `TRAIT_TYPES`,
 `runtime-schema.yaml`, the documents a post-battle step may resolve, the band
 skill-list vocabulary). The suite also fails when a maintained YAML document
@@ -253,9 +253,9 @@ English is **canonical and stored once**: the `name` field (and the `effect`
 prose). The `name_i18n` / `effect_i18n` blocks store only *translations* for
 non-canonical locales (`es`) and never carry an `en` mirror of the canonical
 English — duplicating long English prose invites silent drift, and nothing
-renders the copy anyway. `tools/normalize_names.py` enforces this (it strips
+renders the copy anyway. `tools/knowledge/maintenance/normalize_names.py` enforces this (it strips
 any `en` mirror and drops a locale block left without a real translation),
-and `tests/knowledge/test_kb_i18n.py` guards the invariant independently.
+and `tests/python/knowledge/test_kb_i18n.py` guards the invariant independently.
 
 The KB carries a **reviewed Spanish translation**: every warband's rules,
 profiles and band names, the hired swords and campaign catalogues, and the
@@ -268,7 +268,7 @@ canonical-English-fallback) — is wired into both applications, so a filled
 simply renders its canonical English.
 
 Canonical glossary terms and the resolved edge cases live in
-`sources/knowledge/catalog/translation-glossary.md`; new translations should
+`docs/knowledge/translation-glossary.md`; new translations should
 follow it (Caballero Andante = Questing Knight, Caballero Novel = Knight
 Errant, chequeo = test, 1D6 = D6) so Spanish stays consistent across the KB.
 
@@ -287,7 +287,7 @@ Spanish name is required only when both the binding **and** the English name
 match. When rules share a binding but their English names differ, each rule
 translates its own English name directly. This mirrors the `trait.*`
 exception (the trait is shared but the flavour rule name is band-specific).
-`tests/knowledge/test_band_translation_parity.py`
+`tests/python/knowledge/test_band_translation_parity.py`
 (`test_equivalent_rules_share_the_same_spanish_name`) enforces exactly this:
 consistency gated on `(binding kind, binding id, English name)`.
 
@@ -308,8 +308,8 @@ are kept only when YAML requires them. Run it idempotently after editing any
 maintained YAML names:
 
 ```powershell
-python tools/normalize_names.py --check sources/knowledge
-python tools/normalize_names.py --write sources/knowledge
+python tools/knowledge/maintenance/normalize_names.py --check sources/knowledge
+python tools/knowledge/maintenance/normalize_names.py --write sources/knowledge
 ```
 
 It edits only name scalars lexically — comments, anchors, aliases and key
@@ -341,7 +341,7 @@ Effect prose is **never quoted**: the formatter rewrites every quoted `effect`
 same content plain-safe. Plain values that spill across continuation lines —
 and single lines past the target width — are folded the same way, so every
 effect value ends up as either a plain single line or a `>-` block.
-`python tools/format_yaml.py --check sources/knowledge` reports zero residual
+`python tools/knowledge/maintenance/format_yaml.py --check sources/knowledge` reports zero residual
 quoted or continuation-wrapped effect prose, and the pass is idempotent.
 
 A `>-` block already in that shape is rewrapped when its body carries a line
@@ -363,12 +363,12 @@ empty `[]` / `{}` stays as it is: that is the KB's shape for "nothing".
 `mordheim_knowledge.staging_promotion` writes the flow form back to the block
 form (`normalize_staging_for_promotion.py --write --passes shape`, idempotent and
 document-verified), `audit_staging_contract.py --only shape` measures the drift
-and `tests/knowledge/test_staging_collection_shape.py` is the gate.
+and `tests/python/knowledge/test_staging_collection_shape.py` is the gate.
 
 Line endings are part of the policy: the maintained YAML is LF-only (`.gitattributes`
 declares `*.yaml text eol=lf`), and `--check` reads raw bytes so a CRLF file is
 reported as needing reformatting instead of being hidden by newline translation.
-The same check gates the staging trees (`python tools/format_yaml.py --check
+The same check gates the staging trees (`python tools/knowledge/maintenance/format_yaml.py --check
 sources/2A` / `sources/2B`), so a band package already looks like a
 knowledge-base document before it is promoted.
 
@@ -384,9 +384,9 @@ short values of the other keys stay as plain single lines.
 Use the repository formatter after changing maintained YAML:
 
 ```powershell
-python tools/format_yaml.py --check sources/knowledge
-python tools/format_yaml.py --write sources/knowledge
-python tools/format_yaml.py --check sources/knowledge
+python tools/knowledge/maintenance/format_yaml.py --check sources/knowledge
+python tools/knowledge/maintenance/format_yaml.py --write sources/knowledge
+python tools/knowledge/maintenance/format_yaml.py --check sources/knowledge
 ```
 
 `--check` parses every file and verifies semantic equivalence after formatting;
@@ -407,7 +407,7 @@ python tools/knowledge/derive_kb_contract.py             # re-measure the contra
 python tools/knowledge/audit_schema_strictness.py        # editorial JSON Schemas vs the documents
 python tools/knowledge/audit_staging_contract.py         # the staged 2A/2B packages vs the same schemas
 python tools/knowledge/strip_rule_ref_restatements.py    # rule_ref rules must not restate their effect
-python tools/format_yaml.py --check sources/knowledge    # canonical formatting (LF, folded prose)
+python tools/knowledge/maintenance/format_yaml.py --check sources/knowledge    # canonical formatting (LF, folded prose)
 ```
 
 * `audit_kb_conformance.py` checks document, roster, profile, equipment-list and rule
@@ -534,7 +534,7 @@ For items the same path holds with the extra indirection step: band
   the campaign runtime; do not load it as duel-rule implementation. The
   application consumes it through the validated loaders and `KnowledgePort`.
   The remaining catalogue work is the price-collation review and the deferred
-  scope listed in [TODO](../../TODO.md): collate every `cost` in
+  scope listed in [TODO](../TODO.md): collate every `cost` in
   `equipment-access.yaml` against the Trading Post and convert real exceptions
   to explicit `price_override` entries.
 

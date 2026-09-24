@@ -19,7 +19,7 @@ stays independent of ``mordheim_knowledge`` on purpose.
 
 ``STRINGS`` is grouped by application area (the campaign UI extraction order)
 so a translator can review it screen by screen; every entry must carry an
-``es`` value (``tests/ui/test_ui_i18n.py`` enforces it).
+``es`` value (``tests/python/ui/test_ui_i18n.py`` enforces it).
 
 Spanish glossary (keep consistent across entries): warband=banda,
 rating=valoración, state=estado, stash=reserva, hoard=acopio,

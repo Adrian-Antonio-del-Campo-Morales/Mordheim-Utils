@@ -26,7 +26,7 @@ su mapping de documentos en `mordheim_knowledge.editorial_schemas`):
 2A y en 2B** — con los catálogos staging ya en la forma de promoción: items y
 mercado (§3), hirelings con su reparto de familia y su lado de campaña (§2, §7) y
 magia con su envoltura y sus reprints (§1, §7). Las *clases* siguen fijadas en
-`tests/knowledge/test_editorial_schemas.py` (`STAGED_CATALOGUE_CLASSES`, ahora
+`tests/python/knowledge/test_editorial_schemas.py` (`STAGED_CATALOGUE_CLASSES`, ahora
 vacío en los dos árboles), así que una clase nueva falla el test y obliga a
 actualizar este plan. El único fichero que la promoción deja atrás está declarado
 en `staging_contract_audit.NOT_PROMOTED`.
@@ -59,7 +59,7 @@ en `staging_contract_audit.NOT_PROMOTED`.
 
 Las herramientas que lo hacen: `tools/ingestion/normalize_staging_for_promotion.py`
 (pases `status`, `market`, `items`; idempotente) sobre
-`mordheim_knowledge.staging_promotion`, más `tools/format_yaml.py` para la forma
+`mordheim_knowledge.staging_promotion`, más `tools/knowledge/maintenance/format_yaml.py` para la forma
 canónica.
 
 ---
@@ -73,7 +73,7 @@ canónica.
 - **Decisión (aplicada):** el vocabulario `staging` desaparece. Cada documento
   lleva lo que lleva su destino KB: los ítems y los hirelings **nada** (los
   ficheros KB de esas familias no tienen `status`), y los documentos nuevos
-  (mercado, magia) `draft` — el valor que `catalog/campaign/README.md` reserva a
+  (mercado, magia) `draft` — el valor que `docs/knowledge/campaign-catalogue.md` reserva a
   lo no confirmado. Fusionar con el documento KB publicado es lo que los publica.
 
 ### 1.2 Raíz de los ficheros de items: `status` no existe
@@ -405,4 +405,4 @@ y con comas dentro), `[]`/`{}` intactos — y **verifica el documento entero des
 reescribir**: si el parseo cambia en cualquier otra cosa, el pase falla en vez de
 aplicarse. Medido y aplicado: 895 colecciones en 30 ficheros (247 en 2A, 648 en 2B),
 idempotente. La puerta es `--only shape` de `audit_staging_contract.py` y
-`tests/knowledge/test_staging_collection_shape.py`.
+`tests/python/knowledge/test_staging_collection_shape.py`.

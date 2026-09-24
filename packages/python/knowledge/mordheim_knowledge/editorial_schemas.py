@@ -75,7 +75,7 @@ HIRELING_DOCUMENTS: tuple[tuple[str, str], ...] = tuple(
 UNCOVERED_DOCUMENTS: dict[str, str] = {
     "registry/bindings.yaml": (
         "staging binding registry of the 2A/2B ingestion workflow, gated by "
-        "tests/knowledge/test_binding_registry.py; it joins this contract when the "
+        "tests/python/knowledge/test_binding_registry.py; it joins this contract when the "
         "staged warbands are promoted into the knowledge base"
     ),
 }

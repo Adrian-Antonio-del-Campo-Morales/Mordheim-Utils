@@ -43,4 +43,4 @@ artifacts of automated text matching:
 
 All 60 rows advanced `modeled` → `english-reviewed` in the manifest.
 Active knowledge base untouched. `ingest_2b.py validate` and
-`tests/knowledge/test_2b_staging.py` stay green.
+`tests/python/knowledge/test_2b_staging.py` stay green.

@@ -35,7 +35,7 @@ and every step follows a decision the KB already carries:
   keeps. An *empty* collection stays: ``[]`` and ``{}`` are the KB's own shape.
 
 Editing is lexical: the staged files carry comments, so the passes edit the
-lines they own instead of re-dumping the document, and ``tools/format_yaml.py``
+lines they own instead of re-dumping the document, and ``tools/knowledge/maintenance/format_yaml.py``
 still owns the canonical shape of everything written. Each pass re-parses what
 it wrote and compares it with a pure transform of what it read.
 """
@@ -251,7 +251,7 @@ def _folded(lines: list[str], index: int, text: str) -> list[str]:
     found = _key_of(line)
     assert found is not None
     ending = lexical.line_ending(line)
-    # One physical line per value: wrapping prose is ``tools/format_yaml.py``'s
+    # One physical line per value: wrapping prose is ``tools/knowledge/maintenance/format_yaml.py``'s
     # job, and it folds only where folding cannot change the text (`To-Hit` is
     # never split across the break). A hand-rolled wrap would silently turn a
     # hyphenated word into two.

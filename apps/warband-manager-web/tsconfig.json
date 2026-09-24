@@ -12,6 +12,7 @@
     "noUncheckedSideEffectImports": true,
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
+    "resolveJsonModule": true,
     "moduleDetection": "force",
     "types": ["node", "vite/client"],
     "baseUrl": ".",
@@ -20,11 +21,12 @@
       "@domain/*": ["../../packages/typescript/domain/*"],
       "@app": ["../../packages/typescript/application/campaign/index.ts"],
       "@app/*": ["../../packages/typescript/application/*"],
-      "@adapters/*": ["../../packages/typescript/adapters/*"]
+      "@adapters/*": ["../../packages/typescript/adapters/*"],
+      "@src/*": ["src/*"]
     },
     "skipLibCheck": true,
     "noEmit": true,
     "useDefineForClassFields": true
   },
-  "include": ["src", "vite.config.ts"]
+  "include": ["src", "vite.config.ts", "../../tests/web"]
 }

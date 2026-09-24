@@ -1,7 +1,7 @@
 """KB locale policy and localized display names.
 
 The knowledge base is **canonical English** by convention (see the
-"Locale policy" section of ``sources/knowledge/README.md``): the English
+"Locale policy" section of ``docs/reference/knowledge-base.md``): the English
 ``name`` / ``effect`` fields are the single canonical source. The
 ``name_i18n`` / ``effect_i18n`` blocks store only *translations* for
 non-canonical locales (``es``) — they never carry an ``en`` mirror of the

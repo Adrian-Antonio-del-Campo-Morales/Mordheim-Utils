@@ -63,7 +63,7 @@ Every maintained YAML document of `sources/knowledge/` is claimed: the test
 suite fails when a new file appears without a schema, and when a document is
 claimed by two schemas. One document is declared outside the contract
 (`registry/bindings.yaml`, the staging binding registry of the 2A/2B ingestion
-workflow, gated by `tests/knowledge/test_binding_registry.py`); the exception is
+workflow, gated by `tests/python/knowledge/test_binding_registry.py`); the exception is
 listed in `editorial_schemas.UNCOVERED_DOCUMENTS` and the suite fails if it goes
 stale.
 
@@ -180,7 +180,7 @@ The contract is enforced by the structural gate and by the test suite:
 python tools/mordheim-utils.py verify --structural  # structure, connections, editorial schemas
 python tools/knowledge/audit_schema_strictness.py  # how the schemas relate to the data
 python tools/knowledge/audit_staging_contract.py  # the staged 2A/2B packages and catalogues
-python -m pytest tests/knowledge/test_editorial_schemas.py
+python -m pytest tests/python/knowledge/test_editorial_schemas.py
 ```
 
 The staged warbands are held to the same contract before they are promoted.
@@ -196,13 +196,13 @@ and `sources/2B`:
   magic and campaign documents against the schema of the KB document that will
   claim them at promotion, plus any catalogue YAML no destination claims. These
   are the classes `sources/2B/promotion-schema-plan.md` decides on, and
-  `tests/knowledge/test_editorial_schemas.py` pins them, so the plan cannot go
+  `tests/python/knowledge/test_editorial_schemas.py` pins them, so the plan cannot go
   stale behind the trees. That list is now empty in both trees: the plan's
   remaining work (the hireling split, the campaign side and the magic envelope)
   is applied, and a new class fails the test until the plan declares it. A file
   promotion leaves behind (`catalog/items/missing-item-stubs.yaml`) is a declared
   decision the pass names, not an unclaimed document.
-* **naming** — the files `tools/normalize_names.py --check` would rewrite. The
+* **naming** — the files `tools/knowledge/maintenance/normalize_names.py --check` would rewrite. The
   title-case policy of `name` / `name_i18n.es` is a gate for the knowledge base
   but not for the staging trees, so this pass names the files a promotion copy
   has to normalize first.
@@ -237,7 +237,7 @@ errors, and each one lives in `editorial_schema_audit.JUSTIFIED_FINDINGS` with
 the contract that keeps it alive: a field of `EffectSet`, a value of
 `registry/runtime-schema.yaml`, a trait of `TRAIT_TYPES`, a recipient the
 post-battle engine dispatches on, a shape the two hireling families share, or
-`status: draft`, which `catalog/campaign/README.md` prescribes. An entry that
+`status: draft`, which `docs/knowledge/campaign-catalogue.md` prescribes. An entry that
 stops matching a finding fails the suite, so the list cannot rot.
 
 The audit reads the same merged schemas the validators use, aggregates evidence

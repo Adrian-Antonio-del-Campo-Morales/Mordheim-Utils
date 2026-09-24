@@ -104,7 +104,7 @@ Acción aplicada: las 19 filas del manifiesto avanzaron `modeled` → `english-r
 ## Verificación
 
 - `ingest_2a.py validate`: 19 filas, 0 problemas
-- `pytest tests/knowledge/test_2a_staging.py`: 7/7
+- `pytest tests/python/knowledge/test_2a_staging.py`: 7/7
 - Reporte automatizado: `build/cache/2a-sources/review-report.md`
 
 Siguiente fase del pipeline: **traducción al español** (completar/bajar la calidad de

@@ -2,7 +2,7 @@
  * P4.3: raw shapes of the generated KB web artefact.
  *
  * The artefact is produced by `tools/knowledge/generate_knowledge_web.py` into
- * `build/generated/knowledge-web/knowledge-web.json`. These types describe
+ * `outputs/web-public/knowledge/knowledge-web.json`. These types describe
  * the *document* as stored — the adapter (index.ts) flattens it into the
  * domain's `KnowledgeRecord`s.
  */

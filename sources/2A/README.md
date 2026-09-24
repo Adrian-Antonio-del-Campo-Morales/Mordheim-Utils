@@ -261,7 +261,7 @@ interleave de marcadores de página, monedas no estándar, unidades gratuitas, f
 ### 3.6 `translated`
 
 Igual que 2B (sección 3.6): traducción española completa de nombres y efectos con el
-vocabulario de `sources/knowledge/catalog/translation-glossary.md`, sin alterar IDs,
+vocabulario de `docs/knowledge/translation-glossary.md`, sin alterar IDs,
 números, rangos ni condiciones. Oportunidad práctica detectada en 2B: si la i18n se
 rellena desde el modelado, la revisión inglesa valida ambos idiomas a la vez.
 
@@ -296,11 +296,11 @@ Mismo procedimiento que 2B (sección 5 de su README) con el orden de resolución
 ## 6. Validaciones obligatorias
 
 ```text
-python tools/format_yaml.py --check sources/2A
-python tools/normalize_names.py --check sources/2A
+python tools/knowledge/maintenance/format_yaml.py --check sources/2A
+python tools/knowledge/maintenance/normalize_names.py --check sources/2A
 python tools/ingestion/ingest_2a.py report
 python tools/ingestion/ingest_2a.py validate
-python -m pytest tests/knowledge/test_2a_staging.py
+python -m pytest tests/python/knowledge/test_2a_staging.py
 ```
 
 La herramienta `tools/ingestion/ingest_2a.py` se implementa adaptando `ingest_2b.py`:
@@ -317,7 +317,7 @@ La herramienta `tools/ingestion/ingest_2a.py` se implementa adaptando `ingest_2b
   `rule_ref` e `item_id` resolubles, aislamiento de la KB y de `sources/2B`);
 - `report`: progreso por banda y por fuente.
 
-`tests/knowledge/test_2a_staging.py` replica el aislamiento y los invariantes del
+`tests/python/knowledge/test_2a_staging.py` replica el aislamiento y los invariantes del
 staging (misma batería que `test_2b_staging.py`, con la añadidura de que ninguna
 herramienta lee `sources/2B` accidentalmente y viceversa).
 

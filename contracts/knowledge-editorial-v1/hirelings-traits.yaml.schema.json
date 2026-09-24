@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/hirelings-traits.yaml.schema.json",
   "title": "Mordheim KB catalogue — catalog/hirelings/traits.yaml",
-  "description": "The trait registry of the hireling catalogue: the race, alignment, nature and ability facts the hiring eligibility rules reason about, declared once here and read by the application through `KnowledgePort.hireling_traits()` instead of being curated inside the application. Each row pins the profile it describes and lists its traits; `tests/knowledge/test_campaign_catalogs.py` checks that every `profile_id` exists in the hireling catalogues.",
+  "description": "The trait registry of the hireling catalogue: the race, alignment, nature and ability facts the hiring eligibility rules reason about, declared once here and read by the application through `KnowledgePort.hireling_traits()` instead of being curated inside the application. Each row pins the profile it describes and lists its traits; `tests/python/knowledge/test_campaign_catalogs.py` checks that every `profile_id` exists in the hireling catalogues.",
   "type": "object",
   "required": ["schema_version", "ruleset", "catalog", "status", "traits"],
   "additionalProperties": false,

@@ -4,7 +4,7 @@
 from the editorial contract (`contracts/knowledge-editorial-v1/`).
 
 Read-only. The staging trees are deliberately outside the contract coverage of
-`tests/knowledge/test_editorial_schemas.py` until they are promoted, so this tool
+`tests/python/knowledge/test_editorial_schemas.py` until they are promoted, so this tool
 measures the gap that promotion has to close. It reports the two passes of
 `mordheim_knowledge.staging_contract_audit`:
 
@@ -24,7 +24,7 @@ measures the gap that promotion has to close. It reports the two passes of
   claims and the files promotion declares it leaves behind. These are the
   extension classes of `sources/2B/promotion-schema-plan.md`; this pass is what
   says whether the plan still describes the trees.
-* **naming** — the files `tools/normalize_names.py --check` would rewrite. The
+* **naming** — the files `tools/knowledge/maintenance/normalize_names.py --check` would rewrite. The
   title-case policy is a gate for `sources/knowledge` but not for the staging
   trees, so this is one of the two canonical-formatting rules a promotion copy
   can break.
@@ -54,7 +54,7 @@ should stay green: `tools/ingestion/normalize_staging_for_promotion.py` closes t
 catalogue (the promotion shape of the staged documents) and the shape (its
 `shape` pass),
 `tools/knowledge/normalize_open_fields.py` the vocabulary and
-`tools/normalize_names.py` the naming. A catalogue finding is a promotion-shape
+`tools/knowledge/maintenance/normalize_names.py` the naming. A catalogue finding is a promotion-shape
 decision of `sources/2B/promotion-schema-plan.md` that has not been applied yet.
 """
 from __future__ import annotations

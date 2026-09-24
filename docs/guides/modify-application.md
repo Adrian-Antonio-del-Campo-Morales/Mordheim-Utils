@@ -1,10 +1,10 @@
 # Modify an application
 
-Applies to Combat Lab (`mordheim_combat_lab`) and the Campaign Manager
-(`mordheim_campaign`, composed by `mordheim_desktop`). Prerequisites:
+Applies to Combat Lab (`mordheim_combat_lab`) and the web Campaign Manager.
+Prerequisites:
 [Architecture](../reference/architecture.md) (package responsibilities, layer
 rules) and, for campaign work, [the Campaign Manager
-reference](../reference/campaign-manager.md).
+reference](../reference/components.md#warband-manager).
 
 ## Procedure
 
@@ -25,7 +25,7 @@ pass.
   `KB YAML → mordheim_knowledge.loader → application → ui`. Do not load files
   from `sources/knowledge/` from Tkinter, nor copy campaign tables into
   widgets, UI constants or persistence. Full data-ownership table and query
-  patterns: [`catalog/campaign/README-HOWTO.md`](../../sources/knowledge/catalog/campaign/README-HOWTO.md).
+  patterns: [use the campaign knowledge base](use-campaign-knowledge.md).
 - Campaign state (experience, crowns, wyrdstone, stash, injuries, rolls,
   purchases) lives in `persistence`/the campaign model, referenced through
   stable KB ids (`band_id`, `profile_id`, `item_id`, `rule_id`) — never
@@ -35,9 +35,9 @@ pass.
 - Post-battle screens present results and trigger engine actions; resolution,
   catalogue and state mutation belong to `post_battle_resolution.py`,
   `post_battle_catalogue.py` and `post_battle_engine.py`
-  (see the [Campaign Manager reference](../reference/campaign-manager.md)).
+  (see the [component reference](../reference/components.md#warband-manager)).
 
-Layer rule (executable in `tests/architecture/test_boundaries.py`): `ui`
+Layer rule (executable in `tests/python/architecture/test_boundaries.py`): `ui`
 never imports the KB loaders or YAML; `application` and `persistence` never
 import Tkinter.
 

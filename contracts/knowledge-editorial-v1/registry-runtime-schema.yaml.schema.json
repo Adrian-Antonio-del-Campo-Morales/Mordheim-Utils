@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/registry-runtime-schema.yaml.schema.json",
   "title": "Mordheim KB registry — registry/runtime-schema.yaml",
-  "description": "The classification contract itself: the fields every classified rule declares, the values they may take, the kinds a selectable rule can be, the binding kinds, and the invariants the knowledge base must satisfy. The editorial schemas mirror these values; `tests/knowledge/test_editorial_schemas.py` fails when either side drifts.",
+  "description": "The classification contract itself: the fields every classified rule declares, the values they may take, the kinds a selectable rule can be, the binding kinds, and the invariants the knowledge base must satisfy. The editorial schemas mirror these values; `tests/python/knowledge/test_editorial_schemas.py` fails when either side drifts.",
   "type": "object",
   "required": ["schema_version", "entity", "description", "runtime", "selectable_rule", "invariants"],
   "additionalProperties": false,

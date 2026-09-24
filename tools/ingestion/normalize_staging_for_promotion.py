@@ -11,7 +11,7 @@ campaign side (fees, upkeep, eligibility) *before* it retires ``hire_fee`` and
 and folds the Magical Failure Table into the band rule that rolls on it. ``shape``
 runs last and writes the block-collection keys in the shape the KB keeps: a staged
 flow collection (`[a, b]`, `{a: 1}`) is a merge diff that is nothing but shape.
-``tools/format_yaml.py`` then rewrites the folded prose of every document this
+``tools/knowledge/maintenance/format_yaml.py`` then rewrites the folded prose of every document this
 tool rebuilds.
 
 Usage::
@@ -41,7 +41,7 @@ def format_written(paths: list[Path]) -> None:
         return
     grouped = [str(path) for path in yaml_paths]
     result = subprocess.run(
-        [sys.executable, str(ROOT / "tools" / "format_yaml.py"), "--write", *grouped],
+        [sys.executable, str(ROOT / "tools" / "knowledge" / "maintenance" / "format_yaml.py"), "--write", *grouped],
         cwd=ROOT,
         capture_output=True,
         text=True,

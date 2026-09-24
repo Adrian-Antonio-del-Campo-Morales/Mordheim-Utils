@@ -11,7 +11,6 @@ packages/python/combat-engine               phases plus modular, NumPy and nativ
 packages/python/adapters/desktop-ui         shared Tkinter theme and widgets
 packages/python/campaign                    campaign domain, application and persistence
 apps/combat-lab/mordheim_combat_lab         Combat Lab UI, CLI and verification
-apps/warband-manager-desktop/mordheim_desktop desktop composition root
 apps/warband-manager-web                    React/Vite browser shell
 packages/typescript                         shared web domain, application and adapters
 contracts/campaign-file-v5                  neutral persistence contract and fixtures
@@ -27,9 +26,6 @@ knowledge YAML → mordheim_knowledge → mordheim_construction → mordheim_com
                                          ↓
                               Combat Lab application → Tkinter UI
 
-knowledge YAML → mordheim_knowledge → Campaign application → desktop UI
-                                                    ↘ persistence
-
 knowledge-web.json → web KnowledgeReader → TypeScript domain/application → React shell
 ```
 
@@ -39,7 +35,7 @@ knowledge-web.json → web KnowledgeReader → TypeScript domain/application →
 - `mordheim_combat` consumes compiled fighters and never loads YAML.
 - Combat Lab `application` is Tkinter-free; its `ui` owns windows, widgets and thread coordination.
 - Campaign `application` owns use cases and state transitions; campaign `ui` presents results and forwards actions.
-- UI layers do not load YAML. `tests/architecture/test_boundaries.py` enforces that rule, as well as the ban on Tkinter imports in campaign application/persistence.
+- UI layers do not load YAML. `tests/python/architecture/test_boundaries.py` enforces that rule, as well as the ban on Tkinter imports in campaign application/persistence.
 - The web app consumes generated JSON and does not use YAML, Python packages or browser storage for campaigns.
 
 ## Shared resources and entry points
@@ -49,7 +45,6 @@ knowledge-web.json → web KnowledgeReader → TypeScript domain/application →
 Python entry points declared in `pyproject.toml`:
 
 - `mordheim-combat-lab` → `mordheim_combat_lab.cli.commands:main`
-- `mordheim-campaign-manager` → `mordheim_desktop.app:main`
 
 The source-checkout launcher `tools/mordheim-utils.py` delegates to these modules and to the real web/pytest/generator commands.
 
@@ -77,13 +72,13 @@ Initial draft → State #0 → Battle #1 → Post-Battle #1 → State #1 → …
 
 The draft is editable. Committed states are immutable snapshots. Battles preserve table facts and open a pending post-battle. The post-battle engine applies outcomes and commits the next state.
 
-The desktop application lives in `packages/python/campaign/mordheim_campaign/`, with the Tkinter composition root in `apps/warband-manager-desktop/`. The web shell lives in `apps/warband-manager-web/` and reuses the TypeScript domain/application packages from `packages/typescript/`.
+The web shell lives in `apps/warband-manager-web/` and reuses the TypeScript domain/application packages from `packages/typescript/`.
 
 ## Persistence boundary
 
 `.mordheim` files use format v5, defined by `contracts/campaign-file-v5/campaign-file-v5.schema.json`. Both Python and TypeScript readers/writers accept only v5, reject retired v1–v4 and future versions, and preserve open payload maps. Campaign files contain stable KB IDs and campaign state, never the rule catalogues themselves.
 
-The desktop persistence module is `packages/python/campaign/mordheim_campaign/persistence/campaigns.py`. The web adapter is `packages/typescript/adapters/campaign-file/`. PDF export is implemented independently by the desktop persistence layer and the web export feature.
+The web adapter is `packages/typescript/adapters/campaign-file/`; PDF export belongs to the web export feature.
 
 ## Verification corpus and reports
 
@@ -96,7 +91,7 @@ Generated reports are written below ignored `outputs/`:
 - `parity/` — machine-readable parity certificates.
 - `benchmarks/` — benchmark results.
 
-The web knowledge artefact is generated under ignored `build/generated/knowledge-web/` and copied to the web app's ignored `public/knowledge/` staging directory by CI/`run-ci`.
+The web knowledge artefact is generated under ignored `outputs/web-public/knowledge/`; Vite serves `outputs/web-public/` as its public directory.
 
 ## Where a change lands
 
@@ -107,10 +102,10 @@ The web knowledge artefact is generated under ignored `build/generated/knowledge
 | Combat behavior | `packages/python/combat-engine/` |
 | Combat Lab use case/UI | `apps/combat-lab/` |
 | Campaign domain/application/persistence | `packages/python/campaign/` |
-| Desktop composition | `apps/warband-manager-desktop/` |
 | Web domain/application/adapters | `packages/typescript/` |
 | Web shell and presentation | `apps/warband-manager-web/` |
-| Verification evidence | `tests/specs/`, `tests/verification/`, related test suites |
+| Verification evidence | `tests/specs/`, `tests/python/verification/`, related test suites |
 | Build/release tooling | `tools/`, `.github/workflows/` |
 
-See [Knowledge base](knowledge-base.md), [Campaign Manager](campaign-manager.md) and [Verification](verification.md) for the detailed contracts.
+See [Knowledge base](knowledge-base.md), [Components](components.md) and
+[Verification](verification.md) for the detailed contracts.

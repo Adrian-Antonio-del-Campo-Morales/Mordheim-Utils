@@ -79,7 +79,7 @@ a single spec.
   `name_i18n` / `effect_i18n` hold only translations and carry no `en`
   mirror. A reviewed Spanish pass fills `name_i18n.es` / `effect_i18n.es`
   across the warbands and catalogues, following the translation glossary
-  ([translation glossary](../../sources/knowledge/catalog/translation-glossary.md)).
+  ([translation glossary](../../docs/knowledge/translation-glossary.md)).
 
 ## Campaign application
 

@@ -21,7 +21,7 @@
       "minLength": 1
     },
     "i18n": {
-      "description": "Translations only. English is canonical and stored once in `name` / `effect`; an `en` mirror is forbidden and `tools/normalize_names.py` strips a locale block left without a real translation.",
+      "description": "Translations only. English is canonical and stored once in `name` / `effect`; an `en` mirror is forbidden and `tools/knowledge/maintenance/normalize_names.py` strips a locale block left without a real translation.",
       "type": "object",
       "required": ["es"],
       "additionalProperties": false,
@@ -92,7 +92,7 @@
       "items": { "$ref": "#/$defs/source_ref" }
     },
     "catalog_status": {
-      "description": "Editorial lifecycle of a catalogue document, declared once for every catalogue that is not a warband package. `published` is real, source-referenced data; `draft` marks a document whose rules are still unconfirmed, as `sources/knowledge/catalog/campaign/README.md` prescribes instead of inventing data. No catalogue document is a draft today.",
+      "description": "Editorial lifecycle of a catalogue document, declared once for every catalogue that is not a warband package. `published` is real, source-referenced data; `draft` marks a document whose rules are still unconfirmed, as `docs/knowledge/campaign-catalogue.md` prescribes instead of inventing data. No catalogue document is a draft today.",
       "enum": ["published", "draft"]
     },
     "dice": {

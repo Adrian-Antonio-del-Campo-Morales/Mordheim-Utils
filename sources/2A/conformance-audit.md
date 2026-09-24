@@ -27,7 +27,7 @@ corregir, y el estado verificado al final.
 4. **Auditoría cruzada de contenido.** `tools/ingestion/audit_2a.py` (costes, perfiles,
    statlines y `skill_access` contra las páginas HTML cacheadas).
 5. **Puertas del repo.** `ingest_2a.py validate`, `ingest_2b.py validate`,
-   `tools/format_yaml.py`, `pytest tests/knowledge tests/web`.
+   `tools/knowledge/maintenance/format_yaml.py`, `pytest tests/python/knowledge tests/python/web`.
 
 ## Hallazgos y correcciones
 
@@ -266,7 +266,7 @@ se añadió el cotejo de los precios del bloque Special Equipment.
    `discrepancy-verdicts.md` §3.2).
 
 **El auditor ahora puede fallar** (y se prueba que falla).
-`tests/knowledge/test_2a_source_audit.py` (13 pruebas) inyecta sobre una copia
+`tests/python/knowledge/test_2a_source_audit.py` (13 pruebas) inyecta sobre una copia
 desechable bajo `build/cache`: un precio equivocado, una fila de la página que el
 paquete pierde, un precio de tirada aplanado a `null`, una lista sin encabezado en la
 página, un precio de Special Equipment contradicho, un perfil de ítem borrado y una
@@ -305,7 +305,7 @@ audit_2a.py                         → 19 bandas, 0 problemas
 ingest_2a.py validate               → 19 filas, 0 problemas
 ingest_2b.py validate               → 60 filas, 0 problemas
 format_yaml.py --check 2A + 2B      → 356 ficheros, 0 would change, 0 failures
-pytest tests/knowledge tests/web    → 503 pasan, 2 fallan en tests/web/parity
+pytest tests/python/knowledge tests/python/web    → 503 pasan, 2 fallan en tests/python/web/parity
                                       (port desktop→web, ajeno a 2A/2B)
 ```
 
@@ -317,12 +317,12 @@ python tools/knowledge/audit_kb_conformance.py --tree 2A   # forma clave a clave
 python tools/ingestion/audit_2a.py                         # costes, statlines, skills
 python tools/ingestion/audit_2a_sources.py                 # contenido y precios vs páginas cacheadas
 python tools/ingestion/audit_2a_sources.py --all           # incluye los adjudicados con su motivo
-python -m pytest tests/knowledge/test_2a_source_audit.py   # el auditor falla de verdad (5 inyecciones)
+python -m pytest tests/python/knowledge/test_2a_source_audit.py   # el auditor falla de verdad (5 inyecciones)
 python build/cache/probe_2a_coverage.py                    # cobertura: hechizos y DR/hirelings
 python build/cache/negative_test_2a_hirelings.py           # pruebas negativas (restauran)
 python tools/knowledge/strip_rule_ref_restatements.py      # idempotente: 0 a retirar
 python tools/ingestion/ingest_2a.py validate
-python -m pytest tests/knowledge tests/web -q
+python -m pytest tests/python/knowledge tests/python/web -q
 ```
 
 La auditoría es de solo lectura salvo `format_yaml.py --write`; el auditor marca las clases

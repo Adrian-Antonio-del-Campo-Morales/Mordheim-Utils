@@ -34,10 +34,10 @@ ROOT = Path(__file__).resolve().parents[4]
 #: (spawned workers re-import the main module) and would fail every mutant
 #: for environmental reasons.
 DEFAULT_DETECTOR_SUITES = (
-    "tests/combat/vectorized/test_vectorized_engine.py",
-    "tests/verification/test_parity.py::"
+    "tests/python/combat/vectorized/test_vectorized_engine.py",
+    "tests/python/verification/test_parity.py::"
     "test_vectorized_parity_inventory_is_complete_and_exact_checks_pass",
-    "tests/verification/test_parity.py::"
+    "tests/python/verification/test_parity.py::"
     "test_semantic_specs_are_reused_as_a_case_level_parity_inventory",
 )
 

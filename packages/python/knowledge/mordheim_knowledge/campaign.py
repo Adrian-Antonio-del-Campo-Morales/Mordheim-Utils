@@ -3,7 +3,7 @@
 Implements the loading contract of TODO.md section 5 (Campaign catalogue →
 runtime integration; the ingestion that produced ``catalog/hirelings/**`` and
 ``catalog/campaign/hired-swords-and-dramatis.yaml`` is documented in
-``catalog/hirelings/README.md``).
+``docs/knowledge/hirelings.md``).
 The KB campaign data under ``catalog/campaign/**`` is published and inert;
 these loaders are the authorised runtime read path and validate, at load
 time, the integrity a consumer can rely on:

@@ -1,0 +1,17 @@
+{
+  "name": "mordheim-utils-web",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "description": "npm workspace root: the TypeScript packages, the web application and the shared test suites under tests/.",
+  "workspaces": [
+    "packages/typescript",
+    "apps/warband-manager-web"
+  ],
+  "scripts": {
+    "test": "npm run test --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "build": "npm run build --workspace warband-manager-web",
+    "lint": "eslint . && npm run check:presentation --workspace warband-manager-web"
+  }
+}

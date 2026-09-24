@@ -39,9 +39,9 @@ on L1–L5.
 > | `parity --level deep --pair-set full` (L3) | 42 pairs: ≈4.05M oracle duels + 1M cross duels/pair (tens of minutes pooled; hours without pooling) | use `--pair-set fast` for the short loop |
 > | `parity --truncations --pair-set fast` (L2) | 30 pairs × 8 horizons × 10k duels/engine (≈20–40 min sequential, ≈6–12 min pooled) | `--truncation-simulations 2000` |
 > | `parity --truncations --pair-set full` (L2) | 42 pairs × 8 horizons × 10k duels/engine (≈28–55 min sequential, ≈8–15 min pooled) | use `--pair-set fast` for a smaller sweep |
-> | `coverage-gate` (L4) | ≈3–10 min under `coverage` | run the deterministic suites directly (`pytest tests/combat/... tests/verification/test_parity.py -q`) |
-> | `tools/mutate-engine.py` (L4) | full catalogue ≈3–5 min | `--mutant <name>` for the single defect under test |
-> | `report tests` | whole semantic corpus + full `pytest` suite (minutes) | `pytest tests/verification/test_semantics.py -q` |
+> | `coverage-gate` (L4) | ≈3–10 min under `coverage` | run the deterministic suites directly (`pytest tests/python/combat/... tests/python/verification/test_parity.py -q`) |
+> | `tools/verification/mutate-engine.py` (L4) | full catalogue ≈3–5 min | `--mutant <name>` for the single defect under test |
+> | `report tests` | whole semantic corpus + full `pytest` suite (minutes) | `pytest tests/python/verification/test_semantics.py -q` |
 > | `benchmark --deep --pair-set fast` | vectorized grid over 30 coverage pairs, up to 5M duels | shrink the sizes (`--simulation-sizes 10k,100k`) or select one `--scenario` |
 > | `benchmark --deep --pair-set full` | vectorized grid over all 42 pairs, up to 5M duels | use `--pair-set fast` for the short loop, or `--processes N` to run the scenario measurements through a process pool (the report includes the real speedup). `--tts` is the time-to-solution study over the (simulation size × batch size) grid — see [Develop and release](../guides/develop-and-release.md) |
 >
@@ -162,8 +162,8 @@ Two gates measure whether the deterministic corpus is *complete enough*,
 which no amount of naming discipline can assert by itself.
 
 **Coverage drift gate** (`coverage-gate`). The deterministic suites
-(`tests/combat/modular`, `tests/combat/vectorized`,
-`tests/combat/test_phases.py`, `tests/verification/test_parity.py`) run under
+(`tests/python/combat/modular`, `tests/python/combat/vectorized`,
+`tests/python/combat/test_phases.py`, `tests/python/verification/test_parity.py`) run under
 `coverage` and the result is compared against a committed budget
 (`tests/fixtures/coverage/budget.json`, schema `mordheim-coverage-budget/v1`):
 the engine statements that were exercised when the budget was written (the
@@ -176,7 +176,7 @@ author regenerates it:
 
 ```bash
 python tools/mordheim-utils.py coverage-gate                      # check (drift gate)
-python tools/update-coverage-budget.py                            # regenerate after adding tests
+python tools/verification/update-coverage-budget.py                            # regenerate after adding tests
 python tools/mordheim-utils.py coverage-gate --area-floor modular:95 --area-floor vectorized:93
 ```
 
@@ -185,7 +185,7 @@ regenerated in the same change. `--area-floor AREA:PCT` optionally adds a
 percentage floor so a brand-new area cannot start empty.
 
 **Engine mutation harness** (`engine_mutation.py`,
-`tools/mutate-engine.py`). Where the semantic specs mutate *rules* (proving
+`tools/verification/mutate-engine.py`). Where the semantic specs mutate *rules* (proving
 the specs detect rule defects), this harness mutates *engine code*: a
 catalogue of single-token defects is applied to a staged copy of
 `mordheim_combat` (the live tree is never touched), the deterministic
@@ -202,8 +202,8 @@ harness: it exposes an untested engine decision, and the response is always a
 deterministic test that can tell the two versions apart:
 
 ```bash
-python tools/mutate-engine.py                 # full catalogue (≈3–5 min)
-python tools/mutate-engine.py --mutant wound-ramp-off-by-one --json   # one mutant
+python tools/verification/mutate-engine.py                 # full catalogue (≈3–5 min)
+python tools/verification/mutate-engine.py --mutant wound-ramp-off-by-one --json   # one mutant
 ```
 
 ## L5 — process and certificates

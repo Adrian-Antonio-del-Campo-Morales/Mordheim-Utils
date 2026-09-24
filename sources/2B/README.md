@@ -151,7 +151,7 @@ Reglas de uso:
 - sin `packages`, la fila produce exactamente un paquete, `sources/2B/bands/mordheim/<id>`;
 - con `packages`, la lista debe incluir el propio `id` y cada entrada debe tener los cuatro
   documentos;
-- `ingest_2b.py validate` y `tests/knowledge/test_2b_staging.py` fallan si existe un paquete
+- `ingest_2b.py validate` y `tests/python/knowledge/test_2b_staging.py` fallan si existe un paquete
   en el árbol que ninguna fila declare;
 - no se crean varias filas para la misma pareja `broheim_name` + `source_code`: el
   inventario contra Broheim es 1:1.
@@ -255,7 +255,7 @@ Traducir y revisar todos los campos de usuario:
 - efectos de reglas;
 - nombres y efectos de objetos o habilidades nuevos.
 
-Usar el vocabulario existente en `sources/knowledge/catalog/translation-glossary.md`.
+Usar el vocabulario existente en `docs/knowledge/translation-glossary.md`.
 El inglés permanece en `name` y `effect`; el español va en `name_i18n.es` y
 `effect_i18n.es`. No añadir bloques `en` duplicados.
 
@@ -326,11 +326,11 @@ activa. Los registros provisionales no deben quedar ocultos por IDs coincidentes
 Antes de promocionar, ejecutar estas comprobaciones disponibles actualmente:
 
 ```text
-python tools/format_yaml.py --check sources/2B
-python tools/normalize_names.py --check sources/2B
+python tools/knowledge/maintenance/format_yaml.py --check sources/2B
+python tools/knowledge/maintenance/normalize_names.py --check sources/2B
 python tools/ingestion/audit_2b.py            # re-verificación contra los PDFs de origen
 python tools/knowledge/audit_kb_conformance.py --tree 2B
-python -m pytest tests/knowledge -q
+python -m pytest tests/python/knowledge -q
 ```
 
 ### Verificación contra fuentes
@@ -366,7 +366,7 @@ python tools/ingestion/ingest_2b.py report
 python tools/ingestion/ingest_2b.py validate
 ```
 
-El informe de traducción existente (`tools/band_translation_status.py`) actualmente está
+El informe de traducción existente (`tools/knowledge/maintenance/band_translation_status.py`) actualmente está
 ligado a la KB activa y no debe usarse sobre 2B hasta que acepte una raíz explícita. Durante
 el staging se debe consultar el estado mediante el informe específico de 2B o mediante un
 script equivalente que reciba `sources/2B` como argumento.
