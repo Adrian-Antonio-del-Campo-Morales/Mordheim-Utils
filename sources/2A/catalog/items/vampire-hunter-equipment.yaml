@@ -1,40 +1,28 @@
 schema_version: 2
 ruleset: mordheim
-status: staging
 items:
 - id: silver_tip_stake
   kind: combat-equipment
-  name: Silver-tip Stake
+  name: Silver-Tip Stake
   name_i18n:
     es: Estaca de Punta de Plata
   effect: >-
     Such is the destructive power of silver over a Vampire's form that the silver-tip stake adds +1
     to the injury roll when it causes a wound. Range: Close Combat. Strength: As User. Special
-    Rules: Heart-seeker.
+    Rules: Heart-seeker. Heart-Seeker: The silver-tip stake adds +1 to the injury roll when it
+    causes a wound.
   effect_i18n:
     es: >-
       Tal es el poder destructivo de la plata sobre la forma de un Vampiro que la estaca de punta de
       plata suma +1 a la tirada de heridas cuando causa una herida. Alcance: combate cuerpo a
-      cuerpo. Fuerza: como el usuario. Reglas Especiales: Buscacorazones.
+      cuerpo. Fuerza: como el usuario. Reglas Especiales: Buscacorazones. Busca-Corazones: La estaca
+      de punta de plata suma +1 a la tirada de heridas cuando causa una herida.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Special Equipment / Silver-tip Stake
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
-  rarity: null
-  availability_note: 'Common. 10 gc (operative cost per editorial decision 2026-09-15; see sources/2A/discrepancy-verdicts.md
-    case 1). SOURCE CONFLICT (RESOLVED): the Special Equipment section prints ''Cost: 15 gc'' while both
-    the Hero Equipment List and the Pilgrim Equipment List print 10 gc for the same item — the 15 gc figure
-    is an internal erratum of the original LotD #5 PDF (both prices verified verbatim on p.10 of LOD5.pdf).'
   combat_status: out_of_scope
-  special_rules:
-  - id: heart-seeker
-    name: Heart-seeker
-    effect: The silver-tip stake adds +1 to the injury roll when it causes a wound.
-    effect_i18n:
-      es: La estaca de punta de plata suma +1 a la tirada de heridas cuando causa una herida.
-    name_i18n:
-      es: Busca-Corazones
 - id: throat_guard
   kind: armour
   name: Throat Guard
@@ -46,7 +34,10 @@ items:
     of mind knowing that their blood shall remain in their veins. All injury rolls caused by a
     Vampire have a special 6+ save while this equipment is worn. This save is not modified by
     strength, but can be bypassed by criticals that ignore armour. It does not add any armour-save
-    modifiers, and can be worn on its own, or combined with light or heavy armour.
+    modifiers, and can be worn on its own, or combined with light or heavy armour. Life Saver: All
+    injury rolls caused by a Vampire have a special 6+ save while this equipment is worn. The save
+    is not modified by strength, but can be bypassed by criticals that ignore armour. It adds no
+    armour-save modifiers.
   effect_i18n:
     es: >-
       Como los vampiros de Sylvania dependen de desdichadas víctimas humanas para saciar su sed de
@@ -55,27 +46,13 @@ items:
       tiradas de heridas causadas por un Vampiro tienen una salvación especial de 6+ mientras se
       lleve este equipo. Esta salvación no se ve modificada por la Fuerza, pero puede evitarse con
       críticos que ignoren la armadura. No añade ningún modificador a la salvación por armadura, y
-      puede llevarse solo o combinado con armadura ligera o pesada.
+      puede llevarse solo o combinado con armadura ligera o pesada. Salvavidas: Todas las tiradas de
+      heridas causadas por un Vampiro tienen una salvación especial de 6+ mientras se lleve este
+      equipo. La salvación no se ve modificada por la Fuerza, pero puede evitarse con críticos que
+      ignoren la armadura. No añade ningún modificador a la salvación por armadura.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Special Equipment / Throat Guard
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/vampire-hunters-of-sylvania
-  rarity: 7
-  availability_note: 10 gc; Heroes only.
   combat_status: out_of_scope
-  special_rules:
-  - id: life-saver
-    name: Life Saver
-    effect: >-
-      All injury rolls caused by a Vampire have a special 6+ save while this equipment is worn. The
-      save is not modified by strength, but can be bypassed by criticals that ignore armour. It adds
-      no armour-save modifiers.
-    effect_i18n:
-      es: >-
-        Todas las tiradas de heridas causadas por un Vampiro tienen una salvación especial de 6+
-        mientras se lleve este equipo. La salvación no se ve modificada por la Fuerza, pero puede
-        evitarse con críticos que ignoren la armadura. No añade ningún modificador a la salvación
-        por armadura.
-    name_i18n:
-      es: Salvavidas

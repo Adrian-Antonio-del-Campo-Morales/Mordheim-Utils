@@ -24,7 +24,7 @@ corregir, y el estado verificado al final.
 3. **Auditoría de pérdida de datos.** `build/cache/diff_2a_backup.py` compara un backup
    contra el árbol vivo a nivel de hoja y lista todo campo retirado con su valor, para que
    ningún texto de la fuente desaparezca sin destino.
-4. **Auditoría cruzada de contenido.** `tools/knowledge/audit_2a.py` (costes, perfiles,
+4. **Auditoría cruzada de contenido.** `tools/ingestion/audit_2a.py` (costes, perfiles,
    statlines y `skill_access` contra las páginas HTML cacheadas).
 5. **Puertas del repo.** `ingest_2a.py validate`, `ingest_2b.py validate`,
    `tools/format_yaml.py`, `pytest tests/knowledge tests/web`.
@@ -105,7 +105,7 @@ auditor cuenta la clase `rule-ref-restated` como desviación, no como informativ
 `audit_2a.py` cotejaba nombres, costes, experiencia, roster, statlines y la tabla de
 skills. El hueco era el **contenido**: si las reglas, las skills especiales, el equipo
 especial y las tablas de las listas están realmente en el paquete. Para cerrarlo se añadió
-`tools/knowledge/audit_2a_sources.py` (solo lectura), que parsea la página cacheada de cada
+`tools/ingestion/audit_2a_sources.py` (solo lectura), que parsea la página cacheada de cada
 banda y comprueba, en las dos direcciones:
 
 - cada `<h3>` bajo **Special Skills** → una regla (por nombre, o dentro de la prosa de una
@@ -314,14 +314,14 @@ pytest tests/knowledge tests/web    → 503 pasan, 2 fallan en tests/web/parity
 ```bash
 python tools/knowledge/derive_kb_contract.py --tree 2A     # contrato medido vs staging
 python tools/knowledge/audit_kb_conformance.py --tree 2A   # forma clave a clave
-python tools/knowledge/audit_2a.py                         # costes, statlines, skills
-python tools/knowledge/audit_2a_sources.py                 # contenido y precios vs páginas cacheadas
-python tools/knowledge/audit_2a_sources.py --all           # incluye los adjudicados con su motivo
+python tools/ingestion/audit_2a.py                         # costes, statlines, skills
+python tools/ingestion/audit_2a_sources.py                 # contenido y precios vs páginas cacheadas
+python tools/ingestion/audit_2a_sources.py --all           # incluye los adjudicados con su motivo
 python -m pytest tests/knowledge/test_2a_source_audit.py   # el auditor falla de verdad (5 inyecciones)
 python build/cache/probe_2a_coverage.py                    # cobertura: hechizos y DR/hirelings
 python build/cache/negative_test_2a_hirelings.py           # pruebas negativas (restauran)
 python tools/knowledge/strip_rule_ref_restatements.py      # idempotente: 0 a retirar
-python tools/knowledge/ingest_2a.py validate
+python tools/ingestion/ingest_2a.py validate
 python -m pytest tests/knowledge tests/web -q
 ```
 

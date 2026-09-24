@@ -1,6 +1,5 @@
 schema_version: 2
 ruleset: mordheim
-status: staging
 items:
 - id: whirling_blades
   kind: combat-equipment
@@ -11,92 +10,50 @@ items:
     The signature weapon of the Doomseeker, the Whirling Blade is an axe on a chain. Even expert
     slayers have trouble mastering such a difficult weapon, but once mastered, the damage dealt can
     be staggering. Range: Close Combat. Strength: As User. Special Rules: Cannot be parried, Cutting
-    Edge, Pair, Dance of Doom, Whirlwind of Death.
+    Edge, Pair, Dance of Doom, Whirlwind of Death. Cannot Be Parried: The Whirling Blades is a
+    flexible weapon and a Doomseeker uses it with great expertise. Attempts to parry its strikes are
+    futile. A model attacked by a whirling blade may not make parries with swords or bucklers.
+    Cutting Edge: Whirling Blades have an extra save modifier of -1, so a model with Strength 4
+    using a Whirling Blade has a -2 save modifier when he hits an opponent with the blade in close
+    combat. Pair: Whirling Blades are traditionally used in pairs, one in each hand. This off-hand
+    weapon provides an additional attack like normal. A warrior armed with a pair of whirling blades
+    may not wield a different off-hand weapon, and may never split up the pair (unless he loses a
+    hand). Dance of Doom: Whenever the Doomseeker charges, the blade in their main hand provides a
+    +1 attack in the first round of combat. The main hand also grants an additional attack in any
+    turn in which the Doomseeker is charged by one or more opponents; this attack must be used
+    against one of the chargers. If the wielder is simultaneously charged by two or more opponents
+    they will still only receive a total of +1A. "Dance of Doom" does apply to the off-hand Whirling
+    Blade. Whirlwind of Death: Whenever the Doomseeker is charged, the free attack from the Dance of
+    Doom attack and the additional attack from the off-hand both gain 'Strike First,' like a Steel
+    Whip for that turn. All of the Slayer's other attacks strike at normal speed.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Special Equipment / Whirling Blades
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
-  rarity: 9
-  availability_note: 30 gold crowns per pair; Slayers only.
   combat_status: out_of_scope
-  special_rules:
-  - id: cannot-be-parried
-    name: Cannot be parried
-    name_i18n:
-      es: No Puede Pararse
-    effect: >-
-      The Whirling Blades is a flexible weapon and a Doomseeker uses it with great expertise.
-      Attempts to parry its strikes are futile. A model attacked by a whirling blade may not make
-      parries with swords or bucklers.
-    effect_i18n:
-      es: >-
-        Las Hojas Giratorias son un arma flexible y un Buscador de la Perdición las usa con gran
-        destreza. Los intentos de parar sus golpes son inútiles. Una miniatura atacada por una hoja
-        giratoria no puede hacer paradas con espadas ni broqueles.
-  - id: cutting-edge
-    name: Cutting Edge
-    name_i18n:
-      es: Filo Cortante
-    effect: >-
-      Whirling Blades have an extra save modifier of -1, so a model with Strength 4 using a Whirling
-      Blade has a -2 save modifier when he hits an opponent with the blade in close combat.
-    effect_i18n:
-      es: >-
-        Las Hojas Giratorias tienen un modificador de salvación adicional de -1, de modo que una
-        miniatura con Fuerza 4 que golpee a un oponente con la hoja en combate cuerpo a cuerpo tiene
-        un modificador de salvación de -2.
-  - id: pair
-    name: Pair
-    name_i18n:
-      es: Par
-    effect: >-
-      Whirling Blades are traditionally used in pairs, one in each hand. This off-hand weapon
-      provides an additional attack like normal. A warrior armed with a pair of whirling blades may
-      not wield a different off-hand weapon, and may never split up the pair (unless he loses a
-      hand).
-    effect_i18n:
-      es: >-
-        Las Hojas Giratorias se usan tradicionalmente en parejas, una en cada mano. Esta arma de
-        mano secundaria proporciona un ataque adicional como de costumbre. Un guerrero armado con un
-        par de hojas giratorias no puede empuñar otra arma distinta en la mano secundaria, y nunca
-        puede separar el par (salvo que pierda una mano).
-  - id: dance-of-doom
-    name: Dance of Doom
-    name_i18n:
-      es: Danza de la Perdición
-    effect: >-
-      Whenever the Doomseeker charges, the blade in their main hand provides a +1 attack in the
-      first round of combat. The main hand also grants an additional attack in any turn in which the
-      Doomseeker is charged by one or more opponents; this attack must be used against one of the
-      chargers. If the wielder is simultaneously charged by two or more opponents they will still
-      only receive a total of +1A. "Dance of Doom" does apply to the off-hand Whirling Blade.
-    effect_i18n:
-      es: >-
-        Siempre que el Buscador de la Perdición carga, la hoja de su mano principal proporciona +1
-        ataque en la primera ronda de combate. La mano principal también otorga un ataque adicional
-        en cualquier turno en que el Buscador de la Perdición sea cargado por uno o más oponentes;
-        este ataque debe usarse contra uno de los cargadores. Si el portador es cargado
-        simultáneamente por dos o más oponentes, aun así solo recibirá un total de +1A. La "Danza de
-        la Perdición" sí se aplica a la Hoja Giratoria de la mano secundaria.
-  - id: whirlwind-of-death
-    name: Whirlwind of Death
-    name_i18n:
-      es: Torbellino de Muerte
-    effect: >-
-      Whenever the Doomseeker is charged, the free attack from the Dance of Doom attack and the
-      additional attack from the off-hand both gain 'Strike First,' like a Steel Whip for that turn.
-      All of the Slayer's other attacks strike at normal speed.
-    effect_i18n:
-      es: >-
-        Siempre que el Buscador de la Perdición es cargado, el ataque gratuito de la Danza de la
-        Perdición y el ataque adicional de la mano secundaria obtienen ambos "Golpear en Primero",
-        como un Látigo de Acero, durante ese turno. Todos los demás ataques del Matatroll golpean a
-        velocidad normal.
   effect_i18n:
     es: >-
       El arma insignia del Buscador de la Perdición, la Hoja Giratoria es un hacha sujeta a una
       cadena. Incluso los matatrolles más expertos tienen dificultades para dominar un arma tan
       difícil, pero una vez dominada, el daño que puede causar es pasmoso. Alcance: combate cuerpo a
       cuerpo. Fuerza: como el usuario. Reglas Especiales: No puede pararse, Filo Cortante, Par,
-      Danza de la Perdición, Torbellino de Muerte.
+      Danza de la Perdición, Torbellino de Muerte. No Puede Pararse: Las Hojas Giratorias son un
+      arma flexible y un Buscador de la Perdición las usa con gran destreza. Los intentos de parar
+      sus golpes son inútiles. Una miniatura atacada por una hoja giratoria no puede hacer paradas
+      con espadas ni broqueles. Filo Cortante: Las Hojas Giratorias tienen un modificador de
+      salvación adicional de -1, de modo que una miniatura con Fuerza 4 que golpee a un oponente con
+      la hoja en combate cuerpo a cuerpo tiene un modificador de salvación de -2. Par: Las Hojas
+      Giratorias se usan tradicionalmente en parejas, una en cada mano. Esta arma de mano secundaria
+      proporciona un ataque adicional como de costumbre. Un guerrero armado con un par de hojas
+      giratorias no puede empuñar otra arma distinta en la mano secundaria, y nunca puede separar el
+      par (salvo que pierda una mano). Danza de la Perdición: Siempre que el Buscador de la
+      Perdición carga, la hoja de su mano principal proporciona +1 ataque en la primera ronda de
+      combate. La mano principal también otorga un ataque adicional en cualquier turno en que el
+      Buscador de la Perdición sea cargado por uno o más oponentes; este ataque debe usarse contra
+      uno de los cargadores. Si el portador es cargado simultáneamente por dos o más oponentes, aun
+      así solo recibirá un total de +1A. La "Danza de la Perdición" sí se aplica a la Hoja Giratoria
+      de la mano secundaria. Torbellino de Muerte: Siempre que el Buscador de la Perdición es
+      cargado, el ataque gratuito de la Danza de la Perdición y el ataque adicional de la mano
+      secundaria obtienen ambos "Golpear en Primero", como un Látigo de Acero, durante ese turno.
+      Todos los demás ataques del Matatroll golpean a velocidad normal.

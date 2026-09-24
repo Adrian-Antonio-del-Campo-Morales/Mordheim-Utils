@@ -1,46 +1,28 @@
 schema_version: 2
 ruleset: mordheim
-status: staging
 items:
 - id: hooded_lantern_rig
-  kind: miscellaneous
+  kind: combat-equipment
   name: Hooded Lantern & Rig
   name_i18n:
     es: Farol con Capuchón y Arnés
   effect: >-
     Allowing a Grave Robber to do his work in private and free-handed whilst provided a source of
-    light.
+    light. Concealed Light: Provides light like a regular Lantern, but removes the visibility for
+    enemy models. Free-Hand: The Rig that the Hooded Lantern attaches to allows the Graver free
+    hands with which to ply his trade.
   effect_i18n:
     es: >-
       Permite al Saqueador de Tumbas realizar su trabajo en privado y con las manos libres,
-      disponiendo al mismo tiempo de una fuente de luz.
+      disponiendo al mismo tiempo de una fuente de luz. Luz Oculta: Proporciona luz como un farol
+      normal, pero impide que las miniaturas enemigas la vean. Mano Libre: El arnés al que se sujeta
+      el farol con capuchón deja al Saqueador las manos libres para ejercer su oficio.
   source_refs:
-  - manual: mordheimer.net (Sylvania Supplement)
+  - manual: sylvania-supplement
     printed_page: 0
     section: Special Equipment / Hooded Lantern and Rig
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
-  rarity: 9
-  availability_note: Cost 15 + D6 gold crowns.
   combat_status: out_of_scope
-  special_rules:
-  - id: concealed-light
-    name: Concealed Light
-    effect: Provides light like a regular Lantern, but removes the visibility for enemy models.
-    effect_i18n:
-      es: Proporciona luz como un farol normal, pero impide que las miniaturas enemigas la vean.
-    name_i18n:
-      es: Luz Oculta
-  - id: free-hand
-    name: Free-hand
-    effect: >-
-      The Rig that the Hooded Lantern attaches to allows the Graver free hands with which to ply his
-      trade.
-    effect_i18n:
-      es: >-
-        El arnés al que se sujeta el farol con capuchón deja al Saqueador las manos libres para
-        ejercer su oficio.
-    name_i18n:
-      es: Mano Libre
 - id: pry_bar
   kind: combat-equipment
   name: Pry Bar
@@ -48,87 +30,57 @@ items:
     es: Palanqueta
   effect: >-
     Whilst acting as a club in every sense, the pry bar allows the Graver to parry attacks. Range:
-    Close Combat. Strength: As User. Special Rules: Parry.
+    Close Combat. Strength: As User. Special Rules: Parry. Parry: Whilst acting as a club in every
+    sense, the pry bar allows the Graver to parry attacks.
   effect_i18n:
     es: >-
       Aunque funciona como una maza en todos los sentidos, la palanqueta permite al Saqueador parar
       ataques. Alcance: combate cuerpo a cuerpo. Fuerza: como el usuario. Reglas Especiales: Parada.
+      Parada: Aunque funciona como una maza en todos los sentidos, la palanqueta permite al
+      Saqueador parar ataques.
   source_refs:
-  - manual: mordheimer.net (Sylvania Supplement)
+  - manual: sylvania-supplement
     printed_page: 0
     section: Special Equipment / Pry Bar
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
-  rarity: null
-  availability_note: Grave Robbers only. Cost 10 gold crowns.
   combat_status: out_of_scope
-  special_rules:
-  - id: parry
-    name: Parry
-    effect: Whilst acting as a club in every sense, the pry bar allows the Graver to parry attacks.
-    effect_i18n:
-      es: >-
-        Aunque funciona como una maza en todos los sentidos, la palanqueta permite al Saqueador
-        parar ataques.
-    name_i18n:
-      es: Parada
 - id: surgeons_journal
-  kind: miscellaneous
+  kind: combat-equipment
   name: Surgeon's Journal
   name_i18n:
     es: Diario del Cirujano
   effect: >-
     Written by those who have cut into far too many injured, the Journal provides the Medic with
-    further insight.
+    further insight. Skilled Hand: A Medic equipped with the Journal may modify a single dice rolled
+    for Serious Injury for one friendly model by +/- 1 instead of using his Sawbones skill.
   effect_i18n:
     es: >-
       Escrito por quienes han abierto a demasiados heridos, el Diario aporta al Médico un
-      conocimiento más profundo.
+      conocimiento más profundo. Mano Hábil: Un Médico equipado con el Diario puede modificar en
+      +1/-1 un único dado de la tirada de Herida Grave de un modelo amistoso, en lugar de usar su
+      habilidad de Curandero.
   source_refs:
-  - manual: mordheimer.net (Sylvania Supplement)
+  - manual: sylvania-supplement
     printed_page: 0
     section: Special Equipment / Surgeon's Journal
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
-  rarity: 11
-  availability_note: Cost 80 + 4D6 gold crowns.
   combat_status: out_of_scope
-  special_rules:
-  - id: skilled-hand
-    name: Skilled Hand
-    effect: >-
-      A Medic equipped with the Journal may modify a single dice rolled for Serious Injury for one
-      friendly model by +/- 1 instead of using his Sawbones skill.
-    effect_i18n:
-      es: >-
-        Un Médico equipado con el Diario puede modificar en +1/-1 un único dado de la tirada de
-        Herida Grave de un modelo amistoso, en lugar de usar su habilidad de Curandero.
-    name_i18n:
-      es: Mano Hábil
 - id: finger_pendant
-  kind: miscellaneous
+  kind: combat-equipment
   name: Finger Pendant
   name_i18n:
     es: Colgante de Dedo
   effect: >-
     A grim trophy worn by the Grave Robbers. (No descriptive text is printed for this item beyond
-    its special rule.)
+    its special rule.) Death-Ward: Gives a one-time 5+ save vs. Necromantic or Dark Arts magic.
   effect_i18n:
     es: >-
       Un sombrío trofeo que lucen los Saqueadores de Tumbas. (No se imprime texto descriptivo para
-      este objeto más allá de su regla especial.)
+      este objeto más allá de su regla especial.) Contra la Muerte: Concede una salvación de un solo
+      uso de 5+ contra la magia Necromántica o de Artes Oscuras.
   source_refs:
-  - manual: mordheimer.net (Sylvania Supplement)
+  - manual: sylvania-supplement
     printed_page: 0
     section: Special Equipment / Finger Pendant
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/grave-robbers
-  rarity: null
-  availability_note: Grave Robbers only. Cost 15 gold crowns.
   combat_status: out_of_scope
-  special_rules:
-  - id: death-ward
-    name: Death-Ward
-    effect: Gives a one-time 5+ save vs. Necromantic or Dark Arts magic.
-    effect_i18n:
-      es: >-
-        Concede una salvación de un solo uso de 5+ contra la magia Necromántica o de Artes Oscuras.
-    name_i18n:
-      es: Contra la Muerte

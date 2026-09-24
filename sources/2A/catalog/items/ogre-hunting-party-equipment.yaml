@@ -1,6 +1,5 @@
 schema_version: 2
 ruleset: mordheim
-status: staging
 items:
 - id: sharp_stuff
   kind: ranged-weapon
@@ -9,114 +8,58 @@ items:
     es: Chatarra Afilada
   effect: >-
     A gnoblar always has random objects to throw. Range: 8". Strength: 2. Special Rules: No Limit,
-    Thrown Weapon, +1 Armour Save, Stuff Thrower.
+    Thrown Weapon, +1 Armour Save, Stuff Thrower. No Limit: Sharp Stuff does not count towards the
+    limit of missile weapons a Gnoblar can carry. Thrown Weapon: Gnoblars throwing Sharp Stuff
+    suffer no penalty for moving and shooting, nor for throwing over half range. +1 Armour Save: All
+    targets hit by Sharp Stuff receive +1 Armour Save. Stuff Thrower: If combined with the Shooting
+    skill 'Knife Thrower', a Gnoblar is allowed to throw three pieces of scrap instead of the normal
+    one. He may not throw three pieces of "stuff" and three knives in the same turn.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Special Equipment / Sharp Stuff
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
-  rarity: null
-  availability_note: Common (Gnoblars only). 1st free / second 3 gc.
   combat_status: out_of_scope
-  special_rules:
-  - id: no-limit
-    name: No Limit
-    name_i18n:
-      es: Sin Límite
-    effect: Sharp Stuff does not count towards the limit of missile weapons a Gnoblar can carry.
-    effect_i18n:
-      es: >-
-        La Chatarra Afilada no cuenta para el límite de armas de misil que un Gnoblar puede llevar.
-  - id: thrown-weapon
-    name: Thrown Weapon
-    name_i18n:
-      es: Arma Arrojadiza
-    effect: >-
-      Gnoblars throwing Sharp Stuff suffer no penalty for moving and shooting, nor for throwing over
-      half range.
-    effect_i18n:
-      es: >-
-        Los Gnoblars que lanzan Chatarra Afilada no sufren penalización por mover y disparar, ni por
-        lanzar a más de media distancia.
-  - id: armour-save
-    name: +1 Armour Save
-    name_i18n:
-      es: +1 Salvación por Armadura
-    effect: All targets hit by Sharp Stuff receive +1 Armour Save.
-    effect_i18n:
-      es: >-
-        Todos los objetivos alcanzados por Chatarra Afilada reciben +1 a su salvación por armadura.
-  - id: stuff-thrower
-    name: Stuff Thrower
-    name_i18n:
-      es: Lanzachatarra
-    effect: >-
-      If combined with the Shooting skill 'Knife Thrower', a Gnoblar is allowed to throw three
-      pieces of scrap instead of the normal one. He may not throw three pieces of "stuff" and three
-      knives in the same turn.
-    effect_i18n:
-      es: >-
-        Si se combina con la habilidad de Disparo "Lanzacuchillas", un Gnoblar puede lanzar tres
-        trozos de chatarra en lugar del normal. No puede lanzar tres trozos de "chatarra" y tres
-        cuchillos en el mismo turno.
   effect_i18n:
     es: >-
       Un gnoblar siempre tiene objetos variados que lanzar. Alcance: 8". Fuerza: 2. Reglas
-      Especiales: Sin Límite, Arma Arrojadiza, +1 Salvación por Armadura, Lanzachatarra.
+      Especiales: Sin Límite, Arma Arrojadiza, +1 Salvación por Armadura, Lanzachatarra. Sin Límite:
+      La Chatarra Afilada no cuenta para el límite de armas de misil que un Gnoblar puede llevar.
+      Arma Arrojadiza: Los Gnoblars que lanzan Chatarra Afilada no sufren penalización por mover y
+      disparar, ni por lanzar a más de media distancia. +1 Salvación por Armadura: Todos los
+      objetivos alcanzados por Chatarra Afilada reciben +1 a su salvación por armadura.
+      Lanzachatarra: Si se combina con la habilidad de Disparo "Lanzacuchillas", un Gnoblar puede
+      lanzar tres trozos de chatarra en lugar del normal. No puede lanzar tres trozos de "chatarra"
+      y tres cuchillos en el mismo turno.
 - id: pigback_mount
-  kind: miscellaneous
+  kind: out-of-scope
   name: Pigback Mount
   name_i18n:
-    es: Montura A Caballito
+    es: Montura a Caballito
   effect: >-
     A gnoblar hero may ride a luckless gnoblar, who is forced to carry them piggyback. Profile: M5
-    WS2 BS- S2 T- W1 I3 A1 Ld5.
+    WS2 BS- S2 T- W1 I3 A1 Ld5. Like a Mount: Uses the following standard rules for Mounted Combat
+    in the PHB: cannot climb, uses movement of mount, can jump obstacles up to 2", and uses Mounted
+    rules for Spears. Cannot Infiltrate. Not Like a Mount: Unlike a mount, a gnoblar on Pigback does
+    NOT count as a large target, may enter buildings, and doesn't gain +1AS. May not wear barding.
+    Extra Hand: The Pigback has 1 free hand to hold a weapon. It starts with a free dagger, but may
+    be given a club or axe. Alternatively, may be given a shield (this increases the rider's save by
+    +1, but the mount cannot attack).
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Special Equipment / Pigback Mount
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
-  rarity: null
-  availability_note: Common (Gnoblar Heroes Only). 50 gold crowns.
   combat_status: out_of_scope
-  special_rules:
-  - id: like-a-mount
-    name: Like a Mount
-    name_i18n:
-      es: Como una Montura
-    effect: >-
-      Uses the following standard rules for Mounted Combat in the PHB: cannot climb, uses movement
-      of mount, can jump obstacles up to 2", and uses Mounted rules for Spears. Cannot Infiltrate.
-    effect_i18n:
-      es: >-
-        Usa las siguientes reglas estándar de Combate Montado del libro básico: no puede trepar, usa
-        el movimiento de la montura, puede saltar obstáculos de hasta 2", y usa las reglas Montadas
-        para lanzas. No puede Infiltrarse.
-  - id: not-like-a-mount
-    name: Not Like a Mount
-    name_i18n:
-      es: No Como una Montura
-    effect: >-
-      Unlike a mount, a gnoblar on Pigback does NOT count as a large target, may enter buildings,
-      and doesn't gain +1AS. May not wear barding.
-    effect_i18n:
-      es: >-
-        A diferencia de una montura, un gnoblar a caballito NO cuenta como objetivo grande, puede
-        entrar en edificios y no gana +1 a la salvación por armadura. No puede llevar gualdrapa.
-  - id: extra-hand
-    name: Extra Hand
-    name_i18n:
-      es: Mano Extra
-    effect: >-
-      The Pigback has 1 free hand to hold a weapon. It starts with a free dagger, but may be given a
-      club or axe. Alternatively, may be given a shield (this increases the rider's save by +1, but
-      the mount cannot attack).
-    effect_i18n:
-      es: >-
-        El Caballito tiene 1 mano libre para sostener un arma. Comienza con una daga gratis, pero se
-        le puede dar un garrote o un hacha. Alternativamente, se le puede dar un escudo (esto
-        aumenta la salvación del jinete en +1, pero la montura no puede atacar).
   effect_i18n:
     es: >-
       Un héroe gnoblar puede montar sobre un desdichado gnoblar, obligado a llevárselo a horcajadas
-      a la espalda. Perfil: M5 HA2 HP- F2 R- H1 I3 A1 Ld5.
+      a la espalda. Perfil: M5 HA2 HP- F2 R- H1 I3 A1 Ld5. Como una Montura: Usa las siguientes
+      reglas estándar de Combate Montado del libro básico: no puede trepar, usa el movimiento de la
+      montura, puede saltar obstáculos de hasta 2", y usa las reglas Montadas para lanzas. No puede
+      Infiltrarse. No Como una Montura: A diferencia de una montura, un gnoblar a caballito NO
+      cuenta como objetivo grande, puede entrar en edificios y no gana +1 a la salvación por
+      armadura. No puede llevar gualdrapa. Mano Extra: El Caballito tiene 1 mano libre para sostener
+      un arma. Comienza con una daga gratis, pero se le puede dar un garrote o un hacha.
+      Alternativamente, se le puede dar un escudo (esto aumenta la salvación del jinete en +1, pero
+      la montura no puede atacar).

@@ -1,6 +1,5 @@
 schema_version: 2
 ruleset: mordheim
-status: staging
 items:
 - id: chainsaw_sword
   kind: combat-equipment
@@ -9,44 +8,25 @@ items:
     es: Espada Motosierra
   effect: >-
     A mechanical nightmare borne of insanity, this ear-splitting device tears through armour with
-    ease. Range: Close Combat. Strength: As user. Special Rules: Fear, Shredder.
+    ease. Range: Close Combat. Strength: As user. Special Rules: Fear, Shredder. Fear: Incredibly
+    loud and belching forth a sickly green smoke, this weapon causes even seasoned soldiers to
+    quiver. A model bearing a Chainsaw Sword causes Fear. Shredder: The Chainsaw sword rips and
+    chews through armour as if it were cloth. All blows from a Chainsaw Sword are at -2 Armour Save.
   effect_i18n:
     es: >-
       Una pesadilla mecánica fruto de la locura, este estruendoso artilugio desgarra la armadura con
       facilidad. Alcance: combate cuerpo a cuerpo. Fuerza: como el usuario. Reglas Especiales:
-      Miedo, Trituradora.
+      Miedo, Trituradora. Miedo: Increíblemente ruidosa y escupiendo un humo verdoso enfermizo, esta
+      arma hace temblar incluso a los soldados más curtidos. Una miniatura que lleve una Espada
+      Motosierra causa Miedo. Trituradora: La Espada Motosierra desgarra y mastica la armadura como
+      si fuera trapo. Todos los golpes de una Espada Motosierra reciben -2 a la salvación por
+      armadura.
   source_refs:
-  - manual: mordheimer.net (Sylvania Supplement)
+  - manual: sylvania-supplement
     printed_page: 0
     section: Special Equipment / Chainsaw Sword
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
-  rarity: null
-  availability_note: Masters of Horror only. Cost 15 + D6 gc.
   combat_status: out_of_scope
-  special_rules:
-  - id: fear
-    name: Fear
-    effect: >-
-      Incredibly loud and belching forth a sickly green smoke, this weapon causes even seasoned
-      soldiers to quiver. A model bearing a Chainsaw Sword causes Fear.
-    effect_i18n:
-      es: >-
-        Increíblemente ruidosa y escupiendo un humo verdoso enfermizo, esta arma hace temblar
-        incluso a los soldados más curtidos. Una miniatura que lleve una Espada Motosierra causa
-        Miedo.
-    name_i18n:
-      es: Miedo
-  - id: shredder
-    name: Shredder
-    effect: >-
-      The Chainsaw sword rips and chews through armour as if it were cloth. All blows from a
-      Chainsaw Sword are at -2 Armour Save.
-    effect_i18n:
-      es: >-
-        La Espada Motosierra desgarra y mastica la armadura como si fuera trapo. Todos los golpes de
-        una Espada Motosierra reciben -2 a la salvación por armadura.
-    name_i18n:
-      es: Trituradora
 - id: electric_trident
   kind: combat-equipment
   name: Electric Trident
@@ -54,55 +34,27 @@ items:
     es: Tridente Eléctrico
   effect: >-
     Nothing quite as shocking as a poke from this little treat. Range: Close Combat. Strength: As
-    user. Special Rules: Zzap!, Shocking, Nail in Boot.
+    user. Special Rules: Zzap!, Shocking, Nail in Boot. Zzap!: So stunning is the Electric Trident
+    that a model wounded by it is considered Stunned on a roll of 2-4. Shocking: On a natural 6
+    To-Hit followed by a natural 6 To-Wound, the Electric Trident discharges a field 2" around the
+    target. All models (save for the bearer of the weapon) are struck with a S3 hit. Nail in Boot:
+    If a D6 roll of 1 occurs on the To-Hit roll with the Trident, the bearer is struck with a S3
+    hit.
   effect_i18n:
     es: >-
       Nada tan estremecedor como un pinchazo de esta pequeña delicia. Alcance: combate cuerpo a
       cuerpo. Fuerza: como el usuario. Reglas Especiales: ¡Zzap!, Conmocionante, Clavo en la Bota.
+      ¡Zzzap!: El Tridente Eléctrico es tan aturdidor que una miniatura herida por él cuenta como
+      Aturdida con un resultado de 2-4. Electrizante: Con un 6 natural por impactar seguido de un 6
+      natural por herir, el Tridente Eléctrico descarga un campo de 2" alrededor del objetivo. Todas
+      las miniaturas (salvo el portador del arma) sufren un impacto de F3. Clavo en la Bota: Si en
+      la tirada por impactar con el Tridente sale un 1 en 1D6, el portador sufre un impacto de F3.
   source_refs:
-  - manual: mordheimer.net (Sylvania Supplement)
+  - manual: sylvania-supplement
     printed_page: 0
     section: Special Equipment / Electric Trident
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
-  rarity: null
-  availability_note: Masters of Horror only. Cost 15 + D6 gc.
   combat_status: out_of_scope
-  special_rules:
-  - id: zzap
-    name: Zzap!
-    effect: >-
-      So stunning is the Electric Trident that a model wounded by it is considered Stunned on a roll
-      of 2-4.
-    effect_i18n:
-      es: >-
-        El Tridente Eléctrico es tan aturdidor que una miniatura herida por él cuenta como Aturdida
-        con un resultado de 2-4.
-    name_i18n:
-      es: ¡Zzzap!
-  - id: shocking
-    name: Shocking
-    effect: >-
-      On a natural 6 To-Hit followed by a natural 6 To-Wound, the Electric Trident discharges a
-      field 2" around the target. All models (save for the bearer of the weapon) are struck with a
-      S3 hit.
-    effect_i18n:
-      es: >-
-        Con un 6 natural por impactar seguido de un 6 natural por herir, el Tridente Eléctrico
-        descarga un campo de 2" alrededor del objetivo. Todas las miniaturas (salvo el portador del
-        arma) sufren un impacto de F3.
-    name_i18n:
-      es: Electrizante
-  - id: nail-in-boot
-    name: Nail in Boot
-    effect: >-
-      If a D6 roll of 1 occurs on the To-Hit roll with the Trident, the bearer is struck with a S3
-      hit.
-    effect_i18n:
-      es: >-
-        Si en la tirada por impactar con el Tridente sale un 1 en 1D6, el portador sufre un impacto
-        de F3.
-    name_i18n:
-      es: Clavo en la Bota
 - id: repeater_pistol_moh
   kind: ranged-weapon
   name: Repeater Pistol (Masters of Horror)
@@ -112,62 +64,37 @@ items:
     A dangerous weapon to those on both ends of the pistol. One always goes out with a Bang! Range:
     8". Strength: 4. Special Rules: -2 Armour Save, Too Much Tinkering, Repeater. This is the
     Masters of Horror variant of the trading-post Repeater Pistol; it has a longer range (8" instead
-    of 6") and unique tinkering and repeater mechanics.
+    of 6") and unique tinkering and repeater mechanics. Save Modifier: Pistols are even better at
+    penetrating armour than their Strength of 4 suggests. A model taking a wound from a Repeater
+    Pistol must take its armour save at -2. Too Much Tinkering: The Repeater Pistol is a heavily
+    modified weapon. To represent its unstable mechanics, each time the trigger is pulled, you must
+    roll a D6. On a roll of 4+, the pistol works fine. On a roll of 2-3, the pistol does nothing.
+    One a roll of 1, roll on the "Misfire" Chart. Repeater: The Repeater Pistol has the possibility
+    of firing more than once during the Shooting phase. For each additional shot, you must roll a D6
+    at -1 on the above table. For example, for one shot, you must roll a 4+, with a roll of a 1
+    forcing a roll on the Misfire Table. For a second shot, you need a 5+, with a roll of 1-2
+    forcing a roll on the misfire table. Of course, it is impossible to attempt more than 3 shots
+    per round.
   effect_i18n:
     es: >-
       Un arma peligrosa para quienes están en ambos extremos de la pistola. Siempre acaba con ¡un
       estampido! Alcance: 8". Fuerza: 4. Reglas Especiales: -2 Salvación por Armadura, Demasiados
       Retoques, Repetición. Esta es la variante de los Maestros del Horror de la Pistola de
       Repetición del puesto comercial; tiene mayor alcance (8" en lugar de 6") y mecánicas únicas de
-      retoques y repetición.
+      retoques y repetición. Modificador de Salvación: Las pistolas perforan la armadura aún mejor
+      de lo que sugiere su Fuerza de 4. Una miniatura que sufra una herida de una Pistola de
+      Repetición debe hacer su salvación por armadura con -2. Demasiados Trucos: La Pistola de
+      Repetición es un arma fuertemente modificada. Para representar su mecánica inestable, cada vez
+      que se aprieta el gatillo debes tirar 1D6: con un 4+ la pistola funciona bien; con un 2-3 la
+      pistola no hace nada; con un 1, tira en la tabla de «Fallo de disparo». Repetidora: La Pistola
+      de Repetición puede disparar más de una vez durante la fase de Disparo. Por cada disparo
+      adicional debes tirar 1D6 con -1 en la tabla anterior. Por ejemplo, para un disparo necesitas
+      un 4+, y un 1 obliga a tirar en la tabla de Fallo de Disparo; para un segundo disparo
+      necesitas un 5+, y un 1-2 obliga a tirar en la tabla de fallo de disparo. Por supuesto, es
+      imposible intentar más de 3 disparos por ronda.
   source_refs:
-  - manual: mordheimer.net (Sylvania Supplement)
+  - manual: sylvania-supplement
     printed_page: 0
     section: Special Equipment / Repeater Pistol
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
-  rarity: null
-  availability_note: Masters of Horror only. Cost 25 + 3D6 gc.
   combat_status: out_of_scope
-  special_rules:
-  - id: save-modifier
-    name: Save Modifier
-    effect: >-
-      Pistols are even better at penetrating armour than their Strength of 4 suggests. A model
-      taking a wound from a Repeater Pistol must take its armour save at -2.
-    effect_i18n:
-      es: >-
-        Las pistolas perforan la armadura aún mejor de lo que sugiere su Fuerza de 4. Una miniatura
-        que sufra una herida de una Pistola de Repetición debe hacer su salvación por armadura con
-        -2.
-    name_i18n:
-      es: Modificador de Salvación
-  - id: too-much-tinkering
-    name: Too Much Tinkering
-    effect: >-
-      The Repeater Pistol is a heavily modified weapon. To represent its unstable mechanics, each
-      time the trigger is pulled, you must roll a D6. On a roll of 4+, the pistol works fine. On a
-      roll of 2-3, the pistol does nothing. One a roll of 1, roll on the "Misfire" Chart.
-    effect_i18n:
-      es: >-
-        La Pistola de Repetición es un arma fuertemente modificada. Para representar su mecánica
-        inestable, cada vez que se aprieta el gatillo debes tirar 1D6: con un 4+ la pistola funciona
-        bien; con un 2-3 la pistola no hace nada; con un 1, tira en la tabla de «Fallo de disparo».
-    name_i18n:
-      es: Demasiados Trucos
-  - id: repeater
-    name: Repeater
-    effect: >-
-      The Repeater Pistol has the possibility of firing more than once during the Shooting phase.
-      For each additional shot, you must roll a D6 at -1 on the above table. For example, for one
-      shot, you must roll a 4+, with a roll of a 1 forcing a roll on the Misfire Table. For a second
-      shot, you need a 5+, with a roll of 1-2 forcing a roll on the misfire table. Of course, it is
-      impossible to attempt more than 3 shots per round.
-    effect_i18n:
-      es: >-
-        La Pistola de Repetición puede disparar más de una vez durante la fase de Disparo. Por cada
-        disparo adicional debes tirar 1D6 con -1 en la tabla anterior. Por ejemplo, para un disparo
-        necesitas un 4+, y un 1 obliga a tirar en la tabla de Fallo de Disparo; para un segundo
-        disparo necesitas un 5+, y un 1-2 obliga a tirar en la tabla de fallo de disparo. Por
-        supuesto, es imposible intentar más de 3 disparos por ronda.
-    name_i18n:
-      es: Repetidora

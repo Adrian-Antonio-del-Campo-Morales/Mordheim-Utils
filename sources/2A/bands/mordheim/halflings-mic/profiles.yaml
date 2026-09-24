@@ -6,59 +6,147 @@ profiles:
   type: hero
   cost: 60
   experience: 20
-  characteristics: {M: 4, WS: 3, BS: 5, S: 3, T: 3, W: 1, I: 5, A: 1, Ld: 9}
-  equipment_lists: [adventurer-equipment-list]
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 5
+    S: 3
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 9
+  equipment_lists:
+  - adventurer-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, shooting, academic, speed, special]
-  source: {manual: mordheimer.net (Mordheim Index Catalog), printed_page: 0, section: 1 Halfling Elder, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'}
-  source_path: [heroes, 1 Halfling Elder]
-  name_i18n: {es: Anciano Mediano}
-  rule_ids: [halfling-elder--leader]
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - speed
+  - special
+  source:
+    manual: mordheim-index-catalog
+    printed_page: 0
+    section: 1 Halfling Elder
+    url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'
+  source_path:
+  - heroes
+  - 1 Halfling Elder
+  name_i18n:
+    es: Anciano Mediano
+  rule_ids:
+  - halfling-elder--leader
   combat_traits: {}
 - id: halfling-cook
   name: Halfling Cook
   type: hero
   cost: 35
   experience: 8
-  characteristics: {M: 4, WS: 4, BS: 2, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 8}
-  equipment_lists: [adventurer-equipment-list]
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - adventurer-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [strength, speed, special]
-  source: {manual: mordheimer.net (Mordheim Index Catalog), printed_page: 0, section: 0-1 Halfling Cook, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'}
-  source_path: [heroes, 0-1 Halfling Cook]
-  name_i18n: {es: Cocinero Mediano}
-  rule_ids: [halfling-cook--master-chef]
+  skill_access:
+  - strength
+  - speed
+  - special
+  source:
+    manual: mordheim-index-catalog
+    printed_page: 0
+    section: 0-1 Halfling Cook
+    url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'
+  source_path:
+  - heroes
+  - 0-1 Halfling Cook
+  name_i18n:
+    es: Cocinero Mediano
+  rule_ids:
+  - halfling-cook--master-chef
   combat_traits: {}
 - id: halfling-thief
   name: Halfling Thief
   type: hero
   cost: 30
   experience: 8
-  characteristics: {M: 4, WS: 2, BS: 4, S: 2, T: 2, W: 1, I: 5, A: 1, Ld: 8}
-  equipment_lists: [halfling-thief-equipment-list]
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 4
+    S: 2
+    T: 2
+    W: 1
+    I: 5
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - halfling-thief-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, shooting, speed, special]
-  source: {manual: mordheimer.net (Mordheim Index Catalog), printed_page: 0, section: 0-1 Halfling Thief, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'}
-  source_path: [heroes, 0-1 Halfling Thief]
-  name_i18n: {es: Ladrón Mediano}
-  rule_ids: [halfling-thief--infiltrator, halfling-thief--pick-locks, halfling-thief--cutpurse]
+  skill_access:
+  - combat
+  - shooting
+  - speed
+  - special
+  source:
+    manual: mordheim-index-catalog
+    printed_page: 0
+    section: 0-1 Halfling Thief
+    url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'
+  source_path:
+  - heroes
+  - 0-1 Halfling Thief
+  name_i18n:
+    es: Ladrón Mediano
+  rule_ids:
+  - halfling-thief--infiltrator
+  - halfling-thief--pick-locks
+  - halfling-thief--cutpurse
   combat_traits: {}
 - id: halfling-youths
   name: Halfling Youths
   type: hero
   cost: 10
   experience: 0
-  characteristics: {M: 4, WS: 2, BS: 3, S: 2, T: 2, W: 1, I: 4, A: 1, Ld: 7}
-  equipment_lists: [adventurer-equipment-list]
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 2
+    T: 2
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - adventurer-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [shooting, speed, special]
-  source: {manual: mordheimer.net (Mordheim Index Catalog), printed_page: 0, section: 0-2 Halfling Youths, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'}
-  source_path: [heroes, 0-2 Halfling Youths]
-  name_i18n: {es: Jóvenes Medianos}
+  skill_access:
+  - shooting
+  - speed
+  - special
+  source:
+    manual: mordheim-index-catalog
+    printed_page: 0
+    section: 0-2 Halfling Youths
+    url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'
+  source_path:
+  - heroes
+  - 0-2 Halfling Youths
+  name_i18n:
+    es: Jóvenes Medianos
   rule_ids: []
   combat_traits: {}
 - id: halfling-scouts
@@ -66,14 +154,31 @@ profiles:
   type: henchman
   cost: 20
   experience: 0
-  characteristics: {M: 4, WS: 2, BS: 4, S: 2, T: 2, W: 1, I: 4, A: 1, Ld: 8}
-  equipment_lists: [adventurer-equipment-list]
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 4
+    S: 2
+    T: 2
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - adventurer-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
   skill_access: []
-  source: {manual: mordheimer.net (Mordheim Index Catalog), printed_page: 0, section: 0-7 Halfling Scouts, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'}
-  source_path: [henchmen, 0-7 Halfling Scouts]
-  name_i18n: {es: Exploradores Medianos}
+  source:
+    manual: mordheim-index-catalog
+    printed_page: 0
+    section: 0-7 Halfling Scouts
+    url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'
+  source_path:
+  - henchmen
+  - 0-7 Halfling Scouts
+  name_i18n:
+    es: Exploradores Medianos
   rule_ids: []
   combat_traits: {}
 - id: halfling-warriors
@@ -81,14 +186,31 @@ profiles:
   type: henchman
   cost: 25
   experience: 0
-  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 8}
-  equipment_lists: [adventurer-equipment-list]
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - adventurer-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
   skill_access: []
-  source: {manual: mordheimer.net (Mordheim Index Catalog), printed_page: 0, section: 0-5 Halfling Warriors, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'}
-  source_path: [henchmen, 0-5 Halfling Warriors]
-  name_i18n: {es: Guerreros Medianos}
+  source:
+    manual: mordheim-index-catalog
+    printed_page: 0
+    section: 0-5 Halfling Warriors
+    url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'
+  source_path:
+  - henchmen
+  - 0-5 Halfling Warriors
+  name_i18n:
+    es: Guerreros Medianos
   rule_ids: []
   combat_traits: {}
 - id: piggies
@@ -96,30 +218,69 @@ profiles:
   type: henchman
   cost: 20
   experience: 0
-  characteristics: {M: 5, WS: 4, BS: 0, S: 3, T: 4, W: 1, I: 3, A: 1, Ld: 4}
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 0
+    S: 3
+    T: 4
+    W: 1
+    I: 3
+    A: 1
+    Ld: 4
   equipment_lists: []
   fixed_equipment: []
   equipment_restrictions:
   - None! Apart from their vicious tempers Piggies don't use weapons and can fight
     without penalties.
   skill_access: []
-  source: {manual: mordheimer.net (Mordheim Index Catalog), printed_page: 0, section: 0-4 Piggies, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'}
-  source_path: [henchmen, 0-4 Piggies]
-  name_i18n: {es: Cerditos}
-  rule_ids: [piggies--animals]
+  source:
+    manual: mordheim-index-catalog
+    printed_page: 0
+    section: 0-4 Piggies
+    url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'
+  source_path:
+  - henchmen
+  - 0-4 Piggies
+  name_i18n:
+    es: Cerditos
+  rule_ids:
+  - piggies--animals
   combat_traits: {}
 - id: village-ogre
   name: Village Ogre
   type: henchman
   cost: 140
   experience: 0
-  characteristics: {M: 6, WS: 3, BS: 2, S: 4, T: 4, W: 3, I: 3, A: 2, Ld: 7}
-  equipment_lists: [village-ogre-equipment-list]
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 2
+    S: 4
+    T: 4
+    W: 3
+    I: 3
+    A: 2
+    Ld: 7
+  equipment_lists:
+  - village-ogre-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
   skill_access: []
-  source: {manual: mordheimer.net (Mordheim Index Catalog), printed_page: 0, section: 0-1 Village Ogre, url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'}
-  source_path: [henchmen, 0-1 Village Ogre]
-  name_i18n: {es: Ogro de la Aldea}
-  rule_ids: [village-ogre--fear, village-ogre--large, village-ogre--skills, village-ogre--slow-witted, village-ogre--protective]
+  source:
+    manual: mordheim-index-catalog
+    printed_page: 0
+    section: 0-1 Village Ogre
+    url: 'https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings'
+  source_path:
+  - henchmen
+  - 0-1 Village Ogre
+  name_i18n:
+    es: Ogro de la Aldea
+  rule_ids:
+  - village-ogre--fear
+  - village-ogre--large
+  - village-ogre--skills
+  - village-ogre--slow-witted
+  - village-ogre--protective
   combat_traits: {}

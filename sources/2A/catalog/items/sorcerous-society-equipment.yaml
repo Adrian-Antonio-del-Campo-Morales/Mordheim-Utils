@@ -1,6 +1,5 @@
 schema_version: 2
 ruleset: mordheim
-status: staging
 items:
 - id: wizards_staff
   kind: combat-equipment
@@ -10,56 +9,29 @@ items:
   effect: >-
     Many Wizards find the use of a staff both practical for their long journeys and to defend them
     when the use of their magical arts will draw suspicion. Range: Close Combat. Strength: As User.
-    Special Rules: Parry, 2 Handed, Concussion.
+    Special Rules: Parry, 2 Handed, Concussion. Parry: A warrior armed with a Wizard's Staff may
+    attempt to Parry a blow, just as a sword. 2 Handed: A model using a Wizard's Staff may not use a
+    shield, buckler or additional weapon in close combat. If the model has a shield, it receives a
+    +1 bonus to his armour save versus shooting attacks. Concussion: When using a Wizard's Staff, a
+    roll of 2-4 is treated as stunned when rolling on the injury table.
   effect_i18n:
     es: >-
       A muchos Magos les resulta práctico el bastón tanto para sus largos viajes como para
       defenderse cuando el uso de sus artes mágicas podría levantar sospechas. Alcance: combate
       cuerpo a cuerpo. Fuerza: como el usuario. Reglas Especiales: Parada, A Dos Manos, Conmoción.
+      Parada: Un guerrero armado con un Bastón de Mago puede intentar Parar un golpe, igual que con
+      una espada. A Dos Manos: Una miniatura que use un Bastón de Mago no puede usar escudo, broquel
+      ni arma adicional en combate cuerpo a cuerpo. Si la miniatura lleva escudo, recibe un
+      bonificador de +1 a su salvación por armadura contra ataques de disparo. Conmoción: Al usar un
+      Bastón de Mago, un resultado de 2-4 se considera aturdido al tirar en la tabla de heridas.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Special Equipment / Wizard's Staff
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
-  rarity: null
-  availability_note: Common (10 gc).
   combat_status: out_of_scope
-  special_rules:
-  - id: parry
-    name: Parry
-    effect: A warrior armed with a Wizard's Staff may attempt to Parry a blow, just as a sword.
-    effect_i18n:
-      es: >-
-        Un guerrero armado con un Bastón de Mago puede intentar Parar un golpe, igual que con una
-        espada.
-    name_i18n:
-      es: Parada
-  - id: two-handed
-    name: 2 Handed
-    effect: >-
-      A model using a Wizard's Staff may not use a shield, buckler or additional weapon in close
-      combat. If the model has a shield, it receives a +1 bonus to his armour save versus shooting
-      attacks.
-    effect_i18n:
-      es: >-
-        Una miniatura que use un Bastón de Mago no puede usar escudo, broquel ni arma adicional en
-        combate cuerpo a cuerpo. Si la miniatura lleva escudo, recibe un bonificador de +1 a su
-        salvación por armadura contra ataques de disparo.
-    name_i18n:
-      es: A Dos Manos
-  - id: concussion
-    name: Concussion
-    effect: >-
-      When using a Wizard's Staff, a roll of 2-4 is treated as stunned when rolling on the injury
-      table.
-    effect_i18n:
-      es: >-
-        Al usar un Bastón de Mago, un resultado de 2-4 se considera aturdido al tirar en la tabla de
-        heridas.
-    name_i18n:
-      es: Conmoción
 - id: society_familiar
-  kind: miscellaneous
+  kind: out-of-scope
   name: Familiar
   name_i18n:
     es: Familiar
@@ -72,7 +44,20 @@ items:
     Profiles — Dog: M6 WS4 S3 T3 W1 I4 A1 Ld5; Cat: M6 WS4 S2 T2 W1 I6 A1 Ld5; Raven: M2 WS2 S1 T1
     W1 I4 A1 Ld5; Viper: M3 WS4 S2/4* T1 W1 I5 A1 Ld5. Small Target: models shooting at a Familiar
     suffer a -1 to their BS due to the small size of the target. (* Viper: S2, or S4 vs targets
-    susceptible to poison.)
+    susceptible to poison.) Small Target: Models shooting at a Familiar suffer a -1 to their BS due
+    to the small size of the target. Loyal (Dog): A Dog Familiar that remains within 6 inches of its
+    wizard is immune to fear. Sniff (Dog): A Dog has a keen sense of smell and can be used to aid
+    during exploration. The warband may roll one additional dice and may use the result of this dice
+    rather than that of one of the surviving heroes. Go for the Eyes! (Cat): If both attacks
+    successfully wound in one round then the enemy model is blinded and may not fight back until
+    their next turn. If only one attack wounds then the affected model suffers a -1 to both WS & BS
+    until the beginning of their next turn. Fly (Raven): May fly up to 12 inches anywhere on the
+    table. I See You! (Raven): Spells may be cast on models if they are within range of either the
+    Wizard or the Raven. Therefore, a spell with a 12-inch range may be cast on models within 12
+    inches of either model. Poison (Viper): Should a Viper roll a 6 to hit, the attack automatically
+    wounds with no armour save. Any other successful hit result on a target susceptible to poison
+    will suffer a S4 hit. If the creature is immune to poison then treat the attack as S2. Coiled
+    and Ready (Viper): A Viper is not easily caught unaware. A Viper has Lightning Reflexes.
   effect_i18n:
     es: >-
       Los Familiares son animales que comparten una conexión especial con un Mago concreto. Cada
@@ -83,96 +68,26 @@ items:
       reglas de rareza. Perfiles — Perro: M6 HA4 F3 R3 H1 I4 A1 Ld5; Gato: M6 HA4 F2 R2 H1 I6 A1
       Ld5; Cuervo: M2 HA2 F1 R1 H1 I4 A1 Ld5; Víbora: M3 HA4 F2/4* R1 H1 I5 A1 Ld5. Objetivo
       Pequeño: las miniaturas que disparan a un Familiar sufren -1 a su HP debido al pequeño tamaño
-      del objetivo. (* Víbora: F2, o F4 contra objetivos susceptibles al veneno.)
+      del objetivo. (* Víbora: F2, o F4 contra objetivos susceptibles al veneno.) Objetivo Pequeño:
+      Las miniaturas que disparan a un Familiar sufren -1 a su HP debido al pequeño tamaño del
+      objetivo. Leal (Perro): Un Familiar Perro que permanezca a 6 pulgadas de su mago es inmune al
+      miedo. Olfateo (Perro): El Perro tiene un olfato muy fino y puede usarse para ayudar durante
+      la exploración. La banda puede tirar un dado adicional y usar el resultado de este dado en
+      lugar del de uno de los héroes supervivientes. ¡A los Ojos! (Gato): Si ambos ataques hieren
+      con éxito en la misma ronda, la miniatura enemiga queda cegada y no puede devolver los golpes
+      hasta su siguiente turno. Si solo uno de los ataques hiere, la miniatura afectada sufre -1 a
+      HA y HP hasta el comienzo de su siguiente turno. Volar (Cuervo): Puede volar hasta 12 pulgadas
+      a cualquier punto de la mesa. ¡Te Veo! (Cuervo): Los hechizos pueden lanzarse sobre miniaturas
+      que estén dentro del alcance del Mago o del Cuervo. Por tanto, un hechizo con alcance de 12
+      pulgadas puede lanzarse sobre miniaturas a 12 pulgadas de cualquiera de los dos modelos.
+      Veneno (Víbora): Si la Víbora saca un 6 por impactar, el ataque hiere automáticamente sin
+      salvación por armadura. Cualquier otro impacto exitoso contra un objetivo susceptible al
+      veneno inflige un impacto de F4. Si la criatura es inmune al veneno, considera el ataque como
+      F2. En Guardia (Víbora): No es fácil pillarse a una Víbora desprevenida. Una Víbora tiene
+      Reflejos Súbitos.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Special Equipment / Familiar
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/sorcerous-society
-  rarity: 9
-  availability_note: 20+2D6 gc; Heroes only; one per Wizard.
   combat_status: out_of_scope
-  special_rules:
-  - id: small-target
-    name: Small Target
-    effect: >-
-      Models shooting at a Familiar suffer a -1 to their BS due to the small size of the target.
-    effect_i18n:
-      es: >-
-        Las miniaturas que disparan a un Familiar sufren -1 a su HP debido al pequeño tamaño del
-        objetivo.
-    name_i18n:
-      es: Objetivo Pequeño
-  - id: dog-loyal
-    name: Loyal (Dog)
-    effect: A Dog Familiar that remains within 6 inches of its wizard is immune to fear.
-    effect_i18n:
-      es: Un Familiar Perro que permanezca a 6 pulgadas de su mago es inmune al miedo.
-    name_i18n:
-      es: Leal (Perro)
-  - id: dog-sniff
-    name: Sniff (Dog)
-    effect: >-
-      A Dog has a keen sense of smell and can be used to aid during exploration. The warband may
-      roll one additional dice and may use the result of this dice rather than that of one of the
-      surviving heroes.
-    effect_i18n:
-      es: >-
-        El Perro tiene un olfato muy fino y puede usarse para ayudar durante la exploración. La
-        banda puede tirar un dado adicional y usar el resultado de este dado en lugar del de uno de
-        los héroes supervivientes.
-    name_i18n:
-      es: Olfateo (Perro)
-  - id: cat-go-for-the-eyes
-    name: Go for the Eyes! (Cat)
-    effect: >-
-      If both attacks successfully wound in one round then the enemy model is blinded and may not
-      fight back until their next turn. If only one attack wounds then the affected model suffers a
-      -1 to both WS & BS until the beginning of their next turn.
-    effect_i18n:
-      es: >-
-        Si ambos ataques hieren con éxito en la misma ronda, la miniatura enemiga queda cegada y no
-        puede devolver los golpes hasta su siguiente turno. Si solo uno de los ataques hiere, la
-        miniatura afectada sufre -1 a HA y HP hasta el comienzo de su siguiente turno.
-    name_i18n:
-      es: ¡A los Ojos! (Gato)
-  - id: raven-fly
-    name: Fly (Raven)
-    effect: May fly up to 12 inches anywhere on the table.
-    effect_i18n:
-      es: Puede volar hasta 12 pulgadas a cualquier punto de la mesa.
-    name_i18n:
-      es: Volar (Cuervo)
-  - id: raven-i-see-you
-    name: I see you! (Raven)
-    effect: >-
-      Spells may be cast on models if they are within range of either the Wizard or the Raven.
-      Therefore, a spell with a 12-inch range may be cast on models within 12 inches of either
-      model.
-    effect_i18n:
-      es: >-
-        Los hechizos pueden lanzarse sobre miniaturas que estén dentro del alcance del Mago o del
-        Cuervo. Por tanto, un hechizo con alcance de 12 pulgadas puede lanzarse sobre miniaturas a
-        12 pulgadas de cualquiera de los dos modelos.
-    name_i18n:
-      es: ¡Te Veo! (Cuervo)
-  - id: viper-poison
-    name: Poison (Viper)
-    effect: >-
-      Should a Viper roll a 6 to hit, the attack automatically wounds with no armour save. Any other
-      successful hit result on a target susceptible to poison will suffer a S4 hit. If the creature
-      is immune to poison then treat the attack as S2.
-    effect_i18n:
-      es: >-
-        Si la Víbora saca un 6 por impactar, el ataque hiere automáticamente sin salvación por
-        armadura. Cualquier otro impacto exitoso contra un objetivo susceptible al veneno inflige un
-        impacto de F4. Si la criatura es inmune al veneno, considera el ataque como F2.
-    name_i18n:
-      es: Veneno (Víbora)
-  - id: viper-coiled-and-ready
-    name: Coiled and Ready (Viper)
-    effect: A Viper is not easily caught unaware. A Viper has Lightning Reflexes.
-    effect_i18n:
-      es: No es fácil pillarse a una Víbora desprevenida. Una Víbora tiene Reflejos Súbitos.
-    name_i18n:
-      es: En guardia (Víbora)

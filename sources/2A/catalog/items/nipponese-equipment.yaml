@@ -1,6 +1,5 @@
 schema_version: 2
 ruleset: mordheim
-status: staging
 items:
 - id: kanabo
   kind: combat-equipment
@@ -10,81 +9,52 @@ items:
   effect: >-
     Forged from the heartwood of ancient oaks and reinforced with iron, the Kanabo is a fearsome
     weapon wielded by Nipponese warriors, its brutal strikes crushing bone and rending armor with
-    relentless force. Range: Close Combat. Strength: As user +1.
+    relentless force. Range: Close Combat. Strength: As user +1. Two-Handed: A model armed with a
+    double-handed weapon may not use a shield, buckler or additional weapon in close combat. If the
+    model is equipped with a shield he will still get a +1 bonus to his armour save against
+    shooting. Concussion: Hammers and other bludgeoning weapons are excellent to use for striking
+    your enemy senseless. When using a hammer, club or mace, a roll of 2-4 is treated as stunned
+    when rolling to see the extent of a model's injuries.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Nippon Special Equipment / Kanabo
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
-  rarity: null
-  availability_note: Common (15 gc).
   combat_status: out_of_scope
-  special_rules:
-  - id: two-handed
-    name: Two-handed
-    name_i18n:
-      es: A Dos Manos
-    effect: >-
-      A model armed with a double-handed weapon may not use a shield, buckler or additional weapon
-      in close combat. If the model is equipped with a shield he will still get a +1 bonus to his
-      armour save against shooting.
-    effect_i18n:
-      es: >-
-        Una miniatura armada con un arma a dos manos no puede usar escudo, broquel ni arma adicional
-        en combate cuerpo a cuerpo. Si la miniatura está equipada con escudo, seguirá obteniendo el
-        bonificador de +1 a su salvación por armadura contra disparos.
-  - id: concussion
-    name: Concussion
-    name_i18n:
-      es: Conmoción
-    effect: >-
-      Hammers and other bludgeoning weapons are excellent to use for striking your enemy senseless.
-      When using a hammer, club or mace, a roll of 2-4 is treated as stunned when rolling to see the
-      extent of a model's injuries.
-    effect_i18n:
-      es: >-
-        Los martillos y otras armas contundentes son excelentes para dejar sin sentido al enemigo.
-        Al usar un martillo, garrote o maza, un resultado de 2-4 se considera aturdido al tirar para
-        ver la extensión de las heridas de una miniatura.
   effect_i18n:
     es: >-
       Forjado con el duramen de robles ancestrales y reforzado con hierro, el Kanabo es un arma
       temible empuñada por los guerreros nipones; sus brutales golpes trituran huesos y desgarran
       armaduras con fuerza implacable. Alcance: combate cuerpo a cuerpo. Fuerza: como el usuario +1.
+      A Dos Manos: Una miniatura armada con un arma a dos manos no puede usar escudo, broquel ni
+      arma adicional en combate cuerpo a cuerpo. Si la miniatura está equipada con escudo, seguirá
+      obteniendo el bonificador de +1 a su salvación por armadura contra disparos. Conmoción: Los
+      martillos y otras armas contundentes son excelentes para dejar sin sentido al enemigo. Al usar
+      un martillo, garrote o maza, un resultado de 2-4 se considera aturdido al tirar para ver la
+      extensión de las heridas de una miniatura.
 - id: sashimono
-  kind: miscellaneous
+  kind: combat-equipment
   name: Sashimono
   name_i18n:
     es: Sashimono
   effect: >-
     Emblazoned with the colors of honor and bearing the proud insignia of their clan, the Sashimono
     adorns the back of Nipponese warriors, fluttering defiantly in the wind as they march into
-    battle, a symbol of their unwavering resolve and undying loyalty.
+    battle, a symbol of their unwavering resolve and undying loyalty. Clan Banner: A model wearing a
+    Sashimono can re-roll all non-rout related leadership checks but must keep the second roll.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Nippon Special Equipment / Sashimono
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
-  rarity: null
-  availability_note: Common (15 gc).
   combat_status: out_of_scope
-  special_rules:
-  - id: clan-banner
-    name: Clan Banner
-    name_i18n:
-      es: Estandarte del Clán
-    effect: >-
-      A model wearing a Sashimono can re-roll all non-rout related leadership checks but must keep
-      the second roll.
-    effect_i18n:
-      es: >-
-        Una miniatura que lleve un Sashimono puede repetir todas las pruebas de liderazgo no
-        relacionadas con la huida, pero debe conservar la segunda tirada.
   effect_i18n:
     es: >-
       Decorado con los colores del honor y luciendo el orgulloso emblema de su clán, el Sashimono
       adorna la espalda de los guerreros nipones, ondeando desafiante al viento mientras marchan a
-      la batalla, símbolo de su determinación inquebrantable y su lealtad eterna.
+      la batalla, símbolo de su determinación inquebrantable y su lealtad eterna. Estandarte del
+      Clán: Una miniatura que lleve un Sashimono puede repetir todas las pruebas de liderazgo no
+      relacionadas con la huida, pero debe conservar la segunda tirada.
 - id: horo
   kind: armour
   name: Horo
@@ -94,34 +64,23 @@ items:
     Woven from the finest silk and adorned with intricate patterns, the Horo drapes over the
     shoulders of Nipponese warriors like a cloak of whispers, offering protection from the biting
     winds of battle while concealing their movements with ethereal grace, an emblem of both elegance
-    and stealth amidst the chaos of war.
+    and stealth amidst the chaos of war. Silk Shadow: A model wearing a horo receives a +1 to all
+    armor saves (6+ if no armor is worn) against ranged weapons, as long as they are mounted on a
+    horse or warhorse.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Nippon Special Equipment / Horo
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
-  rarity: 6
-  availability_note: 10 gc.
   combat_status: out_of_scope
-  special_rules:
-  - id: silk-shadow
-    name: Silk Shadow
-    name_i18n:
-      es: Sombra de Seda
-    effect: >-
-      A model wearing a horo receives a +1 to all armor saves (6+ if no armor is worn) against
-      ranged weapons, as long as they are mounted on a horse or warhorse.
-    effect_i18n:
-      es: >-
-        Una miniatura que lleve un horo recibe +1 a todas las salvaciones por armadura (6+ si no
-        lleva armadura) contra armas a distancia, siempre que esté montada en un caballo o corcel de
-        guerra.
   effect_i18n:
     es: >-
       Tejido con la mejor seda y adornado con intrincados motivos, el Horo se drapea sobre los
       hombros de los guerreros nipones como una capa de susurros, ofreciendo protección contra los
       vientos cortantes de la batalla mientras oculta sus movimientos con una gracia etérea; emblema
-      a la vez de elegancia y sigilo en medio del caos de la guerra.
+      a la vez de elegancia y sigilo en medio del caos de la guerra. Sombra de Seda: Una miniatura
+      que lleve un horo recibe +1 a todas las salvaciones por armadura (6+ si no lleva armadura)
+      contra armas a distancia, siempre que esté montada en un caballo o corcel de guerra.
 - id: kusarigama
   kind: combat-equipment
   name: Kusarigama
@@ -131,52 +90,29 @@ items:
     Forged in the crucible of martial tradition, the Kusarigama is a deadly combination of chain and
     sickle, wielded by skilled Nipponese warriors with lethal precision. Its whirling arc strikes
     fear into the hearts of foes, weaving a dance of death that leaves no opportunity for escape.
-    Range: Close Combat. Strength: As user.
+    Range: Close Combat. Strength: As user. Two-Handed: A model armed with a double-handed weapon
+    may not use a shield, buckler or additional weapon in close combat. If the model is equipped
+    with a shield he will still get a +1 bonus to his armour save against shooting. Cannot Be
+    Parried: A model attacked by a Kusarigama may not make parries with a sword or buckler. Chain
+    Strike: Due to the length of the chain attached to the weapon, a model not engaged in combat
+    that has a Kusarigama can force enemies who fail a charge against them or friendlies within 3"
+    to become knocked down.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Nippon Special Equipment / Kusarigama
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
-  rarity: 8
-  availability_note: 20 gc.
   combat_status: out_of_scope
-  special_rules:
-  - id: two-handed
-    name: Two-handed
-    name_i18n:
-      es: A Dos Manos
-    effect: >-
-      A model armed with a double-handed weapon may not use a shield, buckler or additional weapon
-      in close combat. If the model is equipped with a shield he will still get a +1 bonus to his
-      armour save against shooting.
-    effect_i18n:
-      es: >-
-        Una miniatura armada con un arma a dos manos no puede usar escudo, broquel ni arma adicional
-        en combate cuerpo a cuerpo. Si la miniatura está equipada con escudo, seguirá obteniendo el
-        bonificador de +1 a su salvación por armadura contra disparos.
-  - id: cannot-be-parried
-    name: Cannot be parried
-    name_i18n:
-      es: No Puede Pararse
-    effect: A model attacked by a Kusarigama may not make parries with a sword or buckler.
-    effect_i18n:
-      es: Una miniatura atacada por un Kusarigama no puede hacer paradas con espada ni broquel.
-  - id: chain-strike
-    name: Chain Strike
-    name_i18n:
-      es: Golpe de Cadena
-    effect: >-
-      Due to the length of the chain attached to the weapon, a model not engaged in combat that has
-      a Kusarigama can force enemies who fail a charge against them or friendlies within 3" to
-      become knocked down.
-    effect_i18n:
-      es: >-
-        Debido a la longitud de la cadena unida al arma, una miniatura que no esté en combate y que
-        porte un Kusarigama puede hacer que los enemigos que fallen una carga contra ella, o los
-        amistosos dentro de 3", queden derribados.
   effect_i18n:
     es: >-
       Forjado en el crisol de la tradición marcial, el Kusarigama es una combinación letal de cadena
       y hoz, empuñada por diestros guerreros nipones con precisión letal. Su arco giratorio siembra
       el miedo en el corazón de los enemigos, tejiendo una danza de muerte que no deja oportunidad
-      de escape. Alcance: combate cuerpo a cuerpo. Fuerza: como el usuario.
+      de escape. Alcance: combate cuerpo a cuerpo. Fuerza: como el usuario. A Dos Manos: Una
+      miniatura armada con un arma a dos manos no puede usar escudo, broquel ni arma adicional en
+      combate cuerpo a cuerpo. Si la miniatura está equipada con escudo, seguirá obteniendo el
+      bonificador de +1 a su salvación por armadura contra disparos. No Puede Pararse: Una miniatura
+      atacada por un Kusarigama no puede hacer paradas con espada ni broquel. Golpe de Cadena:
+      Debido a la longitud de la cadena unida al arma, una miniatura que no esté en combate y que
+      porte un Kusarigama puede hacer que los enemigos que fallen una carga contra ella, o los
+      amistosos dentro de 3", queden derribados.

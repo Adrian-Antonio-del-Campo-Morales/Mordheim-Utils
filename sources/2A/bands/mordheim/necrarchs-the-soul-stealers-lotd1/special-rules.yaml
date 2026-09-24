@@ -351,7 +351,7 @@ rules:
       binding: null
       reason: >-
         Out of scope: movement-phase run/charge rules are outside the duel scope.
-  name: May not Run
+  name: May Not Run
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -493,7 +493,7 @@ rules:
       binding: null
       reason: >-
         Out of scope: movement-phase run/charge rules are outside the duel scope.
-  name: May not Run
+  name: May Not Run
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -892,5 +892,33 @@ rules:
       de su desaparición. Mientras el Necrarca esté a 4 pulgadas de un secuaz no-muerto, este solo
       puede ser puestos Fuera de Combate con un resultado natural de 6. Disponible solo para el
       Líder.
+  applies_to:
+    band: true
+- id: band--racial-maximum
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.band.racial-maximum
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: characteristic-increase caps on advancement are outside the duel scope.
+  name: Racial Maximum
+  effect: >-
+    Necrarch Vampires may never increase their characteristics beyond the following maximums: M 6,
+    WS 4, BS 4, S 6, T 6, W 4, I 9, A 3, Ld 10.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Racial Maximum
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Máximo Racial
+  effect_i18n:
+    es: >-
+      Los Vampiros Necrarca nunca pueden aumentar sus características más allá de los siguientes
+      máximos: M 6, HA 4, HP 4, F 6, R 6, H 4, I 9, A 3, L 10.
   applies_to:
     band: true
