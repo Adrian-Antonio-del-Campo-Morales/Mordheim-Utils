@@ -182,7 +182,8 @@ def load(path: str) -> dict:
 def save(path: str, doc: dict, write: bool) -> None:
     if not write:
         return
-    with open(path, 'w', encoding='utf-8') as handle:
+    # newline='\n': the maintained YAML is LF-only (see .gitattributes).
+    with open(path, 'w', encoding='utf-8', newline='\n') as handle:
         yaml.safe_dump(doc, handle, allow_unicode=True, sort_keys=False,
                        default_flow_style=False, width=100)
 

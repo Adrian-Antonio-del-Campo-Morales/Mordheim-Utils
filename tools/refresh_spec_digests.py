@@ -83,6 +83,7 @@ def main() -> int:
             spec_file.write_text(
                 yaml.safe_dump(doc, sort_keys=False, allow_unicode=True, width=100),
                 encoding="utf-8",
+                newline="\n",
             )
             changed_files += 1
 

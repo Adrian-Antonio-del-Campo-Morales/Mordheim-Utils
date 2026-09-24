@@ -15,7 +15,7 @@
     },
     "grade": {
       "description": "Grade of the file, mirroring the hiring grades of the campaign catalogue.",
-      "enum": ["core", "1a", "1b", "1c", "2a"]
+      "enum": ["core", "1a", "1b", "1c", "2a", "2b"]
     },
     "profiles": {
       "type": "array",
@@ -68,7 +68,7 @@
         "kind": { "const": "dramatis-personae" },
         "grade": {
           "description": "Grade of the profile; it repeats the file's grade so a record keeps its source when moved.",
-          "enum": ["core", "1a", "1b", "1c", "2a"]
+          "enum": ["core", "1a", "1b", "1c", "2a", "2b"]
         },
         "publication": {
           "description": "Publication the character was printed in, e.g. `Town Cryer 21, Khemri`.",
@@ -209,7 +209,11 @@
           "description": "Canonical `item_id` of `catalog/items/`.",
           "$ref": "defs.schema.json#/$defs/id"
         },
-        "quantity": { "$ref": "defs.schema.json#/$defs/amount" }
+        "quantity": { "$ref": "defs.schema.json#/$defs/amount" },
+        "notes": {
+          "description": "Editorial note on the reference, not on the item: how the source's wording resolves to this canonical id, or what the printed entry says about carrying it. The same field the band equipment lists carry on their entries.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        }
       }
     },
     "unique_equipment": {

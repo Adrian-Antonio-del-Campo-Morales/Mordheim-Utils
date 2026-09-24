@@ -4,6 +4,7 @@
  * presented to a Spanish reader.
  */
 
+import type { ResolvedKbText } from "../../adapters/knowledge-reader/presentation";
 export type DistanceLocale = "en" | "es";
 
 const FIXED_DISTANCE_CM: Readonly<Record<string, string>> = {
@@ -66,6 +67,8 @@ function adaptSpecialCase(text: string, recordId: string): string {
 }
 
 /** Convert display text for the requested locale without changing English. */
+export function adaptDistanceText(text: ResolvedKbText, locale: DistanceLocale, recordId?: string): ResolvedKbText;
+export function adaptDistanceText(text: string, locale: DistanceLocale, recordId?: string): string;
 export function adaptDistanceText(
   text: string,
   locale: DistanceLocale,

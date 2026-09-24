@@ -190,7 +190,8 @@ def main() -> int:
                     output += ["  effect: >-", *folded(en, 4), "  effect_i18n:", "    es: >-", *folded(es, 6)]
                     inserted.add(current)
                 output.append(line)
-            path.write_text("\n".join(output) + "\n", encoding="utf-8")
+            # newline="\n": the maintained YAML is LF-only (see .gitattributes).
+            path.write_text("\n".join(output) + "\n", encoding="utf-8", newline="\n")
     print(f"imported={imported} unresolved={unresolved} pages={len(cache)} write={args.write}")
     return 0 if unresolved == 0 else 1
 

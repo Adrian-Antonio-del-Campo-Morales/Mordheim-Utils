@@ -84,6 +84,7 @@ USAGE = {
     "combat-lab": "python tools/mordheim-utils.py combat-lab",
     "warband-manager": "python tools/mordheim-utils.py warband-manager",
     "doctor": "python tools/mordheim-utils.py doctor",
+    "check-presentation": "python tools/mordheim-utils.py check-presentation",
     "build-native": "python tools/mordheim-utils.py build-native [pip install args ...]",
 }
 
@@ -98,6 +99,7 @@ COMMANDS = (
     ("coverage-gate", "measure deterministic engine coverage and check the drift budget"),
     ("calibrate", "measure this machine's engine optima and install the calibration profile"),
     ("tests", "run the pytest suites, filtered by --scope"),
+    ("check-presentation", "test the GUI text detector and run its strict, deep audit"),
     ("run-ci", "run the local equivalent of the CI validation gates before Pages publishing"),
     ("combine-kb", "combine the KB YAML files into one .txt per subdirectory"),
     ("build-native", "compile the native Cython backend (editable install)"),
@@ -109,7 +111,7 @@ COMMAND_GROUPS = (
     ("Applications", ("combat-lab", "warband-manager")),
     ("Knowledge base", ("verify", "report")),
     ("Engines", ("benchmark", "parity", "coverage-gate", "calibrate")),
-    ("Repository", ("tests", "run-ci", "combine-kb", "build-native", "doctor")),
+    ("Repository", ("tests", "check-presentation", "run-ci", "combine-kb", "build-native", "doctor")),
 )
 
 COMBINE_KB_SCRIPT = REPO_ROOT / "tools" / "kb" / "combine_kb_yaml.py"
@@ -150,6 +152,19 @@ def _print_usage(name: str, detail: str) -> int:
     print(f"usage: {USAGE[name]}")
     print(f"\n{detail}")
     return 0
+
+
+def check_presentation_command(args: list[str]) -> int:
+    if any(argument in ("-h", "--help") for argument in args):
+        return _print_usage(
+            "check-presentation",
+            "Run the web detector tests and strict, deep GUI text audit. "
+            "Requires npm and installed web dependencies. Findings return a "
+            "nonzero exit code; reports: build/generated/gui-text-audit-deep.{json,md}.")
+    if args:
+        print("check-presentation: no arguments expected", file=sys.stderr)
+        return 2
+    return _run_in(WEB_APP, "npm", "run", "check:presentation")
 
 
 def combat_lab_command(args: list[str]) -> int:
@@ -501,6 +516,8 @@ def main(argv: list[str] | None = None) -> int:
         return report_command(args)
     if name == "tests":
         return tests_command(args)
+    if name == "check-presentation":
+        return check_presentation_command(args)
     if name == "run-ci":
         return run_ci_command(args)
     if name == "combine-kb":

@@ -13,13 +13,18 @@ This pass removes ``effect`` / ``effect_i18n`` from such rules and archives the
 retracted wording (EN + ES) in ``sources/<tree>/retired-rule-restatements.md`` so the
 band's own transcription is not lost, only relocated out of a slot nothing reads.
 
+This is a **KB-wide guard**, not a staging-only pass: the invariant holds for every
+maintained tree, so the tool defaults to checking all of them (the active KB plus any
+staging tree) and accepts any tree that exists under ``sources/``.
+
 Safety: every file is reloaded after the edit and compared leaf by leaf; the script
 aborts unless the *only* difference is the removal of those two keys.
 
 Usage::
 
-    python tools/knowledge/strip_rule_ref_restatements.py                 # dry run
+    python tools/knowledge/strip_rule_ref_restatements.py                 # dry run, every tree
     python tools/knowledge/strip_rule_ref_restatements.py --write
+    python tools/knowledge/strip_rule_ref_restatements.py --tree knowledge
     python tools/knowledge/strip_rule_ref_restatements.py --tree 2B --write
 """
 from __future__ import annotations
@@ -31,7 +36,9 @@ import sys
 
 import yaml
 
-TREES = ('2A', '2B')
+# Maintained trees the default run covers: the active KB and the staging trees.
+# ``--tree <name>`` accepts any directory that exists under sources/.
+TREES = ('knowledge', '2A', '2B')
 
 
 def load(path: str) -> dict:
@@ -93,11 +100,18 @@ def archive_markdown(tree: str, rows: list[dict]) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--tree', default='both', help='2A, 2B or both')
+    parser.add_argument('--tree', default='all',
+                        help="tree under sources/ to check, or 'all' (default: "
+                             + ', '.join(TREES) + ')')
     parser.add_argument('--write', action='store_true')
     args = parser.parse_args()
 
-    trees = TREES if args.tree == 'both' else (args.tree,)
+    trees = TREES if args.tree == 'all' else (args.tree,)
+    unknown = [tree for tree in trees if not os.path.isdir(os.path.join('sources', tree))]
+    if unknown:
+        print('unknown tree(s): ' + ', '.join(f'sources/{tree}' for tree in unknown),
+              file=sys.stderr)
+        return 2
     failures = 0
     for tree in trees:
         rows: list[dict] = []

@@ -7,11 +7,11 @@ ignored local cache ``build/cache/2b-pdfs/``.
 
 Commands::
 
-    python tools/knowledge/ingest_2b.py discover    # compare Broheim rows to the manifest
-    python tools/knowledge/ingest_2b.py download    # fetch PDFs, compute SHA-256, log redirects
-    python tools/knowledge/ingest_2b.py extract     # draft text extraction into the cache
-    python tools/knowledge/ingest_2b.py validate    # validate the staging tree
-    python tools/knowledge/ingest_2b.py report      # progress by band and source
+    python tools/ingestion/ingest_2b.py discover    # compare Broheim rows to the manifest
+    python tools/ingestion/ingest_2b.py download    # fetch PDFs, compute SHA-256, log redirects
+    python tools/ingestion/ingest_2b.py extract     # draft text extraction into the cache
+    python tools/ingestion/ingest_2b.py validate    # validate the staging tree
+    python tools/ingestion/ingest_2b.py report      # progress by band and source
 
 Manifest rows progress through::
 

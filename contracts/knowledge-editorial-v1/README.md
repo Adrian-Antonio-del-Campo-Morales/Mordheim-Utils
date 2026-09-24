@@ -177,10 +177,39 @@ accept them explicitly:
 The contract is enforced by the structural gate and by the test suite:
 
 ```powershell
-python tools/mordheim-utils.py validate          # structure, connections, editorial schemas
+python tools/mordheim-utils.py verify --structural  # structure, connections, editorial schemas
 python tools/knowledge/audit_schema_strictness.py  # how the schemas relate to the data
+python tools/knowledge/audit_staging_contract.py  # the staged 2A/2B packages and catalogues
 python -m pytest tests/knowledge/test_editorial_schemas.py
 ```
+
+The staged warbands are held to the same contract before they are promoted.
+`tools/knowledge/audit_staging_contract.py` runs four passes over `sources/2A`
+and `sources/2B`:
+
+* **schema** — the four documents of every package, against the same schemas the
+  knowledge base is validated with. This is the gate that stays green.
+* **vocabulary** — the values of the fields the contract leaves open that the
+  knowledge base has never used: a `2a`/`2b` grade and category, and source labels
+  where the KB keeps a registered id.
+* **catalogue** — the staged items, Hired Sword and Dramatis profiles, market,
+  magic and campaign documents against the schema of the KB document that will
+  claim them at promotion, plus any catalogue YAML no destination claims. These
+  are the classes `sources/2B/promotion-schema-plan.md` decides on, and
+  `tests/knowledge/test_editorial_schemas.py` pins them, so the plan cannot go
+  stale behind the trees. That list is now empty in both trees: the plan's
+  remaining work (the hireling split, the campaign side and the magic envelope)
+  is applied, and a new class fails the test until the plan declares it. A file
+  promotion leaves behind (`catalog/items/missing-item-stubs.yaml`) is a declared
+  decision the pass names, not an unclaimed document.
+* **naming** — the files `tools/normalize_names.py --check` would rewrite. The
+  title-case policy of `name` / `name_i18n.es` is a gate for the knowledge base
+  but not for the staging trees, so this pass names the files a promotion copy
+  has to normalize first.
+
+A package can hold the promoted shape and still speak the staging dialect, which
+is why those values are reported separately instead of being forced into an enum
+here.
 
 `mordheim_knowledge.editorial_schemas` reads the schemas from this directory,
 merges `defs.schema.json` into the document schema before validating (so the

@@ -17,6 +17,7 @@ COMMANDS = (
     "coverage-gate",
     "calibrate",
     "tests",
+    "check-presentation",
     "run-ci",
     "combine-kb",
     "build-native",
@@ -64,6 +65,21 @@ def test_bare_invocation_prints_help(cli, capsys):
 def test_unknown_command_is_rejected(cli, capsys):
     assert cli.main(["does-not-exist"]) == 2
     assert "unknown command" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("exit_code", [0, 1])
+def test_check_presentation_preserves_gate_result(cli, monkeypatch, exit_code):
+    calls = []
+    monkeypatch.setattr(cli, "_run_in", lambda *args: calls.append(args) or exit_code)
+    assert cli.main(["check-presentation"]) == exit_code
+    assert calls == [(cli.WEB_APP, "npm", "run", "check:presentation")]
+
+
+def test_check_presentation_help_and_invalid_args_do_not_run(cli, monkeypatch, capsys):
+    monkeypatch.setattr(cli, "_run_in", lambda *args: pytest.fail("must not run"))
+    assert cli.main(["check-presentation", "--help"]) == 0
+    assert "gui-text-audit-deep" in capsys.readouterr().out
+    assert cli.main(["check-presentation", "--unknown"]) == 2
 
 
 def test_combat_lab_launches_the_lab_ui(cli, monkeypatch):

@@ -7,23 +7,31 @@ of this audit were dead for weeks: they matched a lowercase name against
 capitalized text). This battery pins every dimension - prices, hero costs,
 experience, gold, skill tables, rule anchoring, spells, hireling access,
 delegated figures, the geometry-read costs of the two-column supplements - by
-breaking one fact at a time, and it also proves the two new code paths are load
-bearing: with the display-face reader or the page-geometry pass removed, the
-figures they read stop being verifiable.
+breaking one fact at a time, and it also proves the three new reading paths are
+load bearing: with the display-face reader, the page geometry or the recorded
+read-off-the-image figures removed, the costs they read stop being verifiable.
 """
 import importlib.util
 import json
 import re
 import subprocess
 import sys
+import time
 from pathlib import Path
+
+import printed_entries
 
 ROOT = Path(__file__).resolve().parents[2]
 BANDS = ROOT / "sources/2B/bands/mordheim"
 MAGIC = ROOT / "sources/2B/catalog/magic-2b.yaml"
 
+# La herramienta importa el lector compartido de su propio directorio, que un
+# módulo cargado por ruta no tiene en ``sys.path``.
+if str(ROOT / "tools" / "ingestion") not in sys.path:
+    sys.path.insert(0, str(ROOT / "tools" / "ingestion"))
+
 spec = importlib.util.spec_from_file_location(
-    "audit_2b", ROOT / "tools/knowledge/audit_2b.py")
+    "audit_2b", ROOT / "tools/ingestion/audit_2b.py")
 audit = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(audit)
 
@@ -181,15 +189,31 @@ def _delegated():
             f"delegated Orc Boss cost {m.group(2)} -> {int(m.group(2)) + 5}")
 
 
+def spell_list_end(text: str, start: int) -> int:
+    """Dónde termina el conjuro que empieza en ``start``: el punto de inserción.
+
+    La línea que cierra el ítem es la que abre otro conjuro de la misma lista
+    (``  - id:``), una clave del lore a dos espacios o el documento siguiente a
+    columna cero. Guiarse por la primera línea sin sangría acierta sólo mientras
+    el lore no imprima nada más después de sus conjuros, y los lore llevan sus
+    ``source_refs`` al final: la lista de conjuros se cierra antes.
+    """
+    lines = text[start:].split("\n")
+    offset = start + len(lines[0]) + 1
+    for line in lines[1:]:
+        if line.startswith("  - ") or re.match(r"^  [a-z_]+:", line) or line.startswith("- "):
+            return offset
+        offset += len(line) + 1
+    return len(text)
+
+
 @case("spell absent from source", None, "spell-absent-from-source")
 def _spell():
     text = MAGIC.read_text(encoding="utf-8")
     anchor = "  - id: spell.songs-of-sorrow.hymn-of-rebirth\n"
     assert anchor in text, "anchor spell not found"
     end = text.index(anchor)
-    nxt = re.search(r"\n(?=\S)", text[end:])
-    assert nxt, "list end not found"
-    at = end + nxt.start() + 1
+    at = spell_list_end(text, end)
     block = ("  - id: spell.songs-of-sorrow.invented-by-test\n"
              "    roll: 6\n"
              "    name: Invented By Test\n"
@@ -203,7 +227,7 @@ def _spell():
 
 
 def run_audit(band: str | None = None) -> dict:
-    cmd = [sys.executable, "-X", "utf8", str(ROOT / "tools/knowledge/audit_2b.py")]
+    cmd = [sys.executable, "-X", "utf8", str(ROOT / "tools/ingestion/audit_2b.py")]
     if band:
         cmd.append(band)
     out = subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT, encoding="utf-8")
@@ -225,15 +249,26 @@ def machinery_cases() -> list[tuple]:
             audit.display_font_text = original
 
     def without_page_geometry() -> list[str]:
-        original = audit.printed_costs_by_profile
+        """Quita la capa de geometría del lector: las páginas se leen planas.
+
+        Es la lectura anterior a este cambio (``pdftotext`` por página, sin
+        posiciones): sin palabras con su posición no hay línea física ni celda, la
+        cifra suelta de «40 gold crowns» queda sin el nombre que la encabeza y el
+        coste de la promoción deja de ser verificable.
+        """
+        original = printed_entries.PdfCorpus.word_lines
+        printed_entries.PdfCorpus.word_lines = lambda self, stem, page: []   # noqa: ARG005
+        audit.CORPUS._lines.clear()
+        audit.EXTRA_CORPUS._lines.clear()
         audit._BARE_COST_CACHE.clear()
-        audit.printed_costs_by_profile = lambda *a, **k: set()
         try:
             rows = audit.package_rows()
             return [i["kind"] for i in audit.check_band(
                 "lords-of-the-marsh-mim", rows["lords-of-the-marsh-mim"])]
         finally:
-            audit.printed_costs_by_profile = original
+            printed_entries.PdfCorpus.word_lines = original
+            audit.CORPUS._lines.clear()
+            audit.EXTRA_CORPUS._lines.clear()
             audit._BARE_COST_CACHE.clear()
 
     def without_recorded_readings() -> list[str]:
@@ -256,12 +291,44 @@ def machinery_cases() -> list[tuple]:
     ]
 
 
+def write_with_retry(path: Path, text: str) -> None:
+    """Write LF-only text, retrying while the path is transiently locked.
+
+    ``audit_2b.py`` runs as a child process and reads every package, so Windows
+    can still refuse a reopen of just-touched files with ``OSError: Invalid
+    argument``. Retry briefly instead of corrupting a package (a mutation that
+    is never restored is worse than a slow battery).
+    """
+    for attempt in range(6):
+        try:
+            path.write_text(text, encoding="utf-8", newline="\n")
+            return
+        except OSError:
+            time.sleep(0.25 * (attempt + 1))
+    path.write_text(text, encoding="utf-8", newline="\n")
+
+
+def restore(path: Path, snapshot: bytes) -> None:
+    """Put the file back byte-exactly (never through a text round-trip)."""
+    for attempt in range(6):
+        try:
+            path.write_bytes(snapshot)
+            return
+        except OSError:
+            time.sleep(0.25 * (attempt + 1))
+    write_with_retry(path, snapshot.decode("utf-8"))
+
+
 def main() -> int:
     failures = 0
     for title, band, expected, fn in CASES:
-        path, original, mutated, detail = fn()
+        path, _original, mutated, detail = fn()
+        # Snapshot the bytes: the mutated write must be restored byte-exactly,
+        # never through a text round-trip that would rewrite the line endings
+        # (write_text without newline="\n" emits CRLF on Windows).
+        snapshot = path.read_bytes()
         try:
-            path.write_text(mutated, encoding="utf-8")
+            write_with_retry(path, mutated)
             report = run_audit(band)
             kinds = {i["kind"] for i in report["problems"]}
             ok = expected in kinds
@@ -270,7 +337,11 @@ def main() -> int:
                 print(f"          expected {expected!r}, open kinds: {sorted(kinds)}")
                 failures += 1
         finally:
-            path.write_text(original, encoding="utf-8")
+            try:
+                restore(path, snapshot)
+            except OSError as error:
+                failures += 1
+                print(f"[FAIL] could not restore {path}: {error}")
     for title, fn, expected in machinery_cases():
         kinds = fn()
         ok = expected in kinds

@@ -1,349 +1,286 @@
 # -*- coding: utf-8 -*-
-"""Cotejo de hirelings y dramatis personae de 2B contra sus PDFs fuente.
+"""Cotejo de hirelings y Dramatis Personae de 2B contra sus PDFs fuente.
 
-Para cada hireling de sources/2B/catalog/hirelings/*.yaml se extrae el
-bloque impreso de su PDF (sección 'Hired Swords', 'Dramatis Personae',
-'Specialists' o 'Priests for Every Occasion') y se comparan:
+De cada personaje, este driver resuelve **qué fuente lo imprime** y **qué declara
+el paquete**, y el cotejo en sí lo hace el lector compartido
+(``printed_entries``), el mismo que usa el cotejo de Dramatis Personae de 2A.
+Aquí vive sólo lo que es de este árbol:
 
-  1. Tarifa: '<N> gcs to hire, + <M> gcs upkeep' (variantes: 'gold crowns',
-     'gc', órdenes inversos) contra hire_fee.
-  2. Fila 'Profile M WS BS S T W I A Ld' siguiente: stats contra
-     characteristics.
-  3. Rating: '+<N> points' contra warband_rating.base.
-  4. Presencia de cada regla (rule.name) y de cada ítem fijo del equipo en
-     el bloque impreso.
+1. **Qué PDF imprime a cada personaje** (``reference_stems``): los ficheros
+   citados por ``source_refs``, con el nombre con el que el árbol referencia cada
+   suplemento. La página se lee por geometría, así que la tarifa, la fila de
+   stats y el rating del vecino de columna no pueden atribuirse al personaje.
+2. **Qué declara el paquete**: ``characteristics``, ``warband_rating``, ``rules``
+   y la tarifa —importe **y divisa**— de su entrada de campaña en
+   ``sources/2B/catalog/hired-swords-and-dramatis-2b.yaml``, que es donde vive la
+   tarifa desde que el árbol tomó la forma de promoción.
+3. **Qué se adjudica**: los perfiles ``out_of_scope`` y las etiquetas de regla
+   editoriales. Se compara lo que la fuente imprime —el Horseman de 2B sólo se
+   menciona en las listas de contratación, así que no hay nada que comparar— y la
+   adjudicación queda como nota, nunca como un verde silencioso.
 
-Salida: JSON con verificaciones y hallazgos; los bloques extraídos quedan
-en build/cache/2b-hirelings/hireling-blocks/ para lectura manual.
+Salida: JSON con verificaciones y hallazgos más la cobertura por chequeo —un «0
+hallazgos» sin filas comparadas no es lo mismo que un «0 comprobado»— y las
+entradas extraídas, en orden de lectura, en
+``build/cache/2b-hirelings/hireling-blocks/`` para lectura manual.
+
+Requiere ``pdftohtml`` y ``pdftotext`` (poppler); sin ellos se salta las páginas
+en vez de fallar, como el resto de los auditores de fuente.
 """
-import json
+from __future__ import annotations
+
 import re
-import subprocess
 import sys
 from pathlib import Path
 
 import yaml
 
+# La lectura por geometría, la comparación de divisa y la cobertura viven en el
+# lector compartido; el driver re-exporta las piezas que usa su batería de pruebas
+# (``fees_in``, ``unit_of``, ``entries``, ``stat_rows``, ``ratings_in``).
+from printed_entries import (  # noqa: F401
+    Coverage,
+    Package,
+    PdfCorpus,
+    compare,
+    digits_row,
+    entries,
+    fee_index,
+    fees_in,
+    merge,
+    normalize,
+    package_fee,
+    print_report,
+    ratings_in,
+    stat_rows,
+    unit_of,
+    write_report,
+)
+
 ROOT = Path(__file__).resolve().parents[2]
 CACHE = ROOT / "build/cache/2b-pdfs"
 OUT = ROOT / "build/cache/2b-hirelings"
 BLOCKS = OUT / "hireling-blocks"
+WORDS = OUT / "words"
+TEXT = OUT / "text"
 
-LAYOUTS = CACHE / "layout"
+CORPUS = PdfCorpus(CACHE, WORDS, TEXT)
 
+# Cualquier YAML bajo catalog/hirelings/: los hired swords están hoy planos y los
+# Dramatis Personae en su subcarpeta, como en la KB. Las tarifas viven en el
+# documento de campaña, que es donde el árbol las guarda desde que tomó la forma
+# de promoción (las constantes dejan que la batería de pruebas apunte a otra copia).
+STAGING_HIRELINGS = ROOT / "sources/2B/catalog/hirelings"
+CAMPAIGN_DOC = ROOT / "sources/2B/catalog/hired-swords-and-dramatis-2b.yaml"
 
-def layout_pages(stem: str) -> list[str]:
-    """Páginas (-layout) de un PDF cacheado, por nombre de fichero sin extensión."""
-    path = LAYOUTS / f"{stem}.txt"
-    if not path.exists():
-        pdf = CACHE / f"{stem}.pdf"
-        if not pdf.exists():
-            pdf = CACHE / "extra" / f"{stem}.pdf"
-        if not pdf.exists():
-            return []
-        LAYOUTS.mkdir(parents=True, exist_ok=True)
-        subprocess.run(["pdftotext", "-layout", str(pdf), str(path)], capture_output=True)
-    return path.read_text(encoding="utf-8", errors="replace").split("\f")
+# Nombres de fichero con los que el árbol referencia cada PDF (el manifest usa el
+# nombre de la descarga, la carpeta de caché el del fichero).
+ALIASES = {
+    "Karak Azgal": "adventurers-kaz",
+    "97RelicsoftheCrusadesPt2": "fallen-the-rel",
+    "Specialists": "MiM Specialists",
+    "Miracle-workers-in-Mordheim": "Miracle Workers",
+    "Lords of the Marsh": "lords-of-the-marsh-mim",
+    "Shallows Beasts": "shallows-beasts-mim",
+}
 
-
-def find_block(pages: list[str], name: str) -> list[int]:
-    """Páginas (índice 1-based) que contienen el encabezado del hireling.
-
-    Prueba el nombre completo y, si no hay suerte, los recortes naturales
-    ('Norse Bearman Bodyguard' -> 'Bearman', 'Druid-Priest of Taal' ->
-    'Druid-priest', 'Strigani Seer Necromancer' -> 'Strigani Seer').
-    """
-    candidates = [name, name.replace("Necromancer", "").strip(), name.upper()]
-    words = name.split()
-    if len(words) >= 2:
-        candidates.append(" ".join(words[-2:]))
-        candidates.append(words[-1])
-    # variantes separadas por comas/hifenes: 'Snerik, Night Goblin Scout' -> 'Snerik';
-    # 'Druid-Priest of Taal' -> 'Druid'; 'Norse Bearman Bodyguard' -> 'Bearman'
-    for part in re.split(r"[,\-]", name):
-        part = part.strip()
-        if len(part) >= 5:
-            candidates.append(part)
-    seen = set()
-    for candidate in candidates:
-        if not candidate or candidate in seen:
-            continue
-        seen.add(candidate)
-        if candidate == name and candidate is not name:
-            continue
-        pat = re.compile(re.escape(candidate).replace(r"\ ", r"\s+"), re.I)
-        hits = [i + 1 for i, p in enumerate(pages)
-                if pat.search(p) and not re.search(r"\.{4,}", p)]
-        if hits:
-            return hits
-    return []
-
-
-def block_text(pages: list[str], anchor: str, upto: list[str], page: int) -> str:
-    """Texto desde el encabezado ``anchor`` hasta el próximo encabezado en ``upto``."""
-    lines = pages[page - 1].splitlines()
-    start = next((i for i, l in enumerate(lines)
-                  if re.search(re.escape(anchor).replace(r"\ ", r"\s+"), l, re.I)), None)
-    if start is None:
-        return ""
-    out = []
-    for l in lines[start:]:
-        if len(out) > 3 and any(re.search(re.escape(u).replace(r"\ ", r"\s+"), l, re.I) for u in upto):
-            break
-        out.append(l)
-    return "\n".join(out)
-
-
-# El bloque se cierra en el encabezado de OTRO hireling (se pasa la lista).
-
-
-def hirelings() -> list[dict]:
-    out = []
-    for f in ("grade-2b", "mim-specialists", "miracle-workers-priests",
-              "rel-relics-hirelings"):
-        d = yaml.safe_load(open(ROOT / f"sources/2B/catalog/hirelings/{f}.yaml",
-                                encoding="utf-8"))
-        for h in d["profiles"]:
-            h["_file"] = f
-            out.append(h)
-    return out
-
-
-def fee_in_lines(lines: list[str]) -> list[tuple[int, int | None]]:
-    """Tarifas por línea; una tarifa partida entre dos líneas se reúne."""
-    out = []
-    for i, l in enumerate(lines):
-        for m in re.finditer(
-                r"(\d+)\s*(?:gcs?|gold crowns|crowns|gold coins|wt|doubloons|dinars|warp tokens)\s*"
-                r"(?:to hire|to\ hire),?\s*\+?\s*(\d+)?\s*(?:gcs?|gold crowns|crowns|gold coins|warp tokens)?\s*upkeep",
-                l, re.I):
-            out.append((int(m.group(1)), int(m.group(2)) if m.group(2) else None))
-        # tarifa al final de línea (la página parte la frase)
-        m = re.search(r"(\d+)\s*(?:gcs?|gold crowns|crowns|gold coins|warp tokens)\s*(?:to hire|to\ hire)\s*,?\s*\+?\s*(\d+)?\s*(?:gcs?|gold crowns|crowns|gold coins|warp tokens)?\s*(?:upkeep)?$",
-                      l.rstrip(), re.I)
-        if m and i + 1 < len(lines):
-            nxt = lines[i + 1].strip()
-            up = m.group(2) or (re.match(r"^(\d+)\s*(?:gcs?|gold crowns|crowns|gold coins|warp tokens)?\s*upkeep", nxt, re.I) or [None] and re.match(r"^(\d+)\s*(?:gcs?|gold crowns|crowns|gold coins|warp tokens)?\s*upkeep", nxt, re.I).group(1) if re.match(r"^(\d+)\s*(?:gcs?|gold crowns|crowns|gold coins|warp tokens)?\s*upkeep", nxt, re.I) else None)
-            pair = (int(m.group(1)), int(up) if up else None)
-            if not any(a == pair[0] and b == pair[1] for a, b in out):
-                out.append(pair)
-    return out
-
-
-def fee_in_text(text: str) -> list[tuple[int, int | None]]:
-    """Todas las tarifas impresas del bloque (los bloques a dos columnas
-    comparten página con el hireling vecino)."""
-    t = re.sub(r"\s+", " ", text)
-    out = []
-    for m in re.finditer(
-            r"(\d+)\s*(?:gcs?|gold crowns|crowns|gold coins|wt|doubloons|dinars)\s*"
-            r"(?:to hire|to\ hire),?\s*\+?\s*(\d+)?\s*(?:gcs?|gold crowns|crowns|gold coins)?\s*upkeep",
-            t, re.I):
-        out.append((int(m.group(1)), int(m.group(2)) if m.group(2) else None))
-    for m in re.finditer(
-            r"(\d+)\s*(?:gcs?|gold crowns|crowns|gold coins|dinars)\s*(?:to hire|to\ hire)", t, re.I):
-        pair = (int(m.group(1)), None)
-        if not any(a == pair[0] and b is None for a, b in out):
-            out.append(pair)
-    return out
-
-
-def stats_in_text(text: str) -> list[list[int]]:
-    """Todas las filas 'Profile' del bloque (el vecino de columna imprime la suya)."""
-    rows = []
-    lines = text.splitlines()
-    for i, l in enumerate(lines):
-        if not re.search(r"\bProfile\b", l, re.I):
-            continue
-        for j in range(i + 1, min(i + 4, len(lines))):
-            line = lines[j]
-            clean = re.sub(r"\([^)]*\)", " ", line)  # '4(6)' -> '4'
-            # si la línea mezcla dos columnas, quédate con la cola derecha (la fila
-            # impresa va indentada a su columna) o con la primera tanda de >=9 dígitos
-            tail = clean[35:] if len(clean) > 35 and re.search(r"[A-Za-z]{3,}", clean[:35]) else clean
-            joined = re.sub(r"\D", "", tail)
-            if len(joined) >= 9:
-                rows.append([int(c) for c in joined[:9]])
-                break
-            digits = re.findall(r"\d+", tail)
-            if len(digits) >= 9:
-                rows.append([int(d) for d in digits[:9]])
-                break
-            joined_all = re.sub(r"\D", "", clean)
-            if len(joined_all) >= 9:
-                rows.append([int(c) for c in joined_all[:9]])
-                break
-    return rows
-
-
-ALL_NAMES = [h["name"] for h in hirelings()]
-
-# Nombre del perfil tal y como lo imprime la fuente cuando difiere del nombre
-# del catálogo ('Cleric of Law' es el perfil de ambos sacerdotes de Verena/Solkan).
+# Nombre del perfil tal y como lo imprime la fuente cuando difiere del nombre del
+# catálogo ('Cleric of Law' es el perfil de ambos sacerdotes de Verena/Solkan).
 PROFILE_ANCHORS = {
     "Priest of Verena": "Cleric of Law",
     "Snorri Nosebiter": "Snorri",
-    "Aldred Fellblade": "Aldred 4",
+    "Aldred Fellblade": "Aldred",
     "Mariner-Priest of Manann": "Mariner-priest",
     "Grave Warden": "Grave Warden",
     "Ogre Treasure-Hunter": "Scrap-Dealer",
     "Albino Stormvermin": "Albino Guard",
 }
 
+TREE_NAMES: list[str] = []
+
+
+def pdf_for(stem: str) -> Path | None:
+    return CORPUS.pdf_for(stem)
+
+
+# --------------------------------------------------------------------------- #
+# El paquete
+# --------------------------------------------------------------------------- #
+
+def profiles() -> list[dict]:
+    """Los perfiles de hireling y Dramatis Personae del árbol de staging."""
+    out = []
+    for path in sorted(STAGING_HIRELINGS.rglob("*.yaml")):
+        document = safe_load(path)
+        for profile in document.get("profiles") or []:
+            profile["_file"] = str(path.relative_to(STAGING_HIRELINGS))
+            out.append(profile)
+    return out
+
+
+def safe_load(path: Path) -> dict:
+    return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+
+
+def staged_fees() -> dict[str, dict]:
+    """``{profile_id: entry}`` de las entradas de contratación del árbol."""
+    return fee_index(CAMPAIGN_DOC)
+
+
+def reference_stems(profile: dict) -> list[str]:
+    """Nombres de fichero (stem) de los PDFs que el árbol cita para el perfil."""
+    stems: list[str] = []
+    for ref in profile.get("source_refs") or []:
+        url = str(ref.get("url") or "")
+        stem = url.rsplit("/", 1)[-1].replace(".pdf", "").replace("%20", " ")
+        stem = ALIASES.get(stem, stem)
+        if CORPUS.pdf_for(stem) is not None and stem not in stems:
+            stems.append(stem)
+    return stems
+
+
+def printed_name_candidates(name: str) -> list[str]:
+    """Formas con las que la entrada puede nombrar al personaje.
+
+    Sólo formas de cinco letras o más: un recorte corto (``Fire`` de Fire-Eater)
+    aparece en la prosa de cualquier vecino —«set on fire»— y haría que la entrada
+    de ese vecino se tomara por la del personaje.
+    """
+    candidates = [name, name.replace("Necromancer", "").strip(),
+                  " ".join(name.split()[-2:]), name.split("-")[0].split(",")[0].strip()]
+    candidates += [part.strip() for part in re.split(r"[,\-]", name)]
+    anchor = PROFILE_ANCHORS.get(name)
+    if anchor:
+        candidates.append(anchor)
+    return [c for c in dict.fromkeys(candidates) if len(c) >= 5]
+
+
+def package_of(profile: dict, campaign: dict) -> Package:
+    """Lo que el paquete declara del personaje, listo para cotejar."""
+    rating = profile.get("warband_rating") or {}
+    return Package(
+        stats="".join(str(v) for v in (profile.get("characteristics") or {}).values()) or None,
+        # Un ``base: 0`` con ``per_experience_point`` es la valoración que la fuente
+        # no imprime (el rating de estos sacerdotes es experiencia): el chequeo se
+        # da por verificado por ausencia en los dos lados, no como un cero.
+        rating=rating.get("base", rating.get("value")) or None,
+        rules=tuple(str(rule.get("name") or "") for rule in profile.get("rules") or []),
+        fee=package_fee(campaign.get("hiring_fee")),
+        upkeep=package_fee(campaign.get("upkeep")),
+    )
+
+
+# --------------------------------------------------------------------------- #
+# Localización de la entrada impresa
+# --------------------------------------------------------------------------- #
+
+def locate(profile: dict, stem: str) -> tuple[int, dict | None] | None:
+    """Página y entrada impresa del perfil dentro de un PDF.
+
+    El prefiltro por texto plano descarta las páginas que ni nombran al personaje
+    ni llevan su fila de stats (contigua, que es como la imprime la fuente); la
+    geometría se lee sólo en las candidatas, que es lo caro.
+
+    Cada entrada candidata se puntúa por su encabezado (el nombre que la fuente
+    imprime) y por su fila de stats (lo que imprime); el personaje es la entrada
+    mejor puntuada. La fila sola no basta cuando dos vecinos comparten fila —el
+    Halfling Fence y el Halfling Pimp imprimen los mismos nueve dígitos—, y el
+    encabezado solo no basta cuando la fila del paquete está mal y hay que
+    enseñarla. Identificar al personaje por su nombre en la prosa del vecino es lo
+    que atribuía al Fire-Eater la tarifa del Midshipman («set on fire» vive en la
+    regla Rigger): eso ya no se hace — sin fila ni encabezado se declara sin
+    entrada en vez de inventar un hallazgo.
+    """
+    digits = "".join(str(v) for v in (profile.get("characteristics") or {}).values())
+    candidates = printed_name_candidates(profile["name"])
+    wanted = {digits_row(digits), digits_row(digits, swap=True)} if digits else set()
+    pages: list[int] = []
+    for page in range(1, CORPUS.page_count(stem) + 1):
+        text = CORPUS.page_text(stem, page)
+        lowered = normalize(text)
+        page_digits = re.sub(r"\D", "", normalize(text))
+        if (any(normalize(c) in lowered for c in candidates)
+                or any(w and w in page_digits for w in wanted)):
+            pages.append(page)
+    best: tuple[int, int, dict] | None = None
+    for page in pages:
+        for entry in CORPUS.entries(stem, page):
+            heading_hit = any(normalize(c) in normalize(entry["heading"]) for c in candidates)
+            row_hit = bool(wanted & set(stat_rows(entry)))
+            if not (heading_hit or row_hit):
+                continue
+            score = (2 if heading_hit else 0) + (1 if row_hit else 0)
+            if best is None or score > best[0]:
+                best = (score, page, entry)
+    if best is not None:
+        entry = dict(best[2])
+        entry["spillover"] = (CORPUS.continuation(stem, best[1], profile["name"], TREE_NAMES,
+                                                  candidates_for=printed_name_candidates)
+                              if entry.get("last_on_page") else "")
+        return best[1], entry
+    if pages:
+        return pages[0], None
+    return None
+
+
+# --------------------------------------------------------------------------- #
+# El cotejo
+# --------------------------------------------------------------------------- #
+
+def check_one(profile: dict, campaign: dict) -> dict:
+    """Coteja un perfil contra la fuente que lo imprime."""
+    row = {"name": profile["name"], "file": profile["_file"], "id": profile.get("id"),
+           "checks": [], "findings": [], "notes": [], "comparable": False}
+    adjudicated = profile.get("normalization_status") == "out_of_scope"
+    coverages: list[Coverage] = []
+    for stem in reference_stems(profile):
+        hit = locate(profile, stem)
+        if hit is None:
+            row["notes"].append(f"PDF no cacheado: {stem}")
+            continue
+        page, entry = hit
+        if entry is None:
+            row["notes"].append(
+                f"{stem} p{page} nombra al personaje pero no imprime su entrada de "
+                f"contratación (perfil sólo en las listas de contratación)")
+            continue
+        (BLOCKS / f"{profile['name'].replace(',', '').replace(' ', '_')}.txt").write_text(
+            f"### {stem} p{page}\n" + "\n".join(entry["lines"]) + "\n", encoding="utf-8")
+        coverage = Coverage()
+        compare(entry, package_of(profile, campaign), coverage)
+        coverages.append(coverage)
+    if not coverages:
+        if adjudicated:
+            row["notes"].append(f"adjudicado `out_of_scope`: "
+                                f"{profile.get('out_of_scope_reason') or 'sin entrada impresa'}")
+        if not row["notes"]:
+            row["notes"].append("sin fuente cacheada que cotejar")
+        return row
+    if adjudicated:
+        row["notes"].append(f"adjudicado `out_of_scope`: "
+                            f"{profile.get('out_of_scope_reason') or 'sin entrada impresa'}"
+                            f" — se coteja lo que la fuente imprime")
+    report = merge(coverages).report()
+    # El cotejo se suma a lo que el driver ya anotó (la adjudicación del perfil).
+    report["notes"] = row["notes"] + report["notes"]
+    row.update(report)
+    row["comparable"] = True
+    return row
+
 
 def main() -> int:
     only = set(sys.argv[1:])
     BLOCKS.mkdir(parents=True, exist_ok=True)
-    report = []
-    for h in hirelings():
-        name = h["name"]
-        if only and name not in only:
+    fees = fee_index(CAMPAIGN_DOC)
+    document = profiles()
+    TREE_NAMES[:] = [profile["name"] for profile in document]
+    rows = []
+    for profile in document:
+        if only and profile["name"] not in only:
             continue
-        refs = h.get("source_refs", [])
-        entry = {"name": name, "file": h["_file"], "checks": [], "findings": []}
-
-        pkg_stats = [(h.get("characteristics") or {}).get(k) for k in
-                     ("M", "WS", "BS", "S", "T", "W", "I", "A", "Ld")]
-        pkg_fee = (h.get("hire_fee") or {})
-        pkg_rate = (h.get("warband_rating") or {}).get("base")
-
-        got_stats = got_fee = got_rate = got_block = False
-        # Hallazgos por ref: un chequeo falla sólo si falla en TODAS las refs
-        # (la segunda ref de un hireling puede ser una página donde el perfil
-        # impreso es de otra variante, p. ej. el Mutant-Priest de Shallows Beasts).
-        ref_fail = []  # lista de dicts {fee, stats, rating, rules} por ref
-        for ref in refs:
-            url = str(ref.get("url") or "")
-            stem = url.rsplit("/", 1)[-1].replace(".pdf", "").replace("%20", " ")
-            aliases = {
-                "Karak Azgal": "adventurers-kaz",
-                "97RelicsoftheCrusadesPt2": "fallen-the-rel",
-                "Specialists": "MiM Specialists",
-                "Miracle-workers-in-Mordheim": "Miracle Workers",
-                "Lords of the Marsh": "lords-of-the-marsh-mim",
-                "Shallows Beasts": "shallows-beasts-mim",
-            }
-            stem = aliases.get(stem, stem)
-            pages = layout_pages(stem)
-            if not pages:
-                entry["findings"].append(f"PDF no cacheado: {url}")
-                continue
-            hits = find_block(pages, name)
-            if not hits:
-                continue
-            page, lines, start = None, None, None
-            short = re.split(r"[,]", name)[0].strip()
-            anchors = [name, short, " ".join(name.split()[-2:]), name.split("-")[0]]
-            # ancla por la fila de stats propia (nombre corto impreso o los dígitos)
-            pkg_stats_digits = ''.join(str((h.get("characteristics") or {}).get(k, ''))
-                                       for k in ("M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"))
-            anchors += [PROFILE_ANCHORS.get(name, ""), pkg_stats_digits]
-            for cand in sorted(set(hits), reverse=True):
-                cand_lines = pages[cand - 1].splitlines()
-                for anchor in anchors:
-                    cand_start = next((i for i, l in enumerate(cand_lines)
-                                       if re.search(re.escape(anchor).replace(r"\ ", r"\s+"),
-                                                    l, re.I)), None)
-                    if cand_start is None:
-                        continue
-                    window = cand_lines[max(0, cand_start - 30):cand_start + 45]
-                    has_profile = any(re.search(r"\bProfile\b", l, re.I) for l in window)
-                    has_statrow = any(len(re.sub(r"\D", "", l)) >= 9 for l in window)
-                    if has_profile or has_statrow:
-                        page, lines, start = cand, cand_lines, cand_start
-                        break
-                if page is not None:
-                    break
-            if page is None:
-                continue
-            # bloque: hasta el encabezado de otro hireling conocido, o 60 líneas
-            other = [n for n in ALL_NAMES if n != name and n.split(",")[0] in
-                     " ".join(lines[max(0, start - 3):start])]
-            out = lines[max(0, start - 30):]
-            text = chr(10).join(out)
-            (BLOCKS / f"{name.replace(',', '').replace(' ', '_')}.txt").write_text(
-                f"### {stem} p{page} ({ref.get('section','')})" + chr(10) + text + chr(10),
-                encoding="utf-8")
-            got_block = True
-            fail = {"fee": [], "stats": [], "rating": [], "rules": []}
-
-            t = re.sub(r"\s+", " ", text)
-            fees = fee_in_text(chr(10).join(out)) + fee_in_text(chr(10).join(lines[start:max(0, start - 12):-1] if start > 12 else lines[:start]))
-            # dedup preservando orden
-            seen_ = set()
-            fees = [f_ for f_ in fees if not (f_ in seen_ or seen_.add(f_))]
-            ph, pu = pkg_fee.get("hire"), pkg_fee.get("upkeep")
-            if fees:
-                if any(h_ == ph and (u is None or pu is None or u == pu) for h_, u in fees):
-                    got_fee = True
-                else:
-                    fail["fee"].append(f"tarifa impresa {fees} vs paquete {ph}+{pu} ({stem} p{page})")
-            stats_rows = stats_in_text(text) or []
-            if stats_rows:
-                if any(r == pkg_stats or (r[:6] == pkg_stats[:6]
-                                          and r[6:8] == [pkg_stats[7], pkg_stats[6]]
-                                          and r[8] == pkg_stats[8])
-                       for r in stats_rows):
-                    got_stats = True
-                else:
-                    fail["stats"].append(
-                        f"stats impresas {stats_rows} vs paquete {pkg_stats} ({stem} p{page})")
-            rates = []
-            for i, l in enumerate(out):
-                m_ = re.search(r"rating by\s*\+?\s*(\d+)\s*points?", l, re.I)
-                if not m_:
-                    # 'rating by' al final de línea: el número abre la siguiente
-                    if re.search(r"rating by\s*$", l.rstrip(), re.I) and i + 1 < len(out):
-                        m2 = re.search(r"\+?\s*(\d+)\s*points?", out[i + 1], re.I)
-                        if m2:
-                            rates.append(m2.group(1))
-                else:
-                    rates.append(m_.group(1))
-            if rates:
-                if any(int(v) == pkg_rate for v in rates):
-                    got_rate = True
-                else:
-                    fail["rating"].append(
-                        f"rating impreso {rates} vs paquete {pkg_rate} ({stem} p{page})")
-            shared = [n for n in ALL_NAMES if n != name
-                      and re.search(re.escape(n.split(",")[0]).replace(r"\ ", r"\s+"),
-                                    t, re.I)]
-            for rule in h.get("rules", []) or []:
-                words = [w for w in re.findall(r"[A-Za-z']{4,}", rule.get("name", ""))[:2]]
-                if not words:
-                    continue
-                if not all(w.lower() in t.lower() for w in words):
-                    if shared:
-                        fail.setdefault("rules", []).append(
-                            f"regla '{rule.get('name')}' (página compartida con {shared[0].split(',')[0]}; {stem} p{page})")
-                    else:
-                        fail["rules"].append(
-                            f"regla '{rule.get('name')}' no aparece ({stem} p{page})")
-
-            ref_fail.append(fail)
-        # emitir sólo los fallos comunes a todas las refs
-        if ref_fail:
-            for kind in ("fee", "stats", "rating", "rules"):
-                common = ref_fail[0].get(kind, [])
-                for other in ref_fail[1:]:
-                    common = [x for x in common if x in other.get(kind, [])]
-                entry["findings"].extend(common)
-        if not got_block:
-            entry["findings"].append("bloque no encontrado en ningún PDF")
-        entry["checks"] = [k for k, v in (("block", got_block), ("fee", got_fee),
-                                          ("stats", got_stats), ("rating", got_rate)) if v]
-        report.append(entry)
-
-    (OUT / "hirelings_check.json").write_text(
-        json.dumps(report, indent=1, ensure_ascii=False), encoding="utf-8")
-    n_ok = sum(1 for r in report if {"block", "fee", "stats", "rating"} <= set(r["checks"]))
-    print(f"hirelings: {len(report)}; fully verified: {n_ok}; with findings: "
-          f"{sum(1 for r in report if r['findings'])}")
-    for r in report:
-        if r["findings"]:
-            print(f"  {r['name']}:")
-            for f in r["findings"]:
-                print(f"    - {f}")
+        rows.append(check_one(profile, fees.get(str(profile.get("id"))) or {}))
+    write_report(rows, OUT / "hirelings_check.json")
+    print_report(rows, "hirelings")
     return 0
 
 

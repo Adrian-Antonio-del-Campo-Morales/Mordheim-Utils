@@ -5,9 +5,8 @@
  * Contract honoured (from domain/campaign/kernel/ports.ts):
  * - stable ids resolve; a missing id is `{ok:false, reason:"not_found"}`,
  *   never a name-based guess;
- * - display names resolve per requested locale with the artefact's fallback
- *   chain (requested locale -> canonical English -> any translated entry ->
- *   id), mirroring `mordheim_knowledge.i18n` without importing it;
+ * - display text resolves only in the requested locale; incomplete or invalid
+ *   references produce a localized unavailable notice, never a raw identifier;
  * - records are immutable snapshots; payload maps travel verbatim;
  * - no YAML ever reaches callers; the adapter consumes only the artefact.
  */
@@ -26,11 +25,14 @@ import type {
   KnowledgeArtefact,
 } from "./artefact-types";
 import { validateArtefact } from "./artefact-types";
+import { PresentationIndex, presentationEntries, unavailableText, isTranslatedText, fieldValues, type TextReference, type TextField, type TextResolution, type PresentationEntry, type ResolvedKbText } from "./presentation";
+export { fieldValues, unavailableText, isTranslatedText } from "./presentation";
+export type { TextReference, TextField, TextResolution } from "./presentation";
 
 export type { ArtefactValidation, KnowledgeArtefact } from "./artefact-types";
 
 /** A user-facing KB value, with its fallback status kept out of the text. */
-export type DisplayStatus = "translated" | "canonical-fallback" | "missing";
+export type DisplayStatus = "translated" | "missing";
 export interface LocalizedText {
   readonly text: string;
   readonly sourceLocale: Locale | null;
@@ -43,6 +45,7 @@ export interface DisplayRef {
   readonly id: string;
   readonly profileId?: string;
   readonly bandId?: string;
+  readonly tableId?: string;
 }
 
 const ID_FIELD_BY_KIND: Readonly<Record<KnowledgeKind, string>> = {
@@ -127,75 +130,55 @@ export function titleCaseDisplay(value: string): string {
 }
 
 function rowNames(row: ArtefactRow): Readonly<Record<string, string>> {
-  const merged = row.names;
-  const i18n = row.name_i18n;
-  const names: Record<string, string> = {};
-  const canonical = typeof row.name === "string" ? row.name.trim() : "";
-  if (canonical) names.en = canonical;
-  if (typeof i18n === "object" && i18n !== null) {
-    for (const [locale, value] of Object.entries(i18n as Record<string, unknown>)) {
-      if (typeof value === "string" && value && !names[locale]) names[locale] = value;
-    }
-  }
-  if (typeof merged === "object" && merged !== null) {
-    for (const [locale, value] of Object.entries(merged as Record<string, unknown>)) {
-      if (typeof value === "string" && value && !names[locale]) names[locale] = value;
-    }
-  }
-  return names;
+  return fieldValues(row, "name");
 }
 
 /**
- * Resolve the display name for one locale following the KB fallback chain:
- * requested locale -> canonical English -> any translated entry. Returns the
- * id itself as last resort (ids remain visible instead of crashing).
+ * Resolve the declared name in one locale, or a localized unavailable notice.
  */
 export function resolveName(
   row: ArtefactRow,
   locale: Locale,
 ): string {
-  const names = rowNames(row);
-  const requested = names[locale];
-  if (requested) return requested;
-  const canonical = names.en ?? row.name;
-  if (typeof canonical === "string" && canonical) return canonical;
-  for (const value of Object.values(names)) {
-    if (value) return value;
-  }
-  return titleCaseDisplay(String(row.id ?? row.item_id ?? ""));
+  return localizedText(rowNames(row), locale).text;
 }
 
-function localizedText(values: Readonly<Record<string, string>> | undefined, locale: Locale, fallback?: unknown): LocalizedText {
-  if (values?.[locale]) return { text: values[locale], sourceLocale: locale, status: "translated" };
-  if (values?.en) return { text: values.en, sourceLocale: "en", status: locale === "en" ? "translated" : "canonical-fallback" };
-  const alternate = Object.entries(values ?? {}).find(([, value]) => Boolean(value));
-  if (alternate) return { text: alternate[1], sourceLocale: alternate[0] as Locale, status: "canonical-fallback" };
-  const value = typeof fallback === "string" ? fallback.trim() : "";
-  // Stable ids are useful internally, never as visible recovery text.
-  if (value && !/^[a-z0-9]+(?:[._:-][a-z0-9]+)+$/i.test(value)) {
-    return { text: value, sourceLocale: "en", status: locale === "en" ? "translated" : "canonical-fallback" };
-  }
-  return { text: locale === "es" ? "Información no disponible" : "Information unavailable", sourceLocale: null, status: "missing" };
+function localizedText(values: Readonly<Record<string, string>> | undefined, locale: Locale): LocalizedText {
+  const text = values?.[locale];
+  return isTranslatedText(text)
+    ? { text, sourceLocale: locale, status: "translated" }
+    : { text: unavailableText(locale), sourceLocale: null, status: "missing" };
 }
 
 /** Like resolveName, but safe for UI: it never turns an id into visible text. */
-export function resolveNameText(row: ArtefactRow, locale: Locale, fallback?: unknown): LocalizedText {
-  return localizedText(rowNames(row), locale, fallback);
+export function resolveNameText(row: ArtefactRow, locale: Locale): LocalizedText {
+  return localizedText(rowNames(row), locale);
 }
 
 export class ArtefactKnowledgeReader implements KnowledgeReader {
+  private readonly presentation: PresentationIndex;
+  private readonly presentationErrors = new Map<string, Extract<TextResolution, { ok: false }>>();
+  private readonly presentationRows = new WeakMap<object, TextReference>();
+  private readonly presentationEntries: readonly PresentationEntry[];
   private readonly bands: Map<string, ArtefactRow>;
   private readonly profiles: Map<string, ArtefactRow>;
   private readonly items: Map<string, ArtefactRow>;
   private readonly skills: Map<string, ArtefactRow>;
-  private readonly displayNames: Readonly<Record<string, Readonly<Record<string, string>>>>;
-  private readonly displayEffects: Readonly<Record<string, Readonly<Record<string, string>>>>;
   private readonly campaignMaps: CampaignMaps;
   private readonly campaignRaw: Readonly<Record<string, unknown>>;
   private readonly rulesProse: Readonly<Record<string, readonly ArtefactRow[]>>;
   private readonly weaponHands: Readonly<Record<string, number>>;
 
   private constructor(artefact: KnowledgeArtefact) {
+    this.presentationEntries = presentationEntries(artefact);
+    this.presentation = new PresentationIndex(this.presentationEntries);
+    for (const entry of this.presentationEntries) {
+      let row: unknown = artefact;
+      for (const segment of entry.source.split("/")) {
+        row = row && typeof row === "object" ? (row as Record<string, unknown>)[segment] : undefined;
+      }
+      if (row && typeof row === "object") this.presentationRows.set(row, entry.ref);
+    }
     this.bands = ArtefactKnowledgeReader.indexById(artefact.bands, "id");
     this.profiles = ArtefactKnowledgeReader.indexProfiles(artefact.profiles);
     this.items = ArtefactKnowledgeReader.indexById(artefact.items, "item_id");
@@ -203,8 +186,6 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
       this.items.set(String(item.item_id), item);
     }
     this.skills = ArtefactKnowledgeReader.indexById(artefact.skills, "id");
-    this.displayNames = artefact.display_names ?? {};
-    this.displayEffects = artefact.display_effects ?? {};
     this.rulesProse = artefact.rules_prose ?? {};
     this.weaponHands = artefact.weapon_hands ?? {};
     this.campaignRaw = (artefact.campaign ?? {}) as Readonly<Record<string, unknown>>;
@@ -270,12 +251,17 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
       }
       try {
         const rulesProse = await rulesResponse.json() as Readonly<Record<string, readonly ArtefactRow[]>>;
+        if (document.rules_prose_digest) {
+          const bytes = new TextEncoder().encode(JSON.stringify(rulesProse));
+          const hash = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)), (byte) => byte.toString(16).padStart(2, "0")).join("");
+          if (hash !== document.rules_prose_digest) throw new KnowledgeReaderError("Incompatible rules presentation artefact");
+        }
         document = { ...document, rules_prose: rulesProse };
       } catch (cause) {
         throw new KnowledgeReaderError(`Rules prose artefact at "${rulesUrl}" is not valid JSON: ${(cause as Error).message}`);
       }
     }
-    if (typeof document.display_text_url === "string" && !document.display_names && !document.display_effects) {
+    if (typeof document.display_text_url === "string" && !document.presentation_entries) {
       const pageUrl = (globalThis as { location?: { href: string } }).location?.href ?? "http://localhost/";
       const displayUrl = new URL(document.display_text_url, new URL(url, pageUrl)).toString();
       let displayResponse: Response;
@@ -288,7 +274,19 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
         throw new KnowledgeReaderError(`Display text artefact request failed: HTTP ${displayResponse.status} for "${displayUrl}".`);
       }
       try {
-        document = { ...document, ...await displayResponse.json() as Pick<KnowledgeArtefact, "display_names" | "display_effects"> };
+        const display = await displayResponse.json() as Pick<KnowledgeArtefact, "display_names" | "display_effects" | "presentation_entries" | "presentation_digest">;
+        if (document.display_text_digest) {
+          const bytes = new TextEncoder().encode(JSON.stringify(display));
+          const hash = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)), (byte) => byte.toString(16).padStart(2, "0")).join("");
+          if (hash !== document.display_text_digest) throw new KnowledgeReaderError("Incompatible display presentation content");
+        }
+        if (document.presentation_digest && display.presentation_digest !== document.presentation_digest) throw new KnowledgeReaderError("Incompatible display presentation artefact");
+        if (document.presentation_digest && !Array.isArray(display.presentation_entries)) throw new KnowledgeReaderError("Missing display presentation entries");
+        document = { ...document,
+          ...(display.display_names !== undefined ? { display_names: display.display_names } : {}),
+          ...(display.display_effects !== undefined ? { display_effects: display.display_effects } : {}),
+          ...(display.presentation_entries !== undefined ? { presentation_entries: display.presentation_entries } : {}),
+        };
       } catch (cause) {
         throw new KnowledgeReaderError(`Display text artefact at "${displayUrl}" is not valid JSON: ${(cause as Error).message}`);
       }
@@ -504,33 +502,75 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     return [...new Set(this.mapFor(kind).values())];
   }
 
-  private displayValues(values: Readonly<Record<string, Readonly<Record<string, string>>>>, id: string, profileId?: string, bandId?: string): Readonly<Record<string, string>> | undefined {
-    const scoped = profileId && bandId ? values[`${bandId}:${profileId}:${id}`] : undefined;
-    return scoped ?? (profileId ? values[`${profileId}:${id}`] ?? values[id] : values[id]);
+  resolveKbText(ref: TextReference, field: TextField, locale: Locale): TextResolution {
+    const result = this.presentation.resolve(ref, field, locale);
+    if (!result.ok && result.reason !== "missing-field") {
+      const key = JSON.stringify([result.reason, ref.kind, ref.id, ref.bandId, ref.profileId, ref.tableId, ref.scope, field, locale]);
+      // Bound imported-data diagnostics without exposing them in visible text.
+      if (this.presentationErrors.size < 1000 || this.presentationErrors.has(key)) this.presentationErrors.set(key, result);
+    }
+    return result;
   }
 
-  /** One display lookup for roster ids spanning skills, rules, and mechanics. */
-  displayName(id: string, locale: Locale, fallback?: unknown, profileId?: string, bandId?: string): string {
-    const names = this.displayValues(this.displayNames, id, profileId, bandId);
-    if (names?.[locale]) return names[locale];
-    if (names?.en) return names.en;
-    const alternate = Object.values(names ?? {}).find(Boolean);
-    if (alternate) return alternate;
-    return titleCaseDisplay(String(fallback ?? id).replace(/[._-]+/g, " "));
+  presentationDiagnostics(): readonly Extract<TextResolution, { ok: false }>[] {
+    return [...this.presentationErrors.values()];
   }
 
-  displayNameText(ref: DisplayRef, locale: Locale, fallback?: unknown): LocalizedText {
-    return localizedText(this.displayValues(this.displayNames, ref.id, ref.profileId, ref.bandId), locale, fallback);
+  /** Isolated v5 compatibility: exact stored ability id/name, never approximate. */
+  legacyAbilityRef(value: string, profileId?: string, bandId?: string): TextReference | undefined {
+    const matches = this.presentationEntries.filter((entry) => {
+      if (entry.ref.kind !== "skill" && entry.ref.kind !== "rule") return false;
+      if (entry.source.startsWith("rules_prose/localized-labels/")) return false;
+      if (entry.ref.profileId !== undefined && entry.ref.profileId !== profileId) return false;
+      if (entry.ref.bandId !== undefined && entry.ref.bandId !== bandId) return false;
+      return entry.ref.id === value || Object.values(entry.fields.name ?? {}).includes(value);
+    });
+    return matches.length === 1 ? matches[0].ref : undefined;
   }
 
-  displayDescription(id: string, locale: Locale, profileId?: string, bandId?: string): string | undefined {
-    const ref: DisplayRef = { kind: "rule", id, ...(profileId ? { profileId } : {}), ...(bandId ? { bandId } : {}) };
-    const value = this.displayDescriptionText(ref, locale);
-    return value.status === "missing" ? undefined : value.text;
+  /** Original records only; a caller cannot supply an unrelated text fallback. */
+  recordText(row: Readonly<Record<string, unknown>> | undefined, field: TextField, locale: Locale): ResolvedKbText {
+    if (!row) return unavailableText(locale);
+    const ref = this.presentationRows.get(row);
+    if (ref) {
+      const result = this.resolveKbText(ref, field, locale);
+      return result.ok ? result.text : unavailableText(locale);
+    }
+    return unavailableText(locale);
+  }
+
+  /** Exact compatibility for captured v5 labels. Ambiguity never selects a row. */
+  legacyText(value: unknown, locale: Locale): ResolvedKbText {
+    if (typeof value !== "string") return unavailableText(locale);
+    const matches = new Map<string, Set<ResolvedKbText>>();
+    for (const entry of this.presentationEntries) {
+      for (const [field, texts] of Object.entries(entry.fields)) {
+        if (Object.values(texts).includes(value)) {
+          const key = JSON.stringify(entry.ref);
+          const translations = matches.get(key) ?? new Set<ResolvedKbText>();
+          const resolved = this.resolveKbText(entry.ref, field as TextField, locale);
+          translations.add(resolved.ok ? resolved.text : unavailableText(locale));
+          matches.set(key, translations);
+        }
+      }
+    }
+    if (matches.size !== 1) return unavailableText(locale);
+    const values = [...matches.values()][0];
+    return values.size === 1 ? [...values][0] : unavailableText(locale);
+  }
+
+  displayNameText(ref: DisplayRef, locale: Locale): LocalizedText {
+    const result = this.resolveKbText(ref, "name", locale);
+    return result.ok ? { text: result.text, sourceLocale: locale, status: "translated" } : localizedText(undefined, locale);
   }
 
   displayDescriptionText(ref: DisplayRef, locale: Locale): LocalizedText {
-    return localizedText(this.displayValues(this.displayEffects, ref.id, ref.profileId, ref.bandId), locale);
+    for (const field of ["effect", "description", "text", "note"] as const) {
+      const result = this.resolveKbText(ref, field, locale);
+      if (result.ok) return { text: result.text, sourceLocale: locale, status: "translated" };
+      if (result.reason !== "missing-field") break;
+    }
+    return localizedText(undefined, locale);
   }
 
   // ------------------------------------------------------------------
@@ -571,9 +611,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   /** Display name of a stable KB item id (trading rows only carry ids). */
   itemName(itemId: string, locale: Locale = "en"): string {
     const row = this.items.get(itemId) ?? this.campaignMaps.hirelings.get(itemId);
-    if (!row) return itemId;
-    const names = rowNames(row);
-    return titleCaseDisplay(names[locale] ?? names["en"] ?? itemId);
+    return row ? resolveName(row, locale) : unavailableText(locale);
   }
 
   /** Number of hands required by a canonical weapon, when the KB declares it. */

@@ -28,7 +28,8 @@ import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
-TOOLS = ROOT / "tools" / "knowledge"
+# The 2A/2B ingestion tools live in tools/ingestion (temporary: see its README).
+TOOLS = ROOT / "tools" / "ingestion"
 PAGES = ROOT / "build" / "cache" / "2a-sources" / "pages"
 TEXTS = ROOT / "build" / "cache" / "2a-sources" / "text"
 BANDS = ROOT / "sources" / "2A" / "bands" / "mordheim"
@@ -54,23 +55,44 @@ def sandbox() -> Path:
         shutil.rmtree(root)
     shutil.copytree(BANDS.parent, root)
     shutil.copytree(ROOT / "sources" / "2A" / "catalog", SANDBOX / "catalog")
-    bands, catalog = audit.BANDS, audit.CATALOG_DIR
+    bands, catalog, market = audit.BANDS, audit.CATALOG_DIR, audit.MARKET_FILE
     audit.BANDS = str(root / "mordheim")
     audit.CATALOG_DIR = str(SANDBOX / "catalog" / "items")
+    # The price of a Special Equipment item lives in the market catalogue of the
+    # tree, in the shape of the KB trading post, so the sandbox repoints that too.
+    audit.MARKET_FILE = str(SANDBOX / "catalog" / "trading-post-2a.yaml")
     try:
         yield root / "mordheim"
     finally:
-        audit.BANDS, audit.CATALOG_DIR = bands, catalog
+        audit.BANDS, audit.CATALOG_DIR, audit.MARKET_FILE = bands, catalog, market
         shutil.rmtree(SANDBOX, ignore_errors=True)
 
 
 @CACHED
 def test_audited_tree_has_no_open_findings() -> None:
+    """Ningún hallazgo abierto, y la cobertura que lo sostiene declarada.
+
+    Las cifras son las de las 19 páginas cacheadas y las mismas que daba la lectura
+    anterior (por expresiones regulares sobre el HTML): si la lectura por estructura
+    del lector compartido cambiara lo que ve, cambiarían aquí.
+    """
+    audit.LEDGER.reset()
     items = audit.catalog_items()
     open_rows = [row for band in sorted(p.name for p in BANDS.iterdir())
                  for row in audit.check_band(band, items)
                  if row.get("verdict") != "known"]
     assert not open_rows, open_rows
+    measures = audit.LEDGER.measures
+    assert measures["lists"].units == 47
+    assert measures["lists"].values == 558
+    assert measures["special-price"].units == 35
+    assert measures["item-profiles"].values == 3
+    assert measures["clarifications"].values == 22
+    assert measures["rules"].units == 19
+    # Todo chequeo declara algo comparado: un chequeo en cero es un chequeo que no
+    # corrió, no un chequeo limpio.
+    assert all(measure.values or measure.units
+               for measure in measures.values()), audit.LEDGER.line()
 
 
 @CACHED
@@ -119,27 +141,56 @@ def test_audit_detects_a_list_without_a_source_heading(sandbox: Path) -> None:
 
 @CACHED
 def test_audit_checks_the_lists_published_under_an_h2_heading() -> None:
-    """The h2 lists (Ogre, Outlaws, Sorcerous Society, Protectorate) are covered."""
-    audit.STATS.clear()
+    """The h2 lists (Ogre, Outlaws, Sorcerous Society, Protectorate) are covered.
+
+    Y la cobertura dice que lo están: estas páginas publican sus listas bajo un h2
+    en vez del h3 que usa el resto, que es lo que el cotejo no cubría al principio.
+    """
+    audit.LEDGER.reset()
     items = audit.catalog_items()
     for band in ("ogre-hunting-party-web", "outlaws-of-stirwood-forest-redux-fbg",
                  "sorcerous-society-lotd4", "protectorate-of-sigmar-lotd3"):
         audit.check_band(band, items)
-    assert audit.STATS.get("lists_verified", 0) >= 6
-    assert audit.STATS.get("list_levels_h2", 0) >= 5
+    measure = audit.LEDGER.measures["lists"]
+    assert measure.units >= 6
+    assert measure.values >= 6
+    assert measure.details.get("bajo un h2", 0) >= 5
 
 
 @CACHED
 def test_audit_detects_a_special_equipment_price_error(sandbox: Path) -> None:
     """The Special Equipment price is compared with the page, not trusted."""
-    path = SANDBOX / "catalog" / "items" / "grave-robbers-equipment.yaml"
-    text = path.read_text(encoding="utf-8")
-    path.write_text(text.replace("Cost 15 + D6 gold crowns.", "Cost 45 gold crowns."),
+    path = SANDBOX / "catalog" / "trading-post-2a.yaml"
+    document = yaml.safe_load(path.read_text(encoding="utf-8"))
+    entry = next(row for row in document["items"] if row["item_id"] == "hooded_lantern_rig")
+    entry["price"] = {"base_gc": 45}
+    path.write_text(yaml.safe_dump(document, allow_unicode=True, sort_keys=False),
                     encoding="utf-8")
     found = [row for row in audit.check_band("grave-robbers-sylv", audit.catalog_items())
              if row["kind"].startswith("special-price")]
     assert found, "a special-equipment price the page contradicts was not reported"
     assert any(row.get("verdict") != "known" for row in found), found
+
+
+def test_equipment_lists_read_their_rows_by_structure() -> None:
+    """Las filas de una lista salen del lector compartido, no de expresiones regulares.
+
+    Dos cosas que la lectura anterior perdía: una celda con etiquetas dentro (el
+    nombre lleva un `<strong>` y el precio vive en otra celda) y la tabla que
+    pertenece a la sección siguiente. El encabezado de la lista es su `h3`, y su
+    tramo son sus bloques: lo que viene después del siguiente encabezado no es suyo.
+    """
+    page = ("<h3>Ogre Equipment List</h3>"
+            "<table><thead><tr><th>Item</th><th>Cost</th></tr></thead><tbody>"
+            "<tr><td><strong>Ogre Club</strong></td><td>10 gc</td></tr>"
+            "</tbody></table>"
+            "<h3>Ogre Special Rules</h3>"
+            "<table><tbody><tr><td>Not A Price</td><td>99 gc</td></tr></tbody></table>")
+    doc = audit.document(page)
+    heads = audit.headings(doc)
+    index = next(i for i, (_level, head, _pos) in enumerate(heads)
+                 if head == "Ogre Equipment List")
+    assert audit.table_rows(doc, heads, index) == [("Ogre Club", "10 gc")]
 
 
 def test_special_equipment_prices_are_read_by_shape() -> None:

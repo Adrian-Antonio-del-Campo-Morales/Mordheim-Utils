@@ -22,6 +22,10 @@ export interface ArtefactIndexes {
 }
 
 export interface KnowledgeArtefact {
+  readonly presentation_entries?: readonly import("./presentation").PresentationEntry[];
+  readonly presentation_digest?: string;
+  readonly rules_prose_digest?: string;
+  readonly display_text_digest?: string;
   readonly schema_version: number;
   readonly ruleset: string;
   readonly collections?: readonly ArtefactRow[];
@@ -29,6 +33,7 @@ export interface KnowledgeArtefact {
   readonly profiles: readonly ArtefactRow[];
   readonly items: readonly ArtefactRow[];
   readonly skills: readonly ArtefactRow[];
+  readonly mechanics?: Readonly<Record<string, readonly ArtefactRow[]>>;
   readonly display_names?: Readonly<Record<string, LocaleText>>;
   readonly display_effects?: Readonly<Record<string, LocaleText>>;
   readonly weapon_hands?: Readonly<Record<string, number>>;
@@ -44,7 +49,7 @@ export type ArtefactValidation =
   | { readonly ok: true }
   | {
       readonly ok: false;
-      readonly reason: "not_an_object" | "missing_section" | "bad_schema_version";
+      readonly reason: "not_an_object" | "missing_section" | "bad_schema_version" | "bad_presentation";
       readonly message: string;
     };
 
@@ -63,6 +68,27 @@ export function validateArtefact(value: unknown): ArtefactValidation {
   for (const section of ["bands", "profiles", "items", "skills"] as const) {
     if (!Array.isArray(artefact[section])) {
       return { ok: false, reason: "missing_section", message: `KB artefact section ${section} missing or not an array` };
+    }
+  }
+  if (artefact.presentation_entries !== undefined) {
+    const object = (row: unknown): row is Record<string, unknown> => row !== null && typeof row === "object" && !Array.isArray(row);
+    const fields = new Set(["name", "effect", "description", "text", "note", "notes", "label", "result", "outcome", "rule", "reward", "author", "wyrdstone"]);
+    const identities = new Set<string>();
+    if (!Array.isArray(artefact.presentation_entries)) return { ok: false, reason: "bad_presentation", message: "Invalid presentation entries" };
+    for (const entry of artefact.presentation_entries) {
+      if (!object(entry) || !object(entry.ref) || typeof entry.ref.kind !== "string" || !entry.ref.kind || typeof entry.ref.id !== "string" || !entry.ref.id || typeof entry.source !== "string" || !entry.source || !object(entry.fields)) {
+        return { ok: false, reason: "bad_presentation", message: "Invalid presentation entry" };
+      }
+      for (const scope of ["bandId", "profileId", "tableId"] as const) {
+        if (entry.ref[scope] !== undefined && (typeof entry.ref[scope] !== "string" || !entry.ref[scope])) return { ok: false, reason: "bad_presentation", message: "Invalid presentation scope" };
+      }
+      if (entry.ref.scope !== undefined && (entry.ref.scope !== "global" || entry.ref.bandId !== undefined || entry.ref.profileId !== undefined || entry.ref.tableId !== undefined)) return { ok: false, reason: "bad_presentation", message: "Invalid global presentation scope" };
+      const identity = JSON.stringify([entry.ref.kind, entry.ref.id, entry.ref.bandId, entry.ref.profileId, entry.ref.tableId]);
+      if (identities.has(identity)) return { ok: false, reason: "bad_presentation", message: "Duplicate presentation identity" };
+      identities.add(identity);
+      for (const [field, values] of Object.entries(entry.fields)) {
+        if (!fields.has(field) || !object(values) || Object.values(values).some((text) => typeof text !== "string")) return { ok: false, reason: "bad_presentation", message: "Invalid presentation field" };
+      }
     }
   }
   return { ok: true };

@@ -17,7 +17,7 @@ manifest or the active knowledge base. Manual verdicts are recorded in
 noise), ``MISMATCH`` must be adjudicated against the draft before a row is
 marked ``english-reviewed``.
 
-Adapted from ``tools/knowledge/review_2b.py``. 2A differences: the primary
+Adapted from ``tools/ingestion/review_2b.py``. 2A differences: the primary
 source is the cached mordheimer.net page draft (no scanned sources), and two
 warbands use non-gold-crown currencies in their hire lines (warp tokens).
 """

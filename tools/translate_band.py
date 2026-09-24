@@ -63,9 +63,11 @@ def main() -> int:
         if i18n.get("es") != band_es:
             i18n["es"] = band_es
             changed += 1
+    # newline="\n": the maintained YAML is LF-only (see .gitattributes).
     band_file.write_text(
         yaml.safe_dump(band_doc, sort_keys=False, allow_unicode=True, width=100),
         encoding="utf-8",
+        newline="\n",
     )
 
     profiles = plan.get("profiles") or {}
@@ -83,6 +85,7 @@ def main() -> int:
         profiles_file.write_text(
             yaml.safe_dump(doc, sort_keys=False, allow_unicode=True, width=100),
             encoding="utf-8",
+            newline="\n",
         )
 
     rules = plan.get("rules") or {}
@@ -108,6 +111,7 @@ def main() -> int:
         rules_file.write_text(
             yaml.safe_dump(doc, sort_keys=False, allow_unicode=True, width=100),
             encoding="utf-8",
+            newline="\n",
         )
 
     print(f"{band_path}: {changed} fields updated")

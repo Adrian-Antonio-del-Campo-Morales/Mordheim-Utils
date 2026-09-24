@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Derive the active KB's document contract empirically, then diff a staging tree
-against *that* contract rather than against hardcoded assumptions.
+"""Derive the active KB's document contract empirically, then diff a tree against
+*that* contract rather than against hardcoded assumptions.
 
 The conformance auditor (``audit_kb_conformance.py``) carries key sets that were
 written by hand. This tool re-measures them from ``sources/knowledge`` so a
 correction pass can prove its checklist matches the KB as it exists today, and can
 spot (a) keys the auditor wrongly permits and (b) keys it wrongly rejects.
 
+Permanent companion of the conformance audit: the default run re-checks the
+active KB against its own measured contract, and ``--tree`` points it at a
+staging tree before promotion.
+
 Usage::
 
-    python tools/knowledge/derive_kb_contract.py                # contract + check
+    python tools/knowledge/derive_kb_contract.py                # contract + self-check
     python tools/knowledge/derive_kb_contract.py --tree 2A --json
 """
 from __future__ import annotations
@@ -104,7 +108,8 @@ def canonical_keys(profile: dict, top_n: int = 1) -> set[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--tree', default='2A', help='staging tree to check')
+    parser.add_argument('--tree', default='knowledge',
+                        help="tree under sources/ to diff (default: knowledge)")
     parser.add_argument('--json', action='store_true')
     args = parser.parse_args()
 

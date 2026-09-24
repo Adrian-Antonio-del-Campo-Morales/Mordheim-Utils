@@ -12,10 +12,11 @@
 
 import {
   ArtefactKnowledgeReader,
-  resolveName,
 } from "../../adapters/knowledge-reader/index";
 import type { ArtefactRow } from "../../adapters/knowledge-reader/artefact-types";
+import { fieldValues, unavailableText, type ResolvedKbText } from "../../adapters/knowledge-reader/presentation";
 import { adaptDistanceText } from "./distance-display";
+import { catalogueJoin, catalogueLabel, catalogueNumber, cataloguePunctuation, isCatalogueLabel, type CatalogueText } from "./catalogue-text";
 
 /** Locale code used for display text (matches the KB artefact locales). */
 export type Locale = "en" | "es";
@@ -24,10 +25,10 @@ export type Locale = "en" | "es";
 export interface RuleEntry {
   readonly category_id: string;
   readonly entry_id: string;
-  readonly name: string;
-  readonly effect: string;
+  readonly name: ResolvedKbText | CatalogueText;
+  readonly effect: ResolvedKbText | CatalogueText;
   /** Free detail chips (e.g. "Speed", "Close Combat Weapon", "difficulty 7"). */
-  readonly tags: readonly string[];
+  readonly tags: readonly (ResolvedKbText | CatalogueText)[];
   /** Raw `source_refs` rows (label + url preserved for the UI). */
   readonly source_refs: readonly Readonly<Record<string, unknown>>[];
   /** Owning lore id for spell entries (used by cross-links). */
@@ -41,18 +42,18 @@ export interface RuleEntry {
 /** A browsable category in display order. */
 export interface RulesCategory {
   readonly category_id: string;
-  readonly label: string;
+  readonly label: CatalogueText;
 }
 
 /** One warband profile that can take / carries the browsed entry. */
 export interface ProfileLink {
-  readonly band: string;
-  readonly profile: string;
+  readonly band: ResolvedKbText;
+  readonly profile: ResolvedKbText;
   readonly profile_id: string;
-  readonly relation: string;
+  readonly relation: CatalogueText;
 }
 
-const CATEGORY_ORDER: readonly string[] = [
+const CATEGORY_ORDER = [
   "special-rules",
   "band-rules",
   "conditions",
@@ -62,19 +63,7 @@ const CATEGORY_ORDER: readonly string[] = [
   "spells",
   "scenarios",
   "injuries",
-];
-
-const CATEGORY_LABELS: Readonly<Record<string, string>> = {
-  "special-rules": "Shared Rules",
-  "band-rules": "Warband Rules",
-  conditions: "Conditions",
-  "core-rules": "Core Rules",
-  skills: "Skills",
-  equipment: "Equipment",
-  spells: "Spells",
-  scenarios: "Scenarios",
-  injuries: "Serious Injuries",
-};
+] as const;
 
 function unaccentLower(text: string): string {
   return text.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLocaleLowerCase();
@@ -91,72 +80,36 @@ function entryIdOf(row: Readonly<Record<string, unknown>>): string {
   return String(row.id ?? row.item_id ?? "");
 }
 
-/** Resolve the descriptive text of a KB row for the locale (en -> es chain). */
-function localizedEffect(
-  row: Readonly<Record<string, unknown>>,
-  locale: Locale,
-): string {
-  return adaptDistanceText(rawLocalizedEffect(row, locale), locale, entryIdOf(row));
-}
-
-function rawLocalizedEffect(
-  row: Readonly<Record<string, unknown>>,
-  locale: Locale,
-): string {
-  for (const key of ["effect", "description", "text", "note"]) {
-    const translated = row[`${key}_i18n`];
-    if (
-      translated &&
-      typeof translated === "object" &&
-      typeof (translated as Readonly<Record<string, unknown>>)[locale] === "string"
-    ) {
-      return String((translated as Readonly<Record<string, unknown>>)[locale]);
-    }
-  }
-  const effects = row.effects;
-  if (effects && typeof effects === "object" && typeof (effects as Readonly<Record<string, unknown>>)[locale] === "string") {
-    return String((effects as Readonly<Record<string, unknown>>)[locale]);
-  }
-  for (const key of ["effect", "description", "text", "note"]) {
-    if (typeof row[key] === "string") return String(row[key]);
-  }
-  return locale === "es"
-    ? "No hay texto descriptivo disponible."
-    : "No descriptive text is available.";
-}
-
+/** Resolve only fields explicitly provided in the requested locale. */
 function sourceRefs(row: Readonly<Record<string, unknown>>): readonly Readonly<Record<string, unknown>>[] {
   return Array.isArray(row.source_refs) ? row.source_refs as Readonly<Record<string, unknown>>[] : [];
-}
-
-function translatedText(row: Readonly<Record<string, unknown>>, locale: Locale): string {
-  if (locale === "en") return localizedEffect(row, locale);
-  let text = "";
-  for (const key of ["effect", "description", "text", "note"]) {
-    const values = row[`${key}_i18n`];
-    if (values && typeof values === "object" && typeof (values as Readonly<Record<string, unknown>>)[locale] === "string") {
-      text = String((values as Readonly<Record<string, unknown>>)[locale]);
-      break;
-    }
-  }
-  if (!text) {
-    const effects = row.effects;
-    text = effects && typeof effects === "object" && typeof (effects as Readonly<Record<string, unknown>>)[locale] === "string"
-      ? String((effects as Readonly<Record<string, unknown>>)[locale]) : "";
-  }
-  return adaptDistanceText(text, locale, entryIdOf(row));
 }
 
 export class RulesCatalogue {
   constructor(private readonly knowledge: ArtefactKnowledgeReader) {}
 
+  private translatedText(row: Readonly<Record<string, unknown>>, locale: Locale): ResolvedKbText | null {
+    for (const field of ["effect", "description", "text", "note"] as const) {
+      // Presence is structural only. A declared but untranslated field must
+      // stay unavailable; a later field cannot silently replace it.
+      if (field in row || `${field}_i18n` in row || Object.keys(fieldValues(row, field)).length) {
+        return adaptDistanceText(this.knowledge.recordText(row, field, locale), locale, entryIdOf(row));
+      }
+    }
+    return null;
+  }
+
+  private localizedEffect(row: Readonly<Record<string, unknown>>, locale: Locale): ResolvedKbText {
+    return this.translatedText(row, locale) ?? unavailableText(locale);
+  }
+
   /** The browsable categories, in display order, excluding empty ones. */
-  categories(): RulesCategory[] {
+  categories(locale: Locale = "en"): RulesCategory[] {
     return CATEGORY_ORDER
       .filter((categoryId) => this.entries(categoryId).length > 0)
       .map((categoryId) => ({
         category_id: categoryId,
-        label: CATEGORY_LABELS[categoryId] ?? categoryId,
+        label: catalogueLabel(categoryId, locale),
       }));
   }
 
@@ -214,29 +167,18 @@ export class RulesCatalogue {
       return [];
     }
     const bands = new Map(
-      this.knowledge.list("band").map((band) => [String(band.id), resolveName(band, locale)]),
+      this.knowledge.list("band").map((band) => [String(band.id), this.knowledge.recordText(band, "name", locale)]),
     );
-    const relationLabel = (relation: string) =>
-      locale === "es"
-        ? ({
-            "starting skill": "habilidad inicial",
-            "skill table": "tabla de habilidades",
-            "starting equipment": "equipo inicial",
-            "permitted equipment": "equipo permitido",
-            "package rule": "regla de banda",
-            "spell lore": "saber mágico",
-          }[relation] ?? relation)
-        : relation;
     const links: ProfileLink[] = [];
     for (const profile of this.knowledge.list("profile")) {
       const profileId = String(profile.id ?? "");
       const relation = this.profileRelation(categoryId, entry, profile);
       if (!relation) continue;
       links.push({
-        band: bands.get(String(profile.band_id ?? "")) ?? String(profile.band_id ?? ""),
-        profile: resolveName(profile, locale),
+        band: bands.get(String(profile.band_id ?? "")) ?? unavailableText(locale),
+        profile: this.knowledge.recordText(profile, "name", locale),
         profile_id: profileId,
-        relation: relationLabel(relation),
+        relation: catalogueLabel(relation, locale),
       });
     }
     return links.sort((left, right) =>
@@ -270,6 +212,7 @@ export class RulesCatalogue {
                     ...spell,
                     lore_id: lore.id,
                     _lore: lore,
+                    _spell: spell,
                   }))
                 : [];
             })
@@ -298,10 +241,11 @@ export class RulesCatalogue {
       ? this.scenarioText(row, locale)
       : categoryId === "injuries"
         ? this.injuryTableText(row, locale)
-        : localizedEffect(row, locale);
+        : this.localizedEffect(row._spell && typeof row._spell === "object" ? row._spell as ArtefactRow : row, locale);
     const ruleId = entryIdOf(row);
     const bandId = categoryId === "band-rules" ? String(row.band_id ?? "") : "";
-    const name = resolveName(row as ArtefactRow, locale);
+    const resolvedName = this.knowledge.recordText(row._spell && typeof row._spell === "object" ? row._spell as ArtefactRow : row, "name", locale);
+    const name = resolvedName;
     return {
       category_id: categoryId,
       entry_id: bandId ? `${bandId}:${ruleId}` : ruleId,
@@ -314,87 +258,75 @@ export class RulesCatalogue {
     };
   }
 
-  private scenarioText(row: Readonly<Record<string, unknown>>, locale: Locale): string {
-    const parts = [localizedEffect(row, locale)];
-    parts.push(locale === "es"
-      ? `Ambientación: ${String(row.setting ?? "—")} · Modalidad: ${String(row.player_mode ?? "—")} · Autor: ${String(row.author ?? "—")}`
-      : `Setting: ${String(row.setting ?? "—")} · Mode: ${String(row.player_mode ?? "—")} · Author: ${String(row.author ?? "—")}`);
+  private scenarioText(row: Readonly<Record<string, unknown>>, locale: Locale): CatalogueText {
+    const parts: (CatalogueText | ResolvedKbText)[] = [this.localizedEffect(row, locale)];
+    const enumValue = (value: unknown) => typeof value === "string" && isCatalogueLabel(value) ? catalogueLabel(value, locale) : unavailableText(locale);
+    parts.push(catalogueJoin([
+      catalogueJoin([catalogueLabel("setting", locale), enumValue(row.setting)], ": "),
+      catalogueJoin([catalogueLabel("mode", locale), enumValue(row.player_mode)], ": "),
+    ], " · "));
+    if (typeof row.author === "string" && row.author.trim()) parts.push(catalogueJoin([catalogueLabel("author", locale), this.knowledge.recordText(row, "author", locale)], ": "));
     const progression = row.progression && typeof row.progression === "object"
       ? row.progression as Readonly<Record<string, unknown>> : {};
     const experience = Array.isArray(progression.experience)
       ? progression.experience as Readonly<Record<string, unknown>>[] : [];
     if (experience.length) {
-      parts.push(locale === "es" ? "Experiencia:" : "Experience:");
+      parts.push(catalogueJoin([catalogueLabel("experience", locale), cataloguePunctuation(":")], ""));
       for (const award of experience) {
-        const standard: Readonly<Record<string, string>> = {
-          "campaign.experience.award.survives": "Sobrevive a la batalla",
-          "campaign.experience.award.winning-leader": "El jefe de la banda vencedora",
-          "campaign.experience.award.per-enemy-out-of-action": "Por cada enemigo dejado fuera de combate",
-        };
-        const text = translatedText(award, locale);
-        const fallback = locale === "es" ? standard[String(award.ref ?? "")] : titleCase(String(award.ref ?? "").split(".").pop() ?? "");
-        if (text || fallback) parts.push(`• ${text || fallback}`);
+        const ref = String(award.ref ?? "");
+        const resolution = this.knowledge.resolveKbText({ kind: "record", id: ref }, "name", locale);
+        const text = this.translatedText(award, locale) ?? (resolution.ok ? resolution.text : unavailableText(locale));
+        parts.push(catalogueJoin([cataloguePunctuation("• "), text], ""));
       }
     }
     const loot = progression.loot && typeof progression.loot === "object"
       ? progression.loot as Readonly<Record<string, unknown>> : null;
     if (loot) {
-      const lootText = translatedText(loot, locale);
-      if (lootText) parts.push(`${locale === "es" ? "Botín" : "Loot"}: ${lootText}`);
-      if (locale === "en" && Array.isArray(loot.contents)) {
+      const lootText = this.translatedText(loot, locale);
+      if (lootText) parts.push(catalogueJoin([catalogueLabel("loot", locale), lootText], ": "));
+      if (Array.isArray(loot.contents)) {
         for (const content of loot.contents as Readonly<Record<string, unknown>>[]) {
-          parts.push(`• ${String(content.roll ?? "")} ${String(content.reward ?? "")}`.trim());
+          const reward = this.knowledge.recordText(content, "reward", locale);
+          const roll = catalogueNumber(content.roll);
+          parts.push(catalogueJoin([cataloguePunctuation("• "), catalogueJoin(roll ? [roll, reward] : [reward])], ""));
         }
       }
     }
-    if (locale === "en" && typeof progression.wyrdstone === "string") {
-      parts.push(`Wyrdstone: ${progression.wyrdstone}`);
+    if (typeof progression.wyrdstone === "string") {
+      parts.push(catalogueJoin([catalogueLabel("wyrdstone", locale), this.knowledge.recordText(progression, "wyrdstone", locale)], ": "));
     }
-    if (locale === "en" && Array.isArray(progression.notes)) {
-      parts.push(`Notes: ${(progression.notes as unknown[]).map(String).join(" ")}`);
+    if (Array.isArray(progression.notes)) {
+      parts.push(catalogueJoin([catalogueLabel("notes", locale), this.knowledge.recordText(progression, "notes", locale)], ": "));
     }
-    return parts.filter(Boolean).join("\n\n");
+    return catalogueJoin(parts, "\n\n");
   }
 
-  private injuryTableText(row: Readonly<Record<string, unknown>>, locale: Locale): string {
+  private injuryTableText(row: Readonly<Record<string, unknown>>, locale: Locale): CatalogueText {
     const results = Array.isArray(row.results) ? row.results as Readonly<Record<string, unknown>>[] : [];
-    const es: Readonly<Record<string, string>> = {
-      Dead: "Muerto", "Multiple Injuries": "Heridas múltiples", "Leg Wound": "Herida en la pierna",
-      "Arm Wound": "Herida en el brazo", Madness: "Locura", "Smashed Leg": "Pierna aplastada",
-      "Chest Wound": "Herida en el pecho", "Blinded In One Eye": "Tuerto", "Old Battle Wound": "Vieja herida de guerra",
-      "Nervous Condition": "Problema nervioso", "Hand Injury": "Herida en la mano", "Deep Wound": "Herida profunda",
-      Robbed: "Robado", "Full Recovery": "Recuperación completa", "Bitter Enmity": "Enemistad acérrima",
-      Captured: "Capturado", Hardened: "Curtido", "Horrible Scars": "Cicatrices horribles",
-      "Sold To The Pits": "Vendido a los pozos", "Survives Against The Odds": "Sobrevive contra todo pronóstico",
-      Removed: "Eliminado",
-    };
     const dice = row.dice && typeof row.dice === "object" ? row.dice as Readonly<Record<string, unknown>> : {};
+    const count = catalogueNumber(dice.count) ?? unavailableText(locale);
+    const sides = catalogueNumber(dice.sides) ?? unavailableText(locale);
+    const diceText = catalogueJoin([count, cataloguePunctuation("D"), sides], "");
     const heading = locale === "es"
-      ? `Tabla de ${String(dice.count ?? "")}D${String(dice.sides ?? "")}. Resultados:`
-      : `${String(dice.count ?? "")}D${String(dice.sides ?? "")} table. Results:`;
-    return [heading, ...results.map((result) => {
-      const canonical = String(result.result ?? result.id ?? "");
-      const name = locale === "es" ? es[canonical] ?? canonical : canonical;
-      const note = translatedText(result, locale);
-      return `${String(result.roll ?? "")} — ${name}${note ? `: ${note}` : ""}`;
-    })].join("\n");
+      ? catalogueJoin([catalogueLabel("table-of", locale), diceText, catalogueLabel("results", locale)])
+      : catalogueJoin([diceText, catalogueLabel("results", locale)]);
+    return catalogueJoin([heading, ...results.map((result) => {
+      const roll = catalogueNumber(result.roll) ?? unavailableText(locale);
+      const name = this.knowledge.recordText(result, "result", locale);
+      const note = this.translatedText(result, locale);
+      const line = catalogueJoin([roll, name], " — ");
+      return note ? catalogueJoin([line, note], ": ") : line;
+    })], "\n");
   }
 
   private tagsFor(
     categoryId: string,
     row: Readonly<Record<string, unknown>>,
     locale: Locale,
-  ): readonly string[] {
-    const label = (value: string): string | null => {
+  ): readonly (ResolvedKbText | CatalogueText)[] {
+    const label = (value: string): CatalogueText | null => {
       const canonical = titleCase(value);
-      const translated = ({
-        Speed: "Velocidad", Combat: "Combate", Shooting: "Disparo", Academic: "Académicas", Strength: "Fuerza", Special: "Especiales",
-        "Close Combat Weapon": "Arma de combate cuerpo a cuerpo", "Ranged Weapon": "Arma a distancia", Armour: "Armadura",
-        "Shield Or Defence": "Escudo o defensa", "Combat Equipment": "Equipo de combate", "Material Or Upgrade": "Material o mejora",
-        Hero: "Héroe", Henchman: "Secuaz", Multiplayer: "Multijugador",
-      } as Readonly<Record<string, string>>)[canonical];
-      if (!translated) return null;
-      return locale === "es" ? translated : canonical;
+      return isCatalogueLabel(canonical) ? catalogueLabel(canonical, locale) : null;
     };
     switch (categoryId) {
       case "skills": {
@@ -407,11 +339,11 @@ export class RulesCatalogue {
       }
       case "spells": {
         const loreName = row._lore && typeof row._lore === "object"
-          ? resolveName(row._lore as ArtefactRow, locale)
-          : titleCase(String(row.lore_id ?? ""));
+          ? this.knowledge.recordText(row._lore as ArtefactRow, "name", locale)
+          : unavailableText(locale);
         const difficulty = row.difficulty;
         return [difficulty !== undefined && difficulty !== null
-          ? `${loreName} · ${locale === "es" ? "Dificultad" : "difficulty"} ${String(difficulty)}`
+          ? catalogueJoin([loreName, catalogueJoin([catalogueLabel("difficulty", locale), catalogueNumber(difficulty) ?? unavailableText(locale)]),], " · ")
           : loreName];
       }
       case "scenarios": {
@@ -426,7 +358,7 @@ export class RulesCatalogue {
         const bandId = String(row.band_id ?? "");
         const band = this.knowledge.list("band").find((item) => String(item.id) === bandId);
         // A broken reference is not player-facing metadata; never leak its id.
-        return band ? [resolveName(band, locale)] : [];
+        return band ? [this.knowledge.recordText(band, "name", locale)] : [];
       }
       default:
         return [];
@@ -437,7 +369,7 @@ export class RulesCatalogue {
     categoryId: string,
     entry: RuleEntry,
     profile: ArtefactRow,
-  ): string | null {
+  ): "starting skill" | "skill table" | "starting equipment" | "permitted equipment" | "special rule" | "spell lore" | null {
     const entryId = entry.entry_id;
     if (categoryId === "skills") {
       const skill = this.knowledge.list("skill").find((row) => String(row.id) === entryId);

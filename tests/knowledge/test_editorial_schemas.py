@@ -21,6 +21,8 @@ from mordheim_construction.contracts import TRAIT_TYPES
 from mordheim_core.models import EffectSet
 from mordheim_knowledge import editorial_schema_audit as audit
 from mordheim_knowledge import editorial_schemas
+from mordheim_knowledge import open_field_normalization as normalization
+from mordheim_knowledge import staging_contract_audit as staging
 import pytest
 import yaml as yaml
 
@@ -370,6 +372,200 @@ def test_no_strictness_justification_has_gone_stale():
     """A justification kept for a declaration the data now exercises hides a real gap."""
     stale = audit.stale_justifications(audit.audit_strictness(KNOWLEDGE))
     assert not stale, stale
+
+
+# --------------------------------------------------------------------------- #
+# Staged warbands: the contract applies before promotion
+# --------------------------------------------------------------------------- #
+
+#: Open-field values the staged trees introduce on purpose, each one a new *name*
+#: rather than a new dialect: the grade of the pack and the source ids the registry
+#: now carries. A set, not a count: ingesting more bands must not fail these tests,
+#: but a new label must, because every one of them is a promotion decision — and
+#: the decision has to be written down in ``staging.ACCEPTED_OPEN_VALUES`` or in
+#: ``registry/sources.yaml`` before the value is legitimate.
+STAGED_OPEN_VALUES = {
+    "2A": {
+        "categories[]": {"2a"},
+        "grade": {"2a"},
+        "sources[].manual": {
+            "sylvania-supplement",
+            "mordheim-index-catalog",
+            "mordheim-facebook-group",
+        },
+    },
+    "2B": {
+        "categories[]": {"2b"},
+        "grade": {"2b"},
+        "sources[].manual": {"broheim.net"},
+    },
+}
+
+
+def staged_roots() -> list[tuple[str, Path]]:
+    return [(tree, staging.tree_root(tree)) for tree in staging.STAGED_TREES]
+
+
+@pytest.mark.parametrize("tree,root", staged_roots(), ids=lambda value: value if isinstance(value, str) else None)
+def test_the_staged_packages_match_the_editorial_schemas(tree, root):
+    """A staged package has the promoted shape from the moment it is modelled.
+
+    The staging trees are outside the coverage guardian, so this is the gate that
+    catches a field the contract does not know about before a promotion copies it
+    into the knowledge base.
+    """
+    deviations = staging.schema_deviations(root)
+    assert not deviations, f"{tree}: " + "; ".join(str(deviation) for deviation in deviations)
+
+
+def test_the_staged_schema_gate_is_not_vacuous(tmp_path):
+    """The gate fails on a package the contract does not accept."""
+    source = BANDS / "mordheim" / "averlanders"
+    package = tmp_path / "bands" / "mordheim" / "averlanders"
+    package.mkdir(parents=True)
+    for document in DOCUMENTS:
+        body = read(source / document)
+        if document == "band.yaml":
+            body["legacy_key"] = "prose the contract never names"
+        (package / document).write_text(yaml.safe_dump(body, allow_unicode=True), encoding="utf-8")
+    deviations = staging.schema_deviations(tmp_path)
+    assert deviations, "a stray field must be reported"
+    assert {(deviation.document, deviation.path) for deviation in deviations} == {("band.yaml", "(root)")}
+    assert deviations[0].keys == {"legacy_key": 1}, deviations[0]
+
+
+def test_the_staged_open_fields_are_pinned():
+    """Every open-field value the staging adds to the vocabulary is declared here."""
+    for tree, root in staged_roots():
+        observed = {label: set(values) for label, values in staging.novel_open_values(root).items()}
+        assert observed == STAGED_OPEN_VALUES[tree], f"{tree}: {observed}"
+
+
+def test_no_pinned_staged_value_has_gone_stale():
+    """A pinned label the trees no longer use hides the next one that appears."""
+    for tree, root in staged_roots():
+        used = staging.open_field_values(root)
+        for label, values in STAGED_OPEN_VALUES[tree].items():
+            assert values <= set(used[label]), f"{tree}/{label}: {sorted(values - set(used[label]))}"
+
+
+def test_every_open_field_names_a_document_of_the_contract():
+    assert {field.document for field in staging.OPEN_FIELDS} <= set(DOCUMENTS)
+
+
+@pytest.mark.parametrize("tree,root", staged_roots(), ids=lambda value: value if isinstance(value, str) else None)
+def test_every_introduced_open_value_is_sanctioned(tree, root):
+    """A value outside the KB vocabulary needs the decision that introduced it.
+
+    Two decisions count: a registered source id (the vocabulary `manual` answers
+    to) and ``ACCEPTED_OPEN_VALUES``, which carries the reason. Anything else is a
+    dialect, and a dialect is what promotion would copy into the knowledge base.
+    """
+    assert staging.open_value_findings(root) == {}, tree
+
+
+def test_every_manual_of_the_kb_and_the_staging_is_a_registered_source():
+    """`manual` is a registered source id wherever it is written."""
+    registered = staging.registered_source_ids()
+    roots = [KNOWLEDGE, *[staging.tree_root(tree) for tree in staging.STAGED_TREES]]
+    for root in roots:
+        assert normalization.manual_values(root) <= registered, root
+
+
+# --------------------------------------------------------------------------- #
+# Staged catalogues: the promotion destination, not just the package shape
+# --------------------------------------------------------------------------- #
+
+#: Extension classes of the staged catalogues against the schema of the KB
+#: document that will claim them at promotion — the classes
+#: ``sources/2B/promotion-schema-plan.md`` analyses and decides on. A set, not a
+#: count, for the same reason as ``STAGED_OPEN_VALUES``: ingesting another rare
+#: item must not fail this test, but a *new* field, enum value or missing
+#: required property must, because the promotion plan does not cover it yet.
+#: Extension classes of the staged catalogues, by tree. The list is the plan's
+#: remaining work, and it is empty: the hireling split, the campaign side, the
+#: magic envelope and the lore materialisation closed every class, and a new one
+#: fails this gate until `sources/2B/promotion-schema-plan.md` declares it.
+STAGED_CATALOGUE_CLASSES: dict[str, set[str]] = {"2A": set(), "2B": set()}
+
+def staged_catalogue_classes(root: Path) -> set[str]:
+    return {staging.deviation_class(deviation) for deviation in staging.catalogue_deviations(root)}
+
+
+@pytest.mark.parametrize("tree,root", staged_roots(), ids=lambda value: value if isinstance(value, str) else None)
+def test_the_staged_catalogues_use_only_the_declared_extension_classes(tree, root):
+    """The promotion plan is a document; this keeps it describing the trees.
+
+    Each class is a decision the promotion has to take, so a new one — a field,
+    an enum value, a missing required property — must be added to
+    ``sources/2B/promotion-schema-plan.md`` and to the table above in the same
+    commit. The number of records showing a class is deliberately not pinned.
+    """
+    observed = staged_catalogue_classes(root)
+    new = sorted(observed - STAGED_CATALOGUE_CLASSES[tree])
+    gone = sorted(STAGED_CATALOGUE_CLASSES[tree] - observed)
+    assert not new, f"{tree}: undeclared promotion classes: {new}"
+    assert not gone, f"{tree}: declared promotion classes no longer observed: {gone}"
+
+
+@pytest.mark.parametrize("tree,root", staged_roots(), ids=lambda value: value if isinstance(value, str) else None)
+def test_the_staged_catalogue_names_are_gated_by_the_knowledge_base_policy(tree, root):
+    """The staging trees answer to the title-case policy of the KB, not to a pin.
+
+    The policy is a gate for `sources/knowledge` in its own test; this one is what
+    says a promotion copy of a staging tree no longer needs rewriting first.
+    """
+    assert staging.naming_drift(root) == {}
+
+
+def test_the_name_normalizer_is_clean_on_the_knowledge_base():
+    """The KB is the reference the staging drift is measured against."""
+    assert staging.naming_drift(KNOWLEDGE) == {}
+
+
+def test_every_staged_catalogue_document_has_a_promotion_destination():
+    """A staged catalogue YAML no destination claims would be promoted by nobody."""
+    for tree, root in staged_roots():
+        unclaimed, families = staging.catalogue_coverage(root)
+        assert not unclaimed, f"{tree}: {[path.as_posix() for path in unclaimed]}"
+        assert families, f"{tree}: no catalogue family found"
+        assert {family.schema_path for family in families} <= set(SCHEMA_FILES)
+
+
+def test_the_catalogue_gate_is_not_vacuous(tmp_path):
+    """A stray item field and an unrouted file are both reported."""
+    items = tmp_path / "catalog" / "items"
+    items.mkdir(parents=True)
+    body = read(CATALOG / "items" / "combat-equipment.yaml")
+    (items / "combat-equipment.yaml").write_text(yaml.safe_dump(body, allow_unicode=True), encoding="utf-8")
+    assert staging.catalogue_deviations(tmp_path) == []
+    assert staging.catalogue_coverage(tmp_path)[0] == []
+
+    body["items"][0]["stray_key"] = "prose the contract never names"
+    (items / "combat-equipment.yaml").write_text(yaml.safe_dump(body, allow_unicode=True), encoding="utf-8")
+    classes = staged_catalogue_classes(tmp_path)
+    assert classes == {"catalog/items items/[] additionalProperties stray_key"}, classes
+
+    (tmp_path / "catalog" / "unrouted.yaml").write_text("items: []\n", encoding="utf-8")
+    unclaimed, _ = staging.catalogue_coverage(tmp_path)
+    assert [path.name for path in unclaimed] == ["unrouted.yaml"]
+
+
+def test_the_naming_gate_is_not_vacuous(tmp_path):
+    """A package whose name breaks the policy is reported with its field count."""
+    package = tmp_path / "bands" / "mordheim" / "averlanders"
+    package.mkdir(parents=True)
+    for document in DOCUMENTS:
+        body = read(BANDS / "mordheim" / "averlanders" / document)
+        (package / document).write_text(yaml.safe_dump(body, allow_unicode=True), encoding="utf-8")
+    assert staging.naming_drift(tmp_path) == {}
+
+    profile = read(package / "profiles.yaml")
+    profile["profiles"][0]["name"] = "desert dog of the empire"
+    (package / "profiles.yaml").write_text(yaml.safe_dump(profile, allow_unicode=True), encoding="utf-8")
+    drift = staging.naming_drift(tmp_path)
+    assert list(drift) == ["bands/mordheim/averlanders/profiles.yaml"], drift
+    assert drift["bands/mordheim/averlanders/profiles.yaml"] >= 1
 
 
 def test_the_audit_reports_the_looseness_it_looks_for(monkeypatch):

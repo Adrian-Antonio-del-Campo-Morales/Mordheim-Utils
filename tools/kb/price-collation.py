@@ -340,7 +340,7 @@ def write_markdown(rows: list[dict], target: Path) -> None:
         note = row.get("verified_note") or "Printed list price confirmed on the warband page; creation price."
         lines.append(f"| {row['item_name']} (`{row['item_id']}`) | {row['list_cost']} gc | {row['tp_price']} | {note} |")
     lines += ["", f"_Generated from the KB loaders; {total.total()} equipment-access cost rows checked._", ""]
-    target.write_text("\n".join(lines), encoding="utf-8")
+    target.write_text("\n".join(lines), encoding="utf-8", newline="\n")
 
 
 def write_csv(rows: list[dict], target: Path) -> None:

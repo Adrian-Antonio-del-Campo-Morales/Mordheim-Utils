@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[2]
 STAGING = ROOT / "sources" / "2A"
 STAGING_2B = ROOT / "sources" / "2B"
 KNOWLEDGE = ROOT / "sources" / "knowledge"
-INGEST = ROOT / "tools" / "knowledge" / "ingest_2a.py"
+INGEST = ROOT / "tools" / "ingestion" / "ingest_2a.py"
 
 BAND_DOCUMENTS = ("band.yaml", "profiles.yaml", "equipment-access.yaml", "special-rules.yaml")
 
