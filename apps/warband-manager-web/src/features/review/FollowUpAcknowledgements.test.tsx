@@ -14,6 +14,8 @@ describe("FollowUpAcknowledgements", () => {
     const service = { run: runAction, current: () => document, isDirty: () => false, subscribe: () => () => {} } as never;
     render(<CampaignAppProvider service={service}><FollowUpAcknowledgements document={document} locale="en" /></CampaignAppProvider>);
     expect(screen.getByRole("heading", { name: "Table-side follow-ups" })).toBeInTheDocument();
+    expect(screen.getByText("Information unavailable")).toBeInTheDocument();
+    expect(screen.queryByText("Choose the scenario reward")).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Resolved at table" }));
     expect(runAction).toHaveBeenCalledWith("acknowledgeFollowUp", { follow_up_id: "table-1" });
   });

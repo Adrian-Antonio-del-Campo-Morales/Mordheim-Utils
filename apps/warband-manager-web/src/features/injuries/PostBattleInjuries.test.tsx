@@ -6,6 +6,7 @@ import "@testing-library/jest-dom/vitest";
 import type { CampaignDocument } from "../campaign/types";
 import { CampaignAppProvider } from "../campaign/useCampaignApp";
 import { PostBattleInjuries } from "./PostBattleInjuries";
+import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 
 describe("PostBattleInjuries", () => {
   it("resolves a Hired Sword on the hero D66 table and applies the outcome", async () => {
@@ -78,9 +79,9 @@ describe("PostBattleInjuries", () => {
       subscribe: () => () => undefined,
       run: vi.fn(),
     } as never;
-    const knowledge = {
-      list: (kind: string) => kind === "injury" ? [{ id: "dead", result: "Dead", names: { es: "Muerto" }, note_i18n: { es: "El guerrero muere." } }] : [],
-    } as never;
+    const knowledge = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", bands: [], profiles: [], items: [], skills: [], campaign: {
+      "serious-injuries": { tables: [{ id: "hero", applies_to: "hero", results: [{ id: "dead", result: "Dead", names: { es: "Muerto" }, note_i18n: { es: "El guerrero muere." } }] }] },
+    } });
 
     render(
       <CampaignAppProvider service={service}>
@@ -90,6 +91,7 @@ describe("PostBattleInjuries", () => {
 
     expect(screen.getByText("Gotrek")).toBeInTheDocument();
     expect(screen.getByText("Muerto")).toBeInTheDocument();
+    expect(screen.getByText("El guerrero muere.", { selector: "small" })).toBeInTheDocument();
     expect(screen.getByText("Sin acciones pendientes")).toBeInTheDocument();
   });
 });

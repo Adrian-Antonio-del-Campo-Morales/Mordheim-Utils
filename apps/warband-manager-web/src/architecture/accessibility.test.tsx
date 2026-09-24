@@ -96,8 +96,8 @@ describe("P7.4 static accessibility audit", () => {
 
   it("every dynamically disabled action keeps a stable accessible name", () => {
     // Repeated per-row buttons must not rely on visible text alone.
-    expect(source("equipment/EquipmentPanel.tsx")).toMatch(/aria-label=\{`\$\{locale/);
-    expect(source("injuries/InjuriesPanel.tsx")).toMatch(/aria-label=\{`\$\{locale/);
+    expect(source("equipment/EquipmentPanel.tsx")).toMatch(/aria-label=\{presentationOutput\(textJoin\(\[translate\(\{ key: "[^"]+" \}, locale\)/);
+    expect(source("injuries/InjuriesPanel.tsx")).toMatch(/aria-label=\{presentationOutput\(textJoin\(\[translate\(\{ key: "[^"]+" \}, locale\)/);
   });
 
   it("headings follow document order (h1 once, no skipped levels)", () => {
@@ -167,7 +167,7 @@ describe("P7.4 keyboard & announcement behaviour", () => {
       ).toBe(true),
     );
     const input = screen.getByLabelText("Cargar campañas .mordheim") as HTMLInputElement;
-    // A retired v3 document: the reader must reject it and the UI must
+    // An incomplete v3 document: the reader must reject it and the UI must
     // announce the reason through the alert role.
     const file = {
       name: "old.mordheim",
@@ -176,7 +176,7 @@ describe("P7.4 keyboard & announcement behaviour", () => {
     fireEvent.change(input, { target: { files: [file] } });
 
     const alert = await screen.findByRole("alert");
-    expect(alert).toHaveTextContent("No se pudo importar old.mordheim.");
+    expect(alert).toHaveTextContent("El archivo incumple el formato de campaña.");
   });
 
   it("announces why a disabled action cannot be performed", async () => {

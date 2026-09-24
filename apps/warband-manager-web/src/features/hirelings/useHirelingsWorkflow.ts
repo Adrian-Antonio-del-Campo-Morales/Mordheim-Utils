@@ -1,3 +1,4 @@
+import { unavailableText } from "@adapters/knowledge-reader/presentation";
 /**
  * Hook the hireling/trading workflow to the listing-capable knowledge reader.
  *
@@ -23,15 +24,17 @@ function asListings(reader: KnowledgeReader): KnowledgeListings {
     return {
       campaignRows: (section) => candidate.campaignRows!(section),
       campaignSection: (section) => candidate.campaignSection!(section),
+      resolveKbText: candidate.resolveKbText?.bind(candidate),
+      recordText: candidate.recordText?.bind(candidate),
       itemName: (itemId, locale) =>
-        typeof candidate.itemName === "function" ? candidate.itemName(itemId, locale) : itemId,
+        typeof candidate.itemName === "function" ? candidate.itemName(itemId, locale) : unavailableText(locale === "es" ? "es" : "en"),
     };
   }
   // A reader without listings: empty catalogues (the UI shows empty states).
   return {
     campaignRows: () => [],
     campaignSection: () => ({}),
-    itemName: (itemId) => itemId,
+    itemName: (_itemId, locale) => unavailableText(locale === "es" ? "es" : "en"),
   };
 }
 

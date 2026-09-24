@@ -1,3 +1,7 @@
+import { presentationOutput } from "../campaign/presentation-output";
+import { textJoin, textNumber, textSymbol, warriorPersonalName } from "../campaign/presentation-values";
+import { translate } from "../campaign/i18n-core";
+import { useLocale } from "../campaign/i18n-context";
 /**
  * Injuries and recovery presentation.
  *
@@ -27,13 +31,14 @@ interface InjuriesPanelProps {
   readonly locale?: "es" | "en";
 }
 
-export function InjuriesPanel({ document, knowledge, locale = "en" }: InjuriesPanelProps) {
+export function InjuriesPanel({ document, knowledge, locale: requestedLocale }: InjuriesPanelProps) {
+  const locale = useLocale(requestedLocale);
   const app = useCampaignApp();
   const [busy, setBusy] = useState(false);
   const [targets, setTargets] = useState<Record<string,string>>({});
   const [ransoms, setRansoms] = useState<Record<string,number>>({});
   const overview = injuryOverview(document);
-  const t = locale === "es" ? { title: "Heridas", recoveryTitle: "Heridas y Recuperación", warrior: "Guerrero", condition: "Estado", missingGames: "Batallas que se Pierde", recovery: "Recuperación", pendingRolls: "Tiradas Pendientes", serve: "Hacer Perder 1 Batalla", chooseEye: "Elige Ojo", left: "Izquierdo", right: "Derecho", hatredTarget: "Objetivo del Odio", setHatred: "Establecer Odio", ransom: "Rescate", exchange: "Intercambiar", lost: "Perdido", followUp: "Resolver Seguimiento", resolve: "Resolver" } : { title: "Injuries", recoveryTitle: "Injuries & Recovery", warrior: "Warrior", condition: "Condition", missingGames: "Missing Games", recovery: "Recovery", pendingRolls: "Pending Rolls", serve: "Miss 1 Game", chooseEye: "Choose Eye", left: "Left", right: "Right", hatredTarget: "Hatred Target", setHatred: "Set Hatred", ransom: "Ransom", exchange: "Exchange", lost: "Lost", followUp: "Resolve Injury Follow-up", resolve: "Resolve" };
+  const t = ({ title: translate({ key: "ui.1a912f623fd1" }, locale), recoveryTitle: translate({ key: "ui.28b237ff01f2" }, locale), warrior: translate({ key: "ui.dca4e7aa700c" }, locale), condition: translate({ key: "ui.3c1f26265e4f" }, locale), missingGames: translate({ key: "ui.f01dd46162ef" }, locale), recovery: translate({ key: "ui.9de7c707a1b0" }, locale), pendingRolls: translate({ key: "ui.b2ec6fed01d8" }, locale), serve: translate({ key: "ui.f9b82be20812" }, locale), chooseEye: translate({ key: "ui.5b42bdddc796" }, locale), left: translate({ key: "ui.36adf04d7f2b" }, locale), right: translate({ key: "ui.0a2ae3aa3354" }, locale), hatredTarget: translate({ key: "ui.95300c69a379" }, locale), setHatred: translate({ key: "ui.2c2d07c20359" }, locale), ransom: translate({ key: "ui.7e7a8b47c298" }, locale), exchange: translate({ key: "ui.81c7a226f100" }, locale), lost: translate({ key: "ui.0d3818cf8a9c" }, locale), followUp: translate({ key: "ui.c48d30bc8e34" }, locale), resolve: translate({ key: "ui.8b045a3c4cec" }, locale) });
 
   const run = async (action: string, input: Record<string, unknown>) => {
     setBusy(true);
@@ -44,60 +49,60 @@ export function InjuriesPanel({ document, knowledge, locale = "en" }: InjuriesPa
   };
 
   return (
-    <section aria-label={t.title}>
-      <h3>{t.recoveryTitle}</h3>
+    <section aria-label={presentationOutput(t.title)}>
+      <h3>{presentationOutput(t.recoveryTitle)}</h3>
 
       {app.error && (
         <output role="alert" style={{ color: "crimson", display: "block" }}>
-          {app.error}
+          {presentationOutput(app.error)}
         </output>
       )}
 
       {overview.open_rolls.length > 0 && (
         <p>
-          {overview.open_rolls.length} {locale === "es" ? "tirada(s) de heridas sin resolver en el post-batalla pendiente." : `unresolved injury roll${overview.open_rolls.length === 1 ? "" : "s"} on the pending post-battle.`}
+          {presentationOutput(translate({ key: "injury.pending-rolls", args: { count: overview.open_rolls.length } }, locale))}
         </p>
       )}
 
         <table className="mobile-cards">
-          <caption>{locale === "es" ? "Estado de heridas de la banda" : "Warband injury status"}</caption>
+          <caption>{presentationOutput(translate({ key: "ui.180d5a2c716b" }, locale))}</caption>
         <thead>
           <tr>
-            <th scope="col">{t.warrior}</th>
-            <th scope="col">{t.condition}</th>
-            <th scope="col">{t.missingGames}</th>
-            <th scope="col">{t.recovery}</th>
-            <th scope="col">{t.pendingRolls}</th>
+            <th scope="col">{presentationOutput(t.warrior)}</th>
+            <th scope="col">{presentationOutput(t.condition)}</th>
+            <th scope="col">{presentationOutput(t.missingGames)}</th>
+            <th scope="col">{presentationOutput(t.recovery)}</th>
+            <th scope="col">{presentationOutput(t.pendingRolls)}</th>
           </tr>
         </thead>
         <tbody>
           {overview.warriors.map((row) => (
             <tr key={row.warrior_id} data-restricted={row.restricted || undefined}>
-              <td data-label={t.warrior}>{row.name}</td>
-              <td data-label={t.condition}>
-                {row.condition ? <>{readableValue(row.condition, locale)}{row.condition_detail ? <> ({knowledge ? <KnowledgeHint knowledge={knowledge} kind="injury" id={row.condition_detail} locale={locale}>{knowledgeName(knowledge, "injury", row.condition_detail, locale, row.condition_detail)}</KnowledgeHint> : knowledgeName(knowledge, "injury", row.condition_detail, locale, row.condition_detail)})</> : ""}</> : "—"}
+              <td data-label={presentationOutput(t.warrior)}>{presentationOutput(warriorPersonalName(document.campaign.warriors.find((warrior) => warrior.id === row.warrior_id), locale))}</td>
+              <td data-label={presentationOutput(t.condition)}>
+                {row.condition ? <>{presentationOutput(readableValue(row.condition, locale))}{row.condition_detail ? <>{presentationOutput(textSymbol("("))}{knowledge ? <KnowledgeHint knowledge={knowledge} kind="injury" id={row.condition_detail} locale={locale}>{presentationOutput(knowledgeName(knowledge, "injury", row.condition_detail, locale))}</KnowledgeHint> : presentationOutput(knowledgeName(knowledge, "injury", row.condition_detail, locale))}{presentationOutput(textSymbol(")"))}</> : presentationOutput(textSymbol(""))}</> : presentationOutput(textSymbol("—"))}
               </td>
-              <td data-label={t.missingGames}>{row.games_to_miss > 0 ? `${row.games_to_miss} (${readableValue(row.absence_reason ?? (locale === "es" ? "Lesión" : "Injury"), locale)})` : "0"}</td>
-              <td data-label={t.recovery}>
+              <td data-label={presentationOutput(t.missingGames)}>{presentationOutput(row.games_to_miss > 0 ? textJoin([textNumber(row.games_to_miss, locale), textJoin([textSymbol("("), row.absence_reason ? readableValue(row.absence_reason, locale) : translate({ key: "ui.5655edebe128" }, locale), textSymbol(")")], "")], " ") : textNumber(0, locale))}</td>
+              <td data-label={presentationOutput(t.recovery)}>
                 <button
                   type="button"
                   disabled={busy || row.games_to_miss === 0}
-                  data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : row.games_to_miss === 0 ? (locale === "es" ? "Este guerrero no tiene batallas pendientes que perder." : "This warrior has no missed games remaining.") : undefined}
-                  aria-label={`${locale === "es" ? "Recuperar" : "Recover"} ${row.name}`}
+                  data-disabled-reason={(busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : row.games_to_miss === 0 ? (translate({ key: "disabled.208f3a2933" }, locale)) : undefined) === undefined ? undefined : presentationOutput((busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : row.games_to_miss === 0 ? (translate({ key: "disabled.208f3a2933" }, locale)) : undefined)!)}
+                  aria-label={presentationOutput(textJoin([translate({ key: "ui.45beba95d821" }, locale), warriorPersonalName(document.campaign.warriors.find((warrior) => warrior.id === row.warrior_id), locale)]))}
                   onClick={() => run("recoverWarrior", { warrior_id: row.warrior_id })}
                 >
-                  {t.serve}
+                  {presentationOutput(t.serve)}
                 </button>
               </td>
-              <td data-label={t.pendingRolls}>
+              <td data-label={presentationOutput(t.pendingRolls)}>
                 {row.pending_follow_ups.length === 0
-                  ? "—"
+                  ? presentationOutput(textSymbol("—"))
                   : row.pending_follow_ups.map((followUp) => {
                       const id = String((followUp as { id?: unknown }).id ?? "");
                       const type=String((followUp as { type?: unknown }).type??"");
-                      if(type==="eye_injury")return <span key={id}>{t.chooseEye}: <button disabled={busy} data-disabled-reason={busy ? (locale==="es"?"Se está resolviendo otra herida.":"Another injury is being resolved.") : undefined} onClick={()=>run("resolveEyeInjury",{follow_up_id:id,eye:"left"})}>{t.left}</button><button disabled={busy} data-disabled-reason={busy ? (locale==="es"?"Se está resolviendo otra herida.":"Another injury is being resolved.") : undefined} onClick={()=>run("resolveEyeInjury",{follow_up_id:id,eye:"right"})}>{t.right}</button></span>;
-                      if(type==="relationship")return <span key={id}><input aria-label={`${t.hatredTarget} ${id}`} value={targets[id]??""} onChange={(event)=>setTargets((current)=>({...current,[id]:event.target.value}))}/><button disabled={busy||!(targets[id]??"").trim()} data-disabled-reason={busy ? (locale==="es"?"Se está resolviendo otra herida.":"Another injury is being resolved.") : !(targets[id]??"").trim() ? (locale==="es"?"Introduce el objetivo del odio.":"Enter the hatred target.") : undefined} onClick={()=>run("resolveHatred",{follow_up_id:id,target:targets[id]})}>{t.setHatred}</button></span>;
-                      if(type==="prisoner")return <span key={id}><NumberStepper label={`${t.ransom} ${id}`} value={ransoms[id]??0} onChange={(value)=>setRansoms((current)=>({...current,[id]:value}))}/>{([['ransom',t.ransom],['exchange',t.exchange],['lost',t.lost]] as const).map(([resolution,label])=><button key={resolution} disabled={busy} data-disabled-reason={busy ? (locale==="es"?"Se está resolviendo otra herida.":"Another injury is being resolved.") : undefined} onClick={()=>run("resolvePrisoner",{follow_up_id:id,resolution,...(resolution==='ransom'?{ransom:ransoms[id]??0}:resolution==='lost'?{disposition:'other'}:{})})}>{label}</button>)}</span>;
+                      if(type==="eye_injury")return <span key={id}>{presentationOutput(t.chooseEye)} {presentationOutput(textSymbol(":"))} <button disabled={busy} data-disabled-reason={(busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined) === undefined ? undefined : presentationOutput((busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined)!)} onClick={()=>run("resolveEyeInjury",{follow_up_id:id,eye:"left"})}>{presentationOutput(t.left)}</button><button disabled={busy} data-disabled-reason={(busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined) === undefined ? undefined : presentationOutput((busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined)!)} onClick={()=>run("resolveEyeInjury",{follow_up_id:id,eye:"right"})}>{presentationOutput(t.right)}</button></span>;
+                      if(type==="relationship")return <span key={id}><input aria-label={presentationOutput(textJoin([t.hatredTarget, warriorPersonalName(document.campaign.warriors.find((warrior) => warrior.id === row.warrior_id), locale)]))} value={targets[id]??""} onChange={(event)=>setTargets((current)=>({...current,[id]:event.target.value}))}/><button disabled={busy||!(targets[id]??"").trim()} data-disabled-reason={(busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : !(targets[id]??"").trim() ? (translate({ key: "disabled.a6625ba624" }, locale)) : undefined) === undefined ? undefined : presentationOutput((busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : !(targets[id]??"").trim() ? (translate({ key: "disabled.a6625ba624" }, locale)) : undefined)!)} onClick={()=>run("resolveHatred",{follow_up_id:id,target:targets[id]})}>{presentationOutput(t.setHatred)}</button></span>;
+                      if(type==="prisoner")return <span key={id}><NumberStepper locale={locale} label={textJoin([translate({ key: "number.ransom" }, locale), warriorPersonalName(document.campaign.warriors.find((warrior) => warrior.id === row.warrior_id), locale)])} value={ransoms[id]??0} onChange={(value)=>setRansoms((current)=>({...current,[id]:value}))}/>{([['ransom',t.ransom],['exchange',t.exchange],['lost',t.lost]] as const).map(([resolution,label])=><button key={resolution} disabled={busy} data-disabled-reason={(busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined) === undefined ? undefined : presentationOutput((busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined)!)} onClick={()=>run("resolvePrisoner",{follow_up_id:id,resolution,...(resolution==='ransom'?{ransom:ransoms[id]??0}:resolution==='lost'?{disposition:'other'}:{})})}>{presentationOutput(label)}</button>)}</span>;
                       const dice=knowledge&&injuryFollowUpDice(knowledge,followUp as Record<string,unknown>);
                       if(dice)return <DiceResolver locale={locale} count={dice[0]} sides={dice[1]} label={t.followUp} onResolve={(rolls)=>void run("resolveInjuryTableFollowUp",{follow_up_id:id,dice:rolls,roll:dice[0]===2&&dice[1]===6?rolls[0]*10+rolls[1]:rolls.reduce((total,value)=>total+value,0)})}/>;
                       return (
@@ -105,8 +110,8 @@ export function InjuriesPanel({ document, knowledge, locale = "en" }: InjuriesPa
                           key={id}
                           type="button"
                           disabled={busy}
-                          data-disabled-reason={busy ? (locale === "es" ? "Se está resolviendo otra herida." : "Another injury is being resolved.") : undefined}
-                          aria-label={`${t.resolve} ${row.name}`}
+                          data-disabled-reason={(busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined) === undefined ? undefined : presentationOutput((busy ? (translate({ key: "disabled.1b31e1c693" }, locale)) : undefined)!)}
+                          aria-label={presentationOutput(textJoin([t.resolve, warriorPersonalName(document.campaign.warriors.find((warrior) => warrior.id === row.warrior_id), locale)]))}
                           onClick={() =>
                             run("resolveInjuryFollowUp", {
                               follow_up_id: id,
@@ -119,7 +124,7 @@ export function InjuriesPanel({ document, knowledge, locale = "en" }: InjuriesPa
                             })
                           }
                         >
-                          {t.resolve}
+                          {presentationOutput(t.resolve)}
                         </button>
                       );
                     })}

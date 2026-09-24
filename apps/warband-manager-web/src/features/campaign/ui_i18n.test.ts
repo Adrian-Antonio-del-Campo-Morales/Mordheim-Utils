@@ -1,24 +1,4 @@
-/**
- * UI locale coverage for the browser campaign shell.
- *
- * Desktop source: `tests/ui/test_ui_i18n.py` (7 rows, Tkinter STRINGS
- * catalogue). The web i18n seam is different by design — display names
- * travel inside the KB artefact as `names` maps (`en` canonical + `es`
- * translations from the merge) and resolve through the reader's fallback
- * chain: requested locale → canonical English → any translated entry → id.
- *
- * Same behavioural contract asserted here, on the web seam:
- *  - default locale is English (resolveName without a request = "en");
- *  - Spanish translations resolve from the real artefact (all 81 bands
- *    carry `es` — verified at generation time);
- *  - unknown keys degrade to English/identifier, never throw;
- *  - every band name translates in Spanish (web equivalent of
- *    test_every_catalogue_key_translates_in_spanish).
- *
- * Ownership: browser campaign shell. Reader: generated knowledge artefact,
- * tested through its public API only.
- */
-
+/** Browser presentation uses exact locale and entity references, independently of desktop display policy. */
 import { describe, expect, it, vi, beforeAll, afterEach } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -58,7 +38,8 @@ let reader: ArtefactKnowledgeReader;
 beforeAll(() => {
   raw = JSON.parse(readFileSync(resolve(repoRoot(), ARTEFACT_PATH), "utf-8"));
   const rules_prose = JSON.parse(readFileSync(resolve(repoRoot(), RULES_PROSE_PATH), "utf-8"));
-  reader = ArtefactKnowledgeReader.from({ ...raw, rules_prose });
+  Object.assign(raw, { rules_prose }, JSON.parse(readFileSync(resolve(repoRoot(), "apps/warband-manager-web/public/knowledge/display-text.json"), "utf-8")));
+  reader = ArtefactKnowledgeReader.from(raw);
 });
 
 /** All band rows, via the reader's own index (public query surface). */
@@ -79,7 +60,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("UI i18n parity — locale fallback chain (desktop test_ui_i18n family)", () => {
+describe("UI strict locale resolution", () => {
   it("default resolution is English (CANONICAL_LOCALE)", () => {
     const bands = bandsOf();
     const band = bands[0] ?? firstRow();
@@ -96,13 +77,9 @@ describe("UI i18n parity — locale fallback chain (desktop test_ui_i18n family)
     }
   });
 
-  it("unknown locale degrades to English, unknown key to the id — never throws", () => {
-    const row: ArtefactRow = { id: "some.item", name: "Known Name", names: { en: "Known Name" } };
-    // Unsupported locale ("de" on desktop keeps current selection; web falls
-    // back through en) returns the English string.
-    expect(resolveName(row, "de" as never)).toBe("Known Name");
-    // No names at all → the id is visible instead of crashing.
-    expect(resolveName({ id: "bare.id" } as ArtefactRow, "es")).toBe("bare.id");
+  it("never falls back to English or an identifier", () => {
+    expect(resolveName({ id: "some.item", name: "Known Name" }, "es")).toBe("Información no disponible");
+    expect(resolveName({ id: "bare.id" }, "en")).toBe("Information unavailable");
   });
 
   it("every band name carries a Spanish entry (every_catalogue_key family)", () => {
@@ -183,16 +160,16 @@ describe("UI i18n parity — locale fallback chain (desktop test_ui_i18n family)
     }
   });
 
-  it("translates legacy warrior rules stored by their English display name", () => {
-    expect([
-      "Death Oath", "No Armour", "No Missile Weapons", "Slayer Skills", "Hard to Kill",
-    ].map((name) => knowledgeName(reader, "skill", name, "es", name))).toEqual([
-      "Juramento de Muerte", "Sin Armadura", "Sin Armas de Proyectil", "Habilidades de Matatrolles", "Difíciles de Matar",
-    ]);
+  it("resolves legacy labels only at the contextual compatibility boundary", () => {
+    const ref = reader.legacyAbilityRef("No Armour", "dwarf-troll-slayers", "dwarf-treasure-hunters");
+    expect(ref).toBeDefined();
+    expect(reader.resolveKbText(ref!, "name", "es")).toMatchObject({ ok: true, text: "Sin Armadura" });
+    expect(reader.legacyAbilityRef("No Armour", "dwarf-troll-slayers")).toBeUndefined();
+    expect(knowledgeName(reader, "skill", "No Armour", "es")).toBe("Información no disponible");
   });
 
-  it("renders serious-injury result text instead of its technical id", () => {
-    expect(knowledgeName(reader, "injury", "campaign.serious-injury.hero.41-55-full-recovery", "es")).toBe("Recuperación Completa");
+  it("shows a localized notice for pending injury translations", () => {
+    expect(knowledgeName(reader, "injury", "campaign.serious-injury.hero.41-55-full-recovery", "es")).toBe("Información no disponible");
   });
 });
 

@@ -1,10 +1,15 @@
+import { textJoin, textNumber } from "../campaign/presentation-values";
+import { presentationOutput } from "../campaign/presentation-output";
+import { translate } from "../campaign/i18n-core";
+import { useLocale } from "../campaign/i18n-context";
 import { useEffect, useRef } from "react";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import type { CampaignDocument } from "../campaign/types";
 import { useCampaignApp } from "../campaign/useCampaignApp";
 import { AdvancesPanel } from "./AdvancesPanel";
 
-export function PostBattleExperience({ document, knowledge, locale="en" }: { readonly document: CampaignDocument; readonly knowledge: ArtefactKnowledgeReader; readonly locale?: "es" | "en" }) {
+export function PostBattleExperience({ document, knowledge, locale: requestedLocale }: { readonly document: CampaignDocument; readonly knowledge: ArtefactKnowledgeReader; readonly locale?: "es" | "en" }) {
+  const locale = useLocale(requestedLocale);
   const app = useCampaignApp();
   const post = document.campaign.post_battles.find((row) => !row.complete);
   const battle = post && document.campaign.battles.find((row) => row.number === post.battle_number);
@@ -27,8 +32,8 @@ export function PostBattleExperience({ document, knowledge, locale="en" }: { rea
   }, [app, post, unresolvedInjuries]);
 
   if (!post) return null;
-  const title = locale === "es" ? "Experiencia y avances" : "Experience and advances";
-  if (unresolvedInjuries > 0) return <section aria-label={title}><h3>02 · {title}</h3><p role="status">{locale === "es" ? `Resuelve primero todas las heridas graves (${unresolvedInjuries} pendientes).` : `Resolve all serious injuries first (${unresolvedInjuries} remaining).`}</p></section>;
-  if (!post.experience_applied) return <section aria-label={title}><h3>02 · {title}</h3><p role="status">{locale === "es" ? "Aplicando automáticamente la experiencia de batalla…" : "Applying battle experience automatically…"}</p></section>;
-  return <section aria-label={title}><h3>02 · {title}</h3><AdvancesPanel document={document} knowledge={knowledge} locale={locale} /></section>;
+  const title = translate({ key: "ui.64536a40f6e1" }, locale);
+  if (unresolvedInjuries > 0) return <section aria-label={presentationOutput(title)}><h3>{presentationOutput(textJoin([textNumber(2, locale, 2), title], " · "))}</h3><p role="status">{presentationOutput(translate({ key: "injury.remaining", args: { count: unresolvedInjuries } }, locale))}</p></section>;
+  if (!post.experience_applied) return <section aria-label={presentationOutput(title)}><h3>{presentationOutput(textJoin([textNumber(2, locale, 2), title], " · "))}</h3><p role="status">{presentationOutput(translate({ key: "ui.a8adbaa1f2a5" }, locale))}</p></section>;
+  return <section aria-label={presentationOutput(title)}><h3>{presentationOutput(textJoin([textNumber(2, locale, 2), title], " · "))}</h3><AdvancesPanel document={document} knowledge={knowledge} locale={locale} /></section>;
 }

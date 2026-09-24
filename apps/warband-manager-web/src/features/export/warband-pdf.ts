@@ -25,8 +25,10 @@ import { experienceTotal, modelCount, rating, treasury } from "@domain/campaign/
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 
 import type { Battle, CampaignDocument, InventoryItem, TimelineState, Warrior } from "../campaign/types";
-import { knowledgeName, readableValue } from "../campaign/displayText";
-import { adaptCharacteristicValue } from "@app/rules/distance-display";
+import { knowledgeName, localizedLabel, warriorAbilityRef } from "../campaign/displayText";
+import { translate } from "../campaign/i18n-core";
+import { presentationOutput, type PresentationText } from "../campaign/presentation-output";
+import { textJoin, textNumber, textSymbol, textHeading, textDate, warriorPersonalName, warbandPersonalName, opponentPersonalName, warriorCharacteristic } from "../campaign/presentation-values";
 
 type Locale = "es" | "en";
 type RGB = ReturnType<typeof rgb>;
@@ -59,10 +61,7 @@ const WHITE = rgb(1, 1, 1);
 
 /** Canonical storage order of the characteristics and their sheet headers. */
 const STAT_KEYS = ["M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"] as const;
-const STAT_HEADERS: Record<Locale, readonly string[]> = {
-  en: ["M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"],
-  es: ["M", "HA", "HP", "F", "R", "H", "I", "A", "L"],
-};
+
 
 /** XP tracks: heroes and hired swords 2×45, henchman groups a single 14. */
 const HERO_XP_ROWS = 2;
@@ -102,51 +101,27 @@ type FontStyle = keyof Fonts;
 
 /** Locale labels, mirroring the desktop STRINGS catalogue for these keys. */
 function buildLabels(locale: Locale) {
-  if (locale === "es") {
-    return {
-      draft: "BORRADOR",
-      state: (number: number) => `ESTADO #${number}`,
-      battle: (number: number) => `Batalla #${number}`,
-      advances: "Mejoras",
-      name: "Nombre",
-      type: "Tipo",
-      equipment: "Equipamiento",
-      skills: "Habilidades",
-      number: "Número",
-      warbandName: "NOMBRE DE LA BANDA:",
-      warbandType: "TIPO DE BANDA:",
-      treasure: "TESORO",
-      goldCrowns: "Coronas de Oro:",
-      wyrdstone: "Piedra Bruja:",
-      warbandValue: "VALOR DE LA BANDA",
-      totalExperience: "Experiencia Total:",
-      members: (models: number) => `Miembros ( ${models} ) x 5:`,
-      rating: "Valor:",
-      storedEquipment: "EQUIPO ALMACENADO",
-      notes: "NOTAS",
-    };
-  }
   return {
-    draft: "DRAFT",
-    state: (number: number) => `STATE #${number}`,
-    battle: (number: number) => `Battle #${number}`,
-    advances: "Advances",
-    name: "Name",
-    type: "Type",
-    equipment: "Equipment",
-    skills: "Skills",
-    number: "Number",
-    warbandName: "Warband name:",
-    warbandType: "Warband type:",
-    treasure: "Treasure",
-    goldCrowns: "Gold Crowns:",
-    wyrdstone: "Wyrdstone:",
-    warbandValue: "Warband value",
-    totalExperience: "Total experience:",
-    members: (models: number) => `Members ( ${models} ) x 5:`,
-    rating: "Rating:",
-    storedEquipment: "Stored equipment",
-    notes: "Notes",
+    draft: translate({ key: "pdf.draft" }, locale),
+    advances: translate({ key: "pdf.advances" }, locale),
+    name: translate({ key: "pdf.name" }, locale),
+    type: translate({ key: "pdf.type" }, locale),
+    equipment: translate({ key: "pdf.equipment" }, locale),
+    skills: translate({ key: "pdf.skills" }, locale),
+    number: translate({ key: "pdf.number" }, locale),
+    warbandName: translate({ key: "pdf.warbandName" }, locale),
+    warbandType: translate({ key: "pdf.warbandType" }, locale),
+    treasure: translate({ key: "pdf.treasure" }, locale),
+    goldCrowns: translate({ key: "pdf.goldCrowns" }, locale),
+    wyrdstone: translate({ key: "pdf.wyrdstone" }, locale),
+    warbandValue: translate({ key: "pdf.warbandValue" }, locale),
+    totalExperience: translate({ key: "pdf.totalExperience" }, locale),
+    rating: translate({ key: "pdf.rating" }, locale),
+    storedEquipment: translate({ key: "pdf.storedEquipment" }, locale),
+    notes: translate({ key: "pdf.notes" }, locale),
+    state: (number: number) => translate({ key: "pdf.state", args: { number } }, locale),
+    battle: (number: number) => translate({ key: "pdf.battle", args: { number } }, locale),
+    members: (models: number) => translate({ key: "pdf.members", args: { models } }, locale),
   };
 }
 
@@ -316,7 +291,7 @@ class Sheet {
   cell(
     w: number,
     h: number,
-    raw: string,
+    raw: PresentationText,
     options: { border?: boolean; align?: "L" | "C" | "R"; fill?: boolean; newX?: "RIGHT" | "LMARGIN"; newY?: "TOP" | "NEXT" } = {},
   ): void {
     const { border = false, align = "L", fill = false, newX = "RIGHT", newY = "TOP" } = options;
@@ -326,7 +301,7 @@ class Sheet {
     const y0 = this.y;
     if (fill) this.rect(x0, y0, width, h, { fill: this.fillColor });
     if (border) this.rect(x0, y0, width, h, { border: this.drawColor, lineWidth: this.lineWidth });
-    const text = this.safe(raw);
+    const text = this.safe(presentationOutput(raw));
     if (text) {
       const tw = this.font.widthOfTextAtSize(text, this.fontSize);
       const tx = align === "C" ? x0 + (width - tw) / 2 : align === "R" ? x0 + width - tw : x0;
@@ -342,7 +317,7 @@ class Sheet {
     this.y = newY === "NEXT" ? y0 + h : y0;
   }
 
-  multiCell(width: number, lineHeight: number, raw: string): void {
+  multiCell(width: number, lineHeight: number, raw: PresentationText): void {
     for (const line of this.wrap(raw, width)) {
       this.ensureSpace(lineHeight);
       if (line) {
@@ -359,11 +334,13 @@ class Sheet {
     this.x = LM;
   }
 
-  private wrap(raw: string, width: number): string[] {
-    const text = this.safe(raw);
+  private wrap(raw: PresentationText, width: number): string[] {
+    // Split structural newlines before filtering characters for the PDF font.
+    const paragraphs = presentationOutput(raw).replace(/\r\n?/g, "\n").split("\n");
     const maxWidth = px(width);
     const lines: string[] = [];
-    for (const paragraph of text.split("\n")) {
+    for (const rawParagraph of paragraphs) {
+      const paragraph = this.safe(rawParagraph);
       if (paragraph.length === 0) {
         lines.push("");
         continue;
@@ -408,13 +385,12 @@ interface RenderContext {
   readonly bandId: string;
 }
 
-function momentLabel(campaign: CampaignDocument["campaign"], stateNumber: number | null, labels: Labels): string {
+function momentLabel(campaign: CampaignDocument["campaign"], stateNumber: number | null, labels: Labels, locale: Locale): PresentationText {
   if (stateNumber === null) return labels.draft;
   const snapshot = campaign.states.find((row) => row.number === stateNumber);
-  let label = labels.state(stateNumber);
+  let label: PresentationText = labels.state(stateNumber);
   if (!snapshot) return label;
-  if (snapshot.date) label += ` - ${snapshot.date}`;
-  if (snapshot.label) label += ` - ${snapshot.label}`;
+  if (snapshot.date) label = textJoin([label, textDate(snapshot.date, locale)], " - ");
   return label;
 }
 
@@ -422,55 +398,52 @@ function momentLabel(campaign: CampaignDocument["campaign"], stateNumber: number
 // Warrior card
 // ---------------------------------------------------------------------------
 
-function statValues(warrior: Warrior, locale: Locale): string[] {
-  return STAT_KEYS.map((key) => {
-    const value = warrior.stats[key];
-    if (value === undefined || value === null) return "";
-    return adaptCharacteristicValue(key, value, locale, warrior.stat_modifiers?.[key] ?? 0);
-  });
+function statValues(warrior: Warrior, locale: Locale): PresentationText[] {
+  return STAT_KEYS.map((key) => warriorCharacteristic(warrior, key, locale));
 }
 
-function equipmentLines(warrior: Warrior, knowledge: ArtefactKnowledgeReader | undefined, locale: Locale): string {
+function equipmentLines(warrior: Warrior, knowledge: ArtefactKnowledgeReader | undefined, locale: Locale): PresentationText {
   // In a multi-minion group every listed quantity is the group size (already
   // shown on the type line): the printed sheets list bare item names.
   const groupSize = warrior.quantity ?? 1;
-  return warrior.equipment
+  return textJoin(warrior.equipment
     .map((entry) => {
-      const name = knowledgeName(knowledge, "item", entry.item_id, locale, entry.name);
-      return groupSize > 1 || entry.quantity <= 1 ? name : `${name} x${entry.quantity}`;
-    })
-    .join("\n");
+      const name = knowledgeName(knowledge, "item", entry.item_id, locale);
+      return groupSize > 1 || entry.quantity <= 1 ? name : textJoin([name, textJoin([textSymbol("x"), textNumber(entry.quantity, locale)], "")]);
+    }), "\n");
 }
 
-function skillsLines(warrior: Warrior, labels: Labels, knowledge: ArtefactKnowledgeReader | undefined, locale: Locale, bandId: string): string {
-  const lines = warrior.skills.map((skill) => knowledgeName(knowledge, "skill", skill, locale, skill, warrior.profile_id, bandId));
+function skillsLines(warrior: Warrior, labels: Labels, knowledge: ArtefactKnowledgeReader | undefined, locale: Locale, bandId: string): PresentationText {
+  const lines: PresentationText[] = warrior.skills.map((skill) => {
+    const ref = warriorAbilityRef(knowledge, skill, warrior.profile_id, bandId);
+    return knowledgeName(knowledge, ref.kind, ref.id, locale, ref.profileId, ref.bandId);
+  });
   if (warrior.condition) {
-    let line = readableValue(warrior.condition, locale);
+    let line: PresentationText = localizedLabel(warrior.condition, locale);
     if (warrior.condition_detail) {
-      line += ` (${knowledgeName(knowledge, "injury", warrior.condition_detail, locale, warrior.condition_detail)})`;
+      line = textJoin([line, textJoin([textSymbol("("), knowledgeName(knowledge, "injury", warrior.condition_detail, locale), textSymbol(")")], "")]);
     }
     lines.push(line);
   }
   const advances = warrior.stat_advances ?? {};
   if (Object.keys(advances).length > 0) {
-    const rendered = Object.entries(advances)
+    const rendered = textJoin(Object.entries(advances)
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([key, value]) => `${key} +${value}`)
-      .join(", ");
-    lines.push(`${labels.advances}: ${rendered}`);
+      .map(([key, value]) => textJoin([localizedLabel(key, locale), textJoin([textSymbol("+"), textNumber(value, locale)], "")])), ", ");
+    lines.push(textJoin([textJoin([labels.advances, textSymbol(":")], ""), rendered]));
   }
-  return lines.join("\n");
+  return textJoin(lines, "\n");
 }
 
-function typeText(warrior: Warrior, knowledge: ArtefactKnowledgeReader | undefined, locale: Locale): string {
-  let text = knowledgeName(knowledge, "profile", warrior.profile_id, locale, warrior.profile_name || warrior.kind);
+function typeText(warrior: Warrior, knowledge: ArtefactKnowledgeReader | undefined, locale: Locale, bandId: string): PresentationText {
+  let text: PresentationText = knowledgeName(knowledge, warrior.kind === "hireling" ? "hireling" : "profile", warrior.profile_id, locale, undefined, warrior.kind === "hireling" ? undefined : bandId);
   const groupSize = warrior.quantity ?? 1;
-  if (groupSize > 1) text += ` x${groupSize}`;
+  if (groupSize > 1) text = textJoin([text, textJoin([textSymbol("x"), textNumber(groupSize, locale)], "")]);
   return text;
 }
 
 function statBlock(sheet: Sheet, x: number, y: number, warrior: Warrior, headerH: number, valueH: number, locale: Locale): void {
-  const headers = STAT_HEADERS[locale] ?? STAT_HEADERS.en;
+  const headers = STAT_KEYS.map((key) => localizedLabel(key, locale));
   const cellW = (LEFT_COL_W - 4) / STAT_KEYS.length;
   sheet.setFont("bold", 6.5);
   sheet.setTextColor(PARCHMENT);
@@ -490,7 +463,7 @@ function statBlock(sheet: Sheet, x: number, y: number, warrior: Warrior, headerH
   });
 }
 
-function boxRegion(sheet: Sheet, x: number, y: number, width: number, label: string, content: string, ruleX1: number, ruleX2: number): void {
+function boxRegion(sheet: Sheet, x: number, y: number, width: number, label: PresentationText, content: PresentationText, ruleX1: number, ruleX2: number): void {
   sheet.setXY(x, y);
   sheet.setFont("bold", 9);
   sheet.setTextColor(INK);
@@ -556,14 +529,14 @@ function warriorCard(ctx: RenderContext, warrior: Warrior, y: number, height: nu
   sheet.setFont("bold", 9.5);
   sheet.cell(labelW, 4.3, labels.name);
   sheet.setFont("normal", 8);
-  sheet.cell(LEFT_COL_W - labelW - 2.5, 4.3, warrior.name);
+  sheet.cell(LEFT_COL_W - labelW - 2.5, 4.3, warriorPersonalName(warrior, locale));
   sheet.line(lx, geometry.nameRule, x + LEFT_COL_W - 2.5, geometry.nameRule);
 
   sheet.setXY(lx, geometry.typeY);
   sheet.setFont("bold", 8.5);
   sheet.cell(labelW, 3.8, labels.type);
   sheet.setFont("normal", 7);
-  sheet.cell(LEFT_COL_W - labelW - 2.5, 3.8, typeText(warrior, knowledge, locale));
+  sheet.cell(LEFT_COL_W - labelW - 2.5, 3.8, typeText(warrior, knowledge, locale, bandId));
   sheet.line(lx, geometry.typeRule, x + LEFT_COL_W - 2.5, geometry.typeRule);
 
   statBlock(sheet, lx, geometry.statsY, warrior, geometry.headerH, geometry.valueH, locale);
@@ -599,7 +572,7 @@ function warriorCard(ctx: RenderContext, warrior: Warrior, y: number, height: nu
     sheet.setFont("bold", 8.5);
     sheet.cell(24, 4.2, labels.number);
     sheet.setFont("normal", 7);
-    sheet.cell(10, 4.2, `${Math.trunc(Number(warrior.experience) || 0)} XP`);
+    sheet.cell(10, 4.2, textJoin([textNumber(warrior.experience, locale), textSymbol("XP")]));
     xpBoxes(sheet, x, y + topH + 2.4, warrior.experience, HENCHMAN_XP_PER_ROW, 1, 4.6, 3.2, 5.7, HENCHMAN_ADVANCE_THRESHOLDS);
   }
 }
@@ -608,10 +581,10 @@ function warriorCard(ctx: RenderContext, warrior: Warrior, y: number, height: nu
 // Summary page
 // ---------------------------------------------------------------------------
 
-function pageTitle(sheet: Sheet, title: string): void {
+function pageTitle(sheet: Sheet, title: PresentationText): void {
   sheet.setTextColor(INK);
   sheet.setFont("bold", 15);
-  sheet.cell(0, 9, title.toUpperCase().split("").join(" "), { align: "C", newX: "LMARGIN", newY: "NEXT" });
+  sheet.cell(0, 9, textHeading(title), { align: "C", newX: "LMARGIN", newY: "NEXT" });
   const y = sheet.getY() + 0.5;
   const midX = LM + CARD_TOTAL_WIDTH / 2;
   sheet.setDrawColor(INK_SOFT);
@@ -630,7 +603,7 @@ function pageTitle(sheet: Sheet, title: string): void {
   sheet.ln(3.5);
 }
 
-function summaryBox(sheet: Sheet, x: number, y: number, w: number, h: number, title: string, lines: readonly string[]): void {
+function summaryBox(sheet: Sheet, x: number, y: number, w: number, h: number, title: PresentationText, lines: readonly PresentationText[]): void {
   sheet.rect(x, y, w, h, { round: true, radius: 3, fill: WHITE, border: INK, lineWidth: 0.45 });
   sheet.rect(x + 1, y + 1, w - 2, h - 2, { round: true, radius: 2.2, border: INK_SOFT, lineWidth: 0.15 });
   sheet.setXY(x + 4, y + 3);
@@ -643,7 +616,7 @@ function summaryBox(sheet: Sheet, x: number, y: number, w: number, h: number, ti
   sheet.setXY(x + 4, y + 11);
   sheet.setFont("normal", 10.5);
   sheet.setTextColor(INK);
-  if (lines.length) sheet.multiCell(w - 8, 5.4, lines.join("\n"));
+  if (lines.length) sheet.multiCell(w - 8, 5.4, textJoin(lines, "\n"));
 }
 
 function summaryData(campaign: CampaignDocument["campaign"], snapshot: TimelineState | undefined) {
@@ -664,7 +637,7 @@ function renderSummaryPage(
   campaign: CampaignDocument["campaign"],
   inventory: readonly InventoryItem[],
   snapshot: TimelineState | undefined,
-  moment: string,
+  moment: PresentationText,
 ): void {
   const { sheet, labels, locale, knowledge } = ctx;
   sheet.addPage();
@@ -674,36 +647,36 @@ function renderSummaryPage(
   sheet.ln(1);
 
   const data = summaryData(campaign, snapshot);
-  pageTitle(sheet, campaign.identity.warband_name);
+  pageTitle(sheet, warbandPersonalName(campaign, locale));
   sheet.setFont("bold", 12);
   sheet.setTextColor(INK);
-  sheet.cell(0, 7, `${labels.warbandName} ${campaign.identity.warband_name}`, { newX: "LMARGIN", newY: "NEXT" });
-  sheet.cell(0, 7, `${labels.warbandType} ${campaign.identity.warband_type}`, { newX: "LMARGIN", newY: "NEXT" });
+  sheet.cell(0, 7, textJoin([labels.warbandName, warbandPersonalName(campaign, locale)]), { newX: "LMARGIN", newY: "NEXT" });
+  sheet.cell(0, 7, textJoin([labels.warbandType, knowledgeName(knowledge, "band", campaign.identity.band_id, locale)]), { newX: "LMARGIN", newY: "NEXT" });
 
   const y = sheet.getY() + 4;
   const boxW = (CARD_TOTAL_WIDTH - 8) / 2;
   summaryBox(sheet, LM, y, boxW, 30, labels.treasure, [
-    `${labels.goldCrowns} ${data.gold}`,
-    "",
-    `${labels.wyrdstone} ${data.shards}`,
+    textJoin([labels.goldCrowns, textNumber(data.gold, locale)]),
+    textSymbol(""),
+    textJoin([labels.wyrdstone, textNumber(data.shards, locale)]),
   ]);
   summaryBox(sheet, LM + boxW + 8, y, boxW, 30, labels.warbandValue, [
-    `${labels.totalExperience} ${data.xp}`,
+    textJoin([labels.totalExperience, textNumber(data.xp, locale)]),
     labels.members(data.models),
-    `${labels.rating} ${data.value}`,
+    textJoin([labels.rating, textNumber(data.value, locale)]),
   ]);
 
   const stashLines = inventory
     .filter((item) => item.stash > 0)
     .map((item) => {
-      const name = knowledgeName(knowledge, "item", item.id, locale, item.name);
-      return item.stash > 1 ? `${name} x${item.stash}` : name;
+      const name = knowledgeName(knowledge, "item", item.id, locale);
+      return item.stash > 1 ? textJoin([name, textJoin([textSymbol("x"), textNumber(item.stash, locale)], "")]) : name;
     });
   const battleLines = campaign.battles
     .filter((battle) => !snapshot || battle.number <= snapshot.number)
     .map((battle: Battle) => {
-      const scenario = knowledgeName(knowledge, "scenario", battle.scenario, locale, battle.scenario);
-      return `${labels.battle(battle.number)} - ${scenario} vs. ${battle.opponent} - ${readableValue(battle.result, locale)}`;
+      const scenario = knowledgeName(knowledge, "scenario", battle.scenario, locale);
+      return textJoin([labels.battle(battle.number), textJoin([scenario, textSymbol("vs."), opponentPersonalName(battle, locale)]), localizedLabel(battle.result, locale)], " - ");
     });
   const boxH = PAGE_H - y - 30 - 20;
   summaryBox(sheet, LM, y + 38, boxW, boxH, labels.storedEquipment, stashLines);
@@ -768,7 +741,7 @@ export async function createWarbandPdf(
   const henchmen = roster.filter((warrior) => warrior.kind !== "hero" && warrior.kind !== "hireling");
   renderGroup(ctx, heroes, HERO_CARD_HEIGHT);
   renderGroup(ctx, henchmen, HENCHMAN_CARD_HEIGHT);
-  renderSummaryPage(ctx, campaign, inventory, snapshot, momentLabel(campaign, stateNumber, labels));
+  renderSummaryPage(ctx, campaign, inventory, snapshot, momentLabel(campaign, stateNumber, labels, locale));
 
   return pdf.save();
 }

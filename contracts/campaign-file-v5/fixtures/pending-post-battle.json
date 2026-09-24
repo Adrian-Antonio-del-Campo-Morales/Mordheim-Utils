@@ -1574,7 +1574,18 @@
         "sale_resolved": true,
         "veteran_pool": 0,
         "experience_applied": true,
-        "pending_advances": [],
+        "pending_advances": [
+          {
+            "warrior_id": "matriarch",
+            "table": "hero",
+            "threshold": null,
+            "committed": true,
+            "applied_label": "Resolved outside the application",
+            "applied_result": { "kind": "external" },
+            "roll_history": ["Hero maximum reached (5); reroll this advance."],
+            "roll_history_events": [{ "kind": "hero-limit", "limit": 5 }]
+          }
+        ],
         "step_state": {},
         "searches": {},
         "acknowledgements": {},
@@ -1582,6 +1593,9 @@
           {
             "step": 3,
             "action": "sell_wyrdstone",
+            "type": "sell_wyrdstone",
+            "quantity": 1,
+            "gold": 35,
             "ids": {
               "quantity": "1"
             },

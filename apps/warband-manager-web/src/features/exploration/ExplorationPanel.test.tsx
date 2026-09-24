@@ -1,5 +1,6 @@
+import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { describe, expect, it, vi } from "vitest";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
 import type { CampaignDocument } from "../campaign/types";
@@ -32,10 +33,12 @@ describe("ExplorationPanel", () => {
     const post = resolved.campaign.post_battles[0] as unknown as { experience_applied: boolean; step_state: Record<string, unknown> };
     post.experience_applied = true;
     post.step_state = { exploration: { resolved: true, dice: [5, 4, 5, 2, 1, 5], dice_count: 6, total: 22, shards: 4, follow_up_rolls: [{ label: { es: "Cantidad de coronas" }, dice: [4, 3], total: 7 }, { label: { es: "Tabla de artefactos" }, dice: [6], total: 6 }] } };
-    render(<CampaignAppProvider service={service}><ExplorationPanel document={resolved} knowledge={knowledge} locale="es" /></CampaignAppProvider>);
+    const localKnowledge = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", bands: [], profiles: [], items: [], skills: [], campaign: {} });
+    render(<CampaignAppProvider service={service}><ExplorationPanel document={resolved} knowledge={localKnowledge} locale="es" /></CampaignAppProvider>);
     const history = screen.getByRole("region", { name: "Tiradas posteriores" });
-    expect(history).toHaveTextContent("Cantidad de Coronas4, 3 → 7");
-    expect(history).toHaveTextContent("Tabla de Artefactos6 → 6");
+    expect(history).toHaveTextContent("Información no disponible4, 3 → 7");
+    expect(history).toHaveTextContent("Información no disponible6 → 6");
+    expect(history).not.toHaveTextContent("Cantidad de coronas");
   });
 
   it("rejects technical identifiers in the next roll or decision column", () => {
@@ -48,12 +51,34 @@ describe("ExplorationPanel", () => {
     expect(screen.getByText("Recompensa de Coronas de Oro")).toBeInTheDocument();
   });
 
+  it("keeps personal warrior names and localizes the selection limit", () => {
+    const resolved = structuredClone(base) as CampaignDocument;
+    const warriors: CampaignDocument["campaign"]["warriors"] = [
+      { id: "hero-1", name: "María", profile_name: "Captain", kind: "hero", stats: {}, equipment: [], skills: [], experience: 0, cost: 0 },
+      { id: "hero-2", name: "Elena", profile_name: "Captain", kind: "hero", stats: {}, equipment: [], skills: [], experience: 0, cost: 0 },
+    ];
+    const withWarriors = { ...resolved, campaign: { ...resolved.campaign, warriors } };
+    const post = resolved.campaign.post_battles[0] as unknown as { experience_applied: boolean; pending_follow_ups: unknown[]; step_state: Record<string, unknown> };
+    post.experience_applied = true;
+    post.step_state = { exploration: { resolved: true, dice: [2], dice_count: 1, total: 2, shards: 1 } };
+    post.pending_follow_ups = [{ type: "exploration_followup", messages: [], pending: { kind: "choose_warriors", label: "unknown_system_label", maximum: 1, options: [{ id: "hero-1" }, { id: "hero-2" }] } }];
+    const localKnowledge = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", bands: [], profiles: [], items: [], skills: [], campaign: {} });
+    render(<CampaignAppProvider service={service}><ExplorationPanel document={withWarriors} knowledge={localKnowledge} locale="es" /></CampaignAppProvider>);
+    expect(screen.getByRole("group", { name: "Información no disponible" })).toBeInTheDocument();
+    expect(screen.getByText("María")).toBeInTheDocument();
+    expect(screen.getByText("Elena")).toBeInTheDocument();
+    const first = screen.getByRole("checkbox", { name: "María" });
+    fireEvent.click(first);
+    expect(screen.getByRole("checkbox", { name: "Elena" })).toHaveAttribute("data-disabled-reason", "Puedes seleccionar como máximo 1 guerrero.");
+    expect(screen.queryByText("unknown_system_label")).not.toBeInTheDocument();
+  });
+
   it("shows every die and highlights the combination that triggered the special event", () => {
     const resolved = structuredClone(base) as CampaignDocument;
     const post = resolved.campaign.post_battles[0] as unknown as { experience_applied: boolean; step_state: Record<string, unknown> };
     post.experience_applied = true;
     post.step_state = { exploration: { resolved: true, dice: [4, 4, 4, 2], dice_count: 4, total: 14, shards: 3, special: "Fletcher" } };
-    const localKnowledge = { list: () => [], queryKnowledge: () => ({ ok: false, reason: "not_found" }), queryMany: () => [], campaignSection: () => ({ exploration: { results: [{ dice_pattern: "4,4,4", outcome: "Fletcher", outcome_i18n: { es: "Flechero" }, description: "Roll for bows.", description_i18n: { es: "Tira para determinar qué arcos encuentras." } }] } }) } as never;
+    const localKnowledge = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", bands: [], profiles: [], items: [], skills: [], campaign: { "exploration-and-income": { exploration: { results: [{ dice_pattern: "4,4,4", outcome: "Fletcher", outcome_i18n: { es: "Flechero" }, description: "Roll for bows.", description_i18n: { es: "Tira para determinar qué arcos encuentras." } }] } } }, presentation_entries: [{ ref: { kind: "record", id: "event" }, source: "campaign/exploration-and-income/exploration/results/0", fields: { outcome: { es: "Flechero", en: "Fletcher" }, description: { es: "Tira para determinar qué arcos encuentras.", en: "Roll for bows." } } }] });
     render(<CampaignAppProvider service={service}><ExplorationPanel document={resolved} knowledge={localKnowledge} locale="es" /></CampaignAppProvider>);
 
     const dice = screen.getByRole("list", { name: "Resultados individuales de los dados" });
@@ -92,12 +117,11 @@ describe("ExplorationPanel", () => {
       battles: [{ number:1,result:"loss",out_of_action_ids:[],participants:[{id:"augur-1"}] }],
     });
     Object.assign(document.campaign.post_battles[0], { battle_number:1,experience_applied:true });
-    const localKnowledge={
-      list:(kind:string)=>kind==="profile"?[{id:"augur",rule_ids:["augur--blessed-sight"]}]:[],
-      queryKnowledge:()=>({ok:false,reason:"not_found"}), queryMany:()=>[],
-      rulesDocument:()=>[{id:"augur--blessed-sight",names:{en:"Blessed Sight",es:"Vista Bendita"}}],
-      campaignSection:()=>({exploration:{max_dice:6,dice_allocation:[{eligible_warrior:"hero",condition:"survived_battle",dice:1}]}}),
-    } as never;
+    const localKnowledge=ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", bands: [], items: [], skills: [],
+      profiles: [{ id: "augur", band_id: "sisters-of-sigmar", rule_ids: ["augur--blessed-sight"] }],
+      rules_prose: { "profile-special-rules": [{ id: "augur--blessed-sight", band_id: "sisters-of-sigmar", applies_to: { profile_ids: ["augur"] }, names: { en: "Blessed Sight", es: "Vista Bendita" } }] },
+      campaign: { "exploration-and-income": { exploration: { max_dice: 6, dice_allocation: [{ eligible_warrior: "hero", condition: "survived_battle", dice: 1 }] } } },
+    });
     render(<CampaignAppProvider service={service}><ExplorationPanel document={document} knowledge={localKnowledge} locale="es" /></CampaignAppProvider>);
     expect(screen.getByText("Modificadores activos").parentElement).toHaveTextContent("Vista Bendita");
     expect(screen.getByRole("button", { name: "Tirar 2D6" })).toBeInTheDocument();

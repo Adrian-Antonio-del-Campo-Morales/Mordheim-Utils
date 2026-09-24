@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
 import { BattleHistory } from "./BattleHistory";
 import type { CampaignDocument } from "../campaign/types";
+import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 
 const battle = {
   number: 1, scenario: "Skirmish", date: "01 Aug 2026", opponent: "Cultists", result: "Victory",
@@ -15,13 +16,38 @@ const battle = {
 } as unknown as CampaignDocument["campaign"]["battles"][number];
 
 describe("BattleHistory", () => {
+  it("keeps poisoned scenario and stored reward labels out of all open report tabs across locales", () => {
+    const marker = "RAW_KB_POISON_";
+    const scenario = marker + "SCENARIO";
+    const knowledge = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", bands: [], profiles: [], items: [], skills: [], campaign: { scenarios: { scenarios: [{ id: scenario, name: marker + "NAME", names: { es: "Escaramuza de prueba", en: "Test skirmish" } }] } } });
+    const saved = { ...battle, scenario, date: "2026-09-24", result: "win", notes: "Notas personales",
+      absentees: [{ id: "w2", name: "Greta", reason: marker + "ABSENCE", remaining_before: 2 }],
+      scenario_results: { ...battle.scenario_results, additional_rewards: [{ kind: marker + "REWARD", label: marker + "LABEL", description: marker + "DESCRIPTION", quantity: 1 }] },
+    };
+    const view = render(<BattleHistory battle={saved} knowledge={knowledge} locale="es" />);
+    const assertSafe = () => {
+      expect(view.container.textContent).not.toContain(marker);
+      for (const element of view.container.querySelectorAll("*")) for (const attribute of ["title", "aria-label", "aria-description", "data-tooltip"]) expect(element.getAttribute(attribute) ?? "").not.toContain(marker);
+    };
+    for (const locale of ["es", "en", "es"] as const) {
+      view.rerender(<BattleHistory battle={saved} knowledge={knowledge} locale={locale} />);
+      expect(screen.getByRole("heading", { name: locale === "es" ? "Escaramuza de prueba" : "Test skirmish" })).toBeInTheDocument();
+      assertSafe();
+      for (const button of view.container.querySelectorAll("button")) {
+        fireEvent.click(button);
+        assertSafe();
+      }
+      expect(view.container.textContent).not.toContain(locale === "es" ? "Test skirmish" : "Escaramuza de prueba");
+    }
+  });
+
   it("tells the battle story with its outcome, casualties and highlights", () => {
     render(<BattleHistory battle={battle} locale="en" />);
     expect(screen.getByRole("heading", { name: "Victory against Cultists" })).toBeInTheDocument();
     expect(screen.getByText(/Otto put 2 enemy model/)).toBeInTheDocument();
     expect(screen.getByText(/Sigrid received \+2 XP/)).toBeInTheDocument();
     expect(screen.getByText("An additional exploration benefit was earned.")).toBeInTheDocument();
-    expect(screen.getByText("+3 EXP")).toBeInTheDocument();
+    expect(screen.getByText("+3 XP")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "PARTICIPANTS" }));
     expect(screen.getByText("Sigrid").parentElement).toHaveTextContent("1 Out of Action");
     expect(screen.getByText("Greta").parentElement).toHaveTextContent("Did not participate");

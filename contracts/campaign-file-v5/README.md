@@ -130,3 +130,48 @@ The schema and fixtures are the single source of truth for the format. The
 Python reader/writer (`packages/python/campaign/mordheim_campaign/persistence/campaigns.py`) and the TypeScript `campaign-file` adapter must implement this contract;
 neither side may introduce format extensions without updating the schema and
 fixtures first.
+
+### Structured advance presentation
+
+Web writers add `applied_result` to a pending advance's open payload. It is
+one of `{kind: "characteristic", characteristic, amount}`, `{kind: "skill", id}`,
+`{kind: "spell", id}`, `{kind: "duplicate-spell", id, modifier}`, or
+`{kind: "external"}`. IDs remain canonical and are resolved in the current
+presentation locale. `applied_label` remains for desktop interoperability;
+web presentation prefers the structured result. Existing v5 documents without
+this field use the exact legacy-result adapter; unknown legacy prose is kept
+in the file but displayed as a localized unavailable notice. Unknown open
+payload fields must survive round trips unchanged.
+
+`roll_history_events` stores ordered advance facts: `advance-cap` with
+`characteristic` and numeric `cap`, `henchmen-reroll` with numeric `total`,
+`hero-limit` with numeric `limit`, and `group-promoted` without parameters.
+Existing history is preserved as `{kind: "legacy", text}` when a web writer
+first appends a fact. `roll_history` is still written for desktop readers.
+The web prefers `roll_history_events`; unknown or malformed facts display
+the localized unavailable notice without discarding the original payload.
+
+### Structured event presentation
+
+The existing open `event_log` payloads also carry facts for localized web
+presentation. Legacy `description` remains unchanged for desktop readers.
+
+| Event type | Presentation facts |
+| --- | --- |
+| `buy_item`, `buy_rare_item`, `sell_item` | `item_id`, numeric `quantity`, numeric total `gold` |
+| `upgrade_weapon` | `base_item_id`, upgrade `item_id`, numeric total `gold` |
+| `hire` | `profile_id`, `costs` pairs of resource identifier and numeric amount |
+| `recruit` | `profile_id`, `warrior_id`, `warrior_personal_name`, numeric `quantity`, numeric total `gold` |
+| `recruit_member` | `profile_id`, `warrior_id`, `warrior_personal_name`, `quantity: 1`, numeric total `gold`, boolean `equipment_pending` |
+| `scenario_spell_reward` | `warrior_id`, `warrior_personal_name`, two exact `spell_ids` |
+| `dismiss_member`, `dismiss_warrior` | `warrior_id`, `warrior_personal_name`, numeric `quantity` |
+| `hireling_upkeep` | `warrior_id`, `warrior_personal_name`, boolean `pay`, resource `costs` |
+| `manual_resource_correction` | `resource`, numeric `delta`, personal `reason` |
+| `manual_item_correction` | `item_id`, numeric `quantity`, personal `reason` |
+
+`warrior_personal_name` is a snapshot of the explicitly personal warrior field,
+including when the warrior leaves the roster. It is not a KB display name.
+Entity references resolve afresh in the active locale. Missing or malformed
+facts produce a localized unavailable notice; unknown legacy payloads survive
+saving. These additions use the schema's existing open event objects and do
+not change the file version or enable versions 1–4.

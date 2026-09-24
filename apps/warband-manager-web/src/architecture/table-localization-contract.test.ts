@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
+import { isUiMessageKey, translate } from "../features/campaign/i18n-core";
 
 type TableContract = {
   readonly source: string;
@@ -37,7 +38,7 @@ describe("all web table localization contracts", () => {
       expect(existsSync(resolve(sourceRoot, contract.test)), `${contract.source} needs a rendered test`).toBe(true);
       expect((component.match(/<table\b/g) ?? []).length, `${contract.source} table count`).toBe(contract.tables.length);
       expect((component.match(/<th\b/g) ?? []).length, `${contract.source} column count`).toBe(contract.tables.reduce((total, table) => total + table.columns, 0));
-      expect(component, `${contract.source} must select table copy by locale`).toMatch(/locale\s*===|locale\s*!==|\{t\./);
+      expect(component, `${contract.source} must select table copy by locale`).toMatch(/translate\(\{\s*key:\s*"[^"]+"\s*\},\s*locale\)/);
       if (contract.tables.some((table) => table.className)) {
         const dataLabels = [...component.matchAll(/data-label=\{([^}]+)\}/g)].map((match) => match[1]);
         expect(dataLabels, `${contract.source} must label every mobile cell`).not.toHaveLength(0);
@@ -49,8 +50,13 @@ describe("all web table localization contracts", () => {
   it("requires every table to select all of its interface copy by locale", () => {
     for (const contract of tables) {
       const component = text(contract.source);
-      expect(component, `${contract.source} needs Spanish table copy`).toMatch(/locale\s*===?\s*["']es["']/);
-      expect(component, `${contract.source} needs English table copy`).toContain('"en"');
+      const keys = [...component.matchAll(/translate\(\{ key: "([^"]+)" \}, locale\)/g)].map((match) => match[1]);
+      expect(keys.length, `${contract.source} uses the shared catalogue`).toBeGreaterThan(0);
+      for (const key of keys) {
+        expect(isUiMessageKey(key), key).toBe(true);
+        if (!isUiMessageKey(key)) throw new Error(`Missing message ${key}`);
+        for (const locale of ["es", "en"] as const) expect(translate({ key }, locale).trim(), `${key}.${locale}`).not.toBe("");
+      }
     }
   });
 });

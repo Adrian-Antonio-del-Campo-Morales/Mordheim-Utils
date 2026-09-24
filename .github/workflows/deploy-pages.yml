@@ -72,7 +72,7 @@ jobs:
           cd ../../apps/warband-manager-web && npm test
 
       - name: Build (custom domain root)
-        run: cd apps/warband-manager-web && npm run build
+        run: cd apps/warband-manager-web && npm run lint && npm run build
 
       - name: Guarantee no user campaign data is published
         run: |

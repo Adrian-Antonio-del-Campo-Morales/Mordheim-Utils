@@ -5,8 +5,29 @@ import { CampaignAppProvider } from "../campaign/useCampaignApp";
 import { PostBattleExperience } from "./PostBattleExperience";
 import { AdvancesPanel } from "./AdvancesPanel";
 import type { CampaignDocument } from "../campaign/types";
+import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 
 describe("PostBattleExperience", () => {
+  it("keeps the complete structured spell result when changing locale", () => {
+    const knowledge = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", bands: [], profiles: [], items: [], skills: [
+      { id: "spell.test", names: { es: "Luz", en: "Light" }, effects: { es: "Ilumina el lugar.", en: "Illuminates the area." } },
+    ] });
+    const document = { campaign: {
+      warriors: [{ id: "hero", name: "Personal_name", skills: [] }],
+      post_battles: [{ complete: false, pending_advances: [{ warrior_id: "hero", committed: true,
+        applied_label: "STALE_INTERNAL_LABEL", applied_result: { kind: "duplicate-spell", id: "spell.test", modifier: -1 },
+      }] }],
+    }, view: {} } as unknown as CampaignDocument;
+    const service = { current: () => document, isDirty: () => false, subscribe: () => () => undefined, run: vi.fn() } as never;
+    const view = (locale: "es" | "en") => <CampaignAppProvider service={service}><AdvancesPanel document={document} knowledge={knowledge} locale={locale} /></CampaignAppProvider>;
+    const { rerender, container } = render(view("es"));
+    for (const locale of ["es", "en", "es"] as const) {
+      rerender(view(locale));
+      expect(screen.getByText(locale === "es" ? "Hechizo duplicado: Luz (dificultad -1)" : "Duplicated spell: Light (difficulty -1)")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: locale === "es" ? "Luz" : "Light" })).toBeInTheDocument();
+      expect(container.textContent).not.toMatch(/STALE_INTERNAL_LABEL|spell\.test/);
+    }
+  });
   it("applies calculated experience automatically when the phase opens", async () => {
     const document = { campaign: { warriors: [], battles: [{ number: 1, out_of_action_ids: [] }], post_battles: [{ battle_number: 1, complete: false, experience_applied: false, pending_follow_ups: [] }] }, view: {} } as unknown as CampaignDocument;
     const run = vi.fn().mockResolvedValue({ ok: true, document });

@@ -1,3 +1,9 @@
+import { textDice, textJoin, textNumber, textSymbol, type PresentationValue } from "../campaign/presentation-values";
+import { presentationOutput } from "../campaign/presentation-output";
+import { resourceAmount } from "../campaign/displayText";
+import { translate } from "../campaign/i18n-core";
+import { useLocale } from "../campaign/i18n-context";
+import { unavailableText } from "@adapters/knowledge-reader/presentation";
 /**
  * Hireling, exploration and trading presentation.
  *
@@ -30,47 +36,24 @@ interface HirelingsPanelProps {
   readonly showTradingTitle?: boolean;
 }
 
-const spanishEligibilityReasons: Readonly<Record<string, string>> = {
-  "hireling.hired-sword.dwarf-troll-slayer.rule.campaign-eligibility": "Solo los Mercenarios, los Cazadores de Brujas o una banda que incluya Elfos pueden contratarlo.",
-  "hireling.hired-sword.dwarf-treasure-hunter.rule.campaign-eligibility": "Solo los Mercenarios, los Cazadores de Brujas o una banda que incluya Elfos pueden contratarlo.",
-  "hireling.hired-sword.runesmith-journeyman.rule.campaign-eligibility": "Solo los Mercenarios, los Cazadores de Brujas o una banda que incluya Elfos pueden contratarlo.",
-  "hireling.hired-sword.elf-ranger.rule.campaign-eligibility": "Solo los Mercenarios, los Cazadores de Brujas o una banda que incluya Enanos pueden contratarlo.",
-  "hireling.hired-sword.cathayan-merchant.rule.campaign-eligibility": "La banda debe incluir Humanos o Enanos.",
-  "hireling.hired-sword.grave-robber.rule.campaign-eligibility": "La banda debe incluir un Vampiro, Nigromante o Liche.",
-  "hireling.hired-sword.ninja-gnoblar.rule.campaign-eligibility": "No se unirá a una banda que contenga criaturas que causen miedo.",
-  "hireling.hired-sword.witch-hunter.rule.campaign-eligibility": "No trabajará para una banda con un hechicero; se exceptúan los sacerdotes de Sigmar, Ulric, Taal y Morr.",
-  "hireling.hired-sword.highwayman.rule.campaign-eligibility": "No puede ser contratado por una banda que tenga un Guardacaminos.",
-  "hireling.hired-sword.roadwarden.rule.campaign-eligibility": "No puede ser contratado por una banda que tenga un Salteador de Caminos.",
-  "hireling.hired-sword.knight-of-the-white-wolf.rule.campaign-eligibility": "No se unirá a una banda que contenga un Sacerdote Guerrero.",
-  "hireling.hired-sword.shadow-warrior.rule.campaign-eligibility": "No puede ser contratado por una banda que tenga una Espada de Alquiler malvada.",
-  "hireling.dramatis.dijin-katal-the-renegade-assassin.rule.campaign-eligibility": "No puede ser contratado por una banda que tenga alguna Espada de Alquiler élfica.",
-  "hireling.dramatis.william-schakestange-master-bard.rule.campaign-eligibility": "Solo se unirá a bandas de alineamiento bueno.",
-  "hireling.dramatis.grand-master-ippan-shu.rule.campaign-eligibility": "La banda debe incluir Humanos o Elfos.",
-};
-
-function eligibilityReason(offer: HirelingOfferRow, locale: "es" | "en", fallback: string): string {
-  if (locale === "en") return offer.ineligible_reason ?? fallback;
-  if (offer.ineligible_rule_id === "static") return "La banda o su grupo están excluidos por las reglas de contratación.";
-  if (offer.ineligible_kind === "needs_variant") return "Selecciona la variante de Mercenarios de la banda para comprobar esta contratación.";
-  if (offer.ineligible_rule_id === "hireling.dramatis.maximilian-the-mad.rule.campaign-eligibility" || offer.ineligible_rule_id === "hireling.hired-sword.warrior-priest-of-sigmar.rule.campaign-eligibility") {
-    return "Los Mercenarios de Middenheim no pueden contratarlo.";
-  }
-  if (offer.ineligible_rule_id === "hireling.hired-sword.wolf-priest-of-ulric.rule.campaign-eligibility") {
-    return "Solo los Mercenarios de Middenheim pueden contratarlo.";
-  }
-  return (offer.ineligible_rule_id && spanishEligibilityReasons[offer.ineligible_rule_id]) ?? fallback;
+function eligibilityReason(offer: HirelingOfferRow, listings: KnowledgeListings | undefined, locale: "es" | "en"): PresentationValue {
+  if (offer.ineligible_rule_id === "static") return translate({ key: "ui.e3da81ebd3f3" }, locale);
+  if (offer.ineligible_kind === "needs_variant") return translate({ key: "ui.3c070fd48f40" }, locale);
+  if (!offer.ineligible_rule_id) return translate({ key: "ui.2aa6b5a863cc" }, locale);
+  const result = listings?.resolveKbText?.({ kind: "rule", id: offer.ineligible_rule_id, profileId: offer.profile_id }, "effect", locale);
+  return result?.ok ? result.text : unavailableText(locale);
 }
 
-function VariableFeeHire({ offer, name, busy, locale, onHire }: { offer: ReturnType<ReturnType<typeof useHirelingsWorkflow>["hiredSwordOffers"]>[number]; name: string; busy: boolean; locale: "es" | "en"; onHire: (fee: number) => void }) {
+function VariableFeeHire({ offer, name, busy, locale, onHire }: { offer: ReturnType<ReturnType<typeof useHirelingsWorkflow>["hiredSwordOffers"]>[number]; name: PresentationValue; busy: boolean; locale: "es" | "en"; onHire: (fee: number) => void }) {
   const [fee, setFee] = useState<number | null>(null);
-  if (offer.fee_dice && fee === null) return <DiceResolver locale={locale} count={offer.fee_dice[0]} sides={offer.fee_dice[1]} label={`${name} ${locale === "es" ? "tarifa de contratación" : "hiring fee"}`} onResolve={(dice) => setFee(offer.fee_base + dice.reduce((total, die) => total + die, 0))} />;
-  return <button type="button" disabled={busy || fee === null} data-disabled-reason={busy ? (locale === "es" ? "Espera a que termine la operación en curso." : "Wait for the current operation to finish.") : fee === null ? (locale === "es" ? "Resuelve primero la tarifa de contratación." : "Resolve the hiring fee first.") : undefined} aria-label={`${locale === "es" ? "Contratar" : "Hire"} ${name}`} onClick={() => fee !== null && onHire(fee)}>{locale === "es" ? "Contratar por" : "Hire for"} {fee} gc</button>;
+  if (offer.fee_dice && fee === null) return <DiceResolver locale={locale} count={offer.fee_dice[0]} sides={offer.fee_dice[1]} label={textJoin([name, translate({ key: "ui.60e491668715" }, locale)])} onResolve={(dice) => setFee(offer.fee_base + dice.reduce((total, die) => total + die, 0))} />;
+  return <button type="button" disabled={busy || fee === null} data-disabled-reason={busy ? presentationOutput(translate({ key: "disabled.23ccf48766" }, locale)) : fee === null ? presentationOutput(translate({ key: "disabled.06bdd7e9c4" }, locale)) : undefined} aria-label={presentationOutput(textJoin([translate({ key: "ui.aa663a910be2" }, locale), name]))} onClick={() => fee !== null && onHire(fee)}>{presentationOutput(textJoin([translate({ key: "ui.bd7aeef9804c" }, locale), textNumber(fee, locale), translate({ key: "unit.gold" }, locale)]))}</button>;
 }
 
-function VariableTradingPurchase({ offer, quantity, busy, locale, onBuy }: { offer: TradingOfferRow; quantity: number; busy: boolean; locale: "es" | "en"; onBuy: (price: number) => void }) {
+function VariableTradingPurchase({ offer, name, quantity, busy, locale, onBuy }: { offer: TradingOfferRow; name: PresentationValue; quantity: number; busy: boolean; locale: "es" | "en"; onBuy: (price: number) => void }) {
   const [price, setPrice] = useState<number | null>(null);
-  if (offer.price_dice && price === null) return <DiceResolver locale={locale} count={offer.price_dice[0]} sides={offer.price_dice[1]} label={`${offer.name} ${locale === "es" ? "precio" : "price"}`} onResolve={(dice) => setPrice(offer.price_base + dice.reduce((total, die) => total + die, 0) * offer.price_multiplier)} />;
-  return <button type="button" disabled={busy || price === null} data-disabled-reason={busy ? (locale === "es" ? "Espera a que termine la operación en curso." : "Wait for the current operation to finish.") : price === null ? (locale === "es" ? "Resuelve primero el precio del objeto." : "Resolve the item price first.") : undefined} onClick={() => price !== null && onBuy(price)}>{locale === "es" ? "Comprar" : "Buy"} {quantity} {locale === "es" ? "por" : "for"} {(price ?? 0) * quantity} gc</button>;
+  if (offer.price_dice && price === null) return <DiceResolver locale={locale} count={offer.price_dice[0]} sides={offer.price_dice[1]} label={textJoin([name, translate({ key: "ui.324065ab2794" }, locale)])} onResolve={(dice) => setPrice(offer.price_base + dice.reduce((total, die) => total + die, 0) * offer.price_multiplier)} />;
+  return <button type="button" disabled={busy || price === null} data-disabled-reason={busy ? presentationOutput(translate({ key: "disabled.23ccf48766" }, locale)) : price === null ? presentationOutput(translate({ key: "disabled.c09c040348" }, locale)) : undefined} onClick={() => price !== null && onBuy(price)}>{presentationOutput(textJoin([translate({ key: "ui.ee094da2d5dd" }, locale), textNumber(quantity, locale), translate({ key: "ui.ad3d0d47b7f4" }, locale), textNumber((price ?? 0) * quantity, locale), translate({ key: "unit.gold" }, locale)]))}</button>;
 }
 
 type EquipmentOption = { readonly items?: readonly string[]; readonly from?: readonly string[]; readonly count?: number };
@@ -102,29 +85,31 @@ function sameItems(left: readonly string[], right: readonly string[]): boolean {
   return left.length === right.length && left.every((id) => left.filter((value) => value === id).length === right.filter((value) => value === id).length);
 }
 
-export function HirelingsPanel({ document, listings, locale = "en", mode = "all", showTradingTitle = true }: HirelingsPanelProps) {
+export function HirelingsPanel({ document, listings, locale: requestedLocale, mode = "all", showTradingTitle = true }: HirelingsPanelProps) {
+  const locale = useLocale(requestedLocale);
   const app = useCampaignApp();
   const workflow = useHirelingsWorkflow(listings);
   const [busy, setBusy] = useState(false);
-  const [notice, setNotice] = useState("");
+  const [notice, setNotice] = useState<string | null>(null);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [chosenEquipment, setChosenEquipment] = useState<Record<string, readonly string[]>>({});
 
-  const displayName = (id: string, fallback: string) => listings?.itemName(id, locale) ?? fallback;
-  const offers = workflow.hiredSwordOffers(document).sort((a, b) => displayName(a.profile_id, a.name).localeCompare(displayName(b.profile_id, b.name), locale));
-  const goods = workflow.tradingOffers(document);
+  const displayName = (id: string, kind: "item" | "hireling" = "item") => { const result = listings?.resolveKbText?.({ kind, id }, "name", locale); return result?.ok ? result.text : unavailableText(locale); };
+  const itemLabel = (id: string) => displayName(id);
+  const offers = workflow.hiredSwordOffers(document).sort((a, b) => presentationOutput(displayName(a.profile_id, "hireling")).localeCompare(presentationOutput(displayName(b.profile_id, "hireling")), locale));
+  const goods = workflow.tradingOffers(document, locale);
   const stashRows = document.campaign.inventory.filter((row) => row.stash > 0);
   const hired = document.campaign.warriors.filter((row) => row.kind === "hireling");
-  const resourceLabel = (rows: readonly (readonly [string, number])[]) => rows.map(([key, value]) => `${value} ${key === "gold_crowns" ? "gc" : key === "wyrdstone_fragments" ? (locale === "es" ? "piedra bruja" : "wyrdstone") : key === "treasures" ? (locale === "es" ? "tesoros" : "treasures") : locale === "es" ? "puntos de campaña" : "campaign points"}`).join(" + ");
-  const t = locale === "es" ? { hired:"Espadas de alquiler",hiredOk:"Contratado",already:"Ya contratado",profiles:"PERFILES CONTRATADOS",equipment:"Equipo",skills:"Habilidades / reglas",none:"No hay mercenarios disponibles.",available:"Mercenarios disponibles",name:"Nombre",fee:"Tarifa",upkeep:"Mantenimiento",rating:"Valoración",action:"Acción",dice:"dados",hire:"Contratar",ineligible:"No disponible",excluded:"excluido por las reglas de la banda",trading:"Puesto de comercio",goods:"Objetos en venta",item:"Objeto",price:"Precio",availability:"Disponibilidad",buy:"Comprar",sales:"Vender reserva",nothing:"No hay objetos en la reserva para vender.",stash:"Reserva (una unidad por acción)",inStash:"En reserva",sell:"Vender 1",special:"precio especial" } : { hired:"Hired Swords",hiredOk:"Hired",already:"Already hired",profiles:"HIRED PROFILES",equipment:"Equipment",skills:"Skills / rules",none:"No hireling offers available.",available:"Available hired swords",name:"Name",fee:"Fee",upkeep:"Upkeep",rating:"Rating",action:"Action",dice:"dice",hire:"Hire",ineligible:"Not eligible",excluded:"excluded by warband rules",trading:"Trading Post",goods:"Goods for sale",item:"Item",price:"Price",availability:"Availability",buy:"Buy",sales:"Stash sales",nothing:"Nothing in the stash to sell.",stash:"Stash (sell one unit per action)",inStash:"In stash",sell:"Sell 1",special:"special price" };
+  const resourceLabel = (rows: readonly (readonly [string, number])[]) => textJoin(rows.map(([key, value]) => resourceAmount(key, value, locale)), " + ");
+  const t = ({ hired: translate({ key: "ui.48496343c02a" }, locale), hiredOk: translate({ key: "ui.68f2b63b80e4" }, locale), already: translate({ key: "ui.6223e37fde3f" }, locale), profiles: translate({ key: "ui.bfa52c4c3f02" }, locale), equipment: translate({ key: "ui.9cd4c565ba6e" }, locale), skills: translate({ key: "ui.c966b4bf55d0" }, locale), none: translate({ key: "ui.7c192fc04c99" }, locale), available: translate({ key: "ui.a30bb9292d66" }, locale), name: translate({ key: "ui.9b9a13d3e4d1" }, locale), fee: translate({ key: "ui.e42d3a9bafa9" }, locale), upkeep: translate({ key: "ui.15e8bb635504" }, locale), rating: translate({ key: "ui.f60eeb2b86e6" }, locale), action: translate({ key: "ui.b9a0db2ec300" }, locale), dice: translate({ key: "ui.1d13e4a9ecdf" }, locale), hire: translate({ key: "ui.aa663a910be2" }, locale), ineligible: translate({ key: "ui.df8a970d0e74" }, locale), excluded: translate({ key: "ui.2aa6b5a863cc" }, locale), trading: translate({ key: "ui.284b5047984a" }, locale), goods: translate({ key: "ui.34de3f8b053c" }, locale), item: translate({ key: "ui.cf471eb26f03" }, locale), price: translate({ key: "ui.158f43d31fa9" }, locale), availability: translate({ key: "ui.a282488fda52" }, locale), buy: translate({ key: "ui.ee094da2d5dd" }, locale), sales: translate({ key: "ui.082c2e0f0e0e" }, locale), nothing: translate({ key: "ui.333a612b3b95" }, locale), stash: translate({ key: "ui.4b81c9d8a339" }, locale), inStash: translate({ key: "ui.8188fac068b5" }, locale), sell: translate({ key: "ui.2c999464170e" }, locale), special: translate({ key: "ui.25309059953e" }, locale) });
 
   const hire = async (profileId: string, resolvedFee?: number) => {
     const offer = offers.find((o) => o.profile_id === profileId);
     if (!offer || !offer.eligible) return;
     setBusy(true);
-    setNotice("");
+    setNotice(null);
     const hired = await app.runAction("hireHireling", { profile_id: profileId, fee: resolvedFee ?? offer.fee, fee_resources: offer.fee_resources, upkeep_resources: offer.upkeep_resources, chosen_item_ids: chosenEquipment[profileId], locale });
-    if (hired) setNotice(`${t.hiredOk}: ${displayName(offer.profile_id, offer.name)}.`);
+    if (hired) setNotice(offer.profile_id);
     setBusy(false);
   };
 
@@ -148,17 +133,17 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
   };
 
   return (
-    <section aria-label={locale === "es" ? "Mercenarios y comercio" : "Hirelings and Trading"} aria-busy={busy}>
-      {mode !== "trading" && <><h3>{t.hired}</h3>
-      {notice && <output className="success-notice" role="status">✓ {notice}</output>}
+    <section aria-label={presentationOutput(translate({ key: "ui.056cadd6741d" }, locale))} aria-busy={busy}>
+      {mode !== "trading" && <><h3>{presentationOutput(t.hired)}</h3>
+      {notice && <output className="success-notice" role="status">{presentationOutput(textJoin([textSymbol("✓"), textJoin([t.hiredOk, textSymbol(":")], ""), displayName(notice, "hireling")]))}</output>}
       {offers.length === 0 ? (
-        <p role="status">{t.none}</p>
+        <p role="status">{presentationOutput(t.none)}</p>
       ) : (
           <table className="mobile-cards">
-          <caption>{t.available}</caption>
+          <caption>{presentationOutput(t.available)}</caption>
           <thead>
             <tr>
-              <th scope="col">{t.name}</th><th scope="col">{t.fee}</th><th scope="col">{t.upkeep}</th><th scope="col">{t.rating}</th><th scope="col">{t.action}</th>
+              <th scope="col">{presentationOutput(t.name)}</th><th scope="col">{presentationOutput(t.fee)}</th><th scope="col">{presentationOutput(t.upkeep)}</th><th scope="col">{presentationOutput(t.rating)}</th><th scope="col">{presentationOutput(t.action)}</th>
             </tr>
           </thead>
           <tbody>
@@ -169,25 +154,25 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
                 const selectionReady = options.length === 0 || options.some((option) => option.items ? sameItems(selected, option.items) : selected.length === option.count && selected.every((id) => option.from?.includes(id)));
                 const setSelected = (items: readonly string[]) => setChosenEquipment((current) => ({ ...current, [offer.profile_id]: items }));
                 return <>
-                <td data-label={t.name}>{displayName(offer.profile_id, offer.name)}</td>
-                <td data-label={t.fee}>{offer.fee_dice ? `${offer.fee_base}+${offer.fee_dice[0]}D${offer.fee_dice[1]} gc` : offer.fee_resources.length ? resourceLabel(offer.fee_resources) : t.special}</td>
-                <td data-label={t.upkeep}>{offer.upkeep_resources.length ? resourceLabel(offer.upkeep_resources) : "—"}</td>
-                <td data-label={t.rating}>{offer.rating}</td>
-                <td data-label={t.action}>
-                  {options.length > 0 && <fieldset className="hireling-equipment-choice"><legend>{locale === "es" ? "Equipo inicial" : "Starting equipment"}</legend>{options.map((option, index) => option.items ? <label key={index}><input type="radio" name={`hireling-equipment-${offer.profile_id}`} checked={sameItems(selected, option.items)} onChange={() => setSelected(option.items ?? [])} />{option.items.map((id) => displayName(id, id)).join(" + ")}</label> : <label key={index}><input type="radio" name={`hireling-equipment-${offer.profile_id}`} checked={selected.length === option.count && selected.every((id) => option.from?.includes(id))} onChange={() => setSelected(Array.from({ length: option.count ?? 0 }, () => option.from?.[0] ?? ""))} />{locale === "es" ? `Elige ${option.count}: ` : `Choose ${option.count}: `}{Array.from({ length: option.count ?? 0 }, (_, slot) => <select key={slot} value={selected[slot] ?? option.from?.[0] ?? ""} onChange={(event) => { const next = selected.length === option.count ? [...selected] : Array.from({ length: option.count ?? 0 }, () => option.from?.[0] ?? ""); next[slot] = event.target.value; setSelected(next); }}>{option.from?.map((id) => <option key={id} value={id}>{displayName(id, id)}</option>)}</select>)}</label>)}</fieldset>}
-                  {hired.some((row) => row.profile_id === offer.profile_id) ? <button type="button" disabled data-disabled-reason={t.already}>✓ {t.already}</button> : offer.eligible && offer.fee_dice ? <VariableFeeHire offer={offer} name={displayName(offer.profile_id, offer.name)} busy={busy} locale={locale} onHire={(fee) => void hire(offer.profile_id, fee)} /> : offer.eligible ? (
+                <td data-label={presentationOutput(t.name)}>{presentationOutput(displayName(offer.profile_id, "hireling"))}</td>
+                <td data-label={presentationOutput(t.fee)}>{presentationOutput(offer.fee_dice ? textJoin([textJoin([textNumber(offer.fee_base, locale), textSymbol("+"), textDice(...offer.fee_dice, locale)], ""), translate({ key: "unit.gold" }, locale)]) : offer.fee_resources.length ? resourceLabel(offer.fee_resources) : t.special)}</td>
+                <td data-label={presentationOutput(t.upkeep)}>{presentationOutput(offer.upkeep_resources.length ? resourceLabel(offer.upkeep_resources) : textSymbol("—"))}</td>
+                <td data-label={presentationOutput(t.rating)}>{presentationOutput(textNumber(offer.rating, locale))}</td>
+                <td data-label={presentationOutput(t.action)}>
+                  {options.length > 0 && <fieldset className="hireling-equipment-choice"><legend>{presentationOutput(translate({ key: "ui.6e167b0c85f2" }, locale))}</legend>{options.map((option, index) => option.items ? <label key={index}><input type="radio" name={`hireling-equipment-${offer.profile_id}`} checked={sameItems(selected, option.items)} onChange={() => setSelected(option.items ?? [])} />{presentationOutput(textJoin(option.items.map((id) => displayName(id)), " + "))}</label> : <label key={index}><input type="radio" name={`hireling-equipment-${offer.profile_id}`} checked={selected.length === option.count && selected.every((id) => option.from?.includes(id))} onChange={() => setSelected(Array.from({ length: option.count ?? 0 }, () => option.from?.[0] ?? ""))} />{presentationOutput(translate({ key: "hireling.choose-count", args: { count: option.count ?? 0 } }, locale))}{Array.from({ length: option.count ?? 0 }, (_, slot) => <select key={slot} value={selected[slot] ?? option.from?.[0] ?? ""} onChange={(event) => { const next = selected.length === option.count ? [...selected] : Array.from({ length: option.count ?? 0 }, () => option.from?.[0] ?? ""); next[slot] = event.target.value; setSelected(next); }}>{option.from?.map((id) => <option key={id} value={id}>{presentationOutput(displayName(id))}</option>)}</select>)}</label>)}</fieldset>}
+                  {hired.some((row) => row.profile_id === offer.profile_id) ? <button type="button" disabled data-disabled-reason={presentationOutput(t.already)}>{presentationOutput(textJoin([textSymbol("✓"), t.already]))}</button> : offer.eligible && offer.fee_dice ? <VariableFeeHire offer={offer} name={displayName(offer.profile_id, "hireling")} busy={busy} locale={locale} onHire={(fee) => void hire(offer.profile_id, fee)} /> : offer.eligible ? (
                     <button
                       type="button"
                       disabled={busy || !selectionReady || (offer.fee === null && offer.fee_resources.length === 0)}
-                      data-disabled-reason={busy ? (locale === "es" ? "Espera a que termine la operación en curso." : "Wait for the current operation to finish.") : !selectionReady ? (locale === "es" ? "Elige primero el equipo inicial." : "Choose starting equipment first.") : offer.fee === null && offer.fee_resources.length === 0 ? (locale === "es" ? "Esta contratación exige una resolución especial." : "This hire requires a special resolution.") : undefined}
-                      aria-label={`${t.hire} ${displayName(offer.profile_id, offer.name)}`}
+                      data-disabled-reason={busy ? presentationOutput(translate({ key: "disabled.23ccf48766" }, locale)) : !selectionReady ? presentationOutput(translate({ key: "disabled.00b2460585" }, locale)) : offer.fee === null && offer.fee_resources.length === 0 ? presentationOutput(translate({ key: "disabled.bc4ab7c2d2" }, locale)) : undefined}
+                      aria-label={presentationOutput(textJoin([t.hire, displayName(offer.profile_id, "hireling")]))}
                       onClick={() => hire(offer.profile_id)}
                     >
-                      {offer.fee === null && offer.fee_resources.length === 0 ? t.special : t.hire}
+                      {presentationOutput(offer.fee === null && offer.fee_resources.length === 0 ? t.special : t.hire)}
                     </button>
                   ) : (
                     <span role="note">
-                      {t.ineligible}: {eligibilityReason(offer, locale, t.excluded)}
+                      {presentationOutput(textJoin([textJoin([t.ineligible, textSymbol(":")], ""), eligibilityReason(offer, listings, locale)]))}
                     </span>
                   )}
                 </td>
@@ -197,29 +182,29 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
         </table>
       )}</>}
 
-      {mode !== "hirelings" && <>{showTradingTitle && <h3>{t.trading}</h3>}
+      {mode !== "hirelings" && <>{showTradingTitle && <h3>{presentationOutput(t.trading)}</h3>}
       <table className="mobile-cards">
-        <caption>{t.goods}</caption>
+        <caption>{presentationOutput(t.goods)}</caption>
         <thead>
           <tr>
-            <th scope="col">{t.item}</th><th scope="col">{t.price}</th><th scope="col">{t.availability}</th><th scope="col">{t.action}</th>
+            <th scope="col">{presentationOutput(t.item)}</th><th scope="col">{presentationOutput(t.price)}</th><th scope="col">{presentationOutput(t.availability)}</th><th scope="col">{presentationOutput(t.action)}</th>
           </tr>
         </thead>
         <tbody>
           {goods.map((good) => (
             <tr key={good.offer_id}>
-                <td data-label={t.item}><KnowledgeHint knowledge={listings as never} kind="item" id={good.item_id} locale={locale}>{displayName(good.item_id, good.name)}</KnowledgeHint>{good.restriction_notes.length > 0 && <small className="restriction-note">{good.restriction_notes.join(" · ")}</small>}</td>
-              <td data-label={t.price}>{good.price_dice ? `${good.price_base}+${good.price_dice[0]}D${good.price_dice[1]} gc` : good.base_price === null ? t.dice : `${good.base_price} gc`}</td>
-              <td data-label={t.availability}>{good.availability}</td>
-              <td data-label={t.action}><NumberStepper label={`${locale === "es" ? "Cantidad" : "Quantity"} ${displayName(good.item_id, good.name)}`} value={amount(`buy:${good.item_id}`)} min={1} onChange={(value)=>setQuantities((current)=>({...current,[`buy:${good.item_id}`]:value}))} />
-                {good.price_dice ? <VariableTradingPurchase offer={good} quantity={amount(`buy:${good.item_id}`)} busy={busy} locale={locale} onBuy={(price) => void buy(good.item_id, price)} /> : <button
+                <td data-label={presentationOutput(t.item)}><KnowledgeHint knowledge={listings} kind="item" id={good.item_id} locale={locale}>{presentationOutput(displayName(good.item_id))}</KnowledgeHint>{good.restriction_notes.length > 0 && <small className="restriction-note">{presentationOutput(textJoin(good.restriction_notes, " · "))}</small>}</td>
+              <td data-label={presentationOutput(t.price)}>{presentationOutput(good.price_dice ? textJoin([textJoin([textNumber(good.price_base, locale), textSymbol("+"), textDice(...good.price_dice, locale)], ""), translate({ key: "unit.gold" }, locale)]) : good.base_price === null ? t.dice : textJoin([textNumber(good.base_price, locale), translate({ key: "unit.gold" }, locale)]))}</td>
+              <td data-label={presentationOutput(t.availability)}>{presentationOutput(good.availability === "common" ? translate({ key: "availability.common" }, locale) : unavailableText(locale))}</td>
+              <td data-label={presentationOutput(t.action)}><NumberStepper locale={locale} label={textJoin([translate({ key: "number.quantity" }, locale), itemLabel(good.item_id)])} value={amount(`buy:${good.item_id}`)} min={1} onChange={(value)=>setQuantities((current)=>({...current,[`buy:${good.item_id}`]:value}))} />
+                {good.price_dice ? <VariableTradingPurchase offer={good} name={displayName(good.item_id)} quantity={amount(`buy:${good.item_id}`)} busy={busy} locale={locale} onBuy={(price) => void buy(good.item_id, price)} /> : <button
                   type="button"
                   disabled={busy || good.base_price === null || (good.limit_per_warband !== null && (document.campaign.inventory.find((row) => row.id === good.item_id)?.owned ?? 0) >= good.limit_per_warband)}
-                  data-disabled-reason={busy ? (locale === "es" ? "Espera a que termine la operación en curso." : "Wait for the current operation to finish.") : good.base_price === null ? (locale === "es" ? "Resuelve primero el precio del objeto." : "Resolve the item price first.") : good.limit_per_warband !== null && (document.campaign.inventory.find((row) => row.id === good.item_id)?.owned ?? 0) >= good.limit_per_warband ? (locale === "es" ? "La banda ya ha alcanzado el límite de este objeto." : "The warband has reached this item's limit.") : undefined}
-                  aria-label={`${t.buy} ${displayName(good.item_id, good.name)}`}
+                  data-disabled-reason={busy ? presentationOutput(translate({ key: "disabled.23ccf48766" }, locale)) : good.base_price === null ? presentationOutput(translate({ key: "disabled.c09c040348" }, locale)) : good.limit_per_warband !== null && (document.campaign.inventory.find((row) => row.id === good.item_id)?.owned ?? 0) >= good.limit_per_warband ? presentationOutput(translate({ key: "disabled.4f2131c121" }, locale)) : undefined}
+                  aria-label={presentationOutput(textJoin([t.buy, displayName(good.item_id)]))}
                   onClick={() => buy(good.item_id, good.base_price)}
                 >
-                  {t.buy} {amount(`buy:${good.item_id}`)}
+                  {presentationOutput(textJoin([t.buy, textNumber(amount(`buy:${good.item_id}`), locale)]))}
                 </button>}
               </td>
             </tr>
@@ -227,31 +212,31 @@ export function HirelingsPanel({ document, listings, locale = "en", mode = "all"
         </tbody>
       </table>
 
-      <h3>{t.sales}</h3>
+      <h3>{presentationOutput(t.sales)}</h3>
       {stashRows.length === 0 ? (
-        <p role="status">{t.nothing}</p>
+        <p role="status">{presentationOutput(t.nothing)}</p>
       ) : (
         <table className="mobile-cards">
-          <caption>{t.stash}</caption>
+          <caption>{presentationOutput(t.stash)}</caption>
           <thead>
             <tr>
-              <th scope="col">{t.item}</th><th scope="col">{t.inStash}</th><th scope="col">{t.action}</th>
+              <th scope="col">{presentationOutput(t.item)}</th><th scope="col">{presentationOutput(t.inStash)}</th><th scope="col">{presentationOutput(t.action)}</th>
             </tr>
           </thead>
           <tbody>
             {stashRows.map((row) => (
               <tr key={row.id}>
-                <td data-label={t.item}><KnowledgeHint knowledge={listings as never} kind="item" id={row.id} locale={locale}>{displayName(row.id, row.name)}</KnowledgeHint></td>
-                <td data-label={t.inStash}>{row.stash}<NumberStepper label={`${locale === "es" ? "Cantidad" : "Quantity"} ${displayName(row.id, row.name)} ${locale === "es" ? "de la reserva" : "from stash"}`} value={amount(`sell:${row.id}`,row.stash)} min={1} max={row.stash} onChange={(value)=>setQuantities((current)=>({...current,[`sell:${row.id}`]:value}))} /></td>
-                <td data-label={t.action}>
+                <td data-label={presentationOutput(t.item)}><KnowledgeHint knowledge={listings} kind="item" id={row.id} locale={locale}>{presentationOutput(displayName(row.id))}</KnowledgeHint></td>
+                <td data-label={presentationOutput(t.inStash)}>{presentationOutput(textNumber(row.stash, locale))}<NumberStepper locale={locale} label={textJoin([translate({ key: "number.quantity" }, locale), itemLabel(row.id), translate({ key: "number.stash" }, locale)])} value={amount(`sell:${row.id}`,row.stash)} min={1} max={row.stash} onChange={(value)=>setQuantities((current)=>({...current,[`sell:${row.id}`]:value}))} /></td>
+                <td data-label={presentationOutput(t.action)}>
                   <button
                     type="button"
                     disabled={busy}
-                    data-disabled-reason={busy ? (locale === "es" ? "Espera a que termine la operación en curso." : "Wait for the current operation to finish.") : undefined}
-                    aria-label={`${t.sell} ${displayName(row.id, row.name)} ${locale === "es" ? "de la reserva" : "from stash"}`}
+                    data-disabled-reason={busy ? presentationOutput(translate({ key: "disabled.23ccf48766" }, locale)) : undefined}
+                    aria-label={presentationOutput(textJoin([t.sell, displayName(row.id), translate({ key: "ui.bf565444ee3a" }, locale)]))}
                     onClick={() => sell(row.id)}
                   >
-                  {t.sell} {amount(`sell:${row.id}`,row.stash)} · {Math.max(0, Math.floor((row.value ?? 0) / 2))*amount(`sell:${row.id}`,row.stash)} gc
+                  {presentationOutput(textJoin([t.sell, textNumber(amount(`sell:${row.id}`,row.stash), locale), textSymbol("—"), textNumber(Math.max(0, Math.floor((row.value ?? 0) / 2))*amount(`sell:${row.id}`,row.stash), locale), translate({ key: "unit.gold" }, locale)]))}
                   </button>
                 </td>
               </tr>

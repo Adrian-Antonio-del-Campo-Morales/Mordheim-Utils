@@ -1,3 +1,4 @@
+import { translate } from "../campaign/i18n-core";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -10,14 +11,14 @@ describe("DiceResolver", () => {
     const user = userEvent.setup();
     const resolve = vi.fn();
     const view = render(
-      <DiceResolver count={2} sides={6} label="Tirada principal" locale="es" onResolve={resolve} />,
+      <DiceResolver count={2} sides={6} label={translate({ key: "ui.9a5040b02281" }, "es")} locale="es" onResolve={resolve} />,
     );
 
     await user.click(screen.getByRole("button", { name: "Tirar 2D6" }));
     expect(screen.getByRole("status")).toHaveTextContent("Resultado:");
 
     view.rerender(
-      <DiceResolver count={1} sides={6} label="Siguiente paso" locale="es" onResolve={resolve} />,
+      <DiceResolver count={1} sides={6} label={translate({ key: "ui.6421ce8b8f42" }, "es")} locale="es" onResolve={resolve} />,
     );
 
     expect(screen.getByRole("button", { name: "Tirar 1D6" })).toBeInTheDocument();
@@ -27,7 +28,7 @@ describe("DiceResolver", () => {
   it("does not submit its enclosing form when resolving dice", async () => {
     const user = userEvent.setup();
     const submit = vi.fn();
-    render(<form onSubmit={(event) => { event.preventDefault(); submit(); }}><DiceResolver count={1} sides={6} label="Recompensa" locale="es" onResolve={vi.fn()} /></form>);
+    render(<form onSubmit={(event) => { event.preventDefault(); submit(); }}><DiceResolver count={1} sides={6} label={translate({ key: "ui.90f3bdb4a942" }, "es")} locale="es" onResolve={vi.fn()} /></form>);
 
     await user.click(screen.getByRole("button", { name: "Tirar 1D6" }));
 

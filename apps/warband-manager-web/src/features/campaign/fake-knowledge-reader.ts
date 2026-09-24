@@ -1,3 +1,7 @@
+import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import type { TextReference, TextField } from "@adapters/knowledge-reader/presentation";
+import type { Locale } from "./i18n-core";
+import { translate } from "./i18n-core";
 /**
  * Small deterministic knowledge reader used only by unit tests and degraded
  * first-paint fallback. Its rows mirror the public artefact shape so workflows
@@ -122,7 +126,18 @@ const ROWS: Record<string, Record<string, unknown>> = {
   },
 };
 
+const presentationReader = ArtefactKnowledgeReader.from({
+  schema_version: 1, ruleset: "test",
+  bands: Object.entries(ROWS).filter(([key]) => key.startsWith("band_id:")).map(([, row]) => row),
+  profiles: Object.entries(ROWS).filter(([key]) => key.startsWith("profile_id:")).map(([, row]) => row),
+  items: [], skills: [],
+});
+
 export class FakeKnowledgeReader implements KnowledgeReader {
+  resolveKbText(ref: TextReference, field: TextField, locale: Locale) {
+    return presentationReader.resolveKbText(ref, field, locale);
+  }
+
   queryKnowledge(query: KnowledgeQuery): KnowledgeResult {
     const row = ROWS[`${query.id.kind}:${query.id.value}`];
     if (!row) return { ok: false, reason: "not_found" };
@@ -210,7 +225,7 @@ export class FakeKnowledgeReader implements KnowledgeReader {
     return FakeKnowledgeReader.LISTING_SECTIONS[section] ?? {};
   }
 
-  itemName(itemId: string): string {
+  itemName(itemId: string, locale: "es" | "en" = "en"): string {
     // Any listing row with a `names`/`name` field resolves first (the
     // real adapter delegates to rowNames); the static map is the fallback.
     for (const section of Object.values(FakeKnowledgeReader.LISTING_SECTIONS)) {
@@ -221,12 +236,12 @@ export class FakeKnowledgeReader implements KnowledgeReader {
         ) as Record<string, unknown> | undefined;
         if (profile) {
           const names = profile["names"] as Record<string, string> | undefined;
-          if (names?.["en"]) return names["en"];
-          if (typeof profile["name"] === "string") return profile["name"];
+          const text = names?.[locale] ?? (locale === "en" ? profile["name"] : undefined);
+          if (typeof text === "string" && text.trim() && !text.includes("TODO-TRANSLATE")) return text;
         }
       }
     }
     const names: Record<string, string> = { axe: "Axe", rope: "Rope" };
-    return names[itemId] ?? itemId;
+    return (locale === "en" ? names[itemId] : undefined) ?? (translate({ key: "ui.eab86554d72e" }, locale));
   }
 }

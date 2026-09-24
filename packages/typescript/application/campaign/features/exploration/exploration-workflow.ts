@@ -26,6 +26,8 @@ export interface ExplorationSummary {
   readonly special: string | null;
 }
 export interface ExplorationModifierSource {
+  readonly profileId?: string;
+  readonly bandId?: string;
   readonly id: string;
   readonly label: string;
   readonly label_es?: string;
@@ -79,25 +81,25 @@ export function explorationModifiers(document: CampaignDocument, reader: Catalog
   for (const id of battle?.out_of_action_ids ?? []) casualties.set(id, (casualties.get(id) ?? 0) + 1);
   const profiles = reader.list?.("profile") ?? [];
   const rules = [...(reader.rulesDocument?.("special-rules") ?? []), ...(reader.rulesDocument?.("profile-special-rules") ?? [])];
-  const active: string[] = [];
-  for (const id of activeBandRuleIds(reader, document)) active.push(id);
+  const active: { id: string; profileId?: string }[] = [];
+  for (const id of activeBandRuleIds(reader, document)) active.push({ id });
   for (const warrior of document.campaign.warriors) {
     const survivors = absent.has(warrior.id) || (participants && !participants.has(warrior.id)) ? 0 : Math.max(0, Number(warrior.quantity ?? 1) - (casualties.get(warrior.id) ?? 0));
     if (!survivors) continue;
     const profile = profiles.find((row) => String(row["id"] ?? row["profile_id"] ?? "") === String(warrior.profile_id ?? ""));
     const warriorRules = new Set([...(profile?.["rule_ids"] ?? []) as unknown[], ...warrior.skills].map(String));
     for (const id of warriorRules)
-      for (let index = 0; index < survivors; index += 1) active.push(String(id));
+      for (let index = 0; index < survivors; index += 1) active.push({ id: String(id), ...(warrior.profile_id ? { profileId: warrior.profile_id } : {}) });
   }
   const sources: ExplorationModifierSource[] = [];
-  for (const id of active) {
+  for (const { id, profileId } of active) {
     const spec = EXPLORATION_RULE_MODIFIERS[id];
     if (!spec) continue;
     const row = rules.find((candidate) => String(candidate["id"] ?? "") === id);
     if (row?.["kind"] === "warband_skill" && !document.campaign.warriors.some((warrior) => warrior.skills.map(String).includes(id))) continue;
     const names = row?.["names"] as Record<string, unknown> | undefined;
     const effects = row?.["effects"] as Record<string, unknown> | undefined;
-    sources.push({ id, label: String(names?.["en"] ?? row?.["name"] ?? id), ...(names?.["es"] ? { label_es: String(names["es"]) } : {}), ...(row?.["effect"] ? { effect: String(row["effect"]) } : {}), ...(effects?.["es"] ? { effect_es: String(effects["es"]) } : {}), ...NO_MODIFIER, ...spec });
+    sources.push({ id, ...(profileId ? { profileId } : {}), ...(document.campaign.identity.band_id ? { bandId: document.campaign.identity.band_id } : {}), label: String(names?.["en"] ?? row?.["name"] ?? id), ...(names?.["es"] ? { label_es: String(names["es"]) } : {}), ...(row?.["effect"] ? { effect: String(row["effect"]) } : {}), ...(effects?.["es"] ? { effect_es: String(effects["es"]) } : {}), ...NO_MODIFIER, ...spec });
   }
   const unique = [...sources.reduce((grouped, source) => {
     const prior = grouped.get(source.id);

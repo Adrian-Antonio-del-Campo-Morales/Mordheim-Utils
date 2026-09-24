@@ -1,8 +1,9 @@
+import { unavailableText, type ResolvedKbText, type TextField } from "../../../../adapters/knowledge-reader/presentation";
 import type { Warrior } from "../../../../domain/campaign/index";
 
 export type ScenarioAward = Readonly<{
   id: string;
-  label: string;
+  label: ResolvedKbText;
   amount: number;
   trigger: string;
   manual: boolean;
@@ -12,19 +13,10 @@ export type ScenarioAward = Readonly<{
 }>;
 
 type Row = Readonly<Record<string, unknown>>;
-type CampaignKnowledge = Readonly<{ campaignSection?(section: string): Readonly<Record<string, unknown>> }>;
+type CampaignKnowledge = Readonly<{ campaignSection?(section: string): Readonly<Record<string, unknown>>; recordText?(row: Row, field: TextField, locale: "es" | "en"): ResolvedKbText }>;
 
 function rows(value: unknown): readonly Row[] { return Array.isArray(value) ? value.filter((row): row is Row => !!row && typeof row === "object") : []; }
 
-function localizedText(value: unknown, locale: "es" | "en", fallback: unknown): string {
-  if (typeof value === "string") return value;
-  if (value && typeof value === "object") {
-    const translated = value as Readonly<Record<string, unknown>>;
-    const text = translated[locale] ?? translated["en"];
-    if (typeof text === "string") return text;
-  }
-  return typeof fallback === "string" ? fallback : "Manual award";
-}
 
 function selection(row: Row): ScenarioAward["selection"] {
   const declared = String(row["selection"] ?? "").toLowerCase();
@@ -55,10 +47,10 @@ export function scenarioAwards(knowledge: CampaignKnowledge | undefined, scenari
   return rows((scenario?.["progression"] as Row | undefined)?.["experience"]).flatMap((entry, index) => {
     const ref = String(entry["ref"] ?? ""); const source = ref ? awards.find((row) => String(row["id"] ?? "") === ref) : undefined;
     if (ref && !source) return [];
-    const effect = localizedText(locale === "es" ? entry["effect_i18n"] : entry["effect"], locale, entry["effect"]);
+    const effect = knowledge?.recordText?.(source ?? entry, "effect", locale) ?? unavailableText(locale);
     const dice = !source ? amountDice(entry["amount_dice"]) : undefined;
     const amountWhenMultiple=Number(entry["amount_when_multiple"]);
-    return [{ id: ref || `${scenarioId}:manual:${index}`, label: source ? String(source["id"] ?? ref).split(".").at(-1)?.replaceAll("-", " ") ?? ref : effect, amount: amount(source ?? entry, source ? undefined : entry["amount"]), trigger: String(source?.["trigger"] ?? "manual"), manual: !source, selection: source ? "single" : selection(entry), ...(Number.isFinite(amountWhenMultiple)?{amountWhenMultiple:Math.max(0,Math.trunc(amountWhenMultiple))}:{}), ...(dice ? { amountDice: dice } : {}) }];
+    return [{ id: ref || `${scenarioId}:manual:${index}`, label: effect, amount: amount(source ?? entry, source ? undefined : entry["amount"]), trigger: String(source?.["trigger"] ?? "manual"), manual: !source, selection: source ? "single" : selection(entry), ...(Number.isFinite(amountWhenMultiple)?{amountWhenMultiple:Math.max(0,Math.trunc(amountWhenMultiple))}:{}), ...(dice ? { amountDice: dice } : {}) }];
   });
 }
 
@@ -76,24 +68,24 @@ export function calculatedAwards(rows: readonly ScenarioAward[], warriors: reado
   return totals;
 }
 
-export type ScenarioResourceReward = Readonly<{ id: string; resource: "gold_crowns" | "wyrdstone_fragments"; rule: string }>;
-export type ScenarioExplorationReward = Readonly<{ id: string; extra_dice: number; reroll_all: boolean; rule: string }>;
+export type ScenarioResourceReward = Readonly<{ id: string; resource: "gold_crowns" | "wyrdstone_fragments"; rule: ResolvedKbText }>;
+export type ScenarioExplorationReward = Readonly<{ id: string; extra_dice: number; reroll_all: boolean; rule: ResolvedKbText }>;
 
 /** Structured resource rows from desktop ScenarioRewards.additional. */
-export function scenarioResourceRewards(knowledge: CampaignKnowledge | undefined, scenarioId: string): readonly ScenarioResourceReward[] {
+export function scenarioResourceRewards(knowledge: CampaignKnowledge | undefined, scenarioId: string, locale: "es" | "en"): readonly ScenarioResourceReward[] {
   const document = knowledge?.campaignSection?.("scenario-rewards") ?? {};
   const scenario = rows(document["scenarios"]).find((row) => String(row["scenario_id"] ?? "") === scenarioId);
-  return rows(scenario?.["rewards"]).flatMap((row) => row["kind"] === "resource" && (row["resource"] === "gold_crowns" || row["resource"] === "wyrdstone_fragments") ? [{ id: String(row["id"] ?? ""), resource: row["resource"], rule: String(row["rule"] ?? "") }] : []);
+  return rows(scenario?.["rewards"]).flatMap((row) => row["kind"] === "resource" && (row["resource"] === "gold_crowns" || row["resource"] === "wyrdstone_fragments") ? [{ id: String(row["id"] ?? ""), resource: row["resource"], rule: knowledge?.recordText?.(row, "rule", locale) ?? unavailableText(locale) }] : []);
 }
 
-export function scenarioExplorationRewards(knowledge: CampaignKnowledge | undefined, scenarioId: string): readonly ScenarioExplorationReward[] {
+export function scenarioExplorationRewards(knowledge: CampaignKnowledge | undefined, scenarioId: string, locale: "es" | "en"): readonly ScenarioExplorationReward[] {
   const document = knowledge?.campaignSection?.("scenario-rewards") ?? {};
   const scenario = rows(document["scenarios"]).find((row) => String(row["scenario_id"] ?? "") === scenarioId);
-  return rows(scenario?.["rewards"]).flatMap((row) => row["kind"] === "exploration" ? [{ id: String(row["id"] ?? ""), extra_dice: Math.max(0, Number(row["extra_dice"] ?? 0)), reroll_all: Boolean(row["reroll_all"]), rule: String(row["rule"] ?? "") }] : []);
+  return rows(scenario?.["rewards"]).flatMap((row) => row["kind"] === "exploration" ? [{ id: String(row["id"] ?? ""), extra_dice: Math.max(0, Number(row["extra_dice"] ?? 0)), reroll_all: Boolean(row["reroll_all"]), rule: knowledge?.recordText?.(row, "rule", locale) ?? unavailableText(locale) }] : []);
 }
 
-export type ScenarioLootReward = Readonly<{ id:string; label:string; rule?:string; kind:"item"|"resource"|"special"; item_id?:string; resource?:string; special_id?:string; availability?:Row; when?:Row; quantity_dice?:Row }>;
-export function scenarioLootRewards(knowledge: CampaignKnowledge | undefined, scenarioId: string): readonly ScenarioLootReward[] {
+export type ScenarioLootReward = Readonly<{ id:string; label:ResolvedKbText; rule?:ResolvedKbText; kind:"item"|"resource"|"special"; item_id?:string; resource?:string; special_id?:string; availability?:Row; when?:Row; quantity_dice?:Row }>;
+export function scenarioLootRewards(knowledge: CampaignKnowledge | undefined, scenarioId: string, locale: "es" | "en"): readonly ScenarioLootReward[] {
   const document=knowledge?.campaignSection?.("scenario-rewards")??{}; const scenario=rows(document["scenarios"]).find((row)=>String(row["scenario_id"]??"")===scenarioId);
-  return rows(scenario?.["rewards"]).flatMap((reward)=>rows(reward["contents"]).flatMap((content)=>{const grant=content["grant"] as Row|undefined,kind=String(grant?.["kind"]??"");return ["item","resource","special"].includes(kind)?[{id:String(content["id"]??""),label:String(content["label"]??content["id"]??"Reward"),rule:String(reward["rule"]??""),kind:kind as ScenarioLootReward["kind"],...(typeof grant?.["item_id"]==="string"?{item_id:grant["item_id"]}:{}),...(typeof grant?.["resource"]==="string"?{resource:grant["resource"]}:{}),...(typeof grant?.["special_id"]==="string"?{special_id:grant["special_id"]}:{}),...(content["availability"]&&typeof content["availability"]==="object"?{availability:content["availability"] as Row}:{}),...(content["when"]&&typeof content["when"]==="object"?{when:content["when"] as Row}:{}),...(content["quantity_dice"]&&typeof content["quantity_dice"]==="object"?{quantity_dice:content["quantity_dice"] as Row}:{})}]:[];}));
+  return rows(scenario?.["rewards"]).flatMap((reward)=>rows(reward["contents"]).flatMap((content)=>{const grant=content["grant"] as Row|undefined,kind=String(grant?.["kind"]??"");return ["item","resource","special"].includes(kind)?[{id:String(content["id"]??""),label:knowledge?.recordText?.(content, "label", locale) ?? unavailableText(locale),rule:knowledge?.recordText?.(reward, "rule", locale) ?? unavailableText(locale),kind:kind as ScenarioLootReward["kind"],...(typeof grant?.["item_id"]==="string"?{item_id:grant["item_id"]}:{}),...(typeof grant?.["resource"]==="string"?{resource:grant["resource"]}:{}),...(typeof grant?.["special_id"]==="string"?{special_id:grant["special_id"]}:{}),...(content["availability"]&&typeof content["availability"]==="object"?{availability:content["availability"] as Row}:{}),...(content["when"]&&typeof content["when"]==="object"?{when:content["when"] as Row}:{}),...(content["quantity_dice"]&&typeof content["quantity_dice"]==="object"?{quantity_dice:content["quantity_dice"] as Row}:{})}]:[];}));
 }

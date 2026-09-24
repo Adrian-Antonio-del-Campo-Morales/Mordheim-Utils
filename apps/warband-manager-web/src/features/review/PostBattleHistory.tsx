@@ -1,49 +1,32 @@
+import { presentationOutput } from "../campaign/presentation-output";
+import { textJoin, textNumber, textSymbol, type PresentationValue } from "../campaign/presentation-values";
+import { historyEventText, historyStepLabels } from "./history-presentation";
 import type { CampaignDocument } from "../campaign/types";
-import { localizedLabel, resourceAmount } from "../campaign/displayText";
+import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import { localizedLabel } from "../campaign/displayText";
 import { translate } from "../campaign/i18n-core";
 
 type Event = Readonly<Record<string, unknown>>;
 
-export function PostBattleHistory({ document, battleNumber, locale }: { readonly document: CampaignDocument; readonly battleNumber: number; readonly locale: "es" | "en" }) {
+export function PostBattleHistory({ document, battleNumber, locale, knowledge }: { readonly document: CampaignDocument; readonly battleNumber: number; readonly locale: "es" | "en"; readonly knowledge?: ArtefactKnowledgeReader }) {
   const post = document.campaign.post_battles.find((row) => row.battle_number === battleNumber);
-  const t = locale === "es" ? {
-    title:"POSTBATALLA", missing:"No se encontró el postbatalla.", complete:"Secuencia completada", story:"RESULTADO DE LA SECUENCIA", summary:"La banda resolvió las consecuencias de la batalla y quedó preparada para el siguiente encuentro.", steps:"Acciones resueltas", gold:"Balance de coronas", wyrdstone:"Balance de piedra bruja", sold:"Fragmentos vendidos", veterans:"Reserva de veteranos", events:"LO QUE OCURRIÓ", empty:"Este paso se completó sin cambios registrados.", noEvents:"La secuencia terminó sin eventos adicionales registrados."
-  } : {
-    title:"POST-BATTLE", missing:"Post-battle not found.", complete:"Sequence complete", story:"SEQUENCE OUTCOME", summary:"The warband resolved the battle's consequences and is ready for its next encounter.", steps:"Actions resolved", gold:"Gold balance", wyrdstone:"Wyrdstone balance", sold:"Shards sold", veterans:"Veteran pool", events:"WHAT HAPPENED", empty:"This step completed with no recorded changes.", noEvents:"The sequence ended with no additional events recorded."
-  };
-  if (!post) return <section className="page"><p>{t.missing}</p></section>;
-  const labels = locale === "es"
-    ? ["Heridas y recuperación", "Experiencia y avances", "Exploración", "Venta de piedra bruja", "Veteranos disponibles", "Búsquedas y hallazgos", "Reclutamiento", "Equipo y comercio"]
-    : ["Injuries and recovery", "Experience and advances", "Exploration", "Wyrdstone sale", "Available veterans", "Searches and finds", "Recruitment", "Equipment and trading"];
+  const t = ({ title: translate({ key: "ui.14293491f9ff" }, locale), missing: translate({ key: "ui.c58b97f91898" }, locale), complete: translate({ key: "ui.9a1540872e1e" }, locale), story: translate({ key: "ui.4cd8f897e903" }, locale), summary: translate({ key: "ui.7cc14a6d2a54" }, locale), steps: translate({ key: "ui.6421ce8b8f42" }, locale), gold: translate({ key: "ui.b86b8fcd1fb1" }, locale), wyrdstone: translate({ key: "ui.d1e40f3aec12" }, locale), sold: translate({ key: "ui.6b99698a094f" }, locale), veterans: translate({ key: "ui.cf8a4f1b23fc" }, locale), events: translate({ key: "ui.acdb2be6aea0" }, locale), empty: translate({ key: "ui.8da7a5de58a8" }, locale), noEvents: translate({ key: "ui.924b96b3f826" }, locale) });
+  if (!post) return <section className="page"><p>{presentationOutput(t.missing)}</p></section>;
+  const labels = historyStepLabels(locale);
   const events = (post.event_log ?? []) as readonly Event[];
   const eventsByStep = labels.map((_, step) => events.filter((event) => Number(event.step) === step));
   const unassigned = events.filter((event) => !Number.isInteger(Number(event.step)) || Number(event.step) < 0 || Number(event.step) > 7);
   const completed = new Set(post.completed_steps);
-  const signed = (value: number, suffix = "") => `${value > 0 ? "+" : ""}${value}${suffix}`;
-  const eventText = (event: Event) => {
-    const key = event.message_key;
-    if (key === "knowledge.unavailable" || key === "knowledge.description-unavailable" || key === "error.action-failed") {
-      return translate({ key, args: event.message_args as Readonly<Record<string, string | number>> | undefined }, locale);
-    }
-    const legacy = event.description ?? event.message;
-    if (locale === "en" && typeof legacy === "string" && legacy) return legacy;
-    const number = (key: string) => typeof event[key] === "number" ? event[key] : undefined;
-    const warrior = typeof event.warrior_id === "string" ? document.campaign.warriors.find((row) => row.id === event.warrior_id)?.name : undefined;
-    if (event.type === "experience") return locale === "es" ? "Se aplicó la experiencia de batalla." : "Battle experience applied.";
-    if (event.type === "exploration") { const shards=number("shards") ?? Number(String(legacy ?? "").match(/(\d+) wyrdstone shard/)?.[1]); return Number.isFinite(shards) ? (locale === "es" ? `Se encontraron ${shards} fragmento(s) de piedra bruja.` : `${shards} wyrdstone shard(s) found.`) : localizedLabel(event.type, locale); }
-    if (event.type === "sell_wyrdstone") { const quantity=number("quantity") ?? Number(String(legacy ?? "").match(/Sold (\d+) shard/)?.[1]), gold=number("gold") ?? Number(String(legacy ?? "").match(/for (\d+) gc/)?.[1]); return Number.isFinite(quantity) && Number.isFinite(gold) ? (locale === "es" ? `Se vendieron ${quantity} fragmento(s) por ${gold} co.` : `Sold ${quantity} shard(s) for ${gold} gc.`) : localizedLabel(event.type, locale); }
-    if (event.type === "veteran_pool") { const pool=number("pool"); return Number.isFinite(pool) ? (locale === "es" ? `La reserva de experiencia veterana quedó en ${pool} EXP.` : `Veteran experience pool set to ${pool} XP.`) : localizedLabel(event.type, locale); }
-    if (event.type === "hireling_upkeep") { const costs=Array.isArray(event.costs) ? event.costs.filter((row): row is [unknown, unknown] => Array.isArray(row) && row.length===2).map(([resource,amount])=>resourceAmount(resource,amount,locale)).join(" + ") : ""; const paid=event.pay; return paid === true ? (locale === "es" ? `Mantenimiento de ${warrior ?? "Espada de alquiler"} pagado: ${costs}.` : `${warrior ?? "Hired Sword"}'s upkeep paid: ${costs}.`) : paid === false ? (locale === "es" ? `${warrior ?? "La Espada de alquiler"} se marcha al no pagar su mantenimiento.` : `${warrior ?? "Hired Sword"} leaves because upkeep was not paid.`) : typeof legacy === "string" ? legacy : localizedLabel(event.type, locale); }
-    if (typeof legacy === "string" && legacy) return legacy;
-    return localizedLabel(event.type ?? "event", locale);
-  };
-  return <section className="page post-battle-history" aria-label={`${t.title} #${battleNumber}`}>
-    <header className="post-battle-hero"><div><span>{t.title} #{battleNumber}</span><h2>{t.complete}</h2><p>{t.summary}</p></div><strong>8/8</strong></header>
-    <dl className="post-battle-scoreboard"><div><dt>{t.steps}</dt><dd>{post.completed_steps.length}/8</dd></div><div><dt>{t.gold}</dt><dd className={(post.gold_delta ?? 0) < 0 ? "negative" : ""}>{signed(post.gold_delta ?? 0, " gc")}</dd></div><div><dt>{t.wyrdstone}</dt><dd className={(post.wyrdstone_delta ?? 0) < 0 ? "negative" : ""}>{signed(post.wyrdstone_delta ?? 0)}</dd></div>{post.wyrdstone_sold !== undefined && <div><dt>{t.sold}</dt><dd>{post.wyrdstone_sold}</dd></div>}{post.veteran_pool !== undefined && <div><dt>{t.veterans}</dt><dd>{post.veteran_pool} EXP</dd></div>}</dl>
-    <section className="post-battle-ledger" aria-labelledby="post-battle-events"><span>{t.story}</span><h3 id="post-battle-events">{t.events}</h3>
-      {events.length === 0 && <p className="post-battle-empty">{t.noEvents}</p>}
-      <ol>{labels.map((label, step) => <li className={completed.has(step) ? "complete" : ""} key={label}><div className="post-battle-step-marker"><b>{step + 1}</b><span>{completed.has(step) ? "✓" : "—"}</span></div><article><h4>{label}</h4>{eventsByStep[step].length ? <ul>{eventsByStep[step].map((event, index) => <li key={`${index}:${String(event.type)}`}><small>{localizedLabel(event.type ?? "event", locale)}</small><p>{eventText(event)}</p></li>)}</ul> : <p>{t.empty}</p>}</article></li>)}</ol>
-      {unassigned.length > 0 && <article className="post-battle-other"><h4>{locale === "es" ? "Otros cambios" : "Other changes"}</h4>{unassigned.map((event, index) => <p key={index}>{eventText(event)}</p>)}</article>}
+  const signed = (value: number, suffix?: PresentationValue) => textJoin([textSymbol(value > 0 ? "+" : ""), textNumber(value, locale), ...(suffix ? [suffix] : [])], "");
+  const eventText = (event: Event) => historyEventText(event, document, locale, knowledge);
+  const title = textJoin([t.title, textJoin([textSymbol("#"), textNumber(battleNumber, locale)], "")]);
+  return <section className="page post-battle-history" aria-label={presentationOutput(title)}>
+    <header className="post-battle-hero"><div><span>{presentationOutput(title)}</span><h2>{presentationOutput(t.complete)}</h2><p>{presentationOutput(t.summary)}</p></div><strong>{presentationOutput(textJoin([textNumber(8, locale), textSymbol("/"), textNumber(8, locale)], ""))}</strong></header>
+    <dl className="post-battle-scoreboard"><div><dt>{presentationOutput(t.steps)}</dt><dd>{presentationOutput(textJoin([textNumber(post.completed_steps.length, locale), textSymbol("/"), textNumber(8, locale)], ""))}</dd></div><div><dt>{presentationOutput(t.gold)}</dt><dd className={(post.gold_delta ?? 0) < 0 ? "negative" : ""}>{presentationOutput(signed(post.gold_delta ?? 0, translate({ key: "ui.cb8fa67082cb" }, locale)))}</dd></div><div><dt>{presentationOutput(t.wyrdstone)}</dt><dd className={(post.wyrdstone_delta ?? 0) < 0 ? "negative" : ""}>{presentationOutput(signed(post.wyrdstone_delta ?? 0))}</dd></div>{post.wyrdstone_sold !== undefined && <div><dt>{presentationOutput(t.sold)}</dt><dd>{presentationOutput(textNumber(post.wyrdstone_sold, locale))}</dd></div>}{post.veteran_pool !== undefined && <div><dt>{presentationOutput(t.veterans)}</dt><dd>{presentationOutput(textJoin([textNumber(post.veteran_pool, locale), translate({ key: "ui.06e25290fd23" }, locale)]))}</dd></div>}</dl>
+    <section className="post-battle-ledger" aria-labelledby="post-battle-events"><span>{presentationOutput(t.story)}</span><h3 id="post-battle-events">{presentationOutput(t.events)}</h3>
+      {events.length === 0 && <p className="post-battle-empty">{presentationOutput(t.noEvents)}</p>}
+      <ol>{labels.map((label, step) => <li className={completed.has(step) ? "complete" : ""} key={label}><div className="post-battle-step-marker"><b>{presentationOutput(textNumber(step + 1, locale))}</b><span>{presentationOutput(textSymbol(completed.has(step) ? "✓" : "—"))}</span></div><article><h4>{presentationOutput(label)}</h4>{eventsByStep[step].length ? <ul>{eventsByStep[step].map((event, index) => <li key={`${index}:${String(event.type)}`}><small>{presentationOutput(localizedLabel(event.type ?? "event", locale))}</small><p>{presentationOutput(eventText(event))}</p></li>)}</ul> : <p>{presentationOutput(t.empty)}</p>}</article></li>)}</ol>
+      {unassigned.length > 0 && <article className="post-battle-other"><h4>{presentationOutput(translate({ key: "ui.6a0a7a7f6fb5" }, locale))}</h4>{unassigned.map((event, index) => <p key={index}>{presentationOutput(eventText(event))}</p>)}</article>}
     </section>
   </section>;
 }

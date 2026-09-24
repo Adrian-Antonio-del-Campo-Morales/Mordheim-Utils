@@ -1,4 +1,8 @@
-import { useState, type ReactNode } from "react";
+import { textDice, textDieIndex, textJoin, textNumber, textSymbol, warriorPersonalName, type PresentationValue } from "../campaign/presentation-values";
+import { presentationOutput } from "../campaign/presentation-output";
+import { translate, uiMessageForText } from "../campaign/i18n-core";
+import { useLocale } from "../campaign/i18n-context";
+import { useState, type ReactElement } from "react";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import {
   explorationDiceCount,
@@ -9,16 +13,15 @@ import type { OpenPayload } from "@domain/campaign/index";
 import type { CampaignDocument } from "../campaign/types";
 import { useCampaignApp } from "../campaign/useCampaignApp";
 import { DiceResolver } from "../dice/DiceResolver";
-import { knowledgeName, localizedLabel, readableValue } from "../campaign/displayText";
+import { knowledgeName, knowledgeDescription, warriorAbilityRef, localizedLabel, readableValue, numberText } from "../campaign/displayText";
 
-function visibleText(value: unknown, locale: "en" | "es", fallback: string): string {
+function legacyVisibleText(value: unknown, locale: "en" | "es", fallback: PresentationValue, knowledge: ArtefactKnowledgeReader): PresentationValue {
   if (!value) return fallback;
-  if (typeof value === "object") return readableValue(value, locale);
-  const text = String(value);
-  const es: Record<string, string> = { "Choose a Henchman group": "Elige un grupo de Secuaces", "Choose equipment": "Elige equipo", "Choose warriors": "Elige guerreros", "Do not recruit the prisoner": "No reclutar al prisionero" };
-  const resourceReward = /^(gold_crowns|wyrdstone_fragments) reward$/i.exec(text)?.[1];
-  if (resourceReward) return locale === "es" ? `Recompensa de ${readableValue(resourceReward, locale)}` : `${readableValue(resourceReward, locale)} Reward`;
-  return locale === "es" ? es[text] ?? (text.includes(".") ? localizedLabel(text, locale) : readableValue(text, locale)) : (text.includes(".") ? localizedLabel(text, locale) : readableValue(text, locale));
+  if (typeof value !== "string") return translate({ key: "knowledge.unavailable" }, locale);
+  const resourceReward = /^(gold_crowns|wyrdstone_fragments) reward$/.exec(value)?.[1];
+  if (resourceReward) return translate({ key: "exploration.resource-reward", args: { resource: readableValue(resourceReward, locale) } }, locale);
+  const message = uiMessageForText(value);
+  return message ? translate(message, locale) : knowledge.legacyText(value, locale);
 }
 
 function matchingDice(dice: readonly number[]): readonly [number, number] | undefined {
@@ -27,45 +30,48 @@ function matchingDice(dice: readonly number[]): readonly [number, number] | unde
   return [...counts].filter(([, count]) => count >= 2).sort((a, b) => b[1] - a[1] || b[0] - a[0])[0];
 }
 
-function describeCombination(dice: readonly number[], locale: "en" | "es"): string {
+function describeCombination(dice: readonly number[], locale: "en" | "es"): PresentationValue {
   const match = matchingDice(dice);
-  if (!match) return locale === "es" ? "Sin resultados repetidos" : "No matching dice";
-  const names = locale === "es"
-    ? ["", "", "Doble", "Triple", "Cuádruple", "Quíntuple", "Séxtuple"]
-    : ["", "", "Double", "Triple", "Quadruple", "Quintuple", "Sextuple"];
-  return `${names[match[1]] ?? `${match[1]} iguales`} ${locale === "es" ? "de" : "of"} ${match[0]}`;
+  if (!match) return translate({ key: "ui.692fe81fbd98" }, locale);
+  const count = match[1] === 2 ? translate({ key: "exploration.match-2" }, locale)
+    : match[1] === 3 ? translate({ key: "exploration.match-3" }, locale)
+    : match[1] === 4 ? translate({ key: "exploration.match-4" }, locale)
+    : match[1] === 5 ? translate({ key: "exploration.match-5" }, locale)
+    : match[1] === 6 ? translate({ key: "exploration.match-6" }, locale)
+    : translate({ key: "knowledge.unavailable" }, locale);
+  return textJoin([count, translate({ key: "ui.efeae3b09c13" }, locale), textNumber(match[0], locale)]);
 }
 
-function eventDescription(knowledge: ArtefactKnowledgeReader, dice: readonly number[], locale: "en" | "es"): string {
-  const match = matchingDice(dice);
-  const rows = (knowledge.campaignSection("exploration-and-income")["exploration"] as OpenPayload | undefined)?.["results"] as OpenPayload[] | undefined;
-  const row = match && rows?.find((entry) => entry["dice_pattern"] === Array.from({ length: match[1] }, () => match[0]).join(","));
-  const translated = (row?.["description_i18n"] as OpenPayload | undefined)?.[locale];
-  const description = translated ?? row?.["description"];
-  return typeof description === "string" ? description : locale === "es" ? "No hay una descripción disponible para este evento." : "No description is available for this event.";
-}
-
-function eventLabel(knowledge: ArtefactKnowledgeReader, dice: readonly number[], locale: "en" | "es", fallback: string): string {
+function eventDescription(knowledge: ArtefactKnowledgeReader, dice: readonly number[], locale: "en" | "es"): PresentationValue {
   const match = matchingDice(dice);
   const rows = (knowledge.campaignSection("exploration-and-income")["exploration"] as OpenPayload | undefined)?.["results"] as OpenPayload[] | undefined;
   const row = match && rows?.find((entry) => entry["dice_pattern"] === Array.from({ length: match[1] }, () => match[0]).join(","));
-  return String((row?.["outcome_i18n"] as OpenPayload | undefined)?.[locale] ?? row?.["outcome"] ?? fallback);
+  return row ? knowledge.recordText(row, "description", locale) : translate({ key: "ui.ecba50eadf0e" }, locale);
 }
 
-function ExplorationDice({ dice, label, onSelect, controls }: { dice: readonly number[]; label: string; onSelect?: (index: number) => void; controls?: (index: number, die: number) => ReactNode }) {
-  return <ol className="exploration-dice" aria-label={label}>{dice.map((die, index) => <li key={`${index}:${die}`}>{onSelect ? <button type="button" className="exploration-die-button" aria-label={`${label} D${index + 1}: ${die}`} onClick={() => onSelect(index)}><small>D{index + 1}</small><strong>{die}</strong></button> : <><small>D{index + 1}</small><strong>{die}</strong></>}{controls?.(index, die)}</li>)}</ol>;
+function eventLabel(knowledge: ArtefactKnowledgeReader, dice: readonly number[], locale: "en" | "es"): PresentationValue {
+  const match = matchingDice(dice);
+  const rows = (knowledge.campaignSection("exploration-and-income")["exploration"] as OpenPayload | undefined)?.["results"] as OpenPayload[] | undefined;
+  const row = match && rows?.find((entry) => entry["dice_pattern"] === Array.from({ length: match[1] }, () => match[0]).join(","));
+  return row ? knowledge.recordText(row, "outcome", locale) : localizedLabel(undefined, locale);
+}
+
+function ExplorationDice({ dice, diceLabel, locale, onSelect, controls }: { dice: readonly number[]; diceLabel: PresentationValue; locale: "en" | "es"; onSelect?: (index: number) => void; controls?: (index: number, die: number) => ReactElement }) {
+  return <ol className="exploration-dice" aria-label={presentationOutput(diceLabel)}>{dice.map((die, index) => <li key={`${index}:${die}`}>{onSelect ? <button type="button" className="exploration-die-button" aria-label={presentationOutput(textJoin([diceLabel, textJoin([textDieIndex(index + 1, locale), textSymbol(":")], ""), textNumber(die, locale)]))} onClick={() => onSelect(index)}><small>{presentationOutput(textDieIndex(index + 1, locale))}</small><strong>{presentationOutput(textNumber(die, locale))}</strong></button> : <><small>{presentationOutput(textDieIndex(index + 1, locale))}</small><strong>{presentationOutput(textNumber(die, locale))}</strong></>}{controls?.(index, die)}</li>)}</ol>;
 }
 
 export function ExplorationPanel({
   document,
   knowledge,
-  locale = "en",
+  locale: requestedLocale,
 }: {
   readonly document: CampaignDocument;
   readonly knowledge: ArtefactKnowledgeReader;
   readonly locale?: "en" | "es";
 }) {
+  const locale = useLocale(requestedLocale);
   const app = useCampaignApp();
+  const visibleText = (value: unknown, language: "es" | "en", fallback: PresentationValue) => legacyVisibleText(value, language, fallback, knowledge);
   const [warriorIds, setWarriorIds] = useState<string[]>([]);
   const [rolled, setRolled] = useState<number[] | null>(null);
   const [discarded, setDiscarded] = useState(0);
@@ -76,73 +82,7 @@ export function ExplorationPanel({
   const post = document.campaign.post_battles.find((row) => !row.complete);
   if (!post) return null;
   const t =
-    locale === "es"
-      ? {
-          title: "Exploración",
-          resolved: "Exploración resuelta",
-          total: "total",
-          special: "Resultado especial",
-          result: "Resultado acumulado",
-          action: "Siguiente tirada o decisión",
-          first: "Resuelve antes la experiencia y todos los avances.",
-          without: "Resolver exploración sin dados",
-          discard: "Descarta un dado de exploración.",
-          scenario: "El escenario permite repetir la tirada completa una vez.",
-          catacombs: "Las catacumbas permiten repetir un dado una vez.",
-          keep: "Conservar tirada",
-          dice: "un dado por cada Héroe superviviente, más uno por victoria, limitado por la base de conocimiento.",
-          roll: "Tirada de exploración",
-          hero: "Elige un Héroe",
-          select: "Selecciona…",
-          outcome: "Elige un resultado",
-          warriors: "Elige guerreros",
-          confirm: "Confirmar",
-          external: "Confirmar resolución de mesa",
-          rerollAll: "Repetir todos los dados de exploración",
-          rerollDie: "Repetir dado",
-          discardDie: "Descartar D",
-          followUpRoll: "Tirada de seguimiento",
-          individualDice: "Resultados individuales de los dados",
-          event: "Evento especial",
-          modifiers: "Modificadores activos",
-          adjust: "Modifica un dado en 1",
-          consequence: "Consecuencia",
-          subsequentRolls: "Tiradas posteriores",
-          resolveFollowUp: "Resolver seguimiento de exploración",
-        }
-      : {
-          title: "Exploration",
-          resolved: "Exploration resolved",
-          total: "total",
-          special: "Special result",
-          result: "Accumulated result",
-          action: "Next roll or decision",
-          first: "Resolve experience and all advances first.",
-          without: "Resolve exploration without dice",
-          discard: "Discard one exploration die.",
-          scenario: "Scenario permits one complete reroll.",
-          catacombs: "Catacombs permits one die reroll.",
-          keep: "Keep original roll",
-          dice: "one die per surviving Hero, plus one for winning, capped by KB.",
-          roll: "Exploration roll",
-          hero: "Choose a Hero",
-          select: "Select…",
-          outcome: "Choose an outcome",
-          warriors: "Choose warriors",
-          confirm: "Confirm",
-          external: "Confirm table-side resolution",
-          rerollAll: "Reroll all exploration dice",
-          rerollDie: "Reroll exploration die",
-          discardDie: "Discard D",
-          followUpRoll: "Follow-up roll",
-          individualDice: "Individual dice results",
-          event: "Special event",
-          modifiers: "Active modifiers",
-          adjust: "Modify one die by 1",
-          consequence: "Consequence",
-          subsequentRolls: "Subsequent rolls",
-          resolveFollowUp: "Resolve exploration follow-up",
-        };
+    ({ title: translate({ key: "ui.5bf1692aa621" }, locale), resolved: translate({ key: "ui.cdd14047d5f6" }, locale), total: translate({ key: "ui.f551182ae6a0" }, locale), special: translate({ key: "ui.743a8177f02b" }, locale), result: translate({ key: "ui.a5127d058a48" }, locale), action: translate({ key: "ui.c956f9541ce5" }, locale), first: translate({ key: "ui.4e85c8f409de" }, locale), without: translate({ key: "ui.30bb22d50583" }, locale), discard: translate({ key: "ui.bc42956ad806" }, locale), scenario: translate({ key: "ui.2c8b621aea7d" }, locale), catacombs: translate({ key: "ui.7b51dacc55c7" }, locale), keep: translate({ key: "ui.f59bbbadd021" }, locale), dice: translate({ key: "ui.52d50aa13cef" }, locale), roll: translate({ key: "ui.23892575ed27" }, locale), hero: translate({ key: "ui.ebb717ab42ca" }, locale), select: translate({ key: "ui.9f79f4628ec5" }, locale), outcome: translate({ key: "ui.50ee2cd039b4" }, locale), warriors: translate({ key: "ui.f4f95e43f6a6" }, locale), confirm: translate({ key: "ui.bfc76e0e56e3" }, locale), external: translate({ key: "ui.61b365765bf6" }, locale), rerollAll: translate({ key: "ui.645311e03ef0" }, locale), rerollDie: translate({ key: "ui.690b587d68fc" }, locale), discardDie: translate({ key: "ui.1629187bed22" }, locale), followUpRoll: translate({ key: "ui.4543309924a6" }, locale), individualDice: translate({ key: "ui.353c21c9a9a0" }, locale), event: translate({ key: "ui.06e887c866e0" }, locale), modifiers: translate({ key: "ui.9da5a0182084" }, locale), adjust: translate({ key: "ui.fa790028af6c" }, locale), consequence: translate({ key: "ui.1f106c252cb7" }, locale), subsequentRolls: translate({ key: "ui.5ec01329bf1e" }, locale), resolveFollowUp: translate({ key: "ui.32d95dd4b003" }, locale) });
   const advances = (post.pending_advances ?? []).some(
     (row) => !row["committed"],
   );
@@ -181,58 +121,49 @@ export function ExplorationPanel({
     setRerollIndex(null);
   };
   return (
-    <section aria-label={t.title}>
-      <h3>03 · {t.title}</h3>
-      {modifiers.sources.length > 0 && <aside className="exploration-modifiers"><strong>{t.modifiers}</strong><ul>{modifiers.sources.map((source) => <li key={source.id}><b>{knowledgeName(knowledge, "rule", source.id, locale, locale === "es" ? source.label_es ?? source.label : source.label)}</b>{(locale === "es" ? source.effect_es ?? source.effect : source.effect) && <small>{locale === "es" ? source.effect_es ?? source.effect : source.effect}</small>}</li>)}</ul></aside>}
+    <section aria-label={presentationOutput(t.title)}>
+      <h3>{presentationOutput(textJoin([textNumber(3, locale, 2), t.title], " · "))}</h3>
+      {modifiers.sources.length > 0 && <aside className="exploration-modifiers"><strong>{presentationOutput(t.modifiers)}</strong><ul>{modifiers.sources.map((source) => { const ref = warriorAbilityRef(knowledge, source.id, source.profileId, source.bandId); return <li key={source.id}><b>{presentationOutput(knowledgeName(knowledge, ref.kind, ref.id, locale, ref.profileId, ref.bandId))}</b><small>{presentationOutput(knowledgeDescription(knowledge, ref, locale).text)}</small></li>; })}</ul></aside>}
       <table className="mobile-cards exploration-results">
-        <caption>{t.title}</caption>
+        <caption>{presentationOutput(t.title)}</caption>
         <thead>
           <tr>
-            <th>{t.result}</th>
-            <th>{t.action}</th>
+            <th>{presentationOutput(t.result)}</th>
+            <th>{presentationOutput(t.action)}</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td data-label={t.result}>
+            <td data-label={presentationOutput(t.result)}>
               {state?.["resolved"] ? (
                 <>
-                  <strong>
-                    {String(state["shards"])}{" "}
-                    {locale === "es"
-                      ? "fragmentos de piedra bruja"
-                      : "wyrdstone shards"}
-                  </strong>
-                  <small>
-                    {String(state["dice_count"])}{" "}
-                    {locale === "es" ? "dados" : "dice"} · {t.total}{" "}
-                    {String(state["total"])}
-                  </small>
-                  {resolvedDice.length > 0 && <ExplorationDice dice={resolvedDice} label={t.individualDice} />}
-                  {resolvedDice.length > 0 && <div className={`exploration-combination${state["special"] ? " special" : ""}`}><strong>{describeCombination(resolvedDice, locale)}</strong><span>{state["special"] ? <>{t.event}: <span className="knowledge-hint" tabIndex={0} data-tooltip={eventDescription(knowledge, resolvedDice, locale)}>{eventLabel(knowledge, resolvedDice, locale, String(state["special"]))}</span></> : t.special + ": —"}</span>{specialEffects.length > 0 && <ul className="exploration-effects">{specialEffects.map((effect, index) => <li key={`${index}:${effect}`}>{effect}</li>)}</ul>}</div>}
+                  <strong>{presentationOutput(textJoin([numberText(state["shards"], locale), translate({ key: "ui.7772bcce444d" }, locale)]))}</strong>
+                  <small>{presentationOutput(textJoin([numberText(state["dice_count"], locale), translate({ key: "ui.1d13e4a9ecdf" }, locale), textSymbol("·"), t.total, numberText(state["total"], locale)]))}</small>
+                  {resolvedDice.length > 0 && <ExplorationDice dice={resolvedDice} diceLabel={t.individualDice} locale={locale} />}
+                  {resolvedDice.length > 0 && <div className={`exploration-combination${state["special"] ? " special" : ""}`}><strong>{presentationOutput(describeCombination(resolvedDice, locale))}</strong><span>{state["special"] ? <>{presentationOutput(t.event)} {presentationOutput(textSymbol(":"))} <span className="knowledge-hint" tabIndex={0} data-tooltip={presentationOutput(eventDescription(knowledge, resolvedDice, locale))}>{presentationOutput(eventLabel(knowledge, resolvedDice, locale))}</span></> : presentationOutput(textJoin([t.special, textSymbol(":"), textSymbol("—")]))}</span>{specialEffects.length > 0 && <ul className="exploration-effects">{specialEffects.map((effect, index) => <li key={`${index}:${effect}`}>{presentationOutput(visibleText(effect, locale, translate({ key: "knowledge.unavailable" }, locale)))}</li>)}</ul>}</div>}
                 </>
               ) : (
-                <span>—</span>
+                <span>{presentationOutput(textSymbol("—"))}</span>
               )}
               {followup &&
                 Array.isArray(followup["messages"]) &&
                 (followup["messages"] as string[]).map((message) => (
-                  <small key={message}>{message}</small>
+                  <small key={message}>{presentationOutput(visibleText(message, locale, translate({ key: "knowledge.unavailable" }, locale)))}</small>
                 ))}
             </td>
-            <td data-label={t.action}>
+            <td data-label={presentationOutput(t.action)}>
               {state?.["resolved"] ? (
-                !followup && <><span role="status">{resolvedDice.length ? `${t.roll}: ${resolvedDice.join(", ")} → ${state["total"]}` : t.resolved}</span>{followUpRolls.length > 0 && <section className="exploration-roll-history" aria-label={t.subsequentRolls}>{followUpRolls.map((row, index) => { const dice=Array.isArray(row["dice"]) ? (row["dice"] as unknown[]).map(Number) : []; return <div key={`${index}:${String(row["total"])}`}><strong>{visibleText(row["label"], locale, `${t.followUpRoll} ${index + 1}`)}</strong><span>{dice.length ? `${dice.join(", ")} → ` : ""}{String(row["total"] ?? "—")}</span></div>; })}</section>}</>
+                !followup && <><span role="status">{presentationOutput(resolvedDice.length ? textJoin([textJoin([t.roll, textSymbol(":")], ""), textJoin(resolvedDice.map((die) => textNumber(die, locale)), ", "), textSymbol("→"), textNumber(state["total"], locale)]) : t.resolved)}</span>{followUpRolls.length > 0 && <section className="exploration-roll-history" aria-label={presentationOutput(t.subsequentRolls)}>{followUpRolls.map((row, index) => { const dice=Array.isArray(row["dice"]) ? (row["dice"] as unknown[]).map(Number) : []; return <div key={`${index}:${String(row["total"])}`}><strong>{presentationOutput(visibleText(row["label"], locale, textJoin([t.followUpRoll, textNumber(index + 1, locale)])))}</strong><span>{presentationOutput(textJoin([...(dice.length ? [textJoin(dice.map((die) => textNumber(die, locale)), ", "), textSymbol("→")] : []), textNumber(row["total"], locale)]))}</span></div>; })}</section>}</>
               ) : !post.experience_applied || advances ? (
-                <p role="status">{t.first}</p>
+                <p role="status">{presentationOutput(t.first)}</p>
               ) : count === 0 ? (
                 <button className="primary" onClick={() => apply([])}>
-                  {t.without}
+                  {presentationOutput(t.without)}
                 </button>
               ) : rolled && discarded < discard ? (
                 <div>
-                  <p>{t.discard}</p>
-                  <ExplorationDice dice={rolled} label={t.discardDie} onSelect={(index) => {
+                  <p>{presentationOutput(t.discard)}</p>
+                  <ExplorationDice dice={rolled} diceLabel={t.discardDie} locale={locale} onSelect={(index) => {
                         const kept = rolled.filter((_, item) => item !== index);
                         if (discarded + 1 < discard || full || rerolls || modifiers.adjustments) {
                           setRolled(kept);
@@ -242,8 +173,8 @@ export function ExplorationPanel({
                 </div>
               ) : rolled && full && !fullReroll ? (
                 <div>
-                  <p>{t.scenario}</p>
-                  <ExplorationDice dice={rolled} label={t.individualDice} />
+                  <p>{presentationOutput(t.scenario)}</p>
+                  <ExplorationDice dice={rolled} diceLabel={t.individualDice} locale={locale} />
                   <DiceResolver
                     locale={locale}
                     count={rolled.length}
@@ -261,14 +192,14 @@ export function ExplorationPanel({
                       rerolls || modifiers.adjustments ? setFullReroll(true) : apply(rolled)
                     }
                   >
-                    {t.keep}
+                    {presentationOutput(t.keep)}
                   </button>
                 </div>
               ) : rolled && dieReroll < rerolls ? (
                 <div>
-                  <p>{t.catacombs}</p>
+                  <p>{presentationOutput(t.catacombs)}</p>
                   {rerollIndex === null ? (
-                    <ExplorationDice dice={rolled} label={t.rerollDie} onSelect={setRerollIndex} />
+                    <ExplorationDice dice={rolled} diceLabel={t.rerollDie} locale={locale} onSelect={setRerollIndex} />
                   ) : (
                     <DiceResolver
                       locale={locale}
@@ -283,18 +214,18 @@ export function ExplorationPanel({
                       }}
                     />
                   )}
-                  <button onClick={() => modifiers.adjustments ? setDieReroll(rerolls) : apply(rolled)}>{t.keep}</button>
+                  <button onClick={() => modifiers.adjustments ? setDieReroll(rerolls) : apply(rolled)}>{presentationOutput(t.keep)}</button>
                 </div>
               ) : rolled && adjusted < modifiers.adjustments ? (
                 <div className="exploration-adjustment">
-                  <p>{t.adjust} ({adjusted + 1}/{modifiers.adjustments})</p>
-                  <ExplorationDice dice={rolled} label={t.adjust} controls={(index, die) => <span className="exploration-die-controls">{([-1, 1] as const).map((delta) => { const blocked = delta < 0 ? die <= 1 : die >= 6; return <button key={delta} className="stepper-button" aria-label={`${delta < 0 ? (locale === "es" ? "Restar uno al dado" : "Subtract one from die") : (locale === "es" ? "Sumar uno al dado" : "Add one to die")} ${index + 1}`} disabled={blocked} data-disabled-reason={blocked ? delta < 0 ? (locale === "es" ? "El dado ya tiene el valor mínimo de 1." : "The die is already at the minimum value of 1.") : (locale === "es" ? "El dado ya tiene el valor máximo de 6." : "The die is already at the maximum value of 6.") : undefined} onClick={() => { const next = rolled.map((value, position) => position === index ? value + delta : value); if (adjusted + 1 >= modifiers.adjustments) apply(next); else { setRolled(next); setAdjusted((value) => value + 1); } }}>{delta < 0 ? "−" : "+"}</button>; })}</span>} />
-                  <button onClick={() => apply(rolled)}>{t.keep}</button>
+                  <p>{presentationOutput(t.adjust)} {presentationOutput(textSymbol("("))}{presentationOutput(textNumber(adjusted + 1, locale))}{presentationOutput(textSymbol("/"))}{presentationOutput(textNumber(modifiers.adjustments, locale))}{presentationOutput(textSymbol(")"))}</p>
+                  <ExplorationDice dice={rolled} diceLabel={t.adjust} locale={locale} controls={(index, die) => <span className="exploration-die-controls">{([-1, 1] as const).map((delta) => { const blocked = delta < 0 ? die <= 1 : die >= 6; const actionLabel = delta < 0 ? translate({ key: "ui.019b837428b3" }, locale) : translate({ key: "ui.a253df792358" }, locale); const reason = delta < 0 ? translate({ key: "disabled.996512b73d" }, locale) : translate({ key: "disabled.49d66fa8cf" }, locale); return <button key={delta} className="stepper-button" aria-label={presentationOutput(textJoin([actionLabel, textNumber(index + 1, locale)]))} disabled={blocked} data-disabled-reason={blocked ? presentationOutput(reason) : undefined} onClick={() => { const next = rolled.map((value, position) => position === index ? value + delta : value); if (adjusted + 1 >= modifiers.adjustments) apply(next); else { setRolled(next); setAdjusted((value) => value + 1); } }}>{presentationOutput(textSymbol(delta < 0 ? "−" : "+"))}</button>; })}</span>} />
+                  <button onClick={() => apply(rolled)}>{presentationOutput(t.keep)}</button>
                 </div>
               ) : rolled ? null : (
                 <>
                   <p>
-                    {count}D6: {t.dice}
+                    {presentationOutput(textDice(count, 6, locale))}{presentationOutput(textSymbol(":"))} {presentationOutput(t.dice)}
                   </p>
                   <DiceResolver
                     locale={locale}
@@ -322,11 +253,11 @@ export function ExplorationPanel({
                 />
               )}
               {followup && !pending && Boolean(state?.["resolved"]) && (
-                <button type="button" onClick={() => void app.runAction("continueExploration", {})}>{t.resolveFollowUp}</button>
+                <button type="button" onClick={() => void app.runAction("continueExploration", {})}>{presentationOutput(t.resolveFollowUp)}</button>
               )}
               {pending?.["kind"] === "choose_hero" && (
                 <label>
-                  {visibleText(pending["label"], locale, t.hero)}
+                  {presentationOutput(visibleText(pending["label"], locale, t.hero))}
                   <select
                     defaultValue=""
                     onChange={(event) => {
@@ -337,14 +268,14 @@ export function ExplorationPanel({
                     }}
                   >
                     <option value="" disabled>
-                      {t.select}
+                      {presentationOutput(t.select)}
                     </option>
                     {document.campaign.warriors
                       .filter((row) => row.kind === "hero")
                       .sort((a, b) => a.name.localeCompare(b.name, locale))
                       .map((row) => (
                         <option key={row.id} value={row.id}>
-                          {row.name}
+                          {presentationOutput(warriorPersonalName(row, locale))}
                         </option>
                       ))}
                   </select>
@@ -352,7 +283,7 @@ export function ExplorationPanel({
               )}
               {pending?.["kind"] === "choose_option" && (
                 <div>
-                  <p><strong>{t.consequence}:</strong> {visibleText(pending["label"], locale, t.outcome)}</p>
+                  <p><strong>{presentationOutput(t.consequence)} {presentationOutput(textSymbol(":"))} </strong> {presentationOutput(visibleText(pending["label"], locale, t.outcome))}</p>
                   {((pending["options"] ?? []) as OpenPayload[]).map(
                     (option) => (
                       <button
@@ -363,7 +294,7 @@ export function ExplorationPanel({
                           })
                         }
                       >
-                        {visibleText(option["label"] ?? option["id"], locale, t.outcome)}
+                        {presentationOutput(visibleText(option["label"], locale, t.outcome))}
                       </button>
                     ),
                   )}
@@ -371,7 +302,7 @@ export function ExplorationPanel({
               )}
               {pending?.["kind"] === "choose_warriors" && (
                 <fieldset>
-                  <legend>{visibleText(pending["label"], locale, t.warriors)}</legend>
+                  <legend>{presentationOutput(visibleText(pending["label"], locale, t.warriors))}</legend>
                   {((pending["options"] ?? []) as OpenPayload[]).map(
                     (option) => {
                       const id = String(option["id"]),
@@ -383,13 +314,7 @@ export function ExplorationPanel({
                             type="checkbox"
                             checked={checked}
                             disabled={!checked && warriorIds.length >= maximum}
-                            data-disabled-reason={
-                              !checked && warriorIds.length >= maximum
-                                ? locale === "es"
-                                  ? `Solo puedes seleccionar ${maximum} guerrero(s).`
-                                  : `You can only select ${maximum} warrior(s).`
-                                : undefined
-                            }
+                            data-disabled-reason={!checked && warriorIds.length >= maximum ? presentationOutput(translate({ key: "exploration.maximum-warriors", args: { maximum } }, locale)) : undefined}
                             onChange={() =>
                               setWarriorIds((current) =>
                                 checked
@@ -398,7 +323,7 @@ export function ExplorationPanel({
                               )
                             }
                           />
-                          {visibleText(option["label"] ?? id, locale, id)}
+                          {presentationOutput(warriorPersonalName(document.campaign.warriors.find((warrior) => warrior.id === id), locale))}
                         </label>
                       );
                     },
@@ -412,7 +337,7 @@ export function ExplorationPanel({
                       setWarriorIds([]);
                     }}
                   >
-                    {t.confirm}
+                    {presentationOutput(t.confirm)}
                   </button>
                 </fieldset>
               )}
@@ -424,7 +349,7 @@ export function ExplorationPanel({
                     })
                   }
                 >
-                  {visibleText(pending["label"], locale, t.external)}
+                  {presentationOutput(visibleText(pending["label"], locale, t.external))}
                 </button>
               )}
             </td>

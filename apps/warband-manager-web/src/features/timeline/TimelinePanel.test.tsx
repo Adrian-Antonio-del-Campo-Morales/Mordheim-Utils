@@ -1,3 +1,4 @@
+import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 /**
  * Campaign timeline component tests at the UI level: the timeline
  * panel enumerates the document's moments, navigates through selectMoment
@@ -127,7 +128,7 @@ function Harness({ service }: { service: CampaignAppService }) {
       setDoc(result.document);
     }
   };
-  return <TimelinePanel document={doc} onSelect={select} />;
+  return <TimelinePanel knowledge={presentationKnowledge} document={doc} onSelect={select} />;
 }
 
 describe("P6.1 TimelinePanel", () => {
@@ -178,3 +179,5 @@ describe("P6.1 TimelinePanel", () => {
     expect(screen.getByRole("button", { name: /Battle #1 — Skirmish/i })).toBeInTheDocument();
   });
 });
+
+const presentationKnowledge = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", items: [], bands: [], profiles: [], skills: [], campaign: { scenarios: { scenarios: [{ id: "skirmish", names: { en: "Skirmish", es: "Escaramuza" } }] } } });

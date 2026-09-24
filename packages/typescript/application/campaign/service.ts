@@ -517,7 +517,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           if (draft) return applyResult(result);
           const resultPost = result.state.campaign.post_battles.find((row) => !row.complete);
           if (!resultPost) return error("rejected", "Pending post-battle disappeared while hiring.");
-          const changed = { ...resultPost, gold_delta: (resultPost.gold_delta ?? 0) - gold, wyrdstone_delta: (resultPost.wyrdstone_delta ?? 0) - shards, event_log: [...(resultPost.event_log ?? []), { step: 6, type: "hire", profile_id: input["profile_id"], description: `Hired for ${listedCosts.map(([key,value]) => `${value} ${key}`).join(" + ") || `${gold} gc`}.` }] };
+          const changed = { ...resultPost, gold_delta: (resultPost.gold_delta ?? 0) - gold, wyrdstone_delta: (resultPost.wyrdstone_delta ?? 0) - shards, event_log: [...(resultPost.event_log ?? []), { step: 6, type: "hire", profile_id: input["profile_id"], costs: listedCosts.length ? listedCosts : [["gold_crowns", gold]], description: `Hired for ${listedCosts.map(([key,value]) => `${value} ${key}`).join(" + ") || `${gold} gc`}.` }] };
           const treasures = listedCosts.find(([key]) => key === "treasures")?.[1] ?? 0;
           const points = listedCosts.find(([key]) => key === "campaign_points")?.[1] ?? 0;
           if (treasures > result.state.campaign.resources.treasures || points > result.state.campaign.resources.campaign_points) return error("rejected", "Not enough declared hiring resources.");
@@ -553,7 +553,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const known=knowledge.queryKnowledge({id:{kind:"item_id",value:itemId}}), name=known.ok?String(known.record.names["en"]??itemId):itemId, category=known.ok?String(known.record.data["kind"]??"Trading Post"):"Trading Post";
           const found = state.current.campaign.inventory.find((row) => row.id === itemId);
           const inventory = found ? state.current.campaign.inventory.map((row) => row.id === itemId ? { ...row, owned: row.owned + quantity, stash: row.stash + quantity, value: unitPrice } : row) : [...state.current.campaign.inventory, { id: itemId, name, category, owned: quantity, equipped: 0, stash: quantity, value: unitPrice }];
-          const changed = { ...post, gold_delta: (post.gold_delta ?? 0) - total, event_log: [...(post.event_log ?? []), { step: 7, type: "buy_item", item_id: itemId, quantity, description: `${quantity}× ${name} bought for ${total} gc.` }] };
+          const changed = { ...post, gold_delta: (post.gold_delta ?? 0) - total, event_log: [...(post.event_log ?? []), { step: 7, type: "buy_item", item_id: itemId, quantity, gold: total, description: `${quantity}× ${name} bought for ${total} gc.` }] };
           return applyResult({ ok: true, state: { ...state.current, campaign: { ...state.current.campaign, inventory, post_battles: state.current.campaign.post_battles.map((row) => row === post ? changed : row) } } });
         }
         case "sellStashItem": {
@@ -565,7 +565,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           if (!Number.isInteger(quantity) || quantity <= 0 || found.stash < quantity) return error("rejected", `Only ${found.stash} unassigned copy/copies are available.`);
           const unitPrice = Math.max(0, Math.floor((found.value ?? 0) / 2)), total = unitPrice * quantity;
           const inventory = state.current.campaign.inventory.map((row) => row.id === itemId ? { ...row, owned: row.owned - quantity, stash: row.stash - quantity } : row).filter((row) => row.owned > 0);
-          const changed = { ...post, gold_delta: (post.gold_delta ?? 0) + total, event_log: [...(post.event_log ?? []), { step: 7, type: "sell_item", item_id: itemId, quantity, description: `${quantity}× ${found.name} sold for ${total} gc.` }] };
+          const changed = { ...post, gold_delta: (post.gold_delta ?? 0) + total, event_log: [...(post.event_log ?? []), { step: 7, type: "sell_item", item_id: itemId, quantity, gold: total, description: `${quantity}× ${found.name} sold for ${total} gc.` }] };
           return applyResult({ ok: true, state: { ...state.current, campaign: { ...state.current.campaign, inventory, post_battles: state.current.campaign.post_battles.map((row) => row === post ? changed : row) } } });
         }
         case "applyInjuryOutcome":

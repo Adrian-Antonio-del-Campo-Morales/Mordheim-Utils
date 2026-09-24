@@ -74,6 +74,9 @@ describe("resolveScenarioSpellReward (desktop resolve_scenario_spell_reward)", (
     const hero = result.document.campaign.warriors.find((w) => w.id === "hero-1")!;
     expect(hero.skills).toEqual(["Dazzle", "Fireball"]);
     expect(result.document.campaign.post_battles[0].pending_follow_ups).toHaveLength(0);
+    expect(result.document.campaign.post_battles[0].event_log?.at(-1)).toMatchObject({
+      type: "scenario_spell_reward", spell_ids: ["spell.dazzle", "spell.fireball"], warrior_personal_name: hero.name,
+    });
   });
 
   it("requires exactly two spells", () => {

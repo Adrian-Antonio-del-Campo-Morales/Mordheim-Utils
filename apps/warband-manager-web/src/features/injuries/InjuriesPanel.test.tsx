@@ -1,3 +1,4 @@
+import { translate, type UiText } from "../campaign/i18n-core";
 /**
  * P6.5 component tests: the injuries panel renders the read model and
  * dispatches recovery/follow-up actions through the shared CampaignAppView
@@ -96,7 +97,7 @@ function harness(overrides: Partial<ReturnType<typeof defaultView>> = {}) {
 function defaultView() {
   return {
     document: null,
-    error: null as string | null,
+    error: null as UiText | null,
     dirty: false,
     kbLoading: false,
     kbError: null,
@@ -146,8 +147,8 @@ describe("InjuriesPanel", () => {
   });
 
   it("surfaces the seam error instead of throwing", () => {
-    harness({ error: "Recovery rejected: not missing any games." });
+    harness({ error: translate({ key: "error.action-failed" }, "en") });
     render(<InjuriesPanel document={document} />);
-    expect(screen.getByRole("alert")).toHaveTextContent("Recovery rejected");
+    expect(screen.getByRole("alert")).toHaveTextContent("The action could not be completed.");
   });
 });

@@ -1,3 +1,6 @@
+import { textJoin, textNumber, textSymbol, textDate, type PresentationValue } from "../campaign/presentation-values";
+import type { ResolvedKbText } from "@adapters/knowledge-reader/presentation";
+import { translate } from "../campaign/i18n-core";
 /**
  * Campaign timeline moment helpers — kept separate from the component so
  * the timeline remains a pure projection of the campaign document.
@@ -36,21 +39,23 @@ export function enumerateMoments(campaign: CampaignDocument["campaign"]): Moment
   return moments;
 }
 
-export function momentLabel(moment: MomentSelection, campaign: CampaignDocument["campaign"], locale: "es" | "en" = "en", scenarioName?: string): string {
+export function momentLabel(moment: MomentSelection, campaign: CampaignDocument["campaign"], locale: "es" | "en", scenarioName?: ResolvedKbText): PresentationValue {
   const [kind, raw] = moment.split(":");
   const number = Number(raw);
-  if (kind === "draft") return locale === "es" ? "Banda inicial · borrador" : "Initial warband · draft";
-  if (kind === "new-battle") return locale === "es" ? `Batalla #${number} · en curso` : `Battle #${number} · in progress`;
+  const numbered = textJoin([textSymbol("#"), textNumber(number, locale)], "");
+  if (kind === "draft") return translate({ key: "ui.c0b9b18d14e6" }, locale);
+  if (kind === "new-battle") return translate({ key: "timeline.new-battle", args: { number } }, locale);
   if (kind === "state") {
     const state = campaign.states.find((item) => item.number === number);
-    const title = number === 0 ? locale === "es" ? "Estado inicial" : "Initial state" : `${locale === "es" ? "Estado" : "State"} #${number}`;
-    return `${title}${state?.date ? ` — ${state.date}` : ""}`;
+    const title = number === 0 ? translate({ key: "ui.34ec26f0a73c" }, locale) : textJoin([translate({ key: "ui.edfcc40a3b5d" }, locale), numbered]);
+    return state?.date ? textJoin([title, textSymbol("—"), textDate(state.date, locale)]) : title;
   }
   if (kind === "battle") {
     const battle = campaign.battles.find((item) => item.number === number);
-    return `${locale === "es" ? "Batalla" : "Battle"} #${number}${battle ? ` — ${scenarioName ?? battle.scenario}` : ""}`;
+    const title = textJoin([translate({ key: "ui.8731a48db4a4" }, locale), numbered]);
+    return battle ? textJoin([title, textSymbol("—"), scenarioName ?? translate({ key: "ui.eab86554d72e" }, locale)]) : title;
   }
   const post = campaign.post_battles.find((row) => row.battle_number === number);
-  const status = post?.complete ? locale === "es" ? "completo" : "complete" : locale === "es" ? "en curso" : "in progress";
-  return `${locale === "es" ? "Post-batalla" : "Post-battle"} #${number} (${status})`;
+  const status = post?.complete ? translate({ key: "ui.bfe16a390bab" }, locale) : translate({ key: "ui.4f5ab93e035b" }, locale);
+  return textJoin([translate({ key: "ui.6d07c6511d84" }, locale), numbered, textJoin([textSymbol("("), status, textSymbol(")")], "")]);
 }

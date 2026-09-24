@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint .",
+    "lint": "eslint . && npm run check:presentation",
+    "check:presentation": "node --test tools/presentation-audit.test.mjs tools/presentation-types.test.mjs tools/presentation-flow-audit.test.mjs && node tools/presentation-audit.mjs --strict --deep --check",
+    "audit:gui:deep": "node tools/presentation-audit.mjs --strict --deep --check",
+    "audit:gui": "node tools/presentation-audit.mjs --strict --check",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
