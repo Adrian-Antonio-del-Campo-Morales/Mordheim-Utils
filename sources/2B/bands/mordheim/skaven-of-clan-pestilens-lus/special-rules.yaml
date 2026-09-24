@@ -14,7 +14,7 @@ rules:
         Deferred subsystem: psychology.
   name: Leader
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 3
     section: 1 Plague Priest / Special Rules / Leader
     url: https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf
@@ -42,7 +42,7 @@ rules:
     leader who fears an uprising, regardless of whether the warband has its full quota of heroes.
     Remove the unfortunate Slave from the roster.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: 0-5 Skaven Slaves / Special Rules / Doomed
     url: https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf
@@ -56,3 +56,69 @@ rules:
   applies_to:
     profile_ids:
     - skaven-slaves
+- id: band--maximum-characteristics
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.skaven-of-clan-pestilens-lus.band.maximum-characteristics
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: characteristic-increase caps on advancement.
+  name: Skaven Maximum Characteristics
+  effect: >-
+    Characteristics for Skaven warriors may not be increased beyond the maximum limits: M 6, WS 6,
+    BS 6, S 4, T 4, W 3, I 7, A 4, Ld 7. If a characteristic is at its maximum, take the other option
+    or roll again if you can only increase one characteristic. If both are already at their maximum,
+    you may increase any other by +1 instead. Remember that Henchman can only add +1 to any
+    characteristic.
+  source:
+    manual: broheim.net
+    printed_page: 1
+    section: Maximum Characteristics
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf
+  name_i18n:
+    es: Características Máximas de los Skaven
+  effect_i18n:
+    es: >-
+      Las características de los guerreros Skaven no pueden aumentarse más allá de los límites
+      máximos: M 6, HA 6, HP 6, F 4, R 4, H 3, I 7, A 4, L 7. Si una característica está en su máximo,
+      toma la otra opción o vuelve a tirar si solo puedes aumentar una característica. Si ambas están
+      ya en su máximo, puedes aumentar cualquier otra en +1 en su lugar. Recuerda que los secuaces
+      solo pueden añadir +1 a cualquier característica.
+  applies_to:
+    band: true
+- id: band--skill-cloud-of-flies
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.skaven-of-clan-pestilens-lus.band.cloud-of-flies
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: a to-hit penalty on models in base contact is a combat-resolution mechanic.
+  name: Cloud of Flies
+  effect: >-
+    The Skaven is surrounded by a cloud of buzzing flies. The flies will get in the eyes of enemy
+    models. Any model in base contact with the character suffers a -1 penalty to all to hit rolls.
+    Members of Clan Pestilens and followers of Nurgle are immune to this effect.
+  source:
+    manual: broheim.net
+    printed_page: 2
+    section: Special skills / Cloud of Flies
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf
+  name_i18n:
+    es: Nube de Moscas
+  effect_i18n:
+    es: >-
+      El Skaven está rodeado por una nube de moscas zumbando. Las moscas se meten en los ojos de los
+      modelos enemigos. Cualquier modelo en contacto de peanas con el personaje sufre un penalizador de -1
+      a todas las tiradas para impactar. Los miembros del Clan Pestilens y los seguidores de Nurgle son
+      inmunes a este efecto.
+  applies_to:
+    band: true

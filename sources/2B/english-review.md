@@ -7,7 +7,7 @@ the manifest once verified.
 ## Method
 
 1. The pass covers all 60 manifest rows, package by package.
-2. New read-only cross-check tool `tools/knowledge/review_2b.py` re-derives every
+2. New read-only cross-check tool `tools/ingestion/review_2b.py` re-derives every
    number in the packages (roster limits, starting gold, profile costs/xp, stat
    runs, equipment prices, digits quoted in rule effects) from the cached source
    texts. First run: **2295 checks — 1967 OK / 218 NOT_FOUND / 110 MISMATCH**.

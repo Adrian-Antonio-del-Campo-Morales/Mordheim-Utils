@@ -6,44 +6,109 @@ profiles:
   type: hero
   cost: 80
   experience: 20
-  characteristics: {M: 4, WS: 4, BS: 4, S: 4, T: 3, W: 1, I: 5, A: 2, Ld: 8}
-  equipment_lists: [brotherhood-equipment-list]
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 4
+    T: 3
+    W: 1
+    I: 5
+    A: 2
+    Ld: 8
+  equipment_lists:
+  - brotherhood-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, shooting, strength, speed, special]
-  source: {manual: Broheim, printed_page: 4, section: 1 Silent Master, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf'}
-  source_path: [heroes, 1 Silent Master]
-  name_i18n: {es: Maestro Silencioso}
-  rule_ids: [silent-master--leader, silent-master--perfect-killer]
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: 1 Silent Master
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf'
+  source_path:
+  - heroes
+  - 1 Silent Master
+  name_i18n:
+    es: Maestro Silencioso
+  rule_ids:
+  - silent-master--leader
+  - silent-master--perfect-killer
   combat_traits: {}
 - id: poisoner
   name: Poisoner
   type: hero
   cost: 50
   experience: 8
-  characteristics: {M: 4, WS: 4, BS: 3, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 7}
-  equipment_lists: [brotherhood-equipment-list]
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - brotherhood-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, special]
-  source: {manual: Broheim, printed_page: 4, section: 0-1 Poisoner, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf'}
-  source_path: [heroes, 0-1 Poisoner]
-  name_i18n: {es: Envenenador}
-  rule_ids: [poisoner--toxic-trades, poisoner--master-of-poisons]
+  skill_access:
+  - combat
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: 0-1 Poisoner
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf'
+  source_path:
+  - heroes
+  - 0-1 Poisoner
+  name_i18n:
+    es: Envenenador
+  rule_ids:
+  - poisoner--toxic-trades
+  - poisoner--master-of-poisons
   combat_traits: {}
 - id: assassins
   name: Assassins
   type: hero
   cost: 40
   experience: 8
-  characteristics: {M: 4, WS: 4, BS: 3, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 7}
-  equipment_lists: [brotherhood-equipment-list]
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - brotherhood-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, speed, special]
-  source: {manual: Broheim, printed_page: 4, section: 0-3 Assassins, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf'}
-  source_path: [heroes, 0-3 Assassins]
-  name_i18n: {es: Asesinos}
+  skill_access:
+  - combat
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: 0-3 Assassins
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf'
+  source_path:
+  - heroes
+  - 0-3 Assassins
+  name_i18n:
+    es: Asesinos
   rule_ids: []
   combat_traits: {}
 - id: brotherhood-agents
@@ -51,15 +116,32 @@ profiles:
   type: henchman
   cost: 35
   experience: 0
-  characteristics: {M: 4, WS: 4, BS: 3, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 7}
-  equipment_lists: [brotherhood-equipment-list]
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - brotherhood-equipment-list
   fixed_equipment: []
   equipment_restrictions:
   - Heroes-only entries (long daggers, two-handed weapon, underground contacts) are excluded.
   skill_access: []
-  source: {manual: Broheim, printed_page: 5, section: 0-5 Brotherhood agents, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf'}
-  source_path: [henchmen, 0-5 Brotherhood agents]
-  name_i18n: {es: Agentes de la Hermandad}
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: 0-5 Brotherhood agents
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf'
+  source_path:
+  - henchmen
+  - 0-5 Brotherhood agents
+  name_i18n:
+    es: Agentes de la Hermandad
   rule_ids: []
   combat_traits: {}
 - id: brotherhood-novices
@@ -67,15 +149,32 @@ profiles:
   type: henchman
   cost: 25
   experience: 0
-  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 6}
-  equipment_lists: [brotherhood-equipment-list]
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - brotherhood-equipment-list
   fixed_equipment: []
   equipment_restrictions:
   - Heroes-only entries (long daggers, two-handed weapon, underground contacts) are excluded.
   skill_access: []
-  source: {manual: Broheim, printed_page: 5, section: Brotherhood novices, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf'}
-  source_path: [henchmen, Brotherhood novices]
-  name_i18n: {es: Novicios de la Hermandad}
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: Brotherhood novices
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf'
+  source_path:
+  - henchmen
+  - Brotherhood novices
+  name_i18n:
+    es: Novicios de la Hermandad
   rule_ids: []
   combat_traits: {}
 - id: thugs
@@ -83,13 +182,31 @@ profiles:
   type: henchman
   cost: 20
   experience: 0
-  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 5}
-  equipment_lists: [thugs-equipment-list]
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - thugs-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
   skill_access: []
-  source: {manual: Broheim, printed_page: 5, section: Thugs, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf'}
-  source_path: [henchmen, Thugs]
-  name_i18n: {es: Matones}
-  rule_ids: [thugs--loudmouths]
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: Thugs
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf'
+  source_path:
+  - henchmen
+  - Thugs
+  name_i18n:
+    es: Matones
+  rule_ids:
+  - thugs--loudmouths
   combat_traits: {}

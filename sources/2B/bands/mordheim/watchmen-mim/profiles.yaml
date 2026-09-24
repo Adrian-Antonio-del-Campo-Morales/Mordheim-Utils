@@ -6,59 +6,146 @@ profiles:
   type: hero
   cost: 60
   experience: 20
-  characteristics: {M: 4, WS: 4, BS: 4, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 8}
-  equipment_lists: [watchmen-equipment-list]
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - watchmen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, shooting, academic, strength, speed]
-  source: {manual: Broheim, printed_page: 4, section: 1 Watch captain, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf'}
-  source_path: [heroes, 1 Watch captain]
-  name_i18n: {es: Capitán de la Guardia}
-  rule_ids: [watch-captain--leader]
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: 1 Watch captain
+    url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf'
+  source_path:
+  - heroes
+  - 1 Watch captain
+  name_i18n:
+    es: Capitán de la Guardia
+  rule_ids:
+  - watch-captain--leader
   combat_traits: {}
 - id: sergeants
   name: Sergeants
   type: hero
   cost: 35
   experience: 8
-  characteristics: {M: 4, WS: 4, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
-  equipment_lists: [watchmen-equipment-list]
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - watchmen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, shooting, academic, speed]
-  source: {manual: Broheim, printed_page: 4, section: 0-2 Sergeants, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf'}
-  source_path: [heroes, 0-2 Sergeants]
-  name_i18n: {es: Sargentos}
-  rule_ids: [sergeants--falconer]
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - speed
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: 0-2 Sergeants
+    url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf'
+  source_path:
+  - heroes
+  - 0-2 Sergeants
+  name_i18n:
+    es: Sargentos
+  rule_ids:
+  - sergeants--falconer
   combat_traits: {}
 - id: private-sleuth
   name: Private Sleuth
   type: hero
   cost: 55
   experience: 12
-  characteristics: {M: 4, WS: 3, BS: 2, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 8}
-  equipment_lists: [private-sleuth-equipment-list]
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - private-sleuth-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, academic, special]
-  source: {manual: Broheim, printed_page: 4, section: 0-1 Private sleuth, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf'}
-  source_path: [heroes, 0-1 Private sleuth]
-  name_i18n: {es: Detective Privado}
-  rule_ids: [private-sleuth--scryer, private-sleuth--hypnotist]
+  skill_access:
+  - combat
+  - academic
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: 0-1 Private sleuth
+    url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf'
+  source_path:
+  - heroes
+  - 0-1 Private sleuth
+  name_i18n:
+    es: Detective Privado
+  rule_ids:
+  - private-sleuth--scryer
+  - private-sleuth--hypnotist
   combat_traits: {}
 - id: rookies
   name: Rookies
   type: hero
   cost: 15
   experience: 0
-  characteristics: {M: 4, WS: 2, BS: 3, S: 2, T: 2, W: 1, I: 4, A: 1, Ld: 8}
-  equipment_lists: [watchmen-equipment-list]
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 2
+    T: 2
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - watchmen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, academic, speed]
-  source: {manual: Broheim, printed_page: 4, section: 0-2 Rookies, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf'}
-  source_path: [heroes, 0-2 Rookies]
-  name_i18n: {es: Novatos}
+  skill_access:
+  - combat
+  - academic
+  - speed
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: 0-2 Rookies
+    url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf'
+  source_path:
+  - heroes
+  - 0-2 Rookies
+  name_i18n:
+    es: Novatos
   rule_ids: []
   combat_traits: {}
 - id: officers
@@ -66,14 +153,31 @@ profiles:
   type: henchman
   cost: 25
   experience: 0
-  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
-  equipment_lists: [watchmen-equipment-list]
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - watchmen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
   skill_access: []
-  source: {manual: Broheim, printed_page: 5, section: Officers, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf'}
-  source_path: [henchmen, Officers]
-  name_i18n: {es: Agentes}
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: Officers
+    url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf'
+  source_path:
+  - henchmen
+  - Officers
+  name_i18n:
+    es: Agentes
   rule_ids: []
   combat_traits: {}
 - id: turnkeys
@@ -81,28 +185,65 @@ profiles:
   type: henchman
   cost: 35
   experience: 0
-  characteristics: {M: 4, WS: 3, BS: 3, S: 4, T: 3, W: 1, I: 2, A: 1, Ld: 7}
-  equipment_lists: [watchmen-equipment-list]
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - watchmen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
   skill_access: []
-  source: {manual: Broheim, printed_page: 5, section: 0-2 Turnkeys, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf'}
-  source_path: [henchmen, 0-2 Turnkeys]
-  name_i18n: {es: Carceleros}
-  rule_ids: [turnkeys--immune-to-poison]
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: 0-2 Turnkeys
+    url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf'
+  source_path:
+  - henchmen
+  - 0-2 Turnkeys
+  name_i18n:
+    es: Carceleros
+  rule_ids:
+  - turnkeys--immune-to-poison
   combat_traits: {}
 - id: sewer-jacks
   name: Sewer Jacks
   type: henchman
   cost: 20
   experience: 0
-  characteristics: {M: 4, WS: 3, BS: 2, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 6}
-  equipment_lists: [watchmen-equipment-list]
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - watchmen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
   skill_access: []
-  source: {manual: Broheim, printed_page: 5, section: 0-4 Sewer Jacks, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf'}
-  source_path: [henchmen, 0-4 Sewer Jacks]
-  name_i18n: {es: Chacales de las Cloacas}
-  rule_ids: [sewer-jacks--immune-to-disease, sewer-jacks--tunnel-rat]
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: 0-4 Sewer Jacks
+    url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Watchmen.pdf'
+  source_path:
+  - henchmen
+  - 0-4 Sewer Jacks
+  name_i18n:
+    es: Chacales de las Cloacas
+  rule_ids:
+  - sewer-jacks--immune-to-disease
+  - sewer-jacks--tunnel-rat
   combat_traits: {}

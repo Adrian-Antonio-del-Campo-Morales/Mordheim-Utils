@@ -3,11 +3,11 @@
 Comparación de las 60 bandas de `sources/2B/bands/mordheim/` contra los textos
 extraídos de los PDFs (`build/cache/2b-pdfs/text/`).
 
-Herramienta: `tools/knowledge/audit_2b.py` (nueva). Salida cruda JSON:
+Herramienta: `tools/ingestion/audit_2b.py` (nueva). Salida cruda JSON:
 `build/cache/2b-audit.json`. Ejecutar con:
 
 ```bash
-python -X utf8 tools/knowledge/audit_2b.py
+python -X utf8 tools/ingestion/audit_2b.py
 ```
 
 ## Verificaciones automáticas realizadas

@@ -6,61 +6,146 @@ profiles:
   type: hero
   cost: 65
   experience: 20
-  characteristics: {M: 4, WS: 3, BS: 4, S: 4, T: 3, W: 1, I: 4, A: 1, Ld: 8}
-  equipment_lists: [heroes-equipment-list]
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 4
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - heroes-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, academic, special]
-  source: {manual: Broheim, printed_page: 3, section: 1 Master of Clocks, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf'}
-  source_path: [heroes, 1 Master of Clocks]
-  name_i18n: {es: Maestro de los Relojes}
-  rule_ids: [master-of-clocks--leader, master-of-clocks--laws-of-construction,
-    master-of-clocks--promotion]
+  skill_access:
+  - combat
+  - academic
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: 1 Master of Clocks
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf'
+  source_path:
+  - heroes
+  - 1 Master of Clocks
+  name_i18n:
+    es: Maestro de los Relojes
+  rule_ids:
+  - master-of-clocks--leader
+  - master-of-clocks--laws-of-construction
+  - master-of-clocks--promotion
   combat_traits: {}
 - id: dwarf-engineer
   name: Dwarf Engineer
   type: hero
   cost: 45
   experience: 12
-  characteristics: {M: 3, WS: 4, BS: 3, S: 3, T: 4, W: 1, I: 2, A: 1, Ld: 8}
-  equipment_lists: [heroes-equipment-list]
+  characteristics:
+    M: 3
+    WS: 4
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - heroes-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, academic, strength]
-  source: {manual: Broheim, printed_page: 3, section: 0-1 Dwarf engineer, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf'}
-  source_path: [heroes, 0-1 Dwarf engineer]
-  name_i18n: {es: Ingeniero Enano}
-  rule_ids: [dwarf-engineer--armour, dwarf-engineer--hard-to-kill, dwarf-engineer--hard-head,
-    dwarf-engineer--smithery]
+  skill_access:
+  - combat
+  - academic
+  - strength
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: 0-1 Dwarf engineer
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf'
+  source_path:
+  - heroes
+  - 0-1 Dwarf engineer
+  name_i18n:
+    es: Ingeniero Enano
+  rule_ids:
+  - dwarf-engineer--armour
+  - dwarf-engineer--hard-to-kill
+  - dwarf-engineer--hard-head
+  - dwarf-engineer--smithery
   combat_traits: {}
 - id: metallurgist
   name: Metallurgist
   type: hero
   cost: 35
   experience: 8
-  characteristics: {M: 4, WS: 2, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
-  equipment_lists: [heroes-equipment-list]
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - heroes-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [academic, special]
-  source: {manual: Broheim, printed_page: 4, section: 0-1 Metallurgist, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf'}
-  source_path: [heroes, 0-1 Metallurgist]
-  name_i18n: {es: Metalúrgico}
-  rule_ids: [metallurgist--moonstone-refinery, metallurgist--hellish-tincture]
+  skill_access:
+  - academic
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: 0-1 Metallurgist
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf'
+  source_path:
+  - heroes
+  - 0-1 Metallurgist
+  name_i18n:
+    es: Metalúrgico
+  rule_ids:
+  - metallurgist--moonstone-refinery
+  - metallurgist--hellish-tincture
   combat_traits: {}
 - id: apprentices
   name: Apprentices
   type: hero
   cost: 20
   experience: 0
-  characteristics: {M: 4, WS: 2, BS: 2, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 7}
-  equipment_lists: [heroes-equipment-list]
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - heroes-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [academic, special]
-  source: {manual: Broheim, printed_page: 4, section: 0-2 Apprentices, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf'}
-  source_path: [heroes, 0-2 Apprentices]
-  name_i18n: {es: Aprendices}
+  skill_access:
+  - academic
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: 0-2 Apprentices
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf'
+  source_path:
+  - heroes
+  - 0-2 Apprentices
+  name_i18n:
+    es: Aprendices
   rule_ids: []
   combat_traits: {}
 - id: handymen
@@ -68,46 +153,103 @@ profiles:
   type: henchman
   cost: 25
   experience: 0
-  characteristics: {M: 4, WS: 3, BS: 2, S: 4, T: 3, W: 1, I: 2, A: 1, Ld: 6}
-  equipment_lists: [handymen-equipment-list]
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 4
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - handymen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
   skill_access: []
-  source: {manual: Broheim, printed_page: 5, section: Handymen, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf'}
-  source_path: [henchmen, Handymen]
-  name_i18n: {es: Braceros}
-  rule_ids: [handymen--crude]
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: Handymen
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf'
+  source_path:
+  - henchmen
+  - Handymen
+  name_i18n:
+    es: Braceros
+  rule_ids:
+  - handymen--crude
   combat_traits: {}
 - id: clockwork-soldiers
   name: Clockwork Soldiers
   type: henchman
   cost: 40
   experience: 0
-  characteristics: {M: 4, WS: 3, BS: 3, S: 4, T: 4, W: 1, I: 2, A: 1, Ld: 8}
-  equipment_lists: [constructs-equipment-list]
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 2
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - constructs-equipment-list
   fixed_equipment: []
   equipment_restrictions:
   - Two equipment slots and one armour slot; in-built equipment may not be removed.
   skill_access: []
-  source: {manual: Broheim, printed_page: 5, section: 0-5 Clockwork soldiers, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf'}
-  source_path: [henchmen, 0-5 Clockwork soldiers]
-  name_i18n: {es: Soldados de Cuerda}
-  rule_ids: [clockwork-soldiers--construct, clockwork-soldiers--solitary-maintenance]
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: 0-5 Clockwork soldiers
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf'
+  source_path:
+  - henchmen
+  - 0-5 Clockwork soldiers
+  name_i18n:
+    es: Soldados de Cuerda
+  rule_ids:
+  - clockwork-soldiers--construct
+  - clockwork-soldiers--solitary-maintenance
   combat_traits: {}
 - id: clockwork-fiend
   name: Clockwork Fiend
   type: henchman
   cost: 240
   experience: 0
-  characteristics: {M: 5, WS: 3, BS: 3, S: 5, T: 5, W: 3, I: 1, A: 3, Ld: 8}
-  equipment_lists: [constructs-equipment-list]
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 3
+    S: 5
+    T: 5
+    W: 3
+    I: 1
+    A: 3
+    Ld: 8
+  equipment_lists:
+  - constructs-equipment-list
   fixed_equipment: []
   equipment_restrictions:
   - Four equipment slots and one armour slot; in-built equipment may not be removed.
   skill_access: []
-  source: {manual: Broheim, printed_page: 5, section: 0-1 Clockwork fiend, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf'}
-  source_path: [henchmen, 0-1 Clockwork fiend]
-  name_i18n: {es: Demonio de Cuerda}
-  rule_ids: [clockwork-fiend--construct, clockwork-fiend--cause-fear, clockwork-fiend--large-target,
-    clockwork-fiend--lumbering-behemoth]
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: 0-1 Clockwork fiend
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clockworkers.pdf'
+  source_path:
+  - henchmen
+  - 0-1 Clockwork fiend
+  name_i18n:
+    es: Demonio de Cuerda
+  rule_ids:
+  - clockwork-fiend--construct
+  - clockwork-fiend--cause-fear
+  - clockwork-fiend--large-target
+  - clockwork-fiend--lumbering-behemoth
   combat_traits: {}

@@ -475,6 +475,77 @@ pre-existing dangling refs in `grade-2b.yaml` were fixed: the Black Orc
 Bodyguard's `double_handed_weapon` and Aldred Fellblade's
 `double_handed_sword` now resolve to the KB `two_handed_weapon` item.
 
+## KAZ Savage Orc pets → KB `war_boar`, `giant_wolf`, `giant_spider` (`catalog/items/miscellaneous.yaml`)
+
+The three Karak Azgal pets are listed in `savage-orcs-kaz` (`savage-orc-pet-list`) and reference
+the KB ids, which today carry only an `out-of-scope` stub. The KB entries need the printed data
+(found in the fidelity pass of 2026-09-21; source `Karak Azgal.pdf` page 60, section `Pet`):
+
+```yaml
+source_refs:
+- manual: broheim.net
+  printed_page: 60
+  section: Pet / War Boar
+  url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+effect: >-
+  Profile M 7, WS 3, BS 0, S 3, T 4, W 1, I 3, A 1, Ld 3. Cost: 90 GCs, Availability: Rare 11.
+  Large, ferocious and bad-tempered — a perfect mount for an Orc Warlord. Ferocious Charge: Orc war
+  boars attack with +2S when charging, due to their bulk; this applies only to the boar, not the
+  rider. Thick Skinned: the thick skin and matted fur of the boar makes him very hard to wound;
+  boars confer an additional +1 bonus to the rider's armour save (making +2 total).
+```
+
+```yaml
+source_refs:
+- manual: broheim.net
+  printed_page: 60
+  section: Pet / Giant Wolf
+  url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+effect: >-
+  Profile M 9, WS 3, BS 0, S 3, T 3, W 1, I 4, A 1, Ld 4. Cost: 40 GCs, Availability: Rare 10.
+  Orcs cannot ride a Giant Wolf — they are far too massive. Giant Wolves cannot be used in a
+  warband that already contains Giant Spiders.
+```
+
+```yaml
+source_refs:
+- manual: broheim.net
+  printed_page: 60
+  section: Pet / Giant Spider
+  url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+effect: >-
+  Profile M 7, WS 3, BS 0, S 3(4), T 3, W 1, I 4, A 1, Ld 4. Cost: 50 GCs, Availability: Rare 11.
+  Poisoned Attack: Giant Spider attacks are poisoned — attacks are considered as strength 4, but
+  this will not modify any armour saves. Wall Walk: Giant Spiders may walk up and down walls
+  without making Initiative tests; they may only jump up to 2" across or down, but this does count
+  as a diving charge. Orcs cannot ride a Giant Spider, and Giant Spiders cannot be used in a
+  warband that already contains Giant Wolves.
+```
+
+The `Pet` rule itself (personal property, does not count towards the warband's treasure or maximum
+number of warriors, lost if the hero dies) is modelled as `savage-orcs-kaz` rule `band--pet`.
+
+## `bolas` → KB `bolas` (`catalog/items/out-of-scope.yaml`)
+
+The Lustria Lizardmen list prints the bolas' full entry; the KB entry carries only
+`Range: 16" Strength: Special Dangerous`. Add the missing printed rule at promotion:
+
+```yaml
+source_refs:
+- manual: broheim.net
+  printed_page: 2
+  section: Special Lizardmen Equipment / Bolas
+  url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+effect: >-
+  Range: 16" Strength: Special, 5 gc, Common, Lizardmen only. The bolas can only be used once per
+  battle and are automatically recovered after each battle. Dangerous: if the to hit roll is a
+  natural 1, the bolas brain the wielder with a Strength 3 hit. Entangle: a model hit by bolas
+  isn't hurt, but his legs are entangled and he is unable to move. The model suffers a -2 Weapon
+  Skill penalty in hand-to-hand combat, but may still shoot normally. The model may try to free
+  himself in the Recovery phase; if the model rolls a 4+ on a D6 he is freed and may move and
+  fight normally.
+```
+
 ## Verified as covered (no action)
 
 - **MW priest equipment-list items**: holy tome (120 gc) and holy relic (25 gc)

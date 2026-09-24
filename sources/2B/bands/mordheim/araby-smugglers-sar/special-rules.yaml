@@ -20,7 +20,7 @@ rules:
     crowns each. Captures may temporarily exceed the normal warband and Slave limits, provided the
     excess is sold or dismissed before selling cargo.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 1
     section: Special Rules / Slavers
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf
@@ -50,7 +50,7 @@ rules:
   name: Leader
   effect: Any warrior within 6 inches of the Rais may use his Leadership for Leadership tests.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 3
     section: 1 Rais / Special Rules / Leader
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf
@@ -80,7 +80,7 @@ rules:
     Once per turn, reroll any dice roll made by the Merchant. If he is not taken out of action, roll
     two exploration dice after the battle and choose either result.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 3
     section: 0-1 Merchant / Special Rules / Fine Craftmenship
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf
@@ -111,12 +111,12 @@ rules:
     Janissaries may not use the Leader's Leadership and heroes cannot learn Pirate skills or become
     warband leader.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 3
     section: 0-5 Janissaries / Special Rules / Not Pirates
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf
   name_i18n:
-    es: No son Piratas
+    es: No Son Piratas
   effect_i18n:
     es: >-
       Los Jenízaros no pueden usar el Liderazgo del Líder; los héroes no pueden aprender habilidades
@@ -141,7 +141,7 @@ rules:
     A Slave may gain experience, but if he rolls Lad's got Talent the leader executes him and
     removes him from the roster; the rest of the group may reroll their advance.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 3
     section: 0-5 Slaves / Special Rules / Life of Slavery
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf
@@ -154,3 +154,36 @@ rules:
   applies_to:
     profile_ids:
     - slaves
+- id: band--skill-pious-fury
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.araby-smugglers-sar.band.pious-fury
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: Hatred is a psychology-subsystem interaction, and the abstinence clause is flavour
+        with no engine effect.
+  name: Pious Fury
+  effect: >-
+    The Hero feels the call of the One in his soul, vowing to cleanse the lands and seas of evil. The
+    model hates all Skaven, Undead, or Chaos warbands (including Possessed, Carnival, Khorne Raiders,
+    Maruaders) and all models in them. This warrior will never drink alcohol of any kind nor use drugs.
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: Araby Smuggler special skills / Pious Fury
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Araby%20Smugglers.pdf
+  name_i18n:
+    es: Furia Piadosa
+  effect_i18n:
+    es: >-
+      El Héroe siente la llamada del Único en su alma y jura limpiar tierras y mares de maldad. El modelo
+      odia a todas las bandas Skaven, No Muertas o del Caos (incluidas Poseídos, Carnaval, Saqueadores de
+      Khorne y Merodeadores) y a todos sus modelos. Este guerrero nunca beberá alcohol de ningún tipo ni
+      consumirá drogas.
+  applies_to:
+    band: true

@@ -1,0 +1,307 @@
+schema_version: 1
+ruleset: mordheim
+catalog: hirelings-dramatis-personae
+grade: 2b
+profiles:
+- id: hireling.dramatis.aldred-fellblade
+  kind: dramatis-personae
+  grade: 2b
+  publication: Karak Azgal (Broheim anthology)
+  name: Aldred Fellblade
+  name_i18n:
+    es: Aldred Hoja Maldita
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 6
+    BS: 4
+    S: 4
+    T: 4
+    W: 2
+    I: 4
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 60
+  equipment:
+    fixed_items:
+    - item_id: two_handed_weapon
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Two-handed sword — resolved to the KB `two_handed_weapon` item (the source offers no separate
+        double-handed-sword item).
+    - item_id: heavy_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: shield
+      quantity:
+        kind: fixed
+        value: 1
+  starting_skill_ids:
+  - skill.combat-master
+  - skill.strongman
+  - skill.sign-of-sigmar
+  - skill.protection-of-sigmar
+  - skill.righteous-fury
+  rules:
+  - id: hireling.dramatis.aldred-fellblade.rule.righteous-fury-orcs-goblins
+    name: Righteous Fury (Orcs & Goblins)
+    effect: Aldred's Righteous Fury adds Orc & Goblins as affected enemies.
+    effect_i18n:
+      es: la Ira Justiciera de Aldred añade Orcos & Goblins como enemigos afectados.
+    name_i18n:
+      es: Ira Justiciera (Orcos y Goblins)
+  - id: hireling.dramatis.aldred-fellblade.rule.fellblade
+    name: Fellblade
+    effect: >-
+      Aldred is a master with this sword and he can therefore parry with it as though it was a
+      normal sword.
+    effect_i18n:
+      es: >-
+        Aldred es un maestro con esta espada y por tanto puede parar con ella como si fuera una
+        espada normal.
+    name_i18n:
+      es: Hoja Maldita
+  - id: hireling.dramatis.aldred-fellblade.rule.destiny
+    name: Destiny
+    effect: >-
+      If the "Dead" result is rolled on the Serious Injury Chart then Aldred isn't really dead but
+      he decides to quit the warband and travel to another Dwarf Hold in his quest for the sword
+      Karaghul. He is no longer available for the rest of the campaign.
+    effect_i18n:
+      es: >-
+        Si se obtiene el resultado "Muerto" en la tabla de Heridas Graves, Aldred no está realmente
+        muerto, sino que decide abandonar la banda y viajar a otro bastión enano en su búsqueda de
+        la espada Karaghul. Ya no estará disponible durante el resto de la campaña.
+    name_i18n:
+      es: Destino
+  source_refs:
+  - manual: broheim.net
+    printed_page: 63
+    section: Hired Swords and Dramatis Personae / Aldred Fellblade - Dramatis Personae
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+- id: hireling.dramatis.armen-abbas
+  kind: dramatis-personae
+  grade: 2b
+  publication: Relics of the Crusades (Broheim anthology)
+  name: Armen Abbas
+  name_i18n:
+    es: Armen Abbas
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 5
+    S: 2
+    T: 2
+    W: 3
+    I: 3
+    A: 1
+    Ld: 9
+  warband_rating:
+    kind: fixed
+    value: 65
+  equipment:
+    fixed_items:
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: angel_wings
+      quantity:
+        kind: fixed
+        value: 1
+      notes: REL-specific item (see the Angel Wings rule); no KB or 2B catalog equivalent exists — deliberate
+        dangling ref, define at promotion.
+    - item_id: stickfire
+      quantity:
+        kind: fixed
+        value: 1
+      notes: REL-specific item, "enough stickfire and vermin pots to last for the entire battle"; no KB
+        or 2B catalog equivalent — deliberate dangling ref, define at promotion.
+    - item_id: vermin_pot
+      quantity:
+        kind: fixed
+        value: 1
+      notes: REL-specific item (see stickfire note); deliberate dangling ref, define at promotion.
+  starting_skill_ids:
+  - skill.leap
+  - skill.acrobat
+  - skill.dodge
+  rules:
+  - id: hireling.dramatis.armen-abbas.rule.skills-physician
+    name: Physician
+    effect: >-
+      Armen Abbas has the following skills: Leap, Acrobat, Dodge, On the Wings of Angels. He is also
+      counted as a Physician, see the Scholar entry in the Arabian Tribe warband list.
+    effect_i18n:
+      es: >-
+        Armen Abbas tiene las siguientes habilidades Salto, Acróbata, Esquiva y En las Alas de los
+        Ángeles. También cuenta como Médico, ver la entrada de Erudito en la lista de banda de la
+        Tribu Arabia.
+    name_i18n:
+      es: Médico
+  - id: hireling.dramatis.armen-abbas.rule.angel-wings
+    name: Angel Wings
+    effect: >-
+      The Angel Wings grant Armen the ability to glide through the air. To use the Angel Wings he
+      must give up his movement and apply the effects below. At the beginning of a movement phase in
+      which Armen is at least 3" above ground level, the player may draw a straight line 1" wide and
+      24" long to any point on the table that is at or below the height he starts from. The line may
+      include a turn of up to 45 degrees. The line cannot move through any piece of terrain higher
+      than Armen's starting point. Any enemy model, susceptible to fear, underneath the line must
+      make a leadership test or flee 2D6" directly away from it. At the end of the movement phase,
+      place Armen where the line ends. During the shooting phase Armen will always fire first. His
+      player may work out the point from where he fires from at any point along his line of flight,
+      and the vertical height in inches does not add to the extent of the weapons range.
+    effect_i18n:
+      es: >-
+        Las Alas de Ángel otorgan a Armen la capacidad de planear por el aire. Para usar las Alas de
+        Ángel debe renunciar a su movimiento y aplicar los efectos siguientes. Al comienzo de una
+        fase de movimiento en la que Armen esté al menos a 3" del nivel del suelo, el jugador puede
+        trazar una línea recta de 1" de ancho y 24" de largo hacia cualquier punto del tablero que
+        esté a la altura desde la que parte o por debajo. La línea puede incluir un giro de hasta 45
+        grados. La línea no puede atravesar ninguna escenografía más alta que el punto de partida de
+        Armen. Cualquier miniatura enemiga susceptible de Miedo que esté bajo la línea debe superar
+        una tirada de Liderazgo o huir 2D6" directamente alejándose de ella. Al final de la fase de
+        movimiento, coloca a Armen donde termina la línea. Durante la fase de disparo Armen siempre
+        disparará primero. Su jugador puede calcular el punto desde el que dispara en cualquier
+        punto de su línea de vuelo, y la altura vertical en pulgadas no suma al alcance de las
+        armas.
+    name_i18n:
+      es: Alas de Ángel
+  source_refs:
+  - manual: broheim.net
+    printed_page: 16
+    section: Dramatis Personae / Armen Abbas
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+- id: hireling.dramatis.snerik-night-goblin-scout
+  kind: dramatis-personae
+  grade: 2b
+  publication: Karak Azgal (Broheim anthology)
+  name: Snerik, Night Goblin Scout
+  name_i18n:
+    es: Snerik, Explorador Goblin Nocturno
+  normalization_status: out_of_scope
+  starting_skill_ids: []
+  source_refs:
+  - manual: broheim.net
+    printed_page: 45
+    section: Hired Swords
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  out_of_scope_reason: The sources list Snerik Night Goblin Scout as hireable by the Night Goblin and
+    Savage Orc warbands and print no profile; the entry stays unmodelled until the referenced source document
+    is recovered.
+- id: hireling.dramatis.snorri-nosebiter
+  kind: dramatis-personae
+  grade: 2b
+  publication: Karak Azgal (Broheim anthology)
+  name: Snorri Nosebiter
+  name_i18n:
+    es: Snorri Muerde-Narices
+  normalization_status: normalized
+  characteristics:
+    M: 3
+    WS: 5
+    BS: 3
+    S: 4
+    T: 4
+    W: 2
+    I: 2
+    A: 2
+    Ld: 8
+  warband_rating:
+    kind: fixed
+    value: 20
+  equipment:
+    fixed_items:
+    - item_id: dwarf_axe
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: hammer
+      quantity:
+        kind: fixed
+        value: 1
+  starting_skill_ids: []
+  rules:
+  - id: hireling.dramatis.snorri-nosebiter.rule.slayer-rules
+    name: Slayer Rules
+    effect: >-
+      Snorri follows all the special rules for Slayers as can be found in the Mordheim rulebook and
+      the Slayer warband.
+    effect_i18n:
+      es: >-
+        Snorri sigue todas las reglas especiales de los Matatrolles que aparecen en el libro de
+        Mordheim y en la banda de Matatrolles.
+    name_i18n:
+      es: Reglas de Matatrolles
+  - id: hireling.dramatis.snorri-nosebiter.rule.drunk
+    name: Drunk
+    effect: >-
+      Snorri likes a drink before a battle. Roll a D6 on the following table to see what effect it
+      has: 1 - Snorri drinks to forget. This time he has forgotten to turn up. 2 - Snorri's head is
+      feeling a bit delicate. His WS and S are both reduced by -1. 3 - It takes more than that to
+      slow down Snorri. No effect. 4 - The effects on Snorri's digestion become evident to everyone.
+      Any model friend or foe, fighting within 2" of Snorri is at -1 to hit. 5 - Fortified with
+      liquor Snorri gains +1 strength. 6 - A bucket of his favourite vodka has put fire in his
+      belly. Snorri is subject to frenzy.
+    effect_i18n:
+      es: >-
+        A Snorri le gusta beber antes de una batalla. Lanza un D6 en la siguiente tabla para ver qué
+        efecto tiene: 1 - Snorri bebe para olvidar. Esta vez ha olvidado presentarse. 2 - La cabeza
+        de Snorri está algo delicada; su HA y su F se reducen en -1. 3 - Hace falta más que eso para
+        frenar a Snorri; sin efecto. 4 - Los efectos en la digestión de Snorri se hacen evidentes
+        para todos: cualquier miniatura, amiga o enemiga, que luche dentro de 2" de Snorri obtiene
+        -1 por impactar. 5 - Fortalecido por el licor, Snorri gana +1 de Fuerza. 6 - Un cubo de su
+        vodka favorito le ha puesto fuego en las tripas: Snorri sufre frenesí.
+    name_i18n:
+      es: Borracho
+  - id: hireling.dramatis.snorri-nosebiter.rule.lucky
+    name: Lucky
+    effect: >-
+      Although he has no armour Snorri has a knack of avoiding harm. He has a 5+ ward save against
+      shooting and combat.
+    effect_i18n:
+      es: >-
+        Aunque no lleva armadura, Snorri tiene el don de esquivar el daño. Tiene una tirada de
+        salvación especial de 5+ contra disparos y combate.
+    name_i18n:
+      es: Afortunado
+  source_refs:
+  - manual: broheim.net
+    printed_page: 62
+    section: Hired Swords and Dramatis Personae / Snorri Nosebiter - Dramatis Personae
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+- id: hireling.dramatis.strigani-seer-necromancer
+  kind: dramatis-personae
+  grade: 2b
+  publication: Karak Azgal (Broheim anthology)
+  name: Strigani Seer Necromancer
+  name_i18n:
+    es: Adivino Nigromante Strigani
+  normalization_status: out_of_scope
+  starting_skill_ids: []
+  rules:
+  - id: hireling.dramatis.strigani-seer-necromancer.rule.hiring-condition
+    name: Hiring Condition
+    effect: >-
+      The Strigoi Vampire warband may only hire the Strigani Seer Necromancer if they have no
+      vampire.
+    effect_i18n:
+      es: >-
+        La banda de Vampiros Strigoi solo puede contratar al Adivino Nigromante Strigani si no tiene
+        ningún vampiro.
+    name_i18n:
+      es: Condición de Contratación
+  source_refs:
+  - manual: broheim.net
+    printed_page: 31
+    section: Hired Swords
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  out_of_scope_reason: The source lists the Strigani Seer Necromancer among the Hired Swords the Strigoi
+    Vampire warband may hire (only when it has no vampire) and prints no stat block; the profile stays
+    unmodelled until the referenced source document is recovered.

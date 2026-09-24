@@ -1,9 +1,116 @@
 schema_version: 1
 ruleset: mordheim
-catalog: magic-2b
-status: staging
-casting_rules_note: Casting rules follow the Mordheim rulebook as modeled in the active KB (sources/knowledge/catalog/campaign/magic.yaml
-  -> casting_rules). No new casting mechanics are introduced by the 2B sources.
+catalog: campaign-magic
+status: draft
+casting_rules:
+  id: campaign.magic.casting
+  effect: >-
+    Spells are cast in the shooting phase and may be used even if the caster is in hand-to-hand
+    combat. To use a spell, the wizard rolls equal to or greater than the spell's Difficulty on 2D6.
+    If he fails, he may not cast a spell that turn. A wizard may cast one spell per turn and may not
+    use missile weapons if he wants to cast a spell; he may run. A wizard may not use magic if he is
+    wearing armour or has a shield or buckler; the only exception is the Prayers of Sigmar.
+  effect_i18n:
+    es: >-
+      Los conjuros se lanzan en la fase de disparo y pueden usarse incluso si el lanzador está en
+      combate cuerpo a cuerpo. Para lanzar un conjuro, el hechicero saca en 2D6 igual o más que la
+      Dificultad del conjuro. Si falla, no puede lanzar un conjuro ese turno. Un hechicero puede
+      lanzar un conjuro por turno y no puede usar armas de proyectiles si quiere lanzar un conjuro;
+      puede correr. Un hechicero no puede usar la magia si lleva armadura, escudo o broquel; la
+      única excepción son las Oraciones de Sigmar.
+  damage: Spells that cause direct damage are resolved the same way as damage from shooting or blows in
+    hand-to-hand combat. Spells do not cause critical hits. Models always receive armour saves against
+    wounds caused by spells unless noted otherwise.
+  starting_spells: Each wizard starts with one randomly determined spell, but may gain more. Roll a D6
+    and consult the appropriate chart. If the same spell is rolled twice, roll again or lower the spell's
+    difficulty by 1.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Magic / Casting Spells
+    url: https://mordheimer.net/docs/magic
+lore_assignments:
+  source_refs:
+  - manual: broheim.net
+    printed_page: 0
+    section: Band and hired-sword wizards and their lores of the 2B packs (allocated spells)
+  rows:
+  - wizard: druid-priest-of-taal
+    profile_id: hireling.hired-sword.druid-priest-of-taal
+    band: null
+    lore: lore.prayers-of-taal
+  - wizard: mariner-priest-of-manann
+    profile_id: hireling.hired-sword.mariner-priest-of-manann
+    band: null
+    lore: lore.prayers-of-manann
+  - wizard: priest-of-morr
+    profile_id: hireling.hired-sword.priest-of-morr
+    band: null
+    lore: lore.prayers-of-morr
+  - wizard: priest-of-verena
+    profile_id: hireling.hired-sword.priest-of-verena
+    band: null
+    lore: lore.prayers-of-verena-and-solkan
+  - wizard: priestess-of-shallya
+    profile_id: hireling.hired-sword.priestess-of-shallya
+    band: null
+    lore: lore.prayers-of-shallya
+  - wizard: trickster-priest-of-ranald
+    profile_id: hireling.hired-sword.trickster-priest-of-ranald
+    band: null
+    lore: lore.prayers-of-ranald-and-handrich
+  - wizard: war-priestess-of-myrmidia
+    profile_id: hireling.hired-sword.war-priestess-of-myrmidia
+    band: null
+    lore: lore.prayers-of-myrmidia
+  - wizard: warrior-priest-of-sigmar
+    profile_id: hireling.hired-sword.warrior-priest-of-sigmar
+    band: null
+    lore: lore.prayers-of-sigmar
+  - wizard: wolf-priest-of-ulric
+    profile_id: hireling.hired-sword.wolf-priest-of-ulric
+    band: null
+    lore: lore.prayers-of-ulric-miracle-workers
+  - wizard: call-of-the-night-haint-mim-cairn-wraith
+    profile_id: cairn-wraith
+    band: call-of-the-night-haint-mim
+    lore: lore.necromancy
+  - wizard: channel-rats-mim-petru
+    profile_id: petru
+    band: channel-rats-mim
+    lore: lore.charms-and-hexes
+  - wizard: forest-goblins-lus-shaman
+    profile_id: shaman
+    band: forest-goblins-lus
+    lore: lore.forest-goblin-magic
+  - wizard: ghost-pirates-sar-sea-singer
+    profile_id: sea-singer
+    band: ghost-pirates-sar
+    lore: lore.songs-of-sorrow
+  - wizard: high-elves-lus-loremaster
+    profile_id: loremaster
+    band: high-elves-lus
+    lore: lore.spells-of-the-djedhi
+  - wizard: lothern-sea-patrol-sar-mist-mage
+    profile_id: mist-mage
+    band: lothern-sea-patrol-sar
+    lore: lore.lothern-sea-spells
+  - wizard: necrarchs-mou-nosferatu
+    profile_id: nosferatu
+    band: necrarchs-mou
+    lore: lore.necromancy
+  - wizard: shallows-beasts-mim-mutant-priest
+    profile_id: mutant-priest
+    band: shallows-beasts-mim
+    lore: lore.chaos-rituals
+  - wizard: shallows-beasts-mim-mutant-priest
+    profile_id: mutant-priest
+    band: shallows-beasts-mim
+    lore: lore.prayers-of-manann
+  - wizard: wood-elves-of-arden-mou-forest-mage
+    profile_id: forest-mage
+    band: wood-elves-of-arden-mou
+    lore: lore.wood-elven-spells
 lores:
 - id: lore.songs-of-sorrow
   name: Songs of Sorrow
@@ -11,11 +118,6 @@ lores:
     es: Cantos del Pesar
   note: A simple form of Necromancy, fueled not by scrolls and ancient prayers, but by a Sea Singer's
     fevered mind and pure willpower. (Ghost Pirates of Sartosa, p. 5.)
-  source_refs:
-  - manual: broheim.net
-    printed_page: 5
-    section: Songs of Sorrow
-    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
   spells:
   - id: spell.songs-of-sorrow.sirens-call
     roll: '1'
@@ -145,17 +247,17 @@ lores:
         características y sus habilidades no mágicas. Si el hechizo falla, el héroe se convierte en
         un Hinchado, con las mismas reglas y características que cualquier Hinchado normal (aun así
         puedes quedarte con su equipo).
-- id: lore.wood-elven-spells
-  name: Wood Elven spell list
-  name_i18n:
-    es: Lista de hechizos Silvanos
-  note: Spell list of the Wood Elves of Arden (Mousillon supplement). The Forest Mage randomly chooses
-    one spell from this list.
   source_refs:
   - manual: broheim.net
-    printed_page: 2
-    section: Special Rules / Woodland Incantations
-    url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
+    printed_page: 5
+    section: Songs of Sorrow
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Ghost%20Pirates.pdf
+- id: lore.wood-elven-spells
+  name: Wood Elven Spell List
+  name_i18n:
+    es: Lista de Hechizos Silvanos
+  note: Spell list of the Wood Elves of Arden (Mousillon supplement). The Forest Mage randomly chooses
+    one spell from this list.
   spells:
   - id: spell.wood-elven-spells.song-of-thorns
     roll: '1'
@@ -251,30 +353,69 @@ lores:
         los elfos que obtienen la legendaria vista de Thuarindir; todos los Elfos Silvanos dentro de
         6" ganan +1 por impactar y +1 para recibir golpes críticos; dura hasta el principio de la
         próxima fase de magia del lanzador.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Special Rules / Woodland Incantations
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
 - id: lore.lothern-sea-spells
   name: Spells of the Lothern Sea
   name_i18n:
     es: Hechizos del Mar de Lothern
-  note: 'VARIANT of the KB Djedhi lore. Source note: "Most of the following spells are taken from the
-    ''Djed-Hi Spell List'' from the ''Elven Mage Hired Sword'' by Jake Thornton. The exception is the
-    4th spell, ''Mistress of the Deep'', which replaces the spell ''Fleeting Shadows''." At promotion:
-    inherit spell.spells-of-the-djedhi entries 1-3 and 5-6 (Divination of Shirath D6, Shimmering Shield
-    D7, Statue of Light D7, Hunter''s Fury D9, Silent Guardian D9) and replace Fleeting Shadows with Mistress
-    of the Deep (D8).'
-  source_refs:
-  - manual: broheim.net
-    printed_page: 5
-    section: Spells of the Lothen Sea
-    url: https://broheim.net/downloads/warbands/supplement/sartosa/Lothern%20Sea%20Patrol.pdf
-  replaces_lore: lore.spells-of-the-djedhi
+  note: 'VARIANT of the KB Djedhi lore (lore.spells-of-the-djedhi), stated in full the way the KB keeps
+    its own reprints (lore.necromancy-restless-dead, lore.onogal-rituals): the source reprints five of
+    the Djedhi spells and the fourth spell, Mistress of the Deep (D8), replaces Fleeting Shadows. Source
+    note: "Most of the following spells are taken from the ''Djed-Hi Spell List'' from the ''Elven Mage
+    Hired Sword'' by Jake Thornton. The exception is the 4th spell, ''Mistress of the Deep'', which replaces
+    the spell ''Fleeting Shadows''."'
   spells:
+  - id: spell.lothern-sea-spells.divination-of-shirath
+    roll: '1'
+    name: Divination of Shirath
+    difficulty: 6
+    effect: >-
+      The Mage may reroll all his failed dice rolls, though the second result stands. The effect
+      lasts until the beginning of the Mage's next turn.
+    effect_i18n:
+      es: >-
+        El Mago puede repetir todas sus tiradas de dado fallidas, aunque el segundo resultado es
+        definitivo. El efecto dura hasta el principio del siguiente turno del Mago.
+    name_i18n:
+      es: Adivinación de Shirath
+  - id: spell.lothern-sea-spells.shimmering-shield
+    roll: '2'
+    name: Shimmering Shield
+    difficulty: 7
+    effect: >-
+      This spell gives the Mage an additional unmodified 5+ save against all attacks. The effect
+      lasts until the beginning of the Mage's next turn.
+    effect_i18n:
+      es: >-
+        Este conjuro da al Mago una salvación adicional no modificable de 5+ contra todos los
+        ataques. El efecto dura hasta el principio del siguiente turno del Mago.
+    name_i18n:
+      es: Escudo Refulgente
+  - id: spell.lothern-sea-spells.statue-of-light
+    roll: '3'
+    name: Statue of Light
+    difficulty: 7
+    effect: >-
+      The Mage chooses a single enemy model he can see. That model may not move as long as the Mage
+      remains both static and alive. The Mage and the target may cast spells normally, but fight in
+      close combat at -2 WS, minimum of 1.
+    effect_i18n:
+      es: >-
+        El Mago elige una sola miniatura enemiga que pueda ver. Esa miniatura no puede moverse
+        mientras el Mago permanezca estático y vivo. El Mago y el objetivo pueden lanzar conjuros
+        con normalidad, pero luchan en combate cuerpo a cuerpo con -2 HA, mínimo 1.
+    name_i18n:
+      es: Estatua de Luz
   - id: spell.lothern-sea-spells.mistress-of-the-deep
     roll: '4'
     name: Mistress of the Deep
     name_i18n:
       es: Señora de las Profundidades
     difficulty: 8
-    replaces: spell.spells-of-the-djedhi.fleeting-shadows
     effect: >-
       The mage summons a spirit from water, more beauteous than imagined and bewitching to hear.
       Place a man-sized Oceanid model within 6" of the Mist Mage. This model may not move or make
@@ -302,12 +443,45 @@ lores:
         cuando el Mago intenta volver a lanzarlo o cuando lanza otro hechizo. Si se relanza con
         éxito, la miniatura de Oceanida se traslada a cualquier nueva posición dentro de 6" del
         Mago.
-  inherited_spell_ids:
-  - spell.spells-of-the-djedhi.divination-of-shirath
-  - spell.spells-of-the-djedhi.shimmering-shield
-  - spell.spells-of-the-djedhi.statue-of-light
-  - spell.spells-of-the-djedhi.hunters-fury
-  - spell.spells-of-the-djedhi.silent-guardian
+  - id: spell.lothern-sea-spells.hunters-fury
+    roll: '5'
+    name: Hunter's Fury
+    difficulty: 9
+    effect: >-
+      The spell summons D3 +1 arrows which the Mage can use to shoot against one enemy model
+      following the rules for normal shooting. The arrows have a range of 36". Use the Mage's own
+      Ballistic Skill to determine hits, but ignore movement, range and cover penalties. Each arrow
+      causes one S3 hit.
+    effect_i18n:
+      es: >-
+        El conjuro invoca D3 +1 flechas que el Mago puede usar para disparar contra una miniatura
+        enemiga siguiendo las reglas de disparo normales. Las flechas tienen un alcance de 36". Usa
+        la propia Habilidad de Disparo del Mago para determinar los impactos, pero ignora las
+        penalizaciones por movimiento, alcance y cobertura. Cada flecha causa un impacto de F3.
+    name_i18n:
+      es: Furia del Cazador
+  - id: spell.lothern-sea-spells.silent-guardian
+    roll: '6'
+    name: Silent Guardian
+    difficulty: 9
+    effect: >-
+      If the Mage is attacked in close combat, the guardian fights first with WS5, S3, making one
+      attack per turn against each enemy that attacks the Mage. The guardian will not leave the
+      Mage's side and can only be dispelled if the Mage casts another spell or dies. The guardian
+      cannot be attacked in return.
+    effect_i18n:
+      es: >-
+        Si el Mago es atacado en combate cuerpo a cuerpo, el guardián golpea primero con HA5 y F3,
+        haciendo un ataque por turno contra cada enemigo que ataque al Mago. El guardián no se
+        separará del lado del Mago y solo puede ser disipado si el Mago lanza otro conjuro o muere.
+        El guardián no puede ser atacado en respuesta.
+    name_i18n:
+      es: Guardián Silencioso
+  source_refs:
+  - manual: broheim.net
+    printed_page: 5
+    section: Spells of the Lothen Sea
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Lothern%20Sea%20Patrol.pdf
 - id: lore.prayers-of-manann
   name: Prayers of Manann
   name_i18n:
@@ -322,15 +496,6 @@ lores:
     Strike first, Parry; rarity 7 per Unknowable Cargo). Casting follows the chapter''s priest rules:
     prayers are cast like spells in the shooting phase, priests may wear armour, prayers cause no critical
     hits. A Priest starts with 12 experience and counts as a Hero.'
-  source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
-    printed_page: 17
-    section: Prayers of Manann
-    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-  - manual: broheim.net
-    printed_page: 3
-    section: Heroes / 0-1 Mutant-Priest / Special Rules / Prayers
-    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf
   spells:
   - id: spell.prayers-of-manann.blessed-voyage
     roll: '1'
@@ -445,37 +610,20 @@ lores:
         Sacerdote puede caminar sobre el agua, la marisma y el terreno pantanoso como si fuera
         tierra firme. Los efectos de esta plegaria duran hasta que el Sacerdote regresa a cualquier
         plataforma sólida.
-  marks:
-  - id: spell.prayers-of-manann.mark-one-with-the-sea
-    name: One with the Sea
-    name_i18n:
-      es: Uno con el Mar
-    effect: >-
-      If the Priest falls into water then regardless of the injury roll the Priest cannot be
-      drowned.
-    effect_i18n:
-      es: >-
-        Si el Sacerdote cae al agua, independientemente de la tirada de herida, el Sacerdote no
-        puede ahogarse.
-  - id: spell.prayers-of-manann.mark-webbed
-    name: Webbed
-    name_i18n:
-      es: Palmeado
-    effect: The fingers and toes of the Priest develop webbed skin and he becomes Aquatic.
-    effect_i18n:
-      es: >-
-        Los dedos de las manos y los pies del Sacerdote desarrollan membranas y se convierte en
-        Acuático.
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 17
+    section: Prayers of Manann
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  - manual: broheim.net
+    printed_page: 3
+    section: Heroes / 0-1 Mutant-Priest / Special Rules / Prayers
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf
 - id: lore.prayers-of-morr
   name: Prayers of Morr
   name_i18n:
     es: Plegarias de Morr
   note: El Sacerdote de Morr elige al azar una plegaria de esta lista.
-  source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
-    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-    printed_page: 12
-    section: Prayers of Prayers of Morr
   spells:
   - id: spell.prayers-of-morr.destroy-undead
     roll: '1'
@@ -601,16 +749,16 @@ lores:
         impedir que la cruce una criatura No Muerta. Cualquier criatura No Muerta debe superar una
         tirada de Liderazgo con un modificador de +1 a la tirada antes de poder cruzar el marcador
         umbral, que dura el resto de la batalla.
+  source_refs:
+  - manual: liber-malefic
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+    printed_page: 12
+    section: Prayers of Prayers of Morr
 - id: lore.prayers-of-myrmidia
   name: Prayers of Myrmidia
   name_i18n:
     es: Plegarias de Myrmidia
   note: La Sacerdotisa de Guerra de Myrmidia elige al azar una plegaria de esta lista.
-  source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
-    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-    printed_page: 13
-    section: Prayers of Prayers of Myrmidia
   spells:
   - id: spell.prayers-of-myrmidia.blazing-sun
     roll: '1'
@@ -723,17 +871,17 @@ lores:
         cuerpo, la Sacerdotisa siempre debe cargar si hay miniaturas enemigas dentro de alcance de
         carga. El jugador no tiene elección en el asunto: la Sacerdotisa declarará automáticamente
         una carga.
+  source_refs:
+  - manual: liber-malefic
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+    printed_page: 13
+    section: Prayers of Prayers of Myrmidia
 - id: lore.prayers-of-ranald-and-handrich
   name: Prayers of Ranald & Handrich
   name_i18n:
     es: Plegarias de Ranald y Handrich
   note: El Sacerdote Tramposo de Ranald elige al azar una plegaria de esta lista; en Marienburg, los sacerdotes
     de Handrich (Dios del Comercio) pueden usar la misma lista.
-  source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
-    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-    printed_page: 14
-    section: Prayers of Prayers of Ranald & Handrich
   spells:
   - id: spell.prayers-of-ranald-and-handrich.bamboozle
     roll: '1'
@@ -863,16 +1011,16 @@ lores:
         pasar desapercibidos y evitar el conflicto cuando les conviene. El Sacerdote se oculta hasta
         el comienzo del siguiente turno de los jugadores. Cualquier intento de detectar o avistar al
         Sacerdote fallará automáticamente a menos que pueda lograrse por medios mágicos.
+  source_refs:
+  - manual: liber-malefic
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+    printed_page: 14
+    section: Prayers of Prayers of Ranald & Handrich
 - id: lore.prayers-of-shallya
   name: Prayers of Shallya
   name_i18n:
     es: Plegarias de Shallya
   note: La Sacerdotisa de Shallya elige al azar una plegaria de esta lista.
-  source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
-    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-    printed_page: 15
-    section: Prayers of Prayers of Shallya
   spells:
   - id: spell.prayers-of-shallya.cure-disease
     roll: '1'
@@ -983,156 +1131,11 @@ lores:
         superar una tirada de Liderazgo con -2 de Liderazgo para cargar, disparar proyectiles o usar
         ataques mágicos contra la Sacerdotisa. Los efectos de esta plegaria duran hasta que la
         Sacerdotisa ataque a una miniatura enemiga en combate cuerpo a cuerpo.
-- id: lore.prayers-of-taal-and-rhya
-  name: Prayers of Taal & Rhya
-  name_i18n:
-    es: Plegarias de Taal y Rhya
-  note: 'El Sacerdote Druida de Taal elige al azar una plegaria de esta lista. MIRROR of the KB lore.prayers-of-taal:
-    the six spells and their difficulties are identical (Stag''s Leap D7, Blessed Ale D5, Bears Paw D7,
-    Earthshudder D9, Tanglefoot D8, Summon Squirrels D7); at promotion, verify and map to the existing
-    lore instead of duplicating it.'
   source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
+  - manual: liber-malefic
     url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-    printed_page: 16
-    section: Prayers of Prayers of Taal & Rhya
-  spells:
-  - id: spell.prayers-of-taal-and-rhya.stag-s-leap
-    roll: '1'
-    name: Stag's Leap
-    name_i18n:
-      es: Salto del Ciervo
-    difficulty: 7
-    effect: >-
-      Many of Taal's priests wear a stag skull as a symbol of their devotion and the Forest Lord's
-      power can be used to emulate the speed and beauty of this magnificent beast. The Priest of
-      Taal may immediately move anywhere within 9", including into base-contact with the enemy, in
-      which case he counts as charging and gains a +1 Strength to his first round of attacks. If he
-      engages a fleeing enemy, in the close combat phase he will score one automatic hit at +1
-      Strength and then his opponent will flee again.
-    effect_i18n:
-      es: >-
-        Muchos de los sacerdotes de Taal llevan un cráneo de ciervo como símbolo de su devoción y el
-        poder del Señor del Bosque puede usarse para emular la velocidad y belleza de esta magnífica
-        bestia. El Sacerdote de Taal puede moverse inmediatamente a cualquier punto a 9" o menos,
-        incluido el contacto base con el enemigo, en cuyo caso cuenta como carga y gana +1 de Fuerza
-        en su primera ronda de ataques. Si alcanza a un enemigo en huida, en la fase de combate
-        cuerpo a cuerpo conseguirá un impacto automático con +1 de Fuerza y después su oponente
-        volverá a huir.
-  - id: spell.prayers-of-taal-and-rhya.blessed-ale
-    roll: '2'
-    name: Blessed Ale
-    name_i18n:
-      es: Cerveza Bendecida
-    difficulty: 5
-    effect: >-
-      Like his brother Ulric, Taal has a great appetite for the strong ales of the Northern Empire.
-      During the summer equinox each Priest opens one keg of ale (at least!) in Taal's honour.
-      Drinking a flask of Taal-blessed ale (the priest is assumed to carry as many flasks as are
-      needed) may heal any one model within 2" of the Priest (including himself). The warrior is
-      restored to his full quota of Wounds. In addition, any living enemy models (not Undead or
-      Possessed) within 2" of the Priest will lose 1 Attack during the next round of combat due to
-      the potent fumes of the ale.
-    effect_i18n:
-      es: >-
-        Como su hermano Ulric, Taal tiene un gran apetito por las cervezas fuertes del Imperio del
-        Norte. Durante el solsticio de verano cada Sacerdote abre un barril de cerveza (¡al menos!)
-        en honor de Taal. Beber un frasco de cerveza bendecida por Taal (se asume que el sacerdote
-        lleva tantos frascos como hagan falta) puede sanar a una miniatura cualquiera a 2" o menos
-        del Sacerdote (incluido él mismo). El guerrero recupera toda su cuota de Heridas. Además,
-        cualquier miniatura enemiga viva (no No Muerta ni Poseída) a 2" o menos del Sacerdote
-        perderá 1 Ataque durante la siguiente ronda de combate debido a los potentes vapores de la
-        cerveza.
-  - id: spell.prayers-of-taal-and-rhya.bears-paw
-    roll: '3'
-    name: Bears Paw
-    name_i18n:
-      es: Pata de Oso
-    difficulty: 7
-    effect: >-
-      Many an armoured knight has been knocked to the ground by the surprising Strength of the
-      followers of Taal. Although traditionally called 'Bears Paw' this spell is sometimes referred
-      to as 'Moose Breath' by those who have felt its power. The Priest invokes the blessing of Taal
-      on himself or a single friendly model within 6". The target receives a bonus of +2 to his
-      Strength until the Priest's next turn.
-    effect_i18n:
-      es: >-
-        A más de un caballero armado lo han derribado al suelo la sorprendente Fuerza de los
-        seguidores de Taal. Aunque tradicionalmente se llama 'Pata de Oso', este hechizo a veces es
-        llamado 'Aliento de Alce' por quienes han sentido su poder. El Sacerdote invoca la bendición
-        de Taal sobre sí mismo o sobre una única miniatura amiga a 6" o menos. El objetivo recibe un
-        bonus de +2 a su Fuerza hasta el siguiente turno del Sacerdote.
-  - id: spell.prayers-of-taal-and-rhya.earthshudder
-    roll: '4'
-    name: Earthshudder
-    name_i18n:
-      es: Sacudida de la Tierra
-    difficulty: 9
-    effect: >-
-      Taal's domain includes both the earth and the skies and his power can reach out even into the
-      dark streets of Mordheim. When his name is invoked three times and the blood of an eagle is
-      poured on the ground, the Lord of the Wild will cause thunder to rumble and the earth to
-      shake. The spell is cast on a single building within 4". Any enemy models touching the
-      building will suffer a single Strength 3 hit. In addition the building will collapse and any
-      models on it will count as having fallen to the ground (for example a model falling 5" to the
-      tabletop must pass two Initiative tests to avoid taking D3 Strength 5 hits.) Remove the
-      terrain feature from the board for the rest of the game.
-    effect_i18n:
-      es: >-
-        El dominio de Taal incluye tanto la tierra como los cielos y su poder puede alcanzar incluso
-        las calles oscuras de Mordheim. Cuando su nombre se invoca tres veces y la sangre de un
-        águila se derrama en el suelo, el Señor de lo Salvaje hará retumbar el trueno y temblar la
-        tierra. El hechizo se lanza sobre un único edificio a 4" o menos. Las miniaturas enemigas
-        que toquen el edificio sufrirán un único impacto de Fuerza 3. Además, el edificio se
-        derrumbará y cualquier miniatura sobre él contará como caída al suelo (por ejemplo, una
-        miniatura que caiga 5" hasta la superficie de juego debe superar dos tiradas de Iniciativa
-        para evitar sufrir D3 impactos de Fuerza 5). Retira la escenografía del tablero por el resto
-        de la partida.
-  - id: spell.prayers-of-taal-and-rhya.tanglefoot
-    roll: '5'
-    name: Tanglefoot
-    name_i18n:
-      es: Pies Enredados
-    difficulty: 8
-    effect: >-
-      It is said that when Taal walked the earth, living things would spring up behind him as he
-      passed. A portion of his power can be summoned by his followers to help regrow forests and aid
-      in the return of the land to its natural state. Plants, vines and even small trees burst forth
-      from the earth, hindering all those who attempt to move through them. All models (friend as
-      well as foe) with the exception of friendly Taalites within 12" of the Priest can only move at
-      half their Movement until the next shooting phase.
-    effect_i18n:
-      es: >-
-        Se dice que cuando Taal caminaba por la tierra, los seres vivos brotaban a su paso. Una
-        parte de su poder puede ser invocada por sus seguidores para ayudar a reforestar y
-        contribuir a que la tierra vuelva a su estado natural. Plantas, enredaderas e incluso
-        pequeños árboles brotan de la tierra, dificultando el avance de todos los que intenten
-        atravesarlos. Todas las miniaturas (amigas y enemigas), con la excepción de los taalitas
-        amigas, a 12" o menos del Sacerdote solo pueden moverse a la mitad de su Movimiento hasta la
-        siguiente fase de disparo.
-  - id: spell.prayers-of-taal-and-rhya.summon-squirrels
-    roll: '6'
-    name: Summon Squirrels
-    name_i18n:
-      es: Invocar Ardillas
-    difficulty: 7
-    effect: >-
-      Taal is the master of all beasts both great and small. Those who anger him may be mauled by a
-      mountain lion or drowned in a flood caused by an angry beaver. With this spell the Priest
-      invokes the wrath of the Lord of Beasts, summoning forth dozens upon dozens of enraged
-      squirrels. The furious rodents will assault one enemy within 12" of the Priest, crawling
-      inside the warrior's clothing and armour, pelting him with nuts and causing numerous tiny
-      bites and welts. The target suffers 2D6 Strength 1 hits. No armour saves allowed.
-    effect_i18n:
-      es: >-
-        Taal es el señor de todas las bestias, grandes y pequeñas. Quienes le enfurecen pueden ser
-        despedazados por un puma o ahogados en una inundación causada por un castor furioso. Con
-        este hechizo el Sacerdote invoca la ira del Señor de las Bestias, convocado decenas y
-        decenas de ardillas enfurecidas. Los furiosos roedores asaltan a un enemigo a 12" o menos
-        del Sacerdote, arrastrándose dentro de la ropa y la armadura del guerrero, apedreándolo con
-        nueces y causando numerosos mordiscos diminutos y ronchas. El objetivo sufre 2D6 impactos de
-        Fuerza 1. Sin tiradas de salvación por armadura permitidas.
-  mirror_of_lore: lore.prayers-of-taal
+    printed_page: 15
+    section: Prayers of Prayers of Shallya
 - id: lore.prayers-of-ulric-miracle-workers
   name: Prayers of Ulric (Miracle Workers)
   name_i18n:
@@ -1143,11 +1146,6 @@ lores:
     of the Wolf D8, Hoarfrost Thews D8, Ice Storm D10, The Snow King''s Decree D10, Wild Pack D8). No
     spell overlaps; the MW list replaces the Town Cryer list for this profile only. At promotion: keep
     both lores and route lore_assignments of the MW Wolf-Priest to this variant.'
-  source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
-    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-    printed_page: 17
-    section: Prayers of Prayers of Ulric (Miracle Workers)
   spells:
   - id: spell.prayers-of-ulric.frost-s-bite
     roll: '1'
@@ -1269,7 +1267,11 @@ lores:
         Todas las miniaturas enemigas a 12" o menos sufren una penalización de -1 a su Habilidad de
         Armas en la siguiente fase de combate cuerpo a cuerpo si atacan a guerreros de la banda del
         Sacerdote. Esta plegaria no afecta a los No Muertos.
-  variant_of_lore: lore.prayers-of-ulric
+  source_refs:
+  - manual: liber-malefic
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+    printed_page: 17
+    section: Prayers of Prayers of Ulric (Miracle Workers)
 - id: lore.prayers-of-verena-and-solkan
   name: Prayers of Verena & Solkan
   name_i18n:
@@ -1277,11 +1279,6 @@ lores:
   note: El Sacerdote de Verena elige al azar una plegaria de esta lista; los guías de promoción describen
     a los bélicos sacerdotes de Solkan, que usan la misma lista. The chapter notes the Warrior-Priests
     of Solkan chant from the same list; a Solkan-only variant is not printed.
-  source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
-    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-    printed_page: 18
-    section: Prayers of Prayers of Verena & Solkan
   spells:
   - id: spell.prayers-of-verena-and-solkan.preserve-the-balance
     roll: '1'
@@ -1396,17 +1393,13 @@ lores:
         grave injusticia será envuelto en llamas divinas. Un guerrero enemigo a 6" o menos del
         Sacerdote sufre un impacto de Fuerza 6. El guerrero se considera incendiado por el ataque de
         fuego.
-lore_assignments:
-  existing_lores:
-    channel-rats-mim: lore.charms-and-hexes
-    necrarchs-mou: lore.necromancy
-    call-of-the-night-haint-mim: lore.necromancy
-    shallows-beasts-mim: lore.chaos-rituals
-    forest-goblins-lus: lore.forest-goblin-magic
-    high-elves-lus: lore.spells-of-the-djedhi
-  new_lores:
-    ghost-pirates-sar: lore.songs-of-sorrow
-    wood-elves-of-arden-mou: lore.wood-elven-spells
-    lothern-sea-patrol-sar: lore.lothern-sea-spells
-    shallows-beasts-mim: lore.prayers-of-manann
-  unresolved: {}
+  source_refs:
+  - manual: liber-malefic
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+    printed_page: 18
+    section: Prayers of Prayers of Verena & Solkan
+pending_lores: []
+effect_ids:
+- campaign.magic.cast
+- campaign.magic.learn-spell
+- campaign.magic.generate-spell

@@ -230,7 +230,7 @@ perfiles, costes, equipo y textos de reglas.
 ## 7. Re-verificación completa contra fuentes de los 60 paquetes (2026-09-15)
 
 Pasada de verificación de **todos** los datos ingeridos contra los PDFs de origen, con
-`tools/knowledge/audit_2b.py` reescrito para extraer más evidencia y producir menos ruido:
+`tools/ingestion/audit_2b.py` reescrito para extraer más evidencia y producir menos ruido:
 
 - **Doble extracción por banda.** Cada comprobación se evalúa sobre el texto cacheado *y*
   sobre un `pdftotext -layout` (cacheado en `build/cache/2b-pdfs/layout/`). El extractor plano
@@ -291,14 +291,16 @@ las dos cifras y la regla aplicada.
 ### Reproducir la verificación
 
 ```bash
-python tools/knowledge/audit_2b.py                  # informe JSON a stdout
-python tools/knowledge/ingest_2b.py validate        # forma del staging
+python tools/ingestion/audit_2b.py                  # informe JSON a stdout
+python tools/ingestion/ingest_2b.py validate        # forma del staging
 python -m pytest tests/knowledge -q                 # 351 pruebas
 python tools/format_yaml.py --check sources/2B
 ```
 
-Los veredictos que la herramienta usa están en `tools/knowledge/audit_2b.py`
-(`SOURCE_WORDING`, `KNOWN_EQUIPMENT`, `RULEBOOK_DELEGATED`), cada uno con su motivo. Las
+Los veredictos que la herramienta usa están en `tools/ingestion/audit_2b.py`
+(`KNOWN_EQUIPMENT` y las adjudicaciones del propio auditor) y en el registro compartido
+`tools/ingestion/printed_wordings.py`, que desde el 2026-09-24 lleva las palabras
+impresas y las listas delegadas de los tres cotejos (§15.5), cada uno con su motivo. Las
 filas siguen siendo información, no problemas: `problem_count` es 0.
 
 ## 8. Re-verificación de costes de héroe y experiencia inicial (2026-09-16)
@@ -372,10 +374,10 @@ lectura de las páginas escaneadas y por las dos rutas de lectura nuevas del aud
 **Ninguna corrección de datos en esta pasada.** Todos los hallazgos eran defectos del cotejo
 o artefactos de la extracción a dos columnas; los valores de los 60 paquetes se mantienen tal
 cual. La batería negativa que lo demuestra (10 casos, uno por chequeo, cada uno rompe el dato
-y exige el hallazgo) está en `tools/knowledge/audit_2b_negative_tests.py` y pasa 10/10:
+y exige el hallazgo) está en `tools/ingestion/audit_2b_negative_tests.py` y pasa 10/10:
 
 ```bash
-python -X utf8 tools/knowledge/audit_2b_negative_tests.py
+python -X utf8 tools/ingestion/audit_2b_negative_tests.py
 ```
 ## 9. Cierre de los `cost-unverifiable`: lectura por geometría, tipografía decorativa y páginas escaneadas (2026-09-16)
 
@@ -443,7 +445,7 @@ un «no verificable».
 | `crooked-moon-kep` | Big Boss 45, Shaman 50, Bosses 25, Squig Hopper 30 | 4, 5, 5, 5 |
 | `slave-uprising-kep` | Demagogue 50, Underlings 25, Goblin Leader 25, Human Leader 25 | 2, 2, 2, 2 |
 
-La lectura es reproducible con la herramienta nueva `tools/knowledge/read_scanned_costs.py`
+La lectura es reproducible con la herramienta nueva `tools/ingestion/read_scanned_costs.py`
 (renderiza a 400 dpi, localiza cada línea de contratación con RapidOCR, recorta la franja
 anterior y la imprime en varias preprocesos y en arte ASCII para lectura humana). El auditor
 **no** depende de ella (RapidOCR es una instalación de usuario, no una dependencia del
@@ -468,7 +470,7 @@ al desactivar el descifrado decorativo, la lectura por geometría o las lecturas
 las cifras que cada ruta sostiene vuelven a `cost-unverifiable`), y pasa completa:
 
 ```bash
-python -X utf8 tools/knowledge/audit_2b_negative_tests.py
+python -X utf8 tools/ingestion/audit_2b_negative_tests.py
 ```
 
 ## 11. Cotejo de perfiles y stats de las tres bandas KEP (imagen)
@@ -490,14 +492,14 @@ no verificables por extracción de texto (escaneos), se contrastaron contra la i
   leído como «7» por el OCR crudo, resuelto por plantillas: Troll Slayers, Ironbreaker,
   Clansmen). Squig Hopper y Cave Squigs empiezan su fila con «2D6», no verificables
   glifo a glifo; sus columnas fijas coinciden con lo extraído.
-- Herramienta reproducible: `tools/knowledge/read_2b_kep_stats.py` (semillas
+- Herramienta reproducible: `tools/ingestion/read_2b_kep_stats.py` (semillas
   y coordenadas documentadas en el propio fichero).
 
 ## 12. Cotejo de hirelings y Dramatis Personae contra fuentes
 
 Los 28 hirelings de `sources/2B/catalog/hirelings/` (grade-2b, MiM Specialists,
 Miracle Workers priests y Relics) se contrastaron por primera vez contra sus PDFs
-(`tools/knowledge/check_2b_hirelings.py`; bloques impresos en
+(`tools/ingestion/check_2b_hirelings.py`; bloques impresos en
 `hireling-blocks/` para lectura manual):
 
 - **Tarifa, fila de stats, rating y presencia de reglas**, con adjudicación por
@@ -521,3 +523,409 @@ Miracle Workers priests y Relics) se contrastaron por primera vez contra sus PDF
 Resultado: **27/28 con datos verificados contra el bloque impreso** (25 exactos
 + 1 corregido + Strigani/Snerik name-only conformes) y la batería en verde:
 validate 60/0, conformidad 0, audit_2b 0 problemas.
+
+## 8. Pasada de fidelidad paquete ↔ fuente de los 79 paquetes de staging (2026-09-21)
+
+Cotejo cruzado de **2A (19) y 2B (60)** contra los textos extraídos de las fuentes con
+`tools/ingestion/audit_2ab_fidelity.py`. El auditor recorre las dos direcciones: cada
+artefacto del paquete debe rastrearse hasta la fuente (nombre, fila de características,
+prosa del `effect`) y cada etiqueta que la fuente imprime (reglas, habilidades, listas)
+debe estar modelada.
+
+### 8.1 Huecos reales encontrados y completados a mano
+
+La lista de habilidades especiales de banda era el hueco sistemático: la fuente imprime
+la tabla y el paquete no la modelaba. Se han añadido **39 reglas** (EN + ES) en 11
+paquetes de 2B:
+
+| Banda | Reglas añadidas |
+|---|---|
+| `silent-brotherhood-sc` | Cutthroat, Hit and Run, Backstabber, Infiltration (+ las cinco reglas de modus operandi nombradas en su regla) |
+| `knights-of-the-bitter-moors-mim` | Bretonnian Special Skills y las seis Virtudes (Purity, Valour, Discipline, Noble Disdain, the Impetuous, the Squire) |
+| `clockworkers-sc` | Puppeteer, Rogue Control, Gift of Sentience, Experimental Enhancements |
+| `call-of-the-night-haint-mim` | Siren Song (Banshee), Conduit of Death (Corpse Master), Cause Ruckus (Poltergeists), Wight Walk |
+| `brood-of-ghurash-the-sc` | The Terror, Ground Pounder, Titanic Strength, Hurl, Accelerated Evolution (con la tabla y los tres grupos de mutaciones) |
+| `sea-ghosts-mim` | Las cuatro Danzas Sombrías de Loec (Whirling Death, Storm of Blades, The Shadows Coil, Woven Mist) |
+| `high-elves-lus` | High Sorcery, Stand and Fire, Miniath, Unerring Strike, Fey Quickness |
+| `araby-smugglers-sar` | Pious Fury |
+| `skaven-of-clan-pristekk-sc` | Mutating Experiment, Thing Handler |
+| `skaven-of-clan-pestilens-lus` | Cloud of Flies |
+| `underworld-alliance-mim` | Wyrdstone Addict, Stuff 'Em With Green |
+
+Todas siguen la forma del árbol (`runtime` provisional con efecto `unimplemented` y su
+razón, `source` con manual/página/sección, `name_i18n`/`effect_i18n`), y sus `id` están
+declarados en el `rule_ids` (solo reglas `band--…`) o en el perfil correspondiente.
+
+### 8.2 Adjudicaciones sin cambio
+
+Ninguna de estas es un defecto; cada una se leyó contra la fuente y quedó registrada en
+`ADJUDICATED` de `audit_2ab_fidelity.py`:
+
+| Etiqueta | Veredicto |
+|---|---|
+| `ghost-pirates-sar`: «Necromancers and Bokors make do» | Frase de ficción que introduce el perfil Bloated |
+| `ghost-pirates-sar`: «Special Recruitment» | Encabezado de la sección del Bloated reclutado (modelado como perfil) |
+| `guild-of-disgraced-engineers-mim`: «Stablizers» | Errata de la fuente; el paquete escribe «Stabilizers» |
+| `sea-ghosts-mim`: «Guardians Of The Peace» | Sección de trasfondo sobre los Mannikins de Elftown; no imprime regla |
+| `sea-ghosts-mim`: «WARDANCER SPECIAL SKILLS» | Encabezado de la lista; las cuatro Danzas llevan su contenido |
+| `skaven-of-clan-pristekk-sc`: «Breeder» | La palabra «breeders» del trasfondo del clan, no una regla |
+| `druchii-mic`: «Swift» (2A) | Regla impresa del Draich que **contradice** el texto canónico del ítem KB (`weapon.draich` «strikes last»): registrado para la promoción, nada tocado (2A `discrepancy-verdicts.md` §5) |
+
+### 8.3 Guardas del auditor
+
+Para que el informe mida fidelidad y no ruido, el auditor ahora distingue y no reporta:
+etiquetas que son cabeceras de tabla, filas de características partidas, titulares en
+mayúsculas, firmas de autor y frases de prosa; correcciones de extracción (palabra
+cortada tras su primera letra: «T wo-handed» → «Two-handed») y erratas de la fuente que
+el paquete normaliza; etiquetas que son nombres del catálogo (KB o staging: habilidades,
+objetos y sus reglas especiales, plegarias, hechizos, mutaciones) o que aparecen en su
+prosa —incluidas las que viven en una tabla (`magic-2a.yaml` guarda la Magical Failure
+Table como `- roll: N / result: …`). Las que siguen siendo divergencia se verifican a
+mano y se registran con su razón.
+
+### 8.4 Reproducir
+
+```
+python tools/ingestion/audit_2ab_fidelity.py              # 2A + 2B, informe limpio
+python tools/ingestion/audit_2ab_fidelity.py --all        # incluye las adjudicadas
+python tools/ingestion/audit_2ab_fidelity.py --strict-labels   # barrido de completitud
+python tools/ingestion/audit_2ab_fidelity.py --band <banda> --show 20
+```
+
+Resultado de la pasada: **0 etiquetas sin modelar** en las dos direcciones (de 1164
+`effects` cotejados, 988 son verbatim o casi verbatim y 97 condensados; las 4
+adjudicaciones que siguen apareciendo en modo estricto llevan su razón en el auditor) y
+0 problemas en `validate` (19/0 y 60/0), `audit_2a`, `audit_2b`, conformidad KB y formato
+canónico; 370 pruebas de knowledge en verde.
+
+## 13. Adjudicación de los hallazgos de los hirelings: seis artefactos y una divisa (2026-09-23)
+
+Fecha: 2026-09-23. Desde que la tarifa de un Hired Sword vive en el documento de campaña
+(`catalog/hired-swords-and-dramatis-2b.yaml`) y el cotejo se repuntó a esa entrada,
+`check_2b_hirelings.py` reportaba **7 hallazgos** en `catalog/hirelings/`. Se releyó cada
+caso en el PDF, esta vez **por geometría de página** —página → columna → línea, que es el
+orden que ve un lector— y con el texto impreso **verbatim** delante: **seis eran
+defectos del cotejo** (la columna vecina o una ventana de lectura corta) y **uno era un
+dato del paquete** (una divisa convertida).
+
+Las páginas de MiM Specialists y Miracle Workers llevan **dos entradas por página**, una
+por columna, y varias las comparten personajes distintos. Leída la página como sale del
+extractor, la tarifa, la fila de stats y el rating del vecino se atribuían a la entrada
+que se estaba cotejando: eso producía seis de los siete hallazgos.
+
+### 13.1 Tabla de decisión
+
+| Personaje | Campo | Texto impreso (verbatim) | Paquete | Veredicto |
+|---|---|---|---|---|
+| Bog Hunter | stats | MiM Specialists p5: `Bog Hunter  4 3 3 34 1 31 6` (= 4·3·3·**3**·**4**·1·3·1·6) | 4/3/3/3/4/1/3/1/6 | **coincide**; el extractor leyó la fila del Midshipman, que comparte página |
+| Midshipman | stats | MiM Specialists p5: `Midshipman  4 3 3 3 3 1 41 7` (= 4·3·3·3·3·1·**4**·**1**·7) | 4/3/3/3/3/1/4/1/7 | **coincide**; el cotejo leía la fila del vecino de columna |
+| Halfling Pimp | rating | MiM Specialists p2: `Rating: A Halfling Pimp increases the warband's rating by +10 points` | 10 | **coincide**; el `+15` que salía es el del Halfling Fence, su vecino de columna |
+| Norse Bearman Bodyguard | regla `Drunken` | MiM Specialists p3, cabecera de la columna derecha: `Drunken: Bearmen are notorious for their uncontrollable consumption of alcohol…` | regla presente | **coincide**; la ventana de lectura no alcanzaba la columna siguiente de la misma página |
+| Fire-Eater | rating | MiM Specialists p4: `Rating: A Fire-Eater increases the warband's rating by +30 points` | 30 | **coincide**; el `+15` era el de la Sister of Sigmar |
+| Fire-Eater | stats | MiM Specialists p4: `Fire-eater 4 (6) 2 3 3 4 2 2 1 7` (el `(6)` es el Movement de la variante Ogre Maneater) | 4/2/3/3/4/2/2/1/7 | **coincide**; la fila sale partida entre dos líneas físicas |
+| Priest of Verena | regla `Strictures` | Miracle Workers p10: `Strictures: Priests of Verena may only be armed with a sword.` | regla presente | **coincide**; se buscaba en la página compartida con Solkan, en la ventana equivocada |
+| Albino Stormvermin | tarifa | MiM Specialists p3: `75 warp tokens to hire +30 warp tokens upkeep` | 75 + 30 **coronas** | **discrepancia real**: la divisa impresa se había convertido |
+
+### 13.2 Lo que se aplicó
+
+**Un dato, la divisa del Albino Stormvermin.** La fuente cobra en *warp tokens* y el
+paquete lo había guardado como coronas. Se guarda la expresión impresa, que es lo que el
+contrato reserva en `cost` («el importe, o la expresión que la fuente imprime en lugar de
+una cifra») y lo que el mismo documento ya hace con los dinares de Araby
+(`cost: 40 dinars`, `cost: 30 dinars; Reduced to 20 dinars for warbands that follow the
+Path of Sigmar…`):
+
+```yaml
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 75 warp tokens
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 30 warp tokens
+```
+
+La alternativa —dejar 75 coronas— se descarta por dos razones: convierte una moneda que la
+KB no modela sin declararlo, y contradice la política que la propia KB ya aplica al precio
+de un objeto de Clan Moulder en *warp tokens* (registrado con su prosa verbatim en vez de
+convertirse). Es la única corrección de datos de la pasada.
+
+**Seis defectos del cotejo, corregidos en la herramienta** (el dato del paquete era el
+impreso en los seis):
+
+- **Lectura por geometría** (`pdftohtml -xml`): las palabras se agrupan en líneas por su
+  coordenada vertical, se detecta el canal entre columnas y se ordenan primero las de la
+  izquierda y después las de la derecha. Una línea física que rebasa el canal —la tarifa
+  `45 gold crowns to hire` de los sacerdotes— se corta sólo donde el hueco cruza el canal,
+  nunca por la posición de cada palabra.
+- **La entrada, no la página**: cada entrada empieza en su encabezado y termina donde
+  empieza la siguiente; el texto de regla que la fuente imprime sobre la columna del
+  vecino (el `Drunken` del Bearman) queda dentro de su entrada porque el orden de lectura
+  lo sitúa entre los dos encabezados. El personaje se identifica por su **fila de stats**
+  (nueve dígitos, con el intercambio A/I tolerado) o por su **encabezado**, nunca por su
+  nombre en la prosa del vecino: era el `fire` de «set on fire», en la regla Rigger del
+  Midshipman, lo que atribuía a un Fire-Eater la tarifa del Midshipman.
+- **La fila de stats, en el orden de la tabla**: los dígitos que siguen al encabezado
+  `Profile` se leen ordenados por su margen izquierdo, que es el orden de las columnas.
+  En el Fire-Eater el `4` de Movement sale del extractor en otra línea que los ocho
+  dígitos restantes y leerlo en ese orden daba una fila rotada (`233422174`).
+- **Las dos formas de tarifa impresa**: `<N> divisa to hire + <M> divisa upkeep`
+  (MiM, Miracle Workers, Relics) y `Hire Fee : <N>divisa, upkeep: <M>divisa` (los Dramatis
+  de Karak Azgal). La divisa se lee aunque venga pegada al importe (`40GC`) y aunque la
+  página sustituya los espacios por el punto del formulario (`Hire Fee: .85.dinars.to
+  .hire`, en Relics), que es lo que dejaba a Armen Abbas sin entrada.
+- **La fila de stats sin la palabra `Profile`**: los Dramatis de Karak Azgal empiezan su
+  tabla directamente en las columnas (`M WS BS S T WI A LD`), y una columna puede salir
+  pegada en un solo token (`WI` es W e I).
+- **El desborde a la página siguiente**: las reglas de Snorri están en la p63 aunque su
+  perfil esté en la p62, y su `Drunk`/`Lucky` se leían como ausentes. Se lee el principio
+  de la página contigua hasta la tarifa o el encabezado de **otro** personaje del árbol;
+  un subtítulo propio (`SPECIAL RULES`) no la interrumpe.
+
+### 13.3 Resultado
+
+`check_2b_hirelings.py` cubre ahora los **28 perfiles** —23 hired swords y 3 Dramatis con
+bloque impreso comparable, más Strigani Seer y Snerik, `out_of_scope` conformes— y coteja
+la **divisa** además del importe:
+
+| Chequeo | Cobertura | Hallazgos |
+|---|---|---|
+| Bloque impreso localizado | 26/26 | — |
+| Tarifa (importe **y** divisa) | 26/26 | 0 |
+| Fila de stats | 26/26 | 0 |
+| Rating | 26/26 | 0 |
+| Reglas presentes | 26/26 | 0 |
+
+Cada ejecución imprime la cobertura **por chequeo**, porque un «0 hallazgos» sin filas
+comparadas no es lo mismo que un «0 comprobado»: lo que no se pudo comparar es una nota con
+su razón y baja la cobertura. Los bloques extraídos quedan en orden de lectura en
+`build/cache/2b-hirelings/hireling-blocks/` para lectura manual, y el XML y el texto por
+página en `words/` y `text/`.
+
+Este cotejo y el de los Dramatis Personae de 2A son hoy **uno solo**: comparten el lector de
+entradas impresas (`tools/ingestion/printed_entries.py`), de modo que la geometría con la que
+se lee cada entrada, la comparación de divisa y la cobertura por chequeo no pueden divergir
+entre los dos árboles. La lectura por geometría de 2B queda como estaba —las mismas 26
+entradas verifican tarifa, stats, rating y reglas— y los dos perfiles sin bloque impreso se
+reportan con su adjudicación `out_of_scope` como nota.
+
+```bash
+python -X utf8 tools/ingestion/check_2b_hirelings.py
+python -X utf8 tools/ingestion/check_2b_hirelings.py "Albino Stormvermin"   # un caso
+python -X utf8 -m pytest tests/knowledge/test_2b_hireling_cotejo.py tests/knowledge/test_2a_dramatis_cotejo.py tests/knowledge/test_printed_entries.py
+```
+
+La batería que lo sostiene (`tests/knowledge/test_2b_hireling_cotejo.py`) fija las tres
+clases de artefacto con texto de fixture —las dos columnas de una página, la fila de stats
+en orden de tabla, la divisa pegada al importe— y añade la **prueba negativa**: con la
+tarifa del Albino devuelta a coronas en una copia del documento de campaña, el cotejo
+tiene que producir el hallazgo de divisa. Un cotejo que no puede fallar no vale nada.
+
+Con esto **no queda ninguna discrepancia de fuente abierta** en los hirelings de 2B: los
+26 con bloque impreso verifican tarifa, stats, rating y reglas, y los dos name-only están
+conformes con su fuente.
+
+## 14. Los dos auditores de 2B leen con el lector compartido (2026-09-23)
+
+`audit_2b.py` y `audit_2ab_fidelity.py` leían las tablas y las listas de los PDFs con
+`pdftotext -layout` —que conserva las columnas a costa de comprimir sus desplazamientos e
+intercalar sus líneas— y con ventanas de tokens del texto aplanado. Ahora leen con el
+**lector compartido** (`tools/ingestion/printed_entries.py`), el mismo que coteja los
+hirelings y los Dramatis Personae: la **línea física** es lo que se imprime a la misma
+altura, sin partir la página en columnas, y las **celdas** de esa línea son lo que reparte
+sus columnas.
+
+| Dónde | Cómo lee ahora |
+|---|---|
+| Listas de precios (`price_rows`) | La tarifa se lee de la celda que la imprime y el nombre de esa misma celda, de la anterior de la línea o de la que cubre su horizontal en la línea de arriba (las listas a dos columnas parten la celda: el nombre arriba, la tarifa debajo). Una lista a tres columnas da tres filas |
+| Tablas de habilidad | La tabla ocupa la página entera y sus encabezados, a los dos lados del canal, son la **misma** fila: se leen de la línea física |
+| Filas de características | `printed_row`: el nombre es el de la celda que lleva las cifras y cada celda las imprime en un solo tramo |
+| Capítulos suplementarios (MiM / Marienburg / KAZ / REL) | Mismo lector que el documento de la banda, en vez del volcado `layout/` |
+
+Lo medido contra la corrida anterior, con los mismos paquetes:
+
+- `audit_2b`: **0 problemas** y la batería negativa en **15/15**. Los tres chequeos que
+  cambian lo hacen a mejor: cinco nombres de regla que sólo se anclaban por su sección
+  ahora se anclan por su nombre impreso (790 → 795, y 165 → 160 los de sección, sobre el
+  mismo total), las cifras de tarifa con multiplicador se declaran
+  (`equipment_rows_price_multiplier`), y el hallazgo `hireling-name-absent` del «Shark
+  God» de `khorne-raiders-sar` desaparece: lo producía la prosa de la columna vecina que
+  la lectura aplanada dejaba junto al nombre, y era el único caso adjudicado del informe.
+- `audit_2ab_fidelity`: ningún hallazgo nuevo y uno menos en cada clase que crece con la
+  mejor lectura —`rule-effect-condensed` 97 → 64 (los efectos leídos enteros pasan a
+  verbatim o casi verbatim: 988 → 1037), `item-in-supplement` 15 → 14,
+  `item-name-missing` 28 → 27—, con 71 nombres de fila que pasan de la cola de la prosa
+  al nombre impreso y 19 filas más reconocidas por el perfil que el KB ya define.
+
+Dos adjudicaciones se añaden y una se reclasifica, ninguna por un defecto del paquete:
+
+| Etiqueta | Veredicto |
+|---|---|
+| `araby-smugglers-sar`: «Fine Craftsmanship» (`rule-name-editorial`) | La misma errata de la fuente («Fine Craftmenship») ya adjudicada como `rule-name-missing`; con el efecto leído casi verbatim el caso se clasifica por su nombre |
+| `snotlings-web`: fila `4 4 4 3 3 2 9 4 6` (2A) | Tabla de máximos de la página, que el paquete lleva en su regla «Characteristic Increase», no como perfil |
+| `disciples-of-maldred-mou`: «Gifts of Tzeentch» | Ya no se reporta: la capa de tokens deja de arrastrar el punto con el que el extractor escribe el espaciado («Tzeentch.»), así que las dos palabras del título se rastrean en el propio documento (la página imprime «Tzeentch» y, con errata, «Gifts of Tzentch») |
+
+La prueba negativa de la geometría se reescribió: antes quitaba el paso
+`printed_costs_by_profile` y esperaba `cost-unverifiable`, pero hoy la lectura por
+geometría **es** la lectura del documento, así que la prueba quita la capa de geometría del
+lector (`PdfCorpus.word_lines`) y comprueba que entonces la cifra suelta de la línea del
+Fimir Noble deja de ser verificable.
+
+```bash
+python -X utf8 tools/ingestion/audit_2b.py
+python -X utf8 tools/ingestion/audit_2b_negative_tests.py          # 15/15
+python -X utf8 tools/ingestion/audit_2ab_fidelity.py               # 2A + 2B, informe limpio
+python -X utf8 -m pytest tests/knowledge/test_2ab_fidelity_rows.py tests/knowledge/test_printed_entries.py
+```
+
+## 15. Los objetos del paquete se cotejan contra las listas impresas (2026-09-23)
+
+El auditor cotejaba los objetos de `equipment-access.yaml` buscando su nombre en el
+**texto** del documento: una traza de nombre, que cualquier prosa satisface —el objeto
+quedaba por bueno porque su nombre apareciera en la descripción de una regla, en la lista
+del vecino o en la del capítulo de un anual—. Ahora los coteja contra la **fila de la
+lista**: lo que la fuente imprime con su tarifa (`printed_entries.price_rows`, leído por
+geometría de página, que es la lectura que ya usan este auditor y `audit_2b.py`). La
+clase del hallazgo dice de dónde sale el nombre:
+
+| Clase | Qué declara |
+|---|---|
+| `item-in-list` | Una fila de la lista del propio documento imprime el nombre |
+| `item-in-supplement` | Sólo lo imprime la lista de un capítulo que el árbol comparte (Marienburg Annual, MiM Specialists, Miracle Workers) |
+| `item-outside-list` | Ninguna fila lo imprime: el nombre sólo está en la prosa del documento, que el informe nombra entre paréntesis |
+| `item-name-missing` | No está ni en una fila ni en la prosa |
+
+### 15.1 Lo que la lectura tuvo que aprender
+
+La fila de una lista no se coteja por su texto literal: la fuente la imprime a su manera.
+Cada forma salió de un objeto que la lista sí imprimía y el auditor no leía; todas están
+fijadas en `tests/knowledge/test_2ab_fidelity_rows.py` (cotejo) y
+`tests/knowledge/test_printed_entries.py` (lectura).
+
+| Forma impresa | Caso | Cómo se lee |
+|---|---|---|
+| Una fila por celda que tasa | KAZ p20: `Axe 5 gc` \| `Gromril Weapon 3x the cost` \| `Dagger 1st free/2gc` | La tabla de un suplemento pone **tres filas** a la misma altura; antes la línea daba una sola —la de su último importe— y el arma de Gromril, que tasa con un multiplicador, se quedaba sin leer |
+| La tarifa es un multiplicador | `Gromril Weapon 3x the cost`, `Ithilmar Weapon . . . 2 x Cost`, `Ithilmar weapon . . . 3x price`, `Price x 2*` | La cifra multiplica el precio de otro objeto: no es un importe en coronas, así que el lector devuelve la fila como **fórmula** (`formula`, sin sumarle un precio) y su nombre es el texto que la precede en su celda o el que la cubre por arriba. `audit_2b.py` verifica esas tarifas por su propio múltiplo y las cuenta aparte (`equipment_rows_price_multiplier: 5`) |
+| La disponibilidad con asteriscos | `Ithilmar Weapon*`, `Lock picks**`, `Horn of the Wild Hunt***` | El asterisco, la cruz y el grado no son parte del nombre de la fila |
+| La celda imprime dos objetos | `Mace/Hammer`, `Dagger/Pointy Stick`, `Shield/Buckler`, `Duelling Pistol/Brace` | La fila nombra a los dos |
+| La puntuación de la fuente | `Cat O’ Nine Tails` para «Cat o' nine tails», `Double Handed Weapon` para «double-handed weapon» | El apóstrofo y el guion no deciden el cotejo |
+| La entrada combinada, en el orden contrario | El catálogo `Mace Hammer` y la página `Hammer/Mace . . . 3 gc`; `Staff Club Mace` y `Hammer mace staff club` | Las mismas palabras, en cualquier orden |
+| El nombre que el catálogo compone con un guion largo | `Swivel Gun — Ball Shot` y la lista `Swivel Gun . . . 65 gc` con `Ball Shot . . . 5 gc` | Cada parte del nombre tiene que ser una fila, de modo que la parte del padre no pase por la variante |
+| La tarifa de la página web | 2A: `Ithilmar weapon *` \| `2 x price` | La fila de la lista se reconoce por su tasa (importe, fórmula o multiplicador); la cabecera de columna no lo es |
+
+### 15.2 Lo medido
+
+Mismos 80 paquetes y mismo KB que la corrida anterior:
+
+| Clase | Antes | Ahora |
+|---|---|---|
+| `item-in-list` | *(no existía)* | **2107** de 2131 objetos, en 179 listas |
+| `item-in-supplement` | 14 | 17 |
+| `item-outside-list` | *(no existía)* | 5 |
+| `item-name-missing` | 27 | **0** (2 adjudicados: la lista que el KAZ delega al reglamento, §15.4) |
+
+De los 14 `item-in-supplement` anteriores, 11 siguen (ahora nombrando el **PDF** del
+capítulo en vez del volcado de texto), dos pasan a `item-in-list` (los `throwing_knives`
+de `low-kings-mim` y `pirates-of-the-cathayan-sea-sar`, que la lista del propio documento
+sí imprime) y uno a `item-outside-list` (el `warhound` de `bretonnian-knights-errant-mou`,
+que en esta misma pasada pasa ya a `item-in-list` con la palabra impresa `Wardog`
+registrada, §15.4). Los 9 nuevos son objetos que en la corrida anterior pasaban **sin informe** —su nombre
+aparecía en la prosa, que era la prueba— y que la lectura de filas sitúa en el capítulo
+compartido: `staff_club_mace` ×3 y `mace_hammer` ×2 (la fila combinada
+`Hammer mace staff club` de *Miracle Workers*), `gromril_armour` ×2, `handgun` y
+`superior_blackpowder` (las listas del capítulo de Dwarfs del *Marienburg Annual*). Los 20 objetos que
+dejan de faltar son los 10 de munición de swivel gun (`Chain Shot` y `Grape Shot` en las
+cinco listas de Gunner, cuyas filas la lista imprime bajo `Swivel Gun Ammo:` junto a
+`Ball Shot`) y los 10 nombres combinados (`mace_hammer` ×5, `sword_scimitar` ×2,
+`staff_club_mace` ×3).
+
+Los 7 últimos `item-name-missing` (3 de 2A y 4 de 2B) no eran huecos sino **divergencias
+de palabra**: la lista imprime el objeto con otro nombre y con la tarifa que el paquete
+declara. Todos quedan adjudicados (§9 y §15.4) y el hallazgo desaparece: 5 pasan a
+`item-in-list` —la palabra impresa, registrada en el cotejo, es la fila del objeto— y los
+2 del KAZ quedan como nota declarada, porque esa fuente no imprime lista ninguna.
+
+Tres objetos más pasan de `item-in-supplement` a `item-in-list` al leer el cotejo de
+fidelidad las palabras que el auditor de 2B ya tenía adjudicadas (§15.5): `halberd` (la
+lista de los Forest Goblins imprime `Halbard`, errata de la propia fuente), `superior_blackpowder`
+(`Superiour Black Powder`) y `two_handed_weapon` (`Double-handed weapon`). En los tres la
+fila está en el documento de la banda y lo que no se conocía era la palabra.
+
+### 15.3 Adjudicaciones
+
+| Objeto | Fila impresa (verbatim) | Paquete | Veredicto |
+|---|---|---|---|
+| `warhound` (`bretonnian-knights-errant-mou`) | La lista de los Knights Errant imprime `Wardog 30 gc` | `item_id: warhound`, `cost: 30` | **el precio coincide y el nombre no**: el KB llama `warhound` («Warhound») al objeto que la página imprime «Wardog», y el catálogo staging de 2B tiene además su propio `wardog`. La palabra impresa queda registrada (§15.4) y el cotejo lee la fila; se registra para la promoción y **nada tocado** |
+| `fighting_claws` (`skaven-of-clan-mors-kaz` y `-skryre-kaz`) | El KAZ nombra el objeto en la ficha de los Tunnel Runners (`equipped with Digging Claws (counts as Fighting Claws for all purposes)`), no en una fila de lista | `item_id: fighting_claws` en la Skaven Heroes Equipment List | **fiel a su fuente**: la fuente nombra el objeto en su prosa de roster y ninguna fila de la lista lo imprime; el hallazgo se declara y no se corrige |
+| `mace_hammer`, `sword_scimitar`, `staff_club_mace`, `gromril_armour`, `handgun`, `superior_blackpowder` | La fila que los imprime está en el capítulo del anual (`Hammer mace staff club`, `Mace/Hammer`, `Gromril Armour … 3x the cost`) | — | El objeto está impreso y la fila es de un capítulo compartido: la clase `item-in-supplement` lo declara sin contarlo como hueco |
+
+### 15.4 Las palabras con que la fuente imprime un objeto que el KB llama de otro modo
+
+Cuatro objetos de 2B se cotejaban como hueco porque el KB tiene un nombre canónico por
+objeto y la fuente escribe el suyo. En los cuatro la fila impresa existe **y su tarifa
+coincide con la que el paquete declara**, de modo que el objeto está impreso y lo que
+divergía era la palabra. El veredicto, objeto por objeto, es **quedar como nota**: no se renombra la fila
+del paquete (su `item_id` es el del KB, que manda en el vocabulario) ni se promociona una
+entrada nueva (el objeto ya está en el catálogo), sino que la palabra impresa se registra
+en el **registro único** de los tres cotejos (`tools/ingestion/printed_wordings.py`, §15.5)
+—el auditor de 2B lo lee por banda, el de 2A por banda y lista, el de fidelidad por objeto
+y árbol— y la fila se compara con ella:
+
+| Objeto (KB) | Palabra impresa (verbatim) | Tarifa | Banda / lista |
+|---|---|---|---|
+| `horsemans_hammer` | `Horsemens Hammer` | 30 GC ✓ | `knights-of-the-bitter-moors-mim` · Knights Equipment List |
+| `warhound` | `Wardog` | 30 gc ✓ | `bretonnian-knights-errant-mou` · Knights Equipment List |
+| `warp_pistol` | `Warplock Pistol` | 35 gc (70 for a brace) ✓ | `skaven-of-clan-pestilens-lus` · Clan Pestilens Hero Equipment List |
+| `warp_pistol` | *(ninguna: la fuente no imprime lista skaven)* | — | `skaven-of-clan-mors-kaz` y `-skryre-kaz` · Skaven Heroes Equipment List |
+
+La cuarta fila es otra cosa y se resuelve como nota declarada, no como palabra: el KAZ
+remite la lista entera al reglamento («All of the equipment lists from the rulebook
+apply»), así que no hay fila que leer en el corpus; la lista a la que remite está
+transcrita en el KB (`skaven-clan-eshin` · `skaven-hero-equipment-list`: weeping blades
+50, throwing stars 15, blowpipe 25, warp pistol 35) y el auditor de 2B la verifica como
+lista delegada (§7). El cotejo de fidelidad la declara con ese motivo —deja de ser un
+hueco y pasa al registro de adjudicados— porque tampoco puede leer el reglamento: lo que
+no está en el corpus no se puede cotejar contra el corpus.
+
+El nombre canónico **no se toca** en ninguno de los cuatro: `Wardog` es también el
+`wardog` que el catálogo staging de 2B registra para Watchmen con su nota de fusión en
+`warhound` (`catalog/promotion-merge-notes.md`), y `Warplock Pistol` es la palabra con
+que el propio KB empareja el objeto en el mercado
+(`campaign.trading-post.warplock-pistol` → `item_id: warp_pistol`). Al promover, la
+página de cada banda se suma a los `source_refs` del objeto.
+
+### 15.5 Un solo registro de las palabras impresas (2026-09-24)
+
+Las palabras de §15.4 y las que ya adjudicaban los otros dos cotejos estaban en **tres**
+tablas: `SOURCE_WORDING` en `audit_2a_sources.py` (por banda y lista), `SOURCE_WORDING` en
+`audit_2b.py` (por banda) e `ITEM_ALIASES` en `audit_2ab_fidelity.py` (por objeto). Una
+pareja adjudicada en una se quedaba sin ver en las otras, y el cotejo de fidelidad
+—que es el que declara huecos— pagó esa ceguera: declaraba `item-name-missing` objetos
+que el auditor de 2B ya tenía adjudicados (`horsemans_hammer`, `warhound`, el `warp_pistol`
+de Clan Pestilens) y situaba en el capítulo compartido tres cuya fila imprime el propio
+documento de la banda con una palabra que el catálogo no escribe (`Halbard`,
+`Superiour Black Powder`, `Double-handed weapon`).
+
+Ahora hay **un registro** (`tools/ingestion/printed_wordings.py`) con una pareja por
+sitio —árbol, banda y lista; en blanco vale para cualquiera, que es como la pareja del
+arma a dos manos sirve a los dos árboles— y el motivo de la lista que la fuente delega
+(`DELEGATED_LISTS`, que antes era `RULEBOOK_DELEGATED` en `audit_2b.py` y dos notas
+escritas a mano en el de fidelidad). Cada cotejo lo lee como sabe: `words_at` la fila de
+una lista, `pairs_at` las parejas de una banda y lista, `words_for_item` todas las
+palabras del objeto en su árbol, `delegated_reason` la lista delegada. Una palabra
+registrada en un árbol no vale en el otro («Halbard» es la errata de los Forest Goblins,
+no la palabra de la página de 2A).
+
+Lo medido: `audit_2b.py` y `audit_2a_sources.py` dan el **mismo informe byte a byte**
+antes y después (0 problemas y 0 abiertos; la deduplicación de las cuatro parejas del
+arma a dos manos por banda no cambió ningún número), y el cotejo de fidelidad pasa de
+2104 a **2107** objetos en `item-in-list` y de 20 a **17** en `item-in-supplement`
+(§15.2), con `item-name-missing` en 0 y los dos del KAZ adjudicados con el motivo
+compartido. Tres pruebas nuevas fijan el registro en `tests/knowledge/test_printed_wordings.py`
+y este cotejo se ancla a él por identidad: ningún auditor lleva ya tabla propia.
+
+```bash
+python -X utf8 tools/ingestion/audit_2ab_fidelity.py --tree 2B --json > build/cache/fidelity-2b.json
+python -X utf8 -m pytest tests/knowledge/test_2ab_fidelity_rows.py tests/knowledge/test_printed_entries.py
+```

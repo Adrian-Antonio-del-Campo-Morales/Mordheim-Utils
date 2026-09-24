@@ -6,29 +6,76 @@ profiles:
   type: hero
   cost: 75
   experience: 20
-  characteristics: {M: 4, WS: 4, BS: 4, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 8}
-  equipment_lists: [mobsmen-equipment-list]
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 4
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - mobsmen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, shooting, academic, strength, speed, special]
-  source: {manual: Broheim, printed_page: 3, section: Heroes / Racketeer, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf'}
-  source_path: [heroes, Racketeer]
-  name_i18n: {es: Tirono}
-  rule_ids: [racketeer--leader, racketeer--looter]
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: Heroes / Racketeer
+    url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf'
+  source_path:
+  - heroes
+  - Racketeer
+  name_i18n:
+    es: Tirono
+  rule_ids:
+  - racketeer--leader
+  - racketeer--looter
   combat_traits: {}
 - id: enforcer
   name: Enforcer
   type: hero
   cost: 40
   experience: 8
-  characteristics: {M: 4, WS: 4, BS: 3, S: 4, T: 3, W: 1, I: 3, A: 1, Ld: 7}
-  equipment_lists: [mobsmen-equipment-list]
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - mobsmen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, shooting, strength, speed, special]
-  source: {manual: Broheim, printed_page: 3, section: Heroes / 0-1 Enforcer, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf'}
-  source_path: [heroes, 0-1 Enforcer]
-  name_i18n: {es: Matón de Élite}
+  skill_access:
+  - combat
+  - shooting
+  - strength
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: Heroes / 0-1 Enforcer
+    url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf'
+  source_path:
+  - heroes
+  - 0-1 Enforcer
+  name_i18n:
+    es: Matón de Élite
   rule_ids: []
   combat_traits: {}
 - id: fence
@@ -36,44 +83,105 @@ profiles:
   type: hero
   cost: 55
   experience: 12
-  characteristics: {M: 4, WS: 2, BS: 3, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 8}
-  equipment_lists: [mobsmen-equipment-list]
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  equipment_lists:
+  - mobsmen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, shooting, academic, speed, special]
-  source: {manual: Broheim, printed_page: 3, section: Heroes / 0-1 Fence, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf'}
-  source_path: [heroes, 0-1 Fence]
-  name_i18n: {es: Receptor}
-  rule_ids: [fence--sham]
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: Heroes / 0-1 Fence
+    url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf'
+  source_path:
+  - heroes
+  - 0-1 Fence
+  name_i18n:
+    es: Receptor
+  rule_ids:
+  - fence--sham
   combat_traits: {}
 - id: guttersnipes
   name: Guttersnipes
   type: hero
   cost: 25
   experience: 0
-  characteristics: {M: 4, WS: 2, BS: 2, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 6}
-  equipment_lists: [mobsmen-equipment-list]
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - mobsmen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, speed, special]
-  source: {manual: Broheim, printed_page: 3, section: Heroes / 0-2 Guttersnipes, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf'}
-  source_path: [heroes, 0-2 Guttersnipes]
-  name_i18n: {es: Pelagatos}
-  rule_ids: [guttersnipes--tea-leaf]
+  skill_access:
+  - combat
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: Heroes / 0-2 Guttersnipes
+    url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf'
+  source_path:
+  - heroes
+  - 0-2 Guttersnipes
+  name_i18n:
+    es: Pelagatos
+  rule_ids:
+  - guttersnipes--tea-leaf
   combat_traits: {}
 - id: smugglers
   name: Smugglers
   type: henchman
   cost: 25
   experience: 0
-  characteristics: {M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7}
-  equipment_lists: [mobsmen-equipment-list]
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - mobsmen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
   skill_access: []
-  source: {manual: Broheim, printed_page: 4, section: Henchmen / Smugglers, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf'}
-  source_path: [henchmen, Smugglers]
-  name_i18n: {es: Contrabandistas}
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: Henchmen / Smugglers
+    url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf'
+  source_path:
+  - henchmen
+  - Smugglers
+  name_i18n:
+    es: Contrabandistas
   rule_ids: []
   combat_traits: {}
 - id: bruisers
@@ -81,14 +189,31 @@ profiles:
   type: henchman
   cost: 30
   experience: 0
-  characteristics: {M: 4, WS: 3, BS: 3, S: 4, T: 3, W: 1, I: 2, A: 1, Ld: 7}
-  equipment_lists: [mobsmen-equipment-list]
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 2
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - mobsmen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
   skill_access: []
-  source: {manual: Broheim, printed_page: 4, section: Henchmen / 0-2 Bruisers, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf'}
-  source_path: [henchmen, 0-2 Bruisers]
-  name_i18n: {es: Matones}
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: Henchmen / 0-2 Bruisers
+    url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf'
+  source_path:
+  - henchmen
+  - 0-2 Bruisers
+  name_i18n:
+    es: Matones
   rule_ids: []
   combat_traits: {}
 - id: rapscallions
@@ -96,13 +221,31 @@ profiles:
   type: henchman
   cost: 20
   experience: 0
-  characteristics: {M: 4, WS: 3, BS: 2, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 6}
-  equipment_lists: [mobsmen-equipment-list]
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - mobsmen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
   skill_access: []
-  source: {manual: Broheim, printed_page: 4, section: Henchmen / 0-4 Rapscallions, url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf'}
-  source_path: [henchmen, 0-4 Rapscallions]
-  name_i18n: {es: Canallas}
-  rule_ids: [rapscallions--hide-in-shadows]
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: Henchmen / 0-4 Rapscallions
+    url: 'https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low Kings.pdf'
+  source_path:
+  - henchmen
+  - 0-4 Rapscallions
+  name_i18n:
+    es: Canallas
+  rule_ids:
+  - rapscallions--hide-in-shadows
   combat_traits: {}

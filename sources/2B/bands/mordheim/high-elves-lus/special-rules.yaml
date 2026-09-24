@@ -18,7 +18,7 @@ rules:
     Elves spot hidden enemies from two times as far away as other warriors (twice their Initiative
     value in inches).
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 1
     section: Special Rules / Excellent Sight
     url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
@@ -47,7 +47,7 @@ rules:
     A High Elf warband may never include hired swords that are not of High Elven blood, nor use
     equipment of Dwarf origin, including Gromril weapons and armour.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 1
     section: Special Rules / Haughty
     url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
@@ -74,7 +74,7 @@ rules:
   name: Honorable
   effect: High Elves can never use poison or drugs of any kind, no matter the circumstance.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 1
     section: Special Rules / Honorable
     url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
@@ -103,7 +103,7 @@ rules:
     High Elves may never use black powder weapons of any sort; this goes against their ancestors and
     the traditions of the Old Ways.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 1
     section: Special Rules / The Old Ways
     url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
@@ -132,7 +132,7 @@ rules:
     When fighting the Dark Elves, High Elves have Leadership 10 for Rout Tests and can never choose
     to voluntarily rout.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 1
     section: Special Rules / Resolve
     url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
@@ -161,7 +161,7 @@ rules:
     Any models in the warband within 6 inches may use the Loremaster's Leadership instead of their
     own.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: 1 Loremaster / Special Rules / Leader
     url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
@@ -187,7 +187,7 @@ rules:
         Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
   name: Wizard
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: 1 Loremaster / Special Rules / Wizard
     url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
@@ -213,7 +213,7 @@ rules:
     Anyone shooting at a Sword Warden armed with a sword or a Greatsword (not a double-handed sword)
     must deduct 1 from their roll to hit. This does not include black powder weapons.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: 0-2 Sword Wardens / Special Rules / Sword Master Protégé
     url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
@@ -244,7 +244,7 @@ rules:
     If not taken out of action, when rolling on the Exploration Chart the Ranger allows you to
     modify one die roll by -1/+1.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: 0-2 Rangers / Special Rules / Seeker
     url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
@@ -257,3 +257,195 @@ rules:
   applies_to:
     profile_ids:
     - rangers
+- id: band--maximum-characteristics
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.high-elves-lus.band.maximum-characteristics
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: characteristic-increase caps on advancement.
+  name: Elf Maximum Characteristics
+  effect: >-
+    Characteristics for Elf warriors may not be increased beyond the maximum limits: M 5, WS 7,
+    BS 7, S 4, T 4, W 3, I 9, A 4, Ld 10. If a characteristic is at its maximum, take the other
+    option or roll again if you can only increase one characteristic. If both are already at their
+    maximum, you may increase any other by +1 instead. Remember that Henchman can only add +1 to any
+    characteristic.
+  source:
+    manual: broheim.net
+    printed_page: 2
+    section: Maximum Characteristics
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Características Máximas de los Elfos
+  effect_i18n:
+    es: >-
+      Las características de los guerreros Elfos no pueden aumentarse más allá de los límites
+      máximos: M 5, HA 7, HP 7, F 4, R 4, H 3, I 9, A 4, L 10. Si una característica está en su
+      máximo, toma la otra opción o vuelve a tirar si solo puedes aumentar una característica. Si
+      ambas están ya en su máximo, puedes aumentar cualquier otra en +1 en su lugar. Recuerda que los
+      secuaces solo pueden añadir +1 a cualquier característica.
+  applies_to:
+    band: true
+- id: band--skill-high-sorcery
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.high-elves-lus.band.high-sorcery
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: dispelling an enemy spell is a magic-subsystem interaction. Loremaster only.
+  name: High Sorcery
+  effect: >-
+    A Loremaster's knowledge of magic goes far beyond that of any other race. When an enemy spellcaster
+    successfully casts a spell the Loremaster may attempt to dispel it. If the Loremaster rolls greater
+    then his opponent's casting roll for the spell then it is dispelled. Only the Loremaster may have
+    this skill.
+  source:
+    manual: broheim.net
+    printed_page: 1
+    section: Special High Elf Skills / High Sorcery
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Alta Hechicería
+  effect_i18n:
+    es: >-
+      El conocimiento de la magia de un Maestro de Saberes supera con creces al de cualquier otra raza.
+      Cuando un lanzador enemigo lanza con éxito un hechizo, el Maestro de Saberes puede intentar
+      disiparlo. Si el Maestro de Saberes obtiene un resultado mayor que la tirada de lanzamiento de su
+      oponente, el hechizo se disipa. Solo el Maestro de Saberes puede tener esta habilidad.
+  applies_to:
+    band: true
+- id: band--skill-stand-and-fire
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.high-elves-lus.band.stand-and-fire
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: standing and firing against a charge is a charge-phase mechanic.
+  name: Stand and Fire
+  effect: >-
+    If the Elf passes a leadership test he may choose to stand and fire at a charging opponent. The Elf
+    suffers a -1 penalty to hit and may only fire once, at a single opponent. If his opponent is knocked
+    down or stunned, place him halfway between the Elf and where he started from (or in view if he was
+    out of sight).
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: Special High Elf Skills / Stand and Fire
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Firmes y Disparad
+  effect_i18n:
+    es: >-
+      Si el Elfo supera un chequeo de Liderazgo, puede optar por quedarse firme y disparar contra un
+      oponente que carga. El Elfo sufre un penalizador de -1 para impactar y solo puede disparar una vez,
+      contra un único oponente. Si su oponente queda derribado o aturdido, colócalo a mitad de camino
+      entre el Elfo y el punto desde el que empezó a cargar (o a la vista si estaba fuera de ella).
+  applies_to:
+    band: true
+- id: band--skill-miniath
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.high-elves-lus.band.miniath
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: additional parry attempts are a combat-resolution mechanic.
+  name: Miniath
+  effect: >-
+    The Elf has been trained in the martial art of the White Tower known as Miniath, allowing him to
+    parry with any weapon. If he has a weapon that he can parry with he gains an additional parry
+    attempt.
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: Special High Elf Skills / Miniath
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Miniath
+  effect_i18n:
+    es: >-
+      El Elfo ha sido instruido en el arte marcial de la Torre Blanca conocido como Miniath, que le
+      permite parar con cualquier arma. Si lleva un arma con la que puede parar, gana un intento de parada
+      adicional.
+  applies_to:
+    band: true
+- id: band--skill-unerring-strike
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.high-elves-lus.band.unerring-strike
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: re-rolling failed wound rolls is a combat-resolution mechanic.
+  name: Unerring Strike
+  effect: >-
+    The Elf is an expert at delivering deadly accurate blows. He may re-roll any failed to wound rolls.
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: Special High Elf Skills / Unerring Strike
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Golpe Infalible
+  effect_i18n:
+    es: >-
+      El Elfo es un experto en asestar golpes mortales de enorme precisión. Puede repetir cualquier tirada
+      de herida fallida.
+  applies_to:
+    band: true
+- id: band--skill-fey-quickness
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.high-elves-lus.band.fey-quickness
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: the dodge-style save against melee or missile attacks is a combat-resolution mechanic.
+  name: Fey Quickness
+  effect: >-
+    Few can ever hope to match an Elf's inhuman quickness and agility. An Elf with Fey Quickness can
+    avoid melee or missile attacks on a roll of 6. If the Elf also has Step Aside or Dodge this will
+    increase to a 4+ in the relevant area. For example, an Elf with Fey Quickness and Step Aside avoids
+    melee attacks on a 4+ and missile attacks on a 6.
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: Special High Elf Skills / Fey Quickness
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Rapidez Feérica
+  effect_i18n:
+    es: >-
+      Pocos pueden igualar la rapidez y agilidad inhumanas de un Elfo. Un Elfo con Rapidez Feérica puede
+      evitar ataques cuerpo a cuerpo o a distancia con un resultado de 6. Si el Elfo también tiene
+      Apartarse o Esquivar, esto aumenta a 4+ en el área correspondiente. Por ejemplo, un Elfo con Rapidez
+      Feérica y Apartarse evita ataques cuerpo a cuerpo con 4+ y ataques a distancia con 6.
+  applies_to:
+    band: true

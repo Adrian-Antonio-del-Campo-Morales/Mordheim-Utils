@@ -6,44 +6,108 @@ profiles:
   type: hero
   cost: 60
   experience: 20
-  characteristics: {M: 5, WS: 4, BS: 4, S: 4, T: 3, W: 1, I: 5, A: 1, Ld: 7}
-  equipment_lists: [packmasters-equipment-list]
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 4
+    S: 4
+    T: 3
+    W: 1
+    I: 5
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - packmasters-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, shooting, academic, strength, special]
-  source: {manual: Broheim, printed_page: 3, section: 1 Chieftain, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf'}
-  source_path: [heroes, 1 Chieftain]
-  name_i18n: {es: Jefe de Clan}
-  rule_ids: [chieftain--leader]
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: 1 Chieftain
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf'
+  source_path:
+  - heroes
+  - 1 Chieftain
+  name_i18n:
+    es: Jefe de Clan
+  rule_ids:
+  - chieftain--leader
   combat_traits: {}
 - id: sorcerer
   name: Clan Pristekk Sorcerer
   type: hero
   cost: 45
   experience: 12
-  characteristics: {M: 5, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 6}
-  equipment_lists: [clanrats-equipment-list]
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - clanrats-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [academic, special]
-  source: {manual: Broheim, printed_page: 3, section: 0-1 Clan Pristekk sorcerer, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf'}
-  source_path: [heroes, 0-1 Clan Pristekk sorcerer]
-  name_i18n: {es: Hechicero del Clan Pristekk}
-  rule_ids: [sorcerer--wizard]
+  skill_access:
+  - academic
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: 0-1 Clan Pristekk sorcerer
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf'
+  source_path:
+  - heroes
+  - 0-1 Clan Pristekk sorcerer
+  name_i18n:
+    es: Hechicero del Clan Pristekk
+  rule_ids:
+  - sorcerer--wizard
   combat_traits: {}
 - id: packmasters
   name: Packmasters
   type: hero
   cost: 45
   experience: 8
-  characteristics: {M: 5, WS: 4, BS: 3, S: 4, T: 3, W: 1, I: 4, A: 1, Ld: 6}
-  equipment_lists: [packmasters-equipment-list]
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - packmasters-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, strength, speed, special]
-  source: {manual: Broheim, printed_page: 3, section: 0-2 Packmasters, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf'}
-  source_path: [heroes, 0-2 Packmasters]
-  name_i18n: {es: Maestros de Jauría}
+  skill_access:
+  - combat
+  - strength
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: 0-2 Packmasters
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf'
+  source_path:
+  - heroes
+  - 0-2 Packmasters
+  name_i18n:
+    es: Maestros de Jauría
   rule_ids: []
   combat_traits: {}
 - id: underlings
@@ -51,14 +115,34 @@ profiles:
   type: hero
   cost: 20
   experience: 0
-  characteristics: {M: 5, WS: 3, BS: 2, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 5}
-  equipment_lists: [clanrats-equipment-list]
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - clanrats-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [strength, speed, special]
-  source: {manual: Broheim, printed_page: 3, section: 0-2 Underlings, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf'}
-  source_path: [heroes, 0-2 Underlings]
-  name_i18n: {es: Subordinados}
+  skill_access:
+  - strength
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: 0-2 Underlings
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf'
+  source_path:
+  - heroes
+  - 0-2 Underlings
+  name_i18n:
+    es: Subordinados
   rule_ids: []
   combat_traits: {}
 - id: clanrats
@@ -66,14 +150,31 @@ profiles:
   type: henchman
   cost: 20
   experience: 0
-  characteristics: {M: 5, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 6}
-  equipment_lists: [clanrats-equipment-list]
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - clanrats-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
   skill_access: []
-  source: {manual: Broheim, printed_page: 4, section: 0-5 Clanrats, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf'}
-  source_path: [henchmen, 0-5 Clanrats]
-  name_i18n: {es: Ratas de Clan}
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: 0-5 Clanrats
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf'
+  source_path:
+  - henchmen
+  - 0-5 Clanrats
+  name_i18n:
+    es: Ratas de Clan
   rule_ids: []
   combat_traits: {}
 - id: giant-rats
@@ -81,30 +182,68 @@ profiles:
   type: henchman
   cost: 15
   experience: 0
-  characteristics: {M: 6, WS: 2, BS: 0, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 4}
+  characteristics:
+    M: 6
+    WS: 2
+    BS: 0
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 4
   equipment_lists: []
   fixed_equipment: []
   equipment_restrictions:
   - Giant Rats never use any armour or weapons.
   skill_access: []
-  source: {manual: Broheim, printed_page: 4, section: Giant rats, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf'}
-  source_path: [henchmen, Giant rats]
-  name_i18n: {es: Ratas Gigantes}
-  rule_ids: [giant-rats--countless, giant-rats--animals]
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: Giant rats
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf'
+  source_path:
+  - henchmen
+  - Giant rats
+  name_i18n:
+    es: Ratas Gigantes
+  rule_ids:
+  - giant-rats--countless
+  - giant-rats--animals
   combat_traits: {}
 - id: rat-ogres
   name: Rat Ogres
   type: henchman
   cost: 210
   experience: 0
-  characteristics: {M: 6, WS: 3, BS: 3, S: 5, T: 5, W: 3, I: 4, A: 3, Ld: 4}
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 3
+    S: 5
+    T: 5
+    W: 3
+    I: 4
+    A: 3
+    Ld: 4
   equipment_lists: []
   fixed_equipment: []
   equipment_restrictions:
   - Rat Ogres can never use weapons or armour.
   skill_access: []
-  source: {manual: Broheim, printed_page: 4, section: 0-2 Rat ogres, url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf'}
-  source_path: [henchmen, 0-2 Rat ogres]
-  name_i18n: {es: Ogros Rata}
-  rule_ids: [rat-ogres--fear, rat-ogres--stupidity, rat-ogres--experience, rat-ogres--large-target]
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: 0-2 Rat ogres
+    url: 'https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf'
+  source_path:
+  - henchmen
+  - 0-2 Rat ogres
+  name_i18n:
+    es: Ogros Rata
+  rule_ids:
+  - rat-ogres--fear
+  - rat-ogres--stupidity
+  - rat-ogres--experience
+  - rat-ogres--large-target
   combat_traits: {}

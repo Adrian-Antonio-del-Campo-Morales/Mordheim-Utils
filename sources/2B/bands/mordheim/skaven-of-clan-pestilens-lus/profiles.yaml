@@ -6,29 +6,74 @@ profiles:
   type: hero
   cost: 65
   experience: 20
-  characteristics: {M: 5, WS: 4, BS: 3, S: 4, T: 4, W: 1, I: 5, A: 1, Ld: 7}
-  equipment_lists: [hero-equipment-list]
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 5
+    A: 1
+    Ld: 7
+  equipment_lists:
+  - hero-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, shooting, academic, strength, speed, special]
-  source: {manual: Broheim, printed_page: 3, section: 1 Plague Priest, url: 'https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf'}
-  source_path: [heroes, 1 Plague Priest]
-  name_i18n: {es: Sacerdote de la Peste}
-  rule_ids: [plague-priest--leader]
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  - speed
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: 1 Plague Priest
+    url: 'https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf'
+  source_path:
+  - heroes
+  - 1 Plague Priest
+  name_i18n:
+    es: Sacerdote de la Peste
+  rule_ids:
+  - plague-priest--leader
   combat_traits: {}
 - id: plague-champions
   name: Plague Champions
   type: hero
   cost: 40
   experience: 8
-  characteristics: {M: 5, WS: 4, BS: 3, S: 4, T: 4, W: 1, I: 5, A: 1, Ld: 6}
-  equipment_lists: [hero-equipment-list]
+  characteristics:
+    M: 5
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 5
+    A: 1
+    Ld: 6
+  equipment_lists:
+  - hero-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, shooting, academic, strength]
-  source: {manual: Broheim, printed_page: 3, section: 0-2 Plague Champions, url: 'https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf'}
-  source_path: [heroes, 0-2 Plague Champions]
-  name_i18n: {es: Campeones de la Peste}
+  skill_access:
+  - combat
+  - shooting
+  - academic
+  - strength
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: 0-2 Plague Champions
+    url: 'https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf'
+  source_path:
+  - heroes
+  - 0-2 Plague Champions
+  name_i18n:
+    es: Campeones de la Peste
   rule_ids: []
   combat_traits: {}
 - id: monk-initiates
@@ -36,14 +81,34 @@ profiles:
   type: hero
   cost: 15
   experience: 0
-  characteristics: {M: 5, WS: 2, BS: 2, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 5}
-  equipment_lists: [hero-equipment-list]
+  characteristics:
+    M: 5
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - hero-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
-  skill_access: [combat, academic, special]
-  source: {manual: Broheim, printed_page: 3, section: 0-2 Monk Initiates, url: 'https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf'}
-  source_path: [heroes, 0-2 Monk Initiates]
-  name_i18n: {es: Monjes Novicios}
+  skill_access:
+  - combat
+  - academic
+  - special
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: 0-2 Monk Initiates
+    url: 'https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf'
+  source_path:
+  - heroes
+  - 0-2 Monk Initiates
+  name_i18n:
+    es: Monjes Novicios
   rule_ids: []
   combat_traits: {}
 - id: plague-monks
@@ -51,15 +116,32 @@ profiles:
   type: henchman
   cost: 30
   experience: 0
-  characteristics: {M: 5, WS: 3, BS: 3, S: 3, T: 4, W: 1, I: 4, A: 1, Ld: 5}
-  equipment_lists: [henchmen-equipment-list]
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 3
+    S: 3
+    T: 4
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - henchmen-equipment-list
   fixed_equipment: []
   equipment_restrictions:
   - Flail is available to Plague Monks only on the Henchmen Equipment List.
   skill_access: []
-  source: {manual: Broheim, printed_page: 4, section: 0-7 Plague Monks, url: 'https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf'}
-  source_path: [henchmen, 0-7 Plague Monks]
-  name_i18n: {es: Monjes de la Peste}
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: 0-7 Plague Monks
+    url: 'https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf'
+  source_path:
+  - henchmen
+  - 0-7 Plague Monks
+  name_i18n:
+    es: Monjes de la Peste
   rule_ids: []
   combat_traits: {}
 - id: clanrats
@@ -67,14 +149,31 @@ profiles:
   type: henchman
   cost: 20
   experience: 0
-  characteristics: {M: 5, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 5}
-  equipment_lists: [henchmen-equipment-list]
+  characteristics:
+    M: 5
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 5
+  equipment_lists:
+  - henchmen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
   skill_access: []
-  source: {manual: Broheim, printed_page: 4, section: Clan Rats, url: 'https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf'}
-  source_path: [henchmen, Clan Rats]
-  name_i18n: {es: Ratas de Clan}
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: Clan Rats
+    url: 'https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf'
+  source_path:
+  - henchmen
+  - Clan Rats
+  name_i18n:
+    es: Ratas de Clan
   rule_ids: []
   combat_traits: {}
 - id: skaven-slaves
@@ -82,13 +181,31 @@ profiles:
   type: henchman
   cost: 10
   experience: 0
-  characteristics: {M: 5, WS: 2, BS: 2, S: 3, T: 3, W: 1, I: 4, A: 1, Ld: 4}
-  equipment_lists: [henchmen-equipment-list]
+  characteristics:
+    M: 5
+    WS: 2
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 4
+  equipment_lists:
+  - henchmen-equipment-list
   fixed_equipment: []
   equipment_restrictions: []
   skill_access: []
-  source: {manual: Broheim, printed_page: 4, section: 0-5 Skaven Slaves, url: 'https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf'}
-  source_path: [henchmen, 0-5 Skaven Slaves]
-  name_i18n: {es: Esclavos Skaven}
-  rule_ids: [skaven-slaves--doomed]
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: 0-5 Skaven Slaves
+    url: 'https://broheim.net/downloads/warbands/supplement/lustria/Clan Pestilens.pdf'
+  source_path:
+  - henchmen
+  - 0-5 Skaven Slaves
+  name_i18n:
+    es: Esclavos Skaven
+  rule_ids:
+  - skaven-slaves--doomed
   combat_traits: {}
