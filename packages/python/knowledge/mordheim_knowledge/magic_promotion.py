@@ -371,7 +371,7 @@ def _promoted_rules(document: dict, rows: list[dict] | None, carried: bool) -> d
 
 
 #: Ancho de la prosa mantenida del repositorio: el mismo al que envuelve
-#: ``tools/format_yaml.py``.
+#: ``tools/knowledge/maintenance/format_yaml.py``.
 PROSE_WIDTH = 100
 
 

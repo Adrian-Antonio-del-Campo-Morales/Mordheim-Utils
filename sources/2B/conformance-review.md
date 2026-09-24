@@ -250,10 +250,10 @@ La guarda inicial de esta auditoría lo prohibía por error; ya acepta los cuatr
 | `tools/knowledge/audit_kb_conformance.py --tree 2B` | 1 informe informativo (`trait.spectral-touch`) |
 | `ingest_2b.py validate` | 60 filas / 61 paquetes, **0 problemas** (incluye huérfanos) |
 | `final_audit_2b.py` (formas y dominios) | **0 problemas** sobre 61 paquetes |
-| `tests/knowledge/test_2b_staging.py` | **12 pasan** (contrato, referencias, paquetes declarados) |
-| `tests/knowledge/test_binding_registry.py` | **3 pasan**; con el registro incompleto, falla |
+| `tests/python/knowledge/test_2b_staging.py` | **12 pasan** (contrato, referencias, paquetes declarados) |
+| `tests/python/knowledge/test_binding_registry.py` | **3 pasan**; con el registro incompleto, falla |
 | `format_yaml.py --check sources/2B` | 261/264 limpios (2 avisos de longitud previos, en otros paquetes) |
-| `pytest tests/knowledge` | **toda la suite en verde** |
+| `pytest tests/python/knowledge` | **toda la suite en verde** |
 
 ## Reparto del trabajo
 

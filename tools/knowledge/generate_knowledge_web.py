@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-ROOT = REPO_ROOT  # artefact output root: <repo>/build/generated/knowledge-web/
+ROOT = REPO_ROOT  # artefact output root: <repo>/outputs/web-public/knowledge/
 PACKAGE_ROOTS = (
     REPO_ROOT / "packages" / "python" / "combat-engine",
     REPO_ROOT / "packages" / "python" / "roster-construction",
@@ -46,7 +46,7 @@ from mordheim_knowledge.rules_catalog import load_rules_catalog  # noqa: E402
 
 SCHEMA_VERSION = 1
 DEFAULT_RULESET = "mordheim"
-OUTPUT_RELATIVE = Path("build") / "generated" / "knowledge-web" / "knowledge-web.json"
+OUTPUT_RELATIVE = Path("outputs") / "web-public" / "knowledge" / "knowledge-web.json"
 RULES_PROSE_FILENAME = "rules-prose.json"
 DISPLAY_TEXT_FILENAME = "display-text.json"
 
@@ -557,7 +557,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--ruleset", default=DEFAULT_RULESET)
     parser.add_argument("--output", type=Path, default=None,
-                        help="output JSON path (default: <repo>/build/generated/knowledge-web/knowledge-web.json)")
+                        help="output JSON path (default: <repo>/outputs/web-public/knowledge/knowledge-web.json)")
     parser.add_argument("--check-translations", action="store_true", help="reject every untranslated presentation field")
     parser.add_argument("--check", action="store_true",
                         help="generate and compare against the existing artefact instead of writing")

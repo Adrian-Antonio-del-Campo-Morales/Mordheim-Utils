@@ -47,24 +47,16 @@ jobs:
           node-version: "22"
           cache: npm
           cache-dependency-path: |
-            packages/typescript/package-lock.json
-            apps/warband-manager-web/package-lock.json
+            package-lock.json
 
       - name: Install packages (lockfile-driven)
         run: |
-          cd packages/typescript && npm ci
-          cd ../../apps/warband-manager-web && npm ci
+          npm ci
 
       - name: Validate the KB artefact (generator --check must pass)
         run: |
           python tools/knowledge/generate_knowledge_web.py
           python tools/knowledge/generate_knowledge_web.py --check
-
-      - name: Stage the artefact as a static asset
-        run: |
-          mkdir -p apps/warband-manager-web/public/knowledge
-          cp build/generated/knowledge-web/*.json \
-             apps/warband-manager-web/public/knowledge/
 
       - name: Run the TypeScript suites before publishing
         run: |

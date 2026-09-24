@@ -60,7 +60,7 @@ all now fixed:
 ## 6. Verification
 
 - `ingest_2b.py validate`: **60 rows, 0 problems**
-- `pytest tests/knowledge/test_2b_staging.py`: **7/7**
+- `pytest tests/python/knowledge/test_2b_staging.py`: **7/7**
 - `format_yaml.py --check sources/2B`: **0 would change, 0 failures**
 - `audit_2b.py`: **problem_count 0**
 

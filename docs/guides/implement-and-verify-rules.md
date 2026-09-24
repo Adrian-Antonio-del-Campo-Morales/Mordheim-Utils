@@ -95,7 +95,7 @@ for pending questions.
    mini-sequences only for state or flow.
 4. Declare exact dice and decisions; use fractions for distributions.
 5. Add a mutation detected by behaviour, not only by the same compiled field.
-6. Run `python -m pytest tests/verification/test_semantics.py -q` and
+6. Run `python -m pytest tests/python/verification/test_semantics.py -q` and
    `python tools/mordheim-utils.py verify --json`.
 7. When the new evidence reaches the interaction matrix, certify the
    vectorized/native engines against the modular oracle with

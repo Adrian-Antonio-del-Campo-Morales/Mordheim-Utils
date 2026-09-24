@@ -12,7 +12,8 @@ de `sources/2A/README.md` / `sources/2B/README.md`, que se retiran con él.
 Todo lo que se mantiene de forma permanente vive en `tools/knowledge/`
 (`audit_kb_conformance.py`, `derive_kb_contract.py`, `audit_schema_strictness.py`,
 `audit_staging_contract.py`, `strip_rule_ref_restatements.py`, `generate_knowledge_web.py`)
-o en `tools/` (por ejemplo `format_yaml.py`, `normalize_names.py`).
+Las tareas editoriales permanentes viven en `tools/knowledge/maintenance/`
+(por ejemplo `format_yaml.py` y `normalize_names.py`).
 
 `audit_staging_contract.py` es la puerta permanente del staging: valida los cuatro
 documentos de cada paquete contra los esquemas del contrato (`--only schema`, el que
@@ -21,8 +22,8 @@ los reclamará al promoverse (`--only catalogue`, las clases que decide
 `sources/2B/promotion-schema-plan.md`), lista los ficheros que `normalize_names.py`
 reescribiría (`--only naming`) y las colecciones flow de las claves que la KB escribe en
 bloque (`--only shape`). Tanto las clases de catálogo, como el drift de nombres, como la
-forma de colección están fijados en tests (`tests/knowledge/test_editorial_schemas.py` y
-`tests/knowledge/test_staging_collection_shape.py`), así que un fichero nuevo que
+forma de colección están fijados en tests (`tests/python/knowledge/test_editorial_schemas.py` y
+`tests/python/knowledge/test_staging_collection_shape.py`), así que un fichero nuevo que
 introduzca una desviación no declarada falla el test.
 
 ## Un solo lector para todo lo que se coteja contra una fuente impresa
@@ -83,12 +84,11 @@ Los tres principios que comparten, y que sus tests fijan:
 | `migrate_2b_kb_schema.py` | Lleva los bloques `runtime` de `special-rules.yaml` al canon de la KB (idempotente). |
 | `migrate_staging_records.py` | Lleva los registros de banda (notas de lista, divisas, tipos de `fixed_equipment`, `references`) al canon de la KB. |
 | `normalize_open_fields.py` | Lleva los campos que el contrato deja abiertos (`status`, `categories`/`grade`, `sources[].manual`, `profiles[].source_path`) al vocabulario de la KB; `--check`/`--write`, con registro de fuentes sincronizado. |
-| `normalize_staging_for_promotion.py` | Pases `status`, `market`, `items`, `hirelings`, `magic`, `shape`: el catálogo de mercado de cada árbol, el `status` que lleva cada familia, el objeto en forma KB (prosa plegada, `kind` reclasificado, hechos de mercado retirados), el reparto de hirelings en sus dos catálogos con la tarifa y elegibilidad en el documento de campaña, la magia con su envoltura, sus `lore_assignments` y los reprints/variantes en forma KB (la tabla de fallo viaja a la regla de banda que tira en ella), y la forma de colección que la KB usa (bloque, con los guiones al indent de su clave) para `source_path`, `equipment_lists`, `rule_ids`, `skill_access`, `source`, `characteristics`, `name_i18n` y `combat_traits`. Idempotente; `--write` pasa después `tools/format_yaml.py`. |
+| `normalize_staging_for_promotion.py` | Pases `status`, `market`, `items`, `hirelings`, `magic`, `shape`: el catálogo de mercado de cada árbol, el `status` que lleva cada familia, el objeto en forma KB (prosa plegada, `kind` reclasificado, hechos de mercado retirados), el reparto de hirelings en sus dos catálogos con la tarifa y elegibilidad en el documento de campaña, la magia con su envoltura, sus `lore_assignments` y los reprints/variantes en forma KB (la tabla de fallo viaja a la regla de banda que tira en ella), y la forma de colección que la KB usa (bloque, con los guiones al indent de su clave) para `source_path`, `equipment_lists`, `rule_ids`, `skill_access`, `source`, `characteristics`, `name_i18n` y `combat_traits`. Idempotente; `--write` pasa después `tools/knowledge/maintenance/format_yaml.py`. |
 | `repair_2b_flow_i18n.py` | Repara escalares i18n truncados por comas en YAML flow-style. |
 | `fill_2a_es_effects.py` / `fill_2b_es_effects.py` | Rellenan los `effect_i18n.es` que falten; dry run por defecto, `--write` para aplicar. |
 | `fill_2b_prayer_lores.py` | Ingesta de las listas de plegarias de *Miracle Workers* en `catalog/magic-2b.yaml`. |
 | `find_stub_sources.py` | Localiza el texto cacheado de cada stub de objeto pendiente. |
-| `_repair_2b_runtime.py` | One-off histórico: restauró `special-rules.yaml` dañados por un render de `runtime` defectuoso. Ya aplicado; se conserva solo como registro. |
 
 `strip_rule_ref_restatements.py` empezó aquí y se **promocionó** a `tools/knowledge/`:
 impone un invariante de la KB (`rule_ref` sin `effect` local) y ahora corre por defecto

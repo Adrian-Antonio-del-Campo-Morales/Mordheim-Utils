@@ -14,7 +14,7 @@ locale singletons, the filesystem and the Knowledge Base loaders:
 - ``warband_service``   — committing the initial warband (draft → State #0);
 - ``timeline_service``  — post-battle step navigation rules.
 
-Layer rule (executable in ``tests/architecture/test_boundaries.py``): the
+Layer rule (executable in ``tests/python/architecture/test_boundaries.py``): the
 domain imports neither Tkinter/React, nor ``mordheim_ui``, nor locale
 singletons, nor ``pathlib``.
 """

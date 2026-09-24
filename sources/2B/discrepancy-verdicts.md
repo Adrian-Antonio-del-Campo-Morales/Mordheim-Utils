@@ -293,8 +293,8 @@ las dos cifras y la regla aplicada.
 ```bash
 python tools/ingestion/audit_2b.py                  # informe JSON a stdout
 python tools/ingestion/ingest_2b.py validate        # forma del staging
-python -m pytest tests/knowledge -q                 # 351 pruebas
-python tools/format_yaml.py --check sources/2B
+python -m pytest tests/python/knowledge -q          # 351 pruebas
+python tools/knowledge/maintenance/format_yaml.py --check sources/2B
 ```
 
 Los veredictos que la herramienta usa están en `tools/ingestion/audit_2b.py`
@@ -713,10 +713,10 @@ reportan con su adjudicación `out_of_scope` como nota.
 ```bash
 python -X utf8 tools/ingestion/check_2b_hirelings.py
 python -X utf8 tools/ingestion/check_2b_hirelings.py "Albino Stormvermin"   # un caso
-python -X utf8 -m pytest tests/knowledge/test_2b_hireling_cotejo.py tests/knowledge/test_2a_dramatis_cotejo.py tests/knowledge/test_printed_entries.py
+python -X utf8 -m pytest tests/python/knowledge/test_2b_hireling_cotejo.py tests/python/knowledge/test_2a_dramatis_cotejo.py tests/python/knowledge/test_printed_entries.py
 ```
 
-La batería que lo sostiene (`tests/knowledge/test_2b_hireling_cotejo.py`) fija las tres
+La batería que lo sostiene (`tests/python/knowledge/test_2b_hireling_cotejo.py`) fija las tres
 clases de artefacto con texto de fixture —las dos columnas de una página, la fila de stats
 en orden de tabla, la divisa pegada al importe— y añade la **prueba negativa**: con la
 tarifa del Albino devuelta a coronas en una copia del documento de campaña, el cotejo
@@ -776,7 +776,7 @@ Fimir Noble deja de ser verificable.
 python -X utf8 tools/ingestion/audit_2b.py
 python -X utf8 tools/ingestion/audit_2b_negative_tests.py          # 15/15
 python -X utf8 tools/ingestion/audit_2ab_fidelity.py               # 2A + 2B, informe limpio
-python -X utf8 -m pytest tests/knowledge/test_2ab_fidelity_rows.py tests/knowledge/test_printed_entries.py
+python -X utf8 -m pytest tests/python/knowledge/test_2ab_fidelity_rows.py tests/python/knowledge/test_printed_entries.py
 ```
 
 ## 15. Los objetos del paquete se cotejan contra las listas impresas (2026-09-23)
@@ -800,8 +800,8 @@ clase del hallazgo dice de dónde sale el nombre:
 
 La fila de una lista no se coteja por su texto literal: la fuente la imprime a su manera.
 Cada forma salió de un objeto que la lista sí imprimía y el auditor no leía; todas están
-fijadas en `tests/knowledge/test_2ab_fidelity_rows.py` (cotejo) y
-`tests/knowledge/test_printed_entries.py` (lectura).
+fijadas en `tests/python/knowledge/test_2ab_fidelity_rows.py` (cotejo) y
+`tests/python/knowledge/test_printed_entries.py` (lectura).
 
 | Forma impresa | Caso | Cómo se lee |
 |---|---|---|
@@ -922,10 +922,10 @@ antes y después (0 problemas y 0 abiertos; la deduplicación de las cuatro pare
 arma a dos manos por banda no cambió ningún número), y el cotejo de fidelidad pasa de
 2104 a **2107** objetos en `item-in-list` y de 20 a **17** en `item-in-supplement`
 (§15.2), con `item-name-missing` en 0 y los dos del KAZ adjudicados con el motivo
-compartido. Tres pruebas nuevas fijan el registro en `tests/knowledge/test_printed_wordings.py`
+compartido. Tres pruebas nuevas fijan el registro en `tests/python/knowledge/test_printed_wordings.py`
 y este cotejo se ancla a él por identidad: ningún auditor lleva ya tabla propia.
 
 ```bash
 python -X utf8 tools/ingestion/audit_2ab_fidelity.py --tree 2B --json > build/cache/fidelity-2b.json
-python -X utf8 -m pytest tests/knowledge/test_2ab_fidelity_rows.py tests/knowledge/test_printed_entries.py
+python -X utf8 -m pytest tests/python/knowledge/test_2ab_fidelity_rows.py tests/python/knowledge/test_printed_entries.py
 ```

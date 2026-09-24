@@ -28,7 +28,7 @@ carries:
   grade enums instead of being folded into ``2a``, which the grade contract
   forbids ("kept apart so a source change stays auditable").
 
-Editing is lexical and line-scoped, like ``tools/normalize_names.py``: comments,
+Editing is lexical and line-scoped, like ``tools/knowledge/maintenance/normalize_names.py``: comments,
 key order and every untouched field survive byte for byte, and each edited file
 is re-parsed and compared against the same transformation applied to the parsed
 document, so an edit that changes anything else fails instead of landing.

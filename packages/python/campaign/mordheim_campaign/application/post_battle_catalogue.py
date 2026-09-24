@@ -1,6 +1,6 @@
 """application.post_battle_catalogue: KB read model for the post-battle UI.
 
-Follows the pattern of ``README-HOWTO.md`` (application use case between the
+Follows the pattern of ``docs/guides/use-campaign-knowledge.md`` (application use case between the
 KB loaders and the widgets): the Tk screens ask this catalogue for the
 canonical offers a pending post-battle may consume, and it answers with flat
 DTOs built from the validated campaign catalogues (trading post, hiring

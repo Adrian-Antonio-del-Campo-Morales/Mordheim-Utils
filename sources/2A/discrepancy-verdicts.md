@@ -171,7 +171,7 @@ special-equipment coverage: 35 catalogue item(s) of the 19 bands, 34 with a pric
 ```
 
 La cobertura se imprime a propósito: «0 hallazgos» sin filas comparadas no es
-evidencia. Y el auditor **falla de verdad**: `tests/knowledge/test_2a_source_audit.py`
+evidencia. Y el auditor **falla de verdad**: `tests/python/knowledge/test_2a_source_audit.py`
 (12 pruebas) inyecta un precio equivocado, una fila que el paquete pierde, un precio de
 tirada aplanado a `null`, una lista renombrada sin encabezado en la página, un precio
 de Special Equipment contradicho y un perfil de ítem borrado, y exige el hallazgo en
@@ -431,7 +431,7 @@ a roll of 4+», y el catálogo la modela como regla del perfil; la etiqueta se d
 
 ```bash
 python -X utf8 tools/ingestion/check_2a_dramatis.py
-python -X utf8 -m pytest tests/knowledge/test_2a_dramatis_cotejo.py
+python -X utf8 -m pytest tests/python/knowledge/test_2a_dramatis_cotejo.py
 ```
 
 La batería fija la lectura buena con la página real (Gwen sin tarifa y el Dark Jester con
@@ -464,9 +464,9 @@ lista: se declara en vez de contarse como verde. Las cifras sustituyen a las tre
 en prosa que el auditor imprimía antes (§2.6), que quedan como el registro de aquella
 corrida.
 
-Los pins: `tests/knowledge/test_2a_source_audit.py` fija las cifras de la corrida
+Los pins: `tests/python/knowledge/test_2a_source_audit.py` fija las cifras de la corrida
 completa y añade la lectura por estructura (una celda con `<strong>` y una tabla que
-pertenece a la sección siguiente), y `tests/knowledge/test_printed_entries.py` cubre el
+pertenece a la sección siguiente), y `tests/python/knowledge/test_printed_entries.py` cubre el
 lector —encabezados con su tramo, filas con sus celdas y su tabla— y el libro de
 cobertura.
 
@@ -508,7 +508,7 @@ Dos casos entran en `ADJUDICATED` con su razón y ninguno es un defecto:
 | `araby-smugglers-sar`: «Fine Craftsmanship» (`rule-name-editorial`) | La misma errata de la fuente («Fine Craftmenship») que ya estaba adjudicada; con el efecto leído casi verbatim, el caso se clasifica por su nombre |
 | `snotlings-web`: fila `4 4 4 3 3 2 9 4 6` («snotling») | Es la tabla de máximos que la página encabeza «Profile» («Snotling maximums: M 4, WS 4, BS 4, S 3, T 3, W 2, I 9, A 4, Ld 6»): el paquete la lleva dentro de su regla «Characteristic Increase», no como perfil, y el auditor la lee ahí. Antes quedaba silenciada por el nombre («Snotlings» es un perfil del KB, con otras características) |
 
-Los pins: `tests/knowledge/test_2ab_fidelity_rows.py` fija las tres reglas con fixtures
+Los pins: `tests/python/knowledge/test_2ab_fidelity_rows.py` fija las tres reglas con fixtures
 —el nombre de la celda que lleva las cifras, las cifras partidas entre celdas, la tabla de
 tesoros que no es una fila, el perfil del KB que no cubre la fila— y, si están cacheados
 los PDFs, los nombres de las filas de la tabla del KAZ.
@@ -580,15 +580,15 @@ estaban en la clase `item-in-supplement` se leen ya en la fila de su propio docu
 
 ```bash
 python -X utf8 tools/ingestion/audit_2ab_fidelity.py --tree 2A --json > build/cache/fidelity-2a.json
-python -X utf8 -m pytest tests/knowledge/test_2ab_fidelity_rows.py tests/knowledge/test_printed_entries.py
+python -X utf8 -m pytest tests/python/knowledge/test_2ab_fidelity_rows.py tests/python/knowledge/test_printed_entries.py
 ```
 
-Los pins: `tests/knowledge/test_2ab_fidelity_rows.py` fija el cotejo del objeto contra la
+Los pins: `tests/python/knowledge/test_2ab_fidelity_rows.py` fija el cotejo del objeto contra la
 fila (el asterisco de disponibilidad, la celda que imprime dos objetos, el apóstrofo, el
 guion contra el espacio, la entrada combinada que la lista imprime en el otro orden, el
 nombre que el catálogo compone con un guion largo y cada palabra impresa de las dos
 adjudicadas arriba, contra la fila verbatim de la que se leyó), y
-`tests/knowledge/test_printed_entries.py` la lectura que lo hace posible (una fila por
+`tests/python/knowledge/test_printed_entries.py` la lectura que lo hace posible (una fila por
 celda que tasa, la fila cuya tarifa es un multiplicador del precio de otro objeto y la
 tabla de la página web que tasa con él).
 

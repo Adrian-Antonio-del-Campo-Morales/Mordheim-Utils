@@ -12,8 +12,12 @@ commands.
   classification, translation and formatting policy.
 - [Verification](reference/verification.md) — the certification layers,
   coverage and mutation gates, and what each one can prove.
-- [Campaign Manager](reference/campaign-manager.md) — desktop/web capabilities
-  and campaign lifecycle.
+- [Tools](reference/tools.md) — maintained scripts, their purpose and the
+  directory that owns each one.
+- [Components](reference/components.md) — applications, packages and ownership
+  boundaries.
+- [Web presentation](reference/web-presentation.md) — localization, provenance
+  and output-boundary rules.
 
 Contracts:
 
@@ -28,6 +32,7 @@ Contracts:
 - [Modify the knowledge base](guides/modify-knowledge-base.md)
 - [Implement and verify rules](guides/implement-and-verify-rules.md)
 - [Modify an application](guides/modify-application.md)
+- [Use the campaign knowledge base](guides/use-campaign-knowledge.md)
 - [Develop and release](guides/develop-and-release.md) — the fast loop, the
   release gates, measured performance optima and per-machine calibration.
 
@@ -36,9 +41,29 @@ Contracts:
 - [Design rulings](decisions/design-rulings.md) — permanent design decisions
   that bind the KB, the engines or the applications.
 
-Local orientation pages live next to the code they describe: the package
-`README.md` files, `sources/knowledge/**/README.md` (catalogue modelling and
-ownership rules) and `tests/specs/README.md` (verification-corpus conventions).
+## Knowledge base — modelling documents
+
+The catalogue and registry rules of the canonical data:
+
+- [Campaign catalogue](knowledge/campaign-catalogue.md)
+- [Campaign modelling](knowledge/campaign-modeling.md)
+- [Hirelings](knowledge/hirelings.md)
+- [Translation glossary](knowledge/translation-glossary.md)
+- [Registry](knowledge/registry.md)
+
+## Where documents live
+
+Every document lives under `docs/`; the exceptions, each for a reason the tool
+that owns it enforces:
+
+- [`README.md`](../README.md) at the repository root — the entry point, and the
+  file the Windows installer packages.
+- `contracts/*/README.md` — `tests/python/knowledge/test_editorial_schemas.py`
+  requires each contract README next to its schemas.
+- `sources/2A/*.md`, `sources/2B/*.md` — the active staging trees; their tools
+  read and write those verdict documents in place.
+- [`tests/specs/README.md`](../tests/specs/README.md) — the conventions of the
+  verification corpus, published beside the corpus itself.
 
 ## Conventions
 
@@ -47,7 +72,7 @@ ownership rules) and `tests/specs/README.md` (verification-corpus conventions).
   behaviour and status; reference pages do not copy volatile test counts,
   benchmark results or audit totals — they name the command that produces the
   live report.
-- Unresolved product scope belongs in [TODO](../TODO.md).
-- Generated material (`outputs/`, `build/generated/`, web `dist/`, staged
+- Unresolved product scope belongs in [TODO](TODO.md).
+- Generated material (`outputs/`, web `dist/`, staged
   knowledge JSON) is working data produced by commands: never hand-edit or
   commit it.

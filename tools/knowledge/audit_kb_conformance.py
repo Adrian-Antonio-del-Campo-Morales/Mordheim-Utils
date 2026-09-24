@@ -296,7 +296,7 @@ def audit(tree: str) -> dict:
                             f'{band}/{rule_id}: binding.kind {binding.get("kind")!r}')
                     if binding.get('id') and binding['id'] not in bindings:
                         # Registry-declared ids are staged, not unknown: they are reported
-                        # apart so the CI gate (tests/knowledge/test_binding_registry.py)
+                        # apart so the CI gate (tests/python/knowledge/test_binding_registry.py)
                         # stays the authority on registration.
                         if binding['id'] in pending_bindings:
                             report['binding-pending-promotion'].append(

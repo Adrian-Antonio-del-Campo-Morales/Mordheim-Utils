@@ -2,7 +2,7 @@
 
 The two staging trees — ``sources/2A`` and ``sources/2B`` — hold warbands that are
 modelled *before* they are promoted into the knowledge base, and they sit outside
-the coverage guardian of ``tests/knowledge/test_editorial_schemas.py``. That is
+the coverage guardian of ``tests/python/knowledge/test_editorial_schemas.py``. That is
 exactly the window in which the shape of a package drifts, so this module
 answers the question the contract can answer about them:
 
@@ -24,9 +24,9 @@ answers the question the contract can answer about them:
   destination is the one ``sources/2B/promotion-schema-plan.md`` declares, and the
   deviations here are its extension classes; the promotion plan is a document, so
   this pass is what keeps it from going stale.
-* :func:`naming_drift` reports the files ``tools/normalize_names.py --check`` would
+* :func:`naming_drift` reports the files ``tools/knowledge/maintenance/normalize_names.py --check`` would
   rewrite, because the title-case policy of ``name`` / ``name_i18n.es`` is a gate
-  for the knowledge base (``tests/knowledge/test_name_normalization.py``) but not
+  for the knowledge base (``tests/python/knowledge/test_name_normalization.py``) but not
   for the staging trees — one of the two canonical-formatting rules the staging
   is not already held to.
 * :func:`collection_shape_drift` reports the flow collections of the keys the
@@ -35,7 +35,7 @@ answers the question the contract can answer about them:
   ``combat_traits``) — the other one. A promotion copy that writes one of them as
   ``[a, b]`` carries the KB's facts in a shape the KB does not have, so the merge
   shows a diff that is nothing but shape; ``staging_promotion.shape_pass`` is the
-  repair and ``tests/knowledge/test_staging_collection_shape.py`` is its gate.
+  repair and ``tests/python/knowledge/test_staging_collection_shape.py`` is its gate.
 
 The passes answer different questions, and a green schema run is not a promotion
 certificate: the first says the shape is the promoted shape, the second says how
@@ -487,14 +487,14 @@ def catalogue_deviations(root: Path) -> list[SchemaDeviation]:
 # The canonical-formatting gate the staging is not held to
 # --------------------------------------------------------------------------- #
 
-_NORMALIZER = Path("tools") / "normalize_names.py"
+_NORMALIZER = Path("tools") / "knowledge" / "maintenance" / "normalize_names.py"
 _WOULD_CHANGE = re.compile(r"^would change (.+?) \((\d+) name fields?\)", re.MULTILINE)
 
 
 def naming_drift(root: Path) -> dict[str, int]:
     """``{file relative to the staging tree: name fields}`` of the naming policy.
 
-    ``tools/normalize_names.py`` is the canonical pass of the knowledge base and
+    ``tools/knowledge/maintenance/normalize_names.py`` is the canonical pass of the knowledge base and
     its ``--check`` is a gate for ``sources/knowledge``; running it over a staging
     tree is what says whether a promotion copy would need rewriting first.
     """

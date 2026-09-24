@@ -39,14 +39,8 @@ jobs:
           python tools/knowledge/generate_knowledge_web.py
           python tools/knowledge/generate_knowledge_web.py --check
 
-      - name: Stage the artefact for repository-level parity tests
-        run: |
-          mkdir -p apps/warband-manager-web/public/knowledge
-          cp build/generated/knowledge-web/*.json \
-             apps/warband-manager-web/public/knowledge/
-
       - name: Run the Python regression net
-        run: python -m pytest tests/web tests/contracts tests/campaign tests/architecture tests/knowledge -q
+        run: python -m pytest tests/python/web tests/python/contracts tests/python/campaign tests/python/architecture tests/python/knowledge -q
 
       - name: Verify the artefact is deterministic and untouched by a rebuild
         run: python tools/knowledge/generate_knowledge_web.py --check
@@ -62,26 +56,16 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: |
-            packages/typescript/package-lock.json
-            apps/warband-manager-web/package-lock.json
+          cache-dependency-path: package-lock.json
 
-      - name: Install packages (reproducible, lockfile-driven)
-        run: |
-          cd packages/typescript && npm ci
-          cd ../../apps/warband-manager-web && npm ci
+      - name: Install the workspace (reproducible, lockfile-driven)
+        run: npm ci
 
       - name: Generate the KB artefact for the tests and the browser
         run: |
           pip install -e .
           python tools/knowledge/generate_knowledge_web.py
           python tools/knowledge/generate_knowledge_web.py --check
-
-      - name: Copy the artefact to the app's public assets
-        run: |
-          mkdir -p apps/warband-manager-web/public/knowledge
-          cp build/generated/knowledge-web/*.json \
-             apps/warband-manager-web/public/knowledge/
 
       - name: Typecheck and test the packages
         run: cd packages/typescript && npm run typecheck && npm test
@@ -93,10 +77,10 @@ jobs:
         run: |
           cd apps/warband-manager-web
           npx vitest run --pool=forks --maxWorkers=1 --testTimeout=200000 \
-            src/features/campaign/knowledge-display-coverage.test.tsx \
-            src/features/campaign/ui_i18n.test.ts \
-            src/features/campaign/displayText.test.ts \
-            src/features/campaign/KnowledgeHint.test.tsx
+            ../../tests/web/features/campaign/knowledge-display-coverage.test.tsx \
+            ../../tests/web/features/campaign/ui_i18n.test.ts \
+            ../../tests/web/features/campaign/displayText.test.ts \
+            ../../tests/web/features/campaign/KnowledgeHint.test.tsx
 
       - name: Typecheck, lint, test and build the web app
         run: |
@@ -111,7 +95,7 @@ jobs:
       # asserting the bundle excludes NumPy/Cython/Tkinter/Combat Lab and
       # ships no .mordheim files (the pre-build `npm test` run skips it).
       - name: Post-build bundle guardrails (boundaries.test.ts)
-        run: cd apps/warband-manager-web && npx vitest run src/architecture/boundaries.test.ts
+        run: cd apps/warband-manager-web && npx vitest run ../../tests/web/architecture/boundaries.test.ts
 
       - name: Upload the built app for inspection
         uses: actions/upload-artifact@v4

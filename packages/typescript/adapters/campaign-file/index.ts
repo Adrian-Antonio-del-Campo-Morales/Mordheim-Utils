@@ -4,8 +4,8 @@
  * `contracts/campaign-file-v5/`.
  *
  * Source of truth: `contracts/campaign-file-v5/campaign-file-v5.schema.json`.
- * The structural rules are NOT re-implemented by hand: the schema is embedded
- * verbatim (`./schema-json.ts`, generated from the contract file) and a small
+ * The structural rules are NOT re-implemented by hand: the schema is imported
+ * directly from the contract file and a small
  * generic draft 2020-12 validator walks it (`./schema-validator.ts`). Every
  * structural violation carries the schema's JSON path, mirroring the Python
  * reader's error reporting.
@@ -28,7 +28,7 @@ import type {
   SerializeResult,
 } from "../../domain/campaign/kernel/ports";
 import type { Campaign } from "../../domain/campaign/kernel/state";
-import { SCHEMA_JSON } from "./schema-json";
+import SCHEMA_JSON from "../../../../contracts/campaign-file-v5/campaign-file-v5.schema.json";
 import { validateAgainstSchema } from "./schema-validator";
 
 const MARKER = "MORDHEIM_CAMPAIGN_MANAGER";

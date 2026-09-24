@@ -113,5 +113,5 @@ correcciones.**
 ## Verificación final
 
 - `ingest_2a.py validate`: 19 filas, 0 problemas
-- `pytest tests/knowledge/test_2a_staging.py`: 7/7
+- `pytest tests/python/knowledge/test_2a_staging.py`: 7/7
 - Estado del manifiesto intacto: 19× `english-reviewed`

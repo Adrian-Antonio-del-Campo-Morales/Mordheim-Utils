@@ -10,10 +10,23 @@
     "noFallthroughCasesInSwitch": true,
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
+    "resolveJsonModule": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
     "noEmit": true,
-    "exactOptionalPropertyTypes": true
+    "exactOptionalPropertyTypes": true,
+    "baseUrl": ".",
+    "paths": {
+      "@domain/*": ["domain/*"],
+      "@app/*": ["application/*"],
+      "@adapters/*": ["adapters/*"]
+    }
   },
-  "include": ["domain/**/*.ts", "application/**/*.ts", "adapters/**/*.ts", "vitest.config.ts"]
+  "include": [
+    "domain/**/*.ts",
+    "application/**/*.ts",
+    "adapters/**/*.ts",
+    "vitest.config.ts",
+    "../tests/typescript/**/*.ts"
+  ]
 }

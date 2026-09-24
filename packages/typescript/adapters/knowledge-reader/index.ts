@@ -1,6 +1,6 @@
 /**
  * KnowledgeReader adapter over the generated KB web artefact (tools/knowledge/generate_knowledge_web.py ->
- * build/generated/knowledge-web/knowledge-web.json).
+ * outputs/web-public/knowledge/knowledge-web.json).
  *
  * Contract honoured (from domain/campaign/kernel/ports.ts):
  * - stable ids resolve; a missing id is `{ok:false, reason:"not_found"}`,
@@ -209,7 +209,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   /**
    * Fetch the generated artefact from a URL once, validate it and build the
    * reader. The browser bundle ships the artefact as a static asset
-   * (`public/knowledge/knowledge-web.json`, staged by CI); nothing is
+   * (`outputs/web-public/knowledge/knowledge-web.json`, served by Vite); nothing is
    * inlined into the JS chunk.
    *
    * Failure modes are typed and actionable — a load failure is a

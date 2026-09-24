@@ -18,16 +18,16 @@ that guide's last section.
    names or prose.
 4. For campaign catalogue data, follow the modelling conventions and
    data-ownership table in
-   [`catalog/campaign/README.md`](../../sources/knowledge/catalog/campaign/README.md)
+   [`docs/knowledge/campaign-catalogue.md`](../../docs/knowledge/campaign-catalogue.md)
    and its HOWTO — the KB declares rules and tables, never a concrete
    campaign's state.
-5. Run `python tools/format_yaml.py --check sources/knowledge` (or `--write`,
+5. Run `python tools/knowledge/maintenance/format_yaml.py --check sources/knowledge` (or `--write`,
    then re-check), then `python tools/mordheim-utils.py verify --structural`.
    That gate also checks every maintained document against
    [`contracts/knowledge-editorial-v1`](../../contracts/knowledge-editorial-v1/README.md):
    when a document gains, renames or drops a field, extend its schema in the
    same change or the validation fails. A new YAML under a covered tree needs a
-   schema of its own — `tests/knowledge/test_editorial_schemas.py` fails when a
+   schema of its own — `tests/python/knowledge/test_editorial_schemas.py` fails when a
    document escapes the contract. The same suite refuses a schema that admits
    more than the documents hold and a declaration the documents never exercise
    unless `tools/knowledge/audit_schema_strictness.py` can name the contract
@@ -38,7 +38,7 @@ that guide's last section.
    invalidates them loudly (`verify` reports the exact mismatch). Refresh
    `sources[].digest` / `scope_digest` only after reviewing the changed text.
 7. Regenerate the generated reports you touched
-   (e.g. `python tools/kb/price-collation.py`) instead of hand-editing them.
+   (e.g. `python tools/knowledge/maintenance/price-collation.py`) instead of hand-editing them.
 
 Done when legal cases compile, illegal ones are rejected, and the affected
 evidence is reviewed or explicitly pending. See

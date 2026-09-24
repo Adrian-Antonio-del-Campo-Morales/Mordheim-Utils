@@ -43,7 +43,7 @@ strategy) and the permanent
 
 ```powershell
 python -m mordheim_combat_lab verify --inventory
-python -m pytest tests/verification/test_semantics.py -q
+python -m pytest tests/python/verification/test_semantics.py -q
 python -m mordheim_combat_lab verify --json
 python -m mordheim_combat_lab verify --require-complete
 ```

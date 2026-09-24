@@ -4,7 +4,7 @@
  * lane). The JSON Schema alone cannot express cross-field invariants
  * (inventory conservation, unique ids, live-warrior references); both
  * toolchains must enforce them identically so the shared parity vectors in
- * `tests/web/parity/vectors/malformed_save.json` agree.
+ * `tests/fixtures/parity/vectors/malformed_save.json` agree.
  */
 import type { Campaign } from "../../domain/campaign/kernel/state";
 

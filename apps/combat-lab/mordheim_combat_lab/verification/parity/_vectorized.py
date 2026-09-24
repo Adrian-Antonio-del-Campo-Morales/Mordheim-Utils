@@ -22,23 +22,23 @@ from mordheim_combat_lab.verification.parity._report import ParityObligation, Pa
 
 COMPLEX_EVIDENCE = {
     "reference-bear-hug-replaces-two-hits-before-wound-resolution":
-        "tests/combat/test_phases.py::test_production_attack_orchestrator_aggregates_bear_hug_across_two_attacks",
+        "tests/python/combat/test_phases.py::test_production_attack_orchestrator_aggregates_bear_hug_across_two_attacks",
     "reference-force-of-will-rescues-once-and-sustains-per-round":
-        "tests/combat/vectorized/test_shared_families.py::test_force_of_will_rescues_once_and_then_requires_cumulative_tests",
+        "tests/python/combat/vectorized/test_shared_families.py::test_force_of_will_rescues_once_and_then_requires_cumulative_tests",
     "reference-luck-and-mark-are-persistent-consumable-resources":
-        "tests/combat/vectorized/test_rule_families_a.py::test_contagious_retaliates_and_mark_of_old_ones_is_spent_only_once",
+        "tests/python/combat/vectorized/test_rule_families_a.py::test_contagious_retaliates_and_mark_of_old_ones_is_spent_only_once",
     "reference-spines-acid-blood-and-contagious-are-real-reactions":
-        "tests/combat/vectorized/test_vectorized_engine.py::test_spines_resolve_simultaneously_at_the_start_of_the_phase",
+        "tests/python/combat/vectorized/test_vectorized_engine.py::test_spines_resolve_simultaneously_at_the_start_of_the_phase",
     "reference-black-hunger-resolves-d3-self-hits":
-        "tests/combat/modular/test_complex_sequences.py::test_black_hunger_backlash_is_a_real_self_attack_after_the_round",
+        "tests/python/combat/modular/test_complex_sequences.py::test_black_hunger_backlash_is_a_real_self_attack_after_the_round",
     "reference-netter-covers-miss-escape-and-capture":
-        "tests/combat/modular/test_complex_sequences.py::test_netter_minimal_sequence_distinguishes_miss_escape_and_capture",
+        "tests/python/combat/modular/test_complex_sequences.py::test_netter_minimal_sequence_distinguishes_miss_escape_and_capture",
     "reference-disability-is-applied-during-scalar-initialization":
-        "tests/combat/vectorized/test_rule_families_a.py::test_disability_guardian_unarmed_and_onogal_have_observable_runtime_effects",
+        "tests/python/combat/vectorized/test_rule_families_a.py::test_disability_guardian_unarmed_and_onogal_have_observable_runtime_effects",
     "reference-parry-and-critical-capacity-are-consumed-in-state":
-        "tests/combat/vectorized/test_vectorized_engine.py::test_only_one_critical_can_be_claimed_per_row_and_phase",
+        "tests/python/combat/vectorized/test_vectorized_engine.py::test_only_one_critical_can_be_claimed_per_row_and_phase",
     "reference-fire-persists-until-recovery-succeeds":
-        "tests/combat/modular/test_complex_sequences.py::test_fire_persists_after_failed_recovery_and_stops_after_extinguishing",
+        "tests/python/combat/modular/test_complex_sequences.py::test_fire_persists_after_failed_recovery_and_stops_after_extinguishing",
 }
 
 INDIRECT_TAG_EVIDENCE = {

@@ -39,7 +39,6 @@ PACKAGE_ROOTS = (
     REPO_ROOT / "packages" / "python" / "adapters" / "desktop-ui",
     REPO_ROOT / "packages" / "python" / "campaign",
     REPO_ROOT / "apps" / "combat-lab",
-    REPO_ROOT / "apps" / "warband-manager-desktop",
 )
 
 # Make the in-process commands (doctor) work from a fresh checkout too.
@@ -51,21 +50,21 @@ for package_root in reversed(PACKAGE_ROOTS):
 #: Map of ``tests --scope`` names to the pytest paths they select.
 SCOPE_PATHS = {
     "all": ("tests",),
-    "engines": ("tests/combat", "tests/integration"),
-    "modular": ("tests/combat/modular",),
-    "vectorized": ("tests/combat/vectorized",),
-    "native": ("tests/combat/native",),
+    "engines": ("tests/python/combat",),
+    "modular": ("tests/python/combat/modular",),
+    "vectorized": ("tests/python/combat/vectorized",),
+    "native": ("tests/python/combat/native",),
     # The per-change engine gate: the deterministic suites that certify rule
     # behaviour without statistical noise (mirrors the coverage-gate budget).
-    "deterministic": ("tests/combat/modular", "tests/combat/vectorized",
-                      "tests/combat/test_phases.py", "tests/verification/test_parity.py"),
-    "campaign": ("tests/campaign", "tests/application"),
-    "knowledge": ("tests/knowledge", "tests/specs"),
-    "verification": ("tests/verification",),
-    "construction": ("tests/construction",),
-    "ui": ("tests/ui",),
-    "cli": ("tests/cli",),
-    "architecture": ("tests/architecture",),
+    "deterministic": ("tests/python/combat/modular", "tests/python/combat/vectorized",
+                      "tests/python/combat/test_phases.py", "tests/python/verification/test_parity.py"),
+    "campaign": ("tests/python/campaign", "tests/python/application"),
+    "knowledge": ("tests/python/knowledge", "tests/specs"),
+    "verification": ("tests/python/verification",),
+    "construction": ("tests/python/construction",),
+    "ui": ("tests/python/ui",),
+    "cli": ("tests/python/cli",),
+    "architecture": ("tests/python/architecture",),
 }
 
 #: Combat Lab subcommands forwarded verbatim to ``python -m mordheim_combat_lab``.
@@ -82,7 +81,6 @@ REPORT_KINDS = {
 #: are not delegated to another parser.
 USAGE = {
     "combat-lab": "python tools/mordheim-utils.py combat-lab",
-    "warband-manager": "python tools/mordheim-utils.py warband-manager",
     "doctor": "python tools/mordheim-utils.py doctor",
     "check-presentation": "python tools/mordheim-utils.py check-presentation",
     "build-native": "python tools/mordheim-utils.py build-native [pip install args ...]",
@@ -91,7 +89,6 @@ USAGE = {
 #: Command help lines, in the order shown by ``--help``.
 COMMANDS = (
     ("combat-lab", "open the Combat Lab graphical application"),
-    ("warband-manager", "open the Campaign Manager (warband) graphical application"),
     ("verify", "validate the KB and run the semantic specifications"),
     ("report", "generate the rule and test reports (report rules | report tests)"),
     ("benchmark", "measure the combat engines (modular, NumPy, native) with configurable sizes"),
@@ -108,16 +105,14 @@ COMMANDS = (
 
 #: Command groups for ``--help``; every name in COMMANDS appears exactly once.
 COMMAND_GROUPS = (
-    ("Applications", ("combat-lab", "warband-manager")),
+    ("Applications", ("combat-lab",)),
     ("Knowledge base", ("verify", "report")),
     ("Engines", ("benchmark", "parity", "coverage-gate", "calibrate")),
     ("Repository", ("tests", "check-presentation", "run-ci", "combine-kb", "build-native", "doctor")),
 )
 
-COMBINE_KB_SCRIPT = REPO_ROOT / "tools" / "kb" / "combine_kb_yaml.py"
+COMBINE_KB_SCRIPT = REPO_ROOT / "tools" / "knowledge" / "maintenance" / "combine_kb_yaml.py"
 KNOWLEDGE_GENERATOR = REPO_ROOT / "tools" / "knowledge" / "generate_knowledge_web.py"
-GENERATED_KNOWLEDGE = REPO_ROOT / "build" / "generated" / "knowledge-web"
-WEB_KNOWLEDGE = REPO_ROOT / "apps" / "warband-manager-web" / "public" / "knowledge"
 TYPESCRIPT_PACKAGE = REPO_ROOT / "packages" / "typescript"
 WEB_APP = REPO_ROOT / "apps" / "warband-manager-web"
 
@@ -160,7 +155,7 @@ def check_presentation_command(args: list[str]) -> int:
             "check-presentation",
             "Run the web detector tests and strict, deep GUI text audit. "
             "Requires npm and installed web dependencies. Findings return a "
-            "nonzero exit code; reports: build/generated/gui-text-audit-deep.{json,md}.")
+            "nonzero exit code; reports: outputs/web-presentation/gui-text-audit-deep.{json,md}.")
     if args:
         print("check-presentation: no arguments expected", file=sys.stderr)
         return 2
@@ -172,14 +167,6 @@ def combat_lab_command(args: list[str]) -> int:
         return _print_usage(
             "combat-lab", "Open the Combat Lab graphical application (Tkinter).")
     return _run_module("mordheim_combat_lab", "ui")
-
-
-def warband_manager_command(args: list[str]) -> int:
-    if any(argument in ("-h", "--help") for argument in args):
-        return _print_usage(
-            "warband-manager",
-            "Open the Campaign Manager desktop application (Tkinter).")
-    return _run_module("mordheim_desktop")
 
 
 def lab_command(name: str, args: list[str]) -> int:
@@ -239,12 +226,6 @@ def tests_command(args: list[str]) -> int:
     return _run_module("pytest", *SCOPE_PATHS[scope], *forwarded)
 
 
-def _stage_knowledge_assets() -> None:
-    WEB_KNOWLEDGE.mkdir(parents=True, exist_ok=True)
-    for source in GENERATED_KNOWLEDGE.glob("*.json"):
-        shutil.copy2(source, WEB_KNOWLEDGE / source.name)
-
-
 def run_ci_command(args: list[str]) -> int:
     """Run the checks from .github/workflows/ci.yml using local dependencies."""
     if args in (["-h"], ["--help"]):
@@ -258,9 +239,8 @@ def run_ci_command(args: list[str]) -> int:
                     (sys.executable, str(KNOWLEDGE_GENERATOR), "--check")):
         if _run_in(REPO_ROOT, *command):
             return 1
-    _stage_knowledge_assets()
-    if _run_module("pytest", "tests/web", "tests/contracts", "tests/campaign",
-                   "tests/architecture", "tests/knowledge", "-q"):
+    if _run_module("pytest", "tests/python/web", "tests/python/contracts", "tests/python/campaign",
+                   "tests/python/architecture", "tests/python/knowledge", "-q"):
         return 1
     if _run(sys.executable, str(KNOWLEDGE_GENERATOR), "--check"):
         return 1
@@ -277,15 +257,15 @@ def run_ci_command(args: list[str]) -> int:
         WEB_APP,
         "npx", "vitest", "run", "--pool=forks", "--maxWorkers=1",
         "--testTimeout=200000",
-        "src/features/campaign/knowledge-display-coverage.test.tsx",
-        "src/features/campaign/ui_i18n.test.ts",
-        "src/features/campaign/displayText.test.ts",
-        "src/features/campaign/KnowledgeHint.test.tsx",
+        "../../tests/web/features/campaign/knowledge-display-coverage.test.tsx",
+        "../../tests/web/features/campaign/ui_i18n.test.ts",
+        "../../tests/web/features/campaign/displayText.test.ts",
+        "../../tests/web/features/campaign/KnowledgeHint.test.tsx",
     ):
         return 1
     for command in (("npm", "run", "typecheck"), ("npm", "run", "lint"),
                     ("npm", "test"), ("npm", "run", "build"),
-                    ("npx", "vitest", "run", "src/architecture/boundaries.test.ts")):
+                    ("npx", "vitest", "run", "../../tests/web/architecture/boundaries.test.ts")):
         if _run_in(WEB_APP, *command):
             return 1
     return 0
@@ -339,10 +319,7 @@ def doctor_command() -> int:
         print(f"knowledge root: {knowledge_root()}")
     except Exception as error:  # pragma: no cover - defensive
         print(f"knowledge root: unavailable ({error})")
-    for label, module in (
-        ("Combat Lab", "mordheim_combat_lab.ui.app"),
-        ("Campaign Manager", "mordheim_desktop.app"),
-    ):
+    for label, module in (("Combat Lab", "mordheim_combat_lab.ui.app"),):
         if importlib.util.find_spec(module) is None:
             print(f"{label}: import failed (module not found)")
         else:
@@ -510,8 +487,6 @@ def main(argv: list[str] | None = None) -> int:
             "then exit.")
     if name == "combat-lab":
         return combat_lab_command(args)
-    if name == "warband-manager":
-        return warband_manager_command(args)
     if name == "report":
         return report_command(args)
     if name == "tests":

@@ -4,7 +4,7 @@
  * (contracts/campaign-file-v5) — the campaign/view split is deliberate:
  * persistent campaign state never mixes with reconstructible UI selection.
  *
- * Purity rules (enforced by tests/architecture tests): no React, no DOM, no
+ * Purity rules (enforced by tests/python/architecture tests): no React, no DOM, no
  * browser APIs, no filesystem. Stable KB ids are references; display text is
  * volatile locale snapshot and never used for identity.
  *
