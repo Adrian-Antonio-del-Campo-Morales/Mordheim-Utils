@@ -1,0 +1,744 @@
+schema_version: 2
+ruleset: mordheim
+catalog: campaign-hired-swords-and-dramatis
+status: draft
+availability_procedures:
+- id: campaign.hireling.availability.dramatis-search
+  type: characteristic_test
+  actor: eligible_hero
+  characteristic: initiative
+  dice:
+    count: 1
+    sides: 6
+  success_when: roll_less_than_characteristic
+hired_swords:
+- id: campaign.hireling.hired-sword.albino-stormvermin
+  profile_id: hireling.hired-sword.albino-stormvermin
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 75 warp tokens
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 30 warp tokens
+  availability:
+    kind: common
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Specialists / Albino Stormvermin
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+  eligibility:
+    allow_groups:
+    - warband-group.skaven
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Albino Stormvermin may only be hired by Skaven warbands.
+- id: campaign.hireling.hired-sword.black-orc-bodyguard
+  profile_id: hireling.hired-sword.black-orc-bodyguard
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 60
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 40
+  availability:
+    kind: common
+  source_refs:
+  - manual: broheim.net
+    printed_page: 62
+    section: Hired Swords and Dramatis Personae / Black Orc Bodyguard - Hired Sword V1.1
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  eligibility:
+    allow_groups:
+    - warband-group.orcs-and-goblins
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Any greenskin warband may hire a Black Orc Bodyguard.
+- id: campaign.hireling.hired-sword.bog-hunter
+  profile_id: hireling.hired-sword.bog-hunter
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: broheim.net
+    printed_page: 1
+    section: Hired Swords
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords%20of%20the%20Marsh.pdf
+  - manual: broheim.net
+    printed_page: 5
+    section: Mutiny In Marienburg Specialists / Bog Hunter
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/MiM%20Specialists.pdf
+  eligibility:
+    allow_groups:
+    - warband-group.beastmen
+    - warband-group.orcs-and-goblins
+    forbid_groups: []
+    allow_band_ids:
+    - lords-of-the-marsh-mim
+    forbid_band_ids: []
+    note: Fimir, Beastmen and Greenskin Warbands may hire a Bog Hunter.
+- id: campaign.hireling.hired-sword.crimashin
+  profile_id: hireling.hired-sword.crimashin
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 40 dinars
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15 dinars
+  availability:
+    kind: common
+  source_refs:
+  - manual: broheim.net
+    printed_page: 16
+    section: Hired Swords / Crimashin
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Crimashin were known to fight for any side throughout the crusades, as no one truly knew their
+      agenda. Any warband may hire a Crimashin.
+- id: campaign.hireling.hired-sword.druid-priest-of-taal
+  profile_id: hireling.hired-sword.druid-priest-of-taal
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 45
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 0
+  availability:
+    kind: common
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 13
+    section: Priests for Every Occasion / Warrior-Priest of Sigmar and Taal
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  eligibility:
+    allow_groups:
+    - warband-group.human
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids:
+    - witch-hunters
+    - trollheim-witch-hunters
+    - sisters-of-sigmar
+    - pit-fighters
+    - kislevites
+    - tileans
+    - norse-explorers-btb
+    - norse-explorers-lustria
+    note: Any human warband may hire a Priest of Taal or Rhya (or Karog) except Witch Hunters, Sisters
+      of Sigmar, Pit Fighters, Norse, Kislevites, Tileans, Arabyans and Middenheim mercenaries.
+- id: campaign.hireling.hired-sword.fire-eater
+  profile_id: hireling.hired-sword.fire-eater
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 75
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 30
+  availability:
+    kind: common
+  source_refs:
+  - manual: broheim.net
+    printed_page: 4
+    section: Specialists / Fire-Eater
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+  eligibility:
+    allow_groups:
+    - warband-group.human
+    forbid_groups: []
+    allow_band_ids:
+    - battle-monks-of-cathay
+    - maneaters
+    forbid_band_ids: []
+    note: Any Human warbands including Battle Monks of Cathay may hire a Fire-Eater. Ogre Maneaters may
+      hire a Fire-Eater with Movement 6.
+- id: campaign.hireling.hired-sword.grave-warden
+  profile_id: hireling.hired-sword.grave-warden
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 10
+  availability:
+    kind: common
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Specialists / Grave Warden
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+  eligibility:
+    allow_groups:
+    - warband-group.dwarf
+    - warband-group.elf
+    - warband-group.human
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Any Dwarf, Elf or Human warband may hire a Grave Warden.
+- id: campaign.hireling.hired-sword.halfling-fence
+  profile_id: hireling.hired-sword.halfling-fence
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Specialists / Halfling Fence
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    - warband-group.undead
+    - warband-group.beastmen
+    - warband-group.orcs-and-goblins
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Any warband except Skaven, Undead, Beastmen and Orcs & Goblins may hire a Halfling Fence.
+- id: campaign.hireling.hired-sword.halfling-pimp
+  profile_id: hireling.hired-sword.halfling-pimp
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 20
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 10
+  availability:
+    kind: common
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Specialists / Halfling Pimp
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    - warband-group.undead
+    - warband-group.beastmen
+    - warband-group.orcs-and-goblins
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Any warband except Skaven, Undead, Beastmen and Orcs & Goblins may hire a Halfling Pimp.
+- id: campaign.hireling.hired-sword.holy-man
+  profile_id: hireling.hired-sword.holy-man
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30 dinars; Reduced to 20 dinars for warbands that follow the Path of Sigmar or The One (see
+          the Holy rule)
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15 dinars
+  availability:
+    kind: common
+  source_refs:
+  - manual: broheim.net
+    printed_page: 16
+    section: Hired Swords / Holy Man
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: A Holy Man will not offer his services to any warband that includes spellcasters, undead or
+      non-humans (excluding animals).
+- id: campaign.hireling.hired-sword.mariner-priest-of-manann
+  profile_id: hireling.hired-sword.mariner-priest-of-manann
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 40
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 0
+  availability:
+    kind: common
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 3
+    section: Priests for Every Occasion / Mariner-Priest of Manann
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  - manual: broheim.net
+    printed_page: 3
+    section: Heroes / 0-1 Mutant-Priest / Special Rules / Prayers
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf
+  eligibility:
+    allow_groups:
+    - warband-group.human
+    - warband-group.elf
+    - warband-group.dwarf
+    forbid_groups:
+    - warband-group.chaotic
+    - warband-group.orcs-and-goblins
+    - warband-group.dark-elf
+    - warband-group.skaven
+    - warband-group.undead
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Any human, elf or dwarf warband may hire a Mariner-Priest of Manann (or Olovald). Priests may
+      not be hired by followers of Chaos, Orcs & Goblins, Dark Elves, Skaven and Undead warbands unless
+      specified elsewhere; only one Priest per warband; the Priest counts as a Hero (see the chapter errata
+      note above about replacing a starting Hero).
+- id: campaign.hireling.hired-sword.midshipman
+  profile_id: hireling.hired-sword.midshipman
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 30
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: broheim.net
+    printed_page: 5
+    section: Specialists / Midshipman
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    - warband-group.beastmen
+    - warband-group.orcs-and-goblins
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Any warband except Skaven, Beastmen, and Orcs & Goblins warbands may hire a Midshipman.
+- id: campaign.hireling.hired-sword.norse-bearman-bodyguard
+  profile_id: hireling.hired-sword.norse-bearman-bodyguard
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 65
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 30
+  availability:
+    kind: common
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Specialists / Norse Bearman Bodyguard
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.undead
+    - warband-group.skaven
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Norse Bodyguards may not be hired by Undead and Skaven warbands.
+- id: campaign.hireling.hired-sword.ogre-treasure-hunter
+  profile_id: hireling.hired-sword.ogre-treasure-hunter
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 95
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 40
+  availability:
+    kind: common
+  source_refs:
+  - manual: broheim.net
+    printed_page: 1
+    section: Specialists / Ogre Treasure-Hunter
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.skaven
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Any warband with a riverboat/barge except Skaven may hire an Ogre Treasure-Hunter.
+- id: campaign.hireling.hired-sword.priest-of-morr
+  profile_id: hireling.hired-sword.priest-of-morr
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 35
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 0
+  availability:
+    kind: common
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 5
+    section: Priests for Every Occasion / Priest of Morr
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  eligibility:
+    allow_groups:
+    - warband-group.human
+    - warband-group.elf
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Any human or elf warband may hire a Priest of Morr.
+- id: campaign.hireling.hired-sword.priest-of-verena
+  profile_id: hireling.hired-sword.priest-of-verena
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 45
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 0
+  availability:
+    kind: common
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 16
+    section: Priests for Every Occasion / Priest of Verena
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  eligibility:
+    allow_groups:
+    - warband-group.human
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids:
+    - witch-hunters
+    - trollheim-witch-hunters
+    - sisters-of-sigmar
+    - pit-fighters
+    - pirates
+    - kislevites
+    - tileans
+    - norse-explorers-btb
+    - norse-explorers-lustria
+    note: Any human warband may hire a Priest of Verena (or War-Priest of Solkan) except Witch Hunters,
+      Sisters of Sigmar, Pit Fighters, Pirates, Norse, Kislevites, Arabyans and Middenheim mercenaries.
+- id: campaign.hireling.hired-sword.priestess-of-shallya
+  profile_id: hireling.hired-sword.priestess-of-shallya
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 50
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 0
+  availability:
+    kind: common
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 10
+    section: Priests for Every Occasion / Priestess of Shallya
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  eligibility:
+    allow_groups:
+    - warband-group.human
+    - warband-group.elf
+    - warband-group.dwarf
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Any human, elf or dwarf warband may hire a Priestess of Shallya.
+- id: campaign.hireling.hired-sword.sister-of-sigmar
+  profile_id: hireling.hired-sword.sister-of-sigmar
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 45
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 15
+  availability:
+    kind: common
+  source_refs:
+  - manual: broheim.net
+    printed_page: 4
+    section: Specialists / Sister of Sigmar
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+  eligibility:
+    allow_groups:
+    - warband-group.dwarf
+    - warband-group.elf
+    - warband-group.human
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids:
+    - witch-hunters
+    - trollheim-witch-hunters
+    note: Any Dwarf, Elf or Human warband except Witch Hunters may hire a Sister of Sigmar.
+- id: campaign.hireling.hired-sword.trickster-priest-of-ranald
+  profile_id: hireling.hired-sword.trickster-priest-of-ranald
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 55
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 0
+  availability:
+    kind: common
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 8
+    section: Priests for Every Occasion / Trickster-Priest of Ranald
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  eligibility:
+    allow_groups:
+    - warband-group.human
+    - warband-group.dwarf
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Any human or dwarf warband may hire a Priest of Ranald or Handrich (or Gunndred).
+- id: campaign.hireling.hired-sword.war-priestess-of-myrmidia
+  profile_id: hireling.hired-sword.war-priestess-of-myrmidia
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 40
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 0
+  availability:
+    kind: common
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 6
+    section: Priests for Every Occasion / War-Priestess of Myrmidia
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids:
+    - tileans
+    - merchant-caravans
+    - watchmen-mim
+    forbid_band_ids: []
+    note: Marienburgers, Tileans, Watchmen and Merchants Caravans may hire a War-Priestess of Myrmidia.
+- id: campaign.hireling.hired-sword.warrior-priest-of-sigmar
+  profile_id: hireling.hired-sword.warrior-priest-of-sigmar
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 40
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 0
+  availability:
+    kind: common
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 12
+    section: Priests for Every Occasion / Warrior-Priest of Sigmar
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  eligibility:
+    allow_groups:
+    - warband-group.human
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids:
+    - witch-hunters
+    - trollheim-witch-hunters
+    - pit-fighters
+    - pirates
+    - kislevites
+    - tileans
+    - norse-explorers-btb
+    - norse-explorers-lustria
+    note: Any human warband may hire a Warrior-Priest of Sigmar except Witch Hunters (they already have
+      this choice!), Pit Fighters, Pirates, Norse, Kislevites, Tileans, Arabyans and Middenheim mercenaries.
+- id: campaign.hireling.hired-sword.whaler
+  profile_id: hireling.hired-sword.whaler
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 70
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 30
+  availability:
+    kind: common
+  source_refs:
+  - manual: broheim.net
+    printed_page: 1
+    section: Hired Swords
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords%20of%20the%20Marsh.pdf
+  - manual: broheim.net
+    printed_page: 3
+    section: Mutiny In Marienburg Specialists / Whaler
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/MiM%20Specialists.pdf
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.undead
+    - warband-group.skaven
+    allow_band_ids:
+    - lords-of-the-marsh-mim
+    forbid_band_ids: []
+    note: Whalers may not be hired by Undead and Skaven warbands. Fimir warbands may hire the Whaler (Lords
+      of the Marsh).
+- id: campaign.hireling.hired-sword.wolf-priest-of-ulric
+  profile_id: hireling.hired-sword.wolf-priest-of-ulric
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 60
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 0
+  availability:
+    kind: common
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 14
+    section: Priests for Every Occasion / Wolf-Priest of Ulric
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  eligibility:
+    allow_groups: []
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Middenheim mercenaries may hire a Wolf-Priest of Ulric.
+dramatis_personae:
+- id: campaign.hireling.dramatis.aldred-fellblade
+  profile_id: hireling.dramatis.aldred-fellblade
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 75
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 35
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: broheim.net
+    printed_page: 63
+    section: Hired Swords and Dramatis Personae / Aldred Fellblade - Dramatis Personae
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  eligibility:
+    allow_groups:
+    - warband-group.human
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Only human warbands can hire Aldred (Human Mercenaries, Witch Hunters, and Adventurers).
+- id: campaign.hireling.dramatis.armen-abbas
+  profile_id: hireling.dramatis.armen-abbas
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 85 dinars
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 45 dinars
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: broheim.net
+    printed_page: 16
+    section: Dramatis Personae / Armen Abbas
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  eligibility:
+    allow_groups: []
+    forbid_groups:
+    - warband-group.sigmar-devoted
+    allow_band_ids: []
+    forbid_band_ids:
+    - witch-hunters
+    - trollheim-witch-hunters
+    note: Any warband except Witch Hunters, those that contain non-humans and those that follow the Path
+      of Sigmar.
+- id: campaign.hireling.dramatis.snorri-nosebiter
+  profile_id: hireling.dramatis.snorri-nosebiter
+  hiring_fee:
+    resources:
+      gold_crowns:
+        cost: 40
+  upkeep:
+    resources:
+      gold_crowns:
+        cost: 25
+  availability:
+    procedure_id: campaign.hireling.availability.dramatis-search
+  source_refs:
+  - manual: broheim.net
+    printed_page: 62
+    section: Hired Swords and Dramatis Personae / Snorri Nosebiter - Dramatis Personae
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  eligibility:
+    allow_groups:
+    - warband-group.human
+    - warband-group.dwarf
+    forbid_groups: []
+    allow_band_ids: []
+    forbid_band_ids: []
+    note: Any human or Dwarf warband may hire Snorri Nosebiter.
+eligibility_semantics:
+  simple_lists:
+    allow: If both allow lists are empty, there is no positive static band filter. Otherwise the band
+      must match at least one allow_group or allow_band_id.
+    forbid: A match in any forbid_group or forbid_band_id rejects the hire.
+    precedence: forbid
+  expression:
+    purpose: Complete static eligibility predicate for cases that require boolean composition.
+    leaf_fields:
+    - group_id
+    - band_id
+    operators:
+    - all_of
+    - any_of
+    - not
+    mutual_exclusion: When expression is present, allow/forbid lists are not used for that entry.
+  dynamic_checks: Current-roster composition, current Hired Swords and selected warband variants are profile
+    rules. The application that builds/manages the campaign roster evaluates those rules.
+effect_ids:
+- campaign.hireling.availability
+- campaign.hireling.hire
+- campaign.hireling.upkeep

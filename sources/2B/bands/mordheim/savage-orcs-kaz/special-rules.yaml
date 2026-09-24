@@ -70,7 +70,7 @@ rules:
       binding: null
       reason: >-
         Out of scope: rout tests are a post-battle/campaign mechanic.
-  name: Ain't Orcz (rout counting)
+  name: Ain't Orcz (Rout Counting)
   effect: >-
     Orcs don't expect much from their lesser cousins and are not bothered if they break or get
     slain in battle. Therefore when testing to see if an Orc warband needs to take a rout test,
@@ -81,7 +81,7 @@ rules:
     section: Gobbo Boyz / Special Rules / Ain't Orcz
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
-    es: No son Orcos (recuento de retirada)
+    es: No Son Orcos (Recuento de Retirada)
   effect_i18n:
     es: >-
       Los Orcos no esperan mucho de sus primos menores y no les importa que rompan o caigan en
@@ -157,7 +157,7 @@ rules:
       binding: null
       reason: >-
         Out of scope: deployment/infiltration rolls happen outside the duel resolution.
-  name: Get out dere!
+  name: Get Out Dere!
   effect: >-
     The boss sometimes tells his Spottaz to scout out enemy positions. If the player wants his
     Spottaz to infiltrate, roll a D6 for each Spotta at the beginning of the game but after all
@@ -174,7 +174,7 @@ rules:
     section: heroes / 0-2 Spottaz / Special Rules / Get out dere!
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
-    es: ¡Fuera de ahí!
+    es: ¡Fuera de Ahí!
   effect_i18n:
     es: >-
       A veces el jefe ordena a sus Ojeadores explorar las posiciones enemigas. Si el jugador quiere
@@ -345,7 +345,7 @@ rules:
     section: henchmen / Gobbo Boyz / Special Rules / Ain't Orcz
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
   name_i18n:
-    es: No son Orcos
+    es: No Son Orcos
   effect_i18n:
     es: >-
       Cada Chico Gobbo Fuera de Combate cuenta como medio modelo al hacer el chequeo para ver si una
@@ -406,5 +406,45 @@ rules:
     es: >-
       Una banda de Orcos Salvajes puede contratar las siguientes Espadas a Sueldo y Dramatis
       Personae: Guardaespaldas Orco Negro y Snerik.
+  applies_to:
+    band: true
+- id: band--pet
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.savage-orcs-kaz.band.pet
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: purchases and animals.
+  name: Pet
+  effect: >-
+    One Savage Orc hero may have a single pet. This can be a War Boar, Giant Wolf or Giant
+    Spider. The pet is the personal property of the hero: only he may ride the War Boar, and no
+    one may ride a Wolf or Spider, even if there are goblins in the warband. Note: the hero may
+    ride his pet War Boar, or he may buy a second War Boar to ride. The hero's pet does not count
+    as part of the warband as far as the distribution of treasure or maximum number of warriors
+    is concerned; the pet is treated exactly like a piece of equipment and is lost immediately
+    (it runs off) if the hero dies. Note the reduction in cost of the Giant Wolf and Giant Spider
+    to take into account that they cannot be ridden.
+  source:
+    manual: broheim.net
+    printed_page: 60
+    section: Pet
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Mascota
+  effect_i18n:
+    es: >-
+      Un héroe Orco Salvaje puede tener una sola mascota. Puede ser un Jabalí de Guerra, un Lobo
+      Gigante o una Araña Gigante. La mascota es propiedad personal del héroe: solo él puede montar
+      el Jabalí de Guerra, y nadie puede montar al Lobo ni a la Araña, aunque haya goblins en la
+      banda. Nota: el héroe puede montar su Jabalí de Guerra como mascota, o comprar un segundo
+      Jabalí de Guerra para montarlo. La mascota no cuenta como parte de la banda a efectos del
+      reparto del tesoro ni del número máximo de guerreros; se trata exactamente como una pieza de
+      equipo y se pierde de inmediato (huye) si el héroe muere. Nótese la reducción de coste del
+      Lobo Gigante y de la Araña Gigante para reflejar que no pueden montarse.
   applies_to:
     band: true

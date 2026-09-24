@@ -15,7 +15,7 @@ rules:
   name: Woodland Striders
   effect: Halflings can move through any woodland terrain without penalty.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 1
     section: Special rules / Woodland Striders
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
@@ -42,7 +42,7 @@ rules:
     Halflings riding draft horses, warhorses or anything larger than a mule or mountain goat move 2
     inches less than normal.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 1
     section: Special rules / Short Shanks
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
@@ -71,7 +71,7 @@ rules:
     Halfling Heroes gain +1 when rolling to find rare items that are not exclusively available to
     Halflings.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 1
     section: Special rules / Smooth Customers
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
@@ -98,7 +98,7 @@ rules:
   name: Spry
   effect: Any Halfling Rogue may run or charge while climbing.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 1
     section: Special rules / Spry
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
@@ -125,7 +125,7 @@ rules:
     Halfling warbands may only hire Ogres as bouncers and other Halflings as Hired Swords, to abide
     with Guild policy.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 1
     section: Hired Swords
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
@@ -154,7 +154,7 @@ rules:
     Any warrior within 6 inches of the Burgermeister may use his Leadership value instead of his own
     when taking Leadership tests.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: 1 Burgermeister / Special Rules / Leader
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
@@ -183,7 +183,7 @@ rules:
     Quartermasters may add 2 inches of range to any thrown weapons and 4 inches to the range of a
     sling.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: 0-1 Quartermaster / Special Rules / Long Shot
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
@@ -214,7 +214,7 @@ rules:
     pot heals a number of Wounds equal to the difference rolled +1; any friendly model supping stew
     recovers Wounds up to their maximum (e.g. on a roll of 7 the stew heals up to 2 Wounds).
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: 0-1 Chef / Special Rules / Hot Pot
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
@@ -249,7 +249,7 @@ rules:
     Treasures as normal); 6 = Ignorance is Bliss (the Thieves forgo any charges; the warband ignores
     Thieves for warband size when selling Treasures).
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 5
     section: 0-3 Thieves / Special Rules / Uneasy Allies
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
@@ -280,7 +280,7 @@ rules:
   name: Infiltration
   effect: A Halfling Thief can infiltrate. See the Skaven special skill of the same name.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 5
     section: 0-3 Thieves / Special Rules / Infiltration
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
@@ -309,7 +309,7 @@ rules:
     When testing to open a locked door, the Thief just needs to make an Initiative test in order to
     be successful.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 5
     section: 0-3 Thieves / Special Rules / Pick Locks
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
@@ -339,7 +339,7 @@ rules:
     At the end of the game when the warband rolls to find Treasures, they receive one additional
     Treasure for each Thief who was in the battle and wasn't taken out of action.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 5
     section: 0-3 Thieves / Special Rules / Cutpurse
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
@@ -370,7 +370,7 @@ rules:
     the warband loses its appetite and can only feast after a victory. When selling Treasures, the
     warband is considered one size lower for each batch consumed (never lower than 1-3 models).
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 5
     section: 0-2 Cooks / Special Rules / Feast
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
@@ -385,3 +385,31 @@ rules:
   applies_to:
     profile_ids:
     - cooks
+- id: band--maximum-characteristics
+  runtime:
+    scope: LATER
+    implemented: 'NO'
+    grant: band
+    effects:
+    - id: unimplemented.militiant-mootlanders-mim.band.maximum-characteristics
+      scope: LATER
+      binding: null
+      reason: >-
+        Deferred subsystem: characteristic-increase caps on advancement.
+  name: Halfling Maximum Characteristics
+  effect: >-
+    Characteristics for Halfling warriors may not be increased beyond the maximum limits: M 4,
+    WS 5, BS 7, S 3, T 3, W 3, I 9, A 4, Ld 10.
+  source:
+    manual: broheim.net
+    printed_page: 2
+    section: Characteristics Increase
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Militiant Mootlanders.pdf
+  name_i18n:
+    es: Características Máximas de los Medianos
+  effect_i18n:
+    es: >-
+      Las características de los guerreros Medianos no pueden aumentarse más allá de los límites
+      máximos: M 4, HA 5, HP 7, F 3, R 3, H 3, I 9, A 4, L 10.
+  applies_to:
+    band: true

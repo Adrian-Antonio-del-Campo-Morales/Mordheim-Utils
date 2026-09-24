@@ -21,7 +21,7 @@ rules:
     his pursuers); 2-5 = Success (2D6 gold crowns and +1 experience); 6 = Excellent (3D6 gold crowns
     and D3 experience points).
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 1
     section: Special rules / Assignments
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
@@ -54,7 +54,7 @@ rules:
     Leadership test. If the test is failed, no new heroes may be hired after the game. This does not
     affect the warband's creation.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 1
     section: Special rules / Sworn Brotherhood
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
@@ -81,7 +81,7 @@ rules:
   name: The Silence
   effect: No warband member or hired sword may ever use blackpowder weapons or animals.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 1
     section: Special rules / The silence
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
@@ -110,13 +110,15 @@ rules:
     Every hero may choose one modus operandi when hired (sniper 30 gc, executor 35 gc, lurker 35 gc;
     costs include a basic equipment set). The choice is fixed; a hero may only have one such trait;
     heroes without one may take it instead of a skill on an advance. A modus operandi may only be
-    chosen a second time once every different modus operandi is present at least once. Sniper: may
-    shoot while remaining hidden (target Initiative test to spot); +1 BS, -1 WS; no Combat skills;
-    not available to the Silent Master. Executor: +1 Initiative and +1 to hit on the turn he
-    charges; enemies attacking him in return also gain +1 to hit that turn; no Shooting skills.
-    Lurker: may hide even after running; may never use armour.
+    chosen a second time once every different modus operandi is present at least once. Sniper —
+    Distant fighter: may shoot while remaining hidden (the target takes an Initiative test to spot
+    him); +1 BS, -1 WS; may not take Combat skills; not available to the Silent Master. Executor —
+    Crushing attack: +1 Initiative and +1 to hit on the turn he charges, and the enemies attacking
+    him in return also gain +1 to hit for the duration of that turn; Close quarters: may not take
+    Shooting skills. Lurker — Stealthed advance: may hide even after running during the Movement
+    phase; Lightly armed: may never use armour.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 2
     section: Modus Operandi
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
@@ -128,12 +130,13 @@ rules:
       35, acechador 35; el coste incluye un equipo básico). La elección es fija; un héroe solo puede
       tener un rasgo de este tipo; los héroes sin ninguno pueden tomarlo en lugar de una habilidad
       al mejorar. Un modus operandi solo puede elegirse por segunda vez cuando todos los demás estén
-      presentes al menos una vez. Francotirador: puede disparar permaneciendo oculto (el objetivo
-      hace un chequeo de Iniciativa para detectarlo); +1 HA, -1 WS; sin habilidades de Combate; no
-      disponible para el Maestro Silencioso. Verdugo: +1 Iniciativa y +1 para impactar en el turno
-      en que carga; los enemigos que le ataquen a cambio también obtienen +1 para impactar ese
-      turno; sin habilidades de Disparo. Acechador: puede ocultarse incluso tras correr; nunca puede
-      usar armadura.
+      presentes al menos una vez. Francotirador — Luchador a distancia: puede disparar permaneciendo
+      oculto (el objetivo hace un chequeo de Iniciativa para detectarlo); +1 BS, -1 WS; no puede
+      tomar habilidades de Combate; no disponible para el Maestro Silencioso. Verdugo — Ataque
+      demoledor: +1 Iniciativa y +1 para impactar en el turno en que carga, y los enemigos que le
+      ataquen a cambio también obtienen +1 para impactar durante ese turno; Combate cerrado: no
+      puede tomar habilidades de Disparo. Acechador — Avance sigiloso: puede ocultarse incluso tras
+      correr durante la fase de Movimiento; Ligeramente armado: nunca puede usar armadura.
   applies_to:
     band: true
 - id: silent-master--leader
@@ -152,7 +155,7 @@ rules:
   effect: >-
     Any warrior within 6 inches of the Silent Master may use his Leadership instead of his own.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: 1 Silent Master / Special Rules / Leader
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
@@ -182,7 +185,7 @@ rules:
     A Silent Master always has an extra -1 modifier to any armour save the enemy has to take against
     wounds he inflicted (both with shooting and close combat weapons).
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: 1 Silent Master / Special Rules / Perfect Killer
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
@@ -213,7 +216,7 @@ rules:
     If the hero doesn't search for rare items, he may make a single dose of Black Lotus instead. The
     poison must be used in the next battle and cannot be sold or traded to other warbands.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: 0-1 Poisoner / Special Rules / Toxic trades
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
@@ -245,7 +248,7 @@ rules:
     Black Lotus. There is a chance of getting none, as the hero doesn't have access to a stable
     workplace.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 3
     section: Special skills / Master of Poisons
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
@@ -274,7 +277,7 @@ rules:
   name: Loudmouths
   effect: Thugs never become heroes; re-roll all results of 'that lad's got talent'.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 5
     section: Thugs / Special Rules / Loudmouths
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
@@ -287,3 +290,140 @@ rules:
   applies_to:
     profile_ids:
     - thugs
+- id: band--skill-cutthroat
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.silent-brotherhood-sc.band.cutthroat
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: armour-save modifiers applied to the hero's own attacks are combat-resolution
+        mechanics.
+  name: Cutthroat
+  effect: >-
+    The hero is especially practiced in fighting with two daggers and skilfully sets stabs and cuts at
+    the most vulnerable parts of the body. He always has an extra -1 modifier to any armour save the
+    enemy has to take against wounds inflicted by the hero. This can be used with any kind of dagger as
+    long as he wields them as a pair.
+  source:
+    manual: broheim.net
+    printed_page: 2
+    section: Special skills / Cutthroat
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
+  name_i18n:
+    es: Degollador
+  effect_i18n:
+    es: >-
+      El héroe está especialmente entrenado en el combate con dos dagas y coloca estocadas y cortes con
+      habilidad en las partes más vulnerables del cuerpo. Siempre aplica un modificador adicional de -1 a
+      cualquier tirada de salvación por armadura que el enemigo deba realizar contra las heridas
+      infligidas por el héroe. Puede usarse con cualquier tipo de daga siempre que las empuñe como pareja.
+  applies_to:
+    band: true
+- id: band--skill-hit-and-run
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.silent-brotherhood-sc.band.hit-and-run
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: disengaging from close combat is a combat-phase mechanic.
+  name: Hit and Run
+  effect: >-
+    The hero may make a Leadership Test at the end of any Hand-to-Hand phase, if he is still in base
+    contact with any enemy models. If he passes he may make a normal movement away from the enemy (he
+    may not run or charge), without the enemy striking any blows on him. If he fails the test he remains
+    in combat and must fight as normal in the following turn.
+  source:
+    manual: broheim.net
+    printed_page: 2
+    section: Special skills / Hit and Run
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
+  name_i18n:
+    es: Golpear y Huir
+  effect_i18n:
+    es: >-
+      El héroe puede hacer un chequeo de Liderazgo al final de cualquier fase de combate cuerpo a cuerpo
+      si sigue en contacto de peanas con algún modelo enemigo. Si lo supera, puede realizar un movimiento
+      normal alejándose del enemigo (no puede correr ni cargar) sin que el enemigo le golpee. Si falla el
+      chequeo, permanece en el combate y debe luchar con normalidad en el turno siguiente.
+  applies_to:
+    band: true
+- id: band--skill-backstabber
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.silent-brotherhood-sc.band.backstabber
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: charging a target the hero cannot see and the injury-roll modifier are combat-phase
+        mechanics.
+  name: Backstabber
+  effect: >-
+    The Assassin specializes in attacking his targets when their back is turned. The Assassin may charge
+    an opponent he cannot see (he knows you're there!) as long as the target model is within his charge
+    reach and doesn't hide. If he does this, he surprises his opponent and receives a +1 to hit him with
+    all attacks and any rolls on the injury chart are at +1. This bonus lasts for the first round of
+    combat only, as his opponent will swiftly recover his wits if he survives the initial assault.
+  source:
+    manual: broheim.net
+    printed_page: 2
+    section: Special skills / Backstabber
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
+  name_i18n:
+    es: Apuñalador
+  effect_i18n:
+    es: >-
+      El Asesino está especializado en atacar a sus objetivos cuando están de espaldas. El Asesino puede
+      cargar contra un oponente al que no ve (¡sabe que está ahí!) siempre que el modelo objetivo esté
+      dentro de su alcance de carga y no se oculte. Si lo hace, sorprende a su oponente y recibe +1 para
+      impactarle con todos los ataques, y cualquier tirada en la tabla de heridas se modifica en +1. Este
+      bonificador solo dura el primer asalto de combate, ya que su oponente recuperará el sentido
+      rápidamente si sobrevive al asalto inicial.
+  applies_to:
+    band: true
+- id: band--skill-infiltration
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.silent-brotherhood-sc.band.infiltration
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: deployment order and placement are scenario-setup mechanics.
+  name: Infiltration
+  effect: >-
+    A Hero with this skill is always placed on the battlefield after the opposing warband and can be
+    placed anywhere on the table as long as it is out of sight of the opposing warband and more than 12"
+    away from any enemy model. If both players have models which infiltrate, roll a D6 for each, and the
+    lowest roll sets up first.
+  source:
+    manual: broheim.net
+    printed_page: 2
+    section: Special skills / Infiltration
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Silent Brotherhood.pdf
+  name_i18n:
+    es: Infiltración
+  effect_i18n:
+    es: >-
+      Un Héroe con esta habilidad siempre se despliega en el campo de batalla después de la banda rival y
+      puede colocarse en cualquier punto de la mesa siempre que quede fuera de la vista de la banda rival
+      y a más de 12" de cualquier modelo enemigo. Si ambos jugadores tienen modelos que se infiltran, cada
+      uno tira 1D6 y el resultado más bajo despliega primero.
+  applies_to:
+    band: true

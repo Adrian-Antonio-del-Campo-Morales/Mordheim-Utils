@@ -1,8 +1,7 @@
 schema_version: 1
 ruleset: mordheim
-catalog: hirelings-2b
+catalog: hirelings-hired-swords
 grade: 2b
-status: staging
 # Hirelings introduced by the 'Relics of the Crusades' (REL) Araby campaign
 # anthology (Broheim). Priced in DINARS, the Araby campaign currency (documented
 # per profile; at promotion decide whether to keep the dinar pricing with a
@@ -11,125 +10,6 @@ status: staging
 # Extracted from the anthology text bundled with the REL band PDFs
 # (build/cache/2b-pdfs/text/muzil-rel.txt, pp. 15-16).
 profiles:
-- id: hireling.dramatis.armen-abbas
-  kind: dramatis-personae
-  grade: 2b
-  publication: Relics of the Crusades (Broheim anthology)
-  name: Armen Abbas
-  name_i18n:
-    es: Armen Abbas
-  normalization_status: normalized
-  characteristics:
-    M: 4
-    WS: 4
-    BS: 5
-    S: 2
-    T: 2
-    W: 3
-    I: 3
-    A: 1
-    Ld: 9
-  warband_rating:
-    kind: fixed
-    value: 65
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 85
-    upkeep: 45
-    note: Priced in dinars (Araby campaign currency).
-  equipment:
-    fixed_items:
-    - item_id: sword
-      quantity:
-        kind: fixed
-        value: 1
-    - item_id: angel_wings
-      quantity:
-        kind: fixed
-        value: 1
-      notes: >-
-        REL-specific item (see the Angel Wings rule); no KB or 2B catalog
-        equivalent exists — deliberate dangling ref, define at promotion.
-    - item_id: stickfire
-      quantity:
-        kind: fixed
-        value: 1
-      notes: >-
-        REL-specific item, "enough stickfire and vermin pots to last for
-        the entire battle"; no KB or 2B catalog equivalent — deliberate
-        dangling ref, define at promotion.
-    - item_id: vermin_pot
-      quantity:
-        kind: fixed
-        value: 1
-      notes: >-
-        REL-specific item (see stickfire note); deliberate dangling ref,
-        define at promotion.
-  skill_access: []
-  starting_skill_ids:
-  - skill.leap
-  - skill.acrobat
-  - skill.dodge
-  available_to:
-  - source: 2b
-    note: >-
-      Any warband except Witch Hunters, those that contain non-humans and
-      those that follow the Path of Sigmar.
-  rules:
-  - id: hireling.dramatis.armen-abbas.rule.skills-physician
-    name: Physician
-    effect: >-
-      Armen Abbas has the following skills: Leap, Acrobat, Dodge, On the
-      Wings of Angels. He is also counted as a Physician, see the Scholar entry
-      in the Arabian Tribe warband list.
-    effect_i18n:
-      es: >-
-        Armen Abbas tiene las siguientes habilidades Salto, Acróbata, Esquiva
-        y En las Alas de los Ángeles. También cuenta como Médico, ver la
-        entrada de Erudito en la lista de banda de la Tribu Arabia.
-    name_i18n:
-      es: Médico
-  - id: hireling.dramatis.armen-abbas.rule.angel-wings
-    name: Angel Wings
-    effect: >-
-      The Angel Wings grant Armen the ability to glide through the air. To
-      use the Angel Wings he must give up his movement and apply the effects
-      below. At the beginning of a movement phase in which Armen is at least 3"
-      above ground level, the player may draw a straight line 1" wide and 24"
-      long to any point on the table that is at or below the height he starts
-      from. The line may include a turn of up to 45 degrees. The line cannot
-      move through any piece of terrain higher than Armen's starting point. Any
-      enemy model, susceptible to fear, underneath the line must make a
-      leadership test or flee 2D6" directly away from it. At the end of the
-      movement phase, place Armen where the line ends. During the shooting
-      phase Armen will always fire first. His player may work out the point
-      from where he fires from at any point along his line of flight, and the
-      vertical height in inches does not add to the extent of the weapons
-      range.
-    effect_i18n:
-      es: >-
-        Las Alas de Ángel otorgan a Armen la capacidad de planear por el aire.
-        Para usar las Alas de Ángel debe renunciar a su movimiento y aplicar los
-        efectos siguientes. Al comienzo de una fase de movimiento en la que
-        Armen esté al menos a 3" del nivel del suelo, el jugador puede trazar una
-        línea recta de 1" de ancho y 24" de largo hacia cualquier punto del
-        tablero que esté a la altura desde la que parte o por debajo. La línea
-        puede incluir un giro de hasta 45 grados. La línea no puede atravesar
-        ninguna escenografía más alta que el punto de partida de Armen. Cualquier
-        miniatura enemiga susceptible de Miedo que esté bajo la línea debe
-        superar una tirada de Liderazgo o huir 2D6" directamente alejándose de
-        ella. Al final de la fase de movimiento, coloca a Armen donde termina la
-        línea. Durante la fase de disparo Armen siempre disparará primero. Su
-        jugador puede calcular el punto desde el que dispara en cualquier punto
-        de su línea de vuelo, y la altura vertical en pulgadas no suma al
-        alcance de las armas.
-    name_i18n:
-      es: Alas de Ángel
-  source_refs:
-  - manual: broheim.net
-    printed_page: 16
-    section: Dramatis Personae / Armen Abbas
-    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
 - id: hireling.hired-sword.crimashin
   kind: hired-sword
   grade: 2b
@@ -152,20 +32,14 @@ profiles:
     kind: base_plus_experience
     base: 12
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 40
-    upkeep: 15
-    note: Priced in dinars (Araby campaign currency).
   equipment:
     fixed_items:
     - item_id: dagger
       quantity:
         kind: fixed
         value: 1
-      notes: >-
-        Gromril dagger — counts as a dagger with the gromril weapon
-        upgrade (KB materials-and-upgrades `gromril_weapon`).
+      notes: Gromril dagger — counts as a dagger with the gromril weapon upgrade (KB materials-and-upgrades
+        `gromril_weapon`).
     - item_id: sword
       quantity:
         kind: fixed
@@ -174,36 +48,29 @@ profiles:
   - combat
   - speed
   starting_skill_ids: []
-  available_to:
-  - source: 2b
-    note: >-
-      Crimashin were known to fight for any side throughout the crusades,
-      as no one truly knew their agenda. Any warband may hire a Crimashin.
   rules:
   - id: hireling.hired-sword.crimashin.rule.infiltrate
     name: Infiltrate
     effect: >-
-      A Crimashin starts with the Infiltrate skill and may choose from the
-      Combat and Speed lists when he gains a new skill.
+      A Crimashin starts with the Infiltrate skill and may choose from the Combat and Speed lists
+      when he gains a new skill.
     effect_i18n:
       es: >-
-        Un Crimashin empieza con la habilidad Infiltrarse y puede elegir de
-        las listas de Combate y Velocidad cuando gana una habilidad nueva.
+        Un Crimashin empieza con la habilidad Infiltrarse y puede elegir de las listas de Combate y
+        Velocidad cuando gana una habilidad nueva.
     name_i18n:
       es: Infiltrarse
   - id: hireling.hired-sword.crimashin.rule.a-worthy-foe
     name: A Worthy Foe
     effect: >-
-      The Grand Master will only lend one of his operatives if he can gain
-      something from the transaction, such as the assassination of powerful
-      enemy. A Crimashin will only be a part of a warband if its opponents have
-      a rating of over 250.
+      The Grand Master will only lend one of his operatives if he can gain something from the
+      transaction, such as the assassination of powerful enemy. A Crimashin will only be a part of a
+      warband if its opponents have a rating of over 250.
     effect_i18n:
       es: >-
-        El Gran Maestro solo prestará a uno de sus operativos si puede ganar
-        algo con la transacción, como el asesinato de un poderoso enemigo. Un
-        Crimashin solo formará parte de una banda si sus oponentes tienen una
-        valoración superior a 250.
+        El Gran Maestro solo prestará a uno de sus operativos si puede ganar algo con la
+        transacción, como el asesinato de un poderoso enemigo. Un Crimashin solo formará parte de
+        una banda si sus oponentes tienen una valoración superior a 250.
     name_i18n:
       es: Un Adversario Digno
   source_refs:
@@ -233,13 +100,6 @@ profiles:
     kind: base_plus_experience
     base: 12
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 30
-    upkeep: 15
-    note: >-
-      Priced in dinars (Araby campaign currency). Reduced to 20 dinars for
-      warbands that follow the Path of Sigmar or The One (see the Holy rule).
   equipment:
     fixed_items:
     - item_id: staff
@@ -255,45 +115,36 @@ profiles:
   skill_access:
   - strength
   starting_skill_ids: []
-  available_to:
-  - source: 2b
-    note: >-
-      A Holy Man will not offer his services to any warband that includes
-      spellcasters, undead or non-humans (excluding animals).
   rules:
   - id: hireling.hired-sword.holy-man.rule.true-believer
     name: True Believer
     effect: >-
-      A Holy Man starts with two spells from the Divine Intervention spell
-      list (these are the same as the Prayers of Sigmar as detailed in the core
-      rules).
+      A Holy Man starts with two spells from the Divine Intervention spell list (these are the same
+      as the Prayers of Sigmar as detailed in the core rules).
     effect_i18n:
       es: >-
-        Un Hombre Santo empieza con dos hechizos de la lista de hechizos
-        Intervención Divina (son los mismos que las Plegarias de Sigmar según
-        se detallan en las reglas básicas).
+        Un Hombre Santo empieza con dos hechizos de la lista de hechizos Intervención Divina (son
+        los mismos que las Plegarias de Sigmar según se detallan en las reglas básicas).
     name_i18n:
       es: Creyente Verdadero
   - id: hireling.hired-sword.holy-man.rule.holy
     name: Holy
     effect: >-
-      If a warband that follows the Path of Sigmar or The One hires a Holy
-      Man, his hire fee will be reduced to 20 dinars.
+      If a warband that follows the Path of Sigmar or The One hires a Holy Man, his hire fee will be
+      reduced to 20 dinars.
     effect_i18n:
       es: >-
-        Si una banda que sigue el Sendero de Sigmar o El Uno contrata a un
-        Hombre Santo, su coste de contratación se reduce a 20 dinares.
+        Si una banda que sigue el Sendero de Sigmar o El Uno contrata a un Hombre Santo, su coste de
+        contratación se reduce a 20 dinares.
     name_i18n:
       es: Santo
   - id: hireling.hired-sword.holy-man.rule.skills
     name: Skills
-    effect: >-
-      A Holy Man may choose from the Strength and Holy lists when he
-      gains a new skill.
+    effect: A Holy Man may choose from the Strength and Holy lists when he gains a new skill.
     effect_i18n:
       es: >-
-        Un Hombre Santo puede elegir de las listas de Fuerza y Santa cuando
-        gana una habilidad nueva.
+        Un Hombre Santo puede elegir de las listas de Fuerza y Santa cuando gana una habilidad
+        nueva.
     name_i18n:
       es: Habilidades
   source_refs:

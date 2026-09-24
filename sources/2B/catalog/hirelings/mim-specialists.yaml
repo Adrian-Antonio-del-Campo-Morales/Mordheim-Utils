@@ -1,8 +1,7 @@
 schema_version: 1
 ruleset: mordheim
-catalog: hirelings-2b
+catalog: hirelings-hired-swords
 grade: 2b
-status: staging
 # Specialists from the 'Mutiny in Marienburg Specialists' PDF (Broheim,
 # build/cache/2b-pdfs/extra/MiM Specialists.pdf). Bog Hunter and Whaler live in
 # grade-2b.yaml (hired via the Lords of the Marsh band lists); the ten profiles
@@ -36,10 +35,6 @@ profiles:
     kind: base_plus_experience
     base: 35
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 95
-    upkeep: 40
   equipment:
     fixed_items:
     - item_id: pistol
@@ -61,85 +56,70 @@ profiles:
       quantity:
         kind: fixed
         value: 1
-      notes: >-
-        Rusted diving equipment including a diving bell for a helmet
-        (flavour gear); REL/MiM-specific, no KB item — deliberate dangling ref,
-        define at promotion if ever needed mechanically.
+      notes: Rusted diving equipment including a diving bell for a helmet (flavour gear); REL/MiM-specific,
+        no KB item — deliberate dangling ref, define at promotion if ever needed mechanically.
   skill_access:
   - combat
   - strength
   starting_skill_ids: []
-  available_to:
-  - source: 2b
-    note: >-
-      Any warband with a riverboat/barge except Skaven may hire an Ogre
-      Treasure-Hunter.
   rules:
   - id: hireling.hired-sword.ogre-treasure-hunter.rule.diver
     name: Diver
     effect: >-
-      Ogre Treasure Hunters wear rusty diving gear allowing them to move
-      (and breathe!) in water without penalties. They count as being aquatic.
+      Ogre Treasure Hunters wear rusty diving gear allowing them to move (and breathe!) in water
+      without penalties. They count as being aquatic.
     effect_i18n:
       es: >-
-        Los Cazatesoros Ogro llevan equipo de buceo oxidado que les permite
-        moverse (¡y respirar!) en el agua sin penalizaciones. Cuentan como
-        Acuáticos.
+        Los Cazatesoros Ogro llevan equipo de buceo oxidado que les permite moverse (¡y respirar!)
+        en el agua sin penalizaciones. Cuentan como Acuáticos.
     name_i18n:
       es: Buceador
   - id: hireling.hired-sword.ogre-treasure-hunter.rule.fear
     name: Fear
     effect: >-
-      Ogres are large, threatening creatures that cause fear. See the
-      Psychology section for details.
+      Ogres are large, threatening creatures that cause fear. See the Psychology section for
+      details.
     effect_i18n:
       es: >-
-        Los Ogros son criaturas grandes y amenazantes que causan Miedo. Ver
-        la sección de Psicología para más detalles.
+        Los Ogros son criaturas grandes y amenazantes que causan Miedo. Ver la sección de Psicología
+        para más detalles.
     name_i18n:
       es: Miedo
   - id: hireling.hired-sword.ogre-treasure-hunter.rule.large-target
     name: Large Target
     effect: Ogres are Large Targets as defined in the shooting rules.
     effect_i18n:
-      es: >-
-        Los Ogros son Objetivos Grandes según se define en las reglas de
-        disparo.
+      es: Los Ogros son Objetivos Grandes según se define en las reglas de disparo.
     name_i18n:
       es: Objetivo Grande
   - id: hireling.hired-sword.ogre-treasure-hunter.rule.parrot-gnoblar
     name: Parrot Gnoblar
     effect: >-
-      The ogre is accompanied by a gnoblar dressed as a parrot. The
-      feathery costume is a compulsory disguise in a city like Marienburg! An
-      Ogre Treasure Hunter with a Parrot Gnoblar can swipe salvage for the
-      warband after each battle. Roll on the Cargo Chart if the Ogre
-      Treasure-Hunter was not taken out of action. A Parrot Gnoblar is a
-      'claimed' gnoblar meaning it is represented on the ogre model.
+      The ogre is accompanied by a gnoblar dressed as a parrot. The feathery costume is a compulsory
+      disguise in a city like Marienburg! An Ogre Treasure Hunter with a Parrot Gnoblar can swipe
+      salvage for the warband after each battle. Roll on the Cargo Chart if the Ogre Treasure-Hunter
+      was not taken out of action. A Parrot Gnoblar is a 'claimed' gnoblar meaning it is represented
+      on the ogre model.
     effect_i18n:
       es: >-
-        El ogro va acompañado de un gnoblar vestido de loro. El disfraz
-        emplumado es un disfraz obligatorio en una ciudad como Marienburg. Un
-        Cazatesoros Ogro con un Gnoblar Loro puede apropiarse de salvamentos
-        para la banda después de cada batalla. Tira en la Tabla de Carga si el
-        Cazatesoros Ogro no quedó Fuera de combate. Un Gnoblar Loro es un
-        gnoblar 'reclamado', lo que significa que se representa en la propia
-        miniatura del ogro.
+        El ogro va acompañado de un gnoblar vestido de loro. El disfraz emplumado es un disfraz
+        obligatorio en una ciudad como Marienburg. Un Cazatesoros Ogro con un Gnoblar Loro puede
+        apropiarse de salvamentos para la banda después de cada batalla. Tira en la Tabla de Carga
+        si el Cazatesoros Ogro no quedó Fuera de combate. Un Gnoblar Loro es un gnoblar 'reclamado',
+        lo que significa que se representa en la propia miniatura del ogro.
     name_i18n:
       es: Gnoblar Loro
   - id: hireling.hired-sword.ogre-treasure-hunter.rule.scrap-dealer
     name: Scrap-Dealer
     effect: >-
-      A warband with an Ogre Treasure Hunter can arrange trade deals with
-      other warbands without requirement of a wagon or other vehicle. If the
-      player wants to benefit from having a reputation in trade deals then a
-      vehicle will be required.
+      A warband with an Ogre Treasure Hunter can arrange trade deals with other warbands without
+      requirement of a wagon or other vehicle. If the player wants to benefit from having a
+      reputation in trade deals then a vehicle will be required.
     effect_i18n:
       es: >-
-        Una banda con un Cazatesoros Ogro puede acordar tratos comerciales con
-        otras bandas sin necesidad de un carro u otro vehículo. Si el jugador
-        quiere beneficiarse de tener reputación en los tratos comerciales,
-        entonces sí se requerirá un vehículo.
+        Una banda con un Cazatesoros Ogro puede acordar tratos comerciales con otras bandas sin
+        necesidad de un carro u otro vehículo. Si el jugador quiere beneficiarse de tener reputación
+        en los tratos comerciales, entonces sí se requerirá un vehículo.
     name_i18n:
       es: Chatarrero
   source_refs:
@@ -169,19 +149,14 @@ profiles:
     kind: base_plus_experience
     base: 10
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 30
-    upkeep: 10
   equipment:
     fixed_items:
     - item_id: shovel
       quantity:
         kind: fixed
         value: 1
-      notes: >-
-        Counts as an axe; MiM-specific item, no KB equivalent — deliberate
-        dangling ref, define at promotion if ever needed mechanically.
+      notes: Counts as an axe; MiM-specific item, no KB equivalent — deliberate dangling ref, define at
+        promotion if ever needed mechanically.
     - item_id: toughened_leathers
       quantity:
         kind: fixed
@@ -194,53 +169,44 @@ profiles:
   - combat
   - speed
   starting_skill_ids: []
-  available_to:
-  - source: 2b
-    note: Any Dwarf, Elf or Human warband may hire a Grave Warden.
   rules:
   - id: hireling.hired-sword.grave-warden.rule.immune-to-disease
     name: Immune to Disease
     effect: >-
-      Grave Wardens guard against those who would disturb the dead from
-      their rest, be they rats, bone pickers, grave robbers or worse. Hardy
-      constitution further fortified by drinking bowls of graveroot soup means
-      a Grave Warden is not affected by any disease.
+      Grave Wardens guard against those who would disturb the dead from their rest, be they rats,
+      bone pickers, grave robbers or worse. Hardy constitution further fortified by drinking bowls
+      of graveroot soup means a Grave Warden is not affected by any disease.
     effect_i18n:
       es: >-
-        Los Guardianes de los Jardines custodian contra aquellos que
-        perturbarían el descanso de los muertos, sean ratas, deshuesadores,
-        ladrones de tumbas o peores. Una constitución recia, fortalecida
-        además por cuencos de sopa de raíz de tumba, hace que un Guardián de
-        los Jardines no se vea afectado por ninguna enfermedad.
+        Los Guardianes de los Jardines custodian contra aquellos que perturbarían el descanso de los
+        muertos, sean ratas, deshuesadores, ladrones de tumbas o peores. Una constitución recia,
+        fortalecida además por cuencos de sopa de raíz de tumba, hace que un Guardián de los
+        Jardines no se vea afectado por ninguna enfermedad.
     name_i18n:
       es: Inmune a Enfermedades
   - id: hireling.hired-sword.grave-warden.rule.hardened
     name: Hardened
-    effect: >-
-      Tending the Gardens comes with heavy responsibilities. Grave
-      Wardens are immune to fear.
+    effect: Tending the Gardens comes with heavy responsibilities. Grave Wardens are immune to fear.
     effect_i18n:
       es: >-
-        Mantener los Jardines conlleva grandes responsabilidades. Los
-        Guardianes de los Jardines son inmunes al Miedo.
+        Mantener los Jardines conlleva grandes responsabilidades. Los Guardianes de los Jardines son
+        inmunes al Miedo.
     name_i18n:
       es: Endurecido
   - id: hireling.hired-sword.grave-warden.rule.gardener
     name: Gardener
     effect: >-
-      Stout-hearted are Morr's Gardeners, offering a grim welcome to
-      anyone who dares trespass into his domain. A Grave Warden must move
-      towards the nearest model that attacked a grave marker (or trespassing in
-      a tomb) if he has line of sight. The Grave Warden hates all models
-      defiling graves and charges any trespassers.
+      Stout-hearted are Morr's Gardeners, offering a grim welcome to anyone who dares trespass into
+      his domain. A Grave Warden must move towards the nearest model that attacked a grave marker
+      (or trespassing in a tomb) if he has line of sight. The Grave Warden hates all models defiling
+      graves and charges any trespassers.
     effect_i18n:
       es: >-
-        Firmes son los Jardineros de Morr, que ofrecen una sombría bienvenida
-        a cualquiera que se atreva a invadir su dominio. Un Guardián de los
-        Jardines debe moverse hacia la miniatura más cercana que haya atacado
-        un marcador de tumba (o que esté invadiendo una tumba) si tiene línea
-        de visión. El Guardián de los Jardines odia a todas las miniaturas que
-        profanen tumbas y carga contra cualquier intruso.
+        Firmes son los Jardineros de Morr, que ofrecen una sombría bienvenida a cualquiera que se
+        atreva a invadir su dominio. Un Guardián de los Jardines debe moverse hacia la miniatura más
+        cercana que haya atacado un marcador de tumba (o que esté invadiendo una tumba) si tiene
+        línea de visión. El Guardián de los Jardines odia a todas las miniaturas que profanen tumbas
+        y carga contra cualquier intruso.
     name_i18n:
       es: Jardinero
   source_refs:
@@ -270,10 +236,6 @@ profiles:
     kind: base_plus_experience
     base: 15
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 30
-    upkeep: 15
   equipment:
     fixed_items:
     - item_id: pistol
@@ -288,41 +250,31 @@ profiles:
   - speed
   - shooting
   starting_skill_ids: []
-  available_to:
-  - source: 2b
-    note: >-
-      Any warband except Skaven, Undead, Beastmen and Orcs & Goblins may
-      hire a Halfling Fence.
   rules:
   - id: hireling.hired-sword.halfling-fence.rule.sham
     name: Sham
     effect: >-
-      A Fence has an eclectic range of items procured from sources best
-      left unspoken. Offered at incredible prices, traders should be wary for
-      their word is not their bond and such items are often flawed… All of the
-      items purchased through the Fence are at their base price (ie, do not add
-      the random gold modifier for items). All items bought from the Fence are
-      also at half price but once the item is first used roll a D6. On a roll
-      of 1 the item breaks and is useless – an elaborate fake! At the end of
-      each battle (whether or not the Halfling Fence actually took part), roll
-      a D6 and consult the following chart. D6 Result 1 Halfling cookbook 2
-      Ithilmar weapon 3 Gromril weapon 4 Tome of magic or Holy tome 5 Hunting
-      rifle or Elven bow 6 Brace of duelling pistols.
+      A Fence has an eclectic range of items procured from sources best left unspoken. Offered at
+      incredible prices, traders should be wary for their word is not their bond and such items are
+      often flawed… All of the items purchased through the Fence are at their base price (ie, do not
+      add the random gold modifier for items). All items bought from the Fence are also at half
+      price but once the item is first used roll a D6. On a roll of 1 the item breaks and is useless
+      – an elaborate fake! At the end of each battle (whether or not the Halfling Fence actually
+      took part), roll a D6 and consult the following chart. D6 Result 1 Halfling cookbook 2
+      Ithilmar weapon 3 Gromril weapon 4 Tome of magic or Holy tome 5 Hunting rifle or Elven bow 6
+      Brace of duelling pistols.
     effect_i18n:
       es: >-
-        Un Receptor tiene una ecléctica gama de artículos conseguidos en
-        fuentes mejor no mencionar. Ofrecidos a precios increíbles, los
-        comerciantes deberían andarse con cuidado, pues su palabra no es de
-        fiar y tales artículos a menudo son defectuosos… Todos los artículos
-        comprados a través del Receptor están a su precio base (es decir, no se
-        añade el modificador aleatorio de oro de los artículos). Todos los
-        artículos comprados al Receptor están además a mitad de precio, pero la
-        primera vez que se use el artículo tira un D6. Con un resultado de 1 el
-        artículo se rompe y queda inservible: ¡una falsificación elaborada! Al
-        final de cada batalla (tanto si el Receptor Mediano participó como si
-        no), tira un D6 y consulta la siguiente tabla. Resultado D6 1 Libro de
-        cocina mediano 2 Arma de ithilmar 3 Arma de gromril 4 Tomo de magia o
-        Tomo sagrado 5 Rifle de caza o Arco élfico 6 Par de pistolas de duelo.
+        Un Receptor tiene una ecléctica gama de artículos conseguidos en fuentes mejor no mencionar.
+        Ofrecidos a precios increíbles, los comerciantes deberían andarse con cuidado, pues su
+        palabra no es de fiar y tales artículos a menudo son defectuosos… Todos los artículos
+        comprados a través del Receptor están a su precio base (es decir, no se añade el modificador
+        aleatorio de oro de los artículos). Todos los artículos comprados al Receptor están además a
+        mitad de precio, pero la primera vez que se use el artículo tira un D6. Con un resultado de
+        1 el artículo se rompe y queda inservible: ¡una falsificación elaborada! Al final de cada
+        batalla (tanto si el Receptor Mediano participó como si no), tira un D6 y consulta la
+        siguiente tabla. Resultado D6 1 Libro de cocina mediano 2 Arma de ithilmar 3 Arma de gromril
+        4 Tomo de magia o Tomo sagrado 5 Rifle de caza o Arco élfico 6 Par de pistolas de duelo.
     name_i18n:
       es: Engaño
   source_refs:
@@ -352,10 +304,6 @@ profiles:
     kind: base_plus_experience
     base: 10
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 20
-    upkeep: 10
   equipment:
     fixed_items:
     - item_id: dagger
@@ -371,78 +319,64 @@ profiles:
   - speed
   - shooting
   starting_skill_ids: []
-  available_to:
-  - source: 2b
-    note: >-
-      Any warband except Skaven, Undead, Beastmen and Orcs & Goblins may
-      hire a Halfling Pimp.
   rules:
   - id: hireling.hired-sword.halfling-pimp.rule.underworld-contacts
     name: Underworld Contacts
     effect: >-
-      A Hero visiting a bordello, casino, dream parlour etc (see Infamous
-      Haunts) can re-roll any dice rolls made when accompanied by a Pimp hired
-      by the warband. The second result must always be accepted.
+      A Hero visiting a bordello, casino, dream parlour etc (see Infamous Haunts) can re-roll any
+      dice rolls made when accompanied by a Pimp hired by the warband. The second result must always
+      be accepted.
     effect_i18n:
       es: >-
-        Un Héroe que visite un burdel, casino, salón de ensueño, etc. (ver
-        Antros Infames) puede repetir cualquier tirada de dado que realice
-        cuando le acompañe un Rufián contratado por la banda. Siempre debe
-        aceptarse el segundo resultado.
+        Un Héroe que visite un burdel, casino, salón de ensueño, etc. (ver Antros Infames) puede
+        repetir cualquier tirada de dado que realice cuando le acompañe un Rufián contratado por la
+        banda. Siempre debe aceptarse el segundo resultado.
     name_i18n:
       es: Contactos del Hampa
   - id: hireling.hired-sword.halfling-pimp.rule.flesh-peddler
-    name: Flesh-peddler
+    name: Flesh-Peddler
     effect: >-
-      At the start of each battle nominate one of your opponent's Female
-      warriors as the Pimp's mark. Treat this like a Bounty Hunter's mark,
-      except that instead of earning a reward after the battle has ended, the
-      mark is captured by the Pimp. The Pimp gets +1 to hit his mark and must
-      always move towards them. He gains +D3 Experience for each mark he puts
-      out of action if he survives and the battle was won. After the battle do
-      not roll on the Serious Injuries chart, marks count as captured. Any
-      weapons can be kept by the warband or sold.
+      At the start of each battle nominate one of your opponent's Female warriors as the Pimp's
+      mark. Treat this like a Bounty Hunter's mark, except that instead of earning a reward after
+      the battle has ended, the mark is captured by the Pimp. The Pimp gets +1 to hit his mark and
+      must always move towards them. He gains +D3 Experience for each mark he puts out of action if
+      he survives and the battle was won. After the battle do not roll on the Serious Injuries
+      chart, marks count as captured. Any weapons can be kept by the warband or sold.
     effect_i18n:
       es: >-
-        Al comienzo de cada batalla designa a una de las guerreras Femeninas
-        de tu oponente como objetivo del Rufián. Trátalo como el objetivo de un
-        Cazarrecompensas, salvo que en lugar de ganar una recompensa cuando
-        termine la batalla, el objetivo es capturado por el Rufián. El Rufián
-        obtiene +1 por impactar a su objetivo y siempre debe moverse hacia él.
-        Gana +D3 de Experiencia por cada objetivo que deje Fuera de combate si
-        sobrevive y se ganó la batalla. Tras la batalla no tires en la tabla de
-        Heridas Graves: los objetivos cuentan como capturados. Cualquier arma
-        puede quedarse en la banda o venderse.
+        Al comienzo de cada batalla designa a una de las guerreras Femeninas de tu oponente como
+        objetivo del Rufián. Trátalo como el objetivo de un Cazarrecompensas, salvo que en lugar de
+        ganar una recompensa cuando termine la batalla, el objetivo es capturado por el Rufián. El
+        Rufián obtiene +1 por impactar a su objetivo y siempre debe moverse hacia él. Gana +D3 de
+        Experiencia por cada objetivo que deje Fuera de combate si sobrevive y se ganó la batalla.
+        Tras la batalla no tires en la tabla de Heridas Graves: los objetivos cuentan como
+        capturados. Cualquier arma puede quedarse en la banda o venderse.
     name_i18n:
       es: Mercader de Carne
   - id: hireling.hired-sword.halfling-pimp.rule.playboy
     name: Playboy
     effect: >-
-      A mark works for the Pimp's warband as a Courtesan and must always
-      remain within 8" of him, due to the syndrome of Courtesans becoming
-      dependent on luxuries supplied by the Pimp. Courtesans: If the Pimp is
-      taken out of action and none of the Pimp's warband members are within 8"
-      then his marks will automatically run for the nearest table edge, in the
-      hope of returning to its original warband. If a mark ever comes within 8"
-      of its original warband, then it is instantly controlled by the original
-      owner of the mark. If the Pimp is taken out of action in a battle and a
-      mark is within 8" of another warrior from the Pimp's warband, the mark
-      will charge the closest model from that warband in range. Treat the mark
-      as having hatred.
+      A mark works for the Pimp's warband as a Courtesan and must always remain within 8" of him,
+      due to the syndrome of Courtesans becoming dependent on luxuries supplied by the Pimp.
+      Courtesans: If the Pimp is taken out of action and none of the Pimp's warband members are
+      within 8" then his marks will automatically run for the nearest table edge, in the hope of
+      returning to its original warband. If a mark ever comes within 8" of its original warband,
+      then it is instantly controlled by the original owner of the mark. If the Pimp is taken out of
+      action in a battle and a mark is within 8" of another warrior from the Pimp's warband, the
+      mark will charge the closest model from that warband in range. Treat the mark as having
+      hatred.
     effect_i18n:
       es: >-
-        Un objetivo trabaja para la banda del Rufián como Cortesana y siempre
-        debe permanecer a 8" o menos de él, debido al síndrome de las Cortesanas
-        de volverse dependientes de los lujos suministrados por el Rufián.
-        Cortesanas: si el Rufián queda Fuera de combate y ninguna miniatura de
-        su banda está a 8" o menos, sus objetivos correrán automáticamente
-        hacia el borde de mesa más cercano, con la esperanza de volver a su
-        banda original. Si un objetivo llega alguna vez a 8" o menos de su banda
-        original, pasa a estar controlada al instante por el propietario
-        original del objetivo. Si el Rufián queda Fuera de combate en una
-        batalla y un objetivo está a 8" o menos de otro guerrero de la banda del
-        Rufián, el objetivo cargará contra la miniatura más cercana de esa
-        banda dentro del alcance. Trata al objetivo como con Odio.
+        Un objetivo trabaja para la banda del Rufián como Cortesana y siempre debe permanecer a 8" o
+        menos de él, debido al síndrome de las Cortesanas de volverse dependientes de los lujos
+        suministrados por el Rufián. Cortesanas: si el Rufián queda Fuera de combate y ninguna
+        miniatura de su banda está a 8" o menos, sus objetivos correrán automáticamente hacia el
+        borde de mesa más cercano, con la esperanza de volver a su banda original. Si un objetivo
+        llega alguna vez a 8" o menos de su banda original, pasa a estar controlada al instante por
+        el propietario original del objetivo. Si el Rufián queda Fuera de combate en una batalla y
+        un objetivo está a 8" o menos de otro guerrero de la banda del Rufián, el objetivo cargará
+        contra la miniatura más cercana de esa banda dentro del alcance. Trata al objetivo como con
+        Odio.
     name_i18n:
       es: Donjuán
   source_refs:
@@ -472,11 +406,6 @@ profiles:
     kind: base_plus_experience
     base: 30
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 75
-    upkeep: 30
-    note: Priced in warp tokens (Skaven currency), not gold crowns.
   equipment:
     fixed_items:
     - item_id: halberd
@@ -492,19 +421,16 @@ profiles:
   - strength
   - speed
   starting_skill_ids: []
-  available_to:
-  - source: 2b
-    note: Albino Stormvermin may only be hired by Skaven warbands.
   rules:
   - id: hireling.hired-sword.albino-stormvermin.rule.hardened
     name: Hardened
     effect: >-
-      The Council's bodyguard are chosen for their strength and relative
-      fearlessness. They are immune to fear.
+      The Council's bodyguard are chosen for their strength and relative fearlessness. They are
+      immune to fear.
     effect_i18n:
       es: >-
-        La guardia del Consejo es elegida por su fuerza y su relativa
-        intrepidez. Son inmunes al Miedo.
+        La guardia del Consejo es elegida por su fuerza y su relativa intrepidez. Son inmunes al
+        Miedo.
     name_i18n:
       es: Endurecido
   source_refs:
@@ -534,10 +460,6 @@ profiles:
     kind: base_plus_experience
     base: 30
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 65
-    upkeep: 30
   equipment:
     fixed_items:
     - item_id: axe
@@ -556,65 +478,52 @@ profiles:
       quantity:
         kind: fixed
         value: 1
-      notes: >-
-        Wolf cloak — resolved to the KB `wolfcloak` item (Middenheim hunt
-        cloak, +1 armour saves vs shooting) as the closest existing cloak item;
-        the MiM source grants no effect for it. Review the equivalence at
-        promotion (distinct from the MW White Wolf Pelt Cloak, which is a
-        different 6+-save item).
+      notes: Wolf cloak — resolved to the KB `wolfcloak` item (Middenheim hunt cloak, +1 armour saves vs
+        shooting) as the closest existing cloak item; the MiM source grants no effect for it. Review the
+        equivalence at promotion (distinct from the MW White Wolf Pelt Cloak, which is a different 6+-save
+        item).
   skill_access:
   - combat
   - strength
   starting_skill_ids: []
-  available_to:
-  - source: 2b
-    note: Norse Bodyguards may not be hired by Undead and Skaven warbands.
   rules:
   - id: hireling.hired-sword.norse-bearman-bodyguard.rule.shieldmaster
     name: Shieldmaster
     effect: >-
-      A Norse mercenary has trained with a shield since childhood
-      becoming so skilled as to repel any blow. A Bearman Bodyguard may parry
-      with it in addition to getting a save throw.
+      A Norse mercenary has trained with a shield since childhood becoming so skilled as to repel
+      any blow. A Bearman Bodyguard may parry with it in addition to getting a save throw.
     effect_i18n:
       es: >-
-        Un mercenario nórdico ha entrenado con un escudo desde la infancia,
-        llegando a ser tan diestro que repele cualquier golpe. Un Guardaespaldas
-        Hombre Oso puede parar con él además de obtener su tirada de
-        salvación.
+        Un mercenario nórdico ha entrenado con un escudo desde la infancia, llegando a ser tan
+        diestro que repele cualquier golpe. Un Guardaespaldas Hombre Oso puede parar con él además
+        de obtener su tirada de salvación.
     name_i18n:
       es: Maestro del Escudo
   - id: hireling.hired-sword.norse-bearman-bodyguard.rule.bulwark
     name: Bulwark
     effect: >-
-      Bearmen fight expertly with a shield in one hand and an axe in the
-      other. The Bearman Bodyguard gets an additional +1 bonus on his armour
-      saving roll in close combat.
+      Bearmen fight expertly with a shield in one hand and an axe in the other. The Bearman
+      Bodyguard gets an additional +1 bonus on his armour saving roll in close combat.
     effect_i18n:
       es: >-
-        Los Hombres Oso luchan con maestría con un escudo en una mano y un
-        hacha en la otra. El Guardaespaldas Hombre Oso obtiene un bonus
-        adicional de +1 en su tirada de salvación por armadura en combate
-        cuerpo a cuerpo.
+        Los Hombres Oso luchan con maestría con un escudo en una mano y un hacha en la otra. El
+        Guardaespaldas Hombre Oso obtiene un bonus adicional de +1 en su tirada de salvación por
+        armadura en combate cuerpo a cuerpo.
     name_i18n:
       es: Baluarte
   - id: hireling.hired-sword.norse-bearman-bodyguard.rule.drunken
     name: Drunken
     effect: >-
-      Bearmen are notorious for their uncontrollable consumption of
-      alcohol. Roll a D6 at the start of each turn. On a roll of 1, they must
-      test for stupidity that turn. On a roll of 2-5 nothing happens and on a
-      roll of 6 they become subject to frenzy for that turn. While subject to
-      both stupidity and frenzy they are immune to all other forms of
-      psychology.
+      Bearmen are notorious for their uncontrollable consumption of alcohol. Roll a D6 at the start
+      of each turn. On a roll of 1, they must test for stupidity that turn. On a roll of 2-5 nothing
+      happens and on a roll of 6 they become subject to frenzy for that turn. While subject to both
+      stupidity and frenzy they are immune to all other forms of psychology.
     effect_i18n:
       es: >-
-        Los Hombres Oso son notorios por su consumo incontrolable de alcohol.
-        Tira un D6 al comienzo de cada turno. Con un resultado de 1 deben
-        superar una tirada de Estupidez ese turno. Con un resultado de 2-5 no
-        ocurre nada, y con un 6 sufren frenesí ese turno. Mientras sufran tanto
-        estupidez como frenesí son inmunes a todas las demás formas de
-        psicología.
+        Los Hombres Oso son notorios por su consumo incontrolable de alcohol. Tira un D6 al comienzo
+        de cada turno. Con un resultado de 1 deben superar una tirada de Estupidez ese turno. Con un
+        resultado de 2-5 no ocurre nada, y con un 6 sufren frenesí ese turno. Mientras sufran tanto
+        estupidez como frenesí son inmunes a todas las demás formas de psicología.
     name_i18n:
       es: Borrachuzo
   source_refs:
@@ -644,61 +553,46 @@ profiles:
     kind: base_plus_experience
     base: 30
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 75
-    upkeep: 30
   equipment:
     fixed_items:
     - item_id: fire_stick
       quantity:
         kind: fixed
         value: 1
-      notes: >-
-        MiM-specific item (see the Fire-Stick rule); no KB or 2B catalog
-        equivalent — deliberate dangling ref, define at promotion.
+      notes: MiM-specific item (see the Fire-Stick rule); no KB or 2B catalog equivalent — deliberate dangling
+        ref, define at promotion.
   skill_access: []
   starting_skill_ids: []
-  available_to:
-  - source: 2b
-    note: >-
-      Any Human warbands including Battle Monks of Cathay may hire a
-      Fire-Eater. Ogre Maneaters may hire a Fire-Eater with Movement 6.
   rules:
   - id: hireling.hired-sword.fire-eater.rule.fire-stick
     name: Fire-Stick
     effect: >-
-      Being almost perfectly trained in mystical arts, the Fire-Eater
-      spits fire upon his enemies in the shooting phase. Use the teardrop
-      shaped flame template to determine which models suffer an automatic
-      Strength 4 hit. In addition, any models hit are set on fire on a roll of
-      4+ (see Fire Rules). Fire-Eaters can use this breath attack even when
-      engaged in close combat.
+      Being almost perfectly trained in mystical arts, the Fire-Eater spits fire upon his enemies in
+      the shooting phase. Use the teardrop shaped flame template to determine which models suffer an
+      automatic Strength 4 hit. In addition, any models hit are set on fire on a roll of 4+ (see
+      Fire Rules). Fire-Eaters can use this breath attack even when engaged in close combat.
     effect_i18n:
       es: >-
-        Al estar entrenado casi a la perfección en las artes místicas, el
-        Traga Fuego escupe fuego sobre sus enemigos en la fase de disparo. Usa
-        la plantilla de llamas con forma de lágrima para determinar qué
-        miniaturas sufren un impacto automático de Fuerza 4. Además, cualquier
-        miniatura alcanzada se incendia con un resultado de 4+ (ver Reglas de
-        Fuego). Los Traga Fuego pueden usar este ataque de aliento incluso
-        cuando estén trabados en combate cuerpo a cuerpo.
+        Al estar entrenado casi a la perfección en las artes místicas, el Traga Fuego escupe fuego
+        sobre sus enemigos en la fase de disparo. Usa la plantilla de llamas con forma de lágrima
+        para determinar qué miniaturas sufren un impacto automático de Fuerza 4. Además, cualquier
+        miniatura alcanzada se incendia con un resultado de 4+ (ver Reglas de Fuego). Los Traga
+        Fuego pueden usar este ataque de aliento incluso cuando estén trabados en combate cuerpo a
+        cuerpo.
     name_i18n:
       es: Palo de Fuego
   - id: hireling.hired-sword.fire-eater.rule.inhaling-fire
     name: Inhaling Fire
     effect: >-
-      After belching the first flume of heat, roll a D6 each time a
-      Fire-Eater makes an additional breath attack. On a roll of 1 the
-      Fire-Eater has inhaled the fire he should have been spewing! The warrior
-      suffers a Strength 4 hit instead of using the flame template.
+      After belching the first flume of heat, roll a D6 each time a Fire-Eater makes an additional
+      breath attack. On a roll of 1 the Fire-Eater has inhaled the fire he should have been spewing!
+      The warrior suffers a Strength 4 hit instead of using the flame template.
     effect_i18n:
       es: >-
-        Después de escupir la primera lengua de fuego, tira un D6 cada vez
-        que el Traga Fuego realice un ataque de aliento adicional. Con un
-        resultado de 1, el Traga Fuego ha inhalado el fuego que debía escupir.
-        El guerrero sufre un impacto de Fuerza 4 en lugar de usar la plantilla
-        de llamas.
+        Después de escupir la primera lengua de fuego, tira un D6 cada vez que el Traga Fuego
+        realice un ataque de aliento adicional. Con un resultado de 1, el Traga Fuego ha inhalado el
+        fuego que debía escupir. El guerrero sufre un impacto de Fuerza 4 en lugar de usar la
+        plantilla de llamas.
     name_i18n:
       es: Inhalando Fuego
   source_refs:
@@ -728,10 +622,6 @@ profiles:
     kind: base_plus_experience
     base: 15
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 45
-    upkeep: 15
   equipment:
     fixed_items:
     - item_id: sigmarite_hammer
@@ -747,54 +637,40 @@ profiles:
       quantity:
         kind: fixed
         value: 1
-      notes: >-
-        Vial of blessed water — resolves to the KB out-of-scope
-        `blessed_water` item.
+      notes: Vial of blessed water — resolves to the KB out-of-scope `blessed_water` item.
     - item_id: arcane_candelabrum
       quantity:
         kind: fixed
         value: 1
-      notes: >-
-        MiM-specific item (see the Candle Tree rule); no KB or 2B catalog
-        equivalent — deliberate dangling ref, define at promotion.
+      notes: MiM-specific item (see the Candle Tree rule); no KB or 2B catalog equivalent — deliberate dangling
+        ref, define at promotion.
   skill_access:
   - combat
   - academic
   - strength
   - speed
   starting_skill_ids: []
-  available_to:
-  - source: 2b
-    note: >-
-      Any Dwarf, Elf or Human warband except Witch Hunters may hire a
-      Sister of Sigmar.
   rules:
   - id: hireling.hired-sword.sister-of-sigmar.rule.blessing-of-sigmar
     name: Blessing of Sigmar
-    effect: >-
-      The Sister has two of the special skills from page 83 of Mordheim
-      Rulebook.
+    effect: The Sister has two of the special skills from page 83 of Mordheim Rulebook.
     effect_i18n:
-      es: >-
-        La Hermana tiene dos de las habilidades especiales de la página 83 del
-        libro de Mordheim.
+      es: La Hermana tiene dos de las habilidades especiales de la página 83 del libro de Mordheim.
     name_i18n:
       es: Bendición de Sigmar
   - id: hireling.hired-sword.sister-of-sigmar.rule.candle-tree
     name: Candle Tree
     effect: >-
-      Sisters were orphaned children. In holy light they are recognised
-      as saviours of orphans including mutants with minor afflictions. Arcane
-      Candelabrum counts as a holy relic, brazier iron and lantern that is used
-      one-handed. Any mutant taken out of action by the Sister of Sigmar is
-      captured.
+      Sisters were orphaned children. In holy light they are recognised as saviours of orphans
+      including mutants with minor afflictions. Arcane Candelabrum counts as a holy relic, brazier
+      iron and lantern that is used one-handed. Any mutant taken out of action by the Sister of
+      Sigmar is captured.
     effect_i18n:
       es: >-
-        Las Hermanas fueron niños huérfanos. A la luz sagrada se las reconoce
-        como salvadoras de huérfanos, incluidos los mutantes con aflicciones
-        menores. El Candelabro Arcano cuenta como reliquia sagrada, brasero de
-        hierro y farol que se usa a una mano. Cualquier mutante dejado Fuera de
-        combate por la Hermana de Sigmar es capturado.
+        Las Hermanas fueron niños huérfanos. A la luz sagrada se las reconoce como salvadoras de
+        huérfanos, incluidos los mutantes con aflicciones menores. El Candelabro Arcano cuenta como
+        reliquia sagrada, brasero de hierro y farol que se usa a una mano. Cualquier mutante dejado
+        Fuera de combate por la Hermana de Sigmar es capturado.
     name_i18n:
       es: Árbol de Candelas
   source_refs:
@@ -824,10 +700,6 @@ profiles:
     kind: base_plus_experience
     base: 8
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 30
-    upkeep: 15
   equipment:
     fixed_items:
     - item_id: long_boathook
@@ -851,58 +723,48 @@ profiles:
   skill_access:
   - speed
   starting_skill_ids: []
-  available_to:
-  - source: 2b
-    note: >-
-      Any warband except Skaven, Beastmen, and Orcs & Goblins warbands may
-      hire a Midshipman.
   rules:
   - id: hireling.hired-sword.midshipman.rule.pilot
     name: Pilot
     effect: >-
-      A boat piloted by the Hero may re-roll results on the Propulsion
-      Damage Chart once. The second result must be accepted even if it is
-      worse.
+      A boat piloted by the Hero may re-roll results on the Propulsion Damage Chart once. The second
+      result must be accepted even if it is worse.
     effect_i18n:
       es: >-
-        Una embarcación pilotada por el Héroe puede repetir una vez los
-        resultados de la Tabla de Daños de Propulsión. Siempre debe aceptarse el
-        segundo resultado, aunque sea peor.
+        Una embarcación pilotada por el Héroe puede repetir una vez los resultados de la Tabla de
+        Daños de Propulsión. Siempre debe aceptarse el segundo resultado, aunque sea peor.
     name_i18n:
       es: Piloto
   - id: hireling.hired-sword.midshipman.rule.rigger
     name: Rigger
     effect: >-
-      The Hero is skilled in fixing minor damage to watercraft. If the
-      boat or barge is stationary and has not moved during the last turn then
-      if the Hero is in contact with it, he may repair one location previously
-      damaged or set on fire. ie, a paddle or mast. The Hero may do nothing
-      else that turn and the boat may not be moved. A boat cannot be repaired
-      if an enemy model is in contact with the Hero or the watercraft.
+      The Hero is skilled in fixing minor damage to watercraft. If the boat or barge is stationary
+      and has not moved during the last turn then if the Hero is in contact with it, he may repair
+      one location previously damaged or set on fire. ie, a paddle or mast. The Hero may do nothing
+      else that turn and the boat may not be moved. A boat cannot be repaired if an enemy model is
+      in contact with the Hero or the watercraft.
     effect_i18n:
       es: >-
-        El Héroe es diestro reparando daños menores en embarcaciones. Si el
-        bote o la barcaza está detenido y no se ha movido durante el último
-        turno, y el Héroe está en contacto con él, puede reparar una localización
-        dañada o incendiada previamente, es decir, un remo o un mástil. El Héroe
-        no puede hacer nada más ese turno y la embarcación no puede moverse. No
-        se puede reparar una embarcación si hay una miniatura enemiga en contacto
-        con el Héroe o con la embarcación.
+        El Héroe es diestro reparando daños menores en embarcaciones. Si el bote o la barcaza está
+        detenido y no se ha movido durante el último turno, y el Héroe está en contacto con él,
+        puede reparar una localización dañada o incendiada previamente, es decir, un remo o un
+        mástil. El Héroe no puede hacer nada más ese turno y la embarcación no puede moverse. No se
+        puede reparar una embarcación si hay una miniatura enemiga en contacto con el Héroe o con la
+        embarcación.
     name_i18n:
       es: Cordelista
   - id: hireling.hired-sword.midshipman.rule.a-crew-fer-me
     name: A Crew Fer Me!
     effect: >-
-      A midshipman craves the comradery and adventure of the sea and a
-      worthy crew. As such, any seafaring warbands gain a +1 to blood pact
-      rolls with the Midshipman.
+      A midshipman craves the comradery and adventure of the sea and a worthy crew. As such, any
+      seafaring warbands gain a +1 to blood pact rolls with the Midshipman.
     effect_i18n:
       es: >-
-        Un guardiamarina ansía la camaradería y la aventura del mar, así como
-        una tripulación digna. Por ello, las bandas navales obtienen un +1 en
-        las tiradas de pacto de sangre con el Guardiamarina.
+        Un guardiamarina ansía la camaradería y la aventura del mar, así como una tripulación digna.
+        Por ello, las bandas navales obtienen un +1 en las tiradas de pacto de sangre con el
+        Guardiamarina.
     name_i18n:
-      es: ¡Una Tripulación Para Mí!
+      es: ¡Una Tripulación para Mí!
   source_refs:
   - manual: broheim.net
     printed_page: 5

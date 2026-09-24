@@ -1,11 +1,10 @@
 schema_version: 1
 ruleset: mordheim
-catalog: hirelings-2b-priests
+catalog: hirelings-hired-swords
 grade: 2b
-status: staging
 profiles:
-- id: hireling.priest.mariner-priest-of-manann
-  kind: priest
+- id: hireling.hired-sword.mariner-priest-of-manann
+  kind: hired-sword
   grade: 2b
   publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
   name: Mariner-Priest of Manann
@@ -22,15 +21,10 @@ profiles:
     I: 3
     A: 1
     Ld: 8
-  starting_experience: 12
   warband_rating:
     kind: base_plus_experience
     base: 0
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 40
-    upkeep: 0
   equipment:
     fixed_items:
     - item_id: dagger
@@ -38,34 +32,23 @@ profiles:
         kind: fixed
         value: 1
       notes: Ceremonial dagger — all priests of the chapter start with one.
-    choice_groups:
-    - id: hireling.priest.mariner-priest-of-manann.choice.equipment
-      choose:
-        kind: fixed
-        value: 1
+    choices:
+    - choose: 1
       options:
-      - kind: item
-        item_id: trident
-        quantity:
-          kind: fixed
-          value: 1
-        notes: Priest of Manann only; 15 gc in the chapter's priest equipment list; Strike first, Parry;
-          Rarity 7 per Unknowable Cargo.
+      - items:
+        - item_id: trident
+          quantity:
+            kind: fixed
+            value: 1
+          notes: Priest of Manann only; 15 gc in the chapter's priest equipment list; Strike first, Parry;
+            Rarity 7 per Unknowable Cargo.
   skill_access:
   - combat
   - academic
   - speed
   starting_skill_ids: []
-  lore_assignments:
-  - lore.prayers-of-manann
-  available_to:
-  - source: miracle-workers
-    note: Any human, elf or dwarf warband may hire a Mariner-Priest of Manann (or Olovald). Priests may
-      not be hired by followers of Chaos, Orcs & Goblins, Dark Elves, Skaven and Undead warbands unless
-      specified elsewhere; only one Priest per warband; the Priest counts as a Hero (see the chapter errata
-      note above about replacing a starting Hero).
   rules:
-  - id: hireling.priest.mariner-priest-of-manann.rule.prayers
+  - id: hireling.hired-sword.mariner-priest-of-manann.rule.prayers
     name: Prayers
     effect: >-
       A Priest of Manann is a servant of Manann and may use the Prayers of Manann as detailed
@@ -80,7 +63,7 @@ profiles:
         de Manann en lugar de elegir una nueva habilidad si se saca un doble en la tirada de avance.
     name_i18n:
       es: Plegarias
-  - id: hireling.priest.mariner-priest-of-manann.rule.seafaring
+  - id: hireling.hired-sword.mariner-priest-of-manann.rule.seafaring
     name: Seafaring
     effect: >-
       Priests of Manann are seafaring people and spend much of their time rowing boats. To represent
@@ -92,7 +75,7 @@ profiles:
         embarcación.
     name_i18n:
       es: Navegante de Mar
-  - id: hireling.priest.mariner-priest-of-manann.rule.navigator
+  - id: hireling.hired-sword.mariner-priest-of-manann.rule.navigator
     name: Navigator
     effect: >-
       His maritime intuition means the Priest can influence the exploration outcome of a battle
@@ -105,8 +88,8 @@ profiles:
         modificar una tirada de dado en -1/+1.
     name_i18n:
       es: Navegante
-  - id: hireling.priest.mariner-priest-of-manann.rule.priest-hero-slot
-    name: Priest Hero Slot (chapter errata)
+  - id: hireling.hired-sword.mariner-priest-of-manann.rule.priest-hero-slot
+    name: Priest Hero Slot (Chapter Errata)
     effect: >-
       The Priest counts as a Hero and starts with 12 experience. Chapter errata (author ruling, TBMF
       t8634): the Priest must replace one of the warband's starting Heroes; the original PDF wording
@@ -118,8 +101,8 @@ profiles:
         de la banda; la redacción original del PDF permitía superar el límite de Héroes, y nunca se
         corrigió en el archivo publicado.
     name_i18n:
-      es: Plaza de Héroe Sacerdotal (errata del capítulo)
-  - id: hireling.priest.mariner-priest-of-manann.rule.marks-of-manann
+      es: Plaza de Héroe Sacerdotal (Errata del Capítulo)
+  - id: hireling.hired-sword.mariner-priest-of-manann.rule.marks-of-manann
     name: Marks of Manann
     effect: >-
       One with the Sea: if the Priest falls into water then regardless of the injury roll the Priest
@@ -133,7 +116,7 @@ profiles:
     name_i18n:
       es: Marcas de Manann
   source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
+  - manual: liber-malefic
     printed_page: 3
     section: Priests for Every Occasion / Mariner-Priest of Manann
     url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
@@ -141,8 +124,9 @@ profiles:
     printed_page: 3
     section: Heroes / 0-1 Mutant-Priest / Special Rules / Prayers
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf
-- id: hireling.priest.priest-of-morr
-  kind: priest
+  experience: 12
+- id: hireling.hired-sword.priest-of-morr
+  kind: hired-sword
   grade: 2b
   publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
   name: Priest of Morr
@@ -159,15 +143,10 @@ profiles:
     I: 3
     A: 1
     Ld: 8
-  starting_experience: 12
   warband_rating:
     kind: base_plus_experience
     base: 0
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 35
-    upkeep: 0
   equipment:
     fixed_items:
     - item_id: dagger
@@ -179,20 +158,15 @@ profiles:
       quantity:
         kind: fixed
         value: 1
-      notes: Scythe (chapter special weapon — Close combat, As user +1, Difficult to use, Two-handed;
-        no cost/rarity printed in the article). Resolves to the KB item `scythe` (catalog/items/trollheim.yaml);
+      notes: Scythe (chapter special weapon — Close combat, As user +1, Difficult to use, Two-handed; no
+        cost/rarity printed in the article). Resolves to the KB item `scythe` (catalog/items/trollheim.yaml);
         the chapter's +1 Strength variant is noted for promotion merge.
   skill_access:
   - academic
   - speed
   starting_skill_ids: []
-  lore_assignments:
-  - lore.prayers-of-morr
-  available_to:
-  - source: miracle-workers
-    note: Any human or elf warband may hire a Priest of Morr.
   rules:
-  - id: hireling.priest.priest-of-morr.rule.prayers
+  - id: hireling.hired-sword.priest-of-morr.rule.prayers
     name: Prayers
     effect: >-
       A Priest of Morr is a servant of the Death God and may use the Prayers of Morr as detailed
@@ -207,7 +181,7 @@ profiles:
         en la tirada de avance. Los Sacerdotes de Morr solo pueden elegir una Marca de Morr.
     name_i18n:
       es: Plegarias
-  - id: hireling.priest.priest-of-morr.rule.strictures
+  - id: hireling.hired-sword.priest-of-morr.rule.strictures
     name: Strictures
     effect: >-
       Priests of the Death God seldom engage in martial activities. Priests of Morr always begin
@@ -220,7 +194,7 @@ profiles:
         armados con hoz y daga. Los Sacerdotes de Morr nunca pueden llevar armadura.
     name_i18n:
       es: Preceptos
-  - id: hireling.priest.priest-of-morr.rule.loner
+  - id: hireling.hired-sword.priest-of-morr.rule.loner
     name: Loner
     effect: >-
       Few people care to spend any length of time in the company of a Priest of Morr, even when it
@@ -233,7 +207,7 @@ profiles:
         Los Sacerdotes de Morr no sufren las reglas de Estar Solo.
     name_i18n:
       es: Solitario
-  - id: hireling.priest.priest-of-morr.rule.morrs-servant
+  - id: hireling.hired-sword.priest-of-morr.rule.morrs-servant
     name: Morr's Servant
     effect: >-
       Undead creatures shy away from the Priest's presence. Any Undead creature declaring a charge
@@ -248,7 +222,7 @@ profiles:
         exenciones de Psicología que normalmente se aplican a las miniaturas de No Muertos.
     name_i18n:
       es: Siervo de Morr
-  - id: hireling.priest.priest-of-morr.rule.protected-by-morr
+  - id: hireling.hired-sword.priest-of-morr.rule.protected-by-morr
     name: Protected by Morr
     effect: >-
       Morr has a special purpose in mind for His Priests, or so it seems. He, or some other
@@ -265,7 +239,7 @@ profiles:
         pronóstico' en lugar de 'Vendido a los fosos').
     name_i18n:
       es: Protegido por Morr
-  - id: hireling.priest.priest-of-morr.rule.marks-of-morr
+  - id: hireling.hired-sword.priest-of-morr.rule.marks-of-morr
     name: Marks of Morr
     effect: >-
       Augur: inured to fear by long exposure to death, the Priest becomes Immune to Psychology and
@@ -284,12 +258,13 @@ profiles:
     name_i18n:
       es: Marcas de Morr
   source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
+  - manual: liber-malefic
     printed_page: 5
     section: Priests for Every Occasion / Priest of Morr
     url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-- id: hireling.priest.war-priestess-of-myrmidia
-  kind: priest
+  experience: 12
+- id: hireling.hired-sword.war-priestess-of-myrmidia
+  kind: hired-sword
   grade: 2b
   publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
   name: War-Priestess of Myrmidia
@@ -306,15 +281,10 @@ profiles:
     I: 4
     A: 1
     Ld: 8
-  starting_experience: 12
   warband_rating:
     kind: base_plus_experience
     base: 0
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 40
-    upkeep: 0
   equipment:
     fixed_items:
     - item_id: dagger
@@ -327,13 +297,8 @@ profiles:
   - academic
   - strength
   starting_skill_ids: []
-  lore_assignments:
-  - lore.prayers-of-myrmidia
-  available_to:
-  - source: miracle-workers
-    note: Marienburgers, Tileans, Watchmen and Merchants Caravans may hire a War-Priestess of Myrmidia.
   rules:
-  - id: hireling.priest.war-priestess-of-myrmidia.rule.prayers
+  - id: hireling.hired-sword.war-priestess-of-myrmidia.rule.prayers
     name: Prayers
     effect: >-
       A War-Priestess of Myrmidia is a servant of Myrmidia and may use the Prayers of Myrmidia as
@@ -348,8 +313,8 @@ profiles:
         habilidad si se saca un doble en la tirada de avance.
     name_i18n:
       es: Plegarias
-  - id: hireling.priest.war-priestess-of-myrmidia.rule.war-honed
-    name: War-honed
+  - id: hireling.hired-sword.war-priestess-of-myrmidia.rule.war-honed
+    name: War-Honed
     effect: >-
       The Priestess is a warrior of stout heart and ignores the effects of fear. In addition, the
       War-Priestess may re-roll her first failed Leadership test of every battle.
@@ -360,7 +325,7 @@ profiles:
         batalla.
     name_i18n:
       es: Templada en la Guerra
-  - id: hireling.priest.war-priestess-of-myrmidia.rule.marks-of-myrmidia
+  - id: hireling.hired-sword.war-priestess-of-myrmidia.rule.marks-of-myrmidia
     name: Marks of Myrmidia
     effect: >-
       Oracle: the Priestess may re-roll any one dice roll she makes during a battle. Eagle Friend:
@@ -383,12 +348,13 @@ profiles:
     name_i18n:
       es: Marcas de Myrmidia
   source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
+  - manual: liber-malefic
     printed_page: 6
     section: Priests for Every Occasion / War-Priestess of Myrmidia
     url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-- id: hireling.priest.trickster-priest-of-ranald
-  kind: priest
+  experience: 12
+- id: hireling.hired-sword.trickster-priest-of-ranald
+  kind: hired-sword
   grade: 2b
   publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
   name: Trickster-Priest of Ranald
@@ -405,15 +371,10 @@ profiles:
     I: 3
     A: 1
     Ld: 7
-  starting_experience: 12
   warband_rating:
     kind: base_plus_experience
     base: 0
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 55
-    upkeep: 0
   equipment:
     fixed_items:
     - item_id: dagger
@@ -430,21 +391,16 @@ profiles:
       quantity:
         kind: fixed
         value: 1
-      notes: Stiletto (counts as a sword per the chapter); stricture armament. The KB has no stiletto
-        item (only mechanic weapon.stiletto), so the chapter's own equivalence is used.
+      notes: Stiletto (counts as a sword per the chapter); stricture armament. The KB has no stiletto item
+        (only mechanic weapon.stiletto), so the chapter's own equivalence is used.
   skill_access:
   - academic
   - speed
   starting_skill_ids:
   - skill.haggle
   - skill.streetwise
-  lore_assignments:
-  - lore.prayers-of-ranald-and-handrich
-  available_to:
-  - source: miracle-workers
-    note: Any human or dwarf warband may hire a Priest of Ranald or Handrich (or Gunndred).
   rules:
-  - id: hireling.priest.trickster-priest-of-ranald.rule.prayers
+  - id: hireling.hired-sword.trickster-priest-of-ranald.rule.prayers
     name: Prayers
     effect: >-
       A Priest of Ranald is a servant of Ranald and may use the Prayers of Ranald as detailed
@@ -459,7 +415,7 @@ profiles:
         lugar de elegir una nueva habilidad si se saca un doble en la tirada de avance.
     name_i18n:
       es: Plegarias
-  - id: hireling.priest.trickster-priest-of-ranald.rule.strictures
+  - id: hireling.hired-sword.trickster-priest-of-ranald.rule.strictures
     name: Strictures
     effect: >-
       Trickster-Priests habitually avoid engaging in martial activity. They may only be armed with a
@@ -473,7 +429,7 @@ profiles:
         Regateo y Callejeo.
     name_i18n:
       es: Preceptos
-  - id: hireling.priest.trickster-priest-of-ranald.rule.grifter
+  - id: hireling.hired-sword.trickster-priest-of-ranald.rule.grifter
     name: Grifter
     effect: >-
       Priests of Ranald are practiced swindlers! Like a merchant, a Trickster-Priest allows (dodgy!)
@@ -484,7 +440,7 @@ profiles:
         permite concertar tratos comerciales (¡poco fiables!) con otras bandas.
     name_i18n:
       es: Estafador
-  - id: hireling.priest.trickster-priest-of-ranald.rule.marks-of-ranald
+  - id: hireling.hired-sword.trickster-priest-of-ranald.rule.marks-of-ranald
     name: Marks of Ranald
     effect: >-
       Ranald's Luck: once during each battle the Priest may influence the result of any dice roll he
@@ -507,12 +463,13 @@ profiles:
     name_i18n:
       es: Marcas de Ranald
   source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
+  - manual: liber-malefic
     printed_page: 8
     section: Priests for Every Occasion / Trickster-Priest of Ranald
     url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-- id: hireling.priest.priestess-of-shallya
-  kind: priest
+  experience: 12
+- id: hireling.hired-sword.priestess-of-shallya
+  kind: hired-sword
   grade: 2b
   publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
   name: Priestess of Shallya
@@ -529,15 +486,10 @@ profiles:
     I: 3
     A: 1
     Ld: 8
-  starting_experience: 12
   warband_rating:
     kind: base_plus_experience
     base: 0
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 50
-    upkeep: 0
   equipment:
     fixed_items:
     - item_id: dagger
@@ -553,13 +505,8 @@ profiles:
   skill_access:
   - academic
   starting_skill_ids: []
-  lore_assignments:
-  - lore.prayers-of-shallya
-  available_to:
-  - source: miracle-workers
-    note: Any human, elf or dwarf warband may hire a Priestess of Shallya.
   rules:
-  - id: hireling.priest.priestess-of-shallya.rule.prayers
+  - id: hireling.hired-sword.priestess-of-shallya.rule.prayers
     name: Prayers
     effect: >-
       A Priestess of Shallya is a servant of Shallya and may use the Prayers of Shallya as detailed
@@ -573,7 +520,7 @@ profiles:
         doble en la tirada de avance.
     name_i18n:
       es: Plegarias
-  - id: hireling.priest.priestess-of-shallya.rule.strictures
+  - id: hireling.hired-sword.priestess-of-shallya.rule.strictures
     name: Strictures
     effect: >-
       Priestesses of Shallya avoid engaging in martial activities. Followers of Shallya may only
@@ -590,7 +537,7 @@ profiles:
         ir armadas con un bastón de paseo. Las Sacerdotisas de Shallya nunca pueden llevar armadura.
     name_i18n:
       es: Preceptos
-  - id: hireling.priest.priestess-of-shallya.rule.mercy
+  - id: hireling.hired-sword.priestess-of-shallya.rule.mercy
     name: Mercy
     effect: >-
       The Priestess may heal a wounded warrior once during battle. Any model in contact with the
@@ -604,7 +551,7 @@ profiles:
         las tablas de Cirugía.
     name_i18n:
       es: Misericordia
-  - id: hireling.priest.priestess-of-shallya.rule.cure-poison
+  - id: hireling.hired-sword.priestess-of-shallya.rule.cure-poison
     name: Cure Poison
     effect: >-
       At the beginning of the post battle sequence the Priestess and any other model in the warband
@@ -617,7 +564,7 @@ profiles:
         del modelo afectado y todos sus efectos negativos quedan anulados.
     name_i18n:
       es: Curar Veneno
-  - id: hireling.priest.priestess-of-shallya.rule.marks-of-shallya
+  - id: hireling.hired-sword.priestess-of-shallya.rule.marks-of-shallya
     name: Marks of Shallya
     effect: >-
       Healing Hands: the Priestess may heal a grievously wounded warrior once during battle; any
@@ -634,12 +581,13 @@ profiles:
     name_i18n:
       es: Marcas de Shallya
   source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
+  - manual: liber-malefic
     printed_page: 10
     section: Priests for Every Occasion / Priestess of Shallya
     url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-- id: hireling.priest.warrior-priest-of-sigmar
-  kind: priest
+  experience: 12
+- id: hireling.hired-sword.warrior-priest-of-sigmar
+  kind: hired-sword
   grade: 2b
   publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
   name: Warrior-Priest of Sigmar
@@ -656,15 +604,10 @@ profiles:
     I: 3
     A: 1
     Ld: 8
-  starting_experience: 12
   warband_rating:
     kind: base_plus_experience
     base: 0
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 40
-    upkeep: 0
   equipment:
     fixed_items:
     - item_id: dagger
@@ -677,14 +620,8 @@ profiles:
   - academic
   - strength
   starting_skill_ids: []
-  lore_assignments:
-  - lore.prayers-of-sigmar
-  available_to:
-  - source: miracle-workers
-    note: Any human warband may hire a Warrior-Priest of Sigmar except Witch Hunters (they already have
-      this choice!), Pit Fighters, Pirates, Norse, Kislevites, Tileans, Arabyans and Middenheim mercenaries.
   rules:
-  - id: hireling.priest.warrior-priest-of-sigmar.rule.prayers
+  - id: hireling.hired-sword.warrior-priest-of-sigmar.rule.prayers
     name: Prayers
     effect: >-
       A Warrior-Priest of Sigmar is a servant of Sigmar and may use the Prayers of Sigmar as
@@ -699,7 +636,7 @@ profiles:
         saca un doble en la tirada de avance.
     name_i18n:
       es: Plegarias
-  - id: hireling.priest.warrior-priest-of-sigmar.rule.marks-of-sigmar
+  - id: hireling.hired-sword.warrior-priest-of-sigmar.rule.marks-of-sigmar
     name: Marks of Sigmar
     effect: >-
       Enlightened: divine purpose washes over the Priest; he automatically passes all Leadership
@@ -720,12 +657,13 @@ profiles:
     name_i18n:
       es: Marcas de Sigmar
   source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
+  - manual: liber-malefic
     printed_page: 12
     section: Priests for Every Occasion / Warrior-Priest of Sigmar
     url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-- id: hireling.priest.druid-priest-of-taal
-  kind: priest
+  experience: 12
+- id: hireling.hired-sword.druid-priest-of-taal
+  kind: hired-sword
   grade: 2b
   publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
   name: Druid-Priest of Taal
@@ -742,15 +680,10 @@ profiles:
     I: 3
     A: 1
     Ld: 7
-  starting_experience: 12
   warband_rating:
     kind: base_plus_experience
     base: 0
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 45
-    upkeep: 0
   equipment:
     fixed_items:
     - item_id: dagger
@@ -764,14 +697,8 @@ profiles:
   - strength
   - speed
   starting_skill_ids: []
-  lore_assignments:
-  - lore.prayers-of-taal
-  available_to:
-  - source: miracle-workers
-    note: Any human warband may hire a Priest of Taal or Rhya (or Karog) except Witch Hunters, Sisters
-      of Sigmar, Pit Fighters, Norse, Kislevites, Tileans, Arabyans and Middenheim mercenaries.
   rules:
-  - id: hireling.priest.druid-priest-of-taal.rule.prayers
+  - id: hireling.hired-sword.druid-priest-of-taal.rule.prayers
     name: Prayers
     effect: >-
       A Priest of Taal is a servant of Taal and may use the Prayers of Taal as detailed elsewhere in
@@ -785,7 +712,7 @@ profiles:
         tirada de avance.
     name_i18n:
       es: Plegarias
-  - id: hireling.priest.druid-priest-of-taal.rule.strictures
+  - id: hireling.hired-sword.druid-priest-of-taal.rule.strictures
     name: Strictures
     effect: >-
       Priests of Taal may never wear heavy armour. Druid-Priests may never be equipped with
@@ -796,7 +723,7 @@ profiles:
         pueden equiparse con armas de pólvora.
     name_i18n:
       es: Preceptos
-  - id: hireling.priest.druid-priest-of-taal.rule.marks-of-taal
+  - id: hireling.hired-sword.druid-priest-of-taal.rule.marks-of-taal
     name: Marks of Taal
     effect: >-
       Tranquil Fauna: animals are calmed by the presence of the Priest and will never attack him;
@@ -819,12 +746,13 @@ profiles:
     name_i18n:
       es: Marcas de Taal
   source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
+  - manual: liber-malefic
     printed_page: 13
     section: Priests for Every Occasion / Warrior-Priest of Sigmar and Taal
     url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-- id: hireling.priest.wolf-priest-of-ulric
-  kind: priest
+  experience: 12
+- id: hireling.hired-sword.wolf-priest-of-ulric
+  kind: hired-sword
   grade: 2b
   publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
   name: Wolf-Priest of Ulric
@@ -841,15 +769,10 @@ profiles:
     I: 3
     A: 1
     Ld: 8
-  starting_experience: 12
   warband_rating:
     kind: base_plus_experience
     base: 0
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 60
-    upkeep: 0
   equipment:
     fixed_items:
     - item_id: dagger
@@ -861,9 +784,8 @@ profiles:
       quantity:
         kind: fixed
         value: 1
-      notes: White wolf pelt cloak — 6+ saving throw. Item defined in the Grade-2b
-        staging catalog (miracle-workers-gear.yaml) from this chapter's strictures;
-        not equivalent to the KB `wolfcloak` (Middenheim hunt cloak, shooting-only
+      notes: White wolf pelt cloak — 6+ saving throw. Item defined in the Grade-2b staging catalog (miracle-workers-gear.yaml)
+        from this chapter's strictures; not equivalent to the KB `wolfcloak` (Middenheim hunt cloak, shooting-only
         save) — keep both items and review any merge at promotion.
   skill_access:
   - combat
@@ -871,13 +793,8 @@ profiles:
   - strength
   - speed
   starting_skill_ids: []
-  lore_assignments:
-  - lore.prayers-of-ulric-miracle-workers
-  available_to:
-  - source: miracle-workers
-    note: Middenheim mercenaries may hire a Wolf-Priest of Ulric.
   rules:
-  - id: hireling.priest.wolf-priest-of-ulric.rule.prayers
+  - id: hireling.hired-sword.wolf-priest-of-ulric.rule.prayers
     name: Prayers
     effect: >-
       A Wolf-Priest of Ulric is a servant of Ulric and may use the Prayers of Ulric as detailed
@@ -891,7 +808,7 @@ profiles:
         tirada de avance.
     name_i18n:
       es: Plegarias
-  - id: hireling.priest.wolf-priest-of-ulric.rule.strictures
+  - id: hireling.hired-sword.wolf-priest-of-ulric.rule.strictures
     name: Strictures
     effect: >-
       Wolf-Priests of Ulric may never wear armour, trusting in Ulric's protection. The only
@@ -908,7 +825,7 @@ profiles:
         Sacerdotes Lobo de Ulric nunca pueden equiparse con armas de pólvora.
     name_i18n:
       es: Preceptos
-  - id: hireling.priest.wolf-priest-of-ulric.rule.intense-rivals
+  - id: hireling.hired-sword.wolf-priest-of-ulric.rule.intense-rivals
     name: Intense Rivals
     effect: >-
       A Wolf-Priest hates all Witch Hunters, Warrior-Priests of Sigmar, Sigmarite Matriarchs and
@@ -919,7 +836,7 @@ profiles:
         Matriarcas de Sigmar y Hermanas de Sigmar por ser los agentes de un culto rival.
     name_i18n:
       es: Rivalidad Intensa
-  - id: hireling.priest.wolf-priest-of-ulric.rule.marks-of-ulric
+  - id: hireling.hired-sword.wolf-priest-of-ulric.rule.marks-of-ulric
     name: Marks of Ulric
     effect: >-
       Son of Ulric: the Priest is a direct descendent of Ulric's bloodline; his teeth sharpen and
@@ -943,12 +860,13 @@ profiles:
     name_i18n:
       es: Marcas de Ulric
   source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
+  - manual: liber-malefic
     printed_page: 14
     section: Priests for Every Occasion / Wolf-Priest of Ulric
     url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-- id: hireling.priest.priest-of-verena
-  kind: priest
+  experience: 12
+- id: hireling.hired-sword.priest-of-verena
+  kind: hired-sword
   grade: 2b
   publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
   name: Priest of Verena
@@ -965,15 +883,10 @@ profiles:
     I: 3
     A: 1
     Ld: 8
-  starting_experience: 12
   warband_rating:
     kind: base_plus_experience
     base: 0
     per_experience_point: 1
-  hire_fee:
-    kind: base_plus_upkeep
-    hire: 45
-    upkeep: 0
   equipment:
     fixed_items:
     - item_id: dagger
@@ -989,14 +902,8 @@ profiles:
   skill_access:
   - academic
   starting_skill_ids: []
-  lore_assignments:
-  - lore.prayers-of-verena-and-solkan
-  available_to:
-  - source: miracle-workers
-    note: Any human warband may hire a Priest of Verena (or War-Priest of Solkan) except Witch Hunters,
-      Sisters of Sigmar, Pit Fighters, Pirates, Norse, Kislevites, Arabyans and Middenheim mercenaries.
   rules:
-  - id: hireling.priest.priest-of-verena.rule.prayers
+  - id: hireling.hired-sword.priest-of-verena.rule.prayers
     name: Prayers
     effect: >-
       A Priest of Verena is a servant of Verena and may use the Prayers of Verena as detailed
@@ -1012,14 +919,14 @@ profiles:
         saca un doble en la tirada de avance.
     name_i18n:
       es: Plegarias
-  - id: hireling.priest.priest-of-verena.rule.strictures
+  - id: hireling.hired-sword.priest-of-verena.rule.strictures
     name: Strictures
     effect: Priests of Verena may only be armed with a sword.
     effect_i18n:
       es: Los Sacerdotes de Verena solo pueden ir armados con una espada.
     name_i18n:
       es: Preceptos
-  - id: hireling.priest.priest-of-verena.rule.marks-of-verena
+  - id: hireling.hired-sword.priest-of-verena.rule.marks-of-verena
     name: Marks of Verena
     effect: >-
       Librarian: the Priest has studied forbidden tomes of the Unseen Library; whenever a prayer is
@@ -1045,8 +952,8 @@ profiles:
         abatidos, pero si el Sacerdote muere, el búho se pierde como cualquier otro equipo.
     name_i18n:
       es: Marcas de Verena
-  - id: hireling.priest.priest-of-verena.rule.marks-of-solkan
-    name: Marks of Solkan (War-Priest variant)
+  - id: hireling.hired-sword.priest-of-verena.rule.marks-of-solkan
+    name: Marks of Solkan (War-Priest Variant)
     effect: >-
       War-Priests of Solkan may choose skills from the Strength skills list and can receive a Mark
       of Solkan instead of choosing a new skill on a double advance roll. Witch-finder: the Priest
@@ -1070,9 +977,10 @@ profiles:
         corrupto: tira en la tabla de mutaciones aleatorias y aplica el resultado como su marca. Los
         Inquisidores nunca pueden abandonar el combate y son Inmunes a la Psicología.
     name_i18n:
-      es: Marcas de Solkan (variante Sacerdote de Guerra)
+      es: Marcas de Solkan (Variante Sacerdote de Guerra)
   source_refs:
-  - manual: Liber Malefic (Miracle Workers, Werekin)
+  - manual: liber-malefic
     printed_page: 16
     section: Priests for Every Occasion / Priest of Verena
     url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  experience: 12

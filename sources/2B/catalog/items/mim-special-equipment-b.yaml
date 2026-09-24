@@ -45,7 +45,6 @@ items:
     printed_page: 2
     section: Special equipment / Greenwood scythe
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen%20Guard.pdf
-  rarity: Rare 10
   combat_status: out_of_scope
 - id: iron_bark
   kind: armour
@@ -60,7 +59,6 @@ items:
     printed_page: 2
     section: Special equipment / Iron bark
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen%20Guard.pdf
-  rarity: Rare 5
   combat_status: out_of_scope
 - id: horn_of_the_wild_hunt
   kind: combat-equipment
@@ -69,12 +67,12 @@ items:
     es: Cuerno de la Cacería Salvaje
   effect: >-
     Before each battle the Branch Nymph may take a Leadership test to blow the horn. If they are
-    successful, roll on the table below; these animals will fight for the warband and leave once
-    the battle has finished; they do not count towards your rout test or warband max. D6: 1 nothing
+    successful, roll on the table below; these animals will fight for the warband and leave once the
+    battle has finished; they do not count towards your rout test or warband max. D6: 1 nothing
     answers the call; 2 D3+1 Hunting Hounds appear; 3 a Tiger joins the battle; 4 a Bear joins the
     battle; 5 a Great Stag joins the battle; 6 a Great Eagle joins. 120 gold crowns (description,
-    printed page 2) vs 110 gc (equipment list) — preserving the source discrepancy. Rare 12
-    (Branch Nymph only).
+    printed page 2) vs 110 gc (equipment list) — preserving the source discrepancy. Rare 12 (Branch
+    Nymph only).
   source_refs:
   - manual: broheim.net
     printed_page: 2
@@ -84,7 +82,177 @@ items:
     printed_page: 2
     section: Fen Guard Miscellaneous Equipment / Horn of the Wild Hunt
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen%20Guard.pdf
-  rarity: Rare 12
+  combat_status: out_of_scope
+# Animals of the Hunt (Fen Guard, printed page 064): the creatures the Horn of the Wild
+# Hunt may call. They are not purchasable equipment, so they carry no cost or rarity;
+# the profiles and printed special rules are kept verbatim from the source section.
+- id: hunting_hounds
+  kind: out-of-scope
+  name: Hunting Hounds
+  name_i18n:
+    es: Sabuesos de Caza
+  effect: >-
+    Profile M 6, WS 4, BS 0, S 4, T 3, W 1, I 4, A 1, Ld 10. Weapons/armour: Jaws and brutality! War
+    hounds never use or need weapons and armour. Called by the Horn of the Wild Hunt: on a result of
+    2 on the Horn's table D3+1 Hunting Hounds appear. Animals: War hounds are animals and thus do
+    not gain experience.
+  effect_i18n:
+    es: >-
+      Perfil M 6, HA 4, HP 0, F 4, R 3, H 1, I 4, A 1, L 10. Armas/armadura: ¡Fauces y brutalidad!
+      Los sabuesos de guerra nunca usan ni necesitan armas ni armadura. Llamados por el Cuerno de la
+      Cacería Salvaje: con un resultado de 2 en la tabla del Cuerno aparecen 1D3+1 Sabuesos de Caza.
+      Animales: Los sabuesos de guerra son animales y por tanto no ganan experiencia.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 6
+    section: Animals of the Hunt / Hunting Hounds
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen%20Guard.pdf
+  combat_status: out_of_scope
+- id: bear_of_the_hunt
+  kind: out-of-scope
+  name: Bear
+  name_i18n:
+    es: Oso
+  effect: >-
+    Profile M 6, WS 3, BS 0, S 5, T 5, W 2, I 2, A 2, Ld 6. Special rules: Trained, Fear, Bear Hug,
+    Fiercely Loyal, Woodland Dwelling, Animal. Called by the Horn of the Wild Hunt: on a result of 4
+    on the Horn's table a Bear joins the battle. Bear Hug: If the Bear hits the same enemy warrior
+    with both of his attacks in the same round of combat, the player may choose to make a single
+    Bear Hug attack instead of resolving the attacks normally. If this option is chosen, each player
+    must roll a D6 and add his model's Strength to the roll. If the Bear's total is higher or the
+    totals are equal, the opposing warrior takes a single automatic wound with no armour save
+    allowed. If the enemy warrior's total is higher, the warrior has broken the Bear's hold and
+    suffers no damage from the attack. Woodland Dwelling: Bears suffer no movement penalty for
+    moving through wooded areas.
+  effect_i18n:
+    es: >-
+      Perfil M 6, HA 3, HP 0, F 5, R 5, H 2, I 2, A 2, L 6. Reglas especiales: Adiestrado, Miedo,
+      Abrazo de Oso, Ferozmente Leal, Morador del Bosque, Animal. Llamado por el Cuerno de la
+      Cacería Salvaje: con un resultado de 4 en la tabla del Cuerno un Oso se une a la batalla.
+      Abrazo de Oso: Si el Oso impacta al mismo guerrero enemigo con sus dos ataques en la misma
+      ronda de combate, el jugador puede elegir hacer un único ataque de Abrazo de Oso en lugar de
+      resolver los ataques normalmente. Si se elige esta opción, cada jugador debe tirar 1D6 y sumar
+      la Fuerza de su miniatura a la tirada. Si el total del Oso es mayor o los totales son iguales,
+      el guerrero enemigo sufre una herida automática sin salvación por armadura. Si el total del
+      guerrero enemigo es mayor, este ha roto el agarre del Oso y no sufre daño por el ataque.
+      Morador del Bosque: Los Osos no sufren penalización de movimiento al atravesar zonas boscosas.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 6
+    section: Animals of the Hunt / Bear
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen%20Guard.pdf
+  combat_status: out_of_scope
+- id: sabre_toothed_tiger
+  kind: out-of-scope
+  name: Sabre Toothed Tiger
+  name_i18n:
+    es: Tigre de Dientes de Sable
+  effect: >-
+    Profile M 7, WS 4, BS 0, S 5, T 4, W 2, I 6, A 3, Ld 4 (printed as "Big Cat"). Special rules:
+    Fear, Animal. Called by the Horn of the Wild Hunt: on a result of 3 on the Horn's table a Tiger
+    joins the battle.
+  effect_i18n:
+    es: >-
+      Perfil M 7, HA 4, HP 0, F 5, R 4, H 2, I 6, A 3, L 4 (impreso como «Big Cat»). Reglas
+      especiales: Miedo, Animal. Llamado por el Cuerno de la Cacería Salvaje: con un resultado de 3
+      en la tabla del Cuerno un Tigre se une a la batalla.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 6
+    section: Animals of the Hunt / Sabre Toothed Tiger
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen%20Guard.pdf
+  combat_status: out_of_scope
+- id: great_stag
+  kind: out-of-scope
+  name: Great Stag
+  name_i18n:
+    es: Gran Ciervo
+  effect: >-
+    Profile M 8, WS 4, BS 0, S 4, T 4, W 2, I 6, A 2, Ld 10. Special rules: Fear, Animal, Forest
+    Walk, Thunderous Charge. Called by the Horn of the Wild Hunt: on a result of 5 on the Horn's
+    table a Great Stag joins the battle. Thunderous Charge: A charging Great Stag is a terrifying
+    sight, the ground itself trembling as the Forest Lord thunders into the ranks of their foe. On
+    any turn when a Great Stag charges more than 8", he causes D3 impact hits at the basic strength
+    of the Stag.
+  effect_i18n:
+    es: >-
+      Perfil M 8, HA 4, HP 0, F 4, R 4, H 2, I 6, A 2, L 10. Reglas especiales: Miedo, Animal, Paso
+      del Bosque, Carga Atronadora. Llamado por el Cuerno de la Cacería Salvaje: con un resultado de
+      5 en la tabla del Cuerno un Gran Ciervo se une a la batalla. Carga Atronadora: Un Gran Ciervo
+      que carga es una visión aterradora, el propio suelo tiembla cuando el Señor del Bosque irrumpe
+      entre las filas de su enemigo. En cualquier turno en el que un Gran Ciervo cargue más de 8",
+      causa 1D3 impactos a la Fuerza básica del Ciervo.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 6
+    section: Animals of the Hunt / Great Stag
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen%20Guard.pdf
+  combat_status: out_of_scope
+- id: great_eagle
+  kind: out-of-scope
+  name: Great Eagle
+  name_i18n:
+    es: Gran Águila
+  effect: >-
+    Profile M 4, WS 4, BS 0, S 4, T 4, W 3, I 2, A 2, Ld 6. Called by the Horn of the Wild Hunt: on
+    a result of 6 on the Horn's table a Great Eagle joins the battle. Flying Charge: A Great Eagle
+    may fly up to 16". Any model a Great Eagle comes into contact with while flying is considered
+    charged. Models that are stunned or knocked down cannot be charged as it is too difficult for
+    the Great Eagle to fly that close to the ground. Aerial Escape: Great Eagles circle their prey
+    before swooping in and remain in the air while harrying a foe. This makes them harder to hit.
+    Only a warrior with sharp enough reflexes or a long pointy weapon stands a chance of pinning a
+    Great Eagle down! If the charged model strikes first then resolve combat as normal. Otherwise
+    after the Great Eagle attacks it retreats immediately to a lofty position within 2D6" before the
+    charged model reacts. Similarly to escaping from combat, the Great Eagle receives an automatic
+    hit from its opponent (see page 161 of the Mordheim rulebook) unless it passes a Leadership
+    test. Drop Attack: If a Great Eagle is successful with both attacks in the first round of combat
+    then the Great Eagle has successfully grabbed on to her enemy and swoops back up in the air to
+    drop the model, allowing gravity to do the work instead! The attacks themselves do not wound but
+    instead roll a D6 and a scatter dice. That is the distance and direction from the place where
+    the attack took place that the model was dropped. Roll another D6 to determine a height from
+    which the model falls. Falling models take D3 hits at a Strength equal to the height. If a model
+    falls into a building then count the fall to where they land and then determine if the model
+    falls again if it is within 1" of the platform edge. Any model that is struck by the dropped
+    model suffers a Strength 3 hit. Large targets may only be dropped D3" due to weight. After
+    dropping a model the Great Eagle retreats 2D6" to the nest or nearby rooftop. Talons: Creatures
+    with talons are accustomed to fighting unarmed. Grounded: After the combat phase if a Great
+    Eagle has been unable to flee for any reason the model is assumed to have landed and may be
+    charged. While on the ground, a Great Eagle uses its movement characteristic and may only fly
+    again when able to.
+  effect_i18n:
+    es: >-
+      Perfil M 4, HA 4, HP 0, F 4, R 4, H 3, I 2, A 2, L 6. Llamada por el Cuerno de la Cacería
+      Salvaje: con un resultado de 6 en la tabla del Cuerno una Gran Águila se une a la batalla.
+      Carga en Vuelo: Una Gran Águila puede volar hasta 16". Cualquier miniatura con la que entre en
+      contacto mientras vuela se considera cargada. Las miniaturas aturdidas o derribadas no pueden
+      ser cargadas, pues es demasiado difícil para la Gran Águila volar tan cerca del suelo. Escape
+      Aéreo: Las Grandes Águilas circulan sobre su presa antes de abatirse sobre ella y permanecen
+      en el aire mientras hostigan al enemigo. Esto las hace más difíciles de impactar. ¡Solo un
+      guerrero con reflejos lo bastante rápidos o con un arma larga y puntiaguda tiene alguna
+      posibilidad de inmovilizar a una Gran Águila! Si la miniatura cargada golpea primero, resuelve
+      el combate con normalidad. En caso contrario, tras atacar la Gran Águila se retira de
+      inmediato a una posición elevada a 2D6" antes de que reaccione la miniatura cargada. De forma
+      similar a escapar de un combate, la Gran Águila recibe un impacto automático de su oponente
+      (ver página 161 del reglamento de Mordheim) a menos que supere un chequeo de Liderazgo. Ataque
+      en Picado: Si una Gran Águila tiene éxito con ambos ataques en la primera ronda de combate, ha
+      agarrado a su enemigo y remonta el vuelo para dejarlo caer, ¡dejando que la gravedad haga el
+      trabajo! Los ataques en sí no hieren; en su lugar tira 1D6 y un dado de dispersión. Esa es la
+      distancia y dirección, desde el lugar donde se produjo el ataque, a la que se dejó caer a la
+      miniatura. Tira otro 1D6 para determinar la altura desde la que cae. Las miniaturas que caen
+      reciben 1D3 impactos a una Fuerza igual a la altura. Si una miniatura cae dentro de un
+      edificio, cuenta la caída hasta donde aterriza y luego determina si vuelve a caer si está a 1"
+      del borde de la plataforma. Cualquier miniatura golpeada por la miniatura que cae sufre un
+      impacto de Fuerza 3. Las miniaturas grandes solo pueden dejarse caer 1D3" debido a su peso.
+      Tras dejar caer a una miniatura, la Gran Águila se retira 2D6" al nido o a un tejado cercano.
+      Garras: Las criaturas con garras están acostumbradas a luchar sin armas. En Tierra: Después de
+      la fase de combate, si una Gran Águila no ha podido huir por cualquier motivo, se considera
+      que ha aterrizado y puede ser cargada. Mientras está en tierra, una Gran Águila usa su
+      característica de movimiento y solo puede volver a volar cuando le sea posible.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 6
+    section: Animals of the Hunt / Great Eagle
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen%20Guard.pdf
   combat_status: out_of_scope
 - id: magic_acorn
   kind: combat-equipment
@@ -107,7 +275,6 @@ items:
     printed_page: 2
     section: Fen Guard Miscellaneous Equipment / Magic Acorn
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Fen%20Guard.pdf
-  rarity: Rare 15
   combat_status: out_of_scope
 - id: steel_cloth
   kind: armour
@@ -131,14 +298,13 @@ items:
     es: Capa del Ladrón
   effect: >-
     Thieves wear cloaks that help them blend in with their surroundings and can disguise them very
-    well in both the desert and the towns. The distance required to spot a warrior wearing a
-    Thief's cloak when hidden is doubled. 15 gold crowns, Rare 9.
+    well in both the desert and the towns. The distance required to spot a warrior wearing a Thief's
+    cloak when hidden is doubled. 15 gold crowns, Rare 9.
   source_refs:
   - manual: broheim.net
     printed_page: 2
     section: Low Kings special equipment / Thief's cloak
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low%20Kings.pdf
-  rarity: Rare 9
   combat_status: out_of_scope
 - id: fences_iron_strongbox
   kind: combat-equipment
@@ -146,18 +312,17 @@ items:
   name_i18n:
     es: Caja Fuerte de Hierro del Receptor
   effect: >-
-    The strongbox has a hidden compartment providing storage space for a fence to smuggle goods
-    past watch patrols and excise men. One item can be concealed inside the iron strongbox; a
-    wyrdstone item can be sealed in this way, meaning its hazardous side-effects may be ignored by
-    the bearer. The strongbox never leaves the possession of the warband but it cannot be used
-    unless the warband includes a Fence. Two models are required to move the strongbox. 30 gold
-    crowns, Rare 10 (Fence only).
+    The strongbox has a hidden compartment providing storage space for a fence to smuggle goods past
+    watch patrols and excise men. One item can be concealed inside the iron strongbox; a wyrdstone
+    item can be sealed in this way, meaning its hazardous side-effects may be ignored by the bearer.
+    The strongbox never leaves the possession of the warband but it cannot be used unless the
+    warband includes a Fence. Two models are required to move the strongbox. 30 gold crowns, Rare 10
+    (Fence only).
   source_refs:
   - manual: broheim.net
     printed_page: 2
     section: Low Kings special equipment / Fence's iron strongbox
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low%20Kings.pdf
-  rarity: Rare 10
   combat_status: out_of_scope
 - id: knuckledusters
   kind: close-combat-weapon
@@ -178,7 +343,6 @@ items:
     printed_page: 2
     section: Low Kings special equipment / Knuckledusters
     url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Low%20Kings.pdf
-  rarity: Rare 6
   combat_status: out_of_scope
 - id: wild_mountain_goat
   kind: out-of-scope

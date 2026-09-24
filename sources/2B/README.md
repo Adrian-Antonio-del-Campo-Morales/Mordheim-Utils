@@ -8,6 +8,11 @@ La fuente de alcance es la página de Broheim:
 
 - <https://broheim.net/warbands.html>
 
+**Herramientas:** todo el utillaje de ingesta vive junto en `tools/ingestion/` (temporal:
+se borra cuando la fase termine). Inventario, caches y órdenes en
+`tools/ingestion/README.md`; los guards que se quedan en la KB, en
+`docs/reference/knowledge-base.md`.
+
 En la fecha de elaboración, la categoría contiene 60 entradas. El inventario debe tratarse
 como una fotografía revisable: si Broheim cambia el listado, el cambio se registra como una
 nueva revisión del inventario y no se mezcla silenciosamente con el trabajo en curso.
@@ -47,9 +52,29 @@ sources/2B/
 │           └── special-rules.yaml
 └── catalog/
     ├── items/                        objetos nuevos aún no promovidos
+    ├── hirelings/                    Hired Swords en forma KB (los de grado 2b)
+    │   └── dramatis-personae/        Dramatis Personae del pack, forma del catálogo KB
+    ├── magic-2b.yaml                 listas de hechizos y plegarias de 2B
+    ├── hired-swords-and-dramatis-2b.yaml  tarifa, upkeep y elegibilidad de contratación
     ├── skills/                       habilidades nuevas aún no promovidas
-    └── rules/                        reglas compartidas candidatas, tras revisión
+    ├── rules/                        reglas compartidas candidatas, tras revisión
+    └── trading-post-2b.yaml          mercado de esos objetos, forma del trading-post KB
 ```
+
+El **catálogo de mercado** (`catalog/trading-post-2b.yaml`) es el destino KB del precio,
+la rareza y la restricción de compra de cada objeto, con una entrada por objeto en la forma
+de `sources/knowledge/catalog/campaign/trading-post.yaml`; lo genera
+`tools/ingestion/normalize_staging_for_promotion.py` (idempotente).
+
+Los **hirelings** siguen la misma división que la KB: un Hired Sword es su perfil
+(`hirelings/*.yaml`, forma de `catalog/hirelings/hired-swords/`) y su **lado de campaña**
+—tarifa, upkeep, disponibilidad y elegibilidad— es una entrada de
+`catalog/hired-swords-and-dramatis-2b.yaml` que apunta al perfil con `profile_id`; la
+regla impresa de contratación viaja verbatim en `eligibility.note`. Los Dramatis Personae
+van a su propio catálogo, y los perfiles que la fuente solo *nombra* se publican allí como
+`out_of_scope` con la razón. Los sacerdotes de *Miracle Workers* son Hired Swords del
+capítulo (`kind: hired-sword`), con `experience` inicial y sus plegarias como filas de
+`campaign/magic.yaml`. Lo aplica el pase `hirelings`.
 
 Cada paquete de banda debe tener los cuatro YAML. La ausencia de un documento no significa
 que la información no exista: significa que la transcripción está incompleta y no se puede
@@ -303,14 +328,14 @@ Antes de promocionar, ejecutar estas comprobaciones disponibles actualmente:
 ```text
 python tools/format_yaml.py --check sources/2B
 python tools/normalize_names.py --check sources/2B
-python tools/knowledge/audit_2b.py            # re-verificación contra los PDFs de origen
+python tools/ingestion/audit_2b.py            # re-verificación contra los PDFs de origen
 python tools/knowledge/audit_kb_conformance.py --tree 2B
 python -m pytest tests/knowledge -q
 ```
 
 ### Verificación contra fuentes
 
-`tools/knowledge/audit_2b.py` contrasta cada paquete con el PDF que lo originó: nombres y
+`tools/ingestion/audit_2b.py` contrasta cada paquete con el PDF que lo originó: nombres y
 costes de perfil, experiencia inicial, composición del roster, oro inicial, y nombre y precio
 de **cada** fila de equipo. Evalúa dos formas de extracción por documento (texto cacheado y
 `pdftotext -layout`), reconoce las divisas de cada suplemento y contrasta las listas que el
@@ -320,12 +345,25 @@ herramienta aplica (redacción impresa distinta del nombre canónico, filas adju
 listas delegadas al reglamento) están declarados en el propio fichero con su motivo, y
 resumidos en `discrepancy-verdicts.md` con la evidencia de cada caso.
 
+Los **hirelings y Dramatis Personae** tienen su propio cotejo, `check_2b_hirelings.py`: lee
+cada entrada impresa por geometría de página (columna izquierda y luego derecha, para que la
+tarifa y el rating del vecino no cuenten) y compara tarifa —importe y divisa—, fila de
+stats, rating y presencia de reglas contra el perfil y su entrada de campaña. Imprime la
+cobertura por chequeo y la adjudicación de sus siete hallazgos está en
+`discrepancy-verdicts.md` §13.
+
+El cotejo comparte con el de los Dramatis Personae de 2A (`check_2a_dramatis.py`) el lector
+de entradas impresas (`printed_entries.py`), que es donde viven la lectura por geometría —de
+las coordenadas de las palabras en el PDF y de la estructura del documento en la página
+web—, la comparación de divisa y la cobertura por chequeo; cada driver sólo resuelve qué
+fuente imprime a cada personaje y qué adjudica su árbol.
+
 Además, la herramienta de staging que se implemente como parte de este plan deberá exponer
 al menos estas operaciones:
 
 ```text
-python tools/knowledge/ingest_2b.py report
-python tools/knowledge/ingest_2b.py validate
+python tools/ingestion/ingest_2b.py report
+python tools/ingestion/ingest_2b.py validate
 ```
 
 El informe de traducción existente (`tools/band_translation_status.py`) actualmente está

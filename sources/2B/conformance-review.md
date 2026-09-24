@@ -18,7 +18,7 @@ Tres comprobaciones de solo lectura, ejecutables sobre el staging:
 |---|---|
 | `build/cache/2b-sources/conform_audit_2b.py` | claves de `band.yaml`, gramática y runtime de reglas, tuplas de perfil, claves de `equipment-access` |
 | `build/cache/2b-sources/conform_keys_2b.py` | formas anidadas KB vs 2B: tipos de perfil, juegos de claves de `characteristics`, claves de `roster`, tuplas de miembro, `applies_to` |
-| `tools/knowledge/ingest_2b.py validate` | guardas permanentes (abajo) |
+| `tools/ingestion/ingest_2b.py validate` | guardas permanentes (abajo) |
 
 ## Desviaciones encontradas y corregidas
 

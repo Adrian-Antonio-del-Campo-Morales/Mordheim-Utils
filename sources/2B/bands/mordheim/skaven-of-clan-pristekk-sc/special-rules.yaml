@@ -16,7 +16,7 @@ rules:
   name: Countless
   effect: Giant rats may increase the Clan Pristekk warband's numbers up to 20.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: Giant rats / Special Rules / Countless
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
@@ -39,7 +39,7 @@ rules:
         Deferred subsystem: psychology.
   name: Leader
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 3
     section: 1 Chieftain / Special Rules / Leader
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
@@ -65,7 +65,7 @@ rules:
     A Clan Pristekk Sorcerer is a wizard and uses the Magic of the Horned Rat. See the Magic section
     for details.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 3
     section: 0-1 Clan Pristekk sorcerer / Special Rules / Wizard
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
@@ -93,7 +93,7 @@ rules:
   name: Countless
   effect: Giant rats may increase the warband's numbers up to 20.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: Giant rats / Special Rules / Countless
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
@@ -119,7 +119,7 @@ rules:
   name: Animals
   effect: Giant rats are animals and do not gain experience.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: Giant rats / Special Rules / Animals
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
@@ -145,7 +145,7 @@ rules:
   name: Fear
   effect: Rat Ogres are so frightening they cause fear.
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: 0-2 Rat ogres / Special Rules / Fear
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
@@ -169,7 +169,7 @@ rules:
         Deferred subsystem: psychology or mounts.
   name: Stupidity
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: 0-2 Rat ogres / Special Rules / Stupidity
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
@@ -192,7 +192,7 @@ rules:
         Out of scope: campaign, shooting, movement, terrain, deployment, or non-duel context.
   name: Experience
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: 0-2 Rat ogres / Special Rules / Experience
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
@@ -215,7 +215,7 @@ rules:
         Out of scope: shooting.
   name: Large Target
   source:
-    manual: Broheim
+    manual: broheim.net
     printed_page: 4
     section: 0-2 Rat ogres / Special Rules / Large Target
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
@@ -225,3 +225,64 @@ rules:
     profile_ids:
     - rat-ogres
   rule_ref: shared-rule.large-target
+- id: band--skill-mutating-experiment
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.skaven-of-clan-pristekk-sc.band.mutating-experiment
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: rolling on the Stygian Mutation Chart is an advancement-time interaction with the
+        mutation subsystem. Chieftain and Packmaster only.
+  name: Mutating Experiment
+  effect: >-
+    Chieftain & Packmaster only, may be chosen multiple times. This hero may force any of your heroes
+    (including himself) immediately to roll on the Stygian Mutation Chart. You may re-roll one of the
+    dice involved in the D66 once.
+  source:
+    manual: broheim.net
+    printed_page: 2
+    section: Special skills / Mutating Experiment
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
+  name_i18n:
+    es: Experimento Mutante
+  effect_i18n:
+    es: >-
+      Solo Jefe y Maestro de Manadas, puede elegirse varias veces. Este héroe puede obligar a cualquiera
+      de tus héroes (incluido él mismo) a tirar de inmediato en la Tabla de Mutaciones Estigias. Puedes
+      repetir una de las tiradas del D66 una vez.
+  applies_to:
+    band: true
+- id: band--skill-thing-handler
+  kind: warband_skill
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: selectable
+    effects:
+    - id: unimplemented.skaven-of-clan-pristekk-sc.band.thing-handler
+      scope: 'NO'
+      binding: null
+      reason: >-
+        Out of scope: lending Leadership to animal henchmen inside 6" is a Leadership-range interaction.
+  name: Thing Handler
+  effect: >-
+    This Skaven has a beneficial effect on the animals under his care. Any Giant rats, Rat Ogres and
+    converted Things may use his Leadership provided he is within 6".
+  source:
+    manual: broheim.net
+    printed_page: 2
+    section: Special skills / Thing handler
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan Pristekk.pdf
+  name_i18n:
+    es: Cuidador de Cosas
+  effect_i18n:
+    es: >-
+      Este Skaven tiene un efecto beneficioso sobre los animales a su cargo. Cualquier Rata Gigante, Ogro
+      Rata o Cosa convertida puede usar su Liderazgo siempre que esté a 6" o menos.
+  applies_to:
+    band: true
