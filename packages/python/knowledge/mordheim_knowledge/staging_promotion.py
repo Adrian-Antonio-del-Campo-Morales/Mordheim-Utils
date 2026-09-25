@@ -43,6 +43,7 @@ from __future__ import annotations
 
 import re
 from collections import Counter
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Iterable, Iterator
@@ -50,6 +51,7 @@ from typing import Any, Iterable, Iterator
 import yaml
 
 from mordheim_knowledge import open_field_normalization as lexical
+from mordheim_knowledge.editorial_schemas import validate_document
 
 CHECKOUT = lexical.CHECKOUT
 STAGING_TREES = lexical.STAGING_TREES
@@ -96,6 +98,10 @@ ITEM_KINDS: dict[str, str] = {
     # 2A — ammunition is an upgrade of the missile weapon, as the KB keeps
     # `hunting_arrows` and the other ammunition entries.
     "blessed_bolts": "material-or-upgrade",
+    # 2B — the harpoon is printed in the Missile Weapons sections and its own
+    # text calls it a thrown javelin, so the staged `close-combat-weapon` is
+    # wrong; the reclassification is the declared correction of T04 (§A.8).
+    "harpoon": "ranged-weapon",
 }
 
 #: Item keys the KB item record does not have; their facts move to the staged
@@ -1091,3 +1097,807 @@ def run(passes: Iterable[str] | None = None) -> Report:
             elif name == "shape":
                 _merge(report, shape_pass(tree))
     return report
+
+
+# --------------------------------------------------------------------------- #
+# Promotion: the staged catalogues merged into the knowledge base
+# --------------------------------------------------------------------------- #
+#
+# The passes above give the staged trees the *shape* of the knowledge base. The
+# promotion is the second half: it reads that shape, decides what each record
+# does when it meets the KB (the decisions of T04, as tables here) and merges it
+# into a destination root. A destination is any directory that mirrors
+# ``sources/knowledge``; its first run reads the KB as the base of every document
+# it merges into, so a temporary root is a faithful "KB after the promotion",
+# and the second run reads what the first wrote and therefore changes nothing.
+#
+# Two rules keep it honest:
+#
+# * **Nothing is written without being asked.** A preview computes the whole
+#   promotion and writes nothing; writing needs an explicit destination, and
+#   then each document is validated against the schema of its KB family and
+#   formatted by the canonical formatter.
+# * **A collision nobody declared stops the promotion.** The tables below are
+#   the *only* reasons a staged id may meet an existing KB id; anything else
+#   would overwrite a published record, so the promotion refuses it instead.
+
+#: The knowledge base document a promoted record of each item kind joins. The KB
+#: keeps one file per kind, which is what makes the destination of a new record
+#: mechanical rather than another editorial decision (``miscellaneous.yaml`` is
+#: the KB's own legacy bucket and is never a promotion target).
+ITEM_FILES: dict[str, str] = {
+    "armour": "catalog/items/armour.yaml",
+    "close-combat-weapon": "catalog/items/weapons-close-combat.yaml",
+    "ranged-weapon": "catalog/items/weapons-ranged.yaml",
+    "shield-or-defence": "catalog/items/shields-and-defences.yaml",
+    "combat-equipment": "catalog/items/combat-equipment.yaml",
+    "material-or-upgrade": "catalog/items/materials-and-upgrades.yaml",
+    "out-of-scope": "catalog/items/out-of-scope.yaml",
+    "trollheim-equipment": "catalog/items/trollheim.yaml",
+}
+
+#: Staged item id -> KB item id. The KB entry survives, the staged row is not
+#: published, its provenance joins the KB record and the band lists re-point to
+#: the KB id (T04 §A.7 and the at-promotion table of the merge notes).
+ITEM_REDIRECTS: dict[str, str] = {
+    "dueling_pistol": "duelling_pistol",
+    "dragon_cloak": "sea_dragon_cloak",
+    "elven_bow": "elf_bow",
+    "rope_and_hook": "rope_hook",
+    "throwing_axe_sar": "throwing_axe",
+    "throwing_knife": "throwing_knives",
+    "wardog": "warhound",
+}
+
+#: Staged item id -> KB item id: one printed item the KB already holds, so the KB
+#: record survives and the staged definition is dropped with its provenance
+#: folded in. Kept apart from the redirects because both spell the same item,
+#: while a redirect resolves a *name* difference.
+ITEM_MERGES: dict[str, str] = {
+    "horsemans_hammer": "horsemans_hammer",
+    "hunting_arrows": "hunting_arrows",
+}
+
+#: Staged items the KB keeps under a related but different printed record: same
+#: broad concept, different rules, so both are published (T04 §3.1).
+ITEM_VARIANTS: tuple[str, ...] = (
+    "repeater_pistol_moh",  # 8" + Too Much Tinkering against the KB 6" pistol
+    "shield_of_sigmar",  # 6+ save against the KB trading-post shield
+    "society_familiar",  # companion bestiary against the KB ritual familiar
+    "warplock_pistol",  # MiM Range 6"/S4 against the KB Warp Pistol Range 8"/S5
+    "wolf_cloak",  # no printed effect against the KB Middenheim hunt cloak
+)
+
+#: A staged market entry whose KB-convention id (`campaign.trading-post.<item
+#: id>`) is already claimed by the entry of a *different* item. The variant
+#: entry qualifies its id with the source, which is the shape the KB itself uses
+#: for a second entry of one item (`campaign.trading-post.pike.tileans`,
+#: `campaign.trading-post.ostlander-double-barrelled-pistol`); no published
+#: record is renamed and no price moves.
+MARKET_ENTRY_QUALIFIERS: dict[str, str] = {
+    # The KB entry `campaign.trading-post.warplock-pistol` belongs to `warp_pistol`
+    # ("Warp Pistol", Range 8", S5, rare 11), while the staged `warplock_pistol`
+    # is the Mutiny in Marienburg printing (Range 6", S4, 35 gc, common to the
+    # Metal Mongers list). T05 finding: 26 KB entry ids already break the
+    # convention, so the qualifier — not a rename of the KB record — is the
+    # smaller change.
+    "warplock_pistol": "mim",
+}
+
+#: ``staged item id -> (action, KB item id)``: every declared collision, in one
+#: table, so the refusal list and the preview read the same decision.
+ITEM_DECISIONS: dict[str, tuple[str, str]] = {
+    **{key: ("redirect", value) for key, value in ITEM_REDIRECTS.items()},
+    **{key: ("merge", value) for key, value in ITEM_MERGES.items()},
+}
+
+MARKET_DOCUMENT = "catalog/campaign/trading-post.yaml"
+MAGIC_DOCUMENT = "catalog/campaign/magic.yaml"
+CAMPAIGN_DOCUMENT = "catalog/campaign/hired-swords-and-dramatis.yaml"
+
+#: ``KB family -> the grade-2b document the promoted profiles join``.
+HIRELING_DOCUMENTS: dict[str, str] = {
+    "hired-swords": "catalog/hirelings/hired-swords/grade-2b.yaml",
+    "dramatis-personae": "catalog/hirelings/dramatis-personae/grade-2b.yaml",
+}
+HIRELING_CATALOGUES: dict[str, str] = {
+    "hired-swords": "hirelings-hired-swords",
+    "dramatis-personae": "hirelings-dramatis-personae",
+}
+
+#: The schema every document a promotion writes answers to.
+PROMOTED_SCHEMAS: dict[str, str] = {
+    MARKET_DOCUMENT: "campaign-trading-post.yaml.schema.json",
+    MAGIC_DOCUMENT: "campaign-magic.yaml.schema.json",
+    CAMPAIGN_DOCUMENT: "campaign-hired-swords-and-dramatis.yaml.schema.json",
+    **{value: "catalog-items.yaml.schema.json" for value in ITEM_FILES.values()},
+    **{value: "hireling-profile-hired-sword.yaml.schema.json" for value in (HIRELING_DOCUMENTS["hired-swords"],)},
+    **{value: "hireling-profile-dramatis-personae.yaml.schema.json" for value in (HIRELING_DOCUMENTS["dramatis-personae"],)},
+}
+
+#: Staged documents the promotion never publishes, with the reason.
+PROMOTED_EXCLUSIONS: dict[str, str] = {
+    "catalog/items/missing-item-stubs.yaml": (
+        "an empty helper of the ingestion flow; its stubs are already resolved in their "
+        "definitive catalogues (staging_contract_audit.NOT_PROMOTED)"
+    ),
+    "bands/**": (
+        "band packages keep their own promotion step; the item redirects below are the "
+        "reference list that step re-points"
+    ),
+}
+
+#: The staged families of the promotion preview, in reporting order.
+PROMOTION_FAMILIES: tuple[str, ...] = ("items", "market", "magic", "hirelings", "bands")
+
+ACTION_NEW = "new"
+ACTION_MERGE = "merge"
+ACTION_VARIANT = "variant"
+ACTION_REDIRECT = "redirect"
+ACTION_EXCLUDE = "exclude"
+ACTION_CONFLICT = "conflict"
+ACTION_PRESENT = "already-promoted"
+
+STAGED_KEYS: tuple[str, ...] = (
+    "items",
+    "market",
+    "lores",
+    "assignments",
+    "hired_swords",
+    "dramatis",
+    "campaign_hired",
+    "campaign_dramatis",
+)
+
+
+class PromotionRefused(Exception):
+    """The promotion met a collision the editorial tables do not declare."""
+
+
+@dataclass(frozen=True)
+class Action:
+    """What the promotion does with one staged record."""
+
+    family: str
+    source_id: str
+    action: str
+    destination: str
+    detail: str = ""
+
+    def as_dict(self) -> dict[str, str]:
+        return {
+            "family": self.family,
+            "source_id": self.source_id,
+            "action": self.action,
+            "destination": self.destination,
+            "detail": self.detail,
+        }
+
+
+@dataclass
+class Promotion:
+    """A promotion: what every record does, and the documents it would write."""
+
+    actions: list[Action] = field(default_factory=list)
+    edits: list[lexical.Edit] = field(default_factory=list)
+    destination: str = "sources/knowledge"
+
+    @property
+    def conflicts(self) -> list[Action]:
+        return [action for action in self.actions if action.action == ACTION_CONFLICT]
+
+    def counts(self) -> dict[str, int]:
+        counted = Counter(action.action for action in self.actions)
+        return {name: counted[name] for name in sorted(counted)}
+
+    def families(self) -> dict[str, dict[str, int]]:
+        """How each staged family fares, which is what a review reads first."""
+        found: dict[str, dict[str, int]] = {}
+        for action in self.actions:
+            found.setdefault(action.family, Counter())[action.action] += 1
+        return {family: dict(found[family]) for family in sorted(found)}
+
+    def as_dict(self) -> dict:
+        return {
+            "destination": self.destination,
+            "counts": self.counts(),
+            "families": self.families(),
+            "files": [edit.path.as_posix() for edit in self.edits],
+            "actions": [action.as_dict() for action in self.actions],
+        }
+
+    def summarise(self) -> str:
+        lines = [f"destination: {self.destination}"]
+        for family, counted in self.families().items():
+            detail = ", ".join(f"{name} {count}" for name, count in sorted(counted.items()))
+            lines.append(f"{family}: {detail}")
+        for action in self.actions:
+            lines.append(f"    [{action.action}] {action.family}/{action.source_id} -> {action.destination} {action.detail}")
+        for edit in self.edits:
+            lines.append(f"would write {edit.path.as_posix()} ({len(edit.changes)} change(s))")
+        return "\n".join(lines)
+
+    def write(self) -> list[Path]:
+        """Write the destination documents, refusing an undeclared collision."""
+        if self.conflicts:
+            raise PromotionRefused(_refusal(self.conflicts))
+        for edit in self.edits:
+            edit.write()
+        return [edit.path for edit in self.edits]
+
+
+def _refusal(conflicts: list[Action]) -> str:
+    detail = "; ".join(f"{action.family}/{action.source_id} ({action.detail})" for action in conflicts)
+    return (
+        "the promotion refuses undeclared collisions with the knowledge base: "
+        f"{detail}. Declare the decision in the tables of staging_promotion "
+        "(ITEM_REDIRECTS, ITEM_MERGES, ITEM_VARIANTS, HIRELING_REDIRECTS) instead."
+    )
+
+
+_STAGED: dict[str, dict[str, list[dict]]] = {}
+
+
+def staged_catalogues(tree: str) -> dict[str, list[dict]]:
+    """The staged records of a tree, already read in their promotion shape.
+
+    Read through the lexical overlay, so a promotion preview sees the staged
+    trees as their normalisation leaves them without writing that normalisation
+    first. The band packages are not read: they keep their own promotion step.
+    """
+    if tree in _STAGED:
+        return _STAGED[tree]
+    from mordheim_knowledge import hireling_promotion
+    from mordheim_knowledge import magic_promotion
+
+    found: dict[str, list[dict]] = {key: [] for key in STAGED_KEYS}
+    for path in _item_catalogues(tree):
+        found["items"].extend(_items(path))
+    market = yaml.safe_load(lexical.read_text(_document_path(tree, MARKET_DOCUMENTS[tree]))) or {}
+    found["market"].extend(market.get("items") or [])
+    relative = magic_promotion.MAGIC_DOCUMENTS.get(tree)
+    if relative is not None:
+        magic = yaml.safe_load(lexical.read_text(_document_path(tree, relative))) or {}
+        found["lores"].extend(magic.get("lores") or [])
+        found["assignments"].extend((magic.get("lore_assignments") or {}).get("rows") or [])
+    if tree in hireling_promotion.CAMPAIGN_DOCUMENTS:
+        for profile in hireling_promotion._staged_profiles(tree):
+            found["hired_swords"].append(hireling_promotion.promoted_hireling_profile(profile))
+        dramatis = yaml.safe_load(
+            lexical.read_text(_document_path(tree, hireling_promotion.DRAMATIS_DOCUMENTS[tree]))
+        ) or {}
+        found["dramatis"].extend(dramatis.get("profiles") or [])
+        campaign = yaml.safe_load(
+            lexical.read_text(_document_path(tree, hireling_promotion.CAMPAIGN_DOCUMENTS[tree]))
+        ) or {}
+        found["campaign_hired"].extend(campaign.get("hired_swords") or [])
+        found["campaign_dramatis"].extend(campaign.get("dramatis_personae") or [])
+    _STAGED[tree] = found
+    return found
+
+
+def clear_staged_cache() -> None:
+    """Forget the staged view, so a changed tree is read again."""
+    _STAGED.clear()
+
+
+@contextmanager
+def promotion_view() -> Iterator[None]:
+    """The staged trees as their normalisation leaves them, written nowhere.
+
+    The passes publish their result to the lexical overlay rather than the disk,
+    so running them is what makes the staged documents readable in their
+    promotion shape. The overlay is restored afterwards: a preview never changes
+    what the rest of the process reads, and never touches a file.
+    """
+    saved = dict(lexical._OVERLAY)
+    try:
+        run()
+        yield
+    finally:
+        lexical._OVERLAY.clear()
+        lexical._OVERLAY.update(saved)
+
+
+# --------------------------------------------------------------------------- #
+# Destination documents
+# --------------------------------------------------------------------------- #
+
+
+def _dump(document: Any) -> str:
+    return yaml.safe_dump(
+        document, allow_unicode=True, sort_keys=False, default_flow_style=False, width=100
+    )
+
+
+def _base_text(root: Path, relative: str) -> str:
+    """The text to merge into: the destination's copy, or the knowledge base's.
+
+    A destination starts empty, so its first promotion reads the KB as the base
+    of every document; its second reads what the first wrote, which is what
+    makes the second pass empty.
+    """
+    path = Path(root) / relative
+    if path.is_file():
+        return lexical.read_text(path)
+    kb = CHECKOUT / KB_ROOT / relative
+    if kb.is_file():
+        return lexical.read_text(kb)
+    return ""
+
+
+def _record_lines(record: dict, ending: str, indent: int = 0) -> list[str]:
+    """One record as a block list item, at the indent of its list key."""
+    body = _dump(record).splitlines()
+    pad = " " * indent
+    child = " " * (indent + 2)
+    block = [f"{pad}- {body[0]}"]
+    block += [f"{child}{line}" if line.strip() else "" for line in body[1:]]
+    return [line + ending for line in block]
+
+
+def _source_ref_lines(ref: dict, ending: str) -> list[str]:
+    """One provenance entry as the KB writes it, two columns under the record."""
+    pad = " " * RECORD_INDENT
+    body = _dump(ref).splitlines()
+    block = [f"{pad}- {body[0]}"]
+    block += [f"{pad}  {line}" if line.strip() else "" for line in body[1:]]
+    return [line + ending for line in block]
+
+
+def _append_records(text: str, key: str, records: list[dict], indent: int = 0) -> str:
+    """Add records at the end of the list a document keeps under ``key``."""
+    lines = lexical.lines(text)
+    ending = lexical.line_ending(lines[0]) if lines else "\n"
+    for index, line in enumerate(lines):
+        if _own_key(line, key, indent):
+            end = _block_end(lines, index, indent)
+            lines[end:end] = [
+                line for record in records for line in _record_lines(record, ending, indent)
+            ]
+            return "".join(lines)
+    raise ValueError(f"the document keeps no {key!r} list at indent {indent}")
+
+
+def _fold_source_refs(text: str, record_id: str, refs: list[dict]) -> str:
+    """Add provenance entries to one record, after the ones it already carries."""
+    lines = lexical.lines(text)
+    ending = lexical.line_ending(lines[0]) if lines else "\n"
+    for start, end in _records(lines):
+        if _record_id(lines[start]) != record_id:
+            continue
+        record = lines[start:end]
+        for index, line in enumerate(record):
+            if _own_key(line, "source_refs", RECORD_INDENT):
+                stop = _block_end(record, index, RECORD_INDENT)
+                record[stop:stop] = [line for ref in refs for line in _source_ref_lines(ref, ending)]
+                lines[start:end] = record
+                return "".join(lines)
+        # The record keeps no provenance yet: the key joins it, before the
+        # `combat_status`/`mechanic_id` envelope the item contract ends with.
+        insert = next(
+            (
+                index
+                for index, line in enumerate(record)
+                if _own_key(line, "combat_status", RECORD_INDENT)
+            ),
+            len(record),
+        )
+        block = [f"{' ' * RECORD_INDENT}source_refs:{ending}"]
+        block += [line for ref in refs for line in _source_ref_lines(ref, ending)]
+        record[insert:insert] = block
+        lines[start:end] = record
+        return "".join(lines)
+    raise ValueError(f"no record {record_id!r} to fold provenance into")
+
+
+@dataclass
+class _Target:
+    """One destination document: its base text and what the promotion adds."""
+
+    root: Path
+    relative: str
+    text: str
+    appended: dict[str, list[dict]] = field(default_factory=dict)
+    folded: dict[str, list[dict]] = field(default_factory=dict)
+
+    def append(self, key: str, records: Iterable[dict], indent: int = 0) -> None:
+        self.appended.setdefault(f"{indent}:{key}", []).extend(records)
+
+    def fold(self, record_id: str, refs: Iterable[dict]) -> None:
+        self.folded.setdefault(record_id, []).extend(refs)
+
+    def result(self) -> str:
+        text = self.text
+        for record_id, refs in self.folded.items():
+            text = _fold_source_refs(text, record_id, refs)
+        for pointer, records in self.appended.items():
+            indent, _, key = pointer.partition(":")
+            text = _append_records(text, key, records, int(indent))
+        return text
+
+
+def _target(targets: dict[str, _Target], root: Path, relative: str) -> _Target:
+    if relative not in targets:
+        targets[relative] = _Target(root, relative, _base_text(root, relative))
+    return targets[relative]
+
+
+def _refs_of(record: dict) -> list[dict]:
+    return [ref for ref in record.get("source_refs") or [] if isinstance(ref, dict)]
+
+
+def _new_refs(existing: list[dict], candidates: list[dict]) -> list[dict]:
+    """The provenance entries a record does not already carry (idempotence)."""
+    known = {_dump(ref) for ref in existing}
+    return [ref for ref in candidates if _dump(ref) not in known]
+
+
+# --------------------------------------------------------------------------- #
+# The staged families, one by one
+# --------------------------------------------------------------------------- #
+
+
+def _item_documents(root: Path) -> list[str]:
+    """Every item document the destination and the KB keep, by relative path."""
+    relatives = {
+        path.relative_to(CHECKOUT / KB_ROOT).as_posix()
+        for path in sorted((CHECKOUT / KB_ROOT / "catalog" / "items").glob("*.yaml"))
+    }
+    root_items = Path(root) / "catalog" / "items"
+    if root_items.is_dir():
+        relatives |= {f"catalog/items/{path.name}" for path in sorted(root_items.glob("*.yaml"))}
+    return sorted(relatives)
+
+
+def _item_index(root: Path) -> dict[str, tuple[str, dict]]:
+    """``item id -> (document, record)`` of every item already published."""
+    found: dict[str, tuple[str, dict]] = {}
+    for relative in _item_documents(root):
+        document = yaml.safe_load(_base_text(root, relative)) or {}
+        for item in document.get("items") or []:
+            found.setdefault(str(item["id"]), (relative, item))
+    return found
+
+
+def _evaluate(
+    record: dict, index: dict[str, tuple[str, dict]], decisions: dict[str, tuple[str, str]]
+) -> tuple[str, str, str, list[dict]]:
+    """``(action, KB id, document, refs to fold)`` of one staged record.
+
+    The declared tables decide; everything else is either a new record or a
+    collision no table declares, and the caller refuses the latter.
+    """
+    source_id = str(record["id"])
+    decision = decisions.get(source_id)
+    if decision is not None:
+        action, target_id = decision
+        existing = index.get(target_id)
+        if existing is None:
+            return ACTION_CONFLICT, target_id, "", []
+        relative, target = existing
+        return action, target_id, relative, _new_refs(_refs_of(target), _refs_of(record))
+    existing = index.get(source_id)
+    if existing is None:
+        return ACTION_NEW, source_id, "", []
+    relative, published = existing
+    if published == record:
+        return ACTION_PRESENT, source_id, relative, []
+    return ACTION_CONFLICT, source_id, relative, []
+
+
+def _promote_items(
+    root: Path,
+    staged: dict[str, list[dict]],
+    actions: list[Action],
+    targets: dict[str, _Target],
+    index: dict[str, tuple[str, dict]],
+) -> None:
+    for item in staged["items"]:
+        record = promoted_item(item)
+        source_id = str(record["id"])
+        action, target_id, relative, refs = _evaluate(record, index, ITEM_DECISIONS)
+        if action == ACTION_CONFLICT:
+            if relative:
+                detail = f"the KB already keeps {target_id!r} with different content"
+            else:
+                detail = f"the KB keeps no item {target_id!r} to fold into"
+            actions.append(Action("items", source_id, action, relative or target_id, detail))
+            continue
+        if action in (ACTION_MERGE, ACTION_REDIRECT):
+            if refs:
+                _target(targets, root, relative).fold(target_id, refs)
+            actions.append(
+                Action(
+                    "items",
+                    source_id,
+                    action,
+                    relative,
+                    f"KB {target_id} survives; {len(refs)} source_ref(s) folded",
+                )
+            )
+            continue
+        if action == ACTION_PRESENT:
+            actions.append(Action("items", source_id, action, relative))
+            continue
+        kind = str(record.get("kind") or "")
+        destination = ITEM_FILES.get(kind)
+        if destination is None:
+            actions.append(Action("items", source_id, ACTION_CONFLICT, kind, "no KB file for the kind"))
+            continue
+        if source_id in ITEM_VARIANTS:
+            action = ACTION_VARIANT
+        _target(targets, root, destination).append("items", [record])
+        index[source_id] = (destination, record)
+        actions.append(Action("items", source_id, action, destination, f"kind {kind}"))
+
+
+def _market_index(root: Path) -> tuple[dict[str, dict], dict[str, dict]]:
+    """``(by entry id, by item id)`` of the market catalogue already published."""
+    document = yaml.safe_load(_base_text(root, MARKET_DOCUMENT)) or {}
+    entries = list(document.get("items") or [])
+    return (
+        {str(entry["id"]): entry for entry in entries},
+        {str(entry["item_id"]): entry for entry in entries if entry.get("item_id")},
+    )
+
+
+def _promote_market(
+    root: Path, staged: dict[str, list[dict]], actions: list[Action], targets: dict[str, _Target]
+) -> None:
+    by_id, by_item = _market_index(root)
+    for entry in staged["market"]:
+        entry_id = str(entry["id"])
+        item_id = str(entry["item_id"])
+        sourced = ""
+        qualifier = MARKET_ENTRY_QUALIFIERS.get(item_id)
+        if qualifier is not None and entry_id in by_id:
+            entry = {**entry, "id": f"{entry_id}-{qualifier}"}
+            entry_id = str(entry["id"])
+            sourced = f" (variant entry, the id of the KB record is taken)"
+        decision = ITEM_DECISIONS.get(item_id)
+        if decision is not None:
+            action, target_item = decision
+            target = by_item.get(target_item)
+            if target is None:
+                actions.append(
+                    Action(
+                        "market",
+                        entry_id,
+                        action,
+                        MARKET_DOCUMENT,
+                        f"the KB keeps no market entry for {target_item}; the band-side price stays band-side",
+                    )
+                )
+                continue
+            refs = _new_refs(_refs_of(target), _refs_of(entry))
+            if refs:
+                _target(targets, root, MARKET_DOCUMENT).fold(str(target["id"]), refs)
+            actions.append(
+                Action(
+                    "market",
+                    entry_id,
+                    action,
+                    MARKET_DOCUMENT,
+                    f"KB entry {target['id']} survives; {len(refs)} source_ref(s) folded",
+                )
+            )
+            continue
+        published = by_id.get(entry_id)
+        if published is not None:
+            if published == entry:
+                actions.append(Action("market", entry_id, ACTION_PRESENT, MARKET_DOCUMENT))
+            else:
+                actions.append(
+                    Action(
+                        "market",
+                        entry_id,
+                        ACTION_CONFLICT,
+                        MARKET_DOCUMENT,
+                        "the KB already publishes this entry with different content",
+                    )
+                )
+            continue
+        _target(targets, root, MARKET_DOCUMENT).append("items", [entry])
+        by_id[entry_id] = entry
+        by_item[item_id] = entry
+        actions.append(Action("market", entry_id, ACTION_NEW, MARKET_DOCUMENT, f"item {item_id}{sourced}"))
+
+
+def _magic_index(root: Path) -> tuple[dict[str, dict], set[tuple]]:
+    """``(lores by id, assignment rows)`` of the magic document already published."""
+    document = yaml.safe_load(_base_text(root, MAGIC_DOCUMENT)) or {}
+    lores = {str(lore["id"]): lore for lore in document.get("lores") or []}
+    rows = {
+        (row.get("wizard"), row.get("profile_id"), row.get("band"), row.get("lore"))
+        for row in (document.get("lore_assignments") or {}).get("rows") or []
+    }
+    return lores, rows
+
+
+def _promote_magic(
+    root: Path, staged: dict[str, list[dict]], actions: list[Action], targets: dict[str, _Target]
+) -> None:
+    lores, rows = _magic_index(root)
+    for lore in staged["lores"]:
+        lore_id = str(lore["id"])
+        published = lores.get(lore_id)
+        if published is not None:
+            if published == lore:
+                actions.append(Action("magic", lore_id, ACTION_PRESENT, MAGIC_DOCUMENT))
+            else:
+                actions.append(
+                    Action(
+                        "magic",
+                        lore_id,
+                        ACTION_CONFLICT,
+                        MAGIC_DOCUMENT,
+                        "the KB already keeps this lore id with different text",
+                    )
+                )
+            continue
+        _target(targets, root, MAGIC_DOCUMENT).append("lores", [lore])
+        lores[lore_id] = lore
+        action = ACTION_NEW
+        actions.append(Action("magic", lore_id, action, MAGIC_DOCUMENT, f"{len(lore.get('spells') or [])} spell(s)"))
+    changes: list[dict] = []
+    for row in staged["assignments"]:
+        key = (row.get("wizard"), row.get("profile_id"), row.get("band"), row.get("lore"))
+        if key in rows:
+            actions.append(Action("magic", str(row.get("wizard")), ACTION_PRESENT, MAGIC_DOCUMENT, f"row {row.get('lore')}"))
+            continue
+        changes.append(row)
+        rows.add(key)
+        actions.append(Action("magic", str(row.get("wizard")), ACTION_NEW, MAGIC_DOCUMENT, f"row {row.get('lore')}"))
+    if changes:
+        _target(targets, root, MAGIC_DOCUMENT).append("rows", changes, 2)
+
+
+def _hireling_index(root: Path) -> tuple[dict[str, dict], dict[str, dict]]:
+    """``(profiles by id, campaign entries by profile id)`` already published."""
+    profiles: dict[str, dict] = {}
+    for family, relative in HIRELING_DOCUMENTS.items():
+        document = yaml.safe_load(_base_text(root, relative)) or {}
+        for profile in document.get("profiles") or []:
+            profiles.setdefault(str(profile["id"]), profile)
+    campaign = yaml.safe_load(_base_text(root, CAMPAIGN_DOCUMENT)) or {}
+    entries = list(campaign.get("hired_swords") or []) + list(campaign.get("dramatis_personae") or [])
+    return profiles, {str(entry["profile_id"]): entry for entry in entries if entry.get("profile_id")}
+
+
+def _hireling_family(profile_id: str) -> str:
+    return "dramatis-personae" if ".dramatis." in profile_id else "hired-swords"
+
+
+def _redirected_entry(entry: dict, rename: dict[str, str]) -> tuple[str, dict]:
+    """A campaign entry with the id its redirected profile carries."""
+    profile_id = str(entry["profile_id"])
+    target = rename.get(profile_id)
+    if target is None:
+        return str(entry["id"]), entry
+    from mordheim_knowledge import hireling_promotion
+
+    renamed = hireling_promotion._renamed(entry, profile_id, target)
+    slug = target.split(".", 2)[2]
+    family = "dramatis" if _hireling_family(target) == "dramatis-personae" else "hired-sword"
+    renamed["id"] = f"campaign.hireling.{family}.{slug}"
+    return str(renamed["id"]), renamed
+
+
+def _promote_hirelings(
+    root: Path, staged: dict[str, list[dict]], actions: list[Action], targets: dict[str, _Target]
+) -> None:
+    from mordheim_knowledge import hireling_promotion
+
+    rename = hireling_promotion.HIRELING_REDIRECTS
+    profiles, _ = _hireling_index(root)
+    for record in staged["hired_swords"] + staged["dramatis"]:
+        profile_id = str(record["id"])
+        published = profiles.get(profile_id)
+        if published is not None:
+            action = ACTION_PRESENT if published == record else ACTION_CONFLICT
+            detail = "" if action == ACTION_PRESENT else "the KB already keeps this profile id"
+            actions.append(Action("hirelings", profile_id, action, HIRELING_DOCUMENTS[_hireling_family(profile_id)], detail))
+            continue
+        action = ACTION_REDIRECT if profile_id in set(rename.values()) else ACTION_NEW
+        destination = HIRELING_DOCUMENTS[_hireling_family(profile_id)]
+        target = _target(targets, root, destination)
+        if target.text:
+            target.append("profiles", [record])
+        else:
+            target.text = _dump(
+                {
+                    "schema_version": 1,
+                    "ruleset": "mordheim",
+                    "catalog": HIRELING_CATALOGUES[_hireling_family(profile_id)],
+                    "grade": record.get("grade") or "2b",
+                    "profiles": [record],
+                }
+            )
+        profiles[profile_id] = record
+        detail = "-miracle-workers redirect" if action == ACTION_REDIRECT else ""
+        actions.append(Action("hirelings", profile_id, action, destination, detail))
+    campaign = yaml.safe_load(_base_text(root, CAMPAIGN_DOCUMENT)) or {}
+    published_ids = {
+        str(entry["id"])
+        for entry in (campaign.get("hired_swords") or []) + (campaign.get("dramatis_personae") or [])
+    }
+    for entry in staged["campaign_hired"] + staged["campaign_dramatis"]:
+        entry_id, record = _redirected_entry(entry, rename)
+        if entry_id in published_ids:
+            actions.append(Action("hirelings", entry_id, ACTION_PRESENT, CAMPAIGN_DOCUMENT, "campaign entry"))
+            continue
+        key = "hired_swords" if ".hired-sword." in entry_id else "dramatis_personae"
+        _target(targets, root, CAMPAIGN_DOCUMENT).append(key, [record])
+        published_ids.add(entry_id)
+        action = ACTION_REDIRECT if entry_id != str(entry["id"]) else ACTION_NEW
+        actions.append(Action("hirelings", entry_id, action, CAMPAIGN_DOCUMENT, f"campaign entry into {key}"))
+
+
+def _promote_exclusions(actions: list[Action]) -> None:
+    for relative, reason in sorted(PROMOTED_EXCLUSIONS.items()):
+        actions.append(Action("bands" if relative.startswith("bands") else "items", relative, ACTION_EXCLUDE, "", reason))
+
+
+# --------------------------------------------------------------------------- #
+# Entry point
+# --------------------------------------------------------------------------- #
+
+
+def promote(
+    root: str | Path | None = None, trees: Iterable[str] = STAGING_TREES
+) -> Promotion:
+    """Plan the promotion of the staged catalogues into a destination root.
+
+    Without ``root`` the destination is the knowledge base itself; a temporary
+    directory participates the same way, which is how a promotion is proved
+    before it is applied. Nothing is written and nothing is refused: the
+    returned :class:`Promotion` carries the actions — conflicts included, so a
+    preview can show them — and the documents, and ``write`` is what lands them
+    (and refuses an undeclared collision).
+    """
+    from mordheim_knowledge import editorial_schemas
+
+    destination = Path(root) if root is not None else CHECKOUT / KB_ROOT
+    promotion = Promotion(destination=destination.as_posix())
+    targets: dict[str, _Target] = {}
+    index = _item_index(destination)
+    with promotion_view():
+        for tree in trees:
+            staged = staged_catalogues(tree)
+            _promote_items(destination, staged, promotion.actions, targets, index)
+            _promote_market(destination, staged, promotion.actions, targets)
+            _promote_magic(destination, staged, promotion.actions, targets)
+            _promote_hirelings(destination, staged, promotion.actions, targets)
+    _promote_exclusions(promotion.actions)
+    for relative, target in sorted(targets.items()):
+        text = target.result()
+        document = yaml.safe_load(text)
+        # A fold can land in a document no new record joins — the KB's own
+        # `miscellaneous.yaml` bucket, which survives a redirect — so the item
+        # family is recognised by its tree as well as by ITEM_FILES.
+        schema = PROMOTED_SCHEMAS.get(relative) or (
+            "catalog-items.yaml.schema.json" if relative.startswith("catalog/items/") else None
+        )
+        if schema is None:
+            raise ValueError(f"{relative}: no KB schema is declared for this document")
+        problems = editorial_schemas.validate_document(schema, document)
+        if problems:
+            raise ValueError(f"{relative}: the promoted document does not match the contract: {problems[:3]}")
+        path = destination / relative
+        current = lexical.read_text(path) if path.is_file() else ""
+        if current == text:
+            continue
+        # Not published to the lexical overlay: a promotion is a separate
+        # operation from the normalisation passes, and a plan that were visible
+        # to the next reader would make a document on disk and in memory
+        # disagree. The edit carries the text, and ``write`` lands it.
+        promotion.edits.append(
+            lexical.Edit(
+                path,
+                [f"{len(target.appended)} list(s) extended, {len(target.folded)} record(s) folded"],
+                text,
+                current,
+            )
+        )
+    return promotion

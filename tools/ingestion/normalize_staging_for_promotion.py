@@ -14,11 +14,21 @@ flow collection (`[a, b]`, `{a: 1}`) is a merge diff that is nothing but shape.
 ``tools/knowledge/maintenance/format_yaml.py`` then rewrites the folded prose of every document this
 tool rebuilds.
 
+A second, separate operation lives here too: the *promotion* reads that shape
+and merges the staged records into a destination root that mirrors
+``sources/knowledge``. ``--promote`` alone is a preview and writes nothing;
+writing needs ``--write`` **and** an explicit ``--destination``, so the active
+knowledge base is never written implicitly and a temporary destination is the
+normal way to prove a promotion. An undeclared collision with the KB is
+reported as a conflict and refused (exit 2).
+
 Usage::
 
     python tools/ingestion/normalize_staging_for_promotion.py --check
     python tools/ingestion/normalize_staging_for_promotion.py --write
     python tools/ingestion/normalize_staging_for_promotion.py --check --passes market
+    python tools/ingestion/normalize_staging_for_promotion.py --promote
+    python tools/ingestion/normalize_staging_for_promotion.py --promote --write --destination build/tmp-promotion
 """
 from __future__ import annotations
 
@@ -60,8 +70,20 @@ def main(argv: list[str] | None = None) -> int:
         default=",".join(promotion.PASSES),
         help=f"comma-separated passes ({', '.join(promotion.PASSES)})",
     )
+    parser.add_argument(
+        "--promote",
+        action="store_true",
+        help="preview the promotion of the staged catalogues into the KB (no writes)",
+    )
+    parser.add_argument(
+        "--destination",
+        help="root the promotion writes, mirroring sources/knowledge (a temporary directory is the normal case)",
+    )
     parser.add_argument("--json", action="store_true", help="machine-readable report")
     args = parser.parse_args(argv)
+
+    if args.promote:
+        return promoted(args)
 
     if args.check == args.write:
         parser.error("choose one of --check or --write")
@@ -91,6 +113,34 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     print(f"checked: {len(report.edits)} files would change")
     return 1 if report.edits else 0
+
+
+def promoted(args: argparse.Namespace) -> int:
+    """Preview a promotion, and write it only when a destination is named."""
+    plan = promotion.promote(args.destination)
+    if args.json:
+        print(json.dumps(plan.as_dict(), indent=2, ensure_ascii=False))
+    else:
+        print(plan.summarise())
+    if plan.conflicts:
+        print(
+            f"refused: {len(plan.conflicts)} undeclared collision(s) with the knowledge base",
+            file=sys.stderr,
+        )
+        return 2
+    if not args.write:
+        print(f"preview only: {len(plan.edits)} file(s) would change; nothing written")
+        return 0
+    if not args.destination:
+        print(
+            "--write of a promotion requires --destination; the knowledge base is never written implicitly",
+            file=sys.stderr,
+        )
+        return 2
+    written = plan.write()
+    format_written(written)
+    print(f"promoted {len(written)} file(s) into {plan.destination}")
+    return 0
 
 
 if __name__ == "__main__":

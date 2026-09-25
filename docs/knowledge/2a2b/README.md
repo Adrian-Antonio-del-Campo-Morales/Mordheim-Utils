@@ -65,7 +65,7 @@ La columna «depende de» determina autorización de escritura, salvo la explora
 | [x] | [T02 — Revisión y cierre de bandas 2A](tasks/T02.md) | completada | T01 | Agente ejecutor | Entrega y gate mantenido sobre `101ca5d`; aceptada 2026-09-25 |
 | [x] | [T03 — Revisión y cierre de bandas 2B](tasks/T03.md) | completada | T01; T04 completada | Agente ejecutor | Seis re-puntos y gates afectados sobre `5105860`; aceptada 2026-09-25 |
 | [x] | [T04 — Catálogos, identidades y procedencia](tasks/T04.md) | completada | T01 | Agente ejecutor | Mapa y decisiones sobre `b2e437c`; aceptada 2026-09-25 |
-| [ ] | [T05 — Normalización y promoción reproducible](tasks/T05.md) | pendiente | T04 | Sin asignar | — |
+| [x] | [T05 — Normalización y promoción reproducible](tasks/T05.md) | completada | T04 | Agente ejecutor | Promoción explícita e idempotente sobre `cd04931`; aceptada 2026-09-25 |
 | [ ] | [T06 — Inventario de efectos y obligaciones](tasks/T06.md) | pendiente | T01; cierre tras T02/T03/T04 | Sin asignar | — |
 | [ ] | [T07 — Fusión en la KB canónica](tasks/T07.md) | pendiente | T02–T06 | Coordinador/integrador | — |
 | [ ] | [T08 — Construcción y selección](tasks/T08.md) | pendiente | T07 | Sin asignar | — |
@@ -204,5 +204,6 @@ No es una orden de ejecutar todas las suites en cada tarea. Cada documento concr
 | 2026-09-25 | T03 | Conservar la revisión de las 61 bandas y bloquear el cierre hasta que T04 resuelva fuentes e identidades; después repetir solo gates afectados | Entrega de T03 sobre `b2e437c`; 60/60 hashes PDF, 0 problemas de banda, 8 problemas de magia y barrera de catálogo declarada | Sí |
 | 2026-09-25 | T04 | Aceptar mapa de promoción y decisiones; conservar Taal & Rhya y Shield of Sigmar como variantes y usar sufijo `-miracle-workers`; devolver seis re-puntos a T03 | Fuentes externas recuperadas con URL/hash; auditor 2B con 0 problemas y 66/66 conjuros; mapa `2ab-promotion-map.json` | Sí |
 | 2026-09-25 | T03 | Aceptar el cierre tras aplicar seis re-puntos de objetos decididos por T04 | `ingest_2b validate` sin problemas, auditor 2B `problem_count 0`, matriz con 0 referencias sin resolver | Sí |
+| 2026-09-25 | T05 | Aceptar la promoción explícita; conservar `warplock_pistol` como variante con entrada `-mim`, mantener los 26 ids históricos y normalizar staging al inicio de T07 antes de promover | Preview de 409 acciones/13 documentos, segunda pasada sin escrituras, colisión ambigua rechazada y 9 pruebas enfocadas; revisión estructural del coordinador | Sí |
 
 Añadir aquí solo decisiones de coordinación. Para una regla, enlazar su interpretación y evidencia en el sistema semántico existente. No mantener dos versiones divergentes de una misma decisión.

@@ -109,7 +109,9 @@ MAGIC_ASSIGNMENTS: dict[str, tuple[tuple[str | None, str, str], ...]] = {
         # The Miracle Workers priests are Hired Swords of their chapter: their
         # starting experience and their prayers stay with the profile, and the
         # assignment is a row of this document.
-        (None, "druid-priest-of-taal", "lore.prayers-of-taal"),
+        # T04 §12: the chapter's list is a variant with its own printed prose, so
+        # the druid is routed to the variant instead of the KB list.
+        (None, "druid-priest-of-taal", "lore.prayers-of-taal-and-rhya"),
         (None, "mariner-priest-of-manann", "lore.prayers-of-manann"),
         (None, "priest-of-morr", "lore.prayers-of-morr"),
         (None, "priest-of-verena", "lore.prayers-of-verena-and-solkan"),
@@ -132,9 +134,28 @@ CHARMS_NOTE_SUFFIX = (
     "Kept apart so a source change stays auditable."
 )
 
-#: The 2B mirror is the KB list with one spelling difference in a spell name, so
-#: the wizard is routed to the existing lore and the duplicate is not published.
-MIRROR_LORES: tuple[str, ...] = ("lore.prayers-of-taal-and-rhya",)
+#: A staged list whose spells are the KB list under another name is not
+#: duplicated: the wizard is routed to the existing lore instead. **Empty since
+#: T04 §12**: the one candidate, ``lore.prayers-of-taal-and-rhya``, turned out to
+#: print different prose for all six effects, so it is promoted as its own
+#: variant and must not be read as a mirror again.
+MIRROR_LORES: tuple[str, ...] = ()
+
+#: A staged note the ruling of T04 made false. The stale sentence is *replaced*
+#: (never appended) so a second pass finds nothing to do.
+LORE_NOTE_REPLACEMENTS: dict[str, tuple[str, str]] = {
+    "lore.prayers-of-taal-and-rhya": (
+        "MIRROR of the KB lore.prayers-of-taal: the six spells and their difficulties are identical "
+        "(Stag's Leap D7, Blessed Ale D5, Bears Paw D7, Earthshudder D9, Tanglefoot D8, Summon "
+        "Squirrels D7); at promotion, verify and map to the existing lore instead of duplicating it.",
+        "VARIANT of the KB lore.prayers-of-taal: the two publications print the same six spells at "
+        "the same difficulties, but every effect is different printed prose (Tanglefoot names the "
+        "'Ostlander Jaegers and friendly Horned Hunter Zealots' of the KB against the 'friendly "
+        "Taalites' here, Earthshudder adds the falling example and Bears Paw loses its apostrophe), "
+        "so the chapter keeps its own list beside the Ostlander and Horned Hunter one instead of "
+        "being mapped into it.",
+    ),
+}
 
 #: The Djedhi lore the Lothern list is reprinted from: the source reprints five
 #: of its spells and its own fourth spell replaces *Fleeting Shadows*, so the
@@ -257,6 +278,9 @@ def promoted_lore(lore: dict, kb_lores: dict[str, dict]) -> dict:
         for spell in promoted["spells"]:
             spell["id"] = f"spell.{slug}.{spell['id'].rsplit('.', 1)[-1]}"
         promoted["note"] = str(lore.get("note") or "").strip() + CHARMS_NOTE_SUFFIX
+    fix = LORE_NOTE_REPLACEMENTS.get(str(lore["id"]))
+    if fix is not None and fix[0] in str(promoted.get("note") or ""):
+        promoted["note"] = str(promoted["note"]).replace(fix[0], fix[1])
     return {key: promoted[key] for key in LAST_KEYS if key in promoted}
 
 

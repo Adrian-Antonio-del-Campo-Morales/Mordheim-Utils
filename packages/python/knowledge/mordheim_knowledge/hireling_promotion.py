@@ -11,9 +11,9 @@ A staged hireling file mixes what the KB keeps apart, so this pass is a split:
   keeping a record that cannot be modelled yet.
 * **The campaign side.** The KB keeps a Hired Sword's hiring fee, upkeep,
   availability and eligibility in ``catalog/campaign/hired-swords-and-dramatis.yaml``
-  and points back at the profile with ``profile_id``; the profile never repeats
-  them. The staged ``hire_fee`` and ``available_to`` therefore leave the profile
-  and become a *staged campaign document* in the KB shape. A fee the source
+and points back at the profile with ``profile_id``; the profile never repeats
+them. The staged ``hire_fee`` and ``available_to`` therefore leave the profile
+and become a *staged campaign document* in the KB shape. A fee the source
   prints in a currency the catalogue does not model keeps the amount and says so
   in the ``cost`` expression, which is the field the contract reserves for
   exactly that.
@@ -51,6 +51,21 @@ _HIRED_SWORD_CATALOGUE = "hirelings-hired-swords"
 CAMPAIGN_DOCUMENTS: dict[str, str] = {"2B": "catalog/hired-swords-and-dramatis-2b.yaml"}
 #: The staged Dramatis catalogue of a tree.
 DRAMATIS_DOCUMENTS: dict[str, str] = {"2B": "catalog/hirelings/dramatis-personae/grade-2b.yaml"}
+
+#: ``KB id -> KB id`` of a profile the knowledge base already holds under the
+#: same id from *another publication*, with different printed rules (T04 §3.3).
+#: The suffix is the stable disambiguator the coordinator confirmed: the staged
+#: profile keeps its text and everything prefixed by its id — its rules and its
+#: campaign entry — moves with it, so a naive merge can never overwrite the KB.
+HIRELING_REDIRECTS: dict[str, str] = {
+    "hireling.hired-sword.priest-of-morr": "hireling.hired-sword.priest-of-morr-miracle-workers",
+    "hireling.hired-sword.warrior-priest-of-sigmar": (
+        "hireling.hired-sword.warrior-priest-of-sigmar-miracle-workers"
+    ),
+    "hireling.hired-sword.wolf-priest-of-ulric": (
+        "hireling.hired-sword.wolf-priest-of-ulric-miracle-workers"
+    ),
+}
 
 #: ``normalization_status: name-only`` is faithful to the source: it lists the
 #: hireling but prints no profile. The reason travels to the Dramatis catalogue,
@@ -210,9 +225,14 @@ def hireling_family(profile: dict) -> str:
 
 
 def promoted_hireling_id(profile_id: str, family: str) -> str:
-    """The KB id of a profile: ``hireling.<family>.<slug>``."""
+    """The KB id of a profile: ``hireling.<family>.<slug>``.
+
+    A profile the KB already publishes from another source gets the declared
+    ``-miracle-workers`` suffix, so the two publications coexist (T04 §3.3).
+    """
     slug = profile_id.split(".", 2)[2]
-    return f"hireling.{'dramatis' if family == 'dramatis' else 'hired-sword'}.{slug}"
+    identifier = f"hireling.{'dramatis' if family == 'dramatis' else 'hired-sword'}.{slug}"
+    return HIRELING_REDIRECTS.get(identifier, identifier)
 
 
 def _renamed(node, old: str, new: str):
