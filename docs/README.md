@@ -41,6 +41,9 @@ Contracts:
 
 ## Knowledge base — modelling documents
 
+- [2A/2B integration checklist and agent tasks](knowledge/2a2b/README.md) —
+  phased execution, ownership, synchronization gates and task prompts.
+
 The catalogue and registry rules of the canonical data:
 
 - [Campaign knowledge](guides/campaign-knowledge.md)
