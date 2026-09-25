@@ -66,7 +66,7 @@ La columna «depende de» determina autorización de escritura, salvo la explora
 | [x] | [T03 — Revisión y cierre de bandas 2B](tasks/T03.md) | completada | T01; T04 completada | Agente ejecutor | Seis re-puntos y gates afectados sobre `5105860`; aceptada 2026-09-25 |
 | [x] | [T04 — Catálogos, identidades y procedencia](tasks/T04.md) | completada | T01 | Agente ejecutor | Mapa y decisiones sobre `b2e437c`; aceptada 2026-09-25 |
 | [x] | [T05 — Normalización y promoción reproducible](tasks/T05.md) | completada | T04 | Agente ejecutor | Promoción explícita e idempotente sobre `cd04931`; aceptada 2026-09-25 |
-| [ ] | [T06 — Inventario y reparto de obligaciones](tasks/T06.md) | en revisión | T01–T05 | Agente ejecutor | Matriz de 1692 efectos entregada y reconciliada con las tres fases; pendiente de aceptación |
+| [x] | [T06 — Inventario y reparto de obligaciones](tasks/T06.md) | completada | T01–T05 | Agente ejecutor | 1692 efectos y 2295 obligaciones reconciliados; aceptada 2026-09-25 |
 | [ ] | [T07 — Fusión en la KB canónica](tasks/T07.md) | pendiente | T02–T06 | Coordinador/integrador | — |
 | [ ] | [T08 — Validación y cierre de la KB](tasks/T08.md) | pendiente | T07 | Coordinador/integrador | — |
 | [ ] | [T09 — Construcción y selección para Web](tasks/T09.md) | pendiente | T08 | Sin asignar | — |
@@ -196,5 +196,6 @@ No es una orden de ejecutar todas las suites en cada tarea. Cada documento concr
 | 2026-09-25 | T03 | Aceptar el cierre tras aplicar seis re-puntos de objetos decididos por T04 | `ingest_2b validate` sin problemas, auditor 2B `problem_count 0`, matriz con 0 referencias sin resolver | Sí |
 | 2026-09-25 | T05 | Aceptar la promoción explícita; conservar `warplock_pistol` como variante con entrada `-mim`, mantener los 26 ids históricos y normalizar staging al inicio de T07 antes de promover | Preview de 409 acciones/13 documentos, segunda pasada sin escrituras, colisión ambigua rechazada y 9 pruebas enfocadas; revisión estructural del coordinador | Sí |
 | 2026-09-25 | Replanificación | Organizar el trabajo restante en KB (T06–T08), Warband Manager Web (T09–T12) y Combat Simulator (T13–T15); eliminar escritorio, incluir campaña en Web y cerrar cada fase con validación y commit local | Decisión del usuario antes de iniciar T07; T01–T05 permanecen aceptadas | Sí |
+| 2026-09-25 | T06 | Aceptar el inventario y reparto por fases; tratar las 366 filas compuestas como 970 obligaciones explícitas y resolver `trait.spectral-touch` primero en T07 | Matriz: 1692 efectos, 2295 obligaciones, particiones reconciliadas, JSON/CSV UTF-8 y sin filas idénticas duplicadas; comprobación puntual del coordinador | Sí |
 
 Añadir aquí solo decisiones de coordinación. Para una regla, enlazar su interpretación y evidencia en el sistema semántico existente. No mantener dos versiones divergentes de una misma decisión.

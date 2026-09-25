@@ -20,13 +20,15 @@ Clasificador: `build/cache/t06-classify.py` (determinista, auditable). Reglas:
 4. Reglas de id de regla primero (el propio id nombra la cláusula: `--leader`, `--immune-to-psychology`, `--large`…), después una tabla ordenada de texto. Las cláusulas de **campaña/construcción preceden a las de combate** para que una obligación de campaña no quede tapada por una cláusula de combate del mismo texto.
 5. Los cuatro sistemas de batalla fuera de alcance solo reciben `sistema excluido` cuando **ninguna** cláusula de alcance (construcción/campaña/combate) también casa.
 6. Residuo: solo **41 ids de regla** no los enrutan las tablas; se adjudican a mano en `HAND_ADJUDICATED` (§7).
+7. Cada efecto compuesto lleva una lista `obligations` (§2.2): una entrada por obligación distinta con subsistema, destino, tarea propietaria, mecanismo, criterio y motivo cuando está excluida. El total de **efectos** no cambia (1692); las obligaciones se cuentan aparte.
 
 Reproducir:
 
 ```bash
 python build/cache/t06-classify.py            # regenera la matriz y t06-summary.json
 python build/cache/t06-inventory.py           # recalcula el inventario base (si hace falta)
-head -3 build/cache/t06-matrix.csv            # columnas: id,family,tree,band,owner,binding,mechanism,destination,phase_task,legacy_destination,classification,note,source_file
+head -3 build/cache/t06-matrix.csv            # columnas: id,family,tree,band,owner,binding,mechanism,destination,phase_task,legacy_destination,classification,obligations,note,source_file
+# (obligations es un array JSON por fila; en CSV va serializado como cadena)
 ```
 
 > **Qué es y qué no es este documento.** Es una **clasificación y reparto de trabajo**, no un certificado de implementación. Una fila `cubierto` significa «mecanismo existente + al menos una spec/prueba lo ejercita (§4)», no que el efecto esté validado de extremo a extremo. El enrutado es una **propuesta revisable**: un texto que toca varios subsistemas se envía a su primer mecanismo y se marca `compound` (§6) para que la tarea propietaria lo divida.
@@ -79,15 +81,16 @@ head -3 build/cache/t06-matrix.csv            # columnas: id,family,tree,band,ow
 | `X4-absent-battle-magic` | excluido | 137 | Sin implementación; texto íntegro y limitación conservados. El acceso a listas va por E20. |
 | `D0-data-only` | KB · T07 | 18 | Registro conservado verbatim y servido como dato por los cargadores/presentación; no se reclama efecto de runtime. |
 
-**Totales por destino: `Warband Manager Web` 1027 · `Combat Simulator` 476 · `sistema excluido` 171 · `KB` 18 = 1692.**
+**Totales por destino: `Warband Manager Web` 1026 · `Combat Simulator` 476 · `sistema excluido` 171 · `KB` 19 = 1692.**
 **Totales por clasificación: `cubierto` 78 · `ampliacion-necesaria` 1443 · `sistema-ausente` 171 = 1692.**
-Por tarea de fase: **T09 (Web) 486 · T10 (Web) 541 · T13 (Combate) 476 · T07 (KB) 18 · excluido 171.**
+Por tarea de fase: **T09 (Web) 485 · T10 (Web) 541 · T13 (Combate) 476 · T07 (KB) 19 · `EXCLUDED` 171.**
+La fila `trait.spectral-touch` es la única cuyo destino primario es `KB` (T07) pese a mapear al mecanismo E01: su alta en `bindings.yaml` precede a la promoción (ver §4 y §8).
 
 Desglose por familia y destino:
 
 | Familia | Warband Manager Web | Combat Simulator | sistema excluido | KB |
 |---|---:|---:|---:|---:|
-| `band-rule` (1330) | 838 | 449 | 36 | 7 |
+| `band-rule` (1330) | 837 | 449 | 36 | 8 |
 | `item` (144) | 107 | 27 | 0 | 10 |
 | `spell` (135) | 0 | 0 | 135 | 0 |
 | `hireling` (83) | 82 | 0 | 0 | 1 |
@@ -97,6 +100,43 @@ Desglose por familia y destino:
 - **67 efectos de banda con binding confirmado** (§4). Son los únicos `cubierto` de `band-rule`; el resto del staging no tiene una marca `runtime.implemented=YES` que resista evidencia (T06 no se apoya en la marca global).
 - **10 `item`** con texto de catálogo descriptivo/estructural sin efecto de runtime (`D0`).
 - **1 `hireling`**: perfil `name-only` sin regla propia (T04 ya lo declaró `out_of_scope` sin entrada de contratación).
+
+### 2.2 Obligaciones separadas (efectos con varios consumidores)
+
+Los **366 efectos `compound`** más el binding nuevo `trait.spectral-touch` (**367 filas**) llevan la lista `obligations`. Cada entrada tiene la forma:
+
+```json
+{"subsystem": "<bucket>", "destination": "KB|Warband Manager Web|Combat Simulator|sistema excluido",
+ "phase_task": "T07|T09|T10|T13|EXCLUDED", "mechanism": "E0X-…|X1..X4",
+ "acceptance": "<criterio concreto>", "reason": "<motivo si está excluida>"}
+```
+
+Se conserva **una sola fila por efecto**; el campo `obligations` no infla el total de efectos.
+
+| Métrica | Valor |
+|---|---:|
+| Efectos (filas) | **1692** (sin cambios) |
+| Filas con `obligations` | 367 (366 `compound` + `trait.spectral-touch`) |
+| Obligaciones listadas | **970** |
+| Efectos sin división (1 obligación implícita) | 1325 |
+| **Total de obligaciones** | **2295** |
+
+Reparto de las 970 obligaciones listadas:
+
+| Por destino | N | Por tarea | N | Por subsistema | N |
+|---|---:|---|---:|---|---:|
+| `Combat Simulator` | 409 | T13 | 409 | `shooting` | 254 |
+| `sistema excluido` | 316 | `EXCLUDED` | 316 | `movement` | 182 |
+| `Warband Manager Web` | 244 | T09 | 125 | `battle-magic` | 127 |
+| `KB` | 1 | T10 | 119 | `close-combat` | 125 |
+| | | T07 | 1 | `psychology` | 107 |
+| | | | | `hiding` | 75 |
+| | | | | `deployment` | 38 |
+| | | | | `construction` | 35 |
+| | | | | `campaign` | 26 |
+| | | | | `kb-registration` | 1 |
+
+El mecanismo por obligación es el **primero de la familia del subsistema** que casa con el texto (p. ej. `campaign` → E14–E22; `construction` → E01–E07; `close-combat` → E08–E13); la obligación primaria conserva el mecanismo del efecto. La tarea propietaria debe afinar el mecanismo al dividir si la prosa lo pide.
 
 ---
 
@@ -141,9 +181,9 @@ Los 68 `effect_scope YES` son exactamente los que declaran un `binding`. Comprob
 | `skill.bellowing-battle-roar` | 1 | 2 specs + 5 módulos | cubierto |
 | `skill.always-strikes-first` | 1 | 3 specs + 5 módulos | cubierto |
 | `weapon.vomit-attack` | 1 | `rules/vomit-attack`, `grants/editorial-vomit-attack`; motor | cubierto |
-| `trait.spectral-touch` | 1 | **sin** spec ni módulo; registrado `pending-promotion` | **ampliación · Combat Simulator (T13)** |
+| `trait.spectral-touch` | 1 | **sin** spec ni módulo; registrado `pending-promotion` | **ampliación · KB (T07) → consume Web (T09) y Combate (T13)** |
 
-Cobertura medida: **67 cubiertos, 1 ampliación**. El único no cubierto (`spirit-hosts--spectral-touch`, `call-of-the-night-haint-mim`) es un paso de daño (herida adicional con 6 natural al impactar): T13. Debe registrarse como contrato ejecutable del binding antes de promover la banda.
+Cobertura medida: **67 cubiertos, 1 ampliación**. El único no cubierto (`spirit-hosts--spectral-touch`, `call-of-the-night-haint-mim`) tiene **tres obligaciones** (§2.2): el alta en `sources/knowledge/registry/bindings.yaml` pertenece a **T07/coordinador** durante la fase KB, **antes** de promover la banda; T09 lo consume como contrato ejecutable del compilador y T13 implementa el paso de daño (herida adicional con 6 natural al impactar). **T09 no es prerrequisito de T07.**
 
 ---
 
@@ -165,7 +205,7 @@ Ningún efecto de T02–T05 se pierde ni se cuenta dos veces como trabajo indepe
 
 ## 6. Efectos compuestos (obligaciones con consumidores distintos)
 
-**366 filas** tocan más de un subsistema. La fila lleva su mecanismo primario y el campo `compound`; la tarea propietaria **debe dividir** la obligación cuando las partes tengan consumidor distinto. Los focos de mayor solape:
+**366 filas** tocan más de un subsistema. Cada fila lleva su mecanismo primario y el campo `compound`, y una lista `obligations` con la división por consumidor (§2.2); la tarea propietaria **debe** aplicarla. Los focos de mayor solape por mecanismo:
 
 | Mecanismo primario | Compuestas | División típica |
 |---|---:|---|
@@ -277,5 +317,5 @@ Se conservan las limitaciones ya declaradas por T02–T05 (no se resuelven aquí
 
 - Contabiliza y **reparte** los 1692 efectos en mecanismos y destinos; **no** demuestra que ninguno esté implementado de extremo a extremo.
 - `cubierto` se apoya en la existencia del mecanismo + al menos una spec/prueba, con la suite semántica en el estado del punto 7.
-- El enrutado es **revisable** por la tarea propietaria; el campo `compound` y la §7 son los puntos de mayor riesgo de interpretación.
+- El enrutado es **revisable** por la tarea propietaria; el campo `compound`/`obligations` y la §7 son los puntos de mayor riesgo de interpretación. El mecanismo asignado a cada obligación es un **valor por defecto de su subsistema**, afinable al dividir.
 - No se ejecutaron las suites completas de T02–T05, la promoción de T05, `npm`/TypeScript ni la generación web.
