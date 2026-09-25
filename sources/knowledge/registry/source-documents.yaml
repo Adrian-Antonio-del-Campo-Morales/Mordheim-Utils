@@ -1,0 +1,116 @@
+schema_version: 1
+# Documentos fuente del cotejo de catálogo contra fuente.
+#
+# Cada entrada es **un documento**, no una cita: `source_refs` de un registro del
+# catálogo lleva la sección y la página, y el `url` apunta aquí. Un documento que
+# se cita con dos formas (`Specialists.pdf` y `MiM%20Specialists.pdf`) se declara
+# una vez, con sus dos `urls`, para que las dos citas cotejen la misma copia.
+#
+# `mirror` es dónde el espejo local (`build/cache/`) guarda la copia descargada,
+# relativo a la raíz del espejo. Un `pdf` se lee con el corpus de geometría
+# (`PdfCorpus`) y una `page` con el corpus que la copia declare: el HTML trae la
+# estructura y el `.txt` hermano es el respaldo sin geometría. Que la copia no
+# esté descargada no es un error del registro: el cotejo declara el hueco con la
+# ruta que le falta, y esta ruta es la instrucción para rellenarlo.
+documents:
+# --- los PDFs de broheim.net (2B) ------------------------------------------
+- id: broheim.karak-azgal
+  manual: broheim.net
+  kind: pdf
+  mirror: 2b-pdfs/adventurers-kaz.pdf
+  urls:
+  - https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+- id: broheim.relics-of-the-crusades-2
+  manual: broheim.net
+  kind: pdf
+  mirror: 2b-pdfs/fallen-the-rel.pdf
+  urls:
+  - https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+- id: broheim.mutinyinmarienburg.specialists
+  manual: broheim.net
+  kind: pdf
+  mirror: 2b-pdfs/MiM Specialists.pdf
+  urls:
+  - https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+  - https://broheim.net/downloads/hiredswords/mutinyinmarienburg/MiM%20Specialists.pdf
+- id: broheim.mutinyinmarienburg.lords-of-the-marsh
+  manual: broheim.net
+  kind: pdf
+  mirror: 2b-pdfs/lords-of-the-marsh-mim.pdf
+  urls:
+  - https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords%20of%20the%20Marsh.pdf
+- id: broheim.mutinyinmarienburg.shallows-beasts
+  manual: broheim.net
+  kind: pdf
+  mirror: 2b-pdfs/shallows-beasts-mim.pdf
+  urls:
+  - https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf
+# --- el suplemento de los Miracle Workers (liber-malefic) -------------------
+# Los perfiles lo citan como `liber-malefic`; el PDF vive hoy en scribd.
+- id: liber-malefic.miracle-workers
+  manual: liber-malefic
+  kind: pdf
+  mirror: 2b-pdfs/Miracle Workers.pdf
+  urls:
+  - https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+# --- las páginas de mordheimer.net (2A) ------------------------------------
+- id: mordheimer.net.dramatis-personae
+  manual: mordheimer.net
+  kind: page
+  mirror: 2a-dp/dramatis-personae.html
+  urls:
+  - https://mordheimer.net/docs/campaigns/dramatis-personae
+- id: mordheimer.net.dramatis-personae.grade-1a
+  manual: mordheimer.net
+  kind: page
+  mirror: 2a-dp/dramatis-grade-1a.html
+  urls:
+  - https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
+- id: mordheimer.net.dramatis-personae.grade-1b
+  manual: mordheimer.net
+  kind: page
+  mirror: 2a-dp/dramatis-grade-1b.html
+  urls:
+  - https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1b
+- id: mordheimer.net.dramatis-personae.grade-1c
+  manual: mordheimer.net
+  kind: page
+  mirror: 2a-dp/dramatis-grade-1c.html
+  urls:
+  - https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c
+- id: mordheimer.net.dramatis-personae.grade-2a
+  manual: mordheimer.net
+  kind: page
+  mirror: 2a-dp/dramatis-grade-2a.html
+  urls:
+  - https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+- id: mordheimer.net.hired-swords
+  manual: mordheimer.net
+  kind: page
+  mirror: 2a-dp/hired-swords.html
+  urls:
+  - https://mordheimer.net/docs/campaigns/hired-swords
+- id: mordheimer.net.hired-swords.grade-1a
+  manual: mordheimer.net
+  kind: page
+  mirror: 2a-dp/hired-swords-grade-1a.html
+  urls:
+  - https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+- id: mordheimer.net.hired-swords.grade-1b
+  manual: mordheimer.net
+  kind: page
+  mirror: 2a-dp/hired-swords-grade-1b.html
+  urls:
+  - https://mordheimer.net/docs/campaigns/hired-swords/grade-1b
+- id: mordheimer.net.hired-swords.grade-1c
+  manual: mordheimer.net
+  kind: page
+  mirror: 2a-dp/hired-swords-grade-1c.html
+  urls:
+  - https://mordheimer.net/docs/campaigns/hired-swords/grade-1c
+- id: mordheimer.net.hired-swords.grade-2a
+  manual: mordheimer.net
+  kind: page
+  mirror: 2a-dp/hired-swords-grade-2a.html
+  urls:
+  - https://mordheimer.net/docs/campaigns/hired-swords/grade-2a

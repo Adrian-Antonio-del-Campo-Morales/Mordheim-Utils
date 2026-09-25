@@ -37,6 +37,7 @@ classification contract and legal construction.
 | `registry/aliases.yaml` | [`registry-aliases.yaml`](./registry-aliases.yaml.schema.json) | Band aliases for name normalization. |
 | `registry/collections.yaml` | [`registry-collections.yaml`](./registry-collections.yaml.schema.json) | Collections and the rulesets each one allows. |
 | `registry/rulesets.yaml` | [`registry-rulesets.yaml`](./registry-rulesets.yaml.schema.json) | The rulesets of the repository. |
+| `registry/source-documents.yaml` | [`registry-source-documents.yaml`](./registry-source-documents.yaml.schema.json) | The source documents the catalogues cite: one entry per document, with every URL it is cited by and where the offline mirror keeps its copy. |
 | `registry/sources.yaml` | [`registry-sources.yaml`](./registry-sources.yaml.schema.json) | Registered editorial sources. |
 | `registry/warband-groups.yaml` | [`registry-warband-groups.yaml`](./registry-warband-groups.yaml.schema.json) | Cross-band groups by race, alignment, faction and culture. |
 | `registry/runtime-scope.yaml` | [`registry-runtime-scope.yaml`](./registry-runtime-scope.yaml.schema.json) | Scope policy, exclusions with reasons, supported combat traits. |
@@ -76,7 +77,10 @@ stale.
 - **Locale policy.** English is canonical and stored once in `name`/`effect`;
   `name_i18n`/`effect_i18n` carry translations only and never mirror `en`.
 - **Provenance.** Records carry `source_refs` (or a single `source`) with the
-  manual, printed page, section and, when available, the URL.
+  manual, printed page, section and, when available, the URL. A URL resolves in
+  `registry/source-documents.yaml` to the document that prints the record: it is
+  what the catalogue-vs-source cotejos read, and where the offline mirror keeps
+  each copy.
 - **Runtime classification.** The `runtime` block of a rule is defined as
   `registry/runtime-schema.yaml` defines it: `scope` (`YES`/`NO`/`LATER`),
   `implemented` (`YES`/`NO`), `grant` (`profile`/`band`/`selectable`/`none`),
@@ -237,7 +241,7 @@ errors, and each one lives in `editorial_schema_audit.JUSTIFIED_FINDINGS` with
 the contract that keeps it alive: a field of `EffectSet`, a value of
 `registry/runtime-schema.yaml`, a trait of `TRAIT_TYPES`, a recipient the
 post-battle engine dispatches on, a shape the two hireling families share, or
-`status: draft`, which `docs/knowledge/campaign-catalogue.md` prescribes. An entry that
+`status: draft`, which `docs/guides/campaign-knowledge.md` prescribes. An entry that
 stops matching a finding fails the suite, so the list cannot rot.
 
 The audit reads the same merged schemas the validators use, aggregates evidence

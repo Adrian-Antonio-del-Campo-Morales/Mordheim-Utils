@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/registry-source-documents.yaml.schema.json",
+  "title": "Mordheim KB registry — registry/source-documents.yaml",
+  "description": "The source documents the catalogues cite, one entry per document. A record's `source_refs` name the record inside its document — `manual`, `printed_page` and `section` — and its `url` resolves here, which is what lets a cotejo go from a catalogue record to the document that prints it without knowing anything about the tree it runs in. `mirror` is where the offline mirror (`build/cache/`) keeps the downloaded copy; a document without a copy there is a declared gap the cotejo reports, not a registry error.",
+  "type": "object",
+  "required": ["schema_version", "documents"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "documents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "manual", "kind", "mirror", "urls"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "defs.schema.json#/$defs/id" },
+          "manual": {
+            "description": "Registered source id the document belongs to; it is the `manual` value the citing records use.",
+            "$ref": "defs.schema.json#/$defs/id"
+          },
+          "kind": {
+            "description": "How the document is read: `pdf` for the geometry corpus, `page` for the web-page corpus (its HTML snapshot, or the plain-text twin as fallback).",
+            "enum": ["pdf", "page"]
+          },
+          "mirror": {
+            "description": "Path of the downloaded copy relative to the mirror root, e.g. `2b-pdfs/adventurers-kaz.pdf`.",
+            "type": "string",
+            "minLength": 1
+          },
+          "urls": {
+            "description": "Every location the same document is cited by; the catalogues cite the same PDF with more than one spelling, and one document coteja one copy.",
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  }
+}

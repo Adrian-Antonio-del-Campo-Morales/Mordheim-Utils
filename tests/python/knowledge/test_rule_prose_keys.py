@@ -1,12 +1,9 @@
 """Rule prose has exactly one key: ``effect``.
 
-The KB-wide migration (`tools/knowledge/maintenance/rename_summary_keys.py`) renamed every prose
-``summary`` mapping key to ``effect`` (and the count metadata block of
-``implemented-canonical-families.yaml`` to ``counts``) so that rule text —
-band rules, catalog skills/mechanics, conditions, spells, scenarios,
-mutations and artefact blurbs — always lives under the single key the
-readers, coverage guard and formatter understand. This test guards that no
-``summary`` key ever returns to ``sources/knowledge``.
+Band rules, catalog skills/mechanics, conditions, spells, scenarios,
+mutations and artefact blurbs always use the single key understood by the
+readers, coverage guard and formatter. This test is the permanent guard that
+prevents the retired ``summary`` key from returning to the knowledge base.
 """
 from __future__ import annotations
 
@@ -41,5 +38,5 @@ def test_no_summary_key_survives_in_the_knowledge_base() -> None:
             offenders.append(path.relative_to(KB_ROOT).as_posix())
     assert offenders == [], (
         "the rule-prose key is `effect`; these files still carry a `summary` "
-        f"key (run tools/knowledge/maintenance/rename_summary_keys.py): {offenders}"
+        f"key: {offenders}"
     )

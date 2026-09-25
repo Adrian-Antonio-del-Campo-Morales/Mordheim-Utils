@@ -19,16 +19,18 @@ import sys
 import time
 from pathlib import Path
 
-import printed_entries
-
 ROOT = Path(__file__).resolve().parents[2]
 BANDS = ROOT / "sources/2B/bands/mordheim"
 MAGIC = ROOT / "sources/2B/catalog/magic-2b.yaml"
 
-# La herramienta importa el lector compartido de su propio directorio, que un
-# módulo cargado por ruta no tiene en ``sys.path``.
-if str(ROOT / "tools" / "ingestion") not in sys.path:
-    sys.path.insert(0, str(ROOT / "tools" / "ingestion"))
+# El lector compartido es permanente y vive en ``tools/knowledge``; la herramienta
+# cotejada (``audit_2b.py``) es de esta fase y un módulo cargado por ruta no tiene
+# su directorio en ``sys.path``.
+for _tools in (ROOT / "tools" / "knowledge", ROOT / "tools" / "ingestion"):
+    if str(_tools) not in sys.path:
+        sys.path.insert(0, str(_tools))
+
+import printed_entries
 
 spec = importlib.util.spec_from_file_location(
     "audit_2b", ROOT / "tools/ingestion/audit_2b.py")

@@ -26,8 +26,9 @@ rules are outside the current duel runtime and are classified as such.
 ```text
 sources/knowledge/
 ├── README.md                     locale policy + validation commands
-├── registry/                     collections, rulesets, sources, aliases,
-│                                 warband groups, runtime classification schema
+├── registry/                     collections, rulesets, sources and their
+│                                 documents, aliases, warband groups, runtime
+│                                 classification schema
 ├── bands/                        per-warband editorial data, by collection
 │   ├── mordheim/                 one directory per Mordheim warband
 │   └── trollheim/                Trollheim/Chaos Streets/Lustria/Khemri warbands
@@ -48,6 +49,7 @@ sources/knowledge/
 | `collections.yaml` | The two collections, `mordheim` and `trollheim`, both bound to the `mordheim` ruleset. |
 | `rulesets.yaml` | The active ruleset (`mordheim`). |
 | `sources.yaml` | Registered editorial sources (e.g. `mordheimer.net`). |
+| `source-documents.yaml` | The source documents the catalogues cite: every URL a document is cited by, how it is read (`pdf`/`page`) and where the offline mirror keeps its copy. It is what resolves a record's `source_refs` without guessing file names (`tools/knowledge/source_documents.py`). |
 | `aliases.yaml` | Band aliases for name normalization (e.g. "Amazons (Lustria)" → `amazons-lustria`). |
 | `warband-groups.yaml` | Cross-band groups by race/alignment/faction (e.g. `warband-group.orc`, `warband-group.chaotic`, `warband-group.good-aligned`) used by access and restriction logic. |
 | `runtime-schema.yaml` | **The classification contract.** Defines `scope`, `implemented`, `grant`, `effects`, binding kinds and the invariants every rule must satisfy. |
@@ -318,9 +320,8 @@ order are preserved — and verifies that only name fields changed.
 ## YAML formatting policy
 
 Maintained YAML uses UTF-8, LF line endings, two-space indentation, no trailing
-whitespace, and a target line width of **100 characters**. Lines up to **120
-characters** are accepted. URLs and unavoidable long identifiers are the only
-expected exceptions.
+whitespace and the line-width policy enforced by the formatter. URLs and
+unavoidable long identifiers are the expected exceptions.
 
 Rule prose has **one key: `effect`** (plus its locale block `effect_i18n`).
 There is no `summary` key anywhere in `sources/knowledge` — the display text
@@ -329,57 +330,10 @@ of a rule, item, skill, condition, scenario, spell or mutation is always its
 referencing them (`rule_ref`) instead of restating the prose. A test guards
 that no `summary` key returns.
 
-Descriptive fields such as `effect`, `description`, `notes`, and `reason` use
-folded blocks (`>-`) when they need wrapping. This keeps source text readable
-while loading it as one logical line. Literal blocks (`|`) remain reserved for
-text where line breaks are meaningful. Formatting must preserve key order,
-anchors, aliases, IDs, URLs, scalar types, and parsed values.
-
-Effect prose is **never quoted**: the formatter rewrites every quoted `effect`
-/ `effect_i18n.es` scalar (quoting was only ever needed for content such as
-`: ` or `"`) as a `>-` block rewrapped at the target width, which makes the
-same content plain-safe. Plain values that spill across continuation lines —
-and single lines past the target width — are folded the same way, so every
-effect value ends up as either a plain single line or a `>-` block.
-`python tools/knowledge/maintenance/format_yaml.py --check sources/knowledge` reports zero residual
-quoted or continuation-wrapped effect prose, and the pass is idempotent.
-
-A `>-` block already in that shape is rewrapped when its body carries a line
-past the 120 maximum: a writer that folds prose without wrapping it leaves one
-physical line per value, and `--write` wraps those lines at the target width,
-so what `--check` reports as too long is what it repairs. The block's value is
-verified by the same round-trip guard as every other scalar, so a block whose
-line breaks are content (paragraphs) is left untouched. Scalars the policy
-keeps plain — flow collections and single-line values of keys outside the
-descriptive set — are not folded for width.
-
-The formatter is deliberately lexical, so it preserves a flow collection instead
-of rewriting it; the **collection shape** is a separate rule. The KB writes eight
-keys as block collections and never as a non-empty flow collection:
-`source_path`, `equipment_lists`, `rule_ids` and `skill_access` as block
-sequences (dashes at the indent of their key), and `source`, `characteristics`,
-`name_i18n` and `combat_traits` as block mappings (children two columns in). An
-empty `[]` / `{}` stays as it is: that is the KB's shape for "nothing".
-`mordheim_knowledge.staging_promotion` writes the flow form back to the block
-form (`normalize_staging_for_promotion.py --write --passes shape`, idempotent and
-document-verified), `audit_staging_contract.py --only shape` measures the drift
-and `tests/python/knowledge/test_staging_collection_shape.py` is the gate.
-
-Line endings are part of the policy: the maintained YAML is LF-only (`.gitattributes`
-declares `*.yaml text eol=lf`), and `--check` reads raw bytes so a CRLF file is
-reported as needing reformatting instead of being hidden by newline translation.
-The same check gates the staging trees (`python tools/knowledge/maintenance/format_yaml.py --check
-sources/2A` / `sources/2B`), so a band package already looks like a
-knowledge-base document before it is promoted.
-
-`reason` strings — the audit-taxonomy metadata such as `Deferred subsystem:
-psychology.`, `Out of scope: campaign.` or `dead` — are uniformly folded `>-`
-blocks, quoted or plain, short or long, so every reason value shares one
-style. `description` and `notes` fold only when the prose genuinely needs
-wrapping: short values that fit the accepted line width keep their single-line
-quotes (required for content such as `: `), while values longer than the
-target width — or a hard line past 120 characters — are folded. Plain-safe
-short values of the other keys stay as plain single lines.
+Descriptive prose uses folded blocks (`>-`) when wrapping is needed; literal
+blocks (`|`) are reserved for meaningful line breaks. Formatting preserves
+parsed values, IDs, key order, comments, anchors and aliases. Collection-shape
+rules are enforced by tests rather than repeated here.
 
 Use the repository formatter after changing maintained YAML:
 
@@ -389,56 +343,26 @@ python tools/knowledge/maintenance/format_yaml.py --write sources/knowledge
 python tools/knowledge/maintenance/format_yaml.py --check sources/knowledge
 ```
 
-`--check` parses every file and verifies semantic equivalence after formatting;
-`--write` changes only formatting. Review its diff before committing. It does
-not format `tests/specs/`, `outputs/`, generated files, or engine code. Do not
-run combat tests, parity, or benchmarks for a formatting-only change.
+`--check` parses every file and verifies semantic equivalence; `--write`
+changes only formatting. Review its diff before committing.
 
 ## Contract guards
 
-These read-only tools measure the knowledge base against itself. They are permanent
-(promoted out of the Grade 2a/2b ingestion pass) and each one takes `--tree` to check a
-staging tree with exactly the same rules before promotion.
+These read-only tools measure the knowledge base and its schemas. Some accept
+`--tree` to apply the same checks to a staging tree.
 
 ```powershell
-python tools/knowledge/audit_kb_conformance.py           # the KB; 0 deviations is the baseline
-python tools/knowledge/audit_kb_conformance.py --tree 2B # a staging tree, same checklist
-python tools/knowledge/derive_kb_contract.py             # re-measure the contract, then self-check
-python tools/knowledge/audit_schema_strictness.py        # editorial JSON Schemas vs the documents
-python tools/knowledge/audit_staging_contract.py         # the staged 2A/2B packages vs the same schemas
-python tools/knowledge/strip_rule_ref_restatements.py    # rule_ref rules must not restate their effect
-python tools/knowledge/maintenance/format_yaml.py --check sources/knowledge    # canonical formatting (LF, folded prose)
+python tools/knowledge/audit_kb_conformance.py
+python tools/knowledge/derive_kb_contract.py
+python tools/knowledge/audit_schema_strictness.py
+python tools/knowledge/maintenance/format_yaml.py --check sources/knowledge
 ```
 
-* `audit_kb_conformance.py` checks document, roster, profile, equipment-list and rule
-  shapes, the runtime contract, the binding vocabulary, `rule_ref` resolution and the
-  `rule_ids` listing. Its accepted key sets are the hand-written baseline **unioned with
-  the keys the KB itself carries**, so a key the KB legitimately uses is never reported as
-  invented; the tree under audit contributes nothing to that union.
-* `derive_kb_contract.py` re-measures those shapes from `sources/knowledge` and diffs a
-  tree against the measurement, catching a checklist that drifted from the data.
-* `audit_schema_strictness.py` reports how the editorial JSON Schemas relate to the
-  committed documents: loose nodes, unreachable definitions, unused enums.
-* `audit_staging_contract.py` validates the four documents of every *staged* band package
-  with those same schemas, names the fields the contract deliberately leaves open
-  (`sources[].manual`, `categories`, `grade`, `profiles[].source_path`) whose
-  values the knowledge base never uses, checks the staged catalogues — items, Hired Sword
-  and Dramatis profiles, market, magic and campaign documents — against the schema of the
-  KB document that will claim them at promotion (the classes
-  `sources/2B/promotion-schema-plan.md` decides on, now none in either tree), and lists the
-  files `normalize_names.py` would rewrite. A file promotion declares it leaves behind
-  (`staging_contract_audit.NOT_PROMOTED`) is named as a decision, not as a gap. Every pass
-  is a gate that stays green: `tools/ingestion/normalize_staging_for_promotion.py` closes
-  the catalogue one, the way `normalize_open_fields.py` and `normalize_names.py` close the
-  vocabulary and the naming.
-* `strip_rule_ref_restatements.py` enforces the shared-rule invariant above. It defaults
-  to every maintained tree and archives any retracted wording in
-  `sources/<tree>/retired-rule-restatements.md`.
-
-The Grade 2a/2b ingestion tooling (pipelines, source cross-audits, migrations, staged
-translation fillers) lives in `tools/ingestion/` and is **temporary**: that directory is
-deleted when the ingestion phase ends. See its README for the inventory, the caches it
-needs and the commands.
+The conformance audit checks document shapes, runtime classification,
+bindings and references, including rejecting `rule_ref` entries that duplicate
+shared prose. Contract derivation detects drift from canonical data; schema
+strictness finds loose or unused declarations. See
+[Repository tools](tools.md) for tool ownership and staging-only utilities.
 
 ## Where is the evidence?
 
@@ -533,10 +457,8 @@ For items the same path holds with the extra indirection step: band
 - **Campaign catalogue ≠ runtime.** `catalog/campaign/` is published data for
   the campaign runtime; do not load it as duel-rule implementation. The
   application consumes it through the validated loaders and `KnowledgePort`.
-  The remaining catalogue work is the price-collation review and the deferred
-  scope listed in [TODO](../TODO.md): collate every `cost` in
-  `equipment-access.yaml` against the Trading Post and convert real exceptions
-  to explicit `price_override` entries.
+  See the [campaign knowledge guide](../guides/campaign-knowledge.md) for
+  ownership and price-review rules.
 
 ## Validation loop
 
@@ -547,7 +469,6 @@ python tools/mordheim-utils.py verify --structural   # structure, connections, r
 python tools/mordheim-utils.py verify                # the above plus the semantic specs against the real engine
 python tools/mordheim-utils.py parity                # vectorized/native certification against the oracle
 python tools/mordheim-utils.py report rules          # per-rule status CSV in outputs/audit/
-python tools/mordheim-utils.py combine-kb            # flatten directories for a review pass
 ```
 
 See also [Modify the knowledge base](../guides/modify-knowledge-base.md),

@@ -18,8 +18,6 @@ COMMANDS = (
     "tests",
     "check-presentation",
     "run-ci",
-    "combine-kb",
-    "build-native",
     "doctor",
 )
 
@@ -87,7 +85,7 @@ def test_combat_lab_launches_the_lab_ui(cli, monkeypatch):
     assert calls == [[sys.executable, "-m", "mordheim_combat_lab", "ui"]]
 
 
-@pytest.mark.parametrize("name", ("combat-lab", "doctor", "build-native"))
+@pytest.mark.parametrize("name", ("combat-lab", "doctor"))
 def test_help_is_answered_without_running_anything(cli, monkeypatch, capsys, name):
     """`<command> --help` prints usage; it never launches an app or installs."""
     calls = _record_run(cli, monkeypatch)
@@ -171,14 +169,11 @@ def test_run_ci_executes_the_ci_validation_gates(cli, monkeypatch):
         calls.append((directory, list(argv)))
         return 0
 
-    staged = []
     monkeypatch.setattr(cli, "_run_in", fake_run_in)
     monkeypatch.setattr(cli, "_run_module", lambda *argv: calls.append((cli.REPO_ROOT, [sys.executable, "-m", *argv])) or 0)
     monkeypatch.setattr(cli, "_run", lambda *argv: calls.append((cli.REPO_ROOT, list(argv))) or 0)
-    monkeypatch.setattr(cli, "_stage_knowledge_assets", lambda: staged.append(True))
 
     assert cli.main(["run-ci"]) == 0
-    assert staged == [True]
     assert [command for _, command in calls] == [
         [sys.executable, str(cli.KNOWLEDGE_GENERATOR)],
         [sys.executable, str(cli.KNOWLEDGE_GENERATOR), "--check"],
@@ -203,7 +198,6 @@ def test_run_ci_executes_the_ci_validation_gates(cli, monkeypatch):
 
 def test_run_ci_stops_after_the_first_failure(cli, monkeypatch):
     monkeypatch.setattr(cli, "_run_in", lambda *_args: 1)
-    monkeypatch.setattr(cli, "_stage_knowledge_assets", lambda: pytest.fail("must not stage"))
 
     assert cli.main(["run-ci"]) == 1
 
@@ -242,21 +236,6 @@ def test_deterministic_scope_mirrors_the_coverage_gate_suites(cli):
     assert cli.SCOPE_PATHS["deterministic"] == DEFAULT_SUITES
 
 
-def test_combine_kb_forwards_to_the_kb_script(cli, monkeypatch):
-    calls = _record_run(cli, monkeypatch)
-    script = str(cli.COMBINE_KB_SCRIPT)
-    assert cli.main(["combine-kb", "sources/knowledge", "-o", "outputs/kb"]) == 0
-    assert calls == [
-        [sys.executable, script, "sources/knowledge", "-o", "outputs/kb"]
-    ]
-
-
-def test_build_native_editable_install(cli, monkeypatch):
-    calls = _record_run(cli, monkeypatch)
-    assert cli.main(["build-native"]) == 0
-    assert calls == [[sys.executable, "-m", "pip", "install", "-e", "."]]
-
-
 def test_doctor_reports_environment(cli, capsys):
     assert cli.doctor_command() == 0
     output = capsys.readouterr().out
@@ -264,43 +243,3 @@ def test_doctor_reports_environment(cli, capsys):
     assert "optimized combat backends:" in output
     assert "modular reference engine:" in output
     assert "Combat Lab:" in output
-
-
-def test_completion_offers_every_command(cli):
-    candidates = cli._command_candidates([])
-    assert set(candidates) == {name for name, _ in cli.COMMANDS}
-
-
-def test_completion_filters_the_command_name(cli):
-    assert cli._command_candidates(["bench"]) == ["benchmark"]
-    assert "parity" in cli._command_candidates(["par"])
-    assert cli._command_candidates(["doctor"]) == ["doctor"]
-
-
-def test_completion_introspects_lab_options_and_choices(cli):
-    # An empty trailing word models the cursor right after a space.
-    options = cli._command_candidates(["benchmark", ""])
-    assert "--deep" in options
-    assert "--simulation-sizes" in options
-    assert "--deep-modular-simulations" in cli._command_candidates(["benchmark", "--deep-"])
-    assert cli._command_candidates(["benchmark", "--backend", "nat"]) == ["native"]
-    assert cli._command_candidates(["benchmark", "--backend", ""]) == ["modular", "numpy", "native"]
-
-
-def test_completion_offers_the_report_kinds_and_their_options(cli):
-    assert cli._command_candidates(["report", ""]) == ["rules", "tests"]
-    assert cli._command_candidates(["report", "ru"]) == ["rules"]
-    assert "--review-status" in cli._command_candidates(["report", "rules", ""])
-    assert cli._command_candidates(["report", "tests", "--json"]) == []
-
-
-def test_completion_covers_tests_scope_values(cli):
-    assert cli._command_candidates(["tests", "--scope", "vec"]) == ["vectorized"]
-    assert cli._command_candidates(["tests", "--scope", "det"]) == ["deterministic"]
-    assert "all" in cli._command_candidates(["tests", "--scope", ""])
-    assert cli._command_candidates(["tests", "--scope=ver"]) == ["--scope=verification"]
-
-
-def test_completion_is_empty_for_unknown_commands(cli):
-    assert cli._command_candidates(["does-not-exist", "--x"]) == []
-    assert cli._command_candidates(["doctor", "--nope"]) == []

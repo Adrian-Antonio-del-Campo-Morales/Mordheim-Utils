@@ -10,7 +10,7 @@ La redacción de la fuente (EN y su traducción ES) se conserva aquí: la vista 
 cambia, porque ese texto ya se ignoraba al renderizar; el texto que se muestra sigue
 siendo el de la regla compartida de `sources/knowledge/catalog/rules/special-rules.yaml`.
 
-Regenerable con `python tools/knowledge/strip_rule_ref_restatements.py --tree 2B --write` (idempotente).
+El invariante se comprueba con `python tools/knowledge/audit_kb_conformance.py --tree 2B`.
 
 ## `bretonnian-buccaneers-sar` → `swabbies--never-gain-experience` (`shared-rule.never-gain-experience`)
 

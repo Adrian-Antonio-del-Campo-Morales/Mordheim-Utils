@@ -24,9 +24,8 @@ Checks per band:
      above on the same left margin), headings set in the decorative display
      face are decoded, and the figures of the three scanned KEP documents - which
      have no text layer at all - are compared with the readings recorded in
-     ``READ_OFF_PAGE`` (read off the page image, see
-     ``sources/2B/discrepancy-verdicts.md`` sections 5 and 6, reproducible with
-     ``tools/ingestion/read_scanned_costs.py``).
+     ``READ_OFF_PAGE`` (read off the page image; the readings and their method
+     are recorded in ``sources/2B/discrepancy-verdicts.md`` sections 5 and 6).
   3. Roster: min/max models are anchored to the band's own "CHOICE OF WARRIORS"
      section (the match whose leading words overlap the band name; last match
      as fallback) instead of the first match in the document. Both the
@@ -78,8 +77,10 @@ from urllib.parse import unquote
 import yaml
 
 # La lectura de la página —geometría, celdas, filas y listas de precio— vive en el
-# lector compartido con los cotejos de catálogo; aquí vive lo que es de este árbol:
+# lector compartido con los cotejos de catálogo (``tools/knowledge``: permanente,
+# no propio de esta fase); aquí vive lo que es de este árbol:
 # qué documento imprime cada paquete, qué se considera un hallazgo y su adjudicación.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "knowledge"))
 from printed_entries import PdfCorpus, cells, price_rows  # noqa: F401
 
 # Las palabras que la fuente imprime para un objeto del catálogo cuando no son las

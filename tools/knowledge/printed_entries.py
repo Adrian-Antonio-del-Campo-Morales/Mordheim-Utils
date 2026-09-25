@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
-"""Lector único de **entradas impresas** para el cotejo de fuentes de 2A/2B.
+"""Lector único de **entradas impresas** para el cotejo de fuentes.
 
-Los dos cotejos de catálogo —hirelings de 2B y Dramatis Personae de 2A— comparan
-lo que una fuente imprime con lo que el paquete declara. Antes cada uno leía la
-fuente a su manera, y el de 2A no la leía por entradas: partía del texto aplanado
-y atribuía a un personaje la tarifa y el rating del vecino de columna (Gwen
-aparecía con los 75/30 del Dark Jester y el Foole con los 70/35 de Sigmund, que
+Herramienta permanente del utillaje de la KB (`tools/knowledge`): nació en la fase de
+ingesta de 2A/2B y se promocionó aquí con sus tests (`test_printed_entries.py`), porque
+el cotejo de catálogo contra fuentes sobrevive a esa fase —la KB tiene catálogo de
+hired swords y Dramatis Personae de todos los grados—.
+
+Los cotejos de catálogo —hirelings de 2B y Dramatis Personae de 2A hoy, el que resuelva
+la KB mañana— comparan lo que una fuente imprime con lo que el paquete declara. Antes
+cada uno leía la fuente a su manera, y el de 2A no la leía por entradas: partía del
+texto aplanado y atribuía a un personaje la tarifa y el rating del vecino de columna
+(Gwen aparecía con los 75/30 del Dark Jester y el Foole con los 70/35 de Sigmund, que
 son los del personaje contiguo). Aquí vive una sola lectura, para que lo que los
 dos comparten no pueda divergir:
 

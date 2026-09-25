@@ -4,13 +4,11 @@
 workflow. The usual entry point is `python tools/mordheim-utils.py --help`.
 Specialized scripts are grouped by purpose, not language or caller.
 
-## Main entry point and shell
+## Main entry point
 
 | Tool | Purpose |
 |---|---|
 | `tools/mordheim-utils.py` | Launch applications and centralize tests, local CI, verification, reports, benchmarks, parity and diagnostics. |
-| `tools/completions/mordheim-utils.bash` | Bash completion for the launcher. |
-| `tools/completions/mordheim-utils.zsh` | Zsh completion for the launcher. |
 
 ## Knowledge base
 
@@ -25,19 +23,23 @@ Permanent validation and generation:
 | `tools/knowledge/generate_knowledge_web.py` | Generate deterministic JSON consumed by the web application. |
 | `tools/knowledge/normalize_open_fields.py` | Normalize controlled vocabulary in open editorial fields. |
 | `tools/knowledge/presentation_contract.py` | Build the presentable-text contract used by UI audits. |
-| `tools/knowledge/strip_rule_ref_restatements.py` | Remove duplicated prose when a rule already references shared text. |
+
+Catalogue-vs-source cotejo (permanent; the published catalogues are its target and the 2B staging tree a second invocation):
+
+| Tool | Purpose |
+|---|---|
+| `tools/knowledge/printed_entries.py` | Read a printed entry as the document prints it: geometry, currency and per-check coverage. |
+| `tools/knowledge/printed_wordings.py` | The single registry of printed wordings and delegated price lists. |
+| `tools/knowledge/source_documents.py` | Resolve a record's `source_refs` to the document that prints it and to its copy in the mirror, through `sources/knowledge/registry/source-documents.yaml`. |
+| `tools/knowledge/check_hireling_sources.py` | Compare the published hireling catalogues — Hired Swords and Dramatis Personae, every grade — with the documents that print them; `--tree 2b` runs the same cotejo over the staging tree. |
 
 Reproducible editorial maintenance:
 
 | Tool | Purpose |
 |---|---|
-| `tools/knowledge/maintenance/band_translation_status.py` | Report translation coverage by warband. |
-| `tools/knowledge/maintenance/combine_kb_yaml.py` | Combine YAML by directory for external review; also exposed as `combine-kb`. |
 | `tools/knowledge/maintenance/format_yaml.py` | Check or apply canonical YAML formatting without semantic changes. |
 | `tools/knowledge/maintenance/normalize_names.py` | Check or fix names and IDs according to KB conventions. |
 | `tools/knowledge/maintenance/price-collation.py` | Compare catalogue prices and produce reports using reviewed resolutions. |
-| `tools/knowledge/maintenance/rename_summary_keys.py` | Migrate historical `summary` keys to `effect` in old staging trees. |
-| `tools/knowledge/maintenance/translate_band.py` | Apply a reviewed translation file to one warband. |
 
 ## 2A/2B ingestion
 
@@ -48,15 +50,13 @@ are active. Its detailed inventory and removal condition are documented in
 | Tools | Purpose |
 |---|---|
 | `ingest_2a.py`, `ingest_2b.py` | Discover, download, extract, validate and report staging sources. |
-| `review_2a.py`, `review_2b.py` | Revalidate editorial values against extracted text. |
-| `audit_2a.py`, `audit_2a_sources.py`, `audit_2b.py`, `audit_2ab_fidelity.py` | Audit source fidelity, coverage and consistency. |
+| `audit_2a_sources.py` | Single 2A audit: content and numbers (costs, experience, roster, statlines, skill table) read structurally from the cached pages. |
+| `audit_2b.py`, `audit_2ab_fidelity.py` | Audit 2B source fidelity and the cross-tree coverage of both staging trees. |
 | `audit_2b_negative_tests.py` | Prove that the 2B auditor catches representative corruption. |
-| `check_2a_dramatis.py`, `check_2b_hirelings.py` | Compare Dramatis Personae and Hired Swords with their sources. |
-| `printed_entries.py`, `printed_wordings.py` | Shared geometric source reader and printed-wording registry. |
 | `normalize_staging_for_promotion.py` | Normalize packages into pre-promotion canonical shape. |
-| `migrate_2b_kb_schema.py`, `migrate_staging_records.py` | Migrate old records still present in staging. |
-| `fill_2a_es_effects.py`, `fill_2b_es_effects.py`, `fill_2b_prayer_lores.py`, `repair_2b_flow_i18n.py` | Complete or repair remaining targeted 2A/2B fields. |
-| `find_stub_sources.py`, `read_2b_kep_stats.py`, `read_scanned_costs.py` | Find incomplete sources and extract data requiring specialized readers. |
+
+Retired one-pass helpers (fill/migrate/repair/image-reading) were removed with their
+verdicts recorded in `sources/2A/*.md` and `sources/2B/*.md`.
 
 ## Verification
 
@@ -89,6 +89,9 @@ Their tests live in `tests/web/tools/`, not under `tools/`.
 
 Keep a tool only when it is owned by a current documented workflow, a test or
 CI gate, the central launcher, or a repeatable operation over active data.
-Remove one-off migrations and diagnostics after their result is materialized.
+Permanent audits own invariants after a migration: `audit_kb_conformance.py`
+rejects duplicated `rule_ref` prose, while schemas and
+`test_rule_prose_keys.py` reject the retired `summary` key. Remove one-off
+migrations and diagnostics after their result is materialized.
 Remove `tools/ingestion/` with its staging references after 2A/2B promotion is
 complete.

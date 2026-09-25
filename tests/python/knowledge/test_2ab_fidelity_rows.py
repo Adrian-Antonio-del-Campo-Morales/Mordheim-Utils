@@ -37,11 +37,11 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[3]
-# The 2A/2B ingestion tools live in tools/ingestion (temporary: see its README).
-TOOLS = ROOT / "tools" / "ingestion"
-
-if str(TOOLS) not in sys.path:
-    sys.path.insert(0, str(TOOLS))
+# El lector y el registro son permanentes (tools/knowledge); el cotejo que se
+# fija aquí es de la fase de ingesta (tools/ingestion).
+for TOOLS in (ROOT / "tools" / "knowledge", ROOT / "tools" / "ingestion"):
+    if str(TOOLS) not in sys.path:
+        sys.path.insert(0, str(TOOLS))
 
 pe = pytest.importorskip("printed_entries")
 # El registro compartido de las palabras que una fuente imprime para un objeto del

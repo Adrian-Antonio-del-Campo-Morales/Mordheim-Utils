@@ -14,8 +14,7 @@ cannot reach promotion:
   such as ``effect_i18n: {es: texto, con comas}`` is parsed by YAML with the
   ``es`` value ending at the first comma — the rest of the sentence becomes
   spurious sibling keys and is silently lost (this exact defect hit 30
-  scalars in staging and was repaired by
-  ``tools/ingestion/repair_2b_flow_i18n.py``).
+  scalars in staging; the one-pass repair tool was retired with its work done).
 * **Cross-band consistency**: two copies of the same English rule text must
   not carry different Spanish renderings (the same guard the active KB
   enforces in ``test_translation_consistency.py``).

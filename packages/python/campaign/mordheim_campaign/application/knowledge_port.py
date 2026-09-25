@@ -1,7 +1,7 @@
 """knowledge_port: canonical KB reads for the campaign manager.
 
 The authorised path is ``KB YAML → knowledge.loader → application → ui``
-(see ``docs/guides/use-campaign-knowledge.md``). This module is the
+(see ``docs/guides/campaign-knowledge.md``). This module is the
 ``application`` boundary of that path: it consumes exclusively the loaders in
 ``mordheim_knowledge`` and exposes flat DTOs for warbands, profiles, warband
 limits and available equipment. Tk widgets must not import ``mordheim_knowledge``

@@ -127,6 +127,7 @@ CATALOGUE_DOCUMENTS: tuple[tuple[str, str], ...] = (
     ("registry/aliases.yaml", "registry-aliases.yaml.schema.json"),
     ("registry/collections.yaml", "registry-collections.yaml.schema.json"),
     ("registry/rulesets.yaml", "registry-rulesets.yaml.schema.json"),
+    ("registry/source-documents.yaml", "registry-source-documents.yaml.schema.json"),
     ("registry/sources.yaml", "registry-sources.yaml.schema.json"),
     ("registry/runtime-schema.yaml", "registry-runtime-schema.yaml.schema.json"),
     ("registry/runtime-scope.yaml", "registry-runtime-scope.yaml.schema.json"),

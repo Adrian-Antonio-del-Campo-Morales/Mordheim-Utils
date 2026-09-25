@@ -1398,6 +1398,155 @@ lores:
     url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
     printed_page: 18
     section: Prayers of Prayers of Verena & Solkan
+- id: lore.prayers-of-taal-and-rhya
+  name: Prayers of Taal & Rhya
+  name_i18n:
+    es: Plegarias de Taal y Rhya
+  note: 'El Sacerdote Druida de Taal elige al azar una plegaria de esta lista. MIRROR of the KB lore.prayers-of-taal:
+    the six spells and their difficulties are identical (Stag''s Leap D7, Blessed Ale D5, Bears Paw D7,
+    Earthshudder D9, Tanglefoot D8, Summon Squirrels D7); at promotion, verify and map to the existing
+    lore instead of duplicating it.'
+  source_refs:
+  - manual: liber-malefic
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+    printed_page: 16
+    section: Prayers of Prayers of Taal & Rhya
+  spells:
+  - id: spell.prayers-of-taal-and-rhya.stag-s-leap
+    roll: '1'
+    name: Stag's Leap
+    name_i18n:
+      es: Salto del Ciervo
+    difficulty: 7
+    effect: >-
+      Many of Taal's priests wear a stag skull as a symbol of their devotion and the Forest Lord's
+      power can be used to emulate the speed and beauty of this magnificent beast. The Priest of
+      Taal may immediately move anywhere within 9", including into base-contact with the enemy, in
+      which case he counts as charging and gains a +1 Strength to his first round of attacks. If he
+      engages a fleeing enemy, in the close combat phase he will score one automatic hit at +1
+      Strength and then his opponent will flee again.
+    effect_i18n:
+      es: >-
+        Muchos de los sacerdotes de Taal llevan un cráneo de ciervo como símbolo de su devoción y el
+        poder del Señor del Bosque puede usarse para emular la velocidad y belleza de esta magnífica
+        bestia. El Sacerdote de Taal puede moverse inmediatamente a cualquier punto a 9" o menos,
+        incluido el contacto base con el enemigo, en cuyo caso cuenta como carga y gana +1 de Fuerza
+        en su primera ronda de ataques. Si alcanza a un enemigo en huida, en la fase de combate
+        cuerpo a cuerpo conseguirá un impacto automático con +1 de Fuerza y después su oponente
+        volverá a huir.
+  - id: spell.prayers-of-taal-and-rhya.blessed-ale
+    roll: '2'
+    name: Blessed Ale
+    name_i18n:
+      es: Cerveza Bendecida
+    difficulty: 5
+    effect: >-
+      Like his brother Ulric, Taal has a great appetite for the strong ales of the Northern Empire.
+      During the summer equinox each Priest opens one keg of ale (at least!) in Taal's honour.
+      Drinking a flask of Taal-blessed ale (the priest is assumed to carry as many flasks as are
+      needed) may heal any one model within 2" of the Priest (including himself). The warrior is
+      restored to his full quota of Wounds. In addition, any living enemy models (not Undead or
+      Possessed) within 2" of the Priest will lose 1 Attack during the next round of combat due to
+      the potent fumes of the ale.
+    effect_i18n:
+      es: >-
+        Como su hermano Ulric, Taal tiene un gran apetito por las cervezas fuertes del Imperio del
+        Norte. Durante el solsticio de verano cada Sacerdote abre un barril de cerveza (¡al menos!)
+        en honor de Taal. Beber un frasco de cerveza bendecida por Taal (se asume que el sacerdote
+        lleva tantos frascos como hagan falta) puede sanar a una miniatura cualquiera a 2" o menos
+        del Sacerdote (incluido él mismo). El guerrero recupera toda su cuota de Heridas. Además,
+        cualquier miniatura enemiga viva (no No Muerta ni Poseída) a 2" o menos del Sacerdote
+        perderá 1 Ataque durante la siguiente ronda de combate debido a los potentes vapores de la
+        cerveza.
+  - id: spell.prayers-of-taal-and-rhya.bears-paw
+    roll: '3'
+    name: Bears Paw
+    name_i18n:
+      es: Pata de Oso
+    difficulty: 7
+    effect: >-
+      Many an armoured knight has been knocked to the ground by the surprising Strength of the
+      followers of Taal. Although traditionally called 'Bears Paw' this spell is sometimes referred
+      to as 'Moose Breath' by those who have felt its power. The Priest invokes the blessing of Taal
+      on himself or a single friendly model within 6". The target receives a bonus of +2 to his
+      Strength until the Priest's next turn.
+    effect_i18n:
+      es: >-
+        A más de un caballero armado lo han derribado al suelo la sorprendente Fuerza de los
+        seguidores de Taal. Aunque tradicionalmente se llama 'Pata de Oso', este hechizo a veces es
+        llamado 'Aliento de Alce' por quienes han sentido su poder. El Sacerdote invoca la bendición
+        de Taal sobre sí mismo o sobre una única miniatura amiga a 6" o menos. El objetivo recibe un
+        bonus de +2 a su Fuerza hasta el siguiente turno del Sacerdote.
+  - id: spell.prayers-of-taal-and-rhya.earthshudder
+    roll: '4'
+    name: Earthshudder
+    name_i18n:
+      es: Sacudida de la Tierra
+    difficulty: 9
+    effect: >-
+      Taal's domain includes both the earth and the skies and his power can reach out even into the
+      dark streets of Mordheim. When his name is invoked three times and the blood of an eagle is
+      poured on the ground, the Lord of the Wild will cause thunder to rumble and the earth to
+      shake. The spell is cast on a single building within 4". Any enemy models touching the
+      building will suffer a single Strength 3 hit. In addition the building will collapse and any
+      models on it will count as having fallen to the ground (for example a model falling 5" to the
+      tabletop must pass two Initiative tests to avoid taking D3 Strength 5 hits.) Remove the
+      terrain feature from the board for the rest of the game.
+    effect_i18n:
+      es: >-
+        El dominio de Taal incluye tanto la tierra como los cielos y su poder puede alcanzar incluso
+        las calles oscuras de Mordheim. Cuando su nombre se invoca tres veces y la sangre de un
+        águila se derrama en el suelo, el Señor de lo Salvaje hará retumbar el trueno y temblar la
+        tierra. El hechizo se lanza sobre un único edificio a 4" o menos. Las miniaturas enemigas
+        que toquen el edificio sufrirán un único impacto de Fuerza 3. Además, el edificio se
+        derrumbará y cualquier miniatura sobre él contará como caída al suelo (por ejemplo, una
+        miniatura que caiga 5" hasta la superficie de juego debe superar dos tiradas de Iniciativa
+        para evitar sufrir D3 impactos de Fuerza 5). Retira la escenografía del tablero por el resto
+        de la partida.
+  - id: spell.prayers-of-taal-and-rhya.tanglefoot
+    roll: '5'
+    name: Tanglefoot
+    name_i18n:
+      es: Pies Enredados
+    difficulty: 8
+    effect: >-
+      It is said that when Taal walked the earth, living things would spring up behind him as he
+      passed. A portion of his power can be summoned by his followers to help regrow forests and aid
+      in the return of the land to its natural state. Plants, vines and even small trees burst forth
+      from the earth, hindering all those who attempt to move through them. All models (friend as
+      well as foe) with the exception of friendly Taalites within 12" of the Priest can only move at
+      half their Movement until the next shooting phase.
+    effect_i18n:
+      es: >-
+        Se dice que cuando Taal caminaba por la tierra, los seres vivos brotaban a su paso. Una
+        parte de su poder puede ser invocada por sus seguidores para ayudar a reforestar y
+        contribuir a que la tierra vuelva a su estado natural. Plantas, enredaderas e incluso
+        pequeños árboles brotan de la tierra, dificultando el avance de todos los que intenten
+        atravesarlos. Todas las miniaturas (amigas y enemigas), con la excepción de los taalitas
+        amigas, a 12" o menos del Sacerdote solo pueden moverse a la mitad de su Movimiento hasta la
+        siguiente fase de disparo.
+  - id: spell.prayers-of-taal-and-rhya.summon-squirrels
+    roll: '6'
+    name: Summon Squirrels
+    name_i18n:
+      es: Invocar Ardillas
+    difficulty: 7
+    effect: >-
+      Taal is the master of all beasts both great and small. Those who anger him may be mauled by a
+      mountain lion or drowned in a flood caused by an angry beaver. With this spell the Priest
+      invokes the wrath of the Lord of Beasts, summoning forth dozens upon dozens of enraged
+      squirrels. The furious rodents will assault one enemy within 12" of the Priest, crawling
+      inside the warrior's clothing and armour, pelting him with nuts and causing numerous tiny
+      bites and welts. The target suffers 2D6 Strength 1 hits. No armour saves allowed.
+    effect_i18n:
+      es: >-
+        Taal es el señor de todas las bestias, grandes y pequeñas. Quienes le enfurecen pueden ser
+        despedazados por un puma o ahogados en una inundación causada por un castor furioso. Con
+        este hechizo el Sacerdote invoca la ira del Señor de las Bestias, convocado decenas y
+        decenas de ardillas enfurecidas. Los furiosos roedores asaltan a un enemigo a 12" o menos
+        del Sacerdote, arrastrándose dentro de la ropa y la armadura del guerrero, apedreándolo con
+        nueces y causando numerosos mordiscos diminutos y ronchas. El objetivo sufre 2D6 impactos de
+        Fuerza 1. Sin tiradas de salvación por armadura permitidas.
 pending_lores: []
 effect_ids:
 - campaign.magic.cast

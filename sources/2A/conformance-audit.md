@@ -84,7 +84,7 @@ ser la redacción **larga de la fuente** (p. ej. `dwarf-slayer-cult-web/band--ha
 216 caracteres frente a los 103 de `shared-rule.hard-to-kill`).
 
 **Decisión (usuario, 2026-09-15):** dejar la forma KB exacta, es decir **quitar la prosa
-local**. Aplicada con `tools/knowledge/strip_rule_ref_restatements.py` (idempotente; aborta
+local**. El invariante queda cubierto por `tools/knowledge/audit_kb_conformance.py` (falla
 si el cambio no se limita a esas dos claves), que además **archiva la redacción retirada**
 (EN + traducción ES) en:
 
@@ -320,7 +320,7 @@ python tools/ingestion/audit_2a_sources.py --all           # incluye los adjudic
 python -m pytest tests/python/knowledge/test_2a_source_audit.py   # el auditor falla de verdad (5 inyecciones)
 python build/cache/probe_2a_coverage.py                    # cobertura: hechizos y DR/hirelings
 python build/cache/negative_test_2a_hirelings.py           # pruebas negativas (restauran)
-python tools/knowledge/strip_rule_ref_restatements.py      # idempotente: 0 a retirar
+python tools/knowledge/audit_kb_conformance.py --tree 2A  # incluye prosa duplicada en rule_ref
 python tools/ingestion/ingest_2a.py validate
 python -m pytest tests/python/knowledge tests/python/web -q
 ```

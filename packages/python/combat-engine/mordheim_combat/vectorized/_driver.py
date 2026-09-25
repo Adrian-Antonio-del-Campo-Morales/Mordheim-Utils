@@ -573,7 +573,7 @@ def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
         raise RuntimeError("native combat backend is not available")
     from mordheim_combat.kernel import EFFECT_VALUE_FIELDS
     if getattr(_combat_native, 'N_EFFECT_FIELDS', None) != len(EFFECT_VALUE_FIELDS):
-        raise RuntimeError("native combat effect layout is stale; rebuild with tools/mordheim-utils.py build-native")
+        raise RuntimeError("native combat effect layout is stale; rebuild with `python -m pip install -e .`")
     from mordheim_combat.kernel import compile_duel_plan
 
     plan = compile_duel_plan(request.first, request.second)

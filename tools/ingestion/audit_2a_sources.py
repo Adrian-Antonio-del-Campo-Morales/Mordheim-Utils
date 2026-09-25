@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 """Source-fidelity audit of sources/2A against the cached mordheimer.net pages.
 
-``audit_2a.py`` checks names, costs, experience, roster, statlines and the skill
-table. It does not check whether the *content* of a package matches the page: the
-rules, the special skills, the special equipment and the equipment-list tables.
-This audit closes that gap using the cached HTML
-(``build/cache/2a-sources/pages/<id>.html``), whose headings and tables keep the
-source's structure:
+This is the single 2A auditor. It checks the *content* of a package against the
+cached page (``build/cache/2a-sources/pages/<id>.html``, whose headings and
+tables keep the source's structure) — the rules, the special skills, the special
+equipment and the equipment-list tables — and, ported from the retired flat-text
+auditor (``audit_2a.py``, regex over the token stream), the **numbers**: profile
+costs and starting experience, the roster limits, the statlines cell-by-cell and
+the skill table by column. Where the old auditor searched a window of the flat
+text (which mixed the column next door), the ported checks read the page where
+it prints the figure: the fighter block of each profile, its own section and the
+tables it heads.
 
 * ``<h3>`` under **Special Skills** → a rule with that name must exist.
 * ``<h3>`` under **Special Equipment** → the item must exist in a catalog.
@@ -50,7 +54,10 @@ import yaml
 # El lector de entradas impresas: encabezados, tramos y tablas por estructura. Es
 # el mismo que coteja los hirelings y los Dramatis Personae, y sustituye aquí a las
 # expresiones regulares sobre el HTML (que perdían las celdas con etiquetas dentro
-# y los encabezados con enlaces).
+# y los encabezados con enlaces). Vive en ``tools/knowledge``: es permanente, no
+# propio de esta fase.
+sys.path.insert(0, os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "knowledge"))
 import printed_entries as reader
 
 # Las palabras con que la página imprime el nombre de un objeto que el catálogo
@@ -308,6 +315,11 @@ LEDGER = reader.Ledger({
     'rules': ('bandas', 'nombres'),
     'clarifications': ('bandas', 'aclaraciones'),
     'magic': ('secciones', 'conjuros'),
+    'costs': ('perfiles', 'tarifas'),
+    'experience': ('perfiles', 'inicios'),
+    'roster': ('bandas', 'límites'),
+    'statlines': ('perfiles', 'cifras'),
+    'skill-tables': ('bandas', 'filas'),
 })
 
 
@@ -1147,6 +1159,235 @@ def number_words(text: str) -> str:
                   lambda m: NUMBER_WORDS.get(m.group(1), m.group(0)), text)
 
 
+# The skill-access vocabulary the packages keep. A column of the skill table the
+# source prints is one of these; anything else is not a skill list.
+VALID_SKILL_TOKENS = ('combat', 'shooting', 'academic', 'strength', 'speed', 'special')
+
+# The figure a page prints as a word ("a minimum of three models"); the roster
+# check reads both printings. Numbers beyond twenty never appear as words.
+REVERSED_NUMBER_WORDS = {word: int(number) for number, word in NUMBER_WORDS.items()
+                         if number.isdigit()}
+
+
+def check_costs_and_experience(band_id: str, doc: reader.HtmlDocument,
+                               heads: list[tuple[int, str, int]],
+                               profiles: list[dict], note) -> None:
+    """Profile cost and starting experience, ported from the retired flat-text audit.
+
+    The old auditor searched ``<name> … <N> gold crowns to hire`` and
+    ``<name> starts with <N> experience`` in a window of the token stream, which
+    attributed to a profile the figure the column next door printed. Here the
+    figure is read where the page prints it: the profile's own fighter section
+    (its heading carries the hire line) or, when the page writes the hire line
+    as prose, the section the profile is hired in.
+    """
+    for profile in profiles:
+        name = str(profile.get('name') or '')
+        pid = str(profile.get('id') or '')
+        section = None
+        for index, (level, head, _pos) in enumerate(heads):
+            if level == 3 and (squash(norm(head)) == squash(norm(name))
+                               or squash(norm(head)) == squash(norm(pid))):
+                section = section_text(doc, heads, index)
+                break
+        if not section:
+            # The page has no fighter section for this profile (a henchmen group
+            # priced in prose): declared, not compared.
+            LEDGER.unobtainable('costs')
+            LEDGER.unobtainable('experience')
+            continue
+        # The hire line, in either currency the pages print and in both forms
+        # they use: "60 gold crowns to hire" and "Hire Fee: 60 gold crowns".
+        fees = [int(m.group(1)) for m in re.finditer(
+            r'(\d{1,4})\s*(?:gcs?|gold\s+crowns?|crowns?|wt|warp\s+tokens?)\s+to\s+hire',
+            section, re.I)]
+        fees += [int(m.group(1)) for m in re.finditer(
+            r'hire\s+fee:?\s*(\d{1,4})\s*(?:gcs?|gold\s+crowns?|crowns?|wt|warp\s+tokens?)',
+            section, re.I)]
+        if fees:
+            LEDGER.cover('costs')
+            agrees = int(profile.get('cost')) in fees
+            LEDGER.count('costs', ok=agrees)
+            if not agrees:
+                note('cost-mismatch',
+                     f'{pid} ({name}): page={sorted(set(fees))} '
+                     f'yaml={profile.get("cost")}')
+        starts = [int(m.group(1)) for m in re.finditer(
+            r'starts?\s+with\s+(\d{1,3})\s+experience', section, re.I)]
+        if starts:
+            LEDGER.cover('experience')
+            agrees = int(profile.get('experience')) in starts
+            LEDGER.count('experience', ok=agrees)
+            if not agrees:
+                note('experience-mismatch',
+                     f'{pid} ({name}): page={sorted(set(starts))} '
+                     f'yaml={profile.get("experience")}')
+
+
+def check_roster_limits(band_id: str, heads: list[tuple[int, str, int]],
+                        doc: reader.HtmlDocument, band_doc: dict, note) -> None:
+    """Roster minimum, maximum and starting gold against the page's own numbers.
+
+    Ported from the flat-text audit. The needle is the section the page titles
+    for warband creation (any of the printings it uses); a figure found there
+    that the package does not record is a mismatch, and a needle that is not on
+    the page stays a declared gap instead of a silent pass.
+    """
+    roster = band_doc.get('roster') or {}
+    needle = next((index for index, (level, head, _pos) in enumerate(heads)
+                   if level == 2 and ('warband creation' in norm(head)
+                                      or 'creating the warband' in norm(head)
+                                      or 'starting the warband' in norm(head))), None)
+    if needle is None:
+        return
+    LEDGER.cover('roster')
+    section = section_text(doc, heads, needle)
+    # The figures the section prints, as digits or as words ("minimum of three
+    # models"), which is how the pages write the roster allowance.
+    numbers = [int(m.group(1)) for m in re.finditer(r'(?<!\S)(\d{1,3})(?!\S*%)', section)]
+    numbers += [REVERSED_NUMBER_WORDS[w] for w in re.findall(r'[a-z]+', section)
+                if w in REVERSED_NUMBER_WORDS]
+    problems: list[str] = []
+    for key in ('minimum_models', 'maximum_models', 'starting_gold'):
+        value = roster.get(key)
+        if value is None:
+            continue
+        if int(value) not in numbers:
+            problems.append(f'{key}={value}')
+    LEDGER.count('roster', ok=not problems)
+    if problems:
+        note('roster-mismatch', ', '.join(problems))
+
+
+def check_statlines(band_id: str, doc: reader.HtmlDocument,
+                    profiles: list[dict], note) -> None:
+    """Statlines cell-by-cell, ported from the flat-text audit to the reader.
+
+    The old auditor re-parsed ``<div class="fighter">`` with regexes; the same
+    read is now the reader's (``profile_tables``), already guarded and used by
+    the cross-tree fidelity audit. A row whose name matches a profile of the
+    package is compared value by value; the '*' the source prints for a random
+    movement matches any recorded value, and a printed row with no profile is a
+    note, not a silence.
+    """
+    characteristic_order = ('m', 'ws', 'bs', 's', 't', 'w', 'i', 'a', 'ld')
+    by_key: dict[str, dict] = {}
+    for profile in profiles:
+        by_key[squash(norm(profile.get('name') or profile.get('id')))] = profile
+        by_key[squash(norm(profile.get('id')))] = profile
+    printed = profile_tables(doc)
+    if not printed:
+        return
+    matched: set[str] = set()
+    for row_name, values in printed:
+        key = squash(norm(row_name))
+        profile = by_key.get(key)
+        if profile is None and key:
+            hits = [p for wanted, p in by_key.items()
+                    if wanted and (wanted.startswith(key) or key.startswith(wanted))]
+            profile = hits[0] if len(hits) == 1 else None
+        if profile is None:
+            continue
+        matched.add(str(profile.get('id')))
+        recorded = profile.get('characteristics') or {}
+        LEDGER.cover('statlines')
+        diffs: list[str] = []
+        for characteristic, printed_value in zip(characteristic_order, values):
+            own = str(recorded.get(characteristic, ''))
+            if printed_value == '*' or not own:
+                continue     # a random movement, or a characteristic not modelled
+            LEDGER.count('statlines', ok=re.sub(r'\(.*?\)', '', printed_value).strip() == own)
+            # A parenthesised print is a variant, not a tenth value: «3(4)» is 3.
+            if re.sub(r'\(.*?\)', '', printed_value).strip() != own:
+                diffs.append(f'{characteristic}: yaml={own} page={printed_value}')
+        if diffs:
+            note('statline-mismatch', f'{profile.get("id")}: {"; ".join(diffs)}')
+    for profile in profiles:
+        if str(profile.get('id')) not in matched:
+            note('statline-unverified',
+                 f'{profile.get("id")}: no printed row matched on the page')
+
+
+def check_skill_table(band_id: str, doc: reader.HtmlDocument,
+                      heads: list[tuple[int, str, int]],
+                      profiles: list[dict], note) -> None:
+    """The skill table read by column, ported from the flat-text audit.
+
+    The table keeps the column identity the flat extraction lost: a header row
+    names the skill lists and a '✓' under a column grants access to it. The
+    row's name is the first cell (the flat auditor's ROW_ALIASES are subsumed by
+    the containment match). Henchmen carry empty access, so a '✓' on their row
+    is a mismatch.
+    """
+    rows = doc.rows()
+    # The skill table is the one whose header names at least one skill list and
+    # no characteristic: characteristic tables belong to the statlines check.
+    # A column is remembered for the first skill list its title prints ("Combat
+    # Heroes", "Shooting & Speed"), as the flat auditor read them.
+    table_start = None
+    token_by_column: dict[int, str] = {}
+    for index, row in enumerate(rows):
+        if not row.header:
+            continue
+        if characteristic_columns(row.cells) is not None:
+            continue
+        for position, cell in enumerate(row.cells):
+            title = reader.normalized_key(cell)
+            token = next((t for t in VALID_SKILL_TOKENS if t in title), None)
+            if token and token not in token_by_column.values():
+                token_by_column[position] = token
+        if token_by_column:
+            table_start = index
+            break
+    if table_start is None:
+        return
+    LEDGER.cover('skill-tables')
+    for row in rows[table_start + 1:]:
+        if row.header or row.table != rows[table_start].table:
+            break
+        if len(row.cells) < 2 or not row.cells[0]:
+            continue
+        name = norm(row.cells[0])
+        if name.endswith('only'):
+            continue     # a restricted-list heading, not a skill row
+        access = [token_by_column[position] for position in sorted(token_by_column)
+                  if position < len(row.cells) and '✓' in row.cells[position]]
+        profile = matching_profile(name, profiles)
+        if profile is None:
+            LEDGER.unobtainable('skill-tables')
+            note('skill-row-unmatched', name)
+            continue
+        agrees = list(profile.get('skill_access') or []) == access
+        LEDGER.count('skill-tables', ok=agrees)
+        if not agrees:
+            note('skill-access-mismatch',
+                 f'{profile.get("id")}: yaml={profile.get("skill_access")} '
+                 f'page={access}')
+
+
+def matching_profile(name: str, profiles: list[dict]) -> dict | None:
+    """The profile the skill-table row names, or None when not unambiguous.
+
+    The flat auditor's ROW_ALIASES ("Wolfman" -> "Werewolf", "Petty Thieves" ->
+    "Petty Thief") are the word-containment case: either direction, and only
+    when exactly one candidate qualifies.
+    """
+    exact = [p for p in profiles
+             if squash(norm(p.get('name') or '')) == name
+             or squash(norm(p.get('id') or '')) == name]
+    if exact:
+        return exact[0]
+    name_words = set(name.split())
+    hits: list[dict] = []
+    for profile in profiles:
+        words = set(norm(profile.get('name') or profile.get('id') or '').split())
+        if not words:
+            continue
+        if (name_words <= words or words <= name_words) and name_words | words:
+            hits.append(profile)
+    return hits[0] if len(hits) == 1 else None
+
+
 def check_rule_clarifications(band_id: str, doc: reader.HtmlDocument,
                               heads: list[tuple[int, str, int]],
                               rules: list[dict], note) -> None:
@@ -1237,6 +1478,18 @@ def check_band(band_id: str, items: dict[str, str]) -> list[dict]:
         pname = str(profile.get('name') or pid)
         if norm(pname) not in flat:
             note('roster-name', pname)
+
+    # --- 1b. numbers (ported from the retired flat-text auditor) -------------
+    # The numbers the packages record —costs, starting experience, roster
+    # limits, statlines, skill access— are compared with the page as well; the
+    # flat-text auditor that used to check them read a window of the token
+    # stream, which attributed to a profile the figure of the column next door.
+    profiles: list[dict] = [p for doc in docs(f'{BANDS}/{band_id}/profiles.yaml')
+                            for p in doc.get('profiles') or []]
+    check_costs_and_experience(band_id, page_doc, heads, profiles, note)
+    check_roster_limits(band_id, heads, page_doc, band_doc, note)
+    check_statlines(band_id, page_doc, profiles, note)
+    check_skill_table(band_id, page_doc, heads, profiles, note)
 
     # --- 2. special skills (h3s between the "Special Skills" h2 and the next h2) --
     # A skill list may be ingested as one rule per skill or as a single band rule
