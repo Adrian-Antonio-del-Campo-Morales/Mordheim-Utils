@@ -2,12 +2,6 @@ schema_version: 2
 ruleset: mordheim
 catalog: rules-racial-maximums
 status: published
-# Racial characteristic maximums: single source of truth for the maximum
-# characteristics per race. No YAML inlines these statlines as text: warband
-# rules and campaign advances reference the entries by their stable id
-# (campaign.limit.racial-maximum.*).
-# Source: mordheimer.net, section Campaigns / Experience / Characteristic
-# Increase / Racial Maximum Characteristics.
 racial_maximums:
 - id: campaign.limit.racial-maximum.human
   applies_to: profile
@@ -535,3 +529,23 @@ racial_maximums:
     section: Campaigns / Experience / Characteristic Increase / Racial Maximum Characteristics
     url: https://mordheimer.net/docs/campaigns/experience
   note: Other Beastmen profiles.
+- id: campaign.limit.racial-maximum.troll
+  applies_to: profile
+  profile: troll
+  characteristics:
+    movement: 6
+    weapon_skill: 6
+    ballistic_skill: 3
+    strength: 6
+    toughness: 5
+    wounds: 5
+    initiative: 4
+    attacks: 6
+    leadership: 6
+  note: 'The Sealed City (Brood of Ghurash): the supplement prints the Troll maximums for characteristic
+    increases.'
+  source_refs:
+  - manual: broheim.net
+    printed_page: 1
+    section: Characteristic Increase
+    url: https://broheim.net/downloads/warbands/supplement/sealedcity/Brood Of Ghurash.pdf

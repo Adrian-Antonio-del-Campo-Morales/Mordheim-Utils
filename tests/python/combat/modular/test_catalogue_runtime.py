@@ -37,6 +37,13 @@ def test_modular_runtime_rejects_a_manually_injected_lance():
 
 
 def test_every_legal_profile_can_execute_a_complete_scalar_round():
+    # Profiles the runtime scope excludes (a vehicle, a watercraft and a creature
+    # whose printed line has no Initiative) never reach this pipeline; they are
+    # declared with their reason in registry/runtime-scope.yaml.
+    exclusions = {
+        (str(row["band_id"]), str(row["profile_id"]))
+        for row in load_runtime_scope("mordheim").get("profile_exclusions") or ()
+    }
     opponent = compile_fighter(FighterBuild(
         "mordheim", Characteristics(3, 3, 3, 1, 3, 1),
     ))
@@ -44,6 +51,8 @@ def test_every_legal_profile_can_execute_a_complete_scalar_round():
     for collection in ("mordheim", "trollheim"):
         for band in load_bands(collection):
             for profile in band.profiles:
+                if (str(band.band["id"]), str(profile["id"])) in exclusions:
+                    continue
                 fighter = compile_fighter(profile_build(
                     collection, band.band["id"], profile["id"],
                 ))
@@ -52,7 +61,9 @@ def test_every_legal_profile_can_execute_a_complete_scalar_round():
                 result = resolve_round(fighter, opponent, state, dice)
                 assert result.state.round_index == 1
                 executed += 1
-    assert executed == 534
+    # Every profile of both collections but the three declared exclusions
+    # (534 before T07 promoted the 2A/2B bands).
+    assert executed == 1053
 
 
 def test_every_execution_mechanism_can_enter_the_scalar_round_pipeline():

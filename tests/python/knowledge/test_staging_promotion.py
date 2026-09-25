@@ -4,9 +4,10 @@ The passes of ``staging_promotion`` give the staged trees the *shape* of the
 knowledge base; ``staging_promotion.promote`` merges them into a destination
 root. These tests are the pins of that second half:
 
-* a preview writes nothing, anywhere;
-* a destination that starts empty is promoted whole, and the knowledge base and
-  the staged trees stay byte for byte as they were;
+* a preview writes nothing, anywhere, whether its destination is the live KB (a
+  second promotion, which must have no edit left to make) or an empty root;
+* a promotion writes inside its destination only, and the knowledge base and the
+  staged trees stay byte for byte as they were;
 * a second promotion of the same tree changes nothing;
 * the identity decisions of T04 reach the destination (the declared variants,
   the item redirects, the ``-miracle-workers`` suffix of the three priests with
@@ -18,7 +19,10 @@ root. These tests are the pins of that second half:
 
 ``promote`` reads the staged trees through the normalisation passes, so every
 case here works on the trees as they are checked out; the write lands in a
-``tmp_path`` destination and never in ``sources/knowledge``.
+``tmp_path`` destination and never in ``sources/knowledge``. The decisions T04
+accepted are asserted where T07 put them, on the live knowledge base itself: a
+promotion is a delta against its destination, so once the KB carries a record a
+fresh destination receives only what the KB still lacks.
 """
 from __future__ import annotations
 
@@ -69,7 +73,7 @@ def campaigns(destination: Path) -> dict[str, dict]:
 
 @pytest.fixture(scope="module")
 def promoted(tmp_path_factory) -> dict:
-    """A temporary destination, promoted from an empty root."""
+    """A temporary destination, promoted while the KB and the trees stay put."""
     before = digests()
     root = tmp_path_factory.mktemp("promotion")
     plan = promotion.promote(root)
@@ -78,12 +82,20 @@ def promoted(tmp_path_factory) -> dict:
     return {"root": root, "plan": plan, "written": written, "before": before, "after": digests()}
 
 
-def test_a_preview_writes_nothing() -> None:
-    """Planning a promotion is a read: no file of the trees or the KB moves."""
+def test_a_preview_writes_nothing(tmp_path) -> None:
+    """Planning a promotion is a read: no file of the trees or the KB moves.
+
+    T07 merged the staged trees into the live knowledge base, so the two halves
+    of the original guard are separate now. The live destination is fully
+    promoted — a second promotion has nothing left to edit — while a root that
+    starts empty still has the whole band side of the promotion to write.
+    """
     before = digests()
     plan = promotion.promote()
     assert plan.actions, "a promotion that previews no record is not a preview"
-    assert plan.edits, "the KB promotion of an unmerged staging tree must have work to do"
+    assert plan.edits == [], "the KB is merged: a second promotion must not edit it"
+    empty = promotion.promote(tmp_path)
+    assert empty.edits, "an empty destination still has the promotion to do"
     assert digests() == before
 
 
@@ -142,9 +154,9 @@ def test_the_declared_decisions_are_the_ones_t04_accepted() -> None:
     }
 
 
-def test_the_item_decisions_reach_the_destination(promoted) -> None:
+def test_the_item_decisions_reach_the_destination() -> None:
     """Variants are published, redirects are not, and their provenance is kept."""
-    published = items(promoted["root"])
+    published = items(KNOWLEDGE)
     for variant in promotion.ITEM_VARIANTS:
         assert variant in published, variant
     for redirected in ("rope_and_hook", "elven_bow", "wardog", "dueling_pistol"):
@@ -158,14 +170,14 @@ def test_the_item_decisions_reach_the_destination(promoted) -> None:
     )
 
 
-def test_the_three_priests_and_every_reference_move_together(promoted) -> None:
+def test_the_three_priests_and_every_reference_move_together() -> None:
     """The profile, its rules and its campaign entry share the new suffix."""
     profiles = {
         str(profile["id"]): profile
-        for path in sorted((promoted["root"] / "catalog" / "hirelings" / "hired-swords").glob("*.yaml"))
+        for path in sorted((KNOWLEDGE / "catalog" / "hirelings" / "hired-swords").glob("*.yaml"))
         for profile in read(path).get("profiles") or []
     }
-    entries = campaigns(promoted["root"])
+    entries = campaigns(KNOWLEDGE)
     for priest in PRIESTS:
         assert priest in profiles, priest
         assert priest in {entry["profile_id"] for entry in entries.values()}, priest
@@ -174,11 +186,11 @@ def test_the_three_priests_and_every_reference_move_together(promoted) -> None:
         assert entry["id"] == f"campaign.hireling.hired-sword.{priest.split('.', 2)[2]}"
 
 
-def test_taal_and_rhya_keeps_its_prose_and_its_spells(promoted) -> None:
+def test_taal_and_rhya_keeps_its_prose_and_its_spells() -> None:
     """The variant is published whole, with the ruling in its note."""
     staged = read(ROOT / "sources" / "2B" / "catalog" / "magic-2b.yaml")
     source = next(lore for lore in staged["lores"] if lore["id"] == TAAL)
-    destination = read(promoted["root"] / "catalog" / "campaign" / "magic.yaml")
+    destination = read(KNOWLEDGE / "catalog" / "campaign" / "magic.yaml")
     lore = next(candidate for candidate in destination["lores"] if candidate["id"] == TAAL)
     assert [spell["id"] for spell in lore["spells"]] == [spell["id"] for spell in source["spells"]]
     assert [spell["effect"] for spell in lore["spells"]] == [spell["effect"] for spell in source["spells"]]
@@ -193,9 +205,9 @@ def test_taal_and_rhya_keeps_its_prose_and_its_spells(promoted) -> None:
     assert [row["profile_id"] for row in rows] == ["hireling.hired-sword.druid-priest-of-taal"]
 
 
-def test_local_prices_restrictions_and_currencies_survive(promoted) -> None:
+def test_local_prices_restrictions_and_currencies_survive() -> None:
     """No gold-crown normalisation: warp tokens, dinars and band prices stay."""
-    market = read(promoted["root"] / "catalog" / "campaign" / "trading-post.yaml")
+    market = read(KNOWLEDGE / "catalog" / "campaign" / "trading-post.yaml")
     entries = {str(entry["id"]): entry for entry in market["items"]}
     # The KB entry of another item keeps its own price, availability and id.
     assert entries["campaign.trading-post.club-mace-or-hammer"]["price"] == {"base_gc": 3}
@@ -224,7 +236,7 @@ def test_local_prices_restrictions_and_currencies_survive(promoted) -> None:
     assert entries_by_item["staff_club_mace"]["availability"] == {"kind": "not_sold"}
     fees = {
         str(entry["profile_id"]): entry
-        for entry in campaigns(promoted["root"]).values()
+        for entry in campaigns(KNOWLEDGE).values()
     }
     assert fees["hireling.hired-sword.albino-stormvermin"]["hiring_fee"]["resources"][
         "gold_crowns"

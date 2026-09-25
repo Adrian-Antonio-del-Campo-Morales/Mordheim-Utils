@@ -384,21 +384,18 @@ def test_no_strictness_justification_has_gone_stale():
 #: but a new label must, because every one of them is a promotion decision — and
 #: the decision has to be written down in ``staging.ACCEPTED_OPEN_VALUES`` or in
 #: ``registry/sources.yaml`` before the value is legitimate.
+#: Open-field values the staging adds *on top of* the knowledge base, by tree.
+#:
+#: The pins were non-empty while the trees were staged: `2a`/`2b`, the three
+#: 2A manuals and `broheim.net` were values no committed document carried. T07
+#: promoted the trees, so the knowledge base uses every one of them now and
+#: nothing is novel — the values themselves stay declared in
+#: ``staging_contract_audit.ACCEPTED_OPEN_VALUES``, which is where the decision
+#: that introduced them lives. A future tree that adds a value turns this pin
+#: non-empty again.
 STAGED_OPEN_VALUES = {
-    "2A": {
-        "categories[]": {"2a"},
-        "grade": {"2a"},
-        "sources[].manual": {
-            "sylvania-supplement",
-            "mordheim-index-catalog",
-            "mordheim-facebook-group",
-        },
-    },
-    "2B": {
-        "categories[]": {"2b"},
-        "grade": {"2b"},
-        "sources[].manual": {"broheim.net"},
-    },
+    "2A": {},
+    "2B": {},
 }
 
 

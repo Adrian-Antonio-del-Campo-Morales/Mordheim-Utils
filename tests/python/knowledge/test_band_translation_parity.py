@@ -53,12 +53,33 @@ def _iter_profiles(band_dir: Path):
             yield profile
 
 
+#: Display names whose *Spanish* form is the English form: proper nouns the
+#: printed sources keep ("Troll Slayer" still translates, but a clan, a race, a
+#: weapon and a title keep their spelling), loanwords and Latin tags. Translated
+#: names are never exempt: a copy that merely repeats its English text outside
+#: this list is a placeholder, not a translation.
+_NAMES_WHOSE_SPANISH_IS_IDENTICAL = (
+    "Dramatis Personae", "Esaul", "Streltsi", "Animal", "Berserker", "Instructor", "Verminkin", "Liche",
+    "Magister", "Hobgoblins", "Troll", "Trolls", "Snotlings", "Jarl", "Wulfen", "Ghouls", "Clan Pestilens",
+    "Miniath", "Norse", "Berserkers", "Kroxigor", "Zomblins", "Zomblintua",
+    # The promoted supplements (T07) keep these names untranslated: warband and
+    # hero titles (Rais, Emir, Askar, Thaggi, Domnu, Hatamoto, Shinobi, Ashigaru,
+    # Onnabushi, Globadier), ethnic and creature names (Poltergeists, Mourngul,
+    # Nosferatu, Boglars, Strigany), place and clan names (Clan Angrund, Ghutani,
+    # Muzil, Turjuk, Mazzalupo), exotic weapons (Draich, Katana), words that are
+    # the same in both languages (Noble, Inventor, Chef) and the Latin tag
+    # Modus Operandi.
+    "Rais", "Emir", "Askar", "Thaggi", "Domnu", "Hatamoto", "Shinobi", "Ashigaru", "Onnabushi",
+    "Globadier", "Poltergeists", "Mourngul", "Nosferatu", "Boglars", "Strigany", "Clan Angrund", "Ghutani",
+    "Muzil", "Turjuk", "Mazzalupo", "Druchii", "Daemon-Fimm", "Draich", "Katana", "Noble", "Inventor",
+    "Chef", "Raconteurs", "Modus Operandi",
+)
+
+
 def _assert_translation_ok(english: str, spanish: str, where: str) -> None:
     assert spanish.strip() == spanish, f"{where}: leading/trailing whitespace"
     assert "\n" not in spanish, f"{where}: artifact newline survived folding"
-    assert spanish != english or english in (
-        "Dramatis Personae", "Esaul", "Streltsi", "Animal", "Berserker", "Instructor", "Verminkin", "Liche", "Magister", "Hobgoblins", "Troll", "Trolls", "Snotlings", "Jarl", "Wulfen", "Ghouls", "Clan Pestilens", "Miniath", "Norse", "Berserkers", "Kroxigor", "Zomblins", "Zomblintua",
-    ), (
+    assert spanish != english or english in _NAMES_WHOSE_SPANISH_IS_IDENTICAL, (
         f"{where}: translation equals the English text"
     )
     # Placeholder parity: brace pairs must survive equally (defensive; the KB

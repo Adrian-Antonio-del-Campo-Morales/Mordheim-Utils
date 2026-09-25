@@ -5,17 +5,20 @@ from collections import Counter
 from mordheim_knowledge.loader import load_bands, load_shared_rules
 
 
+#: How many band rules reference each fused id. The counts pin the consolidation:
+#: the promoted 2A/2B packages add references to these ids (and only to these), so
+#: the numbers are the pre-promotion pins plus the references T07 published.
 FUSED_REFERENCE_COUNTS = {
-    "shared-rule.animal": 12,
+    "shared-rule.animal": 16,
     "shared-rule.burn-the-witch": 2,
-    "shared-rule.fear": 24,
-    "shared-rule.immune-to-poison": 11,
-    "shared-rule.immune-to-psychology": 11,
-    "shared-rule.large-target": 7,
-    "shared-rule.leader": 9,
-    "shared-rule.may-not-run": 5,
-    "shared-rule.no-pain": 11,
-    "shared-rule.thick-skull": 6,
+    "shared-rule.fear": 26,
+    "shared-rule.immune-to-poison": 23,
+    "shared-rule.immune-to-psychology": 16,
+    "shared-rule.large-target": 11,
+    "shared-rule.leader": 37,
+    "shared-rule.may-not-run": 9,
+    "shared-rule.no-pain": 19,
+    "shared-rule.thick-skull": 7,
 }
 
 RETIRED_RULE_IDS = {

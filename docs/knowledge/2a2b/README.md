@@ -67,7 +67,7 @@ La columna «depende de» determina autorización de escritura, salvo la explora
 | [x] | [T04 — Catálogos, identidades y procedencia](tasks/T04.md) | completada | T01 | Agente ejecutor | Mapa y decisiones sobre `b2e437c`; aceptada 2026-09-25 |
 | [x] | [T05 — Normalización y promoción reproducible](tasks/T05.md) | completada | T04 | Agente ejecutor | Promoción explícita e idempotente sobre `cd04931`; aceptada 2026-09-25 |
 | [x] | [T06 — Inventario y reparto de obligaciones](tasks/T06.md) | completada | T01–T05 | Agente ejecutor | 1692 efectos y 2295 obligaciones reconciliados; aceptada 2026-09-25 |
-| [ ] | [T07 — Fusión en la KB canónica](tasks/T07.md) | pendiente | T02–T06 | Coordinador/integrador | — |
+| [x] | [T07 — Fusión en la KB canónica](tasks/T07.md) | completada | T02–T06 | Agente ejecutor | KB promovida, estructural e idempotente; aceptada 2026-09-25 |
 | [ ] | [T08 — Validación y cierre de la KB](tasks/T08.md) | pendiente | T07 | Coordinador/integrador | — |
 | [ ] | [T09 — Construcción y selección para Web](tasks/T09.md) | pendiente | T08 | Sin asignar | — |
 | [ ] | [T10 — Automatización de campaña Web](tasks/T10.md) | pendiente | T09 | Sin asignar | — |
@@ -197,5 +197,6 @@ No es una orden de ejecutar todas las suites en cada tarea. Cada documento concr
 | 2026-09-25 | T05 | Aceptar la promoción explícita; conservar `warplock_pistol` como variante con entrada `-mim`, mantener los 26 ids históricos y normalizar staging al inicio de T07 antes de promover | Preview de 409 acciones/13 documentos, segunda pasada sin escrituras, colisión ambigua rechazada y 9 pruebas enfocadas; revisión estructural del coordinador | Sí |
 | 2026-09-25 | Replanificación | Organizar el trabajo restante en KB (T06–T08), Warband Manager Web (T09–T12) y Combat Simulator (T13–T15); eliminar escritorio, incluir campaña en Web y cerrar cada fase con validación y commit local | Decisión del usuario antes de iniciar T07; T01–T05 permanecen aceptadas | Sí |
 | 2026-09-25 | T06 | Aceptar el inventario y reparto por fases; tratar las 366 filas compuestas como 970 obligaciones explícitas y resolver `trait.spectral-touch` primero en T07 | Matriz: 1692 efectos, 2295 obligaciones, particiones reconciliadas, JSON/CSV UTF-8 y sin filas idénticas duplicadas; comprobación puntual del coordinador | Sí |
+| 2026-09-25 | T07 | Aceptar la promoción canónica tras cerrar estructura, traducciones, catálogos, referencias y auditorías; conservar tres exclusiones de runtime justificadas y Spectral Touch pendiente de ejecución | 128 bandas, 2399 IDs creados, suite knowledge 602 pasadas/10 omitidas, estructura completa y segunda promoción sin escrituras | Sí |
 
 Añadir aquí solo decisiones de coordinación. Para una regla, enlazar su interpretación y evidencia en el sistema semántico existente. No mantener dos versiones divergentes de una misma decisión.

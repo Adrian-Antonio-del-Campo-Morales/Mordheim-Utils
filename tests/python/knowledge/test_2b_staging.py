@@ -58,22 +58,46 @@ def test_staging_is_isolated_from_active_kb() -> None:
         assert "sources/2B" not in text, f"active KB references staging: {path}"
 
 
-def test_active_band_ids_do_not_collide_with_staging() -> None:
-    """Any band modeled in staging must not overwrite an active band id."""
+def test_every_staged_band_is_active_exactly_once() -> None:
+    """The promotion is the only route into the active collection, and it runs once.
+
+    Before T07 this test forbade a staged band id from appearing in the active
+    collection: the tree was isolated, so a shared id could only mean a silent
+    overwrite. The promotion of T07 is the sanctioned route, so the guarantee
+    that has to survive is the other direction — nothing staged is missing,
+    nothing is declared twice, and the active copy still carries the grade its
+    package declared.
+    """
     staging_dirs = STAGING / "bands" / "mordheim"
     if not staging_dirs.exists():
         return
-    active = {path.parent.name for path in (KNOWLEDGE / "bands" / "mordheim").glob("*/band.yaml")}
-    for band_dir in staging_dirs.iterdir():
-        if not band_dir.is_dir():
-            continue
-        assert band_dir.name not in active, f"staging band collides with active KB: {band_dir.name}"
+    packages = sorted(path for path in staging_dirs.iterdir() if path.is_dir())
+    active = sorted((KNOWLEDGE / "bands" / "mordheim").glob("*/band.yaml"))
+    names = [path.parent.name for path in active]
+    assert len(names) == len(set(names)), f"the active KB declares a band twice: {names}"
+    missing = sorted({path.name for path in packages} - set(names))
+    assert not missing, f"staged band never reached the active KB: {missing}"
+    for package in packages:
+        staged = yaml.safe_load((package / "band.yaml").read_text(encoding="utf-8")) or {}
+        promoted = yaml.safe_load(
+            (KNOWLEDGE / "bands" / "mordheim" / package.name / "band.yaml").read_text(
+                encoding="utf-8"
+            )
+        ) or {}
+        assert promoted.get("grade") == staged.get("grade"), package.name
+        assert promoted.get("categories") == staged.get("categories"), package.name
 
 
 def test_active_collection_count_is_unchanged() -> None:
-    """The active mordheim collection must stay at 48 bands during staging."""
+    """The active mordheim collection must stay at 128 bands after the promotion.
+
+    T07 promoted the 61 packages of this tree and the 19 of ``sources/2A`` on
+    top of the 48 bands the knowledge base already published. The count is
+    pinned for the same reason it was pinned at 48: a band that appears or
+    disappears without a promotion is the change this test exists to catch.
+    """
     count = len(list((KNOWLEDGE / "bands" / "mordheim").glob("*/band.yaml")))
-    assert count == 48, f"active mordheim collection changed: {count} bands"
+    assert count == 128, f"active mordheim collection changed: {count} bands"
 
 
 def test_staging_uses_the_same_document_contract() -> None:

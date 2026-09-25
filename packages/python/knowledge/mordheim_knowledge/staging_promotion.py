@@ -34,6 +34,15 @@ and every step follows a decision the KB already carries:
   so the staged ``[a, b]`` and ``{a: 1}`` are rewritten to the shape the KB
   keeps. An *empty* collection stays: ``[]`` and ``{}`` are the KB's own shape.
 
+- **A band package is promoted whole.** The KB keeps one directory per band and
+  the staging tree already writes that shape, so the band step is a copy: the
+  four documents keep their prose, their ``runtime`` marks, their band-side
+  prices, notes and provenance, and only the declared transforms touch them —
+  every ``item_id`` follows the identity decisions of T04 and an annotation that
+  named a staging tree names the KB document the same facts live in. A package
+  the KB carries with different content is a collision, and the promotion
+  refuses it instead of overwriting a published record.
+
 Editing is lexical: the staged files carry comments, so the passes edit the
 lines they own instead of re-dumping the document, and ``tools/knowledge/maintenance/format_yaml.py``
 still owns the canonical shape of everything written. Each pass re-parses what
@@ -1191,6 +1200,59 @@ ITEM_DECISIONS: dict[str, tuple[str, str]] = {
     **{key: ("merge", value) for key, value in ITEM_MERGES.items()},
 }
 
+# --------------------------------------------------------------------------- #
+# Band packages: the same facts in the KB's own tree
+# --------------------------------------------------------------------------- #
+
+#: Where a band package lives, on both sides of the promotion.
+BAND_ROOT = "bands/mordheim"
+
+#: The four documents of a band package, in the order the contract reads them.
+BAND_DOCUMENTS: tuple[str, ...] = (
+    "band.yaml",
+    "profiles.yaml",
+    "equipment-access.yaml",
+    "special-rules.yaml",
+)
+
+#: Staged prose that names a staging tree. Nothing but ``sources/knowledge`` is
+#: read in production, so a promoted annotation that pointed at ``sources/2A`` or
+#: ``sources/2B`` would leave a reference into staging on the KB side — exactly
+#: what the isolation tests exist to catch, and ``promote`` refuses a document
+#: that would carry one. Every string here is an editorial annotation the
+#: ingestion wrote (never printed source text) and its replacement names the KB
+#: document the same facts live in after promotion. The staged trees keep their
+#: own wording verbatim; only the promoted copy is reworded.
+STAGING_NOTE_REWRITES: dict[str, str] = {
+    "sources/2A/catalog/magic-2a.yaml": "catalog/campaign/magic.yaml",
+    "sources/2B/catalog/magic-2b.yaml": "catalog/campaign/magic.yaml",
+    "sources/2B/catalog/items/savage-orc-and-skryre-gear.yaml": "catalog/items/weapons-ranged.yaml",
+    "sources/2B/catalog/items/corpse-liquor.yaml": "catalog/items/combat-equipment.yaml",
+    "sources/2A/discrepancy-verdicts.md": "the 2A discrepancy verdicts of the staging tree",
+}
+
+#: ``(band, rule id) -> scope``: the rule-level scope the promoted copy carries
+#: where the staged mark disagrees with the rule's own effects. The KB loader
+#: *derives* a rule's scope from its effects (``YES`` if any effect is ``YES``,
+#: otherwise ``LATER`` if any is ``LATER``, otherwise ``NO``) and refuses a
+#: document where the two disagree, so the corrected value is not an editorial
+#: choice: it is the one the effects already spell out, and the affected rule has
+#: a legal copy in another band carrying exactly that value (for
+#: ``band--hard-to-kill``: ``black-dwarfs`` at ``YES``, ``fen-guard-mim`` at
+#: ``LATER``). Everything else of the rule — its text, its ``implemented`` mark,
+#: its grant, its effects, their bindings, their scopes and their reasons — is
+#: copied verbatim, and the staged tree keeps the staged mark.
+BAND_SCOPE_REPAIRS: dict[tuple[str, str], str] = {
+    ("dwarf-slayer-cult-web", "band--hard-to-kill"): "LATER",
+    ("dwarf-slayer-cult-web", "band--hard-head"): "LATER",
+    ("house-guard-sc", "band--dueling-pride"): "LATER",
+    ("house-guard-sc", "pikemen--pikewall"): "LATER",
+    ("lords-of-the-marsh-mim", "young-nobles--spiked-tail"): "LATER",
+    ("lords-of-the-marsh-mim", "fimir-warriors--spiked-tail"): "LATER",
+    ("underworld-alliance-mim", "goblin-bully--one-upmanship"): "LATER",
+    ("watchmen-mim", "private-sleuth--scryer"): "LATER",
+}
+
 MARKET_DOCUMENT = "catalog/campaign/trading-post.yaml"
 MAGIC_DOCUMENT = "catalog/campaign/magic.yaml"
 CAMPAIGN_DOCUMENT = "catalog/campaign/hired-swords-and-dramatis.yaml"
@@ -1215,15 +1277,13 @@ PROMOTED_SCHEMAS: dict[str, str] = {
     **{value: "hireling-profile-dramatis-personae.yaml.schema.json" for value in (HIRELING_DOCUMENTS["dramatis-personae"],)},
 }
 
-#: Staged documents the promotion never publishes, with the reason.
+#: Staged documents the promotion never publishes, with the reason. The band
+#: packages are not here: each one is promoted whole, and its item references
+#: follow ``ITEM_DECISIONS``.
 PROMOTED_EXCLUSIONS: dict[str, str] = {
     "catalog/items/missing-item-stubs.yaml": (
         "an empty helper of the ingestion flow; its stubs are already resolved in their "
         "definitive catalogues (staging_contract_audit.NOT_PROMOTED)"
-    ),
-    "bands/**": (
-        "band packages keep their own promotion step; the item redirects below are the "
-        "reference list that step re-points"
     ),
 }
 
@@ -1372,6 +1432,9 @@ def staged_catalogues(tree: str) -> dict[str, list[dict]]:
         ) or {}
         found["campaign_hired"].extend(campaign.get("hired_swords") or [])
         found["campaign_dramatis"].extend(campaign.get("dramatis_personae") or [])
+    # One choke point for the editorial annotations that name a staging tree:
+    # every family reads through here, so a promoted record can never carry one.
+    found = {key: [promoted_record(record) for record in records] for key, records in found.items()}
     _STAGED[tree] = found
     return found
 
@@ -1424,6 +1487,20 @@ def _base_text(root: Path, relative: str) -> str:
     if kb.is_file():
         return lexical.read_text(kb)
     return ""
+
+
+def _promoted_schema(relative: str) -> str | None:
+    """The contract document a promoted document answers to, or ``None``.
+
+    A band document is named by its own file, and the band contract carries one
+    schema per document name; the item catalogues share one shape, whether the
+    record joins an existing KB file or the KB's own surviving bucket.
+    """
+    if relative.startswith(f"{BAND_ROOT}/"):
+        return f"{Path(relative).name}.schema.json"
+    if relative.startswith("catalog/items/"):
+        return "catalog-items.yaml.schema.json"
+    return PROMOTED_SCHEMAS.get(relative)
 
 
 def _record_lines(record: dict, ending: str, indent: int = 0) -> list[str]:
@@ -1834,6 +1911,202 @@ def _promote_hirelings(
         actions.append(Action("hirelings", entry_id, action, CAMPAIGN_DOCUMENT, f"campaign entry into {key}"))
 
 
+# --------------------------------------------------------------------------- #
+# Band packages: promotion is a copy with its references resolved
+# --------------------------------------------------------------------------- #
+
+_ITEM_REFERENCE = re.compile(r"(item_id:\s*)([A-Za-z0-9_.\-]+)")
+_STAGING_REFERENCE = re.compile(r"sources/2[AB]")
+#: The ``scope`` of a rule's own ``runtime`` block: four spaces in, never a
+#: list item (an effect's scope sits two spaces deeper, under ``effects:``).
+_RULE_SCOPE = re.compile(r"^(?P<pad> {4})scope:(?P<gap>\s+)(?P<quote>['\"]?)(?P<scope>YES|NO|LATER)(?P=quote)\s*$")
+
+
+def _completed_trait_bindings(text: str) -> str:
+    """Write the value of a trait binding the staged rule left implicit.
+
+    Every one of the KB's trait bindings carries ``parameters.value`` explicitly
+    (170 of 170 before this promotion), the value the trait registry types, and
+    the compiler reads it with no default: a grant that omits it hands the
+    compiler ``None`` and the structural verification stops with a ``TypeError``
+    instead of reporting. Six staged bindings omit it (``trait.concussion-immune``
+    three times, ``trait.poison-immune`` twice, ``trait.frenzy`` once), and every
+    other occurrence of those traits in the KB carries ``true``, which is also
+    the only reading of a rule that *grants* the trait. The staged rule keeps its
+    own shape.
+    """
+    lines = lexical.lines(text)
+    inserts: list[tuple[int, int]] = []
+    index = 0
+    while index < len(lines):
+        head = _key_of(lines[index])
+        # A `binding:` that carries a nested mapping; `binding: null` is skipped.
+        if head is None or head[0] != "binding" or head[2] or lines[index].partition(":")[2].strip():
+            index += 1
+            continue
+        indent = head[1]
+        end = index + 1
+        while end < len(lines) and (not lines[end].strip() or _indent_of(lines[end]) > indent):
+            end += 1
+        children: dict[str, int] = {}
+        for position, line in enumerate(lines[index + 1 : end]):
+            found = _key_of(line)
+            if found is not None and found[1] == indent + 2 and not found[2]:
+                children.setdefault(found[0], position)
+        kind = children.get("kind")
+        if kind is None or "parameters" in children:
+            index = end
+            continue
+        if lines[index + 1 + kind].partition(":")[2].strip().strip("'\"") != "trait":
+            index = end
+            continue
+        inserts.append((index + 1 + children.get("id", kind) + 1, indent + 2))
+        index = end
+    if not inserts:
+        return text
+    ending = lexical.line_ending(lines[0]) if lines else "\n"
+    for position, child in sorted(inserts, reverse=True):
+        lines[position:position] = [
+            f"{' ' * child}parameters:{ending}",
+            f"{' ' * (child + 2)}value: true{ending}",
+        ]
+    return "".join(lines)
+
+
+def _repaired_runtime_scopes(text: str, band: str) -> str:
+    """The declared rule-level scope corrections of one band document."""
+    if not BAND_SCOPE_REPAIRS:
+        return text
+    lines = lexical.lines(text)
+    rule = ""
+    for index, line in enumerate(lines):
+        head = _key_of(line)
+        if head is not None and head[0] == "id" and head[1] == 0 and head[2]:
+            rule = line.partition(":")[2].strip()
+            continue
+        match = _RULE_SCOPE.match(line)
+        if match is None:
+            continue
+        wanted = BAND_SCOPE_REPAIRS.get((band, rule))
+        if wanted is None or match.group("scope") == wanted:
+            continue
+        lines[index] = f"{match.group('pad')}scope:{match.group('gap')}{wanted}{lexical.line_ending(line)}"
+    return "".join(lines)
+
+
+def _staging_path_pattern(path: str) -> re.Pattern[str]:
+    """The path, tolerating the line wrap a folded scalar may put inside it."""
+    return re.compile(r"/\s*".join(re.escape(part) for part in path.split("/")))
+
+
+def promoted_annotation(text: str) -> str:
+    """One editorial annotation with its staging path named as the KB document."""
+    for staging, published in STAGING_NOTE_REWRITES.items():
+        text = _staging_path_pattern(staging).sub(published, text)
+    return text
+
+
+def promoted_record(node: Any) -> Any:
+    """A staged record with the declared annotations re-pointed; keys untouched."""
+    if isinstance(node, str):
+        return promoted_annotation(node)
+    if isinstance(node, dict):
+        return {key: promoted_record(value) for key, value in node.items()}
+    if isinstance(node, list):
+        return [promoted_record(value) for value in node]
+    return node
+
+
+def promoted_band_document(text: str, band: str) -> str:
+    """A staged band document as the knowledge base reads it.
+
+    Three declared transforms and nothing else: every ``item_id`` follows the
+    identity decisions of T04, an annotation that named a staging tree names the
+    KB document holding the same facts instead, and a rule-level scope the
+    loader derives differently from its effects is corrected to the value those
+    effects spell out. The band's own prose, its other ``runtime`` marks, its
+    band-side prices, notes and provenance are copied verbatim.
+    """
+
+    def resolve(match: re.Match[str]) -> str:
+        key = match.group(2)
+        decision = ITEM_DECISIONS.get(key)
+        return match.group(1) + (decision[1] if decision is not None else key)
+
+    text = promoted_annotation(_ITEM_REFERENCE.sub(resolve, text))
+    text = _repaired_runtime_scopes(text, band)
+    return _completed_trait_bindings(text)
+
+
+def _same_document(left: str, right: str) -> bool:
+    """Whether two texts carry the same document; the shape of either is not content."""
+    return yaml.safe_load(left) == yaml.safe_load(right)
+
+
+def _promote_bands(
+    root: Path, tree: str, actions: list[Action], targets: dict[str, _Target]
+) -> None:
+    """Copy a staged band package into the KB with its item references resolved.
+
+    A package is promoted whole — the four documents keep their prose, their
+    ``runtime`` marks, their band-side prices and their provenance, and only the
+    declared transforms of :func:`promoted_band_document` touch them. A document
+    the destination already carries is compared, never overwritten: the same
+    document is already promoted, and a different one is a collision the caller
+    refuses.
+    """
+    staged_root = _tree_root(tree) / BAND_ROOT
+    if not staged_root.is_dir():
+        return
+    for package in sorted(path for path in staged_root.iterdir() if path.is_dir()):
+        band_id = package.name
+        band = yaml.safe_load(lexical.read_text(package / "band.yaml")) or {}
+        declared = str(band.get("id") or "")
+        if declared != band_id:
+            actions.append(
+                Action(
+                    "bands",
+                    band_id,
+                    ACTION_CONFLICT,
+                    "",
+                    f"band.yaml declares id {declared!r}, the package directory is {band_id!r}",
+                )
+            )
+            continue
+        for name in BAND_DOCUMENTS:
+            path = package / name
+            relative = f"{BAND_ROOT}/{band_id}/{name}"
+            if not path.is_file():
+                actions.append(
+                    Action(
+                        "bands",
+                        f"{band_id}/{name}",
+                        ACTION_CONFLICT,
+                        relative,
+                        "the staged package does not carry this document",
+                    )
+                )
+                continue
+            wanted = promoted_band_document(lexical.read_text(path), band_id)
+            target = _target(targets, root, relative)
+            if target.text:
+                if _same_document(target.text, wanted):
+                    actions.append(Action("bands", f"{band_id}/{name}", ACTION_PRESENT, relative))
+                else:
+                    actions.append(
+                        Action(
+                            "bands",
+                            f"{band_id}/{name}",
+                            ACTION_CONFLICT,
+                            relative,
+                            "the KB already keeps this band document with different content",
+                        )
+                    )
+                continue
+            target.text = wanted
+            actions.append(Action("bands", f"{band_id}/{name}", ACTION_NEW, relative, f"{tree} package"))
+
+
 def _promote_exclusions(actions: list[Action]) -> None:
     for relative, reason in sorted(PROMOTED_EXCLUSIONS.items()):
         actions.append(Action("bands" if relative.startswith("bands") else "items", relative, ACTION_EXCLUDE, "", reason))
@@ -1869,16 +2142,25 @@ def promote(
             _promote_market(destination, staged, promotion.actions, targets)
             _promote_magic(destination, staged, promotion.actions, targets)
             _promote_hirelings(destination, staged, promotion.actions, targets)
+        # Bands last: a package that is promoted needs the item documents, the
+        # market entry and the hireling profile its references name to be in the
+        # destination already, so the shared records go first (T07 step 7-8).
+        for tree in trees:
+            _promote_bands(destination, tree, promotion.actions, targets)
     _promote_exclusions(promotion.actions)
     for relative, target in sorted(targets.items()):
         text = target.result()
+        # The knowledge base is the only tree a reader loads: a promoted document
+        # that named a staging tree would break that isolation, so the promotion
+        # stops instead of publishing it.
+        if _STAGING_REFERENCE.search(text):
+            raise ValueError(
+                f"{relative}: the promoted document would name a staging tree, and the "
+                "knowledge base reads sources/knowledge only; declare the rewrite in "
+                "STAGING_NOTE_REWRITES"
+            )
         document = yaml.safe_load(text)
-        # A fold can land in a document no new record joins — the KB's own
-        # `miscellaneous.yaml` bucket, which survives a redirect — so the item
-        # family is recognised by its tree as well as by ITEM_FILES.
-        schema = PROMOTED_SCHEMAS.get(relative) or (
-            "catalog-items.yaml.schema.json" if relative.startswith("catalog/items/") else None
-        )
+        schema = _promoted_schema(relative)
         if schema is None:
             raise ValueError(f"{relative}: no KB schema is declared for this document")
         problems = editorial_schemas.validate_document(schema, document)
@@ -1895,7 +2177,10 @@ def promote(
         promotion.edits.append(
             lexical.Edit(
                 path,
-                [f"{len(target.appended)} list(s) extended, {len(target.folded)} record(s) folded"],
+                [
+                    f"{len(target.appended)} list(s) extended, "
+                    f"{len(target.folded)} record(s) folded"
+                ],
                 text,
                 current,
             )

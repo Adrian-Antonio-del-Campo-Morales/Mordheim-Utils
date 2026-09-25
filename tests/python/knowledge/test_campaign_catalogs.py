@@ -151,30 +151,41 @@ def test_conditions_catalog_is_canonical():
 def test_trading_post_ingestion_state():
     items = campaign("trading-post.yaml")["items"]
     entry_ids = [item["id"] for item in items]
-    assert len(items) == 338
+    # 338 curated entries plus the 135 market entries the 2A/2B promotion added
+    # (T07: market new 135, nothing removed).
+    assert len(items) == 473
     assert len(entry_ids) == len(set(entry_ids))
     assert all(item_id.startswith("campaign.trading-post.") for item_id in entry_ids)
     kinds = Counter(item["availability"]["kind"] for item in items)
     # `reptile-venom` is classified rare (Venom is a rare trade item in the
-    # source rules); the common/rare split tracks the curated data.
-    assert dict(kinds) == {"common": 76, "rare": 184, "not_sold": 78}
+    # source rules); the common/rare split tracks the curated data. The promoted
+    # entries add 55 common, 60 rare and 20 not-sold rows to the curated split.
+    assert dict(kinds) == {"common": 131, "rare": 244, "not_sold": 98}
 
 
 def test_trading_post_price_and_availability_shapes():
     items = campaign("trading-post.yaml")["items"]
     no_price = sorted(item["id"] for item in items if item.get("price") is None)
-    # Four source entries with cost "—" (bec-de-corbin, fist, firepots,
-    # masterwork heavy armour) and 78 items the Mordheim Trading Post does not
-    # sell (only warband equipment lists).
-    assert len(no_price) == 82
+    # Ten source entries with no printed cost (bec-de-corbin, fist, firepots and
+    # masterwork heavy armour from the rulebook; beastwhip, fences-iron-strongbox,
+    # scuttling-hand, thingcatcher, wicker-man and wolf-rat-mount from the
+    # promoted supplements) and 98 items the Mordheim Trading Post does not sell
+    # (only warband equipment lists).
+    assert len(no_price) == 108
     source_no_price = {
         "campaign.trading-post.bec-de-corbin",
+        "campaign.trading-post.beastwhip",
+        "campaign.trading-post.fences-iron-strongbox",
         "campaign.trading-post.firepots-miragliano",
         "campaign.trading-post.fist",
         "campaign.trading-post.masterwork-heavy-armour",
+        "campaign.trading-post.scuttling-hand",
+        "campaign.trading-post.thingcatcher",
+        "campaign.trading-post.wicker-man",
+        "campaign.trading-post.wolf-rat-mount",
     }
     not_sold = [item for item in items if item["availability"]["kind"] == "not_sold"]
-    assert len(not_sold) == 78
+    assert len(not_sold) == 98
     assert {item["id"] for item in not_sold} == set(no_price) - source_no_price
     for item in not_sold:
         assert item.get("price") is None, item["id"]
@@ -314,9 +325,12 @@ def test_racial_maximums_live_in_the_shared_catalog():
     # catalogue does not duplicate the block (`limits` must not reappear there).
     assert "limits" not in campaign("experience-and-advances.yaml")
     limits = load("catalog/rules/racial-maximums.yaml")["racial_maximums"]
-    assert len(limits) == 29
-    assert len({limit["id"] for limit in limits}) == 29
-    assert len({limit["profile"] for limit in limits}) == 29
+    # 29 entries of the mordheimer.net racial-maximum table plus the Troll
+    # maximums the Sealed City supplement (Brood of Ghurash) prints for its own
+    # warband, which the promoted band rule now references instead of inlining.
+    assert len(limits) == 30
+    assert len({limit["id"] for limit in limits}) == 30
+    assert len({limit["profile"] for limit in limits}) == 30
     expected_characteristics = {
         "movement", "weapon_skill", "ballistic_skill", "strength", "toughness",
         "wounds", "initiative", "attacks", "leadership",
@@ -330,7 +344,9 @@ def test_racial_maximums_live_in_the_shared_catalog():
 
 def test_racial_maximum_values_match_band_rules_that_used_to_inline_them():
     # Canonical values fixed by the source (mordheimer.net /docs/campaigns/experience);
-    # warband rules reference these ids instead of inlining statlines.
+    # warband rules reference these ids instead of inlining statlines. The Troll
+    # entry comes from the Sealed City supplement (Brood of Ghurash, broheim.net),
+    # which prints the maximums for its own warband.
     by_profile = {limit["profile"]: limit["characteristics"]
                   for limit in load("catalog/rules/racial-maximums.yaml")["racial_maximums"]}
     checks = {
@@ -351,6 +367,8 @@ def test_racial_maximum_values_match_band_rules_that_used_to_inline_them():
         "bull_centaur_sons_of_hashut": dict(movement=7, initiative=4),
         "marauder_of_chaos": dict(weapon_skill=7, ballistic_skill=7),
         "warrior_of_chaos": dict(weapon_skill=8, ballistic_skill=8, attacks=5),
+        "troll": dict(movement=6, weapon_skill=6, ballistic_skill=3, strength=6,
+                      toughness=5, wounds=5, initiative=4, attacks=6, leadership=6),
     }
     for profile, expected in checks.items():
         assert profile in by_profile, profile
@@ -377,8 +395,12 @@ def test_band_rules_reference_racial_maximums_without_inlining_statlines():
             if "maximum" not in text.lower():
                 continue
             rules_with_maximums += 1
-            # The numeric statline is declared once: in the shared catalogue.
-            assert not statline.search(text), f"{path.name}: {rule['id']} inlines a statline"
+            # The numeric statline is declared once: in the shared catalogue. Only
+            # a rule about *characteristic* maximums is checked: a roster rule that
+            # quotes a profile while mentioning the maximum *warband size* is
+            # printed source prose, not a racial maximum.
+            if re.search(r"characteristic", text, re.IGNORECASE):
+                assert not statline.search(text), f"{path.name}: {rule['id']} inlines a statline"
             if profile_mention.search(text):
                 refs = re.findall(r"campaign\.limit\.racial-maximum\.[a-z0-9-]+", text)
                 assert refs, f"{path.name}: {rule['id']} mentions a max profile without ref"
@@ -614,8 +636,9 @@ def test_magic_assignment_table_covers_lores_and_pending_lores():
     defined = {lore["id"] for lore in document["lores"]}
     pending = set(document["pending_lores"])
     used = {row["lore"] for row in rows}
-    assert len(rows) == 45
-    assert len(defined) == 31
+    # 45 curated rows and 31 lores, plus the promotion's 41 rows and 23 lores.
+    assert len(rows) == 86
+    assert len(defined) == 54
     assert pending == set()
     assert defined.isdisjoint(pending)
     # Every assigned lore is defined and vice versa; nothing pending.
@@ -627,15 +650,16 @@ def test_magic_assignment_table_covers_lores_and_pending_lores():
     # All contractable wizards (hired swords and dramatis personae) with spell
     # lists are linked to their canonical lore (Abdul knows two lists).
     hireling_rows = [row for row in rows if row["profile_id"].startswith("hireling.")]
-    assert len(hireling_rows) == 15
-    assert len({row["profile_id"] for row in hireling_rows}) == 14
+    assert len(hireling_rows) == 23
+    assert len({row["profile_id"] for row in hireling_rows}) == 20
 
 
 def test_magic_lore_spell_lists_are_complete_per_roll():
     document = campaign("magic.yaml")
     spells = [spell for lore in document["lores"] for spell in lore.get("spells", [])]
-    assert len(spells) == 188
-    assert len({spell["id"] for spell in spells}) == 188
+    # 188 curated spells plus the 135 the 23 promoted lores carry.
+    assert len(spells) == 323
+    assert len({spell["id"] for spell in spells}) == 323
     # Documented source exceptions: rituals-of-hashut has a fixed ritual
     # (roll 0, the Sorcerer starts with it) and necromancy-restless-dead
     # shares roll 6 between Deathly Visage (Necromancer) and Living Horror (Liche).
@@ -643,17 +667,25 @@ def test_magic_lore_spell_lists_are_complete_per_roll():
         "lore.rituals-of-hashut",
         "lore.necromancy-restless-dead",
     }
+    # `lore.dark-arts-strigos` (Survivors of Strigos Strigoi Vampire) prints a
+    # three-spell table, not six; provenance in sources/2A/promotion-merge-notes.md §4.
+    short_lists = {
+        "lore.dark-arts-strigos",
+    }
     for lore in document["lores"]:
         rolls = [spell["roll"] for spell in lore["spells"]]
-        assert all(roll in rolls for roll in ("1", "2", "3", "4", "5", "6")), lore["id"]
-        if lore["id"] not in multi_roll:
-            assert sorted(rolls) == ["1", "2", "3", "4", "5", "6"], lore["id"]
+        if lore["id"] in short_lists:
+            assert rolls, lore["id"]
+        else:
+            assert all(roll in rolls for roll in ("1", "2", "3", "4", "5", "6")), lore["id"]
+            if lore["id"] not in multi_roll:
+                assert sorted(rolls) == ["1", "2", "3", "4", "5", "6"], lore["id"]
         for spell in lore["spells"]:
             assert spell["name"]
             assert spell["effect"]
             difficulty = spell["difficulty"]
             assert isinstance(difficulty, int) or difficulty == "auto", spell["id"]
-    assert sum(1 for spell in spells if spell["difficulty"] == "auto") == 6
+    assert sum(1 for spell in spells if spell["difficulty"] == "auto") == 8
 
 
 def test_magic_profile_references_resolve():
@@ -702,16 +734,18 @@ def test_mutations_ingestion_state():
 
 def test_hired_swords_campaign_catalog_state():
     """The mercenary catalogue is published with schema v2 and its canonical
-    counts: 72 Hired Swords + 26 Dramatis Personae = 98 unique entries."""
+    counts: 95 Hired Swords + 29 Dramatis Personae = 124 unique entries."""
     document = campaign("hired-swords-and-dramatis.yaml")
     assert document["status"] == "published"
     assert document["schema_version"] == 2
     assert {entry["id"] for entry in document["hired_swords"]}
-    assert len(document["hired_swords"]) == 72
-    assert len(document["dramatis_personae"]) == 26
+    # 72 + 26 curated entries plus the promotion's 23 hired swords and 3 dramatis
+    # personae (T07: hirelings new 23, redirect 3; nothing removed).
+    assert len(document["hired_swords"]) == 95
+    assert len(document["dramatis_personae"]) == 29
     entries = document["hired_swords"] + document["dramatis_personae"]
-    assert len(entries) == 98
-    assert len({entry["id"] for entry in entries}) == 98
+    assert len(entries) == 124
+    assert len({entry["id"] for entry in entries}) == 124
     assert all(entry["id"].startswith("campaign.hireling.") for entry in entries)
     assert all(entry["profile_id"].startswith("hireling.") for entry in entries)
     # Every entry declares availability, a source reference and a canonical profile.
@@ -769,9 +803,11 @@ def test_hired_swords_eligibility_resolves_and_grammar_is_valid():
         eligibility = entry.get("eligibility") or {}
         if not eligibility:
             continue
+        # `note` carries the source wording for what the lists cannot express;
+        # the schema declares it alongside `expression` and is the authority here.
         assert eligibility.keys() <= {"allow_groups", "forbid_groups",
                                       "allow_band_ids", "forbid_band_ids",
-                                      "expression"}, entry["id"]
+                                      "expression", "note"}, entry["id"]
         for group in eligibility.get("allow_groups") or []:
             assert group in groups, f"{entry['id']}: unknown group {group}"
         for group in eligibility.get("forbid_groups") or []:

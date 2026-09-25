@@ -3,7 +3,8 @@ status: registry
 purpose: >-
   Binding vocabulary introduced by staged warbands (the Grade 2a and 2b staging trees) that
   the active KB does not carry yet. Every binding id used by a staged rule must be declared here until
-  promotion, when the id enters the KB through the promoted band and this entry is retired.
+  promotion, when the id enters the KB through the promoted band; the entry then keeps the
+  mechanic's definition and translation with `status: promoted`.
   Gate: tests/python/knowledge/test_binding_registry.py.
 method: >-
   A staging binding is only registered after the KB's binding vocabulary has been searched
@@ -14,7 +15,7 @@ method: >-
 bindings:
 - id: trait.spectral-touch
   kind: trait
-  status: pending-promotion
+  status: promoted
   definition: >-
     If the hit roll for an attack made by a Spirit Host is 6, the spirit's frightful touch
     stills the victim's beating heart, immediately inflicting 1 additional wound. Roll to
@@ -50,6 +51,10 @@ bindings:
       Death Blow replaces a fighter's attacks with one attack at +1 to hit/wound/injury;
       Spectral Touch leaves the attack profile untouched and only adds a wound on a 6.
   notes: >-
-    Kept at scope YES / implemented YES in the staged rule because the mechanic is a single
-    damage step. Promotion must register the id as an executable contract before the band
-    enters the KB.
+    T07 promoted `call-of-the-night-haint-mim`, so the KB carries this vocabulary: the rule
+    `spirit-hosts--spectral-touch` declares the binding at scope YES / implemented NO, which is
+    the state the loader gives a pending rule — `runtime_bindings` withholds it from compiler and
+    engine consumers until the executable contract exists. `TRAIT_TYPES` has no `spectral_touch`
+    entry and the damage step is not implemented; both belong to the Warband Manager (T09) and
+    Combat Simulator (T13) phases, and this registry entry stays as the record of what the
+    binding means until they land.

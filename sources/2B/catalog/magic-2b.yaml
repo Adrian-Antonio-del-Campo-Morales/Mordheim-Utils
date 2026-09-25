@@ -38,7 +38,7 @@ lore_assignments:
   - wizard: druid-priest-of-taal
     profile_id: hireling.hired-sword.druid-priest-of-taal
     band: null
-    lore: lore.prayers-of-taal
+    lore: lore.prayers-of-taal-and-rhya
   - wizard: mariner-priest-of-manann
     profile_id: hireling.hired-sword.mariner-priest-of-manann
     band: null
@@ -558,7 +558,7 @@ lores:
     roll: '4'
     name: Sea Legs
     name_i18n:
-      es: Piernas de Mar
+      es: Patas de Mar
     difficulty: 8
     effect: >-
       Prayer can be used to bind individuals to the will of Manann. Priests can curse their foe to
@@ -1402,15 +1402,12 @@ lores:
   name: Prayers of Taal & Rhya
   name_i18n:
     es: Plegarias de Taal y Rhya
-  note: 'El Sacerdote Druida de Taal elige al azar una plegaria de esta lista. MIRROR of the KB lore.prayers-of-taal:
-    the six spells and their difficulties are identical (Stag''s Leap D7, Blessed Ale D5, Bears Paw D7,
-    Earthshudder D9, Tanglefoot D8, Summon Squirrels D7); at promotion, verify and map to the existing
-    lore instead of duplicating it.'
-  source_refs:
-  - manual: liber-malefic
-    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-    printed_page: 16
-    section: Prayers of Prayers of Taal & Rhya
+  note: 'El Sacerdote Druida de Taal elige al azar una plegaria de esta lista. VARIANT of the KB lore.prayers-of-taal:
+    the two publications print the same six spells at the same difficulties, but every effect is different
+    printed prose (Tanglefoot names the ''Ostlander Jaegers and friendly Horned Hunter Zealots'' of the
+    KB against the ''friendly Taalites'' here, Earthshudder adds the falling example and Bears Paw loses
+    its apostrophe), so the chapter keeps its own list beside the Ostlander and Horned Hunter one instead
+    of being mapped into it.'
   spells:
   - id: spell.prayers-of-taal-and-rhya.stag-s-leap
     roll: '1'
@@ -1481,7 +1478,7 @@ lores:
     roll: '4'
     name: Earthshudder
     name_i18n:
-      es: Sacudida de la Tierra
+      es: Sacudida Telúrica
     difficulty: 9
     effect: >-
       Taal's domain includes both the earth and the skies and his power can reach out even into the
@@ -1507,7 +1504,7 @@ lores:
     roll: '5'
     name: Tanglefoot
     name_i18n:
-      es: Pies Enredados
+      es: Pies Atados
     difficulty: 8
     effect: >-
       It is said that when Taal walked the earth, living things would spring up behind him as he
@@ -1547,6 +1544,11 @@ lores:
         del Sacerdote, arrastrándose dentro de la ropa y la armadura del guerrero, apedreándolo con
         nueces y causando numerosos mordiscos diminutos y ronchas. El objetivo sufre 2D6 impactos de
         Fuerza 1. Sin tiradas de salvación por armadura permitidas.
+  source_refs:
+  - manual: liber-malefic
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+    printed_page: 16
+    section: Prayers of Prayers of Taal & Rhya
 pending_lores: []
 effect_ids:
 - campaign.magic.cast

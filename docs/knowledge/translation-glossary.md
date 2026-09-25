@@ -96,6 +96,62 @@ Rules of engagement:
 Extend this table band by band; when a new band translation fixes a term,
 add it here in the same commit so later bands inherit it.
 
+### Promoted supplements (T07): one Spanish name per English text
+
+The promotion of the staged 2A/2B supplements put each new band next to the
+historical ones, and the same English name arrived in two Spanish forms in 162
+places. `tests/python/knowledge/test_translation_consistency.py` allows exactly
+one Spanish text per English text, so the reconciliation kept a single one:
+
+- where the KB already carried the name, **the KB's own translation wins** and
+the promoted copies follow it (133 of the 162 texts; no reviewed translation was
+reworded to follow a new band);
+- where no band carried it yet, the form below wins — the glossary's term when it
+has one (*Slayer* → Matatroll, per the Troll Slayer entry), otherwise the more
+specific reading of the source. The discarded variant is listed so a later band
+does not reintroduce it.
+
+| English | Spanish (canonical) | Discarded variant(s) |
+| --- | --- | --- |
+| Art Thou Ready to Die Fighting? | ¿Estáis Listos para Morir Luchando? | ¿Estáis Listo para Morir Luchando?; ¿Estáis Listos a Morir Luchando? |
+| Be on Guard, My Brave Ones! | ¡En Guardia, Mis Valientes! | ¡Estad Alertas, Valientes Míos! |
+| Bicker | Rencilla | Reñir |
+| Bloodline Abilities | Habilidades de Linaje | Habilidades de Estirpe |
+| Cathayan Plate Armour | Armadura de Placas de Cathay | Coraza Catajana |
+| Don't Mind Them Mates, They Ain't True Pirates! | No Les Hagas Caso, ¡No Son Verdaderos Piratas! | No Les Hagas Caso, ¡No Son Piratas de Verdad! |
+| Fallen Noble | Noble Caído | Noble Decaído |
+| Fear (Wights) | Miedo (Espectros) | Miedo |
+| Follow Me, Mine Pugnacious Ones! | ¡Seguidme, Belicosos Míos! | ¡Seguidme, Peleadores Míos! |
+| Giant Slayer | Gran Matatrolles | Matacolosos |
+| Grifter | Trapacero | Estafador |
+| Honorable | Honrado | Honorables |
+| If more than one scout henchman shoots at the same target, they get +1 on the injury roll. | Si más de un explorador (hombre de tropa) dispara al mismo objetivo, obtienen +1 en la tirada de herida. | Si más de un secuaz explorador dispara al mismo objetivo, obtienen +1 en la tirada de herida. |
+| Immune to Disease | Inmune a las Enfermedades | Inmune a Enfermedades |
+| Immune to Poisons (Wights) | Inmune al Veneno (Espectros) | Inmune a Venenos |
+| Immune to Psychology (Wights) | Inmune a la Psicología (Espectros) | Inmune a Psicología |
+| Poison Wind Globe | Esfera de Viento Envenenado | Esfera de Viento Venenoso |
+| Raise Our Insignia! | ¡Enarbolar Nuestro Estandarte! | ¡Enarbola Nuestra Insignia! |
+| Rigger | Trincador | Cordelista |
+| Sea Rangers | Guardabosques del Mar | Batidores del Mar |
+| Sham | Engaño | Farlsa |
+| Slayer | Matatroll | Asesino |
+| Slayer Special Skills | Habilidades Especiales de Matatroll | Habilidades Especiales de Matagigantes |
+| Snotling Mob | Mob de Snotlings | Mobs Snotling |
+| Spike-Jawed Snatcher | Capturador de Mandíbulas con Púas | Capturador de Mandíbulas Pinchudas |
+| Spry | Ágiles | Agil |
+| Stormvermin | Verminescas | Guerreros Tormenta |
+| Underlings | Subordinados | Lugartenientes |
+| Underworld Contacts | Contactos del Bajo Mundo | Contactos del Hampa |
+
+Names whose Spanish form *is* the English form — the titles and ethnic names the
+printed supplements keep (*Emir*, *Askar*, *Rais*, *Thaggi*, *Hatamoto*,
+*Ashigaru*, *Nosferatu*, *Mourngul*, *Druchii*), the exotic weapons (*Draich*,
+*Katana*), the loanwords (*Globadier*, *Chef*, *Inventor*, *Noble*) and the Latin
+tag *Modus Operandi* — are listed in
+`_NAMES_WHOSE_SPANISH_IS_IDENTICAL` in
+`tests/python/knowledge/test_band_translation_parity.py`, which is where the
+parity check reads them.
+
 ## Equipment vocabulary
 
 Canonical Spanish names for the item / equipment catalogues

@@ -1,0 +1,54 @@
+schema_version: 2
+id: skaven-of-clan-mors-kaz
+canonical_family: skaven
+name: Skaven Clan Mors
+name_i18n:
+  es: Clanes Skaven — Clan Mors
+original_locale: en
+ruleset: mordheim
+categories:
+- 2b
+grade: 2b
+setting: Karak Azgal
+publication: 'Karak Azgal web expansion (Skaven Clan Mors v1.2)'
+status: source-normalized
+sources:
+- manual: broheim.net
+  printed_page: 36
+  section: Skaven Clan Mors v1.2
+  url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+roster:
+  minimum_models: 3
+  maximum_models: 20
+  starting_gold: 500
+  members:
+  - profile_id: claw-leader
+    minimum: 1
+    maximum: 1
+  - profile_id: stormvermin
+    minimum: 0
+    maximum: 2
+  - profile_id: mors-sorcerer
+    minimum: 0
+    maximum: 1
+  - profile_id: young-claws
+    minimum: 0
+    maximum: 2
+  - profile_id: clanrats
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: skavenslaves
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: rat-ogre
+    minimum: 0
+    maximum: 1
+rule_ids:
+- band--rulebook-inheritance
+- band--wolf-rats-variant

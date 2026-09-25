@@ -2,16 +2,6 @@ schema_version: 1
 ruleset: mordheim
 catalog: hirelings-hired-swords
 grade: 2b
-# Specialists from the 'Mutiny in Marienburg Specialists' PDF (Broheim,
-# build/cache/2b-pdfs/extra/MiM Specialists.pdf). Bog Hunter and Whaler live in
-# grade-2b.yaml (hired via the Lords of the Marsh band lists); the ten profiles
-# here complete the PDF's roster. None of them is referenced by any of the 60
-# Grade-2b band PDFs (the Halfling Fence's item chart is also transcribed
-# inline in low-kings-mim's own rules) — ingested 2026-09-14 for catalog
-# completeness after the final sweep.
-#
-# Equipment-counts-as notes mirror the source wording; item ids resolve to the
-# active KB catalog where an equivalent exists.
 profiles:
 - id: hireling.hired-sword.ogre-treasure-hunter
   kind: hired-sword
@@ -183,7 +173,7 @@ profiles:
         fortalecida además por cuencos de sopa de raíz de tumba, hace que un Guardián de los
         Jardines no se vea afectado por ninguna enfermedad.
     name_i18n:
-      es: Inmune a Enfermedades
+      es: Inmune a las Enfermedades
   - id: hireling.hired-sword.grave-warden.rule.hardened
     name: Hardened
     effect: Tending the Gardens comes with heavy responsibilities. Grave Wardens are immune to fear.
@@ -332,7 +322,7 @@ profiles:
         repetir cualquier tirada de dado que realice cuando le acompañe un Rufián contratado por la
         banda. Siempre debe aceptarse el segundo resultado.
     name_i18n:
-      es: Contactos del Hampa
+      es: Contactos del Bajo Mundo
   - id: hireling.hired-sword.halfling-pimp.rule.flesh-peddler
     name: Flesh-Peddler
     effect: >-
@@ -478,10 +468,10 @@ profiles:
       quantity:
         kind: fixed
         value: 1
-      notes: Wolf cloak — resolved to the KB `wolfcloak` item (Middenheim hunt cloak, +1 armour saves vs
-        shooting) as the closest existing cloak item; the MiM source grants no effect for it. Review the
-        equivalence at promotion (distinct from the MW White Wolf Pelt Cloak, which is a different 6+-save
-        item).
+      notes: Wolf cloak — resolved to the KB `wolfcloak` item (Middenheim hunt cloak, +1 armour saves
+        vs shooting) as the closest existing cloak item; the MiM source grants no effect for it. Review
+        the equivalence at promotion (distinct from the MW White Wolf Pelt Cloak, which is a different
+        6+-save item).
   skill_access:
   - combat
   - strength
@@ -525,7 +515,7 @@ profiles:
         resultado de 2-5 no ocurre nada, y con un 6 sufren frenesí ese turno. Mientras sufran tanto
         estupidez como frenesí son inmunes a todas las demás formas de psicología.
     name_i18n:
-      es: Borrachuzo
+      es: Ebrios
   source_refs:
   - manual: broheim.net
     printed_page: 3
@@ -559,8 +549,8 @@ profiles:
       quantity:
         kind: fixed
         value: 1
-      notes: MiM-specific item (see the Fire-Stick rule); no KB or 2B catalog equivalent — deliberate dangling
-        ref, define at promotion.
+      notes: MiM-specific item (see the Fire-Stick rule); no KB or 2B catalog equivalent — deliberate
+        dangling ref, define at promotion.
   skill_access: []
   starting_skill_ids: []
   rules:
@@ -642,8 +632,8 @@ profiles:
       quantity:
         kind: fixed
         value: 1
-      notes: MiM-specific item (see the Candle Tree rule); no KB or 2B catalog equivalent — deliberate dangling
-        ref, define at promotion.
+      notes: MiM-specific item (see the Candle Tree rule); no KB or 2B catalog equivalent — deliberate
+        dangling ref, define at promotion.
   skill_access:
   - combat
   - academic
@@ -752,7 +742,7 @@ profiles:
         puede reparar una embarcación si hay una miniatura enemiga en contacto con el Héroe o con la
         embarcación.
     name_i18n:
-      es: Cordelista
+      es: Trincador
   - id: hireling.hired-sword.midshipman.rule.a-crew-fer-me
     name: A Crew Fer Me!
     effect: >-

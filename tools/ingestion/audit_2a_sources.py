@@ -88,13 +88,17 @@ MARKET_FILE = 'sources/2A/catalog/trading-post-2a.yaml'
 
 
 def catalog_roots() -> tuple[str, ...]:
-    """The item pool, with ``CATALOG_DIR`` looked up at call time.
+    """The item pool, with ``CATALOG_DIR`` looked up at call time and read first.
 
     The constant can be repointed (the source-fidelity tests run the audit against
-    a throwaway copy of the 2A catalogue), and every reader has to follow it.
+    a throwaway copy of the 2A catalogue), and every reader has to follow it. The
+    audited tree comes before the active KB: an item the promotion has already
+    published exists in both catalogs, and the copy this audit verifies against the
+    page is the staged one — were the published copy read first, a drift in staging
+    would go unreported.
     """
-    return tuple(CATALOG_DIR if base == 'sources/2A/catalog/items' else base
-                 for base in CATALOG_DIRS)
+    others = tuple(base for base in CATALOG_DIRS if base != CATALOG_DIR)
+    return (CATALOG_DIR, *others)
 # Adjudicated findings. Each row is (kind, band, detail-prefix, why); ``None`` in
 # band or prefix acts as a wildcard. Anything else is reported as an open finding.
 KNOWN: list[tuple[str, str | None, str | None, str]] = [

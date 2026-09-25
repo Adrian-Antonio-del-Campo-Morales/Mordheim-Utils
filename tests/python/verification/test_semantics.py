@@ -91,6 +91,8 @@ def test_binding_identity_preserves_parameters_and_ignores_mapping_order():
 
 
 def test_structural_success_is_not_semantic_success():
+    # The structural layer is green on its own terms; what this test is about is
+    # the semantic layer below it, which stays incomplete on purpose.
     assert audit_phase_verification().structural_complete
     report = verify_semantics()
     assert report.errors == ()

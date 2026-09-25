@@ -12,25 +12,35 @@ from mordheim_combat_lab.verification.structural import audit_phase_verification
 
 
 def test_structural_audit_covers_the_current_implemented_catalogue_snapshot():
+    """No allow-list: the audit is green or the test fails.
+
+    The three profiles the duel runtime cannot carry (the Gyrocopter, the River
+    Boat and the Banshee) are declared exclusions of `runtime-scope.yaml` with
+    their reason, and `trait.spectral-touch` is a rule whose runtime contract is
+    pending, so the compiler withholds it. Neither is an error the audit mutes.
+    """
     report = audit_phase_verification()
     assert report.errors == ()
     assert report.structural_complete
     # Catalogue snapshot only, never an assertion of semantic completeness.
     assert report.execution_mechanics == 193
     assert report.projected_mechanics == 190
-    assert report.projected_trait_bindings == 36
+    assert report.projected_trait_bindings == 37
     assert report.evidenced_profile_bindings == 6
     assert report.projected_automatic_compiler_bindings == 35
     assert report.evidenced_selectable_compiler_bindings == 8
     assert report.evidenced_special_compiler_bindings == 18
-    assert report.observable_canonical_bindings == 172
+    assert report.observable_canonical_bindings == 173
     assert report.evidenced_complex_sequences == 13
     assert report.modular_tag_consumers == 74
     # Includes damage_die_sides, consumed by the modular post-save damage roll.
     assert report.modular_operator_fields == 55
     assert report.modular_execution_mechanics == 193
-    assert report.implemented_rule_records == 422  # 420 + 2 forbid-skill-categories profile rules
-    assert report.canonical_bindings == 172
+    # 420 base records + 2 forbid-skill-categories profile rules + the
+    # implemented records of the bands T07 promoted, minus the spectral-touch
+    # rule, whose runtime contract is still pending.
+    assert report.implemented_rule_records == 488
+    assert report.canonical_bindings == 173
 
 
 def test_every_effect_field_has_an_owned_phase_operator():

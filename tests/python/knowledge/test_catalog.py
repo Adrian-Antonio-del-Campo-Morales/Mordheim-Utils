@@ -39,7 +39,9 @@ def test_runtime_contains_mordheim_and_trollheim_bands():
     collections={row["id"]:row for row in load_collections(ROOT)}
     assert set(collections)=={"mordheim","trollheim"}
     assert collections["trollheim"]["rulesets"]==["mordheim"]
-    assert len(load_bands("mordheim",ROOT))==48
+    # 48 bands before T07, which promoted the 19 packages of `sources/2A` and
+    # the 61 of `sources/2B` the staging trees held.
+    assert len(load_bands("mordheim",ROOT))==128
     trollheim=load_bands("trollheim",ROOT)
     assert len(trollheim)==33
     assert all(band.collection=="trollheim" and band.ruleset=="mordheim" for band in trollheim)
@@ -291,7 +293,7 @@ def test_all_fixed_profiles_compile_with_stable_ids():
             if all(isinstance(c.get(key),int) for key in ("WS","S","T","W","I","A")):
                 fighter=compile_fighter(profile_build("mordheim",band.band["id"],profile["id"]),ROOT)
                 assert fighter.fighter_id.endswith(profile["id"]);compiled+=1
-    assert compiled==313
+    assert compiled==832  # 313 before T07
 
 
 def test_profile_combat_traits_reference_mechanics_by_id():
@@ -335,7 +337,8 @@ def test_special_rule_runtime_metadata_is_canonical_and_binary():
             classified+=1
             assert runtime["implemented"] in {"YES","NO"}
             assert runtime["scope"] in {"YES","NO","LATER"}
-    assert classified == 1572  # 1551 + 21 hidden profile restrictions modelled as rules
+    # 1572 before T07; the promotion added the runtime blocks of every staged rule.
+    assert classified == 2901  # 1551 + 21 hidden profile restrictions + 1329 promoted
 
 
 def test_every_selectable_rule_has_an_explicit_selection_kind():
@@ -353,7 +356,7 @@ def test_every_selectable_rule_has_an_explicit_selection_kind():
     # requires it; this test validates selection kinds, not an obsolete count.
     assert selectable
     assert {rule.get("kind") for rule in selectable}==expected
-    assert sum(rule["kind"]=="warband_skill" for rule in selectable)==305
+    assert sum(rule["kind"]=="warband_skill" for rule in selectable)==381  # 305 + T07
 
 
 def test_equivalent_no_pain_rules_share_one_runtime_mechanic():
@@ -376,7 +379,8 @@ def test_every_runtime_binding_resolves_to_a_known_shared_contract():
                 if binding["kind"]=="mechanic":
                     assert binding["id"] in mechanic_ids
                 elif binding["kind"]=="trait":
-                    assert binding["id"].removeprefix("trait.").replace("-","_") in TRAIT_TYPES
+                    trait=binding["id"].removeprefix("trait.").replace("-","_")
+                    assert trait in TRAIT_TYPES
                 elif binding["kind"]=="profile":
                     assert binding["id"] in PROFILE_BINDING_IDS
                 else:
@@ -657,15 +661,28 @@ def test_every_catalogued_mechanic_can_be_compiled_in_its_legal_slot():
 
 
 def test_all_profiles_are_compilable_or_explicitly_outside_duel_scope():
+    """Every promoted profile compiles, or is a declared limit of the runtime.
+
+    The only profiles outside the loop are the three `runtime-scope.yaml`
+    exclusions (the Gyrocopter, the River Boat and the Banshee, each with its
+    reason); every other profile of the active collection compiles with its
+    default construction.
+    """
     from mordheim_knowledge.loader import load_runtime_scope
     exclusions={(row["band_id"],row["profile_id"]) for row in load_runtime_scope("mordheim",ROOT)["profile_exclusions"]}
     compiled=0
+    refused={}
     for band in load_bands("mordheim",ROOT):
         for profile in band.profiles:
             key=(band.band["id"],profile["id"])
             if key in exclusions:continue
-            compile_fighter(profile_build("mordheim",key[0],key[1]),ROOT);compiled+=1
-    assert compiled==316 and len(exclusions)==0
+            try:compile_fighter(profile_build("mordheim",key[0],key[1]),ROOT)
+            except (ValueError,TypeError) as error:
+                refused[f"{key[0]}/{key[1]}"]=str(error)
+                continue
+            compiled+=1
+    assert not refused, refused
+    assert compiled==835 and len(exclusions)==3
 
 
 def test_fixed_equipment_and_natural_attacks_are_applied_by_profile():

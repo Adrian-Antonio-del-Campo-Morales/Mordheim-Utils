@@ -61,7 +61,7 @@ HIRELING_DOCUMENTS: tuple[tuple[str, str], ...] = tuple(
         ("hired-swords", "hireling-profile-hired-sword.yaml.schema.json"),
         ("dramatis-personae", "hireling-profile-dramatis-personae.yaml.schema.json"),
     )
-    for name in ("core", "grade-1a", "grade-1b", "grade-1c", "grade-2a")
+    for name in ("core", "grade-1a", "grade-1b", "grade-1c", "grade-2a", "grade-2b")
 ) + (
     ("catalog/hirelings/hired-swords/rules.yaml", "hireling-rules.yaml.schema.json"),
     ("catalog/hirelings/dramatis-personae/rules.yaml", "hireling-rules.yaml.schema.json"),
@@ -74,9 +74,9 @@ HIRELING_DOCUMENTS: tuple[tuple[str, str], ...] = tuple(
 #: the contract, and the test fails when an entry goes stale.
 UNCOVERED_DOCUMENTS: dict[str, str] = {
     "registry/bindings.yaml": (
-        "staging binding registry of the 2A/2B ingestion workflow, gated by "
-        "tests/python/knowledge/test_binding_registry.py; it joins this contract when the "
-        "staged warbands are promoted into the knowledge base"
+        "the binding registry of the 2A/2B ingestion workflow, gated by its own "
+        "tests/python/knowledge/test_binding_registry.py: it is edited by hand, never "
+        "written by a promotion, so the editorial contract does not claim it"
     ),
 }
 

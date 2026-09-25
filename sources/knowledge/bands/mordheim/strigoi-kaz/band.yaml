@@ -1,0 +1,56 @@
+schema_version: 2
+id: strigoi-kaz
+canonical_family: strigoi
+name: Strigoi Undead
+name_i18n:
+  es: No-Muertos Estigios
+original_locale: en
+ruleset: mordheim
+categories:
+- 2b
+grade: 2b
+setting: Karak Azgal
+publication: 'Karak Azgal web expansion (Strigoi Undead v2.1)'
+status: source-normalized
+sources:
+- manual: broheim.net
+  printed_page: 50
+  section: Strigoi Undead v2.1
+  url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+roster:
+  minimum_models: 3
+  maximum_models: 15
+  starting_gold: 500
+  members:
+  - profile_id: vampire
+    minimum: 1
+    maximum: 1
+  - profile_id: charnel-guard
+    minimum: 0
+    maximum: 2
+  - profile_id: strigany
+    minimum: 0
+    maximum: 2
+  - profile_id: ghouls
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: skeletons
+    minimum: 0
+    maximum: null
+    group_size:
+      minimum: 1
+      maximum: 5
+  - profile_id: bats
+    minimum: 0
+    maximum: 5
+  - profile_id: fell-bats
+    minimum: 0
+    maximum: 2
+rule_ids:
+- band--dead-leader
+- band--corpse-liquor
+- band--bat-restriction
+- band--hired-swords

@@ -125,15 +125,15 @@ def test_campaign_catalog_loads_every_published_document():
     assert set(catalog.documents) == CAMPAIGN_STEMS
     # Canonical counts of the biggest read models (also enforced per document
     # by tests/python/knowledge/test_campaign_catalogs.py against the raw YAML).
-    assert len(catalog.catalogue("trading-post.yaml")["items"]) == 338
+    assert len(catalog.catalogue("trading-post.yaml")["items"]) == 473
     trading = catalog.catalogue("trading-post")
-    assert len({row["id"] for row in trading["items"]}) == 338
+    assert len({row["id"] for row in trading["items"]}) == 473
     hired = catalog.catalogue("hired-swords-and-dramatis.yaml")
-    assert len(hired["hired_swords"]) == 72
-    assert len(hired["dramatis_personae"]) == 26
+    assert len(hired["hired_swords"]) == 95
+    assert len(hired["dramatis_personae"]) == 29
     magic = catalog.catalogue("magic.yaml")
-    assert len(magic["lores"]) == 31
-    assert len({spell["id"] for lore in magic["lores"] for spell in lore.get("spells", [])}) == 188
+    assert len(magic["lores"]) == 54
+    assert len({spell["id"] for lore in magic["lores"] for spell in lore.get("spells", [])}) == 323
     assert len(catalog.catalogue("scenarios.yaml")["scenarios"]) == 98
 
 
@@ -209,7 +209,7 @@ def test_campaign_catalog_rejects_unknown_item_reference(monkeypatch):
 def test_hireling_catalogue_profiles_resolve_across_catalog():
     catalogue = load_hirelings()
     profiles = catalogue.profiles
-    assert len(profiles) == 102
+    assert len(profiles) == 130
     ids = [row["id"] for row in profiles]
     assert len(set(ids)) == len(ids)
     assert all(profile_id.startswith("hireling.") for profile_id in ids)
@@ -217,7 +217,7 @@ def test_hireling_catalogue_profiles_resolve_across_catalog():
     # Every entry of the published hiring catalogue names one of these profiles.
     document = load_campaign_catalog().catalogue("hired-swords-and-dramatis.yaml")
     entries = document["hired_swords"] + document["dramatis_personae"]
-    assert len(entries) == 98
+    assert len(entries) == 124
     assert {entry["profile_id"] for entry in entries} <= catalogue.profile_ids
 
 

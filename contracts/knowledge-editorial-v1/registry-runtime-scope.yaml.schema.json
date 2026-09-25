@@ -14,9 +14,22 @@
     "ruleset": { "$ref": "defs.schema.json#/$defs/id" },
     "scope": { "$ref": "defs.schema.json#/$defs/runtime_scope" },
     "profile_exclusions": {
-      "description": "Profiles excluded from the runtime; empty today.",
+      "description": "Profiles of the promoted bands that stay outside the runtime, each named by its band and profile id with the reason why.",
       "type": "array",
-      "items": { "$ref": "defs.schema.json#/$defs/id" }
+      "items": {
+        "type": "object",
+        "required": ["band_id", "profile_id", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "band_id": { "$ref": "defs.schema.json#/$defs/id" },
+          "profile_id": { "$ref": "defs.schema.json#/$defs/id" },
+          "reason": {
+            "description": "Why the profile is outside the scope, phrased as the audit taxonomy does (`vehicle`, `campaign`, `movement` …).",
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
     },
     "mechanic_exclusions": {
       "description": "Mechanics of the catalogue that stay out of the runtime, each with the reason why.",

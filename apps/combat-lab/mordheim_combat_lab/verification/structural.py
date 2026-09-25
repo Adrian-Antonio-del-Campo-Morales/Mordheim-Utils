@@ -186,10 +186,20 @@ def _required_profile_build(collection: str, band_id: str, profile_id: str) -> F
 
 
 def _automatic_compiler_projection_errors(
+    ruleset: str,
     root: Path | None,
     expected: set[str],
 ) -> tuple[int, list[str]]:
-    """Compile every legal profile and collect automatic construction contracts."""
+    """Compile every legal profile and collect automatic construction contracts.
+
+    A profile the runtime scope excludes is not a compilation failure: it is a
+    declared limit of the duel runtime, recorded with its reason in
+    ``registry/runtime-scope.yaml``.
+    """
+    excluded = {
+        (str(row.get("band_id")), str(row.get("profile_id")))
+        for row in load_runtime_scope(ruleset, root).get("profile_exclusions") or ()
+    }
     observed: set[str] = set()
     errors: list[str] = []
     for collection in ("mordheim", "trollheim"):
@@ -197,6 +207,8 @@ def _automatic_compiler_projection_errors(
             band_id = str(band.band["id"])
             for profile in band.profiles:
                 profile_id = str(profile["id"])
+                if (band_id, profile_id) in excluded:
+                    continue
                 try:
                     fighter = compile_fighter(
                         _required_profile_build(collection, band_id, profile_id), root
@@ -350,7 +362,7 @@ def audit_phase_verification(
         and bool(grants - {"selectable"})
     }
     projected_compilers, compiler_projection_errors = _automatic_compiler_projection_errors(
-        root, automatic_compilers
+        ruleset, root, automatic_compilers
     )
     errors.extend(compiler_projection_errors)
     selectable_compilers = {

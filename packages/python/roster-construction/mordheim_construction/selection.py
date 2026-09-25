@@ -166,16 +166,30 @@ def _profile_rule_mechanics(package, profile):
 
 
 def _profile_rule_traits(package, profile):
+    """Runtime traits of the rules that apply to one profile.
+
+    A rule granted to the profile replaces the band-wide default for the same
+    trait key instead of stacking with it: Treekin's Redwood raises Bark Skin to
+    4+ for that profile alone. Two rules of the same scope with different values
+    are still ambiguous and stay refused.
+    """
     traits = {}
+    owner = {}
     rules=_applicable_rules(package, profile)
     for rule in rules:
         runtime = rule.get("runtime") or {}
         if runtime.get("implemented") != "YES" or runtime.get("grant") not in {"profile", "band"}:
             continue
+        grant = str(runtime.get("grant"))
         for binding in runtime_bindings(rule, "trait"):
             key = str(binding["id"]).removeprefix("trait.").replace("-", "_")
             value = (binding.get("parameters") or {}).get("value")
-            if key in traits and traits[key] != value:
-                raise ValueError(f"conflicting runtime trait {key} for {package.band.get('id')}/{profile.get('id')}")
+            previous = owner.get(key)
+            if previous is not None and traits[key] != value:
+                if previous == grant:
+                    raise ValueError(f"conflicting runtime trait {key} for {package.band.get('id')}/{profile.get('id')}")
+                if previous == "profile":
+                    continue
             traits[key] = value
+            owner[key] = grant
     return traits

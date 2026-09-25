@@ -134,12 +134,19 @@ def test_every_kb_profile_resolves_through_the_registry() -> None:
 
 
 def test_the_dramatis_personae_print_on_the_four_grade_pages() -> None:
-    """El registro declara las cuatro páginas de grado que cita la familia de Dramatis."""
+    """El registro declara las cuatro páginas de grado que cita la familia de Dramatis.
+
+    La promoción de 2B publica además cinco Dramatis Personae en `grade-2b`, que se
+    cotejan contra los PDF de Karak Azgal y de Relics of the Crusades 2; las cuatro
+    páginas de grado siguen siendo las que imprime la familia histórica.
+    """
     documents = {resolution.document.id.split(".")[-1]
                  for profile in KB.profiles()
                  if profile["_file"].startswith("dramatis-personae")
                  for resolution in DOCUMENTS.resolve(profile)}
-    assert documents == {"grade-1a", "grade-1b", "grade-1c", "grade-2a"}
+    assert {"grade-1a", "grade-1b", "grade-1c", "grade-2a"} <= documents
+    assert documents == {"grade-1a", "grade-1b", "grade-1c", "grade-2a",
+                         "karak-azgal", "relics-of-the-crusades-2"}
 
 
 def test_every_staging_profile_resolves_through_the_registry() -> None:
