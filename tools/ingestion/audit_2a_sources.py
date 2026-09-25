@@ -1169,6 +1169,97 @@ REVERSED_NUMBER_WORDS = {word: int(number) for number, word in NUMBER_WORDS.item
                          if number.isdigit()}
 
 
+# The nine characteristics of a statline table, in their printed order, with the
+# key spelling the staging packages use. The order is the reader's
+# (``CHARACTERISTICS``); the keys are capitalised as the packages write them —
+# comparing against the lowercase form is what left the check reading zero values.
+CHARACTERISTIC_KEYS = ('M', 'WS', 'BS', 'S', 'T', 'W', 'I', 'A', 'Ld')
+
+# Rows the pages print under a different name than the profile they describe. The
+# retired flat-text auditor carried the same pairs (its ``ROW_ALIASES``); they are
+# source labels, not spelling variants, so the audit reads them explicitly instead
+# of loosening the match — a looser match would let a generic row adopt a profile.
+PROFILE_ALIASES = {
+    'werewolf': 'wolfman',           # masters-of-horror-sylv: the page's row, the package's profile
+    'petty thief': 'petty thieves',  # outlaws-of-stirwood-forest-redux-fbg
+}
+
+# The quota the page prefixes to a profile heading ("1 Halfling Elder",
+# "0 – 2 Black Guards Of Morr"); it is not part of the name.
+QUOTA_PREFIX = re.compile(r'^\s*\d+\s*(?:[-\u2013\u2014]\s*\d+)?\s*')
+
+# Starting experience, in both printings the pages use: a clause of the "Starting
+# Experience" section ("a noble starts with 20 experience", "bullied goblin
+# begins with 20", "all henchmen start with no experience") and, in the band whose
+# page has no such section (halflings), an inline "20xp start" after the fighter's
+# name in the "Choice of warriors" prose.
+EXPERIENCE_CLAUSE = re.compile(
+    r"([a-z][a-z ']{1,60}?)\s+(?:starts?|begins?)\s+with\s+(\d{1,3}|no)\s+experience")
+INLINE_EXPERIENCE = re.compile(
+    r"([a-z][a-z '-]{1,60}?)\s*:.{0,160}?(\d{1,3})\s*xp\s+start")
+
+
+def profile_section(doc: reader.HtmlDocument, heads: list[tuple[int, str, int]],
+                    profile: dict) -> str | None:
+    """The fighter section the page prints for this profile, or ``None``.
+
+    The page prefixes the profile heading with its roster allowance ("1 Halfling
+    Elder", "0 – 2 Black Guards Of Morr"), so the heading is compared with that
+    quota stripped; the profile's name and its id are both tried.
+    """
+    wanted = {squash(norm(profile.get('name') or '')), squash(norm(profile.get('id') or ''))}
+    wanted.discard('')
+    for index, (level, head, _pos) in enumerate(heads):
+        if level not in (3, 4):
+            continue
+        if squash(norm(QUOTA_PREFIX.sub('', head))) in wanted:
+            return section_text(doc, heads, index)
+    return None
+
+
+def names_alike(own: set[str], subject: set[str]) -> bool:
+    """Whether a printed subject names the profile whose tokens are ``own``.
+
+    Word sets relate by containment ("the dame of the mare" names *Dame of the
+    Mare*, "necrarch" names *Necrarch Vampire*); a single-word pair also matches
+    across an irregular plural the singular rule cannot fold ("Huntsmen"/
+    "Huntsman"), by a shared prefix long enough to be the same word.
+    """
+    if not own or not subject:
+        return False
+    if own <= subject or subject <= own:
+        return True
+    if len(own) == 1 and len(subject) == 1:
+        one, other = next(iter(own)), next(iter(subject))
+        shared = len(os.path.commonprefix([one, other]))
+        return shared >= 5 and abs(len(one) - len(other)) <= 2
+    return False
+
+
+def printed_experience(doc: reader.HtmlDocument,
+                       heads: list[tuple[int, str, int]]) -> list[tuple[set[str], int]]:
+    """The subjects and figures of every starting-experience clause on the page."""
+    index = next((i for i, (level, head, _pos) in enumerate(heads)
+                  if level == 2 and 'experience' in norm(head)), None)
+    if index is not None:
+        section = section_text(doc, heads, index)
+        # ``section_text`` starts with the heading itself ("starting experience"),
+        # which would prefix itself to the first clause's subject.
+        section = re.sub(r'^' + re.escape(norm(heads[index][1])) + r'\s*', '', section)
+        paragraphs = section
+    else:
+        # No section: the inline "<name>: … <N>xp start" of the creation prose.
+        paragraphs = norm(doc.text())     # normalised so the name keeps its letters
+    pattern = EXPERIENCE_CLAUSE if index is not None else INLINE_EXPERIENCE
+    out: list[tuple[set[str], int]] = []
+    for match in pattern.finditer(paragraphs):
+        words = set(tokens(match.group(1)))
+        if words:
+            value = match.group(2)
+            out.append((words, 0 if value == 'no' else int(value)))
+    return out
+
+
 def check_costs_and_experience(band_id: str, doc: reader.HtmlDocument,
                                heads: list[tuple[int, str, int]],
                                profiles: list[dict], note) -> None:
@@ -1178,50 +1269,54 @@ def check_costs_and_experience(band_id: str, doc: reader.HtmlDocument,
     ``<name> starts with <N> experience`` in a window of the token stream, which
     attributed to a profile the figure the column next door printed. Here the
     figure is read where the page prints it: the profile's own fighter section
-    (its heading carries the hire line) or, when the page writes the hire line
-    as prose, the section the profile is hired in.
+    (its heading carries the hire line), and the starting experience from the
+    clauses the *page* writes (a profile's own section does not repeat it).
     """
     for profile in profiles:
         name = str(profile.get('name') or '')
         pid = str(profile.get('id') or '')
-        section = None
-        for index, (level, head, _pos) in enumerate(heads):
-            if level == 3 and (squash(norm(head)) == squash(norm(name))
-                               or squash(norm(head)) == squash(norm(pid))):
-                section = section_text(doc, heads, index)
-                break
-        if not section:
-            # The page has no fighter section for this profile (a henchmen group
-            # priced in prose): declared, not compared.
-            LEDGER.unobtainable('costs')
-            LEDGER.unobtainable('experience')
-            continue
+        section = profile_section(doc, heads, profile)
         # The hire line, in either currency the pages print and in both forms
         # they use: "60 gold crowns to hire" and "Hire Fee: 60 gold crowns".
         fees = [int(m.group(1)) for m in re.finditer(
             r'(\d{1,4})\s*(?:gcs?|gold\s+crowns?|crowns?|wt|warp\s+tokens?)\s+to\s+hire',
-            section, re.I)]
+            section or '', re.I)]
         fees += [int(m.group(1)) for m in re.finditer(
             r'hire\s+fee:?\s*(\d{1,4})\s*(?:gcs?|gold\s+crowns?|crowns?|wt|warp\s+tokens?)',
-            section, re.I)]
-        if fees:
-            LEDGER.cover('costs')
-            agrees = int(profile.get('cost')) in fees
-            LEDGER.count('costs', ok=agrees)
-            if not agrees:
-                note('cost-mismatch',
-                     f'{pid} ({name}): page={sorted(set(fees))} '
-                     f'yaml={profile.get("cost")}')
-        starts = [int(m.group(1)) for m in re.finditer(
-            r'starts?\s+with\s+(\d{1,3})\s+experience', section, re.I)]
-        if starts:
-            LEDGER.cover('experience')
-            agrees = int(profile.get('experience')) in starts
-            LEDGER.count('experience', ok=agrees)
-            if not agrees:
-                note('experience-mismatch',
-                     f'{pid} ({name}): page={sorted(set(starts))} '
-                     f'yaml={profile.get("experience")}')
+            section or '', re.I)]
+        if not fees:
+            # The page has no fighter section for this profile, or prices it in
+            # prose: declared, not compared.
+            LEDGER.unobtainable('costs')
+            continue
+        LEDGER.cover('costs')
+        agrees = int(profile.get('cost')) in fees
+        LEDGER.count('costs', ok=agrees)
+        if not agrees:
+            note('cost-mismatch',
+                 f'{pid} ({name}): page={sorted(set(fees))} '
+                 f'yaml={profile.get("cost")}')
+    # Starting experience is printed once, for the whole warband: a clause names the
+    # fighters it grants the figure to, so each hero is matched to the clause that
+    # names it ("a noble starts with 20", "petty thieves start with 0").
+    mentions = printed_experience(doc, heads)
+    if not mentions:
+        return
+    for profile in profiles:
+        if str(profile.get('type')) != 'hero' or profile.get('experience') is None:
+            continue
+        own = set(tokens(profile.get('name') or profile.get('id') or ''))
+        printed = {amount for subject, amount in mentions if names_alike(own, subject)}
+        LEDGER.cover('experience')
+        if not printed:
+            LEDGER.unobtainable('experience')
+            continue
+        agrees = int(profile.get('experience')) in printed
+        LEDGER.count('experience', ok=agrees)
+        if not agrees:
+            note('experience-mismatch',
+                 f'{profile.get("id")} ({profile.get("name")}): '
+                 f'page={sorted(printed)} yaml={profile.get("experience")}')
 
 
 def check_roster_limits(band_id: str, heads: list[tuple[int, str, int]],
@@ -1237,7 +1332,8 @@ def check_roster_limits(band_id: str, heads: list[tuple[int, str, int]],
     needle = next((index for index, (level, head, _pos) in enumerate(heads)
                    if level == 2 and ('warband creation' in norm(head)
                                       or 'creating the warband' in norm(head)
-                                      or 'starting the warband' in norm(head))), None)
+                                      or 'starting the warband' in norm(head)
+                                      or 'choice of warriors' in norm(head))), None)
     if needle is None:
         return
     LEDGER.cover('roster')
@@ -1270,42 +1366,79 @@ def check_statlines(band_id: str, doc: reader.HtmlDocument,
     movement matches any recorded value, and a printed row with no profile is a
     note, not a silence.
     """
-    characteristic_order = ('m', 'ws', 'bs', 's', 't', 'w', 'i', 'a', 'ld')
+    def stats_of(profile: dict) -> dict:
+        return profile.get('characteristics') or {}
+
+    def printed_value(cell: str) -> str:
+        # A parenthesised print is a variant, not a tenth value: «3(4)» is 3.
+        return re.sub(r'\(.*?\)', '', cell).strip()
+
+    def agrees(recorded: dict, values: tuple[str, ...]) -> bool:
+        """True when no printed figure contradicts the profile's own nine values."""
+        for characteristic, cell in zip(CHARACTERISTIC_KEYS, values):
+            own = str(recorded.get(characteristic, ''))
+            if not own or printed_value(cell) in ('*', '-'):
+                continue     # a random movement, or a characteristic not modelled
+            if printed_value(cell) != own:
+                return False
+        return True
+
     by_key: dict[str, dict] = {}
     for profile in profiles:
-        by_key[squash(norm(profile.get('name') or profile.get('id')))] = profile
-        by_key[squash(norm(profile.get('id')))] = profile
-    printed = profile_tables(doc)
+        by_key.setdefault(squash(norm(profile.get('name') or profile.get('id'))), profile)
+        by_key.setdefault(squash(norm(profile.get('id'))), profile)
+    printed = reader.profile_tables(doc)
     if not printed:
         return
-    matched: set[str] = set()
+
+    # A row is assigned to the profile it names. The page sometimes prints a source
+    # label rather than the profile's own name (the Rememberer's row is headed
+    # "Dwarf"), and it may repeat a name (two "Necrarch Vampire" rows: the fighter
+    # and the creature of its race table). So the row name matches by the folded
+    # name/id or a recorded alias, and a row that names nobody is adopted only when
+    # the *nine values* single out one still-unassigned profile — never by word
+    # containment, which used to lend the generic "Ogre"/"Snotling" rows to the
+    # first profile whose name started with them.
+    rows_by_profile: dict[str, list[tuple[str, tuple[str, ...]]]] = {}
     for row_name, values in printed:
-        key = squash(norm(row_name))
+        key = squash(norm(PROFILE_ALIASES.get(norm(row_name), row_name)))
         profile = by_key.get(key)
-        if profile is None and key:
-            hits = [p for wanted, p in by_key.items()
-                    if wanted and (wanted.startswith(key) or key.startswith(wanted))]
-            profile = hits[0] if len(hits) == 1 else None
+        how = 'name' if profile is not None else None
+        if profile is None:
+            free = [p for p in profiles if str(p.get('id')) not in rows_by_profile]
+            candidates = [p for p in free if agrees(stats_of(p), values)]
+            if len(candidates) == 1:
+                profile, how = candidates[0], None
+                LEDGER.detail('statlines', f'adoptada por valores: {row_name}')
         if profile is None:
             continue
-        matched.add(str(profile.get('id')))
-        recorded = profile.get('characteristics') or {}
+        rows_by_profile.setdefault(str(profile.get('id')), []).append(
+            (row_name, tuple(values)))
+
+    for profile in profiles:
+        pid = str(profile.get('id'))
+        candidates = rows_by_profile.get(pid) or []
+        if not candidates:
+            note('statline-unverified', f'{pid}: no printed row matched on the page')
+            continue
+        recorded = stats_of(profile)
+        # Of the rows that name the profile, the one that carries its own nine
+        # figures is the fighter's; a repeated name is the neighbour document's row.
+        chosen = next((c for c in candidates if agrees(recorded, c[1])), candidates[0])
         LEDGER.cover('statlines')
         diffs: list[str] = []
-        for characteristic, printed_value in zip(characteristic_order, values):
+        for characteristic, cell in zip(CHARACTERISTIC_KEYS, chosen[1]):
             own = str(recorded.get(characteristic, ''))
-            if printed_value == '*' or not own:
-                continue     # a random movement, or a characteristic not modelled
-            LEDGER.count('statlines', ok=re.sub(r'\(.*?\)', '', printed_value).strip() == own)
-            # A parenthesised print is a variant, not a tenth value: «3(4)» is 3.
-            if re.sub(r'\(.*?\)', '', printed_value).strip() != own:
-                diffs.append(f'{characteristic}: yaml={own} page={printed_value}')
+            if not own or printed_value(cell) in ('*', '-'):
+                continue
+            LEDGER.count('statlines', ok=printed_value(cell) == own)
+            if printed_value(cell) != own:
+                diffs.append(f'{characteristic}: yaml={own} page={cell}')
         if diffs:
-            note('statline-mismatch', f'{profile.get("id")}: {"; ".join(diffs)}')
-    for profile in profiles:
-        if str(profile.get('id')) not in matched:
-            note('statline-unverified',
-                 f'{profile.get("id")}: no printed row matched on the page')
+            note('statline-mismatch', f'{pid}: {"; ".join(diffs)} (fila {chosen[0]!r})')
+        for row_name, _values in candidates:
+            if row_name != chosen[0]:
+                LEDGER.detail('statlines', f'fila repetida: {row_name}')
 
 
 def check_skill_table(band_id: str, doc: reader.HtmlDocument,
@@ -1315,9 +1448,11 @@ def check_skill_table(band_id: str, doc: reader.HtmlDocument,
 
     The table keeps the column identity the flat extraction lost: a header row
     names the skill lists and a '✓' under a column grants access to it. The
-    row's name is the first cell (the flat auditor's ROW_ALIASES are subsumed by
-    the containment match). Henchmen carry empty access, so a '✓' on their row
-    is a mismatch.
+    row's name is the first cell; it may cover several profiles ("Magus &
+    Mages") or a source label ("Werewolf" for Wolfman), and ``matching_profile``
+    folds singular/plural, reads the recorded labels and only falls back to word
+    containment when a single profile qualifies. Henchmen carry empty access, so
+    a '✓' on their row is a mismatch.
     """
     rows = doc.rows()
     # The skill table is the one whose header names at least one skill list and
@@ -1329,7 +1464,7 @@ def check_skill_table(band_id: str, doc: reader.HtmlDocument,
     for index, row in enumerate(rows):
         if not row.header:
             continue
-        if characteristic_columns(row.cells) is not None:
+        if reader.characteristic_columns(row.cells) is not None:
             continue
         for position, cell in enumerate(row.cells):
             title = reader.normalized_key(cell)
@@ -1354,6 +1489,20 @@ def check_skill_table(band_id: str, doc: reader.HtmlDocument,
                   if position < len(row.cells) and '✓' in row.cells[position]]
         profile = matching_profile(name, profiles)
         if profile is None:
+            # One row may cover several profiles ("Magus & Mages"): each part has
+            # to be a profile of the package, and all of them must carry the same
+            # access the single row prints, or the row is compared against none.
+            parts = [p for p in (matching_profile(part.strip(), profiles)
+                                 for part in re.split(r'\s*[&,/]\s*', name)) if p]
+            if len(parts) >= 2:
+                agrees = all(list(p.get('skill_access') or []) == access for p in parts)
+                LEDGER.count('skill-tables', ok=agrees, values=len(parts))
+                if not agrees:
+                    note('skill-access-mismatch',
+                         f'{name}: yaml={[p.get("skill_access") for p in parts]} '
+                         f'page={access}')
+                continue
+        if profile is None:
             LEDGER.unobtainable('skill-tables')
             note('skill-row-unmatched', name)
             continue
@@ -1368,23 +1517,30 @@ def check_skill_table(band_id: str, doc: reader.HtmlDocument,
 def matching_profile(name: str, profiles: list[dict]) -> dict | None:
     """The profile the skill-table row names, or None when not unambiguous.
 
-    The flat auditor's ROW_ALIASES ("Wolfman" -> "Werewolf", "Petty Thieves" ->
-    "Petty Thief") are the word-containment case: either direction, and only
-    when exactly one candidate qualifies.
+    The page and the packages differ in number ("Doomseekers"/"Doomseeker",
+    "Grave Robber"/"Grave Robbers", "Retainers"/"Retainer") and the page
+    sometimes prints a source label instead of the profile's own name ("Werewolf"
+    /"Wolfman"): the match folds singular/plural and reads the labels in
+    ``PROFILE_ALIASES``, then falls back to word containment in either direction
+    — a generic row that fits several profiles stays unmatched.
     """
     exact = [p for p in profiles
              if squash(norm(p.get('name') or '')) == name
              or squash(norm(p.get('id') or '')) == name]
     if exact:
         return exact[0]
-    name_words = set(name.split())
-    hits: list[dict] = []
-    for profile in profiles:
-        words = set(norm(profile.get('name') or profile.get('id') or '').split())
-        if not words:
-            continue
-        if (name_words <= words or words <= name_words) and name_words | words:
-            hits.append(profile)
+
+    def words_of(profile: dict) -> set[str]:
+        return set(tokens(profile.get('name') or profile.get('id') or ''))
+
+    wanted = set(tokens(PROFILE_ALIASES.get(norm(name), name)))
+    if not wanted:
+        return None
+    same = [p for p in profiles if words_of(p) == wanted]
+    if len(same) == 1:
+        return same[0]
+    hits = [p for p in profiles
+            if words_of(p) and (wanted <= words_of(p) or words_of(p) <= wanted)]
     return hits[0] if len(hits) == 1 else None
 
 

@@ -305,3 +305,140 @@ def test_manifest_rows_still_name_their_source_page() -> None:
     assert len(rows) == 19
     for band in sorted(p.name for p in BANDS.iterdir()):
         assert rows[band].get("slug"), f"{band} lost its page slug"
+
+
+@CACHED
+def test_audit_reports_the_numbers_it_compares() -> None:
+    """The four checks that used to leave the ledger at zero are not vacuous.
+
+    Previously the audit announced "statlines 0/0 figures in 126 profiles" and its
+    costs/experience/roster checks found no section at all, yet exited green. Each
+    check now covers the packages and compares their figures.
+    """
+    audit.LEDGER.reset()
+    items = audit.catalog_items()
+    for band in sorted(p.name for p in BANDS.iterdir()):
+        audit.check_band(band, items)
+    measures = audit.LEDGER.measures
+    assert measures["statlines"].values >= 1000, measures["statlines"].line("statlines")
+    assert measures["statlines"].failed == 0
+    assert measures["costs"].values >= 100, measures["costs"].line("costs")
+    assert measures["experience"].values >= 60, measures["experience"].line("experience")
+    assert measures["roster"].values == 19, measures["roster"].line("roster")
+    assert measures["skill-tables"].values >= 60, measures["skill-tables"].line("skill-tables")
+
+
+@CACHED
+def test_audit_detects_a_wrong_statline(sandbox: Path) -> None:
+    """A characteristic that drifts from the page is reported, cell by cell."""
+    path = sandbox / "druchii-mic" / "profiles.yaml"
+    text = path.read_text(encoding="utf-8")
+    changed = text.replace("  characteristics:\n    M: 5", "  characteristics:\n    M: 9", 1)
+    assert changed != text, "the Noble block moved: update this test's pattern"
+    path.write_text(changed, encoding="utf-8")
+    found = [row for row in audit.check_band("druchii-mic", audit.catalog_items())
+             if row["kind"] == "statline-mismatch"]
+    assert found, "a statline the page contradicts was not reported"
+
+
+@CACHED
+def test_audit_detects_a_wrong_hire_fee(sandbox: Path) -> None:
+    """A profile's hire fee is compared with the figure its own section prints."""
+    path = sandbox / "druchii-mic" / "profiles.yaml"
+    text = path.read_text(encoding="utf-8")
+    changed = text.replace("  cost: 75", "  cost: 999", 1)
+    assert changed != text, "the Noble cost moved: update this test's pattern"
+    path.write_text(changed, encoding="utf-8")
+    found = [row for row in audit.check_band("druchii-mic", audit.catalog_items())
+             if row["kind"] == "cost-mismatch"]
+    assert found, "a hire fee the page contradicts was not reported"
+
+
+@CACHED
+def test_audit_detects_a_wrong_starting_experience(sandbox: Path) -> None:
+    """A hero's starting experience is compared with the page's own clause."""
+    path = sandbox / "druchii-mic" / "profiles.yaml"
+    text = path.read_text(encoding="utf-8")
+    changed = text.replace("  experience: 20", "  experience: 99", 1)
+    assert changed != text, "the Noble experience moved: update this test's pattern"
+    path.write_text(changed, encoding="utf-8")
+    found = [row for row in audit.check_band("druchii-mic", audit.catalog_items())
+             if row["kind"] == "experience-mismatch"]
+    assert found, "a starting experience the page contradicts was not reported"
+
+
+@CACHED
+def test_audit_detects_a_wrong_roster_limit(sandbox: Path) -> None:
+    """The roster minimum, maximum and gold are compared with "Choice of warriors"."""
+    path = sandbox / "druchii-mic" / "band.yaml"
+    text = path.read_text(encoding="utf-8")
+    changed = text.replace("  maximum_models: 12", "  maximum_models: 99", 1)
+    assert changed != text, "the roster maximum moved: update this test's pattern"
+    path.write_text(changed, encoding="utf-8")
+    found = [row for row in audit.check_band("druchii-mic", audit.catalog_items())
+             if row["kind"] == "roster-mismatch"]
+    assert found, "a roster limit the page contradicts was not reported"
+
+
+def test_matching_profile_folds_plurals_and_source_labels() -> None:
+    """The plural and the label the page prints are read; a generic row is not lent."""
+    profiles = [{"id": "doomseeker", "name": "Doomseeker"},
+                {"id": "wolfman", "name": "Wolfman"},
+                {"id": "ogre-hunter", "name": "Ogre Hunter"}]
+    assert audit.matching_profile("doomseekers", profiles)["id"] == "doomseeker"
+    assert audit.matching_profile("werewolf", profiles)["id"] == "wolfman"
+    assert audit.matching_profile("retainers", profiles) is None
+
+
+_TABLE_HEAD = ("<thead><tr><th>Profile</th><th>M</th><th>WS</th><th>BS</th><th>S</th>"
+               "<th>T</th><th>W</th><th>I</th><th>A</th><th>Ld</th></tr></thead>")
+def test_statlines_do_not_lend_a_generic_row_to_a_profile() -> None:
+    """A row the page labels "Ogre" is not adopted by "Ogre Hunter" on its name.
+
+    Word containment used to do exactly that, comparing the profile against the
+    creature's figures. The row is adopted only when its nine values single out the
+    profile, so a contradicting generic row stays a declared gap, not a mismatch.
+    """
+    page = ("<h3>1 Ogre Hunter</h3>"
+            "<table>" + _TABLE_HEAD + "<tbody>"
+            "<tr><td>Ogre</td>" + "".join(f"<td>{value}</td>" for value in
+                                          ("4", "4", "4", "4", "4", "1", "4", "1", "5"))
+            + "</tr></tbody></table>")
+    profiles = [{"id": "ogre-hunter", "name": "Ogre Hunter", "type": "hero",
+                 "characteristics": {key: 5 for key in audit.CHARACTERISTIC_KEYS}}]
+    found: list[str] = []
+    audit.check_statlines("generic", audit.document(page), profiles,
+                          lambda kind, detail: found.append(kind))
+    assert found == ["statline-unverified"], found
+
+
+def test_statlines_adopt_a_row_only_on_its_values() -> None:
+    """The Rememberer's row is headed "Dwarf"; its own nine figures claim it."""
+    values = ("3", "3", "3", "3", "4", "1", "2", "1", "8")
+    page = ("<h3>Dwarf</h3>"
+            "<table>" + _TABLE_HEAD + "<tbody>"
+            "<tr><td>Dwarf</td>"
+            + "".join(f"<td>{value}</td>" for value in values)
+            + "</tr></tbody></table>")
+    profiles = [{"id": "rememberer", "name": "Rememberer", "type": "hero",
+                 "characteristics": dict(zip(audit.CHARACTERISTIC_KEYS, (3, 3, 3, 3, 4, 1, 2, 1, 8)))}]
+    found: list[str] = []
+    audit.check_statlines("adopt", audit.document(page), profiles,
+                          lambda kind, detail: found.append(kind))
+    assert not found, found
+
+
+def test_skill_table_compares_a_combined_row() -> None:
+    """One row may cover several profiles ("Magus & Mages") with the same access."""
+    page = ("<h2>Skill Table</h2>"
+            "<table><thead><tr><th>Profile</th><th>Combat</th><th>Shooting</th>"
+            "<th>Academic</th></tr></thead><tbody>"
+            "<tr><td>Magus &amp; Mages</td><td></td><td></td><td>✓</td></tr>"
+            "</tbody></table>")
+    profiles = [{"id": "magus", "name": "Magus", "skill_access": ["academic"]},
+                {"id": "mage", "name": "Mage", "skill_access": ["academic"]}]
+    doc = audit.document(page)
+    found: list[str] = []
+    audit.check_skill_table("combined", doc, audit.headings(doc), profiles,
+                            lambda kind, detail: found.append(kind))
+    assert not found, found
