@@ -5,7 +5,7 @@
 - Rama de trabajo: `2A2B`; remoto: `origin/2A2B`.
 - Snapshot publicado: `9118ca2` (`chore: snapshot 2A2B starting point`), 25 de septiembre de 2026. Incluye los cambios locales existentes y la historia anterior; no certifica que sus tests pasen.
 - La documentación de este directorio se publica después del snapshot, en un commit separado. No se ha ejecutado la integración al redactarla.
-- Alcance: 19 bandas de 2A y 60 de 2B y sus catálogos; automatizar todos los efectos aplicables a los flujos existentes de construcción, combate y campaña, en los consumidores correspondientes.
+- Alcance: 19 bandas de 2A y 60 de 2B y sus catálogos; integrarlas primero en la KB, después en `warband-manager-web` y por último en `combat-simulator`.
 - Fuera de esta ejecución: crear sistemas de despliegue, ocultación, disparo o resolución de magia de batalla. Sus reglas se conservan completas y con limitaciones explícitas; no se marcan como implementadas.
 - Mantener staging y herramientas de ingesta. La aplicación seguirá leyendo exclusivamente `sources/knowledge`.
 - La ejecución de las tareas termina en commits **locales** en `2A2B`. La autorización de push del snapshot y de esta documentación no autoriza publicar implementaciones posteriores ni cambiar `main`.
@@ -66,48 +66,38 @@ La columna «depende de» determina autorización de escritura, salvo la explora
 | [x] | [T03 — Revisión y cierre de bandas 2B](tasks/T03.md) | completada | T01; T04 completada | Agente ejecutor | Seis re-puntos y gates afectados sobre `5105860`; aceptada 2026-09-25 |
 | [x] | [T04 — Catálogos, identidades y procedencia](tasks/T04.md) | completada | T01 | Agente ejecutor | Mapa y decisiones sobre `b2e437c`; aceptada 2026-09-25 |
 | [x] | [T05 — Normalización y promoción reproducible](tasks/T05.md) | completada | T04 | Agente ejecutor | Promoción explícita e idempotente sobre `cd04931`; aceptada 2026-09-25 |
-| [ ] | [T06 — Inventario de efectos y obligaciones](tasks/T06.md) | pendiente | T01; cierre tras T02/T03/T04 | Sin asignar | — |
+| [ ] | [T06 — Inventario y reparto de obligaciones](tasks/T06.md) | en revisión | T01–T05 | Agente ejecutor | Matriz de 1692 efectos entregada y reconciliada con las tres fases; pendiente de aceptación |
 | [ ] | [T07 — Fusión en la KB canónica](tasks/T07.md) | pendiente | T02–T06 | Coordinador/integrador | — |
-| [ ] | [T08 — Construcción y selección](tasks/T08.md) | pendiente | T07 | Sin asignar | — |
-| [ ] | [T09 — Combate y paridad de motores](tasks/T09.md) | pendiente | T08 | Sin asignar | — |
-| [ ] | [T10 — Automatización de campaña](tasks/T10.md) | pendiente | T08 | Sin asignar | — |
-| [ ] | [T11 — Web, escritorio y presentación](tasks/T11.md) | pendiente | T07; cierre tras T10 | Sin asignar | — |
-| [ ] | [T12 — Artefactos y evidencias derivadas](tasks/T12.md) | pendiente | T09/T10/T11 | Integrador | — |
-| [ ] | [T13 — Validación integral de KB](tasks/T13.md) | pendiente | T12 | Sin asignar | — |
-| [ ] | [T14 — Validación semántica y de producto](tasks/T14.md) | pendiente | T12 | Sin asignar | — |
-| [ ] | [T15 — Cierre y commits locales](tasks/T15.md) | pendiente | T13/T14 | Coordinador | — |
+| [ ] | [T08 — Validación y cierre de la KB](tasks/T08.md) | pendiente | T07 | Coordinador/integrador | — |
+| [ ] | [T09 — Construcción y selección para Web](tasks/T09.md) | pendiente | T08 | Sin asignar | — |
+| [ ] | [T10 — Automatización de campaña Web](tasks/T10.md) | pendiente | T09 | Sin asignar | — |
+| [ ] | [T11 — Interfaz Warband Manager Web](tasks/T11.md) | pendiente | T09; cierre tras T10 | Sin asignar | — |
+| [ ] | [T12 — Artefactos, validación Web y cierre](tasks/T12.md) | pendiente | T10/T11 | Coordinador/integrador | — |
+| [ ] | [T13 — Reglas del Combat Simulator](tasks/T13.md) | pendiente | T12 | Sin asignar | — |
+| [ ] | [T14 — Validación y paridad de combate](tasks/T14.md) | pendiente | T13 | Sin asignar | — |
+| [ ] | [T15 — Revisión y cierre del Combat Simulator](tasks/T15.md) | pendiente | T14 | Coordinador | — |
 
 ## Fases, entradas y salidas
 
-### Fase 0 — Verdad inicial (T01)
+T01–T05 constituyen la preparación ya aceptada. Las tres fases siguientes se ejecutan en orden y cada una termina en validación vigente y commit local antes de abrir la siguiente.
 
-Inicio: snapshot accesible. Obtener inventario por ID y familia, baseline de validaciones y mapa de cambios previos. No tratar conteos documentados como verdad sin verificarlos.
+### Fase 1 — Integración con la KB (T06–T08)
 
-Fin: inventario exhaustivo, fallos previos identificados y propiedad de archivos preparada. Este paso no está hecho por haber guardado el snapshot.
+Inicio: T01–T05 aceptadas. T06 clasifica cada obligación como `KB`, `Warband Manager Web`, `Combat Simulator` o `sistema excluido`. T07 normaliza y promueve de forma serial; T08 valida fuente y destino y cierra la fase.
 
-### Fase 1 — Contenido y diseño de integración (T02–T06)
+Fin: todos los registros aprobados se cargan una vez desde `sources/knowledge`, sin referencias rotas, pérdida de variantes ni lectura productiva de staging. Fidelidad, traducciones, esquemas e idempotencia acreditadas; commit local de fase 1 creado.
 
-Inicio: T01 aceptada. Revisar fuentes, traducciones, identidades y forma editorial; preparar promoción y obligaciones ejecutables. Mantener la distinción entre dato transcrito, dato validado y regla automatizada.
+### Fase 2 — Warband Manager Web (T09–T12)
 
-Fin: 79 paquetes y todos sus catálogos con destino y evidencia; colisiones resueltas; normalizador sin pérdida y repetible; todo efecto clasificado; preguntas bloqueantes resueltas. No actualizar manifiestos a `promotable` por simple existencia de YAML.
+Inicio: fase 1 cerrada. T09 fija construcción, selección y contratos; después T10 implementa campaña y T11 conecta exclusivamente `warband-manager-web`. T12 genera artefactos, valida el flujo completo y cierra la fase.
 
-### Fase 2 — Promoción y consumidores (T07, comienzo de T11)
+Fin: las bandas 2A/2B pueden crearse, operar, persistirse, reabrirse y exportarse en Web con ES/EN, accesibilidad y errores correctos. Automatización de campaña cubierta por casos de producto; commit local de fase 2 creado. La aplicación de escritorio ya no existe y queda fuera de alcance.
 
-Inicio: barrera B1 aceptada. Fusionar catálogos y registros antes de bandas; validar el conjunto y adaptar pruebas de aislamiento al staging retenido. Ampliar categorías 2A/2B en Web y probar la vía dinámica de escritorio.
+### Fase 3 — Combat Simulator (T13–T15)
 
-Fin: todos los registros se cargan una sola vez desde la KB; sin referencias rotas ni variantes fusionadas indebidamente. Datos activos previos preservados, salvo cambios justificados y revisados.
+Inicio: fase 2 cerrada. T13 implementa solo las obligaciones de combate clasificadas por T06; T14 demuestra semántica y paridad; T15 revisa el conjunto y cierra la fase.
 
-### Fase 3 — Comportamiento completo dentro de alcance (T08–T11)
-
-Inicio: KB promovida y obligaciones definidas. Implementar primero construcción y selección; después combate y campaña por mecanismos comunes. Completar las interacciones de producto necesarias, traducción y persistencia.
-
-Fin: todos los efectos aplicables tienen resultado observable y evidencia. Las reglas de sistemas ausentes permanecen documentadas, sin falsa automatización. Las elecciones nuevas tienen flujo accesible ES/EN y no se quedan en helpers.
-
-### Fase 4 — Derivados, certificación y cierre (T12–T15)
-
-Inicio: implementación estabilizada. Un solo agente genera derivados; validadores trabajan sobre esa misma revisión; correcciones reabren y repiten solo las comprobaciones afectadas antes del gate final.
-
-Fin: criterios de aceptación completos, informes coherentes con la revisión final y commits locales. No push ni despliegue de esta implementación.
+Fin: cada efecto de combate incluido tiene prueba determinista y paridad en todos los backends aplicables, con RNG, decisiones y estado observable correctos. Gate integral vigente y commit local de fase 3 creados; sin push ni despliegue.
 
 ## Paralelismo y barreras de sincronización
 
@@ -115,26 +105,26 @@ Máximo cuatro agentes simultáneos: coordinador más tres trabajadores. La tabl
 
 | Oleada | Paralelismo permitido | Punto de sincronización |
 |---|---|---|
-| A | T01; otros solo leen por encargo | B0: inventario y baseline aceptados |
-| B | T02 + T03 + T04; coordinador prepara T06 en lectura | Catálogos solo T04; bandas solo su auditor |
-| C | T05 + T06 + revisión pendiente de T02/T03 | B1: T02–T06 aceptadas; congelar identidades y contrato |
-| D | T07 serial | B2: conjunto canónico consistente, reservar archivos de runtime |
-| E | T08 + parte de categorías/presentación de T11 | B3: construcción/selección aceptadas, contratos de elecciones fijados |
-| F | T09 + T10 + continuación T11 | B4: todos los comportamientos aceptados, detener escrituras de producto |
-| G | T12 serial | B5: derivados y evidencias vinculados a una revisión concreta |
-| H | T13 + T14 | B6: validación aceptada sin cambios posteriores no comprobados |
-| I | T15 serial | Commits y estado Git final verificados |
+| A | T01–T05 completadas; T06 activo | P0: preparación aceptada e inventario de obligaciones reconciliado |
+| B | T07 serial | P1a: KB promovida; detener escritores de datos |
+| C | T08 serial | P1: KB validada y commit local de fase 1 |
+| D | T09 serial; T10/T11 solo leen | P2a: contratos Web estables |
+| E | T10 + T11 con archivos disjuntos | P2b: campaña e interfaz Web aceptadas |
+| F | T12 serial | P2: Web validada y commit local de fase 2 |
+| G | T13 por lotes/backends disjuntos tras fijar el mecanismo común | P3a: comportamiento de combate implementado |
+| H | T14 serial respecto de reparaciones | P3b: paridad de combate aceptada |
+| I | T15 serial | P3: revisión integral y commit local de fase 3 |
 
-T05 puede explorar el normalizador antes de cerrar T04, pero no escribir decisiones de identidad ni normalizar sus catálogos concurrentemente. T06 puede inventariar antes de cerrar T02–T04, pero debe reconciliar el inventario con su resultado final. T09/T10 pueden leer y diseñar antes de T08, sin modificar contratos aún inestables.
+La lectura preparatoria puede adelantarse, pero ninguna fase escribe antes del commit de cierre de la anterior. T10 y T11 solo escriben en paralelo después de que T09 estabilice sus contratos. T13 puede dividirse por backend únicamente después de fijar el mecanismo modular y con archivos disjuntos.
 
 ### Conflictos que requieren serialización
 
 - Catálogos y registros compartidos: T04 durante preparación, T07 durante promoción; después asignación por archivo y lote por el coordinador.
-- `runtime`, bindings, constructores y esquemas comunes: un dueño por archivo; consumidores esperan a que se acepte la ampliación común.
+- `runtime`, bindings, constructores y esquemas comunes: un dueño por archivo; T09 fija los contratos Web antes de T10/T11 y T13 fija el mecanismo común de combate antes de repartir backends.
 - T10 y T11 acuerdan las entradas y errores antes de que T11 implemente formularios; T11 no inventa una lógica de campaña alternativa.
 - Generados web y manifiestos: solo T12 o el coordinador tras una corrección. Nunca varios agentes regenerando a la vez.
 - Pruebas que mutan temporalmente datos, como auditorías negativas, no corren mientras otro agente los lee o edita. Ejecutarlas en una copia aislada cuando el runner no garantice aislamiento; comprobar restauración byte a byte.
-- T13/T14 son revisiones independientes. Si encuentran fallos, entregan hallazgos: las reparaciones se reasignan a su propietario y se vuelve a generar antes de repetir validaciones afectadas.
+- T08, T12 y T14 validan sus respectivas fases. Si encuentran fallos, los devuelven al propietario y repiten solo la evidencia invalidada antes del commit de cierre.
 - Git: solo coordinador crea commits, cambia ramas, integra o publica. Sin `reset`, `clean`, amend o rebase para ocultar trabajo concurrente.
 
 En un checkout compartido basta esta reserva por archivos; no crear infraestructura nueva de bloqueo. Un worktree solo si es necesario para aislar una prueba o lote incompatible, creado desde la revisión acordada y con integración a cargo del coordinador.
@@ -168,7 +158,7 @@ npm run build
 python tools/mordheim-utils.py run-ci
 ```
 
-No es una orden de ejecutar todas las suites en cada tarea. Cada documento concreta el mínimo proporcional; T15 consolida el cierre. No actualizar digests ni cantidades para apagar un fallo sin revisar qué cambió.
+No es una orden de ejecutar todas las suites en cada tarea. Cada documento concreta el mínimo proporcional y cada fase tiene su propio cierre. T15 consolida únicamente Combat Simulator y comprueba que los cierres anteriores siguen vigentes. No actualizar digests ni cantidades para apagar un fallo sin revisar qué cambió.
 
 ## Riesgos conocidos que hay que verificar
 
@@ -187,7 +177,7 @@ No es una orden de ejecutar todas las suites en cada tarea. Cada documento concr
 - [ ] Promoción repetible sin cambios adicionales y staging fuera de los cargadores de producción.
 - [ ] Fuentes y traducción ES/EN completas; precios, restricciones y magia mantienen sus contextos.
 - [ ] Cada efecto tiene implementación verificada o exclusión concreta de los sistemas acordados.
-- [ ] Python/TypeScript y motores de combate correspondientes mantienen comportamiento, decisiones y orden RNG.
+- [ ] Python/TypeScript del Warband Manager Web y los motores del Combat Simulator mantienen comportamiento, decisiones y orden RNG donde corresponda.
 - [ ] Creación, reclutamiento, equipo, contratación, progreso, guardado/reapertura y PDF probados donde sean aplicables; todos los mecanismos nuevos tienen casos de producto.
 - [ ] Categorías 2A/2B seleccionables y excluibles; presentación visible y accesible sin IDs técnicos filtrados.
 - [ ] Artefactos y evidencia pertenecen a la revisión final; fallos previos y limitaciones reales de validación declarados.
@@ -205,5 +195,6 @@ No es una orden de ejecutar todas las suites en cada tarea. Cada documento concr
 | 2026-09-25 | T04 | Aceptar mapa de promoción y decisiones; conservar Taal & Rhya y Shield of Sigmar como variantes y usar sufijo `-miracle-workers`; devolver seis re-puntos a T03 | Fuentes externas recuperadas con URL/hash; auditor 2B con 0 problemas y 66/66 conjuros; mapa `2ab-promotion-map.json` | Sí |
 | 2026-09-25 | T03 | Aceptar el cierre tras aplicar seis re-puntos de objetos decididos por T04 | `ingest_2b validate` sin problemas, auditor 2B `problem_count 0`, matriz con 0 referencias sin resolver | Sí |
 | 2026-09-25 | T05 | Aceptar la promoción explícita; conservar `warplock_pistol` como variante con entrada `-mim`, mantener los 26 ids históricos y normalizar staging al inicio de T07 antes de promover | Preview de 409 acciones/13 documentos, segunda pasada sin escrituras, colisión ambigua rechazada y 9 pruebas enfocadas; revisión estructural del coordinador | Sí |
+| 2026-09-25 | Replanificación | Organizar el trabajo restante en KB (T06–T08), Warband Manager Web (T09–T12) y Combat Simulator (T13–T15); eliminar escritorio, incluir campaña en Web y cerrar cada fase con validación y commit local | Decisión del usuario antes de iniciar T07; T01–T05 permanecen aceptadas | Sí |
 
 Añadir aquí solo decisiones de coordinación. Para una regla, enlazar su interpretación y evidencia en el sistema semántico existente. No mantener dos versiones divergentes de una misma decisión.
