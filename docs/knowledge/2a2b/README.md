@@ -63,7 +63,7 @@ La columna «depende de» determina autorización de escritura, salvo la explora
 | [x] | Preparación: snapshot de todos los cambios | completada | — | Coordinador | `9118ca2`, publicado en `origin/2A2B` |
 | [x] | [T01 — Inventario y validación inicial](tasks/T01.md) | completada | Snapshot | Agente ejecutor | Entrega en T01 sobre `a31bd8d`; aceptada 2026-09-25 |
 | [x] | [T02 — Revisión y cierre de bandas 2A](tasks/T02.md) | completada | T01 | Agente ejecutor | Entrega y gate mantenido sobre `101ca5d`; aceptada 2026-09-25 |
-| [ ] | [T03 — Revisión y cierre de bandas 2B](tasks/T03.md) | pendiente | T01 | Sin asignar | — |
+| [ ] | [T03 — Revisión y cierre de bandas 2B](tasks/T03.md) | bloqueada | T01; barrera T04 | Agente ejecutor | Entrega sobre `b2e437c`; pendiente fuentes externas y revalidación tras T04 |
 | [ ] | [T04 — Catálogos, identidades y procedencia](tasks/T04.md) | pendiente | T01 | Sin asignar | — |
 | [ ] | [T05 — Normalización y promoción reproducible](tasks/T05.md) | pendiente | T04 | Sin asignar | — |
 | [ ] | [T06 — Inventario de efectos y obligaciones](tasks/T06.md) | pendiente | T01; cierre tras T02/T03/T04 | Sin asignar | — |
@@ -201,5 +201,6 @@ No es una orden de ejecutar todas las suites en cada tarea. Cada documento concr
 | 2026-09-25 | B0 / T01 | Aceptar inventario y baseline; abrir T02, T03, T04 y la exploración de T06 | Entrega de T01 sobre `a31bd8d`; validación puntual de manifiestos y contrato | Sí |
 | 2026-09-25 | T02 | Mantener bloqueada hasta reparar y ejecutar el auditor 2A; conservar el cotejo ya realizado y pasar sus notas de fusión a T04 | Entrega de T02 sobre `101ca5d`; `audit_2a_sources.py` usa dos nombres no enlazados y deja chequeos vacuos | Sí |
 | 2026-09-25 | T02 | Aceptar las 19 bandas 2A tras reparar el gate; transferir `sources/2A/promotion-merge-notes.md` a T04 | Auditor 2A: 0 abiertos, 14 adjudicados; 23 pruebas enfocadas; cobertura no vacua declarada | Sí |
+| 2026-09-25 | T03 | Conservar la revisión de las 61 bandas y bloquear el cierre hasta que T04 resuelva fuentes e identidades; después repetir solo gates afectados | Entrega de T03 sobre `b2e437c`; 60/60 hashes PDF, 0 problemas de banda, 8 problemas de magia y barrera de catálogo declarada | Sí |
 
 Añadir aquí solo decisiones de coordinación. Para una regla, enlazar su interpretación y evidencia en el sistema semántico existente. No mantener dos versiones divergentes de una misma decisión.
