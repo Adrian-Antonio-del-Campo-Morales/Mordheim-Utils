@@ -24,6 +24,8 @@ Estados válidos: `pendiente`, `en progreso`, `bloqueada`, `en revisión`, `comp
 6. El coordinador pasa a `en revisión`, asigna un revisor distinto cuando haya un cambio semántico o de datos, comprueba los criterios y acepta o devuelve la tarea.
 7. Solo tras aceptar registra `completada`, evidencia y commit si existe; libera los archivos. Una modificación posterior que invalide evidencia reabre las tareas afectadas.
 
+El coordinador revisa la entrega y reutiliza sus resultados. No repite la tarea completa: solo realiza comprobaciones puntuales cuando detecta una contradicción, falta evidencia para un criterio de cierre o existe un riesgo material no cubierto. Si hace una comprobación adicional, registra qué duda concreta resolvió.
+
 Una tarea se puede fraccionar en lotes por mecanismo dentro de su documento auxiliar, sin crear un gestor nuevo. Cada lote tendrá responsable, entradas, archivos, prueba de cierre y estado. Si se necesita otro agente para un lote, se usa el mismo prompt con esos parámetros concretos, conservando las restricciones de la tarea madre.
 
 ### Tabla de reservas activas
@@ -59,7 +61,7 @@ La columna «depende de» determina autorización de escritura, salvo la explora
 | Hecho | ID y documento de ejecución | Estado | Depende de | Responsable | Evidencia / revisión |
 |---|---|---|---|---|---|
 | [x] | Preparación: snapshot de todos los cambios | completada | — | Coordinador | `9118ca2`, publicado en `origin/2A2B` |
-| [ ] | [T01 — Inventario y validación inicial](tasks/T01.md) | pendiente | Snapshot | Sin asignar | — |
+| [x] | [T01 — Inventario y validación inicial](tasks/T01.md) | completada | Snapshot | Agente ejecutor | Entrega en T01 sobre `a31bd8d`; aceptada 2026-09-25 |
 | [ ] | [T02 — Revisión y cierre de bandas 2A](tasks/T02.md) | pendiente | T01 | Sin asignar | — |
 | [ ] | [T03 — Revisión y cierre de bandas 2B](tasks/T03.md) | pendiente | T01 | Sin asignar | — |
 | [ ] | [T04 — Catálogos, identidades y procedencia](tasks/T04.md) | pendiente | T01 | Sin asignar | — |
@@ -196,5 +198,6 @@ No es una orden de ejecutar todas las suites en cada tarea. Cada documento concr
 | Fecha | Barrera/tarea | Decisión | Evidencia | Aprobación del coordinador |
 |---|---|---|---|---|
 | 2026-09-25 | Preparación | Publicar snapshot y documentos en `2A2B`; implementación posterior local | Solicitud del usuario; snapshot `9118ca2` | Sí |
+| 2026-09-25 | B0 / T01 | Aceptar inventario y baseline; abrir T02, T03, T04 y la exploración de T06 | Entrega de T01 sobre `a31bd8d`; validación puntual de manifiestos y contrato | Sí |
 
 Añadir aquí solo decisiones de coordinación. Para una regla, enlazar su interpretación y evidencia en el sistema semántico existente. No mantener dos versiones divergentes de una misma decisión.
