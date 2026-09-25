@@ -87,7 +87,7 @@ JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str] = {
         "defs.schema.json",
         "unused_enum_value",
         "#/$defs/catalog_status",
-    ): "`draft` is the editorial state docs/knowledge/campaign-catalogue.md prescribes for unconfirmed rules",
+    ): "`draft` is the editorial state docs/guides/campaign-knowledge.md prescribes for unconfirmed rules",
     (
         "catalog-rules-implemented-canonical-families.yaml.schema.json",
         "unused_enum_value",

@@ -14,8 +14,6 @@ commands.
   coverage and mutation gates, and what each one can prove.
 - [Tools](reference/tools.md) — maintained scripts, their purpose and the
   directory that owns each one.
-- [Components](reference/components.md) — applications, packages and ownership
-  boundaries.
 - [Web presentation](reference/web-presentation.md) — localization, provenance
   and output-boundary rules.
 
@@ -32,7 +30,7 @@ Contracts:
 - [Modify the knowledge base](guides/modify-knowledge-base.md)
 - [Implement and verify rules](guides/implement-and-verify-rules.md)
 - [Modify an application](guides/modify-application.md)
-- [Use the campaign knowledge base](guides/use-campaign-knowledge.md)
+- [Use and extend campaign knowledge](guides/campaign-knowledge.md)
 - [Develop and release](guides/develop-and-release.md) — the fast loop, the
   release gates, measured performance optima and per-machine calibration.
 
@@ -45,11 +43,9 @@ Contracts:
 
 The catalogue and registry rules of the canonical data:
 
-- [Campaign catalogue](knowledge/campaign-catalogue.md)
-- [Campaign modelling](knowledge/campaign-modeling.md)
+- [Campaign knowledge](guides/campaign-knowledge.md)
 - [Hirelings](knowledge/hirelings.md)
 - [Translation glossary](knowledge/translation-glossary.md)
-- [Registry](knowledge/registry.md)
 
 ## Where documents live
 

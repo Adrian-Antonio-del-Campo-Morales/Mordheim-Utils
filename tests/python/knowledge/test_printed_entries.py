@@ -1,4 +1,4 @@
-"""Guards for the shared printed-entry reader (``tools/ingestion/printed_entries``).
+"""Guards for the shared printed-entry reader (``tools/knowledge/printed_entries``).
 
 The 2A and 2B source cotejos both compare *what a source prints* against *what the
 package declares*, and both do it through this module. It is only worth a green
@@ -27,8 +27,8 @@ import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[3]
-# The 2A/2B ingestion tools live in tools/ingestion (temporary: see its README).
-TOOLS = ROOT / "tools" / "ingestion"
+# El lector de entradas impresas es permanente: vive en tools/knowledge.
+TOOLS = ROOT / "tools" / "knowledge"
 
 if str(TOOLS) not in sys.path:
     sys.path.insert(0, str(TOOLS))

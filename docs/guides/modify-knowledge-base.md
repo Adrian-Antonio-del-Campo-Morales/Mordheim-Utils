@@ -18,7 +18,7 @@ that guide's last section.
    names or prose.
 4. For campaign catalogue data, follow the modelling conventions and
    data-ownership table in
-   [`docs/knowledge/campaign-catalogue.md`](../../docs/knowledge/campaign-catalogue.md)
+   [campaign knowledge guide](campaign-knowledge.md)
    and its HOWTO — the KB declares rules and tables, never a concrete
    campaign's state.
 5. Run `python tools/knowledge/maintenance/format_yaml.py --check sources/knowledge` (or `--write`,

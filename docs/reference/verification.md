@@ -25,32 +25,13 @@ justify itself by covering something no deterministic test covers.
 L0 is documented in [the KB guide](knowledge-base.md); this document focuses
 on L1–L5.
 
-## Runtime budget: the expensive layers run rarely
+## Runtime budget
 
-> **Warning — long-running commands.** The certification tiers below take
-> minutes to hours by design and are **not** part of the per-change loop.
-> Their intent is *point certification*: run them occasionally, after large
-> modifications (a new engine pass, a new archetype family, a release), when
-> the drift they watch can actually have moved.
->
-> | Command | Full run | Trimmed version for small checks |
-> | --- | --- | --- |
-> | `parity --level deep --pair-set fast` (L3) | 30 pairs: ≈2.925M oracle duels + 1M cross duels/pair (target ≈10–15 min pooled) | `--deep-simulations 10000 --deep-cross-simulations 100000` |
-> | `parity --level deep --pair-set full` (L3) | 42 pairs: ≈4.05M oracle duels + 1M cross duels/pair (tens of minutes pooled; hours without pooling) | use `--pair-set fast` for the short loop |
-> | `parity --truncations --pair-set fast` (L2) | 30 pairs × 8 horizons × 10k duels/engine (≈20–40 min sequential, ≈6–12 min pooled) | `--truncation-simulations 2000` |
-> | `parity --truncations --pair-set full` (L2) | 42 pairs × 8 horizons × 10k duels/engine (≈28–55 min sequential, ≈8–15 min pooled) | use `--pair-set fast` for a smaller sweep |
-> | `coverage-gate` (L4) | ≈3–10 min under `coverage` | run the deterministic suites directly (`pytest tests/python/combat/... tests/python/verification/test_parity.py -q`) |
-> | `tools/verification/mutate-engine.py` (L4) | full catalogue ≈3–5 min | `--mutant <name>` for the single defect under test |
-> | `report tests` | whole semantic corpus + full `pytest` suite (minutes) | `pytest tests/python/verification/test_semantics.py -q` |
-> | `benchmark --deep --pair-set fast` | vectorized grid over 30 coverage pairs, up to 5M duels | shrink the sizes (`--simulation-sizes 10k,100k`) or select one `--scenario` |
-> | `benchmark --deep --pair-set full` | vectorized grid over all 42 pairs, up to 5M duels | use `--pair-set fast` for the short loop, or `--processes N` to run the scenario measurements through a process pool (the report includes the real speedup). `--tts` is the time-to-solution study over the (simulation size × batch size) grid — see [Develop and release](../guides/develop-and-release.md) |
->
-> A small change cannot escape the cheap layers — L1 pins every rule and
-> every engine line deterministically — so the full certification adds
-> nothing to the small-change loop. When a certification command is
-> genuinely needed for a small check, prefer the trimmed version; the CLI
-> warns when a trimmed matrix still leaves an expensive layer at its full
-> size.
+Run deterministic suites for ordinary changes. Deep parity, truncation,
+coverage mutation and benchmark matrices are certification jobs for engine
+changes and releases; use their focused CLI options while developing. The
+commands and current defaults are discoverable through
+`python tools/mordheim-utils.py --help` and the relevant subcommand help.
 
 ## L1 — deterministic per-rule evidence (both engines)
 
@@ -67,10 +48,8 @@ on L1–L5.
   replay. These checks exercise the **engine's real operators** — the exact
   checks must drive the engine's own code, not a delegating helper, so a
   duplicated projection cannot hide untested behavior (see L4).
-- Per-rule evidence is tied to the knowledge inventory by `verify` — the
-  live status is whatever `verify --inventory` reports (all obligations
-  verified, 0 pending, at the time the corpus was closed) — and every
-  rule-family mutation is detected by at least one spec.
+- Per-rule evidence is tied to the knowledge inventory. Use
+  `verify --inventory` for current obligations and gaps.
 
 New rules land here first. This layer is why adding a rule does **not**
 require adding a statistical pair.
@@ -82,16 +61,16 @@ at proving the *duel driver* composes phases in the right order — a defect in
 how phases are sequenced can leave every individual rule green.
 
 The **round-truncation outcome parity** (`_truncations.py`, CLI
-`parity --truncations`) certifies the outcome distribution at every horizon
-`h ∈ {2, 4, 6, 8, 10, 12, 15, 20}` on **every deep-matrix pair** (42
-scenarios): both engines run the pair with `maximum_rounds = h` and the three
+`parity --truncations`) certifies the outcome distribution at each configured
+horizon on every selected deep-matrix pair: both engines run the pair with
+`maximum_rounds = h` and the three
 outcome rates (first / second / unresolved) must stay inside the same
 six-sigma gate used for full duels. A defect that shifts *when* duels resolve
 pushes one or more horizon rows apart (rows are labelled
 `<scenario>@rounds=<h>`) while the final aggregate marginals still agree —
-exactly the class of divergence the aggregate gate cannot see. Default budget
-is 10 000 duels per engine, scenario and horizon (`--truncation-simulations`);
-the oracle leg is shared per horizon and poolable with `--workers`.
+exactly the class of divergence the aggregate gate cannot see. The budget is
+controlled by `--truncation-simulations`; the oracle leg is shared per horizon
+and poolable with `--workers`.
 
 **Round-ledger convention.** Resolution round is not an engine-agnostic
 observable: duels resolved by round-start phases (fire, Force-of-Will

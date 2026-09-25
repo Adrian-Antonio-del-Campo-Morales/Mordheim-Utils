@@ -1,122 +1,63 @@
 # Hired Swords and Dramatis Personae
 
-Canonical identity of the hirelings a campaign can hire: `hired-swords/` and
-`dramatis-personae/` catalogues (102 profiles; 26 Dramatis Personae are in the
-published hiring catalogue and 4 additional Dramatis Personae are deliberately
-out of scope). The campaign-side contract —
-hiring fee, upkeep, availability/search procedure and static hiring
-eligibility — lives in `catalog/campaign/hired-swords-and-dramatis.yaml`; the
-reusable band sets its eligibility references live in
-`registry/warband-groups.yaml`. This directory holds only what belongs to the
-warrior himself.
+`sources/knowledge/catalog/hirelings/` owns intrinsic profile identity,
+characteristics, equipment, skills, rules and rating. Hiring fees, upkeep,
+search procedure and eligibility belong to
+`catalog/campaign/hired-swords-and-dramatis.yaml`; reusable group facts belong
+to `registry/warband-groups.yaml`.
 
-## What a profile holds
+## Identity and invariants
 
-- canonical hireling identity
-- characteristics
-- intrinsic equipment
-- skill access
-- starting skills
-- intrinsic special rules
-- intrinsic warband-rating contribution
+- Hired Sword profiles use `hireling.hired-sword.<slug>`.
+- Dramatis Personae use `hireling.dramatis.<slug>`.
+- Campaign hiring entries use `campaign.hireling.<slug>` and reference a
+  `profile_id`.
+- Do not reuse a band profile merely because its name matches a hireling.
+- Reference canonical item and skill IDs only after confirming equivalence.
+- Keep unknown concepts in the profile's `unresolved_references`; never invent
+  a canonical ID.
+- Store campaign rolls, choices and rewards outside the KB.
+- Evaluate dynamic roster/variant restrictions through
+  `*.rule.campaign-eligibility`, using the canonical trait registry rather
+  than application-maintained sets.
 
-## ID conventions
+Profiles that require composite warriors, mounts or selectable personas remain
+`status: out_of_scope` until the KB has an entity schema that can represent
+them without flattening their rules.
 
-- **hired sword profile:** `hireling.hired-sword.<slug>`
-- **dramatis profile:** `hireling.dramatis.<slug>`
-- **warband group (referenced, defined in the registry):** `warband-group.<slug>`
-- **campaign hiring entry (in `catalog/campaign`):** `campaign.hireling.<slug>`
-  with `profile_id` pointing back here
+## Resolving knowledge gaps
 
-## Modelling decisions and invariants
+The authoritative backlog is the `unresolved_references` collection in each
+profile. Add the missing canonical catalogue or schema, update references, and
+remove only the entries that now resolve. [Project backlog](../TODO.md) groups
+the remaining categories without duplicating volatile counts.
 
-- Do not reuse a band profile as a hireling profile merely because names match.
-- Existing canonical `item_id` values are referenced; item definitions are not
-  duplicated.
-- Existing canonical skill IDs are referenced only when equivalence is explicit.
-- Source-only or unresolved concepts are never assigned guessed canonical IDs;
-  they stay in `unresolved_references` until their catalogue exists (see
-  below).
-- Campaign-resolved rolls, choices and rewards remain outside the KB.
-- Current-roster and selected-warband-variant eligibility checks live as
-  hireling rules (`*.rule.campaign-eligibility`) and are evaluated by the
-  application (`packages/python/campaign/mordheim_campaign/application/hire_eligibility.py`), never
-  inferred from static warband groups.
-- The race/alignment/nature facts those rules reason about are declared once,
-  in `traits.yaml` (this catalogue's trait registry: elf, dwarf, human, undead,
-  ogre, evil, spellcaster, priest, fear-causing), validated to resolve against
-  the profiles, and loaded by the application through
-  `KnowledgePort.hireling_traits()` — the application keeps no curated trait
-  sets.
-- Chaos / followers-of-Chaos / devoted-to-Chaos hireling restrictions use
-  `warband-group.chaotic`.
-- The Halfling Thief uses `warband-group.elf` rather than a Wood-Elf-only
-  group (as printed).
-- `hireling.hired-sword.goblin-lantern-bearer` may be hired by any warband.
+## Source provenance
 
-## Deliberately out-of-scope profiles
+Every profile, rule and hiring entry carries `source_refs`: the manual, the
+printed page, the section and the URL of the document it was transcribed from.
+The URL resolves in `registry/source-documents.yaml` to that document — one
+entry per document, with every URL it is cited by and the path of the copy the
+offline mirror (`build/cache/`) keeps. A citation the registry does not declare
+fails `tests/python/knowledge/test_source_documents.py`.
 
-These four Dramatis entries are published in `profiles.yaml` with
-`status: out_of_scope` and are excluded from the 98 hiring entries of
-`hired-swords-and-dramatis.yaml` (`tests/python/knowledge/test_campaign_catalogs.py`
-pins the count). They do not block the hire model; each waits on a schema for
-its entity kind:
+The catalogue-vs-source cotejo goes the same way: `tools/knowledge/source_documents.py`
+turns a record into the document that prints it and hands it to
+`tools/knowledge/printed_entries.py`, which reads the entry as the document
+prints it. A document whose copy is not downloaded is reported with the path it
+is missing, never compared against an empty page.
+`tools/knowledge/check_hireling_sources.py` is that cotejo as a command: it walks
+both published catalogues — Hired Swords and Dramatis Personae, every grade — and
+`--tree 2b` runs it over the staging tree with the same reading.
 
-| Profile | Reason |
-| --- | --- |
-| `hireling.dramatis.ulli-and-marquand` | Composite entry with two independent warrior profiles. |
-| `hireling.dramatis.belandysh-condemned-champion-of-chen` | Random characteristics plus random-characteristic mount. |
-| `hireling.dramatis.luthor-wolfenbaum` | Single identity with multiple selectable personas/loadouts. |
-| `hireling.dramatis.the-headless-horseman` | Composite rider-and-steed entity with separate profiles. |
+## Validation and loading
 
-## Unresolved intrinsic references (59)
+The matching schemas in `contracts/knowledge-editorial-v1/` define profile,
+rule and trait shapes. Structural verification validates them before the
+loader contract.
 
-The profiles reference 59 concepts — equipment mappings/modifiers, skills,
-mount and companion profiles, prayers, runes, summoning procedures, alternate
-payments/profiles, entity semantics, patron branches, availability procedures —
-whose canonical catalogues or schemas do not exist yet in the KB. They are
-tracked per profile in each file's `unresolved_references`; the counts by kind:
-
-| Kind | Count |
-| --- | --- |
-| `skill` | 16 |
-| `equipment_mapping` | 12 |
-| `equipment_choice` | 5 |
-| `mount_profile` | 3 |
-| `companion_profile` | 2 |
-| `summoning_procedure` | 2 |
-| `entity_semantics` | 2 |
-| `equipment_modifier` | 2 |
-| other (one each) | 15 |
-
-TODO.md §4 tracks creating those catalogues; when one lands, remove its
-resolved entries from the profiles' `unresolved_references` and update the
-59-count here. The per-profile detail is in the YAML files themselves —
-`unresolved_references` is the authoritative, always-current list.
-
-> The 15 `spell_list` references were already canonicalized against
-> `catalog/campaign/magic.yaml` (45 lore↔wizard assignments, 31 lores with
-> 188 spells) — including registering `lore.dark-magic` (the Dark Mage's Dark
-> Magic list, *Letters of the Damned* 6), transcribed from its hiring page
-> because it was not indexed in the magic section of the site. 0 pending of
-> type `spell_list`.
-
-## Format contract
-
-Every document of this catalogue has a JSON Schema in
-`contracts/knowledge-editorial-v1/`: `hireling-profile-hired-sword.yaml`,
-`hireling-profile-dramatis-personae.yaml`, `hireling-rules.yaml` and
-`hirelings-traits.yaml`. They fix the profile envelope, the intrinsic equipment
-shapes, the closed trait vocabulary and the rule that an `out_of_scope` entry
-must state its reason (`normalization_status: out_of_scope` exists only in the
-Dramatis catalogue). `mordheim_knowledge.editorial_schemas` validates them in the
-`validate` gate and in `tests/python/knowledge/test_editorial_schemas.py`, before this
-directory's own loader contract.
-
-## Loader contract
-
-`mordheim_knowledge.campaign.load_hirelings(ruleset)` is the authorised read
-path: it validates the catalogue (ID uniqueness, declared rules with
-cross-file rule references and item resolution) and the campaign catalogues
-resolve every `profile_id` against band profiles **and** this pool. Tests:
-`tests/python/knowledge/test_campaign_loaders.py`.
+`mordheim_knowledge.campaign.load_hirelings(ruleset)` is the authorized read
+path. It checks IDs, rule references and items; campaign loaders additionally
+resolve every hiring `profile_id`. Coverage lives in
+`tests/python/knowledge/test_campaign_loaders.py` and the editorial schema
+tests.

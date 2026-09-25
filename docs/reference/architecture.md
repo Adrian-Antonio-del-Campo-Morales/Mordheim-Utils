@@ -107,5 +107,5 @@ The web knowledge artefact is generated under ignored `outputs/web-public/knowle
 | Verification evidence | `tests/specs/`, `tests/python/verification/`, related test suites |
 | Build/release tooling | `tools/`, `.github/workflows/` |
 
-See [Knowledge base](knowledge-base.md), [Components](components.md) and
-[Verification](verification.md) for the detailed contracts.
+See [Knowledge base](knowledge-base.md) and [Verification](verification.md)
+for the detailed contracts.

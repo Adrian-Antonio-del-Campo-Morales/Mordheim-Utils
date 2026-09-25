@@ -1,4 +1,4 @@
-"""Guards for the shared registry of printed wordings (``tools/ingestion/printed_wordings``).
+"""Guards for the shared registry of printed wordings (``tools/knowledge/printed_wordings``).
 
 Los tres cotejos que comparan objetos contra una fuente —`audit_2a_sources.py`,
 `audit_2b.py` y `audit_2ab_fidelity.py`— necesitan las mismas parejas: la palabra que la
@@ -23,8 +23,8 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[3]
-# The 2A/2B ingestion tools live in tools/ingestion (temporary: see its README).
-TOOLS = ROOT / "tools" / "ingestion"
+# El registro de las palabras impresas es permanente: vive en tools/knowledge.
+TOOLS = ROOT / "tools" / "knowledge"
 
 if str(TOOLS) not in sys.path:
     sys.path.insert(0, str(TOOLS))

@@ -1,5 +1,9 @@
 """Las palabras con que una fuente imprime el nombre de un objeto del catálogo.
 
+Herramienta permanente del utillaje de la KB (`tools/knowledge`): nació en la fase de
+ingesta de 2A/2B y se promocionó aquí con sus tests (`test_printed_wordings.py`); el
+registro que fija no desaparece con esa fase.
+
 La KB tiene un id canónico por objeto y el staging lo usa aunque la fuente escriba el
 nombre a su manera («Double-handed weapon» → `great_weapon`), de modo que los **tres**
 cotejos que comparan objetos contra una fuente —`audit_2a_sources.py`,

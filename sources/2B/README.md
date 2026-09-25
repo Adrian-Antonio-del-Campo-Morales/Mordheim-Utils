@@ -345,18 +345,21 @@ herramienta aplica (redacción impresa distinta del nombre canónico, filas adju
 listas delegadas al reglamento) están declarados en el propio fichero con su motivo, y
 resumidos en `discrepancy-verdicts.md` con la evidencia de cada caso.
 
-Los **hirelings y Dramatis Personae** tienen su propio cotejo, `check_2b_hirelings.py`: lee
-cada entrada impresa por geometría de página (columna izquierda y luego derecha, para que la
-tarifa y el rating del vecino no cuenten) y compara tarifa —importe y divisa—, fila de
-stats, rating y presencia de reglas contra el perfil y su entrada de campaña. Imprime la
-cobertura por chequeo y la adjudicación de sus siete hallazgos está en
-`discrepancy-verdicts.md` §13.
+Los **hirelings y Dramatis Personae** los coteja la herramienta permanente
+`tools/knowledge/check_hireling_sources.py` con `--tree 2b`: lee cada entrada impresa por
+geometría de página (columna izquierda y luego derecha, para que la tarifa y el rating del
+vecino no cuenten) y compara tarifa —importe y divisa—, fila de stats, rating y presencia de
+reglas contra el perfil y su entrada de campaña. Imprime la cobertura por chequeo y deja el
+informe y las entradas leídas en `build/cache/hireling-sources/2b/`; la adjudicación de sus
+siete hallazgos está en `discrepancy-verdicts.md` §13.
 
-El cotejo comparte con el de los Dramatis Personae de 2A (`check_2a_dramatis.py`) el lector
-de entradas impresas (`printed_entries.py`), que es donde viven la lectura por geometría —de
-las coordenadas de las palabras en el PDF y de la estructura del documento en la página
-web—, la comparación de divisa y la cobertura por chequeo; cada driver sólo resuelve qué
-fuente imprime a cada personaje y qué adjudica su árbol.
+Es la misma herramienta que coteja los dos catálogos publicados de la KB, y vive con sus
+dos piezas permanentes: el lector de entradas impresas (`printed_entries.py`) —la lectura por
+geometría de las coordenadas de las palabras en el PDF y de la estructura del documento en
+la página web, la comparación de divisa y la cobertura por chequeo— y el resolvedor de
+documentos fuente (`source_documents.py`), que lleva la URL de cada `source_refs` al registro
+de la KB (`sources/knowledge/registry/source-documents.yaml`) y de ahí al PDF y a su copia
+del espejo. Lo único que declara cada árbol es su adjudicación.
 
 Además, la herramienta de staging que se implemente como parte de este plan deberá exponer
 al menos estas operaciones:
@@ -366,10 +369,8 @@ python tools/ingestion/ingest_2b.py report
 python tools/ingestion/ingest_2b.py validate
 ```
 
-El informe de traducción existente (`tools/knowledge/maintenance/band_translation_status.py`) actualmente está
-ligado a la KB activa y no debe usarse sobre 2B hasta que acepte una raíz explícita. Durante
-el staging se debe consultar el estado mediante el informe específico de 2B o mediante un
-script equivalente que reciba `sources/2B` como argumento.
+La cobertura de traducción del staging se valida con los tests de conocimiento de 2B;
+no se mantiene un segundo informe manual que pueda divergir de esas puertas.
 
 El validador de 2B debe comprobar además:
 
@@ -399,7 +400,9 @@ Checklist de promoción:
 3. Comparar IDs nuevos con la KB activa.
 4. Copiar las bandas a `sources/knowledge/bands/mordheim/`.
 5. Copiar solo los objetos, habilidades y reglas compartidas aprobados.
-6. Añadir o actualizar fuentes y aliases del registro.
+6. Añadir o actualizar fuentes, documentos y aliases del registro; en
+   `registry/source-documents.yaml` van los PDFs que las citas nuevas traigan (los de los
+   catálogos de hirelings ya están declarados, con su copia del espejo).
 7. Auditar `warband-groups.yaml` para las nuevas razas, facciones y alineamientos.
 8. Regenerar el artefacto web desde la KB activa.
 9. Ejecutar tests de conocimiento, construcción, campaña y web.

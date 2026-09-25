@@ -38,7 +38,7 @@ Support code lives in `tools/` (runnable scripts), `docs/` (prose) and `tests/`
 (the suites and the shared fixtures they read); the application and package
 directories carry product code only. `tools/` is grouped by what the script
 works on — `kb/`, `verification/`, `web/`, `knowledge/`, `ingestion/`,
-`completions/`, `windows/` — and the tests mirror the tree they exercise:
+`windows/` — and the tests mirror the tree they exercise:
 `tests/python/<package|app|contract>/`, `tests/web/` and `tests/typescript/`.
 The root [`package.json`](package.json) is an npm workspace over
 `packages/typescript` and `apps/warband-manager-web`: one `npm ci` at the root
@@ -76,7 +76,7 @@ python tools/mordheim-utils.py run-ci
 
 The commands are grouped by task (applications, knowledge base, engines,
 repository); `--help` lists them and `<command> --help` opens the delegated
-parser. Bash and zsh completions live in `tools/completions/`.
+parser.
 
 ## Validation and development loop
 
@@ -110,7 +110,7 @@ It is generated into `outputs/web-public/knowledge/`; Vite serves that directory
 
 - [Documentation index](docs/README.md)
 - [Architecture and package boundaries](docs/reference/architecture.md)
-- [Applications and packages](docs/reference/components.md)
+- [Architecture and package ownership](docs/reference/architecture.md)
 - [Knowledge-base reference](docs/reference/knowledge-base.md)
 - [Verification strategy](docs/reference/verification.md)
 - [Campaign-file v5 contract](contracts/campaign-file-v5/README.md)

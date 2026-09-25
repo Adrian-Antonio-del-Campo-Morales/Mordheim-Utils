@@ -254,9 +254,10 @@ Crear los cuatro documentos de banda exactamente con el contrato de 2B (sección
 ### 3.5 `english-reviewed`
 
 Igual que 2B (sección 3.5): segunda revisión independiente contra el documento fuente,
-con verificación automatizada de todos los números mediante una herramienta de
-verificación cruzada equivalente a `tools/ingestion/review_2b.py` (lecciones aprendidas:
-interleave de marcadores de página, monedas no estándar, unidades gratuitas, fórmulas D6).
+con verificación automatizada de todos los números por los auditores de
+`tools/ingestion/` (el auditor único de 2A los lee por la geometría de la página;
+lecciones aprendidas del cotejo de 2B, hoy retirado: interleave de marcadores de página,
+monedas no estándar, unidades gratuitas, fórmulas D6).
 
 ### 3.6 `translated`
 
@@ -333,9 +334,11 @@ Checklist equivalente al de 2B (sección 7 de su README):
 5. Copiar solo los objetos, habilidades y reglas compartidas aprobados; ejecutar las
    notas de fusión de `promotion-merge-notes.md` (2A y las que apliquen de 2B) de forma
    que cada objeto materialice una sola entrada en la KB con todos sus `source_refs`.
-6. Añadir o actualizar fuentes y aliases del registro: `mordheimer.net`,
+6. Añadir o actualizar fuentes, documentos y aliases del registro: `mordheimer.net`,
    `Sylvania Supplement`, `Letters of the Damned #1/#3/#4/#5`, `Mordheim Facebook Group`,
-   `Mordheimer's Information Centre`, fuentes WEB resueltas.
+   `Mordheimer's Information Centre`, fuentes WEB resueltas; y, en
+   `registry/source-documents.yaml`, cada documento que las citas nuevas traigan (las
+   páginas de los catálogos de hirelings ya están declaradas, con su copia del espejo).
 7. Auditar `warband-groups.yaml` para las nuevas razas y alineamientos
    (Universal Monsters, Vampire, Ogre/Gnoblar, Wood Elf).
 8. Regenerar el artefacto web desde la KB activa.

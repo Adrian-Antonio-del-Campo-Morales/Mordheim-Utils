@@ -69,7 +69,10 @@ import yaml
 # Las páginas web de 2A se leen por la **estructura del documento** que ya usa su
 # cotejo (encabezados, tramos y tablas), y las páginas a dos columnas por el orden
 # de lectura del lector: en ninguno de los dos casos queda una fila leída de una
-# ventana de tokens de prosa.
+# ventana de tokens de prosa. El lector vive en ``tools/knowledge``: es permanente,
+# no propio de esta fase.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__))), "knowledge"))
 from printed_entries import (HtmlDocument, PdfCorpus, cell_value, cells as printed_cells,
                              fee_line, flat, list_rows, price_rows, profile_name,
                              profile_tables, stat_header)
@@ -654,7 +657,8 @@ def extra_documents(tree: str) -> list[tuple[str, str]]:
     out: list[tuple[str, str]] = []
     reader = page_reader(tree, 'extra')
     extra_dir = SOURCE_EXTRA[tree]
-    if reader is not None and extra_dir:
+    # Sin caché el suplemento no existe: se declara el hueco, no se falla en seco.
+    if reader is not None and extra_dir and os.path.isdir(os.path.join(ROOT, extra_dir)):
         for name in sorted(os.listdir(os.path.join(ROOT, extra_dir))):
             if not name.lower().endswith('.pdf'):
                 continue

@@ -73,7 +73,7 @@ canónica.
 - **Decisión (aplicada):** el vocabulario `staging` desaparece. Cada documento
   lleva lo que lleva su destino KB: los ítems y los hirelings **nada** (los
   ficheros KB de esas familias no tienen `status`), y los documentos nuevos
-  (mercado, magia) `draft` — el valor que `docs/knowledge/campaign-catalogue.md` reserva a
+  (mercado, magia) `draft` — el valor que `docs/guides/campaign-knowledge.md` reserva a
   lo no confirmado. Fusionar con el documento KB publicado es lo que los publica.
 
 ### 1.2 Raíz de los ficheros de items: `status` no existe

@@ -8,8 +8,8 @@ as a package command and there is no parser to duplicate::
     python tools/mordheim-utils.py --help
     python tools/mordheim-utils.py benchmark --help
 
-Delegated commands keep their own parsers (Combat Lab CLI, pytest,
-``combine_kb_yaml.py``), so their help text and behaviour never drift.
+Delegated commands keep their own parsers (Combat Lab CLI and pytest), so
+their help text and behaviour never drift.
 Running from a source checkout is enough: child processes get the configured
 package roots on their ``PYTHONPATH``.
 
@@ -83,7 +83,6 @@ USAGE = {
     "combat-lab": "python tools/mordheim-utils.py combat-lab",
     "doctor": "python tools/mordheim-utils.py doctor",
     "check-presentation": "python tools/mordheim-utils.py check-presentation",
-    "build-native": "python tools/mordheim-utils.py build-native [pip install args ...]",
 }
 
 #: Command help lines, in the order shown by ``--help``.
@@ -98,8 +97,6 @@ COMMANDS = (
     ("tests", "run the pytest suites, filtered by --scope"),
     ("check-presentation", "test the GUI text detector and run its strict, deep audit"),
     ("run-ci", "run the local equivalent of the CI validation gates before Pages publishing"),
-    ("combine-kb", "combine the KB YAML files into one .txt per subdirectory"),
-    ("build-native", "compile the native Cython backend (editable install)"),
     ("doctor", "report the environment, installed engines and KB location"),
 )
 
@@ -108,10 +105,9 @@ COMMAND_GROUPS = (
     ("Applications", ("combat-lab",)),
     ("Knowledge base", ("verify", "report")),
     ("Engines", ("benchmark", "parity", "coverage-gate", "calibrate")),
-    ("Repository", ("tests", "check-presentation", "run-ci", "combine-kb", "build-native", "doctor")),
+    ("Repository", ("tests", "check-presentation", "run-ci", "doctor")),
 )
 
-COMBINE_KB_SCRIPT = REPO_ROOT / "tools" / "knowledge" / "maintenance" / "combine_kb_yaml.py"
 KNOWLEDGE_GENERATOR = REPO_ROOT / "tools" / "knowledge" / "generate_knowledge_web.py"
 TYPESCRIPT_PACKAGE = REPO_ROOT / "packages" / "typescript"
 WEB_APP = REPO_ROOT / "apps" / "warband-manager-web"
@@ -271,28 +267,6 @@ def run_ci_command(args: list[str]) -> int:
     return 0
 
 
-def combine_kb_command(args: list[str]) -> int:
-    if not COMBINE_KB_SCRIPT.is_file():
-        print(
-            f"combine-kb: script not found at {COMBINE_KB_SCRIPT}; "
-            "this command requires a source checkout",
-            file=sys.stderr,
-        )
-        return 2
-    return _run(sys.executable, str(COMBINE_KB_SCRIPT), *args)
-
-
-def build_native_command(args: list[str]) -> int:
-    if any(argument in ("-h", "--help") for argument in args):
-        return _print_usage(
-            "build-native",
-            "Build the native Cython backend with `pip install -e .` from the "
-            "repository root (any extra arguments are forwarded to pip).")
-    command = [sys.executable, "-m", "pip", "install", "-e", ".", *args]
-    print("Building the native Cython backend with: " + " ".join(command))
-    return _run(*command)
-
-
 def doctor_command() -> int:
     print(f"Python: {sys.version.split()[0]} ({platform.platform()})")
     try:
@@ -367,104 +341,8 @@ def _help_text() -> str:
         "The engine commands (benchmark, parity, coverage-gate, calibrate) and the "
         "knowledge base gate (verify) run as `python -m mordheim_combat_lab <command>`; "
         "`report rules|tests` forwards to the `audit` and `test-report` lab commands.",
-        "",
-        "Tab completion (bash/zsh): source tools/completions/mordheim-utils.bash "
-        "or mordheim-utils.zsh. Completion covers the command names and, for the "
-        "delegated parsers, their options and choice values.",
     ))
     return "\n".join(lines) + "\n"
-
-
-def _choice_values(choices) -> tuple[str, ...]:
-    """Return a tuple of choice strings, or () for unbounded choices (ranges)."""
-    if isinstance(choices, (tuple, list, set, frozenset)):
-        return tuple(str(item) for item in choices)
-    return ()
-
-
-def _tests_candidates(typed: list[str]) -> list[str]:
-    """Candidates after ``tests``: only the --scope values are enumerable;
-    the remaining arguments are forwarded to pytest as-is."""
-    current = typed[-1] if typed else ""
-    previous = typed[-2] if len(typed) >= 2 else None
-    if previous == "--scope":
-        return sorted(scope for scope in SCOPE_PATHS if scope.startswith(current))
-    if current.startswith("--scope="):
-        value = current.split("=", 1)[1]
-        return [f"--scope={scope}" for scope in SCOPE_PATHS if scope.startswith(value)]
-    if current.startswith("-"):
-        return ["--scope"]
-    return []
-
-
-def _report_candidates(typed: list[str]) -> list[str]:
-    """Candidates after ``report``: the kind, then the report's own options."""
-    current = typed[-1] if typed else ""
-    if len(typed) <= 1:
-        return [kind for kind in REPORT_KINDS if kind.startswith(current)]
-    return _lab_candidates(REPORT_KINDS[typed[0]], typed[1:])
-
-
-def _lab_candidates(command: str, typed: list[str]) -> list[str]:
-    """Candidates for a lab command, introspected from its real argparse parser
-    so the completion never drifts from the actual options."""
-    current = typed[-1] if typed else ""
-    previous = typed[-2] if len(typed) >= 2 else None
-    try:
-        from mordheim_combat_lab.cli.commands import build_parser
-    except Exception:
-        return []
-    parser = build_parser()
-    subparsers = next(
-        (action for action in parser._actions
-         if action.__class__.__name__ == "_SubParsersAction"),
-        None,
-    )
-    if subparsers is None or command not in subparsers.choices:
-        return []
-    subparser = subparsers.choices[command]
-    valued: dict[str, tuple[bool, object]] = {}
-    for action in subparser._actions:
-        if not action.option_strings or action.__class__.__name__ == "_HelpAction":
-            continue
-        takes_value = action.nargs != 0
-        for option in action.option_strings:
-            valued[option] = (takes_value, action.choices)
-    options = sorted(valued)
-    if current.startswith("-"):
-        return [option for option in options if option.startswith(current)]
-    if previous in valued:
-        takes_value, choices = valued[previous]
-        values = _choice_values(choices)
-        if takes_value and values:
-            return [value for value in values if value.startswith(current)]
-        if takes_value:
-            return []  # free-form value; let the shell fall back to files
-        if not current:
-            return [option for option in options if option != previous]
-        return []
-    if not current:
-        return options
-    return []
-
-
-def _command_candidates(words: list[str]) -> list[str]:
-    """Return the completion candidates for the words typed after the launcher
-    program name (the last word may be the partially typed token)."""
-    names = [name for name, _ in COMMANDS]
-    if not words:
-        return names
-    if len(words) == 1:
-        current = words[0]
-        return [name for name in names if name.startswith(current)]
-    head, rest = words[0], words[1:]
-    if head == "tests":
-        return _tests_candidates(rest)
-    if head == "report":
-        return _report_candidates(rest)
-    if head in LAB_COMMANDS:
-        return _lab_candidates(head, rest)
-    return []
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -495,16 +373,8 @@ def main(argv: list[str] | None = None) -> int:
         return check_presentation_command(args)
     if name == "run-ci":
         return run_ci_command(args)
-    if name == "combine-kb":
-        return combine_kb_command(args)
-    if name == "build-native":
-        return build_native_command(args)
     if name == "doctor":
         return doctor_command()
-    if name == "_complete":
-        for candidate in _command_candidates(args):
-            print(candidate)
-        return 0
     if name in LAB_COMMANDS:
         return lab_command(name, args)
     print(f"mordheim-utils: unknown command {name!r}", file=sys.stderr)
