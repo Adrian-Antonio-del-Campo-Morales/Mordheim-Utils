@@ -18,6 +18,14 @@ all sat between 0.28 and 0.47 on the character axis before repair.
 
 Only 170 of the 1,537 `effect_i18n.es` pairs today are multi-sentence rules,
 so the widened check matters: single-sentence effects can be truncated too.
+
+The same walk guards the other half of the contract: an `effect` without an
+`effect_i18n.es` is not a truncation, it is a missing translation, and it used
+to slip through because the truncation branch simply skipped nodes whose
+Spanish text was absent. Every one of the 4,305 nodes that carry an `effect`
+today also carries `effect_i18n.es`, so the rule is stated as an invariant:
+if a node has English rule prose it must have the Spanish counterpart (the T08
+audit found 80 promoted items that were missing it).
 """
 from __future__ import annotations
 
@@ -48,6 +56,11 @@ def _walk(node, path: list, findings: list) -> None:
     if isinstance(node, dict):
         effect = node.get("effect")
         es = (node.get("effect_i18n") or {}).get("es") if isinstance(node.get("effect_i18n"), dict) else None
+        if isinstance(effect, str) and effect.strip() and not (isinstance(es, str) and es.strip()):
+            findings.append(
+                f"{path[-1] if path else '?'} {_label(node)}: effect has no "
+                "effect_i18n.es — the rule prose is English-only"
+            )
         if (
             isinstance(effect, str)
             and isinstance(es, str)

@@ -116,14 +116,18 @@ does not reintroduce it.
 | Art Thou Ready to Die Fighting? | ¿Estáis Listos para Morir Luchando? | ¿Estáis Listo para Morir Luchando?; ¿Estáis Listos a Morir Luchando? |
 | Be on Guard, My Brave Ones! | ¡En Guardia, Mis Valientes! | ¡Estad Alertas, Valientes Míos! |
 | Bicker | Rencilla | Reñir |
+| Black Caps | Gorras Negras | Cascos Negros |
 | Bloodline Abilities | Habilidades de Linaje | Habilidades de Estirpe |
 | Cathayan Plate Armour | Armadura de Placas de Cathay | Coraza Catajana |
+| Chain Lightning | Rayo Eléctrico | Relámpago en Cadena |
 | Don't Mind Them Mates, They Ain't True Pirates! | No Les Hagas Caso, ¡No Son Verdaderos Piratas! | No Les Hagas Caso, ¡No Son Piratas de Verdad! |
 | Fallen Noble | Noble Caído | Noble Decaído |
 | Fear (Wights) | Miedo (Espectros) | Miedo |
+| First strike | Golpe primero | Primer golpe |
 | Follow Me, Mine Pugnacious Ones! | ¡Seguidme, Belicosos Míos! | ¡Seguidme, Peleadores Míos! |
 | Giant Slayer | Gran Matatrolles | Matacolosos |
 | Grifter | Trapacero | Estafador |
+| Handymen | Braceros | Mozos |
 | Honorable | Honrado | Honorables |
 | If more than one scout henchman shoots at the same target, they get +1 on the injury roll. | Si más de un explorador (hombre de tropa) dispara al mismo objetivo, obtienen +1 en la tirada de herida. | Si más de un secuaz explorador dispara al mismo objetivo, obtienen +1 en la tirada de herida. |
 | Immune to Disease | Inmune a las Enfermedades | Inmune a Enfermedades |
@@ -140,8 +144,20 @@ does not reintroduce it.
 | Spike-Jawed Snatcher | Capturador de Mandíbulas con Púas | Capturador de Mandíbulas Pinchudas |
 | Spry | Ágiles | Agil |
 | Stormvermin | Verminescas | Guerreros Tormenta |
+| Treescuttle Venom | Veneno de Trepabosques | — |
 | Underlings | Subordinados | Lugartenientes |
 | Underworld Contacts | Contactos del Bajo Mundo | Contactos del Hampa |
+| Whipcrack | Whipcrack (se conserva el nombre de la regla) | Chasquido |
+
+The six rows added while clearing D1 (*Black Caps*, *Chain Lightning*, *First
+strike*, *Handymen*, *Treescuttle Venom*, *Whipcrack*) are the names the new
+item translations reached **after** the first pass, when they were checked
+against the forms the KB had already published: *Gorras Negras* is the Watchmen
+rule, *Rayo Eléctrico* the Clan Skryre spell, *Braceros* the Clockworkers
+henchman, *Golpe primero* the phrase the House Guard *Pikewall* translation
+already used, and *Whipcrack* the rule name the Trollheim and close-combat
+whips keep in English. The discarded variant is listed so a later band does not
+reintroduce it.
 
 Names whose Spanish form *is* the English form — the titles and ethnic names the
 printed supplements keep (*Emir*, *Askar*, *Rais*, *Thaggi*, *Hatamoto*,
