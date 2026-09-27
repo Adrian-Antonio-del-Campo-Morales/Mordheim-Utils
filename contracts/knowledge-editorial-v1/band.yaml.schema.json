@@ -143,6 +143,27 @@
           "type": "array",
           "items": { "$ref": "defs.schema.json#/$defs/rule_id" }
         },
+        "roster_members": {
+          "description": "Roster slots this variant opens: the roster marks a member gated to the choice with `maximum: 0`. `maximum` states the printed bound when the source fixes it and stays absent while the source does not.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["profile_id"],
+            "additionalProperties": false,
+            "properties": {
+              "profile_id": { "$ref": "defs.schema.json#/$defs/id" },
+              "minimum": { "type": "integer", "minimum": 0 },
+              "maximum": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        "equipment_lists": {
+          "description": "Equipment lists this variant activates: a member that declares any of them keeps only the intersection while the variant is selected.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "defs.schema.json#/$defs/id" }
+        },
         "profile_bonuses": {
           "description": "Per-profile characteristic bonuses of the variant: `profile_id` → characteristic → bonus.",
           "type": "object",

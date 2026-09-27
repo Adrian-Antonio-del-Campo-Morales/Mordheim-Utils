@@ -90,6 +90,17 @@ rules:
       binding:
         kind: compiler
         id: compiler.bow-discipline
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: crossbow
+          max_missile_weapons: 1
+          required_tag: bow
+          exempt_profile_ids:
+          - cleric
 - id: band--hired-swords
   name: Hired Swords
   effect: >-

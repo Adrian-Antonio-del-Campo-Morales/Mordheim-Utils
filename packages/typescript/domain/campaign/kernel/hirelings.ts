@@ -21,6 +21,7 @@ import type {
 } from "./usecases";
 import { rejected } from "./rejections";
 import { findWarrior, withCampaign } from "./document";
+import { hiringDecisionFor } from "../construction";
 
 /** XP thresholds from desktop's experience-and-advances catalogue. */
 export const ADVANCE_THRESHOLDS = {
@@ -93,6 +94,13 @@ export function hireHireling(
   }
   if (campaign.warriors.some((w) => w.profile_id === input.profile_id)) {
     return rejected("conflict", `A ${displayName} is already hired.`);
+  }
+  // Static eligibility of the campaign catalogue (T09 contract): a rejected
+  // band never reaches the roster. Roster-dependent clauses stay with the
+  // application's dynamic rule evaluation, which the decision reports.
+  const decision = hiringDecisionFor(knowledge, campaign.identity.band_id, input.profile_id);
+  if (decision.kind === "rejected") {
+    return rejected("not_available", decision.reason);
   }
   // Rating: the profile's `warband_rating` block — `fixed` value or the
   // `base` of a base+experience rating (XP 0 at hiring time), mirroring the

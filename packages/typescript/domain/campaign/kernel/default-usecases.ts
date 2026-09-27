@@ -54,7 +54,7 @@ export function createDefaultUseCases(knowledge: KnowledgeReader = nullReader): 
       if (variants.length && !selectedWarbandVariant(reader, document.campaign.identity.band_id, document.campaign.identity.mercenary_variant)) {
         return rejected("invalid_input", "Choose a valid warband variant before committing the initial warband.");
       }
-      return commitInitialWarband(document);
+      return commitInitialWarband(document, reader);
     },
 
     selectMoment: (document: CampaignDocument, moment: MomentSelection): UseCaseResult => ({

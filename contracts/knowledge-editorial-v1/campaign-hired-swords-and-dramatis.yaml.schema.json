@@ -27,6 +27,12 @@
       "minItems": 1,
       "items": { "$ref": "#/$defs/availability_procedure" }
     },
+    "band_hiring_clauses": {
+      "description": "Band-side clauses that narrow the hire set of one warband (a warband's own printed exceptions). The clause names the band rule it belongs to and excludes by stable trait and item-tag ids; who a Hired Sword is applicable to stays in each entry's `eligibility` and in the profile rules.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/band_hiring_clause" }
+    },
     "hired_swords": {
       "description": "The hiring entries of the Hired Swords.",
       "type": "array",
@@ -46,6 +52,32 @@
     }
   },
   "$defs": {
+    "band_hiring_clause": {
+      "description": "One band's printed narrowing of the hire set, keyed by stable ids.",
+      "type": "object",
+      "required": ["rule_id", "band_id", "note"],
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": {
+          "description": "Id of the band rule the clause belongs to.",
+          "$ref": "defs.schema.json#/$defs/rule_id"
+        },
+        "band_id": { "$ref": "defs.schema.json#/$defs/id" },
+        "exclude_traits": {
+          "description": "Hireling traits the band may not hire (catalog/hirelings/traits.yaml vocabulary).",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "defs.schema.json#/$defs/id" }
+        },
+        "exclude_item_tags": {
+          "description": "Item tags the band's Hired Swords may not use (catalog/items tags vocabulary).",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "defs.schema.json#/$defs/id" }
+        },
+        "note": { "$ref": "defs.schema.json#/$defs/display_text" }
+      }
+    },
     "availability_procedure": {
       "description": "One search procedure: a characteristic test that says whether the character can be found.",
       "type": "object",

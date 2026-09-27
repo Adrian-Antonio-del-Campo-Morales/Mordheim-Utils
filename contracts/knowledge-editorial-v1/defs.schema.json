@@ -244,6 +244,11 @@
               "type": "array",
               "items": { "$ref": "#/$defs/characteristic_name" }
             },
+            "exempt_profile_ids": {
+              "description": "Profiles a compulsory-equipment requirement does not apply to (the printed exception).",
+              "type": "array",
+              "items": { "$ref": "#/$defs/id" }
+            },
             "forbids": {
               "description": "Item, category or rule id the binding forbids.",
               "oneOf": [
@@ -254,6 +259,20 @@
             "ignore_penalties": {
               "description": "Whether the binding cancels the usual penalties.",
               "type": "boolean"
+            },
+            "max_missile_weapons": {
+              "description": "How many missile weapons one member may carry at once; the printed bound the construction contract counts over the whole equipment set.",
+              "type": "integer",
+              "minimum": 0
+            },
+            "required_tag": {
+              "description": "Item tag the member's own equipment must include (`bow` for the compulsory bow of the Outlaw discipline).",
+              "$ref": "#/$defs/id"
+            },
+            "skills": {
+              "description": "Skill ids a bounded band skill list grants; the list is the printed membership, so the whole special catalogue is never granted.",
+              "type": "array",
+              "items": { "$ref": "#/$defs/id" }
             },
             "profile_ids": {
               "description": "Profiles the binding applies to.",

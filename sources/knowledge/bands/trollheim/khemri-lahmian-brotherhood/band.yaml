@@ -68,3 +68,31 @@ rule_ids:
 - band--lahmian-special-skills-lost-innocence
 - band--lahmian-special-skills-seduction
 - band--lahmian-special-skills-creature-of-the-night
+variants:
+- id: background.foreign
+  name: Foreign Background
+  name_i18n:
+    es: Trasfondo Foráneo
+  rule_ids:
+  - band--background-selection
+  roster_members:
+  - profile_id: blood-slaves
+    maximum: 5
+  - profile_id: black-hounds
+    maximum: 5
+  equipment_lists:
+  - foreign-undead-equipment-list
+  - foreign-beloved-equipment-list
+- id: background.native
+  name: Native Background
+  name_i18n:
+    es: Trasfondo Nativo
+  rule_ids:
+  - band--background-selection
+  roster_members:
+  - profile_id: spirits
+    maximum: 5
+  - profile_id: jackals
+  equipment_lists:
+  - native-undead-equipment-list
+  - native-beloved-equipment-list

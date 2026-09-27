@@ -7,3 +7,6 @@ export * from "./kernel/state";
 export * from "./kernel/ports";
 export * from "./kernel/usecases";
 export * from "./band-variants";
+// T09 construction contracts shared by the campaign (T10) and the web interface
+// (T11): facts, stable issue codes, hiring decisions and open clauses.
+export * from "./construction";

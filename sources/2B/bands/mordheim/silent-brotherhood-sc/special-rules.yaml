@@ -69,15 +69,19 @@ rules:
     band: true
 - id: band--the-silence
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.silent-brotherhood-sc.band.the-silence
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - blackpowder
+          - animal
   name: The Silence
   effect: No warband member or hired sword may ever use blackpowder weapons or animals.
   source:

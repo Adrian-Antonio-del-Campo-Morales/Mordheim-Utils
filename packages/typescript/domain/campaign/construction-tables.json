@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "comment": [
+    "T09 construction contracts: the two facts the web domain cannot derive from the",
+    "generated artefact, kept as data with a Python parity gate",
+    "(tests/python/construction/test_construction_contract_tables.py).",
+    "profile_exclusions: verbatim projection of sources/knowledge/registry/runtime-scope.yaml",
+    "profile_exclusions (band_id, profile_id, reason).",
+    "pending_bindings: every KB rule that declares a binding while runtime.implemented != YES",
+    "(rule_id, binding_id, owner_task, reason) — today exactly trait.spectral-touch."
+  ],
+  "profile_exclusions": [
+    {
+      "band_id": "guild-of-disgraced-engineers-mim",
+      "profile_id": "gyrocopter",
+      "reason": "The Gyrocopter is a vehicle the warband buys, not a fighter: its profile line carries only Toughness and Wounds, and its Movement, crew, transport capacity and malfunction rules belong to the vehicle subsystem. It has no individual close-combat fighter line for the duel runtime."
+    },
+    {
+      "band_id": "sea-ghosts-mim",
+      "profile_id": "river-boat",
+      "reason": "The River Boat is a watercraft the warband fields, not a fighter: every characteristic of its profile line is blank and its rule is transport. It has no fighter characteristics to compile."
+    },
+    {
+      "band_id": "necrarchs-mou",
+      "profile_id": "banshee",
+      "reason": "The Banshee is a combat creature whose printed profile leaves Initiative blank (it always strikes last), so it cannot be compiled without inventing the missing characteristic. T13 must decide whether it earns a contract of its own."
+    }
+  ],
+  "pending_bindings": [
+    {
+      "rule_id": "spirit-hosts--spectral-touch",
+      "band_id": "call-of-the-night-haint-mim",
+      "profile_id": "spirit-hosts",
+      "binding_id": "trait.spectral-touch",
+      "declared_scope": "YES",
+      "owner_task": "T13",
+      "reason": "If the hit roll for an attack made by a Spirit Host is 6, the spirit's frightful touch stills the victim's beating heart, immediately inflicting 1 additional wound. Roll to wound for the hit as normal."
+    }
+  ]
+}

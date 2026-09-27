@@ -10,8 +10,10 @@
  */
 
 import type { Campaign, CampaignDocument, EquipmentEntry, InventoryItem, UseCaseResult } from "./usecases";
+import type { KnowledgeReader } from "./ports";
 import type { TimelineState } from "./state";
 import { rejected } from "./rejections";
+import { rosterIssuesOf } from "../construction";
 import {
   cloneDocument,
   draftIsLegal,
@@ -59,8 +61,15 @@ function foldEquipmentIntoInventory(campaign: Campaign): InventoryItem[] {
 /**
  * Commit the draft as State #0. Rejects when the draft is already committed
  * or illegal (with the specific violation, mirroring `draft_is_legal`).
+ *
+ * With a reader, the roster is also checked against the band record's declared
+ * minimums (member slots and henchman group sizes) and its runtime-scope
+ * exclusions — the same verdicts the interface presents (T09).
  */
-export function commitInitialWarband(document: CampaignDocument): UseCaseResult {
+export function commitInitialWarband(
+  document: CampaignDocument,
+  knowledge?: KnowledgeReader,
+): UseCaseResult {
   const { campaign } = document;
   if (!campaign.configuration.is_draft) {
     return rejected(
@@ -95,6 +104,20 @@ export function commitInitialWarband(document: CampaignDocument): UseCaseResult 
   }
   if (!draftIsLegal(campaign)) {
     return rejected("limit_violated", "The draft is not legal.");
+  }
+  if (knowledge) {
+    const fatal = rosterIssuesOf(knowledge, campaign).find((issue) =>
+      issue.code === "roster_minimum_missing" ||
+      issue.code === "roster_group_minimum_missing" ||
+      issue.code === "profile_unknown" ||
+      issue.code === "profile_excluded_from_construction" ||
+      issue.code === "variant_selection_required" ||
+      issue.code === "variant_options_missing" ||
+      issue.code === "variant_unknown_option" ||
+      issue.code === "profile_not_permitted_for_variant" ||
+      issue.code === "band_unknown",
+    );
+    if (fatal) return rejected("limit_violated", fatal.message);
   }
 
   const started = new Date().toISOString().slice(0, 10);

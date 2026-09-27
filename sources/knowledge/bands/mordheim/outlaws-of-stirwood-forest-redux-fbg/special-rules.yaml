@@ -3,16 +3,26 @@ band_id: outlaws-of-stirwood-forest-redux-fbg
 rules:
 - id: band--bow-restrictions
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.outlaws-of-stirwood-forest-redux-fbg.band.bow-restrictions
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: equipment restrictions are roster-construction mechanics outside the
-        duel scope.
+    - id: mechanic.bow-discipline
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.bow-discipline
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: crossbow
+          max_missile_weapons: 1
+          required_tag: bow
+          exempt_profile_ids:
+          - cleric
   name: Bow Restrictions
   effect: >-
     All warriors in an Outlaws warband may be equipped with only one missile weapon at any time. All

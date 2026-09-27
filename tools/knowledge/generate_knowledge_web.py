@@ -136,6 +136,67 @@ def _build_collections(ruleset: str) -> list[dict]:
     ]
 
 
+def _bound_effects(package, binding_id: str):
+    """Every in-scope effect of the package that binds `binding_id`.
+
+    The band rules are the single source of the construction data the artefact
+    carries for a profile: an effect bound to `profile.skill-access` or to
+    `profile.equipment-restrictions` is materialized here, exactly like the
+    prohibition tokens the profiles already exposed, so no reader resolves a
+    rule-level binding itself.
+    """
+    for rule in package.special_rules:
+        applies = rule.get("applies_to") or {}
+        recipients = {str(value) for value in applies.get("profile_ids") or ()}
+        band_wide = bool(applies.get("band"))
+        for effect in (rule.get("runtime") or {}).get("effects") or ():
+            if not isinstance(effect, dict) or str(effect.get("scope")) != "YES":
+                continue
+            binding = effect.get("binding")
+            if not isinstance(binding, dict) or str(binding.get("id")) != binding_id:
+                continue
+            yield rule, recipients, band_wide, dict(binding.get("parameters") or {})
+
+
+def _band_equipment_data(package) -> tuple[list[str], dict]:
+    """Band-wide prohibitions and equipment limits declared by the band rules."""
+    forbids: set[str] = set()
+    limits: dict = {}
+    for _rule, _recipients, band_wide, parameters in _bound_effects(
+        package, "profile.equipment-restrictions"
+    ):
+        if not band_wide:
+            continue
+        tokens = parameters.get("forbids")
+        for token in ((tokens,) if isinstance(tokens, str) else tokens or ()):
+            if str(token).strip():
+                forbids.add(str(token))
+        for key in ("max_missile_weapons", "required_tag", "exempt_profile_ids"):
+            if parameters.get(key) is not None:
+                limits[key] = parameters[key]
+        if limits:
+            # The reader reports the limit's owner rule, never a bare value.
+            limits["rule_id"] = str(_rule["id"])
+    return sorted(forbids), limits
+
+
+def _profile_skill_data(package, profile_id: str) -> tuple[set[str], list[dict]]:
+    """Skill tables a published rule grants this profile, and their bound lists."""
+    categories: set[str] = set()
+    lists: list[dict] = []
+    for rule, recipients, _band_wide, parameters in _bound_effects(package, "profile.skill-access"):
+        if profile_id not in recipients:
+            continue
+        category = str(parameters.get("category") or "").strip()
+        if not category:
+            continue
+        categories.add(category)
+        skills = sorted({str(skill) for skill in parameters.get("skills") or () if str(skill).strip()})
+        if skills:
+            lists.append({"rule_id": str(rule["id"]), "category": category, "skills": skills})
+    return categories, sorted(lists, key=lambda row: (row["rule_id"], row["category"]))
+
+
 def _build_bands(ruleset: str) -> tuple[list[dict], dict[str, list[str]]]:
     bands: list[dict] = []
     indexes: dict[str, list[str]] = {}
@@ -158,6 +219,10 @@ def _build_bands(ruleset: str) -> tuple[list[dict], dict[str, list[str]]]:
                 key=_sort_key,
             )
             entry["collection"] = str(collection)
+            band_forbids, band_limits = _band_equipment_data(package)
+            entry["equipment_forbids"] = band_forbids
+            if band_limits:
+                entry["equipment_limits"] = band_limits
             access: list[dict] = []
             for equipment_list in package.equipment_lists:
                 list_id = str(equipment_list.get("id") or "")
@@ -258,6 +323,15 @@ def _build_profiles(ruleset: str) -> list[dict]:
                     access,
                     key=lambda row: (str(row["item_id"]), str(row["list_id"])),
                 )
+                # Skill tables a published band rule grants this profile, and the
+                # printed membership of each bounded list: the reader never has to
+                # resolve a rule-level `profile.skill-access` binding itself.
+                granted, skill_lists = _profile_skill_data(package, str(profile["id"]))
+                if granted:
+                    declared = {str(value) for value in entry.get("skill_access") or ()}
+                    entry["skill_access"] = sorted(declared | granted)
+                if skill_lists:
+                    entry["skill_lists"] = skill_lists
                 profiles.append(entry)
     return sorted(profiles, key=_sort_key)
 

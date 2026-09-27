@@ -790,16 +790,24 @@ rules:
     - snotling-mobs
 - id: runts--teeny-hands
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: armour
     - id: unimplemented.snotlings-web.runts.teeny-hands
       scope: LATER
       binding: null
       reason: >-
-        Deferred subsystem: equipment restrictions and promotion changes are
-        roster-construction/progression mechanics outside the duel scope.
+        Deferred subsystem: the single one-handed weapon at a time and the promotion reset are
+        combat/progression mechanics outside the duel scope; the armour prohibition is published as
+        the profile binding above.
   name: Teeny Hands
   effect: >-
     Runts can use Missile Weapons as normal. However, Runt Henchmen can only use a single One-Handed

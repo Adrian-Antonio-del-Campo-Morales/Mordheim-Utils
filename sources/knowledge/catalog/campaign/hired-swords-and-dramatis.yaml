@@ -3071,6 +3071,30 @@ dramatis_personae:
     allow_band_ids: []
     forbid_band_ids: []
     note: Any human or Dwarf warband may hire Snorri Nosebiter.
+band_hiring_clauses:
+- rule_id: band--the-silence
+  band_id: silent-brotherhood-sc
+  exclude_item_tags:
+  - blackpowder
+  - animal
+  note: >-
+    "No warband member or hired sword may ever use blackpowder weapons or animals." A Hired Sword
+    whose published kit carries either family cannot be fielded by this warband, so the exclusion is
+    declared through the catalogue's item tags instead of a local list of hireling ids. Members are
+    covered by the band-wide prohibition of the same rule.
+- rule_id: band--hired-swords
+  band_id: knights-of-the-bitter-moors-mim
+  exclude_traits:
+  - spellcaster
+  exclude_item_tags:
+  - blackpowder
+  - poison
+  note: >-
+    The print counts Bretonnians as Humans — `registry/warband-groups.yaml` carries that as the
+    `warband-group.human` membership — and excludes the Hired Swords that use Black Powder, Magic
+    or Poison. Runes are explicitly allowed, so magic *items* are not excluded: `spellcaster` is the
+    trait of a character who uses magic. Applicability to Humans and the dynamic roster checks stay
+    where they already live (the static eligibility of each entry and the profile rules).
 effect_ids:
 - campaign.hireling.availability
 - campaign.hireling.hire

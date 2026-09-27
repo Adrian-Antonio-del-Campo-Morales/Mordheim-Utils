@@ -28,7 +28,16 @@ import type {
 } from "./usecases";
 import { rejected } from "./rejections";
 import { memberCount, uniqueWarriorName } from "./document";
-import { selectedWarbandVariant } from "../band-variants";
+import { selectedWarbandVariant, warbandVariants } from "../band-variants";
+import {
+  bandFactsOf,
+  characteristicBoundIssueFor,
+  equipmentIssueFor,
+  profileExclusionFor,
+  profileFactsOf,
+  racialMaximumsOf,
+  variantFrameOf,
+} from "../construction";
 
 /** Characteristic display keys, in KB order. */
 export const STAT_KEYS = ["M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"] as const;
@@ -211,19 +220,34 @@ export function warriorFromProfile(
 /**
  * Creates a draft for a warband: identity and configuration from the band
  * record's roster, an initial roster filled from member minimums, then the
- * cheapest henchmen up to the minimum model count (Python
- * `_starter_warriors`). Rejects unknown bands and unusable rosters.
+ * cheapest henchmen up to the minimum model count (the shared
+ * `mordheim_construction` starter algorithm). Rejects unknown bands and
+ * unusable rosters.
+ *
+ * `variantId` is the mandatory warband variant when it is already chosen
+ * (`background.native`, `bloodline.lahmia`…): the draft is built for that
+ * option — its slots open and a bloodline's Vampire arrives as the leader — and
+ * the choice travels in `identity.mercenary_variant`. Without it, a band that
+ * demands the choice keeps every gated slot locked.
  */
 export function createDraft(
   bandId: IdString,
   knowledge: KnowledgeReader,
   campaignName = "New Mordheim Campaign",
+  variantId: string | null = null,
 ): UseCaseResult {
   const bandResult = knowledge.queryKnowledge({ id: { kind: "band_id", value: bandId } });
   if (!bandResult.ok) {
     return rejected("not_found", `Unknown warband id: ${bandId}.`);
   }
   const bandRecord = bandResult.record;
+  const requestedVariant = String(variantId ?? "").trim().toLowerCase();
+  if (
+    requestedVariant &&
+    !warbandVariants(knowledge, bandId).some((option) => option.id === requestedVariant)
+  ) {
+    return rejected("invalid_input", `Unknown warband variant for ${bandId}: ${variantId}.`);
+  }
   const rules = rosterRulesOf(bandRecord, (profileId) => {
     const profile = profileRecord(knowledge, bandId, profileId);
     if (!profile) return null;
@@ -235,12 +259,54 @@ export function createDraft(
       `Warband "${bandId}" has no usable roster definition in the knowledge base.`,
     );
   }
-
-  const roster =
+  // A band whose mandatory roster needs a profile the runtime-scope excludes
+  // cannot produce a legal draft (T09: an exclusion is never turned into a
+  // normal profile, and never into a generic allowlist).
+  const declaredRoster =
     bandRecord.data["roster"] && typeof bandRecord.data["roster"] === "object"
       ? (bandRecord.data["roster"] as OpenPayload)
       : {};
-  const members = Array.isArray(roster["members"]) ? (roster["members"] as OpenPayload[]) : [];
+  const declaredMembers = Array.isArray(declaredRoster["members"])
+    ? (declaredRoster["members"] as OpenPayload[])
+    : [];
+  for (const member of declaredMembers) {
+    const profileId = member["profile_id"];
+    const minimum = member["minimum"];
+    if (typeof profileId !== "string" || typeof minimum !== "number" || minimum <= 0) continue;
+    const exclusion = profileExclusionFor(bandId, profileId);
+    if (exclusion) {
+      return rejected(
+        "invalid_input",
+        `Warband "${bandId}" requires ${profileId}, which is outside the warband roster as a fighter: ${exclusion.reason}`,
+      );
+    }
+  }
+
+  // The mandatory variant choice resolves which declared slots are open: a
+  // gated member stays locked until its option is chosen (the published `0/0`
+  // state), and the chosen bloodline's Vampire becomes the mandatory leader.
+  const band = bandFactsOf(knowledge, bandId);
+  const frame = band ? variantFrameOf(knowledge, band, requestedVariant || null) : null;
+  const members: OpenPayload[] = frame
+    ? frame.available.map((member) => ({
+        profile_id: member.profile_id,
+        minimum: member.minimum,
+        maximum: member.maximum,
+        ...(member.group_size ? { group_size: { ...member.group_size } } : {}),
+      }))
+    : declaredMembers;
+  // The hero cap belongs to the resolved frame too: the declared maxima do not
+  // include the leader a bloodline unlocks and still count the Vampires the
+  // choice removes (the Chaos in the Streets band publishes them at `0/0`).
+  const heroCaps = members
+    .filter((member) => typeof member["profile_id"] === "string")
+    .filter((member) => {
+      const profile = profileRecord(knowledge, bandId, member["profile_id"] as IdString);
+      return profile !== null && profile["type"] === "hero";
+    })
+    .map((member) => member["maximum"])
+    .filter((maximum): maximum is number => typeof maximum === "number");
+  const heroLimit = heroCaps.length > 0 ? heroCaps.reduce((total, cap) => total + cap, 0) : rules.hero_limit;
   const itemName = makeItemName(knowledge);
 
   const occurrences = new Map<IdString, number>();
@@ -279,13 +345,16 @@ export function createDraft(
   }
 
   // 2. Fill up to the minimum model count with the cheapest henchman groups.
-  const groupMax = (member: OpenPayload): number => {
+  // Mirrors the shared Python starter algorithm: without a declared
+  // `group_size`, a row may hold as many models as the member maximum allows
+  // (or as many as still needed), never silently one.
+  const groupMax = (member: OpenPayload): number | null => {
     const gs = member["group_size"];
     if (gs && typeof gs === "object") {
       const raw = gs as OpenPayload;
-      return typeof raw["maximum"] === "number" ? raw["maximum"] : 1;
+      return typeof raw["maximum"] === "number" ? raw["maximum"] : null;
     }
-    return 1;
+    return null;
   };
   const membersWithProfiles = members
     .map((member) => {
@@ -296,7 +365,7 @@ export function createDraft(
     })
     .filter((entry): entry is NonNullable<typeof entry> => entry !== null);
   const fillCandidates = membersWithProfiles
-    .filter(({ profile }) => profile["type"] === "henchman")
+    .filter(({ profileId, profile }) => profile["type"] === "henchman" && !profileExclusionFor(bandId, profileId))
     .sort((a, b) => {
       const costA = typeof a.profile["cost"] === "number" ? a.profile["cost"] : Number.MAX_SAFE_INTEGER;
       const costB = typeof b.profile["cost"] === "number" ? b.profile["cost"] : Number.MAX_SAFE_INTEGER;
@@ -307,16 +376,17 @@ export function createDraft(
     const needed = rules.minimum_models - memberCount(rows);
     if (needed <= 0) break;
     if (member["maximum"] === 0) continue; // closed member slot
-    const perRowCap = Math.max(1, groupMax(member));
-    const quantity = Math.min(needed, perRowCap);
+    const memberMaximum = typeof member["maximum"] === "number" ? (member["maximum"] as number) : null;
+    const perRowCap = groupMax(member) ?? memberMaximum ?? needed;
+    const quantity = Math.min(needed, Math.max(1, perRowCap));
     add(profile, quantity, profileId);
   }
 
   // 3. All-hero-optional bands still need at least one hero.
   if (!rows.some((row) => row.kind === "hero")) {
     const heroCandidates = membersWithProfiles
-      .filter(({ profile, member }) => {
-        if (profile["type"] !== "hero") return false;
+      .filter(({ profile, profileId, member }) => {
+        if (profile["type"] !== "hero" || profileExclusionFor(bandId, profileId)) return false;
         const maximum = member["maximum"];
         return maximum !== 0 && (typeof maximum !== "number" || maximum > 0);
       })
@@ -340,7 +410,7 @@ export function createDraft(
     warband_name: `My ${bandRecord.names["en"] ?? bandId} Warband`,
     warband_type: bandRecord.names["en"] ?? bandId,
     band_id: bandId,
-    mercenary_variant: null,
+    mercenary_variant: requestedVariant || null,
     ...(typeof collectionValue === "string" ? { collection: collectionValue as IdString } : {}),
   };
   const campaign: Campaign = {
@@ -350,7 +420,7 @@ export function createDraft(
       starting_gold: rules.starting_gold,
       minimum_models: rules.minimum_models,
       maximum_models: rules.maximum_models,
-      hero_limit: rules.hero_limit ?? 5,
+      hero_limit: heroLimit ?? 5,
     },
     resources: { stash_value: 0, rare_finds: 0, treasures: 0, campaign_points: 0 },
     current_state_number: 0,
@@ -394,6 +464,21 @@ export function composeDraft(
   const bandRoster = bandResult.ok && bandResult.record.data["roster"] && typeof bandResult.record.data["roster"] === "object"
     ? bandResult.record.data["roster"] as OpenPayload : {};
   const rosterMembers = Array.isArray(bandRoster["members"]) ? bandRoster["members"] as OpenPayload[] : [];
+  // The composition frame resolves the mandatory variant choice: a member the
+  // selection forbids cannot be added, and its limits are the ones the choice
+  // publishes (the background's lists and the chosen bloodline's leader slot).
+  const band = bandFactsOf(knowledge, campaign.identity.band_id);
+  const frame = band ? variantFrameOf(knowledge, band, campaign.identity.mercenary_variant) : null;
+  const effectiveMembers: OpenPayload[] = frame
+    ? frame.available.map((member) => ({
+        profile_id: member.profile_id,
+        minimum: member.minimum,
+        maximum: member.maximum,
+        ...(member.group_size ? { group_size: { ...member.group_size } } : {}),
+      }))
+    : rosterMembers;
+  const effectiveById = new Map(effectiveMembers.map((member) => [String(member["profile_id"]), member]));
+  const removedByVariant = new Set<string>(frame?.removed_profiles ?? []);
 
   const itemName = makeItemName(knowledge);
   const occurrences = new Map<IdString, number>();
@@ -428,8 +513,22 @@ export function composeDraft(
         `Profile "${rowInput.profile_id}" is a ${kind} row, not ${rowInput.kind}.`,
       );
     }
-    const member = rosterMembers.find((candidate) => candidate["profile_id"] === rowInput.profile_id);
-    if (!member) return rejected("not_available", `Profile "${rowInput.profile_id}" is not available to this warband.`);
+    const declaredMember = rosterMembers.find((candidate) => candidate["profile_id"] === rowInput.profile_id);
+    if (!declaredMember) return rejected("not_available", `Profile "${rowInput.profile_id}" is not available to this warband.`);
+    if (removedByVariant.has(rowInput.profile_id)) {
+      return rejected(
+        "not_available",
+        `"${rowInput.profile_id}" is not available under the selected warband variant "${frame?.variant_id}".`,
+      );
+    }
+    const member = effectiveById.get(rowInput.profile_id) ?? declaredMember;
+    const exclusion = profileExclusionFor(campaign.identity.band_id, rowInput.profile_id);
+    if (exclusion) {
+      return rejected(
+        "not_available",
+        `"${rowInput.profile_id}" is outside the warband roster as a fighter: ${exclusion.reason}`,
+      );
+    }
     if (kind === "hero" && rowInput.quantity !== 1) {
       return rejected("limit_violated", "Heroes must be recruited individually.");
     }
@@ -446,6 +545,19 @@ export function composeDraft(
     const warrior = { ...created, stats: variantStats, name: uniqueWarriorName([...campaign.warriors, ...planned.map((row) => row.warrior)], created.name) };
     // Fixed equipment comes from the profile; listed equipment is purchased.
     const fixedIds = warrior.equipment.map((entry) => entry.item_id);
+    const facts = profileFactsOf(knowledge, campaign.identity.band_id, rowInput.profile_id);
+    for (const itemId of rowInput.equipment) {
+      if (fixedIds.includes(itemId) || !facts) continue;
+      const issue = equipmentIssueFor(
+        knowledge,
+        facts,
+        itemId,
+        campaign.identity.mercenary_variant ?? null,
+      );
+      if (issue && (issue.code === "equipment_not_permitted" || issue.code === "equipment_forbidden")) {
+        return rejected("not_available", issue.message);
+      }
+    }
     const purchased = rowInput.equipment
       .filter((itemId: IdString) => !fixedIds.includes(itemId))
       .map((itemId: IdString) => {
@@ -470,9 +582,23 @@ export function composeDraft(
     planned.push({ warrior: built, purchased });
   }
 
+  // Starting characteristics must stay inside the published racial maximum;
+  // a profile with no row is exempt (the bound is what the KB declares).
+  const maximums = racialMaximumsOf(knowledge);
+  for (const row of planned) {
+    if (!row.warrior.profile_id) continue;
+    const facts = profileFactsOf(knowledge, campaign.identity.band_id, row.warrior.profile_id);
+    if (!facts) continue;
+    for (const [stat, value] of Object.entries(row.warrior.stats)) {
+      if (typeof value !== "number") continue;
+      const issue = characteristicBoundIssueFor({ profile: facts, stat, value, rows: maximums });
+      if (issue) return rejected("limit_violated", issue.message);
+    }
+  }
+
   // Limit checks on the would-be roster (Python formulas).
   const warriors = [...campaign.warriors, ...planned.map((p) => p.warrior)];
-  for (const member of rosterMembers) {
+  for (const member of effectiveMembers) {
     const profileId = typeof member["profile_id"] === "string" ? member["profile_id"] : "";
     const maximum = member["maximum"];
     if (!profileId || typeof maximum !== "number") continue;

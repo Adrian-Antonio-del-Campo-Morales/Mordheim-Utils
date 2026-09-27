@@ -320,6 +320,10 @@ rules:
         id: profile.skill-access
         parameters:
           category: special
+          skills:
+          - skill.fey
+          - skill.chosen-of-the-white-tower
+          - skill.fey-quickness
   name: Elf Special Skill Table
   effect: >-
     Elf Heroes may use the following Skill table instead of any of the standard Skill tables. Fey:
@@ -344,6 +348,8 @@ rules:
       Feérica: igual que TC12.
   applies_to:
     band: true
+    profile_ids:
+    - elf
 - id: band--barbarian-special-skills
   runtime:
     scope: 'YES'
@@ -357,6 +363,10 @@ rules:
         id: profile.skill-access
         parameters:
           category: special
+          skills:
+          - skill.hard-to-kill
+          - skill.ferocious-charge
+          - skill.instinctive-warrior
   name: Barbarian Special Skills
   effect: >-
     Barbarians may use the following skill list instead of the standard skill lists. Hard to Kill:
@@ -371,6 +381,10 @@ rules:
     printed_page: 22
     section: Barbarian Special Skills
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  applies_to:
+    band: true
+    profile_ids:
+    - barbarian
   name_i18n:
     es: Habilidades Especiales de Bárbaros
   effect_i18n:
@@ -382,8 +396,6 @@ rules:
       turno en el que carga; sufrirá un -1 por impactar ese turno. Guerrero Instintivo: el Bárbaro
       está tan acostumbrado a su Arma a Dos Manos que es capaz de parar con ella; usa las reglas de
       Parada normalmente, como con una espada, tal y como se describen en tu Libro de Reglas.
-  applies_to:
-    band: true
 - id: band--noble-special-skills
   runtime:
     scope: 'YES'
@@ -397,6 +409,9 @@ rules:
         id: profile.skill-access
         parameters:
           category: special
+          skills:
+          - skill.trading-flair
+          - skill.taunt
   name: Noble Special Skill Table
   effect: >-
     The Noble may use the following Skill table instead of any of the standard Skill tables. Trading
@@ -421,6 +436,8 @@ rules:
       cargar contra el Noble, incluso si está fuera de su alcance de carga.
   applies_to:
     band: true
+    profile_ids:
+    - imperial-noble
 - id: band--dwarf-special-skills
   runtime:
     scope: 'YES'
@@ -434,6 +451,11 @@ rules:
         id: profile.skill-access
         parameters:
           category: special
+          skills:
+          - skill.magic-resistant
+          - skill.ferocious-charge
+          - skill.monster-slayer
+          - skill.berserker
   name: Dwarf Special Skill Table
   effect: >-
     Dwarf may use the following Skill table instead of any of the standard Skill tables. Magic
@@ -456,6 +478,8 @@ rules:
       libro de reglas de Mordheim. Berserker: ver la página 151 del libro de reglas de Mordheim.
   applies_to:
     band: true
+    profile_ids:
+    - dwarf
 - id: cannon-fodder--mixed-bunch
   runtime:
     scope: 'NO'
