@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/campaign-recruitment-and-veterans.yaml.schema.json",
   "title": "Mordheim KB catalogue — catalog/campaign/recruitment-and-veterans.yaml",
-  "description": "How a warband hires new warriors and when a veteran is available. The policies and the availability roll are rule knowledge; the recruits already hired and the Experience pool of a concrete warband are campaign state and live outside the KB.",
+  "description": "How a warband hires new warriors, when a veteran is available and which rolls the creation of a warband still owes. The policies, the availability roll and the creation tables are rule knowledge; the recruits already hired, the Experience pool and the rolled outcomes of a concrete warband are campaign state and live outside the KB.",
   "type": "object",
   "required": [
     "schema_version",
@@ -30,6 +30,26 @@
       "type": "array",
       "minItems": 1,
       "items": { "$ref": "#/$defs/veteran" }
+    },
+    "creation_decisions": {
+      "description": "Rolls the printed rules require while a warband is being created. Each one names the band, the rule and the recipient profiles, so an application can demand the roll exactly when the roster holds a recipient and persist only the result.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/creation_decision" }
+    },
+    "lifecycle_clauses": {
+      "description": "Roster-lifecycle clauses a printed band rule imposes outside construction. Each one names the trigger the campaign already observes and the profiles it operates on; the operation is a closed vocabulary, so a consumer never reads the rule prose.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/lifecycle_clause" }
+    },
+    "succession_clauses": {
+      "description": "Leader-succession clauses a printed band rule imposes. Each one names the leader profile and the eligible successor profiles; the core-book consequence the rule refers to is a separate document.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/succession_clause" }
+    },
+    "advance_access_clauses": {
+      "description": "Advancement-time skill-list grants a printed band rule imposes. Each one names the trigger advance, the recipient profiles and the skill lists it adds to their choices.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/advance_access_clause" }
     },
     "effect_ids": {
       "description": "Effects of this catalogue a warband's own special rules may modify.",
@@ -62,6 +82,180 @@
           "description": "Editorial clarification of the policy.",
           "$ref": "defs.schema.json#/$defs/display_text"
         },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "creation_decision": {
+      "description": "One warband-creation roll: who owes it and which printed outcome each dice result reaches. The outcome text is the rule's own wording; an application records the dice result and the outcome id, never a translated sentence.",
+      "type": "object",
+      "required": [
+        "id",
+        "band_id",
+        "rule_id",
+        "profile_ids",
+        "name",
+        "roll",
+        "outcomes",
+        "source_refs"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "band_id": {
+          "description": "Band whose creation owes the roll.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "rule_id": {
+          "description": "Band rule the roll belongs to.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "profile_ids": {
+          "description": "Recipient profiles: the roll is owed while the draft roster holds one of them.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "required": {
+          "description": "Whether the warband cannot be committed before the roll is recorded. Defaults to true; declared explicitly so a future optional roll cannot be inferred from prose.",
+          "type": "boolean"
+        },
+        "roll": {
+          "type": "object",
+          "required": ["dice"],
+          "additionalProperties": false,
+          "properties": { "dice": { "$ref": "defs.schema.json#/$defs/dice" } }
+        },
+        "outcomes": {
+          "description": "Printed outcome of each dice interval, in roll order.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/creation_outcome" }
+        },
+        "note": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "note_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "creation_outcome": {
+      "description": "One printed result of a creation roll. `result_id` is the stable identity an application persists.",
+      "type": "object",
+      "required": ["when", "result_id", "result", "result_i18n"],
+      "additionalProperties": false,
+      "properties": {
+        "when": { "$ref": "defs.schema.json#/$defs/interval" },
+        "result_id": { "$ref": "defs.schema.json#/$defs/id" },
+        "result": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "result_i18n": { "$ref": "defs.schema.json#/$defs/i18n" }
+      }
+    },
+    "lifecycle_clause": {
+      "description": "One roster-lifecycle clause: when it fires and what it does to the named profiles. `require_member` blocks recruiting other profiles while the named one is missing from the roster; `remove_member` takes the named profile out of the roster when the trigger fires.",
+      "type": "object",
+      "required": [
+        "id",
+        "band_id",
+        "rule_id",
+        "trigger",
+        "operation",
+        "profile_ids",
+        "name",
+        "effect",
+        "source_refs"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "band_id": {
+          "description": "Band the clause belongs to.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "rule_id": {
+          "description": "Printed band rule the clause transcribes.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "trigger": {
+          "description": "Campaign moment that fires the clause.",
+          "type": "string",
+          "enum": ["recruitment", "henchman_promotion"]
+        },
+        "operation": {
+          "description": "What the clause does with `profile_ids`.",
+          "type": "string",
+          "enum": ["require_member", "remove_member"]
+        },
+        "profile_ids": {
+          "description": "Profiles the clause operates on, and the only ones it lets through while it is unmet.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "succession_clause": {
+      "description": "One leader-succession clause: the profile that leads the band and the profiles the printed rule allows to take over. The core-book consequence the rule refers to is a separate document.",
+      "type": "object",
+      "required": ["id", "band_id", "rule_id", "leader_profile_ids", "successor_profile_ids", "name", "effect", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "band_id": {
+          "description": "Band the clause belongs to.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "rule_id": {
+          "description": "Printed band rule the clause transcribes.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "leader_profile_ids": {
+          "description": "Profiles whose roster member leads the band.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "successor_profile_ids": {
+          "description": "Profiles the printed rule allows to take over.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "advance_access_clause": {
+      "description": "One advancement-time skill-list grant: the trigger advance, the recipient profiles and the skill lists the printed rule adds to their choices.",
+      "type": "object",
+      "required": ["id", "band_id", "rule_id", "trigger", "profile_ids", "skill_lists", "name", "effect", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "band_id": {
+          "description": "Band the clause belongs to.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "rule_id": {
+          "description": "Printed band rule the clause transcribes.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "trigger": {
+          "description": "Advance that fires the grant.",
+          "type": "string",
+          "enum": ["that-lads-got-talent"]
+        },
+        "profile_ids": {
+          "description": "Profiles whose choices the grant widens.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "skill_lists": {
+          "description": "Skill lists added to the profile's choices.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
       }
     },

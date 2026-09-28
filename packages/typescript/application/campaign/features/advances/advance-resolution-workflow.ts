@@ -1,5 +1,8 @@
 import type { CampaignDocument, KnowledgeReader, OpenPayload, Warrior } from "../../../../domain/campaign/index";
 import { withCampaign } from "../../../../domain/campaign/kernel/document";
+import { profileFactsOf, skillIssueFor } from "../../../../domain/campaign/construction";
+import { promotionRemovalClauseFor } from "../../../../domain/campaign/kernel/lifecycle";
+import { additionalSkillListsFor } from "../../../../domain/campaign/kernel/advance-access";
 
 interface CatalogueReader extends KnowledgeReader {
   campaignSection?(section: string): Readonly<Record<string, unknown>>;
@@ -101,7 +104,15 @@ export function commitAdvanceChoice(document: CampaignDocument, reader: Catalogu
     const skill=input.skill_id ? reader.queryKnowledge({id:{kind:"skill_id",value:input.skill_id}}):null; if(!skill?.ok||!offered.some((item)=>item["kind"]==="choose_skill")) return {ok:false,message:"That skill is not offered."};
     const category=String(skill.record.data["category"]??""); if(warrior.skill_access?.length&&!warrior.skill_access.includes(category)) return {ok:false,message:"That skill is outside this Hero's skill tables."};
     const name=String(skill.record.names["en"]??input.skill_id); if(warrior.skills.includes(name)) return {ok:false,message:"The warrior already knows that skill."};
-    const post=document.campaign.post_battles.find((item)=>!item.complete)!; const committed={...row,committed:true,applied_result:{kind:"skill",id:input.skill_id},applied_label:`Skill: ${name}`};
+    // T10: a `special` table is bounded by the printed member list the band
+    // publishes (T09 `skill_lists`). A skill off the list is refused; a list
+    // still published as prose is reported on the row instead of silently
+    // granting the whole special catalogue.
+    const profile=warrior.profile_id?profileFactsOf(reader,document.campaign.identity.band_id,warrior.profile_id):null;
+    const verdict=profile?skillIssueFor(profile,{id:input.skill_id??"",category,kind:String(skill.record.data["kind"]??"general")}):null;
+    if(verdict?.code==="skill_not_permitted") return {ok:false,message:verdict.message};
+    const pendingSpecialList=verdict?.code==="skill_pending_special_list"?{code:verdict.code,owner_task:verdict.owner_task??"KB",...(verdict.rule_id?{rule_id:verdict.rule_id}:{})}:null;
+    const post=document.campaign.post_battles.find((item)=>!item.complete)!; const committed={...row,committed:true,applied_result:{kind:"skill",id:input.skill_id},applied_label:`Skill: ${name}`,...(pendingSpecialList?{pending_special_list:pendingSpecialList}:{})};
     return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?committed:item),document.campaign.warriors.map((item)=>item.id===warrior.id?{...item,skills:[...item.skills,name]}:item))};
   }
   if(input.kind==="generate_spell" || input.kind==="duplicate_spell") {
@@ -121,7 +132,7 @@ export function commitAdvanceChoice(document: CampaignDocument, reader: Catalogu
     const committed={...row,committed:true,applied_result:{kind:"external"},applied_label:"Resolved outside the application"};
     return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?committed:item))};
   }
-  return {ok:false,message:"This desktop advance option is not implemented yet."};
+  return {ok:false,message:"This advance option is not implemented yet."};
 }
 
 function nextWarriorId(document: CampaignDocument, base: string): string {
@@ -130,10 +141,28 @@ function nextWarriorId(document: CampaignDocument, base: string): string {
   return candidate;
 }
 
-export function promoteHenchman(document: CampaignDocument, input:{warrior_id:string;threshold:number|null;member_name?:string}): Result {
+export function promoteHenchman(document: CampaignDocument, reader: CatalogueReader, input:{warrior_id:string;threshold:number|null;member_name?:string}): Result {
   const {post,warrior,row}=context(document,input.warrior_id,input.threshold); if(!post||!warrior||!row) return {ok:false,message:"No matching pending promotion."};
   const offered=((row["advance_options"]??[]) as OpenPayload[]).some((item)=>item["kind"]==="promote_henchman");
   if(!offered||warrior.kind!=="henchman") return {ok:false,message:"The Lad's Got Talent is not offered for this warrior."};
+  // T10: a printed lifecycle clause can turn the promotion itself into the
+  // removal of the promoted member (`skaven-slaves--doomed`). The clause fires
+  // regardless of the Hero quota, so it is checked before the limit below.
+  const doomed=promotionRemovalClauseFor(reader,document.campaign.identity.band_id,warrior.profile_id??null);
+  if(doomed) {
+    const quantity=warrior.quantity??1, remaining=quantity-1;
+    const groupEquipment=warrior.equipment.map((item)=>item.per_model&&item.quantity%quantity===0?{...item,quantity:item.quantity-item.quantity/quantity}:item).filter((item)=>item.quantity>0);
+    const warriors=remaining>0
+      ? document.campaign.warriors.map((item)=>item.id===warrior.id?{...item,quantity:remaining,equipment:groupEquipment}:item)
+      : document.campaign.warriors.filter((item)=>item.id!==warrior.id);
+    const note=`${doomed.name}: the promoted ${warrior.profile_name} is removed from the roster instead of becoming a Hero.`;
+    // The remaining group rerolls the advance; a lone member leaves a committed
+    // row behind, the same way a removed warrior keeps his committed advances.
+    const pending=(post.pending_advances??[]).map((item)=>item!==row?item:remaining>0
+      ? {...item,roll_total:null,subroll:null,advance_options:[],promotion_offer:false,reroll_exclude_promotion:true,...appendHistory(item,{kind:"lifecycle-removal",clause_id:doomed.id},note)}
+      : {...item,committed:true,applied_result:{kind:"lifecycle",id:doomed.id},applied_label:note,...appendHistory(item,{kind:"lifecycle-removal",clause_id:doomed.id},note)});
+    return {ok:true,document:update(document,post.battle_number,pending,warriors)};
+  }
   const heroes=document.campaign.warriors.reduce((total,item)=>total+(item.kind==="hero"?(item.quantity??1):0),0);
   if(heroes>=document.campaign.configuration.hero_limit) {
     const reset={...row,roll_total:null,subroll:null,advance_options:[],promotion_offer:false,...appendHistory(row,{kind:"hero-limit",limit:document.campaign.configuration.hero_limit},`Hero maximum reached (${document.campaign.configuration.hero_limit}); reroll this advance.`)};
@@ -160,9 +189,22 @@ export function promotionHeroTables(document: CampaignDocument, reader: Catalogu
   return [...tables];
 }
 
+/**
+ * Skill tables the promoted warrior may choose from: the band's hero tables
+ * plus any printed advancement-time grant the profile carries
+ * (`axe-hurlers--born-marksmen` opens Shooting for the Axe Hurlers even when no
+ * other hero in the band offers it).
+ */
+export function promotionTablesForWarrior(document: CampaignDocument, reader: CatalogueReader, warriorId:string): readonly string[] {
+  const warrior=document.campaign.warriors.find((item)=>item.id===warriorId);
+  const tables=new Set<string>(promotionHeroTables(document,reader));
+  for(const table of additionalSkillListsFor(reader,document.campaign.identity.band_id,warrior?.profile_id??null)) tables.add(table);
+  return [...tables];
+}
+
 export function setPromotionSkillTables(document: CampaignDocument, reader: CatalogueReader, input:{warrior_id:string;tables:readonly string[]}): Result {
   const {post,warrior,row}=context(document,input.warrior_id,null); if(!post||!warrior||!row||!row["promotion_setup_pending"]) return {ok:false,message:"No pending promotion setup."};
-  const selected=[...new Set(input.tables)]; const available=new Set(promotionHeroTables(document,reader));
+  const selected=[...new Set(input.tables)]; const available=new Set(promotionTablesForWarrior(document,reader,input.warrior_id));
   if(selected.length!==2||selected.some((item)=>!available.has(item))) return {ok:false,message:"Choose exactly two available Hero skill lists."};
   const changed={...warrior,skill_access:selected}; const pending=post.pending_advances!.map((item)=>item===row?{...item,promotion_tables:selected,promotion_setup_pending:false}:item);
   return {ok:true,document:update(document,post.battle_number,pending,document.campaign.warriors.map((item)=>item.id===warrior.id?changed:item))};

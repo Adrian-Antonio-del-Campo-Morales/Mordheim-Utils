@@ -18,6 +18,11 @@
       "minItems": 1,
       "items": { "$ref": "#/$defs/mutation" }
     },
+    "grant_rules": {
+      "description": "Printed band rules that grant a mutation. Each one names the band, its rule, who may receive a mutation and the mutation ids the rule lists; the ids the rule names but the catalogue does not publish are listed by name instead of invented.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/grant_rule" }
+    },
     "effect_ids": {
       "description": "Effects of this catalogue a warband's own special rules may modify.",
       "$ref": "defs.schema.json#/$defs/id_list"
@@ -79,6 +84,50 @@
           "type": "integer",
           "minimum": 0
         },
+        "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "grant_rule": {
+      "description": "One printed grant of mutations: the recipients and the catalogue ids the rule lists.",
+      "type": "object",
+      "required": ["id", "band_id", "rule_id", "recipients", "profile_ids", "mutation_ids", "name", "effect", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "band_id": {
+          "description": "Band the grant belongs to.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "rule_id": {
+          "description": "Printed band rule the grant transcribes.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "recipients": {
+          "description": "Who the printed rule grants a mutation to. Currently only Heroes, as the source states.",
+          "const": "hero"
+        },
+        "profile_ids": {
+          "description": "Recipient profiles; empty when the printed rule names none.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "mutation_ids": {
+          "description": "Catalogue mutation ids the printed rule lists.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "unrouted_mutation_names": {
+          "description": "Mutation names the printed rule lists that the catalogue does not publish (no listed price in the available sources).",
+          "type": "array",
+          "items": { "$ref": "defs.schema.json#/$defs/display_text" }
+        },
+        "limit_per_warrior": {
+          "description": "Printed per-warrior cap, when the source states one.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
         "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }

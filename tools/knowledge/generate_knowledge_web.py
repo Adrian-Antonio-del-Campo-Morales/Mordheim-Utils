@@ -261,6 +261,33 @@ def _profile_can_gain_experience(package, profile: dict) -> bool:
     )
 
 
+#: Band rules whose printed clause says some of their members do not count
+#: towards the warband's Rout test. The recipient set is published by the rule
+#: (`applies_to.profile_ids`); only the meaning is curated here, once, so no
+#: consumer has to read the rule prose. Ids are band-local, so they are keyed by
+#: the band that owns them.
+_ROUT_TEST_COUNT_EXEMPT_RULES = frozenset({
+    ("lothern-sea-patrol-sar", "raw-recruits--dont-mind-them"),
+})
+
+
+def _profile_rout_test_exempt(package, profile: dict) -> bool:
+    """Whether the printed rules exclude this profile from the Rout-test count.
+
+    `raw-recruits--dont-mind-them` prints: "Any Raw Recruits who are running away
+    or have been taken out of action do not count towards the need to take a Rout
+    test for the warband." The battle-time evaluation (which members are running
+    away right now) is combat; the roster fact is materialised here.
+    """
+    band_id = str(package.band["id"])
+    profile_id = str(profile.get("id") or "")
+    return any(
+        (band_id, str(rule.get("id") or "")) in _ROUT_TEST_COUNT_EXEMPT_RULES
+        and profile_id in ((rule.get("applies_to") or {}).get("profile_ids") or ())
+        for rule in package.special_rules
+    )
+
+
 def _build_profiles(ruleset: str) -> list[dict]:
     profiles: list[dict] = []
     for collection in (row["id"] for row in load_collections() if ruleset in set(row.get("rulesets") or ())):
@@ -276,6 +303,8 @@ def _build_profiles(ruleset: str) -> list[dict]:
                 entry["collection"] = str(collection)
                 entry["band_id"] = str(package.band["id"])
                 entry["can_gain_experience"] = _profile_can_gain_experience(package, profile)
+                if _profile_rout_test_exempt(package, profile):
+                    entry["rout_test_exempt"] = True
                 entry["rule_ids"] = sorted({
                     *map(str, entry.get("rule_ids") or ()),
                     *(str(rule["rule_ref"]) for rule in package.special_rules

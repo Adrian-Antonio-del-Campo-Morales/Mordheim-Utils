@@ -170,6 +170,48 @@ mutations:
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/cult-of-the-possessed
   name_i18n:
     es: Horripilante
+# Printed band rules that grant mutations. Each one names the band, its rule,
+# who may receive a mutation and the mutation ids the rule lists that the
+# catalogue publishes. The ids the printed rule names but the catalogue does not
+# carry (no published cost in the available sources) are recorded in
+# `unrouted_mutation_names` instead of being invented.
+grant_rules:
+- id: campaign.mutation.grant.aquatic-mutants
+  band_id: shallows-beasts-mim
+  rule_id: band--aquatic-mutants
+  recipients: hero
+  profile_ids: []
+  mutation_ids:
+  - campaign.mutation.blackblood
+  - campaign.mutation.great-claw
+  - campaign.mutation.tentacle
+  unrouted_mutation_names:
+  - prehensile tail
+  - beak
+  - electrical touch
+  - mer-creature
+  - suckers
+  - eye stalks
+  limit_per_warrior: 1
+  name: Aquatic Mutants
+  name_i18n:
+    es: Mutantes Acuáticos
+  effect: >-
+    Any Hero may start the campaign with a single mutation from the following gifts and mutations in
+    the 'Corrupted Characters' chapter if they pay the appropriate cost; blackblood, great claw,
+    tentacle, prehensile tail, beak, electrical touch, mer-creature, suckers, or eye stalks (counts
+    as hideous).
+  effect_i18n:
+    es: >-
+      Cualquier Héroe puede comenzar la campaña con una única mutación de los siguientes dones y
+      mutaciones del capítulo 'Personajes Corruptos' si paga el coste apropiado; sangre negra, gran
+      garra, tentáculo, cola prensil, pico, toque eléctrico, criatura marina, ventosas u ojos tallo
+      (cuenta como horripilante).
+  source_refs:
+  - manual: broheim.net
+    printed_page: 1
+    section: Special rules / Aquatic Mutants
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf
 effect_ids:
 - campaign.mutation.apply
 - campaign.mutation.grant-on-advance

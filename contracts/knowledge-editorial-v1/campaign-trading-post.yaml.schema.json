@@ -133,7 +133,7 @@
       ]
     },
     "restriction": {
-      "description": "A typed buying restriction. `condition` and `profile_only` carry the source wording in `note` because the restriction is editorial prose, not a rule the applications evaluate yet. A warband restriction names either the individual bands (`band_ids`) or the shared groups (`groups`) it applies to, never both.",
+      "description": "A typed buying restriction. `condition` and `profile_only` carry the source wording in `note`; a `condition` may also declare the `band_ids` or `groups` the printed clause names, and only then is it a scope an application evaluates. `warband_only` and `warband_forbidden` are always evaluated. A warband restriction names either the individual bands (`band_ids`) or the shared groups (`groups`), never both.",
       "type": "object",
       "required": ["type"],
       "additionalProperties": false,

@@ -57,6 +57,11 @@ import { resolveScenarioEncampment, resolveScenarioSpellReward } from "./feature
 import { acknowledgeFollowUp, followUpNeedsResolution } from "./features/review/follow-up-acknowledgement-workflow";
 import { selectedWarbandVariant, warbandVariants } from "../../domain/campaign/band-variants";
 import { treasury } from "../../domain/campaign/kernel/document";
+import { marketAvailabilityIssueFor } from "../../domain/campaign/kernel/market";
+import { resolveCreationDecision } from "../../domain/campaign/kernel/creation-decisions";
+import { withdrawLeftTableMembers } from "../../domain/campaign/kernel/withdrawal";
+import { succeedLeader } from "../../domain/campaign/kernel/succession";
+import { buyMutation } from "../../domain/campaign/kernel/mutations";
 
 const HISTORY_LIMIT = 50;
 
@@ -245,7 +250,12 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
       // immutable battle summary; it must neither revive the draft nor show
       // a misleading read-only error to the player.
       if (action === "saveBattleDraft" && !editable) return { ok: true, document: state.current };
-      if (action !== "undo" && action !== "renameCampaign" && action !== "renameWarband" && !editable) return error("rejected", "Historical moments are read-only.");
+      // Roster consequences of a battle (members that left the table, leader
+      // succession, a mutation bought while recruiting) are not tied to the
+      // timeline moment being viewed; the domain operations validate their own
+      // context and are therefore allowed from any selection.
+      const contextFree = action === "undo" || action === "renameCampaign" || action === "renameWarband" || action === "withdrawLeftTableMembers" || action === "succeedLeader" || action === "buyMutation";
+      if (!contextFree && !editable) return error("rejected", "Historical moments are read-only.");
       switch (action) {
         case "renameCampaign":
         case "renameWarband": {
@@ -275,6 +285,26 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
             return { ...warrior, stats: Object.fromEntries(Object.entries(warrior.stats).map(([key, value]) => [key, value + (bonuses[key] ?? 0)])) };
           });
           return applyResult({ ok: true, state: { ...state.current, campaign: { ...state.current.campaign, warriors, configuration: { ...state.current.campaign.configuration, starting_gold: startingGold }, identity: { ...state.current.campaign.identity, mercenary_variant: variant.id } } } });
+        }
+        case "resolveCreationDecision": {
+          const result = resolveCreationDecision(state.current, knowledge, { decision_id: String(input["decision_id"] ?? ""), roll: Number(input["roll"]) });
+          if (!result.ok) return error("rejected", result.message, { reason: result.reason, ...(result.subject_ids ? { subject_ids: result.subject_ids } : {}) });
+          return applyResult(result);
+        }
+        case "withdrawLeftTableMembers": {
+          const result = withdrawLeftTableMembers(state.current, input as never);
+          if (!result.ok) return error("rejected", result.message, { reason: result.reason, ...(result.subject_ids ? { subject_ids: result.subject_ids } : {}) });
+          return applyResult(result);
+        }
+        case "succeedLeader": {
+          const result = succeedLeader(state.current, knowledge, input as never);
+          if (!result.ok) return error("rejected", result.message, { reason: result.reason, ...(result.subject_ids ? { subject_ids: result.subject_ids } : {}) });
+          return applyResult(result);
+        }
+        case "buyMutation": {
+          const result = buyMutation(state.current, knowledge, input as never);
+          if (!result.ok) return error("rejected", result.message, { reason: result.reason, ...(result.subject_ids ? { subject_ids: result.subject_ids } : {}) });
+          return applyResult(result);
         }
         case "setManualSkill": {
           const result = setManualSkill(state.current, knowledge, input as never);
@@ -392,7 +422,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           return applyResult({ ok: true, state: result.document });
         }
         case "promoteHenchman": {
-          const result = promoteHenchman(state.current, input as never);
+          const result = promoteHenchman(state.current, knowledge, input as never);
           if (!result.ok) return error("rejected", result.message);
           return applyResult({ ok: true, state: result.document });
         }
@@ -430,7 +460,7 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         }
         case "recruitBandProfile": {
           const result = recruitBandProfile(state.current, knowledge, input as never);
-          if (!result.ok) return error("rejected", result.message);
+          if (!result.ok) return error("rejected", result.message, { ...(result.reason ? { reason: result.reason } : { reason: "recruit_rejected" }), ...(result.subject_ids ? { subject_ids: result.subject_ids } : {}) });
           return applyResult({ ok: true, state: result.document });
         }
         case "dismissRecruit": {
@@ -533,15 +563,15 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const catalogueItems = Array.isArray(catalogue?.["items"]) ? catalogue["items"] as Readonly<Record<string,unknown>>[] : [];
           const catalogueEntry = catalogueItems.find((row) => row["item_id"] === itemId);
           if (!catalogueEntry) return error("rejected", "This item is not listed at the Trading Post.");
-          const availability=(catalogueEntry["availability"]??{}) as Readonly<Record<string,unknown>>;
-          if (availability["kind"]!=="common") return error("rejected", "Rare items must be obtained through a successful rare search.");
           const price=(catalogueEntry["price"]??{}) as Readonly<Record<string,unknown>>, base=Number(price["base_gc"]??0), variable=(price["optional_variable_cost"]??{}) as Readonly<Record<string,unknown>>, dice=(variable["dice"]??{}) as Readonly<Record<string,unknown>>, count=Number(dice["count"]??0), sides=Number(dice["sides"]??0), multiplier=Number(variable["multiplier"]??1);
           if (!Number.isInteger(base)||base<0) return error("rejected", "This Trading Post item has no supported price.");
           if (count&&sides) { const rolled=(unitPrice-base)/multiplier; if(!Number.isInteger(rolled)||rolled<count||rolled>count*sides)return error("rejected", "The variable price does not match this item's dice range."); }
           else if(unitPrice!==base) return error("rejected", `Invalid item price: expected ${base} gc.`);
           const restrictions = Array.isArray(catalogueEntry?.["restrictions"]) ? catalogueEntry["restrictions"] as Readonly<Record<string,unknown>>[] : [];
           const groups=new Set(((knowledge as typeof knowledge & { list?(kind:string):readonly Readonly<Record<string,unknown>>[] }).list?.("warband_group")??[]).filter((row)=>Array.isArray(row["band_ids"])&&(row["band_ids"] as unknown[]).map(String).includes(state.current!.campaign.identity.band_id)).map((row)=>String(row["id"]??"")));
-          for(const restriction of restrictions) { const bandIds=(restriction["band_ids"]??[]) as unknown[], groupIds=(restriction["groups"]??[]) as unknown[],matches=bandIds.map(String).includes(state.current.campaign.identity.band_id)||groupIds.map(String).some((id)=>groups.has(id)); if(restriction["type"]==="warband_only"&&!matches)return error("rejected", "This item is not available to this warband."); if(restriction["type"]==="warband_forbidden"&&matches)return error("rejected", "This item is forbidden to this warband."); if(restriction["type"]==="condition")return error("rejected", String(restriction["note"]??"This item cannot be purchased at the Trading Post.")); }
+          const marketItem=knowledge.queryKnowledge({id:{kind:"item_id",value:itemId}});
+          const availabilityIssue=marketAvailabilityIssueFor({offer:catalogueEntry,band_id:state.current.campaign.identity.band_id,groups:[...groups],item_name:marketItem.ok?String(marketItem.record.names["en"]??itemId):itemId});
+          if(availabilityIssue)return error("rejected", availabilityIssue.message, { reason: availabilityIssue.code });
           const inferredOne = restrictions.some((row) => row["type"] === "profile_only" && String(row["note"] ?? "").toLocaleLowerCase().startsWith("one "));
           const declaredLimit = restrictions.find((row) => row["type"] === "limit_per_warband")?.["value"];
           const limit = Number.isInteger(declaredLimit) ? Number(declaredLimit) : inferredOne ? 1 : null;

@@ -87,7 +87,7 @@ function pendingRow(document: CampaignDocument, warriorId: string) {
 
 describe("promoteHenchman (desktop promote_henchman)", () => {
   it("splits the group and preserves the promoted member's state", () => {
-    const result = promoteHenchman(makePromotion(2), { warrior_id: "novices", threshold: null, member_name: "Novice Olaf" });
+    const result = promoteHenchman(makePromotion(2), reader(), { warrior_id: "novices", threshold: null, member_name: "Novice Olaf" });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     const hero = result.document.campaign.warriors.find((w) => w.kind === "hero" && w.id.includes("promoted"))!;
@@ -108,7 +108,7 @@ describe("promoteHenchman (desktop promote_henchman)", () => {
   });
 
   it("replaces a single-model group with the Hero", () => {
-    const result = promoteHenchman(makePromotion(1), { warrior_id: "novices", threshold: null });
+    const result = promoteHenchman(makePromotion(1), reader(), { warrior_id: "novices", threshold: null });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.document.campaign.warriors.some((w) => w.id === "novices")).toBe(false);
@@ -116,7 +116,7 @@ describe("promoteHenchman (desktop promote_henchman)", () => {
   });
 
   it("the remaining group rerolls results 10-12 after a promotion", () => {
-    const promoted = promoteHenchman(makePromotion(2), { warrior_id: "novices", threshold: null });
+    const promoted = promoteHenchman(makePromotion(2), reader(), { warrior_id: "novices", threshold: null });
     expect(promoted.ok).toBe(true);
     if (!promoted.ok) return;
     const result = resolveAdvanceRoll(promoted.document, reader(), { warrior_id: "novices", threshold: null, roll_total: 11 });
@@ -129,7 +129,7 @@ describe("promoteHenchman (desktop promote_henchman)", () => {
 
   it("at the hero limit reopens the advance for a reroll instead of promoting", () => {
     // heroLimit 1 with the existing Matriarch Hero → already at the cap.
-    const result = promoteHenchman(makePromotion(2, 1), { warrior_id: "novices", threshold: null, member_name: "Novice Olaf" });
+    const result = promoteHenchman(makePromotion(2, 1), reader(), { warrior_id: "novices", threshold: null, member_name: "Novice Olaf" });
     expect(result.ok).toBe(true);
     if (!result.ok) return;
     expect(result.document.campaign.warriors.some((w) => w.name === "Novice Olaf")).toBe(false);
@@ -143,7 +143,7 @@ describe("setPromotionSkillTables (desktop set_promotion_skill_tables)", () => {
   });
 
   it("accepts exactly two available Hero skill lists and clears the setup", () => {
-    const promoted = promoteHenchman(makePromotion(2), { warrior_id: "novices", threshold: null });
+    const promoted = promoteHenchman(makePromotion(2), reader(), { warrior_id: "novices", threshold: null });
     expect(promoted.ok).toBe(true);
     if (!promoted.ok) return;
     const hero = promoted.document.campaign.warriors.find((w) => w.kind === "hero" && w.id.includes("promoted"))!;
@@ -156,7 +156,7 @@ describe("setPromotionSkillTables (desktop set_promotion_skill_tables)", () => {
   });
 
   it("commits the Hero's stat advance once the two skill lists are chosen", () => {
-    const promoted = promoteHenchman(makePromotion(2), { warrior_id: "novices", threshold: null, member_name: "Novice Olaf" });
+    const promoted = promoteHenchman(makePromotion(2), reader(), { warrior_id: "novices", threshold: null, member_name: "Novice Olaf" });
     expect(promoted.ok).toBe(true);
     if (!promoted.ok) return;
     const hero = promoted.document.campaign.warriors.find((w) => w.kind === "hero" && w.id.includes("promoted"))!;
@@ -177,7 +177,7 @@ describe("setPromotionSkillTables (desktop set_promotion_skill_tables)", () => {
   });
 
   it("rejects lists outside the warband Hero tables or the wrong count", () => {
-    const promoted = promoteHenchman(makePromotion(2), { warrior_id: "novices", threshold: null });
+    const promoted = promoteHenchman(makePromotion(2), reader(), { warrior_id: "novices", threshold: null });
     expect(promoted.ok).toBe(true);
     if (!promoted.ok) return;
     const hero = promoted.document.campaign.warriors.find((w) => w.kind === "hero" && w.id.includes("promoted"))!;

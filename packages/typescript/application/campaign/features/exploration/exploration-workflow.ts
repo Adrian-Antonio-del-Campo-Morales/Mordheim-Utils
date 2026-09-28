@@ -145,6 +145,18 @@ function magicalArtefacts(reader: CatalogueReader) {
     ] as OpenPayload | undefined
   )?.["results"] ?? []) as OpenPayload[];
 }
+/**
+ * Stable ids of one magical-artefact row: the canonical item id when the
+ * catalogue publishes it (`Att'la's Plate Mail` is `runic_attlas_plate_mail`),
+ * plus the row-derived id older campaigns persisted. Both are checked so a
+ * campaign saved before the canonical id existed cannot receive the unique
+ * artefact twice.
+ */
+function magicalArtefactIds(row: OpenPayload): readonly string[] {
+  const canonical = String(row["item_id"] ?? "").trim();
+  const legacy = `magical_artefact.${String(row["id"] ?? "").replace("campaign.magical-artefact.", "")}`;
+  return canonical && canonical !== legacy ? [canonical, legacy] : [legacy];
+}
 function eligibleHiredSwords(
   document: CampaignDocument,
   reader: CatalogueReader,
@@ -691,19 +703,14 @@ function processQueue(
     }
     if (kind === "magical_artefact_table") {
       const artefacts = magicalArtefacts(reader),
-        identifiers = new Set(
-          artefacts.map(
-            (row) =>
-              `magical_artefact.${String(row["id"] ?? "").replace("campaign.magical-artefact.", "")}`,
-          ),
-        ),
+        identifiers = artefacts.map((row) => magicalArtefactIds(row)),
         unavailable = new Set([
           ...uniqueRewardIds,
           ...inventory.filter((row) => row.owned > 0).map((row) => row.id),
         ]);
       if (
-        identifiers.size &&
-        [...identifiers].every((id) => unavailable.has(id))
+        identifiers.length &&
+        identifiers.every((ids) => ids.some((id) => unavailable.has(id)))
       ) {
         current = {
           ...current,
@@ -1515,11 +1522,13 @@ export function continueExploration(
       if (!artefact)
         messages.push(`Magical artefact roll ${roll} has no result`);
       else {
-        const id = `magical_artefact.${String(artefact["id"] ?? "").replace("campaign.magical-artefact.", "")}`;
+        const ids = magicalArtefactIds(artefact);
+        const id = ids[0];
+        const recorded = document.campaign.unique_reward_ids ?? [];
         if (
-          document.campaign.unique_reward_ids?.includes(id) ||
+          ids.some((candidate) => recorded.includes(candidate)) ||
           document.campaign.inventory.some(
-            (row) => row.id === id && row.owned > 0,
+            (row) => ids.includes(row.id) && row.owned > 0,
           )
         ) {
           messages.push(

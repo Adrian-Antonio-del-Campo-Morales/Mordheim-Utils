@@ -14,6 +14,7 @@ import type { KnowledgeReader } from "./ports";
 import type { TimelineState } from "./state";
 import { rejected } from "./rejections";
 import { rosterIssuesOf } from "../construction";
+import { owedCreationDecisions, type CreationDecisionReader } from "./creation-decisions";
 import {
   cloneDocument,
   draftIsLegal,
@@ -118,6 +119,17 @@ export function commitInitialWarband(
       issue.code === "band_unknown",
     );
     if (fatal) return rejected("limit_violated", fatal.message);
+    // A printed creation roll the rules require is part of the warband, not an
+    // optional flourish: the draft cannot commit while one is still owed.
+    const owed = owedCreationDecisions(document, knowledge as CreationDecisionReader);
+    if (owed.length) {
+      return {
+        ok: false,
+        reason: "prerequisite_missing",
+        message: `Record the required creation roll first: ${owed.map((decision) => decision.name).join(", ")}.`,
+        subject_ids: owed.map((decision) => decision.id),
+      };
+    }
   }
 
   const started = new Date().toISOString().slice(0, 10);

@@ -68,6 +68,174 @@ veteran_availability:
     printed_page: 0
     section: Tools / Post-battle / Check available veterans
     url: https://mordheimer.net/docs/tools
+# Rolls the printed rules require while the warband is being created. The
+# printed outcome of each dice interval is the rule's own wording; an
+# application records the dice result and the outcome id, never a translated
+# sentence.
+creation_decisions:
+- id: campaign.creation.family-heirloom
+  band_id: adventurers-kaz
+  rule_id: imperial-noble--family-heirloom
+  profile_ids:
+  - imperial-noble
+  name: Family Heirloom
+  name_i18n:
+    es: Reliquia Familiar
+  required: true
+  roll:
+    dice:
+      count: 1
+      sides: 6
+  outcomes:
+  - when:
+      min: 1
+      max: 2
+    result_id: psychology-reroll
+    result: the Noble may re-roll the first failed Psychology test during a battle
+    result_i18n:
+      es: el Noble puede repetir la primera prueba de Psicología fallida durante una
+        batalla
+  - when:
+      min: 3
+      max: 4
+    result_id: fear-orcs-goblins-skaven
+    result: the Noble causes Fear in Orcs & Goblins and Skaven
+    result_i18n:
+      es: el Noble causa Miedo a Orcos y Goblins y Skaven
+  - when:
+      min: 5
+      max: 6
+    result_id: reroll-one-die
+    result: the Noble may re-roll one die during a battle
+    result_i18n:
+      es: el Noble puede repetir un dado durante una batalla
+  note: >-
+    Transcription of the printed rule (heroes / 0-1 Imperial Noble / Special Rules / Family Heirloom):
+    the creation D6 is campaign state; what each result does during a battle is a battle rule.
+  note_i18n:
+    es: >-
+      Transcripción de la regla impresa (héroes / 0-1 Noble Imperial / Reglas especiales /
+      Reliquia Familiar): el D6 de creación es estado de campaña; lo que hace cada resultado
+      durante una batalla es una regla de batalla.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 23
+    section: heroes / 0-1 Imperial Noble / Special Rules / Family Heirloom
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+# Roster-lifecycle clauses the printed band rules impose on a warband outside
+# construction. Each one names its band, its rule, the trigger the campaign
+# already observes and the profiles it operates on, so no consumer reads the rule
+# prose. `operation` fixes what happens: `require_member` blocks recruiting
+# others while the named profile is missing from the roster; `remove_member`
+# takes the named profile out of the roster when the trigger fires.
+lifecycle_clauses:
+- id: campaign.lifecycle.dame-of-the-mare-succession
+  band_id: order-of-the-mare-web
+  rule_id: band--dame-of-the-mare-succession
+  trigger: recruitment
+  operation: require_member
+  profile_ids:
+  - dame-of-the-mare
+  name: Dame of the Mare Succession
+  name_i18n:
+    es: Sucesión de la Dama de la Yegua
+  effect: >-
+    Your warband must include a single Dame of the Mare. If she is removed you must recruit a new one
+    without delay (no other warriors may be recruited before you do).
+  effect_i18n:
+    es: >-
+      Tu banda debe incluir una única Dama de la Yegua. Si es eliminada debes reclutar una nueva sin
+      demora (no puedes reclutar otros guerreros antes de hacerlo).
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Choice of warriors / Dame of the Mare
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+- id: campaign.lifecycle.skaven-slaves-doomed
+  band_id: skaven-of-clan-pestilens-lus
+  rule_id: skaven-slaves--doomed
+  trigger: henchman_promotion
+  operation: remove_member
+  profile_ids:
+  - skaven-slaves
+  name: Doomed
+  name_i18n:
+    es: Condenado
+  effect: >-
+    If a Skaven Slave becomes a hero (rolls "the lad's got talent"), he is quickly executed by the
+    leader who fears an uprising, regardless of whether the warband has its full quota of heroes.
+    Remove the unfortunate Slave from the roster.
+  effect_i18n:
+    es: >-
+      Si un Esclavo Skaven se convierte en héroe (saca "este chico tiene talento"), el líder lo
+      ejecuta rápidamente por miedo a un levantamiento, sin importar si la banda tiene su cupo de
+      héroes completo. Retira al desafortunado Esclavo de la plantilla.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 5
+    section: 0-5 Skaven Slaves / Special Rules / Doomed
+    url: https://broheim.net/downloads/warbands/supplement/lustria/clan-pestilens.pdf
+# Leader-succession clauses of the printed band rules. Each one names the band,
+# its rule, the leader profile (the printed `--leader` profile) and the profiles
+# the rule allows to take over, so no consumer deduces leadership from a name.
+# The core-book consequence the rules refer to is not published; the campaign
+# closes the boundary at the published data (see T10 §10).
+succession_clauses:
+- id: campaign.succession.cathayan-pirates
+  band_id: pirates-of-the-cathayan-sea-sar
+  rule_id: band--succession
+  leader_profile_ids:
+  - disgraced-warlord
+  successor_profile_ids:
+  - shanghaires
+  name: Succession (Cathayan Pirates)
+  name_i18n:
+    es: Sucesión (Piratas de Cathay)
+  effect: >-
+    If the Disgraced Warlord is killed, one of the Shanghai'ers will take over in the same manner as
+    a Champion taking over for a Mercenary warband.
+  effect_i18n:
+    es: >-
+      Si el Señor de la Guerra Degradado muere, uno de los Shanghaiers tomará el mando de la misma
+      forma que un Campeón en una banda mercenaria.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 1
+    section: Succession
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  - manual: broheim.net
+    printed_page: 3
+    section: Heroes / 1 Disgraced Warlord / Special Rules
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+# Advancement-time skill-list grants: a profile the printed rule widens the skill
+# tables of when a specific advance is rolled. `trigger` is an advance the
+# campaign already observes; `skill_lists` are the granted tables.
+advance_access_clauses:
+- id: campaign.advance-access.axe-hurlers-born-marksmen
+  band_id: dwarf-slayer-cult-web
+  rule_id: axe-hurlers--born-marksmen
+  trigger: that-lads-got-talent
+  profile_ids:
+  - axe-hurlers
+  skill_lists:
+  - shooting
+  name: Born Marksmen
+  name_i18n:
+    es: Tiradores Natos
+  effect: >-
+    If an Axe Hurler rolls a "That Lad's Got Talent" as an advancement, he may always choose
+    Shooting skills as one of his two skill list choices. He may do this even if there are no heroes
+    with Shooting Skills in the warband.
+  effect_i18n:
+    es: >-
+      Si un Lanzahachas saca "¡Ese Chico Tiene Talento!" como mejora, siempre puede elegir
+      habilidades de Disparo como una de sus dos opciones de lista de habilidades. Puede hacerlo
+      incluso si no hay héroes con habilidades de Disparo en la banda.
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: 0-5 Axe Hurlers / Special Rules / Born Marksmen
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/dwarf-slayer-cult
 effect_ids:
 - campaign.recruitment.hire
 - campaign.recruitment.hire-veteran

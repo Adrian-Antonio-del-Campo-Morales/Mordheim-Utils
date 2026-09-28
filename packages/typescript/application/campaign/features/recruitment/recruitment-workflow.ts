@@ -1,8 +1,10 @@
 import type { CampaignDocument, KnowledgeReader, OpenPayload } from "../../../../domain/campaign/index";
 import { currentState, effectiveMaximumModels, heroCount, memberCount, uniqueWarriorName, withCampaign } from "../../../../domain/campaign/kernel/document";
+import { recruitmentGateIssueFor } from "../../../../domain/campaign/kernel/lifecycle";
 
 interface CatalogueReader extends KnowledgeReader { campaignSection?(section:string):Readonly<Record<string,unknown>> }
-type Result={ok:true;document:CampaignDocument}|{ok:false;message:string};
+type Failure={ok:false;message:string;reason?:string;subject_ids?:readonly string[]};
+type Result={ok:true;document:CampaignDocument}|Failure;
 
 /** Desktop `add_member_to_group`: hire one veteran into an existing henchman group. */
 export function recruitGroupMember(document:CampaignDocument,reader:CatalogueReader,input:{warrior_id:string}):Result {
@@ -67,6 +69,11 @@ export function recruitBandProfile(document:CampaignDocument,reader:KnowledgeRea
   if(taken+quantity>maximum||quantity>groupMaximum)return{ok:false,message:"Roster or group limit reached for this recruit."};
   if(memberCount(document.campaign.warriors)+quantity>effectiveMaximumModels(document.campaign))return{ok:false,message:`Cannot exceed ${effectiveMaximumModels(document.campaign)} warband members.`};
   if(kind==="hero"&&heroCount(document.campaign.warriors)+1>document.campaign.configuration.hero_limit)return{ok:false,message:`Cannot exceed ${document.campaign.configuration.hero_limit} heroes.`};
+  // T10: a printed lifecycle clause can require a member the roster lost before
+  // anything else is recruited; the profiles the clause names are exactly the
+  // ones it lets through, so recruiting the replacement discharges it.
+  const gate=recruitmentGateIssueFor(document,reader,input.profile_id);
+  if(gate)return{ok:false,message:gate.message,reason:gate.code,subject_ids:[gate.clause_id,...gate.profile_ids]};
   const cost=Number(data["cost"]??0)*quantity, gold=(currentState(document)?.gold??0)+(post.gold_delta??0); if(cost>gold)return{ok:false,message:`Not enough gold: ${cost} gc needed, ${gold} available.`};
   const characteristics=(data["characteristics"]??{}) as OpenPayload, stats=Object.fromEntries(Object.entries(characteristics).filter(([,value])=>typeof value==="number")) as Record<string,number>;
   const fixed=Array.isArray(data["fixed_equipment"])?data["fixed_equipment"].filter((id):id is string=>typeof id==="string"):[];

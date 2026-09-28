@@ -57,8 +57,12 @@ const OVERRIDE = process.env.MORDHEIM_KNOWLEDGE_ARTEFACT;
 const CANDIDATES = OVERRIDE
   ? [OVERRIDE]
   : [
-      join(REPO_ROOT, "outputs", "web-public", "knowledge", "knowledge-web.json"),
+      // The build output first: the published `outputs/` copy is still the
+      // pre-T09 artefact T12 regenerates, and T10 verified these blockers
+      // against the freshly generated one (`MORDHEIM_KNOWLEDGE_ARTEFACT`
+      // overrides both).
       join(REPO_ROOT, "build", "generated", "knowledge-web", "knowledge-web.json"),
+      join(REPO_ROOT, "outputs", "web-public", "knowledge", "knowledge-web.json"),
     ];
 const ARTEFACT_PATH = CANDIDATES.find((path) => existsSync(path));
 

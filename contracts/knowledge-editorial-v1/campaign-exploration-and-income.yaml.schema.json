@@ -226,6 +226,10 @@
                 "description": "Name of the artefact.",
                 "$ref": "defs.schema.json#/$defs/display_text"
               },
+              "item_id": {
+                "description": "Canonical item the artefact is, when the promoted item catalogue carries it. A consumer grants the canonical id instead of synthesising one from this row.",
+                "$ref": "defs.schema.json#/$defs/id"
+              },
               "result_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
               "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
               "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" }
