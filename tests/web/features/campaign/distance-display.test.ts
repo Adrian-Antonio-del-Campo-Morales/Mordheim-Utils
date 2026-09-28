@@ -1,8 +1,8 @@
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { adaptCharacteristicValue, adaptDistanceText } from "@app/rules/distance-display";
+import { readArtefactDocument } from "../../../support/kb-artefact";
 
 const FIXED_CASES = [
   ["0.4\"", "1 cm"],
@@ -71,8 +71,14 @@ describe("adaptDistanceText", () => {
   });
 
   it("finds no unadapted imperial distances in KB effect text", () => {
-    const artefact = JSON.parse(
-      readFileSync(resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"), "utf-8"),
+    // The published artefact is split (T12 fase D): the equipment rows and the
+    // campaign sections travel in the deferred catalogue. This sweep must see
+    // their effect text, so it merges that fragment — the one family Fase D
+    // moved out of the document. The prose and presentation artifacts were
+    // always separate URLs (HEAD included) and are covered by their own suites.
+    const artefact = readArtefactDocument(
+      resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"),
+      { prose: false, displayText: false },
     ) as unknown;
     const texts = collectEffectTexts(artefact);
     const failures = texts

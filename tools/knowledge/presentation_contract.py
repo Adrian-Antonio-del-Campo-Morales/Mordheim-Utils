@@ -10,14 +10,29 @@ REQUIRED_FIELDS = {kind: ("name",) for kind in (
     "hireling", "scenario", "lore", "mutation", "injury",
 )}
 
+# Campaign catalogue rows the interface addresses by their own stable id
+# instead of by their position in the artefact. Keyed by the path of the array
+# that holds them, so a reader resolves a decision, clause or grant published
+# under a new id without any consumer casting a raw field into a display value.
+CAMPAIGN_ROW_KINDS = {
+    ("campaign", "recruitment-and-veterans", "creation_decisions"): "creation-decision",
+    ("campaign", "recruitment-and-veterans", "lifecycle_clauses"): "lifecycle-clause",
+    ("campaign", "recruitment-and-veterans", "succession_clauses"): "succession-clause",
+    ("campaign", "recruitment-and-veterans", "advance_access_clauses"): "advance-access-clause",
+    ("campaign", "mutations", "grant_rules"): "mutation-grant",
+}
+# A printed creation roll publishes one outcome per interval; the outcome is
+# addressed by the decision that owns it plus its own stable result id.
+CREATION_OUTCOME_PATH = ("campaign", "recruitment-and-veterans", "creation_decisions")
+
 
 def build_presentation_entries(artefact: dict) -> list[dict]:
     entries: dict[tuple, dict] = {}
 
-    def visit(value: object, path: tuple[str, ...], owner: dict) -> None:
+    def visit(value: object, path: tuple[str, ...], owner: dict, parent_id: str = "") -> None:
         if isinstance(value, list):
             for index, row in enumerate(value):
-                visit(row, (*path, str(index)), owner)
+                visit(row, (*path, str(index)), owner, parent_id)
             return
         if not isinstance(value, dict):
             return
@@ -40,6 +55,14 @@ def build_presentation_entries(artefact: dict) -> list[dict]:
                     kind = "injury"
                 if section == "serious-injuries" and len(path) == 4 and value.get("id"):
                     context["tableId"] = str(value["id"])
+        # Campaign catalogue rows the interface addresses by their own stable id.
+        campaign_kind = CAMPAIGN_ROW_KINDS.get(path[:-1]) if len(path) == 4 else None
+        if campaign_kind:
+            kind = campaign_kind
+        decision_id = str(value.get("id") or "") if campaign_kind == "creation-decision" else parent_id
+        if (len(path) == 6 and path[:3] == CREATION_OUTCOME_PATH and path[4] == "outcomes"
+                and isinstance(value.get("result_id"), str)):
+            kind = "creation-outcome"
         fields = {}
         for field in FIELDS:
             locales = {}
@@ -59,11 +82,19 @@ def build_presentation_entries(artefact: dict) -> list[dict]:
                 fields[field] = locales
         if "name" not in fields and "result" in fields:
             fields["name"] = fields["result"]
-        if value.get("id") or value.get("item_id"):
+        if value.get("id") or value.get("result_id") or value.get("item_id"):
             for required in REQUIRED_FIELDS.get(kind, ()):
                 fields.setdefault(required, {locale: TODO_TRANSLATE for locale in ("en", "es")})
         if fields:
-            identity = "/".join(path) if kind == "record" else str(value.get("id") or value.get("item_id") or "/".join(path))
+            if kind == "creation-outcome":
+                # The printed result of one interval is addressed by the decision
+                # that owns it plus its own stable result id, never by the array
+                # position the catalogue happens to publish it at.
+                identity = f"{decision_id}/{value['result_id']}"
+            elif kind == "record":
+                identity = "/".join(path)
+            else:
+                identity = str(value.get("id") or value.get("item_id") or "/".join(path))
             if kind == "rule" and identity.startswith(("skill.", "spell.")):
                 kind = "skill"
             profiles = (value.get("applies_to") or {}).get("profile_ids", []) if isinstance(value.get("applies_to"), dict) else []
@@ -84,7 +115,7 @@ def build_presentation_entries(artefact: dict) -> list[dict]:
                     entries[tuple(sorted(item_ref.items()))] = {**entry, "ref": item_ref}
         for key, child in value.items():
             if key not in {"names", "source_refs", "display_names", "display_effects"} and not key.endswith("_i18n") and not (key == "effects" and isinstance(child, dict)):
-                visit(child, (*path, key), context)
+                visit(child, (*path, key), context, decision_id)
 
     visit(artefact, (), {})
     return [entries[key] for key in sorted(entries)]

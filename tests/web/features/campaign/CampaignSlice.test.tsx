@@ -5,6 +5,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import { readArtefactReader } from "../../../support/kb-artefact";
 
 import { createService } from "@src/features/campaign/default-deps";
 import { CampaignAppProvider } from "@src/features/campaign/useCampaignApp";
@@ -52,8 +53,7 @@ describe("CampaignSlice", () => {
   });
 
   it("keeps the campaign timeline beside the initial-warband draft", async () => {
-    const raw = JSON.parse(readFileSync(resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"), "utf-8"));
-    const knowledge = ArtefactKnowledgeReader.from(raw);
+    const knowledge = readArtefactReader(resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"));
     const service = createService(knowledge);
     await service.createCampaign({
       band_id: "sisters-of-sigmar",

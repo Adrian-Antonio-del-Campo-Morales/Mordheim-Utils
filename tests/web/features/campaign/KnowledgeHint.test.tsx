@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import { readArtefactReader } from "../../../support/kb-artefact";
 
 import { KnowledgeHint } from "@src/features/campaign/KnowledgeHint";
 import { knowledgeName, readableValue } from "@src/features/campaign/displayText";
@@ -17,11 +17,9 @@ const knowledge = ArtefactKnowledgeReader.from({
 });
 
 function loadReader() {
-  const artefactPath = resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json");
-  const artefact = JSON.parse(readFileSync(artefactPath, "utf-8"));
-  artefact.rules_prose = JSON.parse(readFileSync(resolve(artefactPath, "..", artefact.rules_prose_url), "utf-8"));
-  Object.assign(artefact, JSON.parse(readFileSync(resolve(artefactPath, "..", artefact.display_text_url), "utf-8")));
-  return ArtefactKnowledgeReader.from(artefact);
+  // T12 fase D: the published artefact defers the campaign catalogue; the
+  // shared helper merges every fragment the directory publishes.
+  return readArtefactReader(resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"));
 }
 
 describe("KnowledgeHint", () => {

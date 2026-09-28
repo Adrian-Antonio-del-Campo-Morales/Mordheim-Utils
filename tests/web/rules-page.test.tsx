@@ -6,7 +6,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ProductApp } from "@src/ProductApp";
 import { loadKnowledge } from "@src/features/campaign/default-deps";
 
-vi.mock("@src/features/campaign/default-deps", () => ({
+// T12 fase D: only the composition functions are stubbed; the real
+// `ensureCampaignCatalogue` is kept so the deferred-catalogue gate runs as in
+// the product.
+vi.mock("@src/features/campaign/default-deps", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@src/features/campaign/default-deps")>()),
   createService: vi.fn(),
   loadKnowledge: vi.fn(),
 }));

@@ -49,6 +49,10 @@ DEFAULT_RULESET = "mordheim"
 OUTPUT_RELATIVE = Path("outputs") / "web-public" / "knowledge" / "knowledge-web.json"
 RULES_PROSE_FILENAME = "rules-prose.json"
 DISPLAY_TEXT_FILENAME = "display-text.json"
+#: Deferred campaign catalogue (items + campaign sections). Not part of the
+#: initial download: the browser fetches it on demand through the reader's
+#: `ensureCatalogue("items" | "campaign")` operation (see T12 fase D).
+CATALOGUE_FILENAME = "knowledge-catalogue.json"
 
 #: Item kinds consumed by the browser Campaign Manager.
 INCLUDED_ITEM_KINDS = frozenset({
@@ -688,13 +692,31 @@ def main(argv: list[str] | None = None) -> int:
     artefact["rules_prose_url"] = RULES_PROSE_FILENAME
     artefact["display_text_url"] = DISPLAY_TEXT_FILENAME
     artefact["display_text_digest"] = hashlib.sha256(json.dumps(display_text, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
+    # T12 fase D: the campaign catalogue (equipment catalogue + campaign
+    # sections) is published as a deferred fragment. The initial document keeps
+    # only the core needed to open the application and choose a warband: bands,
+    # profiles, skills, mechanics, prose and the presentation index. The
+    # fragment keeps the same ids and row shapes, so a reader that loads it
+    # rebuilds exactly the same maps as before, and the digest is computed over
+    # the fragment document exactly as serialized here.
+    # `indexes` stays whole in the initial document: it is a single top-level
+    # object (a few kB) that consumers read as a unit, and keeping it intact
+    # avoids a key collision when a loader merges the fragment back.
+    catalogue = {
+        "items": artefact.pop("items"),
+        "campaign": artefact.pop("campaign"),
+    }
+    artefact["catalogue_url"] = CATALOGUE_FILENAME
+    artefact["catalogue_digest"] = hashlib.sha256(json.dumps(catalogue, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
     text = json.dumps(artefact, ensure_ascii=False, separators=(",", ":")) + "\n"
     rules_text = json.dumps(rules_prose, ensure_ascii=False, separators=(",", ":")) + "\n"
     display_text_text = json.dumps(display_text, ensure_ascii=False, separators=(",", ":")) + "\n"
+    catalogue_text = json.dumps(catalogue, ensure_ascii=False, separators=(",", ":")) + "\n"
     rules_output = output.with_name(RULES_PROSE_FILENAME)
     display_text_output = output.with_name(DISPLAY_TEXT_FILENAME)
+    catalogue_output = output.with_name(CATALOGUE_FILENAME)
     if args.check:
-        for path, expected in ((output, text), (rules_output, rules_text), (display_text_output, display_text_text)):
+        for path, expected in ((output, text), (rules_output, rules_text), (display_text_output, display_text_text), (catalogue_output, catalogue_text)):
             if not path.exists():
                 print(f"check failed: {path} does not exist", file=sys.stderr)
                 return 1
@@ -707,10 +729,13 @@ def main(argv: list[str] | None = None) -> int:
     output.write_text(text, encoding="utf-8")
     rules_output.write_text(rules_text, encoding="utf-8")
     display_text_output.write_text(display_text_text, encoding="utf-8")
+    catalogue_output.write_text(catalogue_text, encoding="utf-8")
     size_kb = output.stat().st_size / 1024
-    print(f"wrote {output}, {rules_output.name}, and {display_text_output.name} ({size_kb:.0f} KB main, "
+    catalogue_kb = catalogue_output.stat().st_size / 1024
+    print(f"wrote {output}, {rules_output.name}, {display_text_output.name} and {catalogue_output.name} "
+          f"({size_kb:.0f} KB initial, {catalogue_kb:.0f} KB deferred catalogue, "
           f"{len(artefact['bands'])} bands, {len(artefact['profiles'])} profiles, "
-          f"{len(artefact['items'])} items, {len(artefact['skills'])} skills)")
+          f"{len(catalogue['items'])} deferred items, {len(artefact['skills'])} skills)")
     return 0
 
 

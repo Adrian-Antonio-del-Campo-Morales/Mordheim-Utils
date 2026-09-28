@@ -93,6 +93,13 @@ interface CampaignMaps {
   racialMaximums: Map<string, ArtefactRow>;
 };
 
+/**
+ * Families published by the deferred campaign catalogue (T12 fase D): the
+ * equipment catalogue and the campaign sections. Both travel in one fragment;
+ * `ensureCatalogue` names the family the calling flow actually needs.
+ */
+export type CatalogueKind = "items" | "campaign";
+
 export class KnowledgeReaderError extends Error {
   constructor(message: string) {
     super(message);
@@ -162,28 +169,47 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   private readonly presentationEntries: readonly PresentationEntry[];
   private readonly bands: Map<string, ArtefactRow>;
   private readonly profiles: Map<string, ArtefactRow>;
-  private readonly items: Map<string, ArtefactRow>;
+  private items: Map<string, ArtefactRow>;
   private readonly skills: Map<string, ArtefactRow>;
-  private readonly campaignMaps: CampaignMaps;
-  private readonly campaignRaw: Readonly<Record<string, unknown>>;
+  private campaignMaps: CampaignMaps;
+  private campaignRaw: Readonly<Record<string, unknown>>;
   private readonly rulesProse: Readonly<Record<string, readonly ArtefactRow[]>>;
   private readonly weaponHands: Readonly<Record<string, number>>;
+  /** The assembled document; deferred families are merged back into it. */
+  private document: KnowledgeArtefact;
+  private readonly fetcher: typeof fetch;
+  private readonly baseUrl: string | null;
+  private readonly catalogueUrl: string | null;
+  private readonly catalogueDigest: string | null;
+  /** Families the initial document does not publish; see `ensureCatalogue`. */
+  private readonly deferredFamilies = new Set<CatalogueKind>();
+  private readonly loadedFamilies = new Set<CatalogueKind>();
+  /** Single in-flight load: concurrent ensure calls share one request. */
+  private catalogueLoad: Promise<void> | null = null;
 
-  private constructor(artefact: KnowledgeArtefact) {
+  private constructor(
+    artefact: KnowledgeArtefact,
+    origin: { url: string; fetchFn: typeof fetch } | null = null,
+  ) {
+    this.document = artefact;
+    this.fetcher = origin?.fetchFn ?? fetch;
+    this.baseUrl = origin?.url ?? null;
+    this.catalogueUrl = typeof artefact.catalogue_url === "string" && artefact.catalogue_url ? artefact.catalogue_url : null;
+    this.catalogueDigest = typeof artefact.catalogue_digest === "string" && artefact.catalogue_digest ? artefact.catalogue_digest : null;
+    if (this.catalogueUrl) {
+      if (!Array.isArray(artefact.items)) this.deferredFamilies.add("items");
+      if (artefact.campaign === undefined) this.deferredFamilies.add("campaign");
+    }
     this.presentationEntries = presentationEntries(artefact);
     this.presentation = new PresentationIndex(this.presentationEntries);
-    for (const entry of this.presentationEntries) {
-      let row: unknown = artefact;
-      for (const segment of entry.source.split("/")) {
-        row = row && typeof row === "object" ? (row as Record<string, unknown>)[segment] : undefined;
-      }
-      if (row && typeof row === "object") this.presentationRows.set(row, entry.ref);
-    }
+    this.bindPresentationRows();
     this.bands = ArtefactKnowledgeReader.indexById(artefact.bands, "id");
     this.profiles = ArtefactKnowledgeReader.indexProfiles(artefact.profiles);
-    this.items = ArtefactKnowledgeReader.indexById(artefact.items, "item_id");
-    for (const item of ArtefactKnowledgeReader.magicalArtefactItems(artefact.campaign ?? {})) {
-      this.items.set(String(item.item_id), item);
+    this.items = ArtefactKnowledgeReader.indexById(artefact.items ?? [], "item_id");
+    if (!this.deferredFamilies.has("items")) {
+      for (const item of ArtefactKnowledgeReader.magicalArtefactItems(artefact.campaign ?? {})) {
+        this.items.set(String(item.item_id), item);
+      }
     }
     this.skills = ArtefactKnowledgeReader.indexById(artefact.skills, "id");
     this.rulesProse = artefact.rules_prose ?? {};
@@ -192,6 +218,23 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     this.campaignMaps = ArtefactKnowledgeReader.indexCampaignSections(
       artefact.campaign ?? {},
     );
+  }
+
+  /**
+   * Binds every presentation entry to the row object its `source` points at.
+   * The constructor binds the whole document; a deferred catalogue re-binds
+   * only the families it merged, so `recordText` keeps working on loaded rows.
+   */
+  private bindPresentationRows(families?: ReadonlySet<string>): void {
+    for (const entry of this.presentationEntries) {
+      const segments = entry.source.split("/");
+      if (families && !families.has(segments[0])) continue;
+      let row: unknown = this.document;
+      for (const segment of segments) {
+        row = row && typeof row === "object" ? (row as Record<string, unknown>)[segment] : undefined;
+      }
+      if (row && typeof row === "object") this.presentationRows.set(row, entry.ref);
+    }
   }
 
   /**
@@ -293,7 +336,126 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     }
     // One validation pass (`from` re-validates; both are cheap relative to
     // the network hop, and `from` stays the single entry point for fakes).
-    return ArtefactKnowledgeReader.from(document);
+    const validation = validateArtefact(document);
+    if (!validation.ok) throw new KnowledgeReaderError(validation.message);
+    // The deferred catalogue is never fetched here: the first flow that needs
+    // items or campaign sections calls `ensureCatalogue` (T12 fase D).
+    return new ArtefactKnowledgeReader(document, { url, fetchFn });
+  }
+
+  /**
+   * T12 fase D — deferred campaign catalogue.
+   *
+   * The published artefact keeps the initial document small (open the app,
+   * choose a warband) and publishes the equipment catalogue and the campaign
+   * sections as one fragment addressed by `catalogue_url` + `catalogue_digest`.
+   * `fromUrl` does not fetch it; the first flow that needs it — construction and
+   * starting equipment, the market, equipment transfers, the campaign inventory,
+   * the PDF writer or any item/campaign name or effect resolver — awaits
+   * `ensureCatalogue(kind)`.
+   *
+   * Contract: idempotent (a second call neither downloads nor merges again),
+   * shared in flight (concurrent calls coalesce into one request), and a
+   * missing fragment or a wrong digest produces a deterministic
+   * `KnowledgeReaderError` instead of empty lists or technical names. Once
+   * loaded, the read contract is the previous synchronous one: the same maps are
+   * rebuilt from the same ids and row shapes.
+   */
+  async ensureCatalogue(kind: CatalogueKind): Promise<void> {
+    if (!this.deferredFamilies.has(kind)) return;
+    if (this.loadedFamilies.has(kind)) return;
+    if (!this.catalogueLoad) this.catalogueLoad = this.loadCatalogue();
+    await this.catalogueLoad;
+    if (!this.loadedFamilies.has(kind)) {
+      throw new KnowledgeReaderError(
+        `KB catalogue "${kind}" is not published by "${this.catalogueUrl ?? ""}".`,
+      );
+    }
+  }
+
+  /** Has `kind` been published inline, or already loaded on demand? */
+  isCatalogueLoaded(kind: CatalogueKind): boolean {
+    return !this.deferredFamilies.has(kind) || this.loadedFamilies.has(kind);
+  }
+
+  /**
+   * Explicit whole-artefact load: the same URL + digest mechanism, for tools and
+   * tests that legitimately need every family (the product loads lazily).
+   */
+  static async fromFullUrl(url: string, fetchFn: typeof fetch = fetch): Promise<ArtefactKnowledgeReader> {
+    const reader = await ArtefactKnowledgeReader.fromUrl(url, fetchFn);
+    await Promise.all([reader.ensureCatalogue("items"), reader.ensureCatalogue("campaign")]);
+    return reader;
+  }
+
+  /** Reading a deferred family before loading it is an error, never empty data. */
+  private requireCatalogue(kind: CatalogueKind): void {
+    if (this.isCatalogueLoaded(kind)) return;
+    throw new KnowledgeReaderError(
+      `KB catalogue "${kind}" is deferred and not loaded: await ensureCatalogue("${kind}") before reading it.`,
+    );
+  }
+
+  private async loadCatalogue(): Promise<void> {
+    const reference = this.catalogueUrl;
+    if (!reference || !this.baseUrl) {
+      throw new KnowledgeReaderError(
+        "KB catalogue is deferred but this reader was built without a catalogue_url.",
+      );
+    }
+    const pageUrl = (globalThis as { location?: { href: string } }).location?.href ?? "http://localhost/";
+    const url = new URL(reference, new URL(this.baseUrl, pageUrl)).toString();
+    // Called as a bare function: `this.fetcher(...)` would bind the reader as
+    // the receiver of the global `fetch` ("Illegal invocation" in browsers).
+    const fetcher: typeof fetch = this.fetcher;
+    let response: Response;
+    try {
+      response = await fetcher(url, { cache: "no-cache" });
+    } catch (cause) {
+      throw new KnowledgeReaderError(`Could not fetch the KB catalogue from "${url}": ${(cause as Error).message}`);
+    }
+    if (!response.ok) {
+      throw new KnowledgeReaderError(`KB catalogue request failed: HTTP ${response.status} for "${url}".`);
+    }
+    let fragment: { items?: unknown; campaign?: unknown };
+    try {
+      fragment = await response.json() as { items?: unknown; campaign?: unknown };
+    } catch (cause) {
+      throw new KnowledgeReaderError(`KB catalogue at "${url}" is not valid JSON: ${(cause as Error).message}`);
+    }
+    if (this.catalogueDigest) {
+      const bytes = new TextEncoder().encode(JSON.stringify(fragment));
+      const hash = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)), (byte) => byte.toString(16).padStart(2, "0")).join("");
+      if (hash !== this.catalogueDigest) throw new KnowledgeReaderError("Incompatible KB catalogue artefact");
+    }
+    this.applyCatalogue(fragment);
+  }
+
+  /** Rebuilds the deferred maps from the fragment; never a partial merge. */
+  private applyCatalogue(fragment: { items?: unknown; campaign?: unknown }): void {
+    if (this.deferredFamilies.has("items")) {
+      const rows = Array.isArray(fragment.items) ? fragment.items as ArtefactRow[] : [];
+      this.items = ArtefactKnowledgeReader.indexById(rows, "item_id");
+    }
+    if (this.deferredFamilies.has("campaign")) {
+      const campaign = fragment.campaign && typeof fragment.campaign === "object" && !Array.isArray(fragment.campaign)
+        ? fragment.campaign as Readonly<Record<string, unknown>>
+        : {};
+      this.campaignRaw = campaign;
+      this.campaignMaps = ArtefactKnowledgeReader.indexCampaignSections(campaign);
+    }
+    if (this.deferredFamilies.has("items")) {
+      for (const item of ArtefactKnowledgeReader.magicalArtefactItems(this.campaignRaw)) {
+        this.items.set(String(item.item_id), item);
+      }
+    }
+    this.document = {
+      ...this.document,
+      ...(this.deferredFamilies.has("items") ? { items: Array.isArray(fragment.items) ? fragment.items as readonly ArtefactRow[] : [] } : {}),
+      ...(this.deferredFamilies.has("campaign") ? { campaign: this.campaignRaw } : {}),
+    };
+    this.bindPresentationRows(new Set<string>(["items", "campaign"]));
+    for (const kind of ["items", "campaign"] as const) this.loadedFamilies.add(kind);
   }
 
   private static indexById(
@@ -440,24 +602,33 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
       case "profile":
         return this.profiles;
       case "item":
+        this.requireCatalogue("items");
         return this.items;
       case "skill":
         return this.skills;
       case "scenario":
+        this.requireCatalogue("campaign");
         return this.campaignMaps.scenarios;
       case "post_battle_step":
+        this.requireCatalogue("campaign");
         return this.campaignMaps.postBattleSteps;
       case "injury":
+        this.requireCatalogue("campaign");
         return this.campaignMaps.injuries;
       case "lore":
+        this.requireCatalogue("campaign");
         return this.campaignMaps.lores;
       case "mutation":
+        this.requireCatalogue("campaign");
         return this.campaignMaps.mutations;
       case "hireling":
+        this.requireCatalogue("campaign");
         return this.campaignMaps.hirelings;
       case "warband_group":
+        this.requireCatalogue("campaign");
         return this.campaignMaps.warbandGroups;
       case "racial_maximum":
+        this.requireCatalogue("campaign");
         return this.campaignMaps.racialMaximums;
     }
   }
@@ -583,6 +754,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
 
   /** Raw rows of the artefact's `campaign` section, for listing features. */
   campaignRows(section: string): readonly ArtefactRow[] {
+    this.requireCatalogue("campaign");
     const value = this.campaignRaw[section];
     if (Array.isArray(value)) return value as ArtefactRow[];
     // Listing workflows address nested catalogues as `section:sublist`
@@ -599,6 +771,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
 
   /** Raw object sections (e.g. `trading-post`, `hirelings`). */
   campaignSection(section: string): Readonly<Record<string, unknown>> {
+    this.requireCatalogue("campaign");
     const value = this.campaignRaw[section];
     return value && typeof value === "object" ? (value as Readonly<Record<string, unknown>>) : {};
   }
@@ -610,6 +783,8 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
 
   /** Display name of a stable KB item id (trading rows only carry ids). */
   itemName(itemId: string, locale: Locale = "en"): string {
+    this.requireCatalogue("items");
+    this.requireCatalogue("campaign");
     const row = this.items.get(itemId) ?? this.campaignMaps.hirelings.get(itemId);
     return row ? resolveName(row, locale) : unavailableText(locale);
   }

@@ -5,7 +5,7 @@ import type { CampaignAppService } from "./features/campaign/types";
 import { CampaignAppProvider, localizeErrorMessage } from "./features/campaign/useCampaignApp";
 import { OperationProgress } from "./features/common/OperationProgress";
 import { withOperationProgress } from "./features/common/operationProgressEvents";
-import { createService, loadKnowledge } from "./features/campaign/default-deps";
+import { createService, ensureCampaignCatalogue, loadKnowledge } from "./features/campaign/default-deps";
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { catalogueLabel } from "@app/rules/catalogue-text";
 import { RulesCatalogue } from "@app/rules/rules-catalogue";
@@ -107,6 +107,8 @@ export function ProductApp() {
   // Categories the picker hides. Stored as exclusions so a category a later KB
   // release publishes is enabled by default instead of silently disappearing.
   const [excludedCategories, setExcludedCategories] = useState<ReadonlySet<string>>(() => new Set());
+  // T12 fase D: reader whose deferred campaign catalogue is loaded.
+  const [catalogueReader, setCatalogueReader] = useState<ArtefactKnowledgeReader | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const createButtonRef = useRef<HTMLButtonElement>(null);
   const libraryButtonRef = useRef<HTMLButtonElement>(null);
@@ -131,10 +133,31 @@ export function ProductApp() {
     return next;
   });
 
+  // T12 fase D: the equipment catalogue and the campaign sections may travel in
+  // a deferred fragment. It is requested only by a flow that needs it — an open
+  // campaign, the rules catalogue page, construction, import or PDF export —
+  // never at startup, and the reader coalesces concurrent calls into one hop.
+  // A document that already publishes both families is ready synchronously.
+  const catalogueDeferred = knowledge !== null && !(
+    knowledge.isCatalogueLoaded("items") && knowledge.isCatalogueLoaded("campaign")
+  );
+  const catalogueReady = knowledge !== null && (!catalogueDeferred || catalogueReader === knowledge);
+  const needsCatalogue = catalogueDeferred && (active !== null || page === "rules");
+  useEffect(() => {
+    if (!knowledge || !needsCatalogue || catalogueReader === knowledge) return;
+    const reader = knowledge;
+    let cancelled = false;
+    void ensureCampaignCatalogue(reader)
+      .then(() => { if (!cancelled) setCatalogueReader(reader); })
+      .catch((error: Error) => { if (!cancelled) setKbError(error.message); });
+    return () => { cancelled = true; };
+  }, [knowledge, needsCatalogue, catalogueReader]);
+
   const addSession = (service: CampaignAppService, source: string) => { const id = crypto.randomUUID(); setSessions((all) => [...all, { id, service, source }]); setActiveId(id); setPage("campaign"); };
-  const create = async () => { if (!knowledge) return; const band=bands.find((row)=>String(row.id)===bandId); if(!band)return; await withOperationProgress(async () => { try { const service=createService(knowledge); const result=await service.createCampaign({ band_id: bandId, campaign_name: campaignName.trim() || (translate({ key: "ui.f0efa10d6f50" }, locale)), warband_name: knowledge.recordText(band, "name", locale), ...(variantId ? { variant: variantId } : {}) }); if (result.ok) { addSession(service, "created"); setShowCreate(false); setCampaignName(""); setVariantId(""); } else setOperationError(result.message); } catch(error) { setOperationError(error instanceof Error ? error.message : String(error)); } }); };
+  const create = async () => { if (!knowledge) return; const band=bands.find((row)=>String(row.id)===bandId); if(!band)return; await withOperationProgress(async () => { try { await ensureCampaignCatalogue(knowledge); const service=createService(knowledge); const result=await service.createCampaign({ band_id: bandId, campaign_name: campaignName.trim() || (translate({ key: "ui.f0efa10d6f50" }, locale)), warband_name: knowledge.recordText(band, "name", locale), ...(variantId ? { variant: variantId } : {}) }); if (result.ok) { addSession(service, "created"); setShowCreate(false); setCampaignName(""); setVariantId(""); } else setOperationError(result.message); } catch(error) { setOperationError(error instanceof Error ? error.message : String(error)); } }); };
   const importFiles = async (files: readonly File[]) => { await withOperationProgress(async () => {
     if (!knowledge) return;
+    await ensureCampaignCatalogue(knowledge);
     const imported: Session[] = [];
     const failures: string[] = [];
     for (const file of files) {
@@ -160,7 +183,7 @@ export function ProductApp() {
   const closeCreate = () => { setShowCreate(false); requestAnimationFrame(() => createButtonRef.current?.focus()); };
   const closeLibrary = () => { setShowLibrary(false); requestAnimationFrame(() => libraryButtonRef.current?.focus()); };
   useEffect(() => { const onKeyDown=(event:KeyboardEvent)=>{const target=event.target as HTMLElement|null;const editing=target?.matches("input, textarea, select, [contenteditable=true]");if(event.key==="Escape"){if(document.querySelector(":popover-open"))return;if(pendingRemove)setPendingRemove(null);else if(showCreate)closeCreate();else if(showLibrary)closeLibrary();else if(showMore)setShowMore(false);}else if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==="z"&&!editing&&active?.service.canUndo()){event.preventDefault();void undo();}};addEventListener("keydown",onKeyDown);return()=>removeEventListener("keydown",onKeyDown);},[active,pendingRemove,showCreate,showLibrary,showMore,undo]);
-  const exportPdf = async () => { if (!active) return; const doc=active.service.current(); if (!doc) return; await withOperationProgress(async () => { try { const { createWarbandPdf } = await import("./features/export/warband-pdf"); const bytes=await createWarbandPdf(doc, locale, knowledge ?? undefined); const selected=String(doc.view.selected_moment??"draft:0"); const suffix=selected.startsWith("state:")?`-state-${selected.slice(6)}`:"-draft"; download(`${doc.campaign.identity.warband_name.replace(/[^\w-]+/g, "_")}${suffix}.pdf`, bytes, "application/pdf"); } catch (error) { setOperationError(error instanceof Error ? error.message : String(error)); } }); };
+  const exportPdf = async () => { if (!active) return; const doc=active.service.current(); if (!doc) return; await withOperationProgress(async () => { try { if (knowledge) await ensureCampaignCatalogue(knowledge); const { createWarbandPdf } = await import("./features/export/warband-pdf"); const bytes=await createWarbandPdf(doc, locale, knowledge ?? undefined); const selected=String(doc.view.selected_moment??"draft:0"); const suffix=selected.startsWith("state:")?`-state-${selected.slice(6)}`:"-draft"; download(`${doc.campaign.identity.warband_name.replace(/[^\w-]+/g, "_")}${suffix}.pdf`, bytes, "application/pdf"); } catch (error) { setOperationError(error instanceof Error ? error.message : String(error)); } }); };
 
   return <I18nProvider locale={locale}><div className="app-shell" onPointerDownCapture={(event) => { const control=(event.target as Element).closest<HTMLElement>("button:disabled, input:disabled, select:disabled, [aria-disabled=true]"); if(control)setDisabledMessage(uiMessageForText(control.dataset.disabledReason) ?? { key: "error.action-failed" }); }}>
     <OperationProgress locale={locale} />
@@ -174,11 +197,13 @@ export function ProductApp() {
     {disabledMessage && <output className="global-error" role="alert">{presentationOutput(translate(disabledMessage, locale))} <button onClick={() => setDisabledMessage(null)}>{presentationOutput(t.dismiss)}</button></output>}
     {operationError && <output className="global-error" role="alert">{presentationOutput(localizeErrorMessage(operationError, locale, (id) => knowledgeName(knowledge ?? undefined, "profile", id, locale)))} <button onClick={() => setOperationError(null)}>{presentationOutput(t.dismiss)}</button></output>}
     <main>
-      {page==="campaign" && active && <CampaignAppProvider service={active.service} locale={locale} profileName={(id) => knowledgeName(knowledge ?? undefined, "profile", id, locale)} bandName={(id) => knowledgeName(knowledge ?? undefined, "band", id, locale)} variantName={(band, variant) => variantName(knowledge ?? undefined, band, variant, locale)} obligationNames={knowledge && active.service.current() ? obligationNamesOf(active.service.current()!, knowledge, locale) : undefined}><Suspense fallback={null}><CampaignSlice knowledge={knowledge ?? undefined} locale={locale} /></Suspense></CampaignAppProvider>}
+      {page==="campaign" && active && !catalogueReady && <section className="empty-workspace" role="status"><h1>{presentationOutput(t.campaign)}</h1><p>{presentationOutput(translate({ key: "shell.loading-catalogue" }, locale))}</p></section>}
+      {page==="campaign" && active && catalogueReady && <CampaignAppProvider service={active.service} locale={locale} profileName={(id) => knowledgeName(knowledge ?? undefined, "profile", id, locale)} bandName={(id) => knowledgeName(knowledge ?? undefined, "band", id, locale)} variantName={(band, variant) => variantName(knowledge ?? undefined, band, variant, locale)} obligationNames={knowledge && active.service.current() ? obligationNamesOf(active.service.current()!, knowledge, locale) : undefined}><Suspense fallback={null}><CampaignSlice knowledge={knowledge ?? undefined} locale={locale} /></Suspense></CampaignAppProvider>}
       {page==="campaign" && !active && <section className="empty-workspace"><h1>{presentationOutput(t.campaign)}</h1><p>{presentationOutput(t.empty)}</p><p>{presentationOutput(t.bandCategoriesHint)}</p><div><button className="primary" onClick={() => setShowCreate(true)} disabled={!knowledge} data-disabled-reason={!knowledge ? presentationOutput(translate({ key: "disabled.239bd32144" }, locale)) : undefined}>{presentationOutput(t.newCampaign)}</button><button onClick={() => fileRef.current?.click()} disabled={!knowledge} data-disabled-reason={!knowledge ? presentationOutput(translate({ key: "disabled.239bd32144" }, locale)) : undefined}>{presentationOutput(t.load)}</button></div></section>}
       {page==="campaign" && active && <button className="statistics-link" onClick={() => setPage("statistics")}>{presentationOutput(translate({ key: "ui.980e0b2b3439" }, locale))}</button>}
-      {page==="statistics" && active?.service.current() && <Suspense fallback={null}><CampaignStatistics document={active.service.current()!} locale={locale} /></Suspense>}
-      {page==="rules" && knowledge && <RulesPage knowledge={knowledge} locale={locale} />}
+      {page==="statistics" && active?.service.current() && catalogueReady && <Suspense fallback={null}><CampaignStatistics document={active.service.current()!} locale={locale} /></Suspense>}
+      {page==="rules" && knowledge && !catalogueReady && <section className="empty-workspace" role="status"><h1>{presentationOutput(t.rules)}</h1><p>{presentationOutput(translate({ key: "shell.loading-catalogue" }, locale))}</p></section>}
+      {page==="rules" && knowledge && catalogueReady && <RulesPage knowledge={knowledge} locale={locale} />}
       {page==="settings" && <section className="page"><div className="page-title"><h1>{presentationOutput(t.settings)}</h1><span>{presentationOutput(translate({ key: "ui.05464f7ff4f2" }, locale))}</span></div><div className="settings-card"><label><span>{presentationOutput(t.language)}</span><select value={locale} onChange={(e) => setLocale(e.target.value as Locale)}><option value="es">{presentationOutput(translate({ key: "shell.language-es" }, locale))}</option><option value="en">{presentationOutput(translate({ key: "shell.language-en" }, locale))}</option></select></label><fieldset className="band-set-picker"><legend>{presentationOutput(translate({ key: "ui.42caf13d9870" }, locale))}</legend>{categories.map((category) => <label key={category.key}><input type="checkbox" checked={!excludedCategories.has(category.key)} onChange={() => toggleCategory(category.key)} /><span>{presentationOutput(translate(category.label, locale))}</span></label>)}</fieldset><p>{presentationOutput(translate({ key: "ui.41e3cc2b218c" }, locale))}</p><div><span>{presentationOutput(translate({ key: "ui.1b3f05e763e0" }, locale))}</span><strong>{presentationOutput(translate({ key: "ui.d4fd9c530e89" }, locale))}</strong></div><p>{presentationOutput(t.sessionHelp)}</p></div></section>}
     </main>
     <nav className="mobile-nav" aria-label={presentationOutput(translate({ key: "ui.ef08f2dd2211" }, locale))}>{(["campaign","rules","settings"] as const).map((key,index) => <button aria-current={page === key || (key === "campaign" && page === "statistics") ? "page" : undefined} aria-label={presentationOutput(textJoin([t[key], translate({ key: "ui.c96644056635" }, locale)], " · "))} key={key} className={page===key || (key==="campaign"&&page==="statistics") ? "active" : ""} onClick={() => { setPage(key); setShowMore(false); }}><span aria-hidden="true">{presentationOutput(textSymbol(index === 0 ? "◆" : index === 1 ? "☰" : "⚙"))}</span>{presentationOutput(t[key])}</button>)}<button aria-label={presentationOutput(translate({ key: "ui.dd92209d34de" }, locale))} aria-expanded={showMore} aria-controls="mobile-more-menu" onClick={() => setShowMore((value) => !value)}><span aria-hidden="true">{presentationOutput(textSymbol("•••"))}</span>{presentationOutput(translate({ key: "ui.cb53dee52de4" }, locale))}</button></nav>

@@ -4,7 +4,14 @@ import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { ProductApp } from "@src/ProductApp";
 import { loadKnowledge, createService } from "@src/features/campaign/default-deps";
 
-vi.mock("@src/features/campaign/default-deps", () => ({ loadKnowledge: vi.fn(), createService: vi.fn() }));
+// T12 fase D: only the composition functions are stubbed; the real
+// `ensureCampaignCatalogue` is kept so the deferred-catalogue gate runs as in
+// the product.
+vi.mock("@src/features/campaign/default-deps", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@src/features/campaign/default-deps")>()),
+  loadKnowledge: vi.fn(),
+  createService: vi.fn(),
+}));
 const marker = "RAW_KB_POISON_";
 const labels = { es: "Banda de prueba", en: "Test warband" };
 function assertSafe(container: HTMLElement) {

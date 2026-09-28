@@ -8,8 +8,8 @@
  * sets, mirroring the desktop test's "facts come from the KB" contract.
  */
 
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { readArtefactDocument } from "../../../support/kb-artefact";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -20,11 +20,8 @@ import {
   type WarbandHireContext,
 } from "@domain/campaign/hire-eligibility";
 
-const ARTEFACT = JSON.parse(
-  readFileSync(
-    resolve(__dirname, "../../../../outputs/web-public/knowledge/knowledge-web.json"),
-    "utf-8",
-  ),
+const ARTEFACT = readArtefactDocument(
+  resolve(__dirname, "../../../../outputs/web-public/knowledge/knowledge-web.json"),
 ) as {
   bands: { id: string }[];
   campaign: {

@@ -1,6 +1,5 @@
 /** Browser presentation uses exact locale and entity references, independently of desktop display policy. */
 import { describe, expect, it, vi, beforeAll, afterEach } from "vitest";
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import {
@@ -9,6 +8,7 @@ import {
 } from "@adapters/knowledge-reader/index";
 import type { ArtefactRow } from "@adapters/knowledge-reader/artefact-types";
 import { knowledgeName } from "@src/features/campaign/displayText";
+import { readArtefactDocument } from "../../../support/kb-artefact";
 
 /** Locate the repo root (walk up from cwd until the contract dir exists). */
 function repoRoot(): string {
@@ -25,7 +25,6 @@ function repoRoot(): string {
 import { existsSync } from "node:fs";
 
 const ARTEFACT_PATH = "outputs/web-public/knowledge/knowledge-web.json";
-const RULES_PROSE_PATH = "outputs/web-public/knowledge/rules-prose.json";
 
 interface RawArtefact {
   bands: ArtefactRow[];
@@ -36,9 +35,9 @@ let raw: RawArtefact;
 let reader: ArtefactKnowledgeReader;
 
 beforeAll(() => {
-  raw = JSON.parse(readFileSync(resolve(repoRoot(), ARTEFACT_PATH), "utf-8"));
-  const rules_prose = JSON.parse(readFileSync(resolve(repoRoot(), RULES_PROSE_PATH), "utf-8"));
-  Object.assign(raw, { rules_prose }, JSON.parse(readFileSync(resolve(repoRoot(), "outputs/web-public/knowledge/display-text.json"), "utf-8")));
+  // T12 fase D: the published artefact defers the campaign catalogue; the
+  // shared helper merges prose, presentation and the deferred catalogue.
+  raw = readArtefactDocument(resolve(repoRoot(), ARTEFACT_PATH)) as RawArtefact;
   reader = ArtefactKnowledgeReader.from(raw);
 });
 

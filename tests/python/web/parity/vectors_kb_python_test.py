@@ -21,13 +21,20 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[4]
+sys.path.insert(0, str(ROOT / "tools" / "knowledge"))
+
+from artefact_document import load_artefact_document  # noqa: E402
+
 VECTORS = ROOT / "tests" / "fixtures" / "parity" / "vectors"
 ARTEFACT = ROOT / "outputs" / "web-public" / "knowledge" / "knowledge-web.json"
 MANIFEST = ROOT / "outputs" / "parity" / "test-manifests" / "campaign-test-manifest.json"
 MANIFEST_GENERATOR = ROOT / "tools" / "verification" / "make_test_manifest.py"
 
-ARTEFACT_DICT: dict = json.loads(ARTEFACT.read_text(encoding="utf-8"))
-PROSE: dict = json.loads((ARTEFACT.parent / ARTEFACT_DICT["rules_prose_url"]).read_text(encoding="utf-8"))
+# T12 fase D: the published artefact defers the campaign catalogue (equipment
+# + campaign sections); these parity vectors assert against the complete
+# artefact, so they merge every fragment the same directory publishes.
+ARTEFACT_DICT: dict = load_artefact_document(ARTEFACT)
+PROSE: dict = ARTEFACT_DICT["rules_prose"]
 
 
 def _band(collection: str, band_id: str) -> dict:

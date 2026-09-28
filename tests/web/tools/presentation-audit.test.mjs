@@ -75,6 +75,20 @@ for (const [name, source] of [
   assert.ok(inspectPresentation(prefix + source, "src/new.tsx", { strict: true }).findings.length > 0, source);
 });
 
+test("a declared resolver may take system keys, an undeclared call may not", () => {
+  // `variantName` resolves a published variant row through `recordText`; the
+  // band id is a lookup key, never output. Registering it must not become a
+  // blanket amnesty: the same keys through any other call stay findings.
+  const source = (call) => `const row = (campaign) => sheet.cell(0, 7, ${call});`;
+  const reasons = (call) => inspectPresentation(source(call), "src/features/export/warband-pdf.ts", { strict: true }).findings.map((finding) => finding.reason);
+  assert.ok(!reasons('variantName(kb, campaign.identity.band_id, variant, locale)').includes("raw-system-value"));
+  for (const call of [
+    'renamed(kb, campaign.identity.band_id, variant, locale)',
+    '(0, variantName)(kb, campaign.identity.band_id, variant, locale)',
+    'page.drawText(campaign.identity.band_id)',
+  ]) assert.ok(reasons(call).includes("raw-system-value"), call);
+});
+
 test("CSS comments, case, escapes and imports cannot bypass the audit", () => {
   for (const source of ['a { CONTENT: "raw" }', 'a { content/**/: "raw" }', String.raw`a { c\6f ntent: "raw" }`, '@import "remote.css";']) assert.ok(inspectCssPresentation(source).findings.length > 0, source);
 });

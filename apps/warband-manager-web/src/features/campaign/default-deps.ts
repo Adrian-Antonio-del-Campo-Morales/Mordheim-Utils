@@ -48,3 +48,31 @@ export async function loadKnowledge(
 ): Promise<ArtefactKnowledgeReader> {
   return ArtefactKnowledgeReader.fromUrl(url);
 }
+
+/**
+ * T12 fase D — load the deferred campaign catalogue (equipment + campaign
+ * sections) on demand. The initial document publishes neither, so every flow
+ * that builds or equips a warband, prices a market, moves equipment, prices the
+ * campaign inventory, resolves an item/campaign name or writes the PDF calls
+ * this first. The reader coalesces concurrent calls and never downloads twice,
+ * so calling it on every flow entry is the intended usage.
+ */
+export async function ensureCampaignCatalogue(
+  knowledge: ArtefactKnowledgeReader,
+): Promise<void> {
+  await Promise.all([
+    knowledge.ensureCatalogue("items"),
+    knowledge.ensureCatalogue("campaign"),
+  ]);
+}
+
+/**
+ * Explicit whole-artefact load for tools and diagnostics: same URL + digest
+ * mechanism, every family loaded before it returns. The product never uses it —
+ * the browser loads the catalogue lazily.
+ */
+export async function loadFullKnowledge(
+  url: string = KNOWLEDGE_ARTEFACT_URL,
+): Promise<ArtefactKnowledgeReader> {
+  return ArtefactKnowledgeReader.fromFullUrl(url);
+}

@@ -14,7 +14,8 @@
  * Purity: plain Node, the real reader for the published rows plus fixtures.
  */
 import { describe, expect, it } from "vitest";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
+import { readArtefactDocument } from "../../../support/kb-artefact";
 import { join } from "node:path";
 
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
@@ -136,7 +137,7 @@ describe("T10 market availability verdict", () => {
 });
 
 describe.skipIf(!ARTEFACT_PATH)("T10 market obligations against the published catalogue", () => {
-  const artefact = JSON.parse(readFileSync(ARTEFACT_PATH as string, "utf8"));
+  const artefact = readArtefactDocument(ARTEFACT_PATH as string);
   const reader = ArtefactKnowledgeReader.from(artefact);
   const offers = (artefact.campaign?.["trading-post"]?.items ?? []) as Readonly<Record<string, unknown>>[];
 

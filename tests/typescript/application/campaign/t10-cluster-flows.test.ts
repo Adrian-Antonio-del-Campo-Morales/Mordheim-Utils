@@ -7,7 +7,8 @@
  * exported/reimported as a v5 file.
  */
 import { describe, expect, it } from "vitest";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
+import { readArtefactDocument } from "../../../support/kb-artefact";
 import { join } from "node:path";
 
 import { CampaignFileV5Adapter, parseCampaignFileDetailed } from "@adapters/campaign-file";
@@ -62,7 +63,7 @@ async function loadService(campaign: Campaign, reader: ArtefactKnowledgeReader) 
 }
 
 describe.skipIf(!ARTEFACT_PATH)("T10 re-opened clusters (application service)", () => {
-  const artefact = JSON.parse(readFileSync(ARTEFACT_PATH as string, "utf8"));
+  const artefact = readArtefactDocument(ARTEFACT_PATH as string);
   const reader = ArtefactKnowledgeReader.from(artefact);
 
   it("withdraws the members that left the table and keeps the audit across a reopen", async () => {

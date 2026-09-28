@@ -9,6 +9,7 @@
  */
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
+import { readArtefactDocument } from "../support/kb-artefact";
 import { describe, expect, it } from "vitest";
 
 const ROOT = resolve(__dirname, "../..");
@@ -25,12 +26,9 @@ interface VectorFile {
 }
 
 const hasArtefact = existsSync(ARTEFACT_PATH);
-const artefact: any = hasArtefact
-  ? JSON.parse(readFileSync(ARTEFACT_PATH, "utf-8"))
-  : null;
-if (artefact?.rules_prose_url) {
-  artefact.rules_prose = JSON.parse(readFileSync(resolve(ARTEFACT_PATH, "..", artefact.rules_prose_url), "utf-8"));
-}
+// T12 fase D: merge the deferred campaign catalogue (equipment + campaign
+// sections) so the vectors keep asserting against the complete artefact.
+const artefact: any = hasArtefact ? readArtefactDocument(ARTEFACT_PATH) : null;
 const vectorsRoot = resolve(ROOT, "tests/fixtures/parity/vectors");
 
 function loadVectorFile(name: string): VectorFile {

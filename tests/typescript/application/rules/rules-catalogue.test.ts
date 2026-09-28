@@ -4,8 +4,8 @@
  * (seam source: `adapters/knowledge-reader/rules_catalogue_parity.test.ts`).
  */
 
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { readArtefactDocument } from "../../../support/kb-artefact";
 import { describe, expect, it } from "vitest";
 
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
@@ -23,15 +23,9 @@ const rawRelation: ProfileLink["relation"] = "unreviewed";
 void [rawCatalogueText, rawEntryName, rawCategoryLabel, rawRelation];
 
 const ARTEFACT_PATH = resolve(__dirname, "../../../../outputs/web-public/knowledge/knowledge-web.json");
-const ARTEFACT = JSON.parse(
-  readFileSync(
-    ARTEFACT_PATH,
-    "utf-8",
-  ),
-) as Record<string, unknown>;
-ARTEFACT.rules_prose = JSON.parse(
-  readFileSync(resolve(ARTEFACT_PATH, "..", String(ARTEFACT.rules_prose_url)), "utf-8"),
-);
+// T12 fase D: the helper merges prose, presentation and the deferred campaign
+// catalogue from the same directory the artefact is published in.
+const ARTEFACT = readArtefactDocument(ARTEFACT_PATH) as Record<string, unknown>;
 
 function catalogue(): RulesCatalogue {
   return new RulesCatalogue(ArtefactKnowledgeReader.from(ARTEFACT));

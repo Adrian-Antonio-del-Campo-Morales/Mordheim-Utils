@@ -71,7 +71,7 @@ export function presentationEntries(artefact: KnowledgeArtefact): readonly Prese
       } else entries.push({ ref, fields, source: `${source}/${index}` });
     }
   };
-  for (const [kind, rows] of [["band", artefact.bands], ["profile", artefact.profiles], ["item", artefact.items], ["skill", artefact.skills], ["collection", artefact.collections ?? []]] as const) add(kind, rows, { band: "bands", profile: "profiles", item: "items", skill: "skills", collection: "collections" }[kind]);
+  for (const [kind, rows] of [["band", artefact.bands], ["profile", artefact.profiles], ["item", artefact.items ?? []], ["skill", artefact.skills], ["collection", artefact.collections ?? []]] as const) add(kind, rows, { band: "bands", profile: "profiles", item: "items", skill: "skills", collection: "collections" }[kind]);
   for (const [bandIndex, band] of artefact.bands.entries()) {
     if (!Array.isArray(band.variants)) continue;
     for (const [variantIndex, variant] of band.variants.entries()) {

@@ -19,7 +19,8 @@
  * writing the versioned Web artefact T12 owns.
  */
 import { describe, expect, it } from "vitest";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
+import { readArtefactDocument } from "../../../support/kb-artefact";
 import { join } from "node:path";
 
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
@@ -52,7 +53,7 @@ interface RosterMember {
 }
 
 describe.skipIf(!ARTEFACT_PATH)("T09 construction: every applicable band builds", () => {
-  const artefact = JSON.parse(readFileSync(ARTEFACT_PATH as string, "utf8"));
+  const artefact = readArtefactDocument(ARTEFACT_PATH as string);
   const reader: KnowledgeReader = ArtefactKnowledgeReader.from(artefact);
   const bands = artefact.bands as { id: string; roster?: { members?: RosterMember[] } }[];
 

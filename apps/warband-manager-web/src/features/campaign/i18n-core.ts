@@ -19,6 +19,9 @@ const messages = {
   "shell.language-es": { es: "Español", en: "Español" },
   "shell.language-en": { es: "English", en: "English" },
   "shell.imported": { es: "Importada", en: "Imported" },
+  // T12 fase D: the equipment catalogue and the campaign sections travel in a
+  // deferred fragment; a flow that needs them reports the wait in the locale.
+  "shell.loading-catalogue": { es: "Cargando el catálogo de campaña…", en: "Loading the campaign catalogue…" },
   "shell.ok": { es: "Aceptar", en: "OK" },
   "exploration.match-2": { es: "Doble", en: "Double" },
   "exploration.match-3": { es: "Triple", en: "Triple" },
@@ -763,6 +766,16 @@ const messages = {
   "pdf.rating": { es: "Valor:", en: "Rating:" },
   "pdf.storedEquipment": { es: "EQUIPO ALMACENADO", en: "Stored equipment" },
   "pdf.notes": { es: "NOTAS", en: "Notes" },
+  "pdf.campaign": { es: "CAMPAÑA", en: "CAMPAIGN" },
+  "pdf.variant": { es: "Variante de banda:", en: "Warband variant:" },
+  "pdf.decisions": { es: "Decisiones de creación", en: "Creation decisions" },
+  "pdf.successionPending": { es: "Sucesión pendiente", en: "Pending succession" },
+  "pdf.mutations": { es: "Mutaciones", en: "Mutations" },
+  "pdf.mutationUnpriced": { es: "La regla impresa nombra mutaciones que el catálogo no tasa.", en: "The printed rule names mutations the catalogue does not price." },
+  "pdf.advanceTables": { es: "Tablas de avance concedidas", en: "Granted advance tables" },
+  "pdf.withdrawals": { es: "Retiradas de miembros", en: "Member withdrawals" },
+  "pdf.noObligations": { es: "La campaña no registra ninguna obligación de campaña.", en: "The campaign records no campaign obligation." },
+  "pdf.sourceLimit": { es: "Límite de fuente:", en: "Source limit:" },
   "action.close": { es: "Cerrar", en: "Close" },
   "knowledge.info-symbol": { es: "ⓘ", en: "ⓘ" },
   "availability.common": { es: "Común", en: "Common" },
@@ -1138,6 +1151,10 @@ const parameterMessages = {
     es: ({ name, owned, stash }: { name: PresentationValue; owned: number; stash: number }) => `${name} · ${owned} en la banda · ${stash} en la reserva`,
     en: ({ name, owned, stash }: { name: PresentationValue; owned: number; stash: number }) => `${name} · ${owned} in the warband · ${stash} in the stash`,
   },
+  "campaign.skill-not-permitted": {
+    es: ({ profile, skill }: { profile: PresentationValue; skill: PresentationValue }) => `${skill} queda fuera de las tablas de habilidad publicadas de ${profile}.`,
+    en: ({ profile, skill }: { profile: PresentationValue; skill: PresentationValue }) => `${skill} is outside the published skill tables of ${profile}.`,
+  },
 } as const;
 type ParameterMessage = { [K in keyof typeof parameterMessages]: { readonly key: K; readonly args: Parameters<typeof parameterMessages[K]["en"]>[0] } }[keyof typeof parameterMessages];
 export type UiMessage = { readonly key: keyof typeof messages } | ParameterMessage;
@@ -1234,6 +1251,7 @@ export function translate(message: UiMessage, locale: Locale): UiText {
       case "campaign.rout.member": return parameterMessages[message.key][locale](message.args) as UiText;
       case "campaign.mutation.offer": return parameterMessages[message.key][locale](message.args) as UiText;
       case "campaign.unique.entry": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.skill-not-permitted": return parameterMessages[message.key][locale](message.args) as UiText;
     }
   }
   return messages[message.key][locale] as UiText;

@@ -525,6 +525,50 @@ describe.skipIf(freshArtefactPath() === null)("campaign obligations (T10 contrac
     expect(service.current()!.campaign.warriors[0].skills).toEqual([]);
   });
 
+  it("phrases a skill outside the profile's published tables with its own sentence", async () => {
+    // `house-guard-sc`/`adjutant` publishes `academic` and `special` access only,
+    // so a Speed skill is outside the printed tables. The construction contract
+    // refuses it with `skill_not_permitted` and its three parameters; the module
+    // owns the sentence for that code, so the rejection never falls back to the
+    // English diagnostic of the domain or to a printed id.
+    const outside = reader.list("skill").find((row) => row["id"] === "skill.acrobat")!;
+    expect(outside, "the artefact no longer publishes skill.acrobat").toBeDefined();
+    const service = await loadService(
+      baseCampaign({
+        band: HOUSE,
+        battles: [battle(1)],
+        warriors: [warrior("adj", ADJUTANT, { skill_access: ["speed"] })],
+        post_battles: [pendingPost(1, {
+          pending_advances: [
+            { warrior_id: "adj", warrior_name: "Miembro adj", table: "hero", threshold: null, roll_total: 11, subroll: null, committed: false, applied_label: "", promotion_setup_pending: false, advance_options: [{ kind: "choose_skill" }] },
+          ],
+        })],
+      }),
+      reader,
+    );
+
+    const refused = await service.run("commitAdvanceChoice", { warrior_id: "adj", threshold: null, kind: "choose_skill", skill_id: "skill.acrobat" });
+    expect(refused.ok).toBe(false);
+    if (refused.ok) return;
+    expect(campaignIssueSignal(refused)).toEqual({ code: "skill_not_permitted", subjectIds: [HOUSE, ADJUTANT, "skill.acrobat"] });
+    for (const locale of ["es", "en"] as const) {
+      const phrase = campaignErrorText(refused, service.current()!, reader, locale);
+      expect(phrase?.severity).toBe("alert");
+      const text = presentationOutput(phrase!.text);
+      expect(text).toContain(presentationOutput(knowledgeName(reader, "skill", "skill.acrobat", locale)));
+      expect(text).toContain(presentationOutput(knowledgeName(reader, "profile", ADJUTANT, locale, undefined, HOUSE)));
+      // Neither the ids nor the English diagnostic of the domain are visible.
+      expect(text).not.toContain("skill.acrobat");
+      expect(text).not.toContain(ADJUTANT);
+      expect(text).not.toContain(HOUSE);
+      expect(text).not.toContain("is outside the skill access of");
+      expect(text).not.toBe(presentationOutput(translate({ key: "error.action-failed" }, locale)));
+    }
+    // The refusal writes nothing: no skill and no committed advance.
+    expect(service.current()!.campaign.post_battles[0].pending_advances![0]["committed"]).toBe(false);
+    expect(service.current()!.campaign.warriors[0].skills).toEqual([]);
+  });
+
   // -------------------------------------------------------------------------
   // 3. Unique find (canonical id plus the id older campaigns persisted)
   // -------------------------------------------------------------------------

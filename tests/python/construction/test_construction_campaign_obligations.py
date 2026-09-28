@@ -24,6 +24,7 @@ and `tests/typescript/application/campaign/t10-obligations-flow.test.ts`.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -31,6 +32,10 @@ import pytest
 from mordheim_knowledge.loader import load_bands, load_items, read_yaml
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "tools" / "knowledge"))
+
+from artefact_document import load_artefact_document  # noqa: E402
+
 KB = ROOT / "sources" / "knowledge"
 STAGING = ROOT / "sources"
 CONTRACTS = ROOT / "contracts" / "knowledge-editorial-v1"
@@ -62,7 +67,9 @@ def _artefact() -> dict:
     path = ROOT / "build" / "generated" / "knowledge-web" / "knowledge-web.json"
     if not path.exists():
         pytest.skip("run tools/knowledge/generate_knowledge_web.py to check the artefact side")
-    return json.loads(path.read_text(encoding="utf-8"))
+    # T12 fase D: merge the deferred campaign catalogue exactly as the product
+    # does, so this gate keeps asserting against the complete artefact.
+    return load_artefact_document(path)
 
 
 def test_family_heirloom_publishes_the_printed_creation_roll():

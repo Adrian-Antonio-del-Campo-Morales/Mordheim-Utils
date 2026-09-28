@@ -6,6 +6,7 @@ import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 
 import type { CampaignDocument, TimelineState, Warrior } from "@src/features/campaign/types";
 import { createWarbandPdf } from "@src/features/export/warband-pdf";
+import { freshArtefactPath, freshCampaignKnowledge } from "../../support/fresh-campaign-artefact";
 
 const hero: Warrior = {
   id: "marta",
@@ -158,6 +159,135 @@ describe("warband PDF exporter (desktop parity port)", () => {
       expect(text.startsWith("%PDF-")).toBe(true);
       expect(text.trimEnd().endsWith("%%EOF")).toBe(true);
       expect(bytes.length).toBeGreaterThan(500);
+    }
+  });
+
+  // T12: the campaign fields T11 transferred to the writer. The sheet must show
+  // the option the band chose, the mandatory creation decision with its result,
+  // who leads (or the succession still owed), the mutations bought, the advance
+  // tables a printed clause grants and the members a withdrawal removed — all
+  // with published names and no ids.
+  const campaignCases = [
+    {
+      name: "the warband variant it was built with",
+      band: "khemri-lahmian-brotherhood",
+      variant: "background.native",
+      warriors: [{ id: "vamp", profile: "lahmian-vampire", kind: "hero" as const }],
+      rules: [] as readonly Readonly<Record<string, unknown>>[],
+      log: [] as readonly Readonly<Record<string, unknown>>[],
+      expected: { es: ["Variante de banda:", "Trasfondo Nativo"], en: ["Warband variant:", "Native Background"] },
+      forbidden: ["background.native", "khemri-lahmian-brotherhood"],
+    },
+    {
+      name: "the recorded creation decision and the withdrawal audit",
+      band: "adventurers-kaz",
+      variant: null,
+      warriors: [{ id: "noble", profile: "imperial-noble", kind: "hero" as const }],
+      rules: [{
+        kind: "creation_decision", decision_id: "campaign.creation.family-heirloom",
+        outcome_id: "psychology-reroll", roll: 1, order: 1, text: "legacy copy", expires_after_battles: null,
+      }],
+      log: [{
+        kind: "left_table_withdrawal", order: 1, battle_number: 2, reason: "left the table",
+        members: [{ warrior_id: "deck", name: "Martin Salas", profile_id: "deck-hands", quantity: 1 }],
+      }],
+      expected: {
+        es: ["Decisiones de creación", "Reliquia Familiar", "el Noble puede repetir la primera prueba de Psicología fallida durante una batalla", "Retiradas de miembros", "Retirada #1", "Martin Salas"],
+        en: ["Creation decisions", "Family Heirloom", "the Noble may re-roll the first failed Psychology test during a battle", "Member withdrawals", "Withdrawal #1", "Martin Salas"],
+      },
+      forbidden: ["campaign.creation.family-heirloom", "psychology-reroll", "legacy copy", "deck-hands"],
+    },
+    {
+      name: "the mutation a member bought with its paid cost",
+      band: "shallows-beasts-mim",
+      variant: null,
+      warriors: [{ id: "buc", profile: "buccaneer", kind: "hero" as const }],
+      rules: [{
+        kind: "mutation", warrior_id: "buc", mutation_id: "campaign.mutation.tentacle",
+        grant_rule_id: "campaign.mutation.grant.aquatic-mutants", rule_id: "band--aquatic-mutants",
+        cost_gc: 35, order: 1, text: "legacy mutation", expires_after_battles: null,
+      }],
+      log: [],
+      expected: { es: ["Mutaciones", "Tentáculo", "35"], en: ["Mutations", "Tentacle", "35"] },
+      forbidden: ["campaign.mutation.tentacle", "band--aquatic-mutants"],
+    },
+    {
+      name: "the succession the warband still owes, and its source limit",
+      band: "pirates-of-the-cathayan-sea-sar",
+      variant: null,
+      // Two published successors make the choice ambiguous, which is exactly the
+      // case the available source does not resolve: the sheet says so.
+      // Personal names are player data and print verbatim in both languages, so
+      // the fixture uses locale-neutral ones: Spanish words in the English
+      // sample would look like a localization leak to a reviewer.
+      warriors: [
+        { id: "shang1", profile: "shanghaires", kind: "hero" as const, personal: "Alaric Voss" },
+        { id: "shang2", profile: "shanghaires", kind: "hero" as const, personal: "Boris Tanner" },
+      ],
+      rules: [],
+      log: [],
+      expected: {
+        es: ["Sucesión pendiente", "Sucesión (Piratas de Cathay)", "Alaric Voss", "Boris Tanner", "Límite de fuente:"],
+        en: ["Pending succession", "Succession (Cathayan Pirates)", "Alaric Voss", "Boris Tanner", "Source limit:"],
+      },
+      forbidden: ["campaign.succession.cathayan-pirates", "disgraced-warlord"],
+    },
+    {
+      name: "the advancement tables a printed clause grants",
+      band: "dwarf-slayer-cult-web",
+      variant: null,
+      warriors: [{ id: "axe", profile: "axe-hurlers", kind: "henchman" as const, quantity: 3 }],
+      rules: [],
+      log: [],
+      // The rule row is published scoped (band+profile) and globally, so the
+      // clause name, the list label and the granted rule name must all resolve:
+      // an ambiguous lookup would print the shared unavailable message here.
+      expected: {
+        es: ["Tablas de avance concedidas", "Tiradores Natos: Disparo - Tiradores Natos"],
+        en: ["Granted advance tables", "Born Marksmen: Shooting - Born Marksmen"],
+      },
+      forbidden: ["campaign.advance-access.axe-hurlers-born-marksmen", "axe-hurlers--born-marksmen", "Información no disponible", "Information unavailable"],
+    },
+  ] as const;
+
+  it.each(campaignCases)("prints $name in both languages", async ({ band, variant, warriors, rules, log, expected, forbidden }) => {
+    if (!freshArtefactPath()) return;
+    const knowledge = freshCampaignKnowledge();
+    // T12 fase D: the PDF writer only runs on a loaded catalogue — the deferred
+    // families are the ones it resolves equipment and campaign text from.
+    expect(knowledge.isCatalogueLoaded("items")).toBe(true);
+    expect(knowledge.isCatalogueLoaded("campaign")).toBe(true);
+    expect(knowledge.list("item").length).toBeGreaterThan(0);
+    for (const locale of ["es", "en"] as const) {
+      const base = documentWith();
+      const roster: Warrior[] = warriors.map((row, index) => ({
+        id: row.id, name: ("personal" in row && row.personal) || `Miembro ${index + 1}`,
+        profile_id: row.profile, profile_name: row.profile, kind: row.kind,
+        stats: { M: 4, WS: 3, BS: 3, S: 3, T: 3, W: 1, I: 3, A: 1, Ld: 7 },
+        equipment: [], skills: [], experience: 0, cost: 25,
+        ...("quantity" in row ? { quantity: row.quantity } : {}),
+      }));
+      const document: CampaignDocument = { ...base, campaign: { ...base.campaign,
+        identity: { ...base.campaign.identity, band_id: band, mercenary_variant: variant },
+        configuration: { ...base.campaign.configuration, is_draft: true },
+        warriors: roster, special_rules: [...rules], manual_log: [...log],
+      } };
+      const draw = vi.spyOn(PDFPage.prototype, "drawText");
+      try {
+        const bytes = await createWarbandPdf(document, locale, knowledge);
+        if (process.env.PRESENTATION_PDF_DIR) {
+          const directory = resolve(process.env.PRESENTATION_PDF_DIR);
+          mkdirSync(directory, { recursive: true });
+          writeFileSync(resolve(directory, `campaign-${band}-${locale}.pdf`), bytes);
+        }
+        const printed = draw.mock.calls.map(([text]) => text).join("\n");
+        for (const label of expected[locale]) expect(printed, `${label} (${locale})`).toContain(label);
+        for (const leak of forbidden) expect(printed, `${leak} must not print`).not.toContain(leak);
+        // The WinAnsi screen never turns a published name into a replacement.
+        expect(printed).not.toContain("?");
+      } finally {
+        draw.mockRestore();
+      }
     }
   });
 

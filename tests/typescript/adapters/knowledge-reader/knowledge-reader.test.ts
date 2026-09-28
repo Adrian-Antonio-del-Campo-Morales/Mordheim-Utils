@@ -7,7 +7,8 @@
  * - corrupt artefact rejection (build must fail, per the plan).
  */
 import { describe, expect, it } from "vitest";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
+import { readArtefactDocument } from "../../../support/kb-artefact";
 import { join } from "node:path";
 import { ArtefactKnowledgeReader, resolveName } from "@adapters/knowledge-reader/index";
 
@@ -212,7 +213,7 @@ describe("queryMany", () => {
 describe("real generated artefact", () => {
   const artefactExists = existsSync(ARTEFACT_PATH);
   it.skipIf(!artefactExists)("indexes the generated artefact end to end", () => {
-    const artefact = JSON.parse(readFileSync(ARTEFACT_PATH, "utf-8"));
+    const artefact = readArtefactDocument(ARTEFACT_PATH);
     const real = ArtefactKnowledgeReader.from(artefact);
     const band = real.queryKnowledge({
       id: { kind: "band_id", value: "sisters-of-sigmar" },

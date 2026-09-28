@@ -21,16 +21,17 @@ import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { unavailableText, type TextField, type TextReference, type TextResolution } from "@adapters/knowledge-reader/presentation";
 import type { KnowledgeKind } from "@domain/campaign/kernel/ports";
 import type { AppError, CampaignDocument, IdString, OpenPayload } from "./types";
+import { advanceAccessClausesOf } from "@domain/campaign/kernel/advance-access";
 import { creationDecisionsOf, owedCreationDecisions, recordedCreationDecision, type CreationDecisionFacts } from "@domain/campaign/kernel/creation-decisions";
 import { missingRequiredMembers } from "@domain/campaign/kernel/lifecycle";
 import { marketAvailabilityIssueFor, type MarketIssueCode } from "@domain/campaign/kernel/market";
-import { mutationCatalogue, mutationGrantRulesOf, mutationPrice, mutationsOf, type MutationGrantFacts } from "@domain/campaign/kernel/mutations";
+import { MUTATION_MARKER, mutationCatalogue, mutationGrantRulesOf, mutationPrice, mutationsOf, type MutationGrantFacts } from "@domain/campaign/kernel/mutations";
 import { routTestFactsFor } from "@domain/campaign/kernel/rout-test";
 import { currentLeaderId, pendingSuccession, successionClausesOf } from "@domain/campaign/kernel/succession";
 import { withdrawalLog } from "@domain/campaign/kernel/withdrawal";
-import { knowledgeName, persistedSystemText } from "./displayText";
+import { knowledgeName, localizedLabel, persistedSystemText } from "./displayText";
 import { translate, type Locale, type UiText } from "./i18n-core";
-import { warriorPersonalName, type FormattedText, type PresentationValue } from "./presentation-values";
+import { warriorPersonalName, withdrawalMemberName, type PresentationValue } from "./presentation-values";
 
 /** Stable rejection reasons the interface knows how to phrase. */
 export type CampaignIssueCode =
@@ -45,6 +46,8 @@ export type CampaignIssueCode =
   | "not_permitted_when_committed"
   | "lifecycle_member_required"
   | "market_creation_only"
+  /** T09 construction contract: the skill is outside the profile's tables. */
+  | "skill_not_permitted"
   /** T09/T10 advance contract: a `special` list still published as prose. */
   | "skill_pending_special_list"
   | MarketIssueCode;
@@ -60,6 +63,7 @@ const CAMPAIGN_ISSUE_CODES: readonly string[] = [
   "not_permitted_in_draft",
   "not_permitted_when_committed",
   "lifecycle_member_required",
+  "skill_not_permitted",
   "skill_pending_special_list",
   "market_not_listed",
   "market_not_common",
@@ -92,34 +96,48 @@ export function campaignIssueSignal(error: AppError): CampaignIssueSignal {
 }
 
 /**
- * A campaign-catalogue row publishes its own translated name fields. English
- * may read the canonical field (which is the English text by contract); any
- * other locale without its own translation is a missing datum, never an
- * English leak.
+ * Name of a published campaign catalogue row, resolved by its stable kind and
+ * id through the presentation index. The generated index carries those rows
+ * (`creation-decision`, `lifecycle-clause`, `succession-clause`,
+ * `advance-access-clause`, `mutation-grant`), so a name reaches a surface as a
+ * resolved KB value and no consumer casts a raw field into a display value. A
+ * row the index does not publish resolves to the shared unavailable message.
  */
-function catalogueName(locale: Locale, name: unknown, nameI18n: unknown): PresentationValue {
-  const translations = nameI18n && typeof nameI18n === "object" ? (nameI18n as Readonly<Record<string, unknown>>) : {};
-  const localized = translations[locale];
-  if (typeof localized === "string" && localized.trim()) return localized as FormattedText;
-  if (locale === "en" && typeof name === "string" && name.trim()) return name as FormattedText;
-  return unavailableText(locale);
-}
-
-/** Published text of a recorded campaign entry, in the active language only. */
-function recordedText(locale: Locale, text: unknown, texts: unknown): PresentationValue {
-  const translations = texts && typeof texts === "object" ? (texts as Readonly<Record<string, unknown>>) : {};
-  const localized = translations[locale];
-  return typeof localized === "string" && localized.trim() ? (localized as FormattedText) : persistedSystemText(text, undefined, locale);
+function campaignRowName(reader: ArtefactKnowledgeReader, kind: string, id: string, locale: Locale): PresentationValue {
+  const result = reader.resolveKbText({ kind, id }, "name", locale);
+  return result.ok ? result.text : unavailableText(locale);
 }
 
 /**
- * Name of a member recorded in the campaign log. The member is already gone, so
- * the sanctioned `warriorPersonalName` adapter has no row to read: the persisted
- * audit entry is the only source. A field-specific adapter for that record (the
- * shape of `manualCorrectionReason`) is a T12 presentation item.
+ * Name of the rule a printed advance-access clause grants. Rule rows are
+ * published twice — once scoped to the band and profile that owns the printed
+ * rule, once globally from `rules_prose/localized-labels` — so an unscoped
+ * lookup finds two candidates and resolves to neither. The clause names its
+ * recipients, exactly as the index scopes the row, so the scoped reference is
+ * tried first and the global row remains the fallback.
  */
-function recordedMemberName(locale: Locale, value: unknown): PresentationValue {
-  return typeof value === "string" && value.trim() ? (value as FormattedText) : unavailableText(locale);
+function grantedRuleName(reader: ArtefactKnowledgeReader, ruleId: string, bandId: string, profileIds: readonly string[], locale: Locale): PresentationValue {
+  for (const profileId of profileIds) {
+    const scoped = reader.resolveKbText({ kind: "rule", id: ruleId, bandId, profileId }, "name", locale);
+    if (scoped.ok) return scoped.text;
+  }
+  return campaignRowName(reader, "rule", ruleId, locale);
+}
+
+/**
+ * Printed result of a recorded creation roll. The persisted entry keeps the
+ * stable `decision_id` and `outcome_id`, so the text is resolved from the
+ * published table in the active language; the persisted copy is only the
+ * fallback for a row the index no longer publishes.
+ */
+function recordedOutcomeText(reader: ArtefactKnowledgeReader, recorded: OpenPayload, locale: Locale): PresentationValue {
+  const decisionId = String(recorded["decision_id"] ?? "");
+  const outcomeId = String(recorded["outcome_id"] ?? "");
+  if (decisionId && outcomeId) {
+    const result = reader.resolveKbText({ kind: "creation-outcome", id: `${decisionId}/${outcomeId}` }, "name", locale);
+    if (result.ok) return result.text;
+  }
+  return persistedSystemText(recorded["text"], undefined, locale);
 }
 
 /**
@@ -162,6 +180,7 @@ export interface ObligationNames {
   readonly ruleName: (id: string) => PresentationValue;
   readonly profileName: (id: string) => PresentationValue;
   readonly itemName: (id: string) => PresentationValue;
+  readonly skillName: (id: string) => PresentationValue;
 }
 
 /**
@@ -172,20 +191,23 @@ export interface ObligationNames {
 export function obligationNamesOf(document: CampaignDocument, reader: ArtefactKnowledgeReader, locale: Locale): ObligationNames {
   const doc = armedDocument(document);
   const bandId = doc.campaign.identity.band_id;
-  const decisions = creationDecisionsOf(reader, bandId);
-  const clauses = [...missingRequiredMembers(doc, reader), ...successionClausesOf(reader, bandId)];
+  const decisions = new Set(creationDecisionsOf(reader, bandId).map((row: CreationDecisionFacts) => row.id as string));
+  // Clauses of both families share the parameter slot of a rejection, so the
+  // kind each id belongs to is resolved from the published rows once.
+  const clauses = new Map<string, string>([
+    ...missingRequiredMembers(doc, reader).map((row) => [row.id as string, "lifecycle-clause"] as const),
+    ...successionClausesOf(reader, bandId).map((row) => [row.id as string, "succession-clause"] as const),
+  ]);
   return {
-    decisionName: (id) => {
-      const decision = decisions.find((row) => row.id === id);
-      return decision ? catalogueName(locale, decision.name, decision.name_i18n) : null;
-    },
+    decisionName: (id) => decisions.has(id) ? campaignRowName(reader, "creation-decision", id, locale) : null,
     clauseName: (id) => {
-      const clause = clauses.find((row) => row.id === id);
-      return clause ? catalogueName(locale, clause.name, clause.name_i18n) : null;
+      const kind = clauses.get(id);
+      return kind ? campaignRowName(reader, kind, id, locale) : null;
     },
     ruleName: (id) => knowledgeName(reader, "rule", id, locale),
     profileName: (id) => knowledgeName(reader, "profile", id, locale, undefined, bandId),
     itemName: (id) => knowledgeName(reader, "item", id, locale),
+    skillName: (id) => knowledgeName(reader, "skill", id, locale),
   };
 }
 
@@ -257,6 +279,17 @@ export function campaignIssueText(signal: CampaignIssueSignal, names: Obligation
         }, locale),
         severity: "status",
       };
+    case "skill_not_permitted":
+      // The parameters are band, profile and skill; the printed skill tables of
+      // that profile decide the verdict, so the sentence names the profile that
+      // owns the tables rather than repeating the ids.
+      return {
+        text: translate({
+          key: "campaign.skill-not-permitted",
+          args: { profile: names.profileName(second ?? ""), skill: names.skillName(signal.subjectIds[2] ?? "") },
+        }, locale),
+        severity: "alert",
+      };
     case "skill_pending_special_list":
       // The advance refused the choice because the KB publishes no members for
       // the band special-skill list. The cause is the missing datum, not the
@@ -288,7 +321,7 @@ export interface PendingDecisionFacts {
 export function pendingDecisionFacts(document: CampaignDocument, reader: ArtefactKnowledgeReader, locale: Locale): readonly PendingDecisionFacts[] {
   return owedCreationDecisions(armedDocument(document), reader).map((decision: CreationDecisionFacts) => ({
     id: decision.id,
-    name: catalogueName(locale, decision.name, decision.name_i18n),
+    name: campaignRowName(reader, "creation-decision", decision.id, locale),
     ruleId: decision.rule_id,
     dice: decision.dice,
   }));
@@ -311,10 +344,10 @@ export function recordedDecisionFacts(document: CampaignDocument, reader: Artefa
       if (!recorded) return [];
       return [{
         id: decision.id,
-        name: catalogueName(locale, decision.name, decision.name_i18n),
+        name: campaignRowName(reader, "creation-decision", decision.id, locale),
         order: Number(recorded["order"] ?? 0),
         roll: Number(recorded["roll"] ?? 0),
-        outcome: recordedText(locale, recorded["text"], recorded["texts"]),
+        outcome: recordedOutcomeText(reader, recorded, locale),
       }];
     })
     .sort((left, right) => left.order - right.order);
@@ -336,7 +369,7 @@ export function requiredMemberFacts(document: CampaignDocument, reader: Artefact
   const doc = armedDocument(document);
   return missingRequiredMembers(doc, reader).map((clause) => ({
     clauseId: clause.id,
-    clauseName: catalogueName(locale, clause.name, clause.name_i18n),
+    clauseName: campaignRowName(reader, "lifecycle-clause", clause.id, locale),
     ruleId: clause.rule_id,
     profiles: clause.profile_ids.map((id) => ({ id, name: knowledgeName(reader, "profile", id, locale, undefined, doc.campaign.identity.band_id) })),
   }));
@@ -375,7 +408,7 @@ export function leaderFacts(document: CampaignDocument, reader: ArtefactKnowledg
     leader: null,
     pending: {
       clauseId: pending.clause.id,
-      clauseName: catalogueName(locale, pending.clause.name, pending.clause.name_i18n),
+      clauseName: campaignRowName(reader, "succession-clause", pending.clause.id, locale),
       ruleId: pending.clause.rule_id,
       candidates,
     },
@@ -419,14 +452,14 @@ export function mutationFactsFor(document: CampaignDocument, reader: ArtefactKno
     if (!mutation) return [];
     return [{
       id,
-      name: catalogueName(locale, mutation.name, mutation.name_i18n),
+      name: campaignRowName(reader, "mutation", mutation.id, locale),
       price: mutationPrice(reader, id, purchased.length),
       owned: purchased.includes(id),
     }];
   });
   return {
     warriorId,
-    ruleName: catalogueName(locale, rule.name, rule.name_i18n),
+    ruleName: campaignRowName(reader, "mutation-grant", rule.id, locale),
     ruleId: rule.rule_id,
     recipients: rule.recipients,
     limitPerWarrior: rule.limit_per_warrior,
@@ -436,10 +469,83 @@ export function mutationFactsFor(document: CampaignDocument, reader: ArtefactKno
   };
 }
 
+export interface MutationHistoryEntry {
+  readonly id: IdString;
+  readonly name: PresentationValue;
+  /** Gold paid for the purchase, as the domain recorded it. */
+  readonly cost: number | null;
+  readonly order: number;
+}
+
+export interface MutationHistoryFacts {
+  readonly warriorId: IdString;
+  readonly warriorName: PresentationValue;
+  readonly entries: readonly MutationHistoryEntry[];
+}
+
+/**
+ * Mutations the campaign bought and persisted, oldest first, per member. The
+ * purchased cost is the recorded one (the domain charged it at purchase time);
+ * the catalogue supplies the name in the active language.
+ */
+export function mutationHistoryFacts(document: CampaignDocument, reader: ArtefactKnowledgeReader, locale: Locale): readonly MutationHistoryFacts[] {
+  const doc = armedDocument(document);
+  const catalogue = mutationCatalogue(reader);
+  return doc.campaign.warriors.flatMap((warrior) => {
+    const rows = doc.campaign.special_rules.filter((row) => row["kind"] === MUTATION_MARKER && row["warrior_id"] === warrior.id);
+    if (rows.length === 0) return [];
+    return [{
+      warriorId: warrior.id,
+      warriorName: warriorPersonalName(warrior, locale),
+      entries: rows.map((row) => {
+        const id = String(row["mutation_id"] ?? "");
+        return {
+          id,
+          name: catalogue.some((candidate) => candidate.id === id) ? campaignRowName(reader, "mutation", id, locale) : unavailableText(locale),
+          cost: typeof row["cost_gc"] === "number" && Number.isFinite(row["cost_gc"]) ? row["cost_gc"] : null,
+          order: Number(row["order"] ?? 0),
+        };
+      }).sort((left, right) => left.order - right.order),
+    }];
+  });
+}
+
 /** Whether the campaign is at a moment where a mutation may still be bought. */
 export function mutationPurchaseWindow(document: CampaignDocument): boolean {
   const doc = armedDocument(document);
   return doc.campaign.configuration?.is_draft === true || doc.campaign.post_battles.some((row) => !row.complete);
+}
+
+// ---------------------------------------------------------------------------
+// Granted advance tables
+// ---------------------------------------------------------------------------
+
+export interface AdvanceAccessFacts {
+  readonly id: IdString;
+  readonly name: PresentationValue;
+  readonly ruleId: IdString;
+  readonly ruleName: PresentationValue;
+  /** Localized labels of the skill lists the clause grants. */
+  readonly lists: readonly PresentationValue[];
+  readonly profiles: readonly { readonly id: IdString; readonly name: PresentationValue }[];
+}
+
+/**
+ * Printed clauses that widen a profile's advancement tables (Born Marksmen and
+ * its kin), as published rows. Nothing is re-implemented: the clause names the
+ * trigger, the recipients and the lists, and the advance workflow decides with
+ * them.
+ */
+export function advanceAccessFacts(document: CampaignDocument, reader: ArtefactKnowledgeReader, locale: Locale): readonly AdvanceAccessFacts[] {
+  const bandId = armedDocument(document).campaign.identity.band_id;
+  return advanceAccessClausesOf(reader, bandId).map((clause) => ({
+    id: clause.id,
+    name: campaignRowName(reader, "advance-access-clause", clause.id, locale),
+    ruleId: clause.rule_id,
+    ruleName: grantedRuleName(reader, clause.rule_id, bandId, clause.profile_ids, locale),
+    lists: clause.skill_lists.map((list) => localizedLabel(list, locale)),
+    profiles: clause.profile_ids.map((id) => ({ id, name: knowledgeName(reader, "profile", id, locale, undefined, bandId) })),
+  }));
 }
 
 // ---------------------------------------------------------------------------
@@ -503,7 +609,7 @@ export function withdrawalAuditFacts(document: CampaignDocument, locale: Locale)
     order: Number(entry["order"] ?? 0),
     battleNumber: typeof entry["battle_number"] === "number" ? entry["battle_number"] : null,
     members: (Array.isArray(entry["members"]) ? (entry["members"] as OpenPayload[]) : []).map((member) => ({
-      name: recordedMemberName(locale, member["name"]),
+      name: withdrawalMemberName(entry, member, locale),
       quantity: Number(member["quantity"] ?? 1),
     })),
   }));
@@ -605,6 +711,7 @@ export function marketAvailabilityFacts(document: CampaignDocument, reader: Mark
     ruleName: (id) => knowledgeName(reader, "rule", id, locale),
     profileName: (id) => knowledgeName(reader, "profile", id, locale, undefined, bandId),
     itemName: (id) => knowledgeName(reader, "item", id, locale),
+    skillName: (id) => knowledgeName(reader, "skill", id, locale),
   };
   const phrase = (code: MarketIssueCode): UiText | null => campaignIssueText({ code, subjectIds: [itemId] }, names, locale)?.text ?? null;
   if (!offer) return { available: false, text: phrase("market_not_listed") };

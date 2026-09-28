@@ -25,10 +25,19 @@ import { experienceTotal, modelCount, rating, treasury } from "@domain/campaign/
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 
 import type { Battle, CampaignDocument, InventoryItem, TimelineState, Warrior } from "../campaign/types";
-import { knowledgeName, localizedLabel, warriorAbilityRef } from "../campaign/displayText";
+import { knowledgeName, localizedLabel, variantName, warriorAbilityRef } from "../campaign/displayText";
 import { translate } from "../campaign/i18n-core";
 import { presentationOutput, type PresentationText } from "../campaign/presentation-output";
 import { textJoin, textNumber, textSymbol, textHeading, textDate, warriorPersonalName, warbandPersonalName, opponentPersonalName, warriorCharacteristic } from "../campaign/presentation-values";
+import {
+  advanceAccessFacts,
+  leaderFacts,
+  mutationFactsFor,
+  mutationHistoryFacts,
+  pendingDecisionFacts,
+  recordedDecisionFacts,
+  withdrawalAuditFacts,
+} from "../campaign/campaign-obligations";
 
 type Locale = "es" | "en";
 type RGB = ReturnType<typeof rgb>;
@@ -119,6 +128,16 @@ function buildLabels(locale: Locale) {
     rating: translate({ key: "pdf.rating" }, locale),
     storedEquipment: translate({ key: "pdf.storedEquipment" }, locale),
     notes: translate({ key: "pdf.notes" }, locale),
+    campaign: translate({ key: "pdf.campaign" }, locale),
+    variant: translate({ key: "pdf.variant" }, locale),
+    decisions: translate({ key: "pdf.decisions" }, locale),
+    successionPending: translate({ key: "pdf.successionPending" }, locale),
+    mutations: translate({ key: "pdf.mutations" }, locale),
+    mutationUnpriced: translate({ key: "pdf.mutationUnpriced" }, locale),
+    advanceTables: translate({ key: "pdf.advanceTables" }, locale),
+    withdrawals: translate({ key: "pdf.withdrawals" }, locale),
+    noObligations: translate({ key: "pdf.noObligations" }, locale),
+    sourceLimit: translate({ key: "pdf.sourceLimit" }, locale),
     state: (number: number) => translate({ key: "pdf.state", args: { number } }, locale),
     battle: (number: number) => translate({ key: "pdf.battle", args: { number } }, locale),
     members: (models: number) => translate({ key: "pdf.members", args: { models } }, locale),
@@ -652,6 +671,12 @@ function renderSummaryPage(
   sheet.setTextColor(INK);
   sheet.cell(0, 7, textJoin([labels.warbandName, warbandPersonalName(campaign, locale)]), { newX: "LMARGIN", newY: "NEXT" });
   sheet.cell(0, 7, textJoin([labels.warbandType, knowledgeName(knowledge, "band", campaign.identity.band_id, locale)]), { newX: "LMARGIN", newY: "NEXT" });
+  // The band option the campaign chose is part of its identity: without it a
+  // Mercenaries or Khemri sheet does not say which warband was built.
+  const variant = campaign.identity.mercenary_variant;
+  if (variant && knowledge) {
+    sheet.cell(0, 7, textJoin([labels.variant, variantName(knowledge, campaign.identity.band_id, variant, locale)]), { newX: "LMARGIN", newY: "NEXT" });
+  }
 
   const y = sheet.getY() + 4;
   const boxW = (CARD_TOTAL_WIDTH - 8) / 2;
@@ -681,6 +706,127 @@ function renderSummaryPage(
   const boxH = PAGE_H - y - 30 - 20;
   summaryBox(sheet, LM, y + 38, boxW, boxH, labels.storedEquipment, stashLines);
   summaryBox(sheet, LM + boxW + 8, y + 38, boxW, boxH, labels.notes, battleLines);
+}
+
+// ---------------------------------------------------------------------------
+// Campaign obligations page
+// ---------------------------------------------------------------------------
+
+interface ObligationGroup {
+  readonly title: PresentationText;
+  readonly lines: readonly PresentationText[];
+}
+
+/**
+ * The campaign contracts T10/T11 persist, phrased with the same resolvers and
+ * message catalogue the interface uses. Nothing is re-implemented here: the
+ * module reads the published rows through the campaign-obligation facts and
+ * prints names, never ids. Returns no group when the campaign records none, so
+ * a plain roster sheet keeps its previous wording.
+ */
+function obligationGroups(ctx: RenderContext, document: CampaignDocument, roster: readonly Warrior[]): readonly ObligationGroup[] {
+  const { knowledge, labels, locale } = ctx;
+  if (!knowledge) return [];
+  const groups: ObligationGroup[] = [];
+
+  const recorded = recordedDecisionFacts(document, knowledge, locale);
+  const pending = pendingDecisionFacts(document, knowledge, locale);
+  if (recorded.length || pending.length) {
+    groups.push({
+      title: labels.decisions,
+      lines: [
+        ...recorded.map((row) => translate({ key: "campaign.decision.resolved", args: { name: row.name, roll: row.roll, outcome: row.outcome } }, locale)),
+        ...pending.map((row) => translate({ key: "campaign.decision.required", args: { name: row.name } }, locale)),
+      ],
+    });
+  }
+
+  const leader = leaderFacts(document, knowledge, locale);
+  if (leader.leader) {
+    groups.push({ title: translate({ key: "campaign.succession.leader" }, locale), lines: [leader.leader.name] });
+  } else if (leader.pending) {
+    groups.push({
+      title: labels.successionPending,
+      lines: [
+        leader.pending.clauseName,
+        ...(leader.pending.candidates.length
+          ? leader.pending.candidates.map((candidate) => candidate.name)
+          : [translate({ key: "campaign.succession.none" }, locale)]),
+        ...(leader.sourceLimit ? [textJoin([labels.sourceLimit, translate({ key: "campaign.succession.source-limit" }, locale)], " ")] : []),
+      ],
+    });
+  }
+
+  const mutationLines: PresentationText[] = [];
+  let unpriced = 0;
+  for (const warrior of roster) {
+    const facts = mutationFactsFor(document, knowledge, warrior.id, locale);
+    if (facts) unpriced = Math.max(unpriced, facts.unpricedCount);
+  }
+  for (const history of mutationHistoryFacts(document, knowledge, locale)) {
+    for (const entry of history.entries) {
+      mutationLines.push(
+        entry.cost === null
+          ? textJoin([history.warriorName, textSymbol(":"), entry.name], " ")
+          : textJoin([history.warriorName, textSymbol(":"), translate({ key: "campaign.mutation.offer", args: { name: entry.name, price: entry.cost } }, locale)], " "),
+      );
+    }
+  }
+  if (mutationLines.length || unpriced) {
+    groups.push({ title: labels.mutations, lines: [...mutationLines, ...(unpriced ? [labels.mutationUnpriced] : [])] });
+  }
+
+  const tables = advanceAccessFacts(document, knowledge, locale).map((clause) => textJoin([
+    textJoin([clause.name, textSymbol(":")], ""),
+    textJoin([textJoin(clause.lists, ", "), clause.ruleName], " - "),
+  ]));
+  if (tables.length) groups.push({ title: labels.advanceTables, lines: tables });
+
+  const withdrawals = withdrawalAuditFacts(document, locale).map((entry) => translate({
+    key: "campaign.withdrawal.entry",
+    args: {
+      order: entry.order,
+      members: textJoin(entry.members.map((member) => translate({ key: "campaign.withdrawal.member", args: { name: member.name, quantity: member.quantity } }, locale)), ", "),
+    },
+  }, locale));
+  if (withdrawals.length) groups.push({ title: labels.withdrawals, lines: withdrawals });
+
+  // A row an older campaign saved while the advance contract still marked the
+  // prose-only list is printed as the pending datum it is, never as a grant.
+  const pendingLists = document.campaign.post_battles.flatMap((post) => (post.pending_advances ?? []).filter((row) => row["pending_special_list"] != null)).length;
+  if (pendingLists) groups.push({ title: labels.mutations, lines: [translate({ key: "campaign.advance.pending-special-list" }, locale)] });
+
+  return groups;
+}
+
+function renderCampaignPage(
+  ctx: RenderContext,
+  document: CampaignDocument,
+  roster: readonly Warrior[],
+  moment: PresentationText,
+): void {
+  const { sheet, labels } = ctx;
+  const groups = obligationGroups(ctx, document, roster);
+  if (groups.length === 0) return;
+  sheet.addPage();
+  sheet.setFont("italic", 8.5);
+  sheet.setTextColor(INK_SOFT);
+  sheet.cell(0, 5, moment, { align: "R", newX: "LMARGIN", newY: "NEXT" });
+  sheet.ln(1);
+  pageTitle(sheet, labels.campaign);
+  for (const group of groups) {
+    sheet.setFont("bold", 11.5);
+    sheet.setTextColor(INK);
+    sheet.cell(0, 7, group.title, { newX: "LMARGIN", newY: "NEXT" });
+    sheet.setDrawColor(INK_SOFT);
+    sheet.setLineWidth(0.2);
+    sheet.line(LM, sheet.getY(), LM + CARD_TOTAL_WIDTH, sheet.getY());
+    sheet.setXY(LM, sheet.getY() + 2);
+    sheet.setFont("normal", 10);
+    sheet.setTextColor(INK);
+    sheet.multiCell(CARD_TOTAL_WIDTH, 5.2, textJoin(group.lines, "\n"));
+    sheet.ln(3);
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -741,7 +887,9 @@ export async function createWarbandPdf(
   const henchmen = roster.filter((warrior) => warrior.kind !== "hero" && warrior.kind !== "hireling");
   renderGroup(ctx, heroes, HERO_CARD_HEIGHT);
   renderGroup(ctx, henchmen, HENCHMAN_CARD_HEIGHT);
-  renderSummaryPage(ctx, campaign, inventory, snapshot, momentLabel(campaign, stateNumber, labels, locale));
+  const moment = momentLabel(campaign, stateNumber, labels, locale);
+  renderSummaryPage(ctx, campaign, inventory, snapshot, moment);
+  renderCampaignPage(ctx, document, roster, moment);
 
   return pdf.save();
 }

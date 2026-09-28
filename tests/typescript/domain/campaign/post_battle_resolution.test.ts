@@ -7,8 +7,8 @@
  * published campaign catalogue rows, mirroring the desktop test.
  */
 
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { readArtefactDocument } from "../../../support/kb-artefact";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -16,11 +16,8 @@ import {
   type ResolverArtefact,
 } from "@domain/campaign/post_battle_resolution";
 
-const ARTEFACT = JSON.parse(
-  readFileSync(
-    resolve(__dirname, "../../../../outputs/web-public/knowledge/knowledge-web.json"),
-    "utf-8",
-  ),
+const ARTEFACT = readArtefactDocument(
+  resolve(__dirname, "../../../../outputs/web-public/knowledge/knowledge-web.json"),
 ) as ResolverArtefact;
 
 function resolver(): PostBattleResolver {

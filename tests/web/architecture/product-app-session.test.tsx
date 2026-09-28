@@ -5,7 +5,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ProductApp } from "@src/ProductApp";
 import { createService, loadKnowledge } from "@src/features/campaign/default-deps";
 
-vi.mock("@src/features/campaign/default-deps", () => ({
+// T12 fase D: only the composition functions are stubbed; the real
+// `ensureCampaignCatalogue` is kept so the deferred-catalogue gate runs as in
+// the product.
+vi.mock("@src/features/campaign/default-deps", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@src/features/campaign/default-deps")>()),
   createService: vi.fn(),
   loadKnowledge: vi.fn(),
 }));
@@ -41,9 +45,13 @@ describe("ProductApp session removal", () => {
     prepareExport.mockReset();
     markExported.mockClear();
     prepareExport.mockResolvedValue({ ok: false, message: "Export failed" });
+    // T12 fase D: the stand-in reader publishes both catalogue families, so the
+    // shell has nothing to defer.
     vi.mocked(loadKnowledge).mockResolvedValue({
       list: () => [{ id: "mercenaries", names: { es: "Mercenarios" }, collection: "mordheim", grade: "core" }],
       recordText: (row: { names: { es: string } }) => row.names.es,
+      isCatalogueLoaded: () => true,
+      ensureCatalogue: async () => {},
     } as never);
     vi.mocked(createService).mockReturnValue({
       createCampaign: vi.fn().mockResolvedValue({ ok: true }),

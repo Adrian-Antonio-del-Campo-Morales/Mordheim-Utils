@@ -1,9 +1,9 @@
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import "@testing-library/jest-dom/vitest";
 import { describe, expect, it } from "vitest";
 
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import { readArtefactReader } from "../../../support/kb-artefact";
 import { knowledgeHintDetails } from "@src/features/campaign/KnowledgeHintDetails";
 import { knowledgeDescription, knowledgeText } from "@src/features/campaign/displayText";
 
@@ -11,11 +11,8 @@ type HintKind = "item" | "skill" | "rule" | "injury";
 type Entry = { readonly kind: HintKind; readonly id: string; readonly profileId?: string; readonly bandId?: string };
 
 function reader(): ArtefactKnowledgeReader {
-  const path = resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json");
-  const artefact = JSON.parse(readFileSync(path, "utf8"));
-  artefact.rules_prose = JSON.parse(readFileSync(resolve(path, "..", artefact.rules_prose_url), "utf8"));
-  Object.assign(artefact, JSON.parse(readFileSync(resolve(path, "..", artefact.display_text_url), "utf8")));
-  return ArtefactKnowledgeReader.from(artefact);
+  // T12 fase D: complete artefact (initial document + deferred catalogue).
+  return readArtefactReader(resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"));
 }
 
 /** These are catalogue classes, not per-id exemptions: they are labels, not tooltip entries. */

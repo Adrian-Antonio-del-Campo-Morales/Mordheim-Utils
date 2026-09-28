@@ -77,6 +77,18 @@ export function manualCorrectionReason(entry: CampaignDocument["campaign"]["manu
     ? entry.reason as FormattedText : translate({ key: "knowledge.unavailable" }, locale);
 }
 
+/**
+ * Personal name of a member the withdrawal audit already removed. The warrior
+ * is no longer on the roster and no knowledge row describes him, so the audit
+ * entry the domain wrote is the only source. Field-specific like the adapters
+ * above: it accepts one declared record shape and nothing else.
+ */
+export function withdrawalMemberName(entry: CampaignDocument["campaign"]["manual_log"][number], member: Readonly<Record<string, unknown>> | undefined, locale: Locale): FormattedText | UiText {
+  const kind = entry?.kind ?? entry?.type;
+  return kind === "left_table_withdrawal" && typeof member?.name === "string" && member.name.trim()
+    ? member.name as FormattedText : translate({ key: "knowledge.unavailable" }, locale);
+}
+
 export function warriorCharacteristic(warrior: Warrior, key: "M" | "WS" | "BS" | "S" | "T" | "W" | "I" | "A" | "Ld", locale: Locale): FormattedText | UiText {
   const value = warrior.stats[key];
   const modifier = warrior.stat_modifiers?.[key] ?? 0;

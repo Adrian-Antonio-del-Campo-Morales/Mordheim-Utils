@@ -1,20 +1,19 @@
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
 import { describe, expect, it } from "vitest";
 
-import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { createDefaultUseCases } from "@domain/campaign/kernel/default-usecases";
 import { memberCount } from "@domain/campaign/kernel/document";
 import { CampaignAppProvider } from "@src/features/campaign/useCampaignApp";
 import type { CampaignDocument } from "@src/features/campaign/types";
 import { DraftWorkspace } from "@src/features/draft/DraftWorkspace";
+import { readArtefactReader } from "../../../support/kb-artefact";
 
 describe("DraftWorkspace", () => {
   it("does not count a Hired Sword against the initial warband limit", () => {
-    const knowledge = ArtefactKnowledgeReader.from(JSON.parse(readFileSync(resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"), "utf-8")));
+    const knowledge = readArtefactReader(resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"));
     const created = createDefaultUseCases(knowledge).createDraft("sisters-of-sigmar", knowledge);
     if (!created.ok) throw new Error("draft should succeed");
     const ownModels = memberCount(created.state.campaign.warriors);
@@ -36,7 +35,7 @@ describe("DraftWorkspace", () => {
 
   it("closes the add-hero dialog when the action is rejected", async () => {
     const user = userEvent.setup();
-    const knowledge = ArtefactKnowledgeReader.from(JSON.parse(readFileSync(resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"), "utf-8")));
+    const knowledge = readArtefactReader(resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"));
     const created = createDefaultUseCases(knowledge).createDraft("sisters-of-sigmar", knowledge);
     if (!created.ok) throw new Error("draft should succeed");
     const service = { current: () => created.state, isDirty: () => false, subscribe: () => () => {}, run: async () => ({ ok: false, reason: "rejected", message: "Roster limit reached (1/1)." }) } as never;

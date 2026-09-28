@@ -30,7 +30,8 @@
  * DOM, no filesystem write.
  */
 import { describe, expect, it } from "vitest";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
+import { readArtefactDocument } from "../../../support/kb-artefact";
 import { join } from "node:path";
 
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
@@ -151,7 +152,7 @@ function campaignDocument(bandId: string): CampaignDocument {
 }
 
 describe.skipIf(!ARTEFACT_PATH)("T09 §6 blockers (generated artefact)", () => {
-  const artefact = JSON.parse(readFileSync(ARTEFACT_PATH as string, "utf8"));
+  const artefact = readArtefactDocument(ARTEFACT_PATH as string);
   const reader: KnowledgeReader = ArtefactKnowledgeReader.from(artefact);
 
   describe("KAZ special-skill tables", () => {

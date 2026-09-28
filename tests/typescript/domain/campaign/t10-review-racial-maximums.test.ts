@@ -15,7 +15,8 @@
  * Purity: plain Node, the real reader — no React, no DOM.
  */
 import { describe, expect, it } from "vitest";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
+import { readArtefactDocument } from "../../../support/kb-artefact";
 import { join } from "node:path";
 
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
@@ -97,7 +98,7 @@ function warriorFrom(profile: ProfileRow): Warrior {
 }
 
 describe.skipIf(!ARTEFACT_PATH)("T10 review: racial maxima by stable identity", () => {
-  const artefact = JSON.parse(readFileSync(ARTEFACT_PATH as string, "utf8")) as { profiles: ProfileRow[] };
+  const artefact = readArtefactDocument(ARTEFACT_PATH as string) as { profiles: ProfileRow[] };
   const reader = ArtefactKnowledgeReader.from(artefact as never);
   const rows = racialMaximumsOf(reader);
 

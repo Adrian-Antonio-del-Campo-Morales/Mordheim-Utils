@@ -23,7 +23,11 @@ import "@testing-library/jest-dom/vitest";
 import { ProductApp } from "@src/ProductApp";
 import { createService, loadKnowledge } from "@src/features/campaign/default-deps";
 
-vi.mock("@src/features/campaign/default-deps", () => ({
+// T12 fase D: only the composition functions are stubbed; the real
+// `ensureCampaignCatalogue` is kept so the deferred-catalogue gate runs as in
+// the product.
+vi.mock("@src/features/campaign/default-deps", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@src/features/campaign/default-deps")>()),
   createService: vi.fn(),
   loadKnowledge: vi.fn(),
 }));
@@ -128,7 +132,9 @@ describe("P7.4 static accessibility audit", () => {
 
 describe("P7.4 keyboard & announcement behaviour", () => {
   beforeEach(() => {
-    vi.mocked(loadKnowledge).mockResolvedValue({ list: () => [] } as never);
+    // T12 fase D: the stand-in reader publishes both catalogue families, so the
+    // shell has nothing to defer.
+    vi.mocked(loadKnowledge).mockResolvedValue({ list: () => [], isCatalogueLoaded: () => true, ensureCatalogue: async () => {} } as never);
     vi.mocked(createService).mockReturnValue({
       importCampaign: vi.fn().mockResolvedValue({ ok: false, message: "Rejected import" }),
       subscribe: () => () => {},

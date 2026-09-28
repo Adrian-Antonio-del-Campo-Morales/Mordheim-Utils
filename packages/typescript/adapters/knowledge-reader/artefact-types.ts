@@ -26,12 +26,20 @@ export interface KnowledgeArtefact {
   readonly presentation_digest?: string;
   readonly rules_prose_digest?: string;
   readonly display_text_digest?: string;
+  /** T12 fase D: URL of the deferred campaign catalogue (items + campaign). */
+  readonly catalogue_url?: string;
+  readonly catalogue_digest?: string;
   readonly schema_version: number;
   readonly ruleset: string;
   readonly collections?: readonly ArtefactRow[];
   readonly bands: readonly ArtefactRow[];
   readonly profiles: readonly ArtefactRow[];
-  readonly items: readonly ArtefactRow[];
+  /**
+   * Equipment catalogue. Absent when `catalogue_url` defers it: the reader then
+   * exposes it only after `ensureCatalogue("items")` resolves, and reading it
+   * before that is a deterministic error instead of an empty catalogue.
+   */
+  readonly items?: readonly ArtefactRow[];
   readonly skills: readonly ArtefactRow[];
   readonly mechanics?: Readonly<Record<string, readonly ArtefactRow[]>>;
   readonly display_names?: Readonly<Record<string, LocaleText>>;
@@ -65,10 +73,21 @@ export function validateArtefact(value: unknown): ArtefactValidation {
       message: `KB artefact schema_version ${String(artefact.schema_version)} unsupported (expected 1)`,
     };
   }
-  for (const section of ["bands", "profiles", "items", "skills"] as const) {
+  for (const section of ["bands", "profiles", "skills"] as const) {
     if (!Array.isArray(artefact[section])) {
       return { ok: false, reason: "missing_section", message: `KB artefact section ${section} missing or not an array` };
     }
+  }
+  // The equipment catalogue travels inline, or deferred behind `catalogue_url`
+  // (T12 fase D); it may never be simply absent.
+  if (artefact.catalogue_url !== undefined && (typeof artefact.catalogue_url !== "string" || !artefact.catalogue_url)) {
+    return { ok: false, reason: "missing_section", message: "KB artefact catalogue_url is not a usable URL" };
+  }
+  if (artefact.catalogue_digest !== undefined && typeof artefact.catalogue_digest !== "string") {
+    return { ok: false, reason: "missing_section", message: "KB artefact catalogue_digest is not a string" };
+  }
+  if (!Array.isArray(artefact.items) && typeof artefact.catalogue_url !== "string") {
+    return { ok: false, reason: "missing_section", message: "KB artefact section items is missing and no catalogue_url defers it" };
   }
   if (artefact.presentation_entries !== undefined) {
     const object = (row: unknown): row is Record<string, unknown> => row !== null && typeof row === "object" && !Array.isArray(row);

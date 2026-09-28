@@ -7,7 +7,12 @@ import { createPresentationFlowAudit } from "./presentation-flow-audit.mjs";
 
 const attributes = new Set(["title", "alt", "placeholder", "aria-label", "aria-description", "aria-valuetext", "aria-placeholder", "aria-roledescription", "aria-braillelabel", "aria-brailleroledescription", "data-label", "data-tooltip", "data-disabled-reason", "data-disabled-tooltip", "data-title", "data-status", "label"]);
 const unsafeProperties = new Set(["id", "item_id", "profile_id", "band_id", "tag", "tags", "message", "applied_label", "roll_history", "profile_name", "warband_type"]);
-const resolvers = new Set(["knowledgeName", "knowledgeText", "knowledgeDescription", "resolveName", "resolveNameText", "localizedLabel", "readableValue", "resourceAmount", "translate", "advanceResultText", "recordText", "legacyText", "unavailableText", "itemName"]);
+// Adapters that turn domain/system values into presentation text. Every member
+// returns branded text on every path, so its lookup keys are not visible values.
+// `variantName` returns `ResolvedKbText` from `recordText` (or the unavailable
+// message); it was missing here, which made a non-GUI sink that takes a band id
+// through it look like raw system text (T12, §presentación).
+const resolvers = new Set(["knowledgeName", "knowledgeText", "knowledgeDescription", "resolveName", "resolveNameText", "localizedLabel", "readableValue", "resourceAmount", "translate", "advanceResultText", "recordText", "legacyText", "unavailableText", "itemName", "variantName"]);
 // Only structural native attributes may bypass presentation validation. Unknown
 // attributes are review findings, including future browser/custom extensions.
 const structuralAttributes = new Set("key ref id className htmlFor role type name disabled checked defaultChecked selected multiple required readOnly autoFocus autoComplete tabIndex hidden inert open href target rel download width height rows cols min max step pattern inputMode form method action accept acceptCharset encType colSpan rowSpan scope xmlns viewBox d fill stroke strokeWidth cx cy r x y x1 y1 x2 y2 points transform focusable preserveAspectRatio aria-hidden aria-expanded aria-controls aria-describedby aria-labelledby aria-details aria-errormessage aria-live aria-atomic aria-busy aria-current aria-selected aria-checked aria-disabled aria-required aria-invalid aria-pressed aria-modal aria-haspopup aria-level aria-valuemin aria-valuemax aria-valuenow aria-posinset aria-setsize".split(" "));

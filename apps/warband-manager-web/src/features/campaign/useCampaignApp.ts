@@ -241,6 +241,7 @@ const CAMPAIGN_CODE_MESSAGES: Readonly<Record<CampaignIssueCode, string>> = {
   not_permitted_in_draft: "campaign.error-draft-only",
   not_permitted_when_committed: "campaign.error-recruiting-only",
   lifecycle_member_required: "campaign.lifecycle.required",
+  skill_not_permitted: "campaign.skill-not-permitted",
   skill_pending_special_list: "campaign.advance.pending-special-list",
   market_not_listed: "campaign.market.not-listed",
   market_not_common: "campaign.market.not-common",

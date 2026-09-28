@@ -6,19 +6,16 @@
  * post-battle gold delta (the engine-side guards the desktop matrix pins).
  */
 
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { readArtefactDocument } from "../../../../../support/kb-artefact";
 import { describe, expect, it } from "vitest";
 
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import type { Campaign, CampaignDocument } from "@domain/campaign/kernel/usecases";
 import { buyWeaponUpgrade } from "@app/campaign/features/economy/weapon-upgrade-workflow";
 
-const ARTEFACT = JSON.parse(
-  readFileSync(
-    resolve(__dirname, "../../../../../../outputs/web-public/knowledge/knowledge-web.json"),
-    "utf-8",
-  ),
+const ARTEFACT = readArtefactDocument(
+  resolve(__dirname, "../../../../../../outputs/web-public/knowledge/knowledge-web.json"),
 ) as unknown;
 
 const reader = ArtefactKnowledgeReader.from(ARTEFACT) as ArtefactKnowledgeReader & {

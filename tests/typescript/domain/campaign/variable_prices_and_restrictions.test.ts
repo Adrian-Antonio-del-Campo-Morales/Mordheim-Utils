@@ -13,15 +13,12 @@
  * `application/campaign/features/economy/weapon-upgrade-workflow`.
  */
 
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { readArtefactDocument } from "../../../support/kb-artefact";
 import { describe, expect, it } from "vitest";
 
-const ARTEFACT = JSON.parse(
-  readFileSync(
-    resolve(__dirname, "../../../../outputs/web-public/knowledge/knowledge-web.json"),
-    "utf-8",
-  ),
+const ARTEFACT = readArtefactDocument(
+  resolve(__dirname, "../../../../outputs/web-public/knowledge/knowledge-web.json"),
 ) as {
   campaign: {
     "trading-post": {

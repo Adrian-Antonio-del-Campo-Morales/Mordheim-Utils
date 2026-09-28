@@ -8,7 +8,11 @@ import { loadKnowledge } from "@src/features/campaign/default-deps";
 import { bandCategoriesOf, bandCategoryKey, bandPickerState } from "@src/features/campaign/band-categories";
 import { translate } from "@src/features/campaign/i18n-core";
 
-vi.mock("@src/features/campaign/default-deps", () => ({
+// T12 fase D: only the composition functions are stubbed; the real
+// `ensureCampaignCatalogue` is kept so the deferred-catalogue gate runs as in
+// the product.
+vi.mock("@src/features/campaign/default-deps", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@src/features/campaign/default-deps")>()),
   createService: vi.fn(),
   loadKnowledge: vi.fn(),
 }));
@@ -34,6 +38,9 @@ function mockKnowledge(rows: readonly unknown[]) {
       const band = rows.find((row) => (row as { id: string }).id === id.value);
       return band ? { ok: true, record: { data: band } } : { ok: false, reason: "not_found" };
     },
+    // T12 fase D: the stand-in reader publishes both catalogue families.
+    isCatalogueLoaded: () => true,
+    ensureCatalogue: async () => {},
   } as never);
 }
 

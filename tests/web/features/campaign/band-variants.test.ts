@@ -1,14 +1,13 @@
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
-import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import { readArtefactReader } from "../../../support/kb-artefact";
 import { activeBandRuleIds, warbandVariants } from "@domain/campaign/band-variants";
 import { createService } from "@src/features/campaign/default-deps";
 
 function knowledge() {
-  const raw = JSON.parse(readFileSync(resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"), "utf8"));
-  return ArtefactKnowledgeReader.from(raw);
+  // T12 fase D: complete artefact (initial document + deferred catalogue).
+  return readArtefactReader(resolve(process.cwd(), "../../outputs/web-public/knowledge/knowledge-web.json"));
 }
 
 describe("warband family variants", () => {
