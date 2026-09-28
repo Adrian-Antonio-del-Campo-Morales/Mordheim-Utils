@@ -11,7 +11,7 @@ de `sources/2A/README.md` / `sources/2B/README.md`, que se retiran con él.
 
 Todo lo que se mantiene de forma permanente vive en `tools/knowledge/`
 (`audit_kb_conformance.py`, `derive_kb_contract.py`, `audit_schema_strictness.py`,
-`audit_staging_contract.py`, `strip_rule_ref_restatements.py`, `generate_knowledge_web.py`,
+`audit_staging_contract.py`, `generate_knowledge_web.py`,
 `normalize_open_fields.py`, y desde su promoción `printed_entries.py` y
 `printed_wordings.py`).
 Las tareas editoriales permanentes viven en `tools/knowledge/maintenance/`
@@ -105,9 +105,11 @@ leen de allí; la condición de borrado del directorio ya no los arrastra.
 | `audit_2ab_fidelity.py` | Fidelidad y completitud de los 79 paquetes de staging contra los textos extraídos: cada artefacto del paquete debe rastrearse hasta la fuente y cada etiqueta impresa debe estar modelada. Los **objetos** de cada lista de equipo (`equipment-access.yaml`) se cotejan contra las **listas impresas** —la fila que imprime su nombre con su tarifa, `price_rows` en 2B y las tablas del documento en la página web de 2A— y no contra el nombre suelto de su prosa: `item-in-list` cuando la lista del propio documento lo imprime, `item-in-supplement` cuando sólo lo imprime un capítulo que el árbol comparte, `item-outside-list` cuando el nombre está en la prosa y ninguna fila lo imprime, y `item-name-missing` cuando no está ni en la lista ni en la prosa. La fila se coteja con la **palabra que la fuente imprime** para ese objeto (`printed_wordings`: «Holy Water» para `blessed_water`, «Wardog» para `warhound`, «Warplock Pistol» para `warp_pistol`…), adjudicada fila por fila con su tarifa en §9 de los verdictos de 2A y §15.4 de los de 2B, y con la nota de la lista que la fuente **delega** al reglamento en vez de imprimirla (el KAZ skaven, §7). La lectura del documento es la del lector compartido, no la de `pdftotext -layout`, y las filas de características de la tabla impresa se leen por **estructura** —la línea física y sus celdas (`printed_row`), el orden de lectura de la columna con el nombre del título que encabeza la tabla (`entry_row`, `title_above`, `column_row`) y las tablas de la página web por sus celdas (`profile_tables`)—, nunca por una ventana de tokens de prosa (que queda sólo como respaldo de la fuente sin lectura estructural): el nombre es el de la celda que lleva los valores o el del encabezado que titula la tabla, la fila se lee por sus nueve **valores** (un guion es una característica que no hay; el paréntesis de «3(4)», «Giant Spider 7 3 0 3(4) 3 1 4 1 4», es una variante y no un décimo valor) y lo que la columna vecina imprime a la misma altura no lo es (la tabla de tesoros del KAZ, «D3 Gems worth 10 gc each 4+», no es la fila de un perfil llamado «D»). Una fila cuyo nombre coincide con un perfil del KB sólo cuenta como modelada si el KB también lleva sus características. |
 | `normalize_staging_for_promotion.py` | Pases `status`, `market`, `items`, `hirelings`, `magic`, `shape`: el catálogo de mercado de cada árbol, el `status` que lleva cada familia, el objeto en forma KB (prosa plegada, `kind` reclasificado, hechos de mercado retirados), el reparto de hirelings en sus dos catálogos con la tarifa y elegibilidad en el documento de campaña, la magia con su envoltura, sus `lore_assignments` y los reprints/variantes en forma KB (la tabla de fallo viaja a la regla de banda que tira en ella), y la forma de colección que la KB usa (bloque, con los guiones al indent de su clave) para `source_path`, `equipment_lists`, `rule_ids`, `skill_access`, `source`, `characteristics`, `name_i18n` y `combat_traits`. Idempotente; `--write` pasa después `tools/knowledge/maintenance/format_yaml.py`. |
 
-`strip_rule_ref_restatements.py` empezó aquí y se **promocionó** a `tools/knowledge/`:
-impone un invariante de la KB (`rule_ref` sin `effect` local) y ahora corre por defecto
-sobre todos los árboles, `knowledge` incluido.
+`strip_rule_ref_restatements.py` empezó aquí y se **retiró** con su invariante hecho: el
+invariante (`rule_ref` sin `effect` local) lo publica ahora
+`tools/knowledge/audit_kb_conformance.py` bajo `rule-ref-restated`, junto a `rule-ref`
+para toda referencia sin resolver. No hace falta un pase aparte ni se restaura la
+herramienta.
 
 ## Caches que necesitan
 

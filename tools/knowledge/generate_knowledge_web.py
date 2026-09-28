@@ -422,7 +422,8 @@ def _build_skills(ruleset: str) -> list[dict]:
     return sorted((_row(row, drop=("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n")) for row in load_skills(ruleset)), key=_sort_key)
 
 
-def _build_display_values(ruleset: str, skills: list[dict], rules_prose: dict, field: str) -> dict[str, dict[str, str]]:
+def _build_display_values(ruleset: str, skills: list[dict], rules_prose: dict, field: str,
+                          rule_ref_labels: tuple[dict, ...] | list[dict] = ()) -> dict[str, dict[str, str]]:
     """Compact canonical display values for every id that may appear on a roster."""
     values: dict[str, dict[str, str]] = {}
     conflicting: set[str] = set()
@@ -456,6 +457,13 @@ def _build_display_values(ruleset: str, skills: list[dict], rules_prose: dict, f
             add(row, f"{profile_id}:{row['id']}")
             if row.get("band_id"):
                 add(row, f"{row['band_id']}:{profile_id}:{row['id']}")
+    # A band rule that delegates its prose to a shared ``rule_ref`` keeps the
+    # referenced rule's name; it is scoped by band and profile exactly like the
+    # direct band rules, so a warrior card resolves it without reading prose.
+    for row in rule_ref_labels:
+        applies_to = row.get("applies_to") or {}
+        for profile_id in applies_to.get("profile_ids") or ():
+            add(row, f"{row['band_id']}:{profile_id}:{row['id']}")
     for rows in load_mechanics(ruleset).values():
         if isinstance(rows, list):
             for row in rows:
@@ -464,12 +472,14 @@ def _build_display_values(ruleset: str, skills: list[dict], rules_prose: dict, f
     return dict(sorted(values.items()))
 
 
-def _build_display_names(ruleset: str, skills: list[dict], rules_prose: dict) -> dict[str, dict[str, str]]:
-    return _build_display_values(ruleset, skills, rules_prose, "names")
+def _build_display_names(ruleset: str, skills: list[dict], rules_prose: dict,
+                         rule_ref_labels: tuple[dict, ...] | list[dict] = ()) -> dict[str, dict[str, str]]:
+    return _build_display_values(ruleset, skills, rules_prose, "names", rule_ref_labels)
 
 
-def _build_display_effects(ruleset: str, skills: list[dict], rules_prose: dict) -> dict[str, dict[str, str]]:
-    return _build_display_values(ruleset, skills, rules_prose, "effects")
+def _build_display_effects(ruleset: str, skills: list[dict], rules_prose: dict,
+                           rule_ref_labels: tuple[dict, ...] | list[dict] = ()) -> dict[str, dict[str, str]]:
+    return _build_display_values(ruleset, skills, rules_prose, "effects", rule_ref_labels)
 
 
 def _build_weapon_hands(ruleset: str) -> dict[str, int]:
@@ -482,8 +492,14 @@ def _build_weapon_hands(ruleset: str) -> dict[str, int]:
     return dict(sorted(hands.items()))
 
 
-def _build_rules_prose(ruleset: str) -> dict:
-    """Browsable rules prose catalogue for the browser rules view."""
+def _build_rules_prose(ruleset: str) -> tuple[dict, list[dict]]:
+    """Browsable rules prose catalogue for the browser rules view.
+
+    Returns the per-stem documents plus, separately, the scoped display labels of
+    the band rules that delegate their prose to a shared ``rule_ref`` rule. Those
+    rows stay out of the published prose (the shared rule owns it) but a warrior
+    card still shows their name, taken from the referenced rule.
+    """
     catalog = load_rules_catalog(ruleset)
     documents: dict[str, list[dict]] = {}
     for stem in catalog.stems():
@@ -496,19 +512,40 @@ def _build_rules_prose(ruleset: str) -> dict:
     special_rules = {str(row["id"]): row for row in documents.get("special-rules", ())}
     band_rules: list[dict] = []
     label_rules: list[dict] = []
+    rule_ref_labels: list[dict] = []
     for collection in (row["id"] for row in load_collections() if ruleset in set(row.get("rulesets") or ())):
         for package in load_bands(str(collection)):
             if package.ruleset != ruleset:
                 continue
             for rule in package.special_rules:
                 label_rules.append(_row(rule))
-                if rule.get("rule_ref"):
-                    continue
-                entry = {**_row(rule), "band_id": str(package.band["id"])}
-                identifier = str(entry.get("id") or "")
+                identifier = str(rule.get("id") or "")
                 if not identifier:
                     raise GenerationError(f"band special rule without id: {package.band['id']!r}")
-                band_rules.append(entry)
+                rule_ref = str(rule.get("rule_ref") or "")
+                if rule_ref:
+                    # The referenced rule owns the prose and the name; publish
+                    # the band-scoped label so the card shows "Leader", not an id.
+                    shared = special_rules.get(rule_ref)
+                    if shared is None:
+                        raise GenerationError(
+                            f"band rule {identifier!r} references unknown rule {rule_ref!r}"
+                        )
+                    names = {str(locale): str(value)
+                             for locale, value in (shared.get("names") or {}).items()
+                             if str(value).strip()}
+                    if not names:
+                        raise GenerationError(
+                            f"band rule {identifier!r} references {rule_ref!r}, which has no name"
+                        )
+                    rule_ref_labels.append({
+                        "id": identifier,
+                        "band_id": str(package.band["id"]),
+                        "applies_to": dict(rule.get("applies_to") or {}),
+                        "names": names,
+                    })
+                    continue
+                band_rules.append({**_row(rule), "band_id": str(package.band["id"])})
     direct_counts: dict[str, int] = {}
     for entry in band_rules:
         identifier = str(entry["id"])
@@ -547,7 +584,7 @@ def _build_rules_prose(ruleset: str) -> dict:
                 localized_ids[identifier] = candidate
     localized_labels.update({f"id:{key}": value for key, value in localized_ids.items()})
     documents["localized-labels"] = sorted(localized_labels.values(), key=_sort_key)
-    return dict(sorted(documents.items()))
+    return dict(sorted(documents.items())), rule_ref_labels
 
 
 def _build_campaign_section(ruleset: str, item_ids: set[str]) -> dict:
@@ -630,9 +667,9 @@ def generate(ruleset: str = DEFAULT_RULESET) -> dict:
         artefact["mechanics"] = {family: [_row(row) for row in rows if isinstance(row, dict)]
                                   for family, rows in load_mechanics(ruleset).items() if isinstance(rows, list)}
         artefact["weapon_hands"] = _build_weapon_hands(ruleset)
-        artefact["rules_prose"] = _build_rules_prose(ruleset)
-        artefact["display_names"] = _build_display_names(ruleset, artefact["skills"], artefact["rules_prose"])
-        artefact["display_effects"] = _build_display_effects(ruleset, artefact["skills"], artefact["rules_prose"])
+        artefact["rules_prose"], rule_ref_labels = _build_rules_prose(ruleset)
+        artefact["display_names"] = _build_display_names(ruleset, artefact["skills"], artefact["rules_prose"], rule_ref_labels)
+        artefact["display_effects"] = _build_display_effects(ruleset, artefact["skills"], artefact["rules_prose"], rule_ref_labels)
         artefact["campaign"] = _build_campaign_section(ruleset, {str(item["item_id"]) for item in artefact["items"]})
     except GenerationError:
         raise

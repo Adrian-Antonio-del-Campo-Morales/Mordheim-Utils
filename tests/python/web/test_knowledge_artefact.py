@@ -169,6 +169,37 @@ def test_every_profile_ability_with_a_canonical_id_has_a_display_name() -> None:
     assert artefact["display_effects"]["skill.blessed-sight"]["es"].startswith("La Augur puede repetir")
 
 
+def test_rule_ref_band_rules_reuse_the_shared_rule_display_name() -> None:
+    """A band rule that delegates to a shared ``rule_ref`` shows the shared name.
+
+    The five scoped pairs that used to have no display name (three
+    ``captain--leader`` and two ``vampire--*`` rules) resolve it from the
+    referenced ``shared-rule.*`` row, scoped by band and profile — never from a
+    per-profile copy or from the rule prose.
+    """
+    artefact = _artefact()
+    labels = artefact["display_names"]
+    profiles = artefact["rules_prose"]["profile-special-rules"]
+    cases = (
+        ("averlanders", "captain", "captain--leader", "shared-rule.leader"),
+        ("tileans", "captain", "captain--leader", "shared-rule.leader"),
+        ("wasteland-privateers-sar", "captain", "captain--leader", "shared-rule.leader"),
+        ("undead", "vampire", "vampire--immune-to-psychology", "shared-rule.immune-to-psychology"),
+        ("undead", "vampire", "vampire--no-pain", "shared-rule.no-pain"),
+    )
+    for band_id, profile_id, rule_id, shared_id in cases:
+        scoped = f"{band_id}:{profile_id}:{rule_id}"
+        assert scoped in labels, f"missing display name for {scoped}"
+        # The name is the referenced shared rule's, not a copy written per band.
+        assert labels[scoped] == labels[shared_id], f"{scoped} must reuse {shared_id}"
+        assert labels[scoped]["en"] and labels[scoped]["es"]
+        # The band keeps delegating the prose to the shared rule (no duplicate
+        # direct row), which is exactly why the name has to be resolved here.
+        assert not any(
+            row["id"] == rule_id and row.get("band_id") == band_id for row in profiles
+        ), f"{scoped} should delegate its prose to {shared_id}"
+
+
 def test_serious_injury_tables_publish_reader_facing_names() -> None:
     tables = {row["id"]: row for row in _artefact()["campaign"]["serious-injuries"]["tables"]}
     assert tables["campaign.serious-injuries.hero"]["name"] == "Heroes' Serious Injuries Chart"

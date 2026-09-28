@@ -91,7 +91,7 @@ Fin: todos los registros aprobados se cargan una vez desde `sources/knowledge`, 
 
 Inicio: fase 1 cerrada. T09 fija construcción, selección y contratos; después T10 implementa campaña y T11 conecta exclusivamente `warband-manager-web`. T12 genera artefactos, valida el flujo completo y cierra la fase.
 
-Fin: las bandas 2A/2B pueden crearse, operar, persistirse, reabrirse y exportarse en Web con ES/EN, accesibilidad y errores correctos. Automatización de campaña cubierta por casos de producto; commit local de fase 2 creado. La aplicación de escritorio ya no existe y queda fuera de alcance.
+Fin: las bandas 2A/2B pueden crearse, operar, persistirse, reabrirse y exportarse en Web con ES/EN, accesibilidad y errores correctos. Automatización de campaña cubierta por casos de producto; commit local de fase 2 creado. El **producto** de escritorio se retiró y queda fuera de alcance: no se crean ni modifican diálogos Tk ni se exige paridad con él. Los **adaptadores y módulos compartidos** que ese producto consumía siguen en el árbol y no se retiran, porque los usan las pruebas y el Combat Lab (`packages/python/adapters/desktop-ui/` y `packages/python/campaign/mordheim_campaign/ui/`).
 
 ### Fase 3 — Combat Simulator (T13–T15)
 

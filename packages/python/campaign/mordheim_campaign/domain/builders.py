@@ -147,12 +147,16 @@ def _starter_warriors(port: "KnowledgePort", option) -> list[WarriorVM]:
         occurrences[profile.profile_id] = occurrences.get(profile.profile_id, 0) + 1
         add(profile, quantity, row_id=f"{profile.profile_id}#{occurrences[profile.profile_id]}")
     # Warbands that declare all their heroes optional: the draft still needs
-    # at least one hero, so the cheapest legal hero available is added.
+    # at least one hero, so the cheapest hireable hero available is added. A
+    # profile the source prints without a hiring cost (e.g. a promotion-only
+    # entry such as Karak Azgal's Imperial Captain, which "can never be hired")
+    # is not a legal pick, so it is skipped rather than seeded at cost 0.
     if not any(row.kind == "hero" for row in rows):
         hero_candidates = [
             profile for profile in profiles.values()
             if profile.kind == "hero" and not profile.random_characteristics
             and profile.member_maximum not in (None, 0) and profile.member_maximum > 0
+            and profile.cost > 0
         ]
         for profile in sorted(hero_candidates, key=lambda profile: (profile.cost, profile.name)):
             if profile.cost > rules.starting_gold - sum(row.cost * row.quantity for row in rows):

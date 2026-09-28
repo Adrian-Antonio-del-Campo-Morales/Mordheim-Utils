@@ -1,6 +1,7 @@
 """KnowledgePort: canonical warband/profile reads for the Campaign Manager."""
 from mordheim_campaign.application.knowledge_port import CHARACTERISTIC_KEYS, KnowledgePort
 from mordheim_campaign.domain.builders import make_draft_state
+from mordheim_knowledge.loader import load_items
 
 
 def test_options_expose_every_canonical_warband():
@@ -115,7 +116,13 @@ def test_port_exposes_the_kb_post_battle_sequence():
     for resolves in sequence.resolved_catalogues:
         assert catalog.has_catalogue(resolves)
     assert len(catalog.documents) == 13
-    assert len(catalog.catalogue("trading-post.yaml")["items"]) == 338
+    # The Trading Post exposes the whole canonical item catalogue (one or more
+    # offers per item), so the port is checked against the KB inventory instead
+    # of a frozen row count.
+    offers = catalog.catalogue("trading-post.yaml")["items"]
+    assert {offer["item_id"] for offer in offers} == {
+        str(item["id"]) for item in load_items("mordheim")
+    }
 
 
 def test_price_override_only_for_source_confirmed_exceptions():
@@ -151,10 +158,17 @@ def test_price_override_only_for_source_confirmed_exceptions():
 def test_port_exposes_hireling_and_group_resolution():
     port = KnowledgePort()
     hirelings = port.hireling_catalogue()
-    assert len(hirelings.profiles) == 102
-    entries = port.campaign_catalog().catalogue("hired-swords-and-dramatis.yaml")
-    entries = entries["hired_swords"] + entries["dramatis_personae"]
+    # The pool is unique by construction and splits into the two published
+    # kinds; its size is derived from the catalogue, never pinned.
+    assert len(hirelings.profiles) == len(hirelings.profile_ids)
+    assert {profile["kind"] for profile in hirelings.profiles} == {"hired-sword", "dramatis-personae"}
+    catalogue = port.campaign_catalog().catalogue("hired-swords-and-dramatis.yaml")
+    entries = catalogue["hired_swords"] + catalogue["dramatis_personae"]
     # Hiring entries are the canonical consumers of the profile pool.
     assert {entry["profile_id"] for entry in entries} <= hirelings.profile_ids
+    # …and every hired sword has its hiring entry: the pool and the hired-sword
+    # catalogue stay in bijection, so both grow together.
+    hired_swords = {profile["id"] for profile in hirelings.profiles if profile["kind"] == "hired-sword"}
+    assert {entry["profile_id"] for entry in catalogue["hired_swords"]} == hired_swords
     groups = {group["id"] for group in port.warband_groups()}
     assert "warband-group.human-mercenary" in groups
