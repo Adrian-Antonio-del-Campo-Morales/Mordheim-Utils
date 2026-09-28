@@ -89,6 +89,11 @@ export function missingRequiredMembers(
   document: CampaignDocument,
   reader: LifecycleReader,
 ): readonly LifecycleClauseFacts[] {
+  // A clause of this family replaces a member the warband *lost* mid-campaign
+  // ("if the Dame is killed, she must be replaced before any other recruit").
+  // A draft has lost nobody: the clause cannot be owed while the warband is
+  // still being composed, and the roster may be built in any order.
+  if (document.campaign.configuration.is_draft) return [];
   const present = profilesInRoster(document);
   return lifecycleClausesOf(reader, document.campaign.identity.band_id).filter(
     (clause) =>

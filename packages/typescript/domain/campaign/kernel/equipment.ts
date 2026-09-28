@@ -21,6 +21,7 @@ import type {
 } from "./usecases";
 import { rejected } from "./rejections";
 import { findInventoryItem, findWarrior, treasury, withCampaign } from "./document";
+import { equipmentChangeRejectionFor } from "./equipment-verdicts";
 
 export interface DraftEquipmentPurchaseInput {
   readonly warrior_id: IdString;
@@ -225,25 +226,23 @@ export function buyDraftEquipment(
   if (!profile.ok || (typeof profile.record.data["band_id"] === "string" && profile.record.data["band_id"] !== document.campaign.identity.band_id)) {
     return rejected("not_found", `Unknown profile id: ${warrior.profile_id}.`);
   }
+  // Permission is the T09 construction contract's, not this route's: whether the
+  // item is on an active list (band lists, the lists the selected variant
+  // activates) and whether a prohibition or a whole-set limit blocks it are
+  // decided below by `equipmentChangeRejectionFor`, so no second table of
+  // tokens or of raw access rows can disagree with it. The published access row
+  // is read here only for the listed creation price.
   const access = Array.isArray(profile.record.data["equipment_access"])
     ? profile.record.data["equipment_access"] as Readonly<Record<string, unknown>>[]
     : [];
   const offer = access.find((row) => row["item_id"] === input.item_id);
-  if (!offer) {
-    return rejected("not_available", "This warrior cannot buy that item.");
-  }
-  const listedPrice = offer["cost"];
+  const listedPrice = offer?.["cost"];
   const price = typeof listedPrice === "number" ? listedPrice : input.unit_price;
   if (typeof price !== "number" || !Number.isInteger(price) || price < 0) {
     return rejected("invalid_input", "Resolve a valid creation price before buying this item.");
   }
   const item = knowledge.queryKnowledge({ id: { kind: "item_id", value: input.item_id } });
   if (!item.ok) return rejected("not_found", `Unknown item id: ${input.item_id}.`);
-  if (["armour", "shield-or-defence"].includes(String(item.record.data["kind"] ?? ""))
-    && Array.isArray(profile.record.data["equipment_forbids"])
-    && profile.record.data["equipment_forbids"].includes("armour")) {
-    return rejected("not_available", "This warrior cannot wear armour, shields or bucklers.");
-  }
   const quantity = warrior.quantity ?? 1;
   const total = price * quantity;
   if (total > treasury(document.campaign)) {
@@ -254,6 +253,16 @@ export function buyDraftEquipment(
   const equipment: EquipmentEntry[] = existing
     ? warrior.equipment.map((entry) => entry === existing ? { ...entry, quantity: entry.quantity + quantity, acquisition_costs: [...copyCosts(entry), ...Array(quantity).fill(price)] } : entry)
     : [...warrior.equipment, { item_id: input.item_id, name, quantity, acquisition: "purchase", unit_cost: price, per_model: true, acquisition_costs: Array(quantity).fill(price) }];
+  // The T09 construction contract decides the purchase: the item against its
+  // prohibitions and the member's complete kit against the whole-set limits.
+  const verdict = equipmentChangeRejectionFor({
+    document,
+    reader: knowledge,
+    warrior_id: warrior.id,
+    added_item_ids: [input.item_id],
+    resulting_item_ids: equipment.map((entry) => entry.item_id),
+  });
+  if (verdict) return verdict;
   const existingInventory = findInventoryItem(document, input.item_id);
   const inventory: InventoryItem[] = existingInventory
     ? document.campaign.inventory.map((entry) => entry.id === input.item_id ? { ...entry, owned: entry.owned + quantity, equipped: entry.equipped + quantity, acquisition_costs: [...stockCosts(entry), ...Array(quantity).fill(price)] } : entry)

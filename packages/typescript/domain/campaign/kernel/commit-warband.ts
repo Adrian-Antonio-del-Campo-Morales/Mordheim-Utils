@@ -13,8 +13,30 @@ import type { Campaign, CampaignDocument, EquipmentEntry, InventoryItem, UseCase
 import type { KnowledgeReader } from "./ports";
 import type { TimelineState } from "./state";
 import { rejected } from "./rejections";
-import { rosterIssuesOf } from "../construction";
+import { constructionIssuesOf, type ConstructionIssueCode } from "../construction";
+import { FATAL_EQUIPMENT_CODES } from "./equipment-verdicts";
 import { owedCreationDecisions, type CreationDecisionReader } from "./creation-decisions";
+
+/**
+ * Construction verdicts that make the composition invalid at commit time.
+ * Everything else the contract reports is a KB follow-up (an item row the
+ * artefact does not carry, a clause still published as prose, a characteristic
+ * whose roll belongs to the battle layer) and must not block a legal warband.
+ */
+const FATAL_COMMIT_CODES: readonly ConstructionIssueCode[] = [
+  "band_unknown",
+  "profile_unknown",
+  "profile_excluded_from_construction",
+  "roster_minimum_missing",
+  "roster_group_minimum_missing",
+  "variant_selection_required",
+  "variant_options_missing",
+  "variant_unknown_option",
+  "profile_not_permitted_for_variant",
+  "animal_not_permitted",
+  "characteristic_bound_exceeded",
+  ...FATAL_EQUIPMENT_CODES,
+];
 import {
   cloneDocument,
   draftIsLegal,
@@ -63,13 +85,16 @@ function foldEquipmentIntoInventory(campaign: Campaign): InventoryItem[] {
  * Commit the draft as State #0. Rejects when the draft is already committed
  * or illegal (with the specific violation, mirroring `draft_is_legal`).
  *
- * With a reader, the roster is also checked against the band record's declared
- * minimums (member slots and henchman group sizes) and its runtime-scope
- * exclusions — the same verdicts the interface presents (T09).
+ * The reader is mandatory: the whole T09 construction contract is evaluated over
+ * the composed draft — declared minimums and henchman group sizes, runtime-scope
+ * exclusions, the mandatory variant choice, the per-item equipment verdicts and
+ * the complete kit of every member (compulsory family, missile-weapon cap,
+ * per-profile exemptions) — so no signature exists that commits a roster the
+ * contract refuses. Only fatal verdicts block; KB follow-ups travel as reports.
  */
 export function commitInitialWarband(
   document: CampaignDocument,
-  knowledge?: KnowledgeReader,
+  knowledge: KnowledgeReader,
 ): UseCaseResult {
   const { campaign } = document;
   if (!campaign.configuration.is_draft) {
@@ -106,30 +131,26 @@ export function commitInitialWarband(
   if (!draftIsLegal(campaign)) {
     return rejected("limit_violated", "The draft is not legal.");
   }
-  if (knowledge) {
-    const fatal = rosterIssuesOf(knowledge, campaign).find((issue) =>
-      issue.code === "roster_minimum_missing" ||
-      issue.code === "roster_group_minimum_missing" ||
-      issue.code === "profile_unknown" ||
-      issue.code === "profile_excluded_from_construction" ||
-      issue.code === "variant_selection_required" ||
-      issue.code === "variant_options_missing" ||
-      issue.code === "variant_unknown_option" ||
-      issue.code === "profile_not_permitted_for_variant" ||
-      issue.code === "band_unknown",
+  const fatal = constructionIssuesOf(knowledge, campaign).find((issue) =>
+    FATAL_COMMIT_CODES.includes(issue.code),
+  );
+  if (fatal) {
+    return rejected(
+      fatal.code === "equipment_not_permitted" ? "not_available" : "limit_violated",
+      fatal.message,
+      fatal.subject_ids,
     );
-    if (fatal) return rejected("limit_violated", fatal.message);
-    // A printed creation roll the rules require is part of the warband, not an
-    // optional flourish: the draft cannot commit while one is still owed.
-    const owed = owedCreationDecisions(document, knowledge as CreationDecisionReader);
-    if (owed.length) {
-      return {
-        ok: false,
-        reason: "prerequisite_missing",
-        message: `Record the required creation roll first: ${owed.map((decision) => decision.name).join(", ")}.`,
-        subject_ids: owed.map((decision) => decision.id),
-      };
-    }
+  }
+  // A printed creation roll the rules require is part of the warband, not an
+  // optional flourish: the draft cannot commit while one is still owed.
+  const owed = owedCreationDecisions(document, knowledge as CreationDecisionReader);
+  if (owed.length) {
+    return {
+      ok: false,
+      reason: "prerequisite_missing",
+      message: `Record the required creation roll first: ${owed.map((decision) => decision.name).join(", ")}.`,
+      subject_ids: owed.map((decision) => decision.id),
+    };
   }
 
   const started = new Date().toISOString().slice(0, 10);

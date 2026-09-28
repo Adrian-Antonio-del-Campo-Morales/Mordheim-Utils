@@ -135,16 +135,79 @@ export function mutationsOf(document: CampaignDocument, warriorId: IdString): re
     .filter((id) => id.length > 0);
 }
 
+/**
+ * The published purchase policy, as the catalogue states it
+ * (`campaign.mutations.rules.purchase.pricing`): the multiplier of the first
+ * mutation and of the second and later ones. The vocabulary is closed: a policy
+ * value the application does not know is refused explicitly instead of being
+ * replaced by a hardcoded price rule.
+ */
+export const MUTATION_PRICE_MULTIPLIERS: Readonly<Record<string, number>> = {
+  listed_price: 1,
+  double_listed_price: 2,
+};
+
+export type MutationPricingPolicy =
+  | { readonly ok: true; readonly first: number; readonly second_and_subsequent: number }
+  | { readonly ok: false; readonly first: string; readonly second_and_subsequent: string };
+
+/** The published pricing policy of the catalogue, or an explicit unknown one. */
+export function mutationPricingPolicy(reader: MutationReader): MutationPricingPolicy {
+  const purchase = reader.campaignSection?.("mutations")?.["rules"];
+  const rules = purchase && typeof purchase === "object" ? (purchase as OpenPayload) : {};
+  const purchaseRules =
+    rules["purchase"] && typeof rules["purchase"] === "object" ? (rules["purchase"] as OpenPayload) : {};
+  const pricing =
+    purchaseRules["pricing"] && typeof purchaseRules["pricing"] === "object"
+      ? (purchaseRules["pricing"] as OpenPayload)
+      : {};
+  const first = String(pricing["first_mutation"] ?? "");
+  const later = String(pricing["second_and_subsequent"] ?? "");
+  const firstMultiplier = MUTATION_PRICE_MULTIPLIERS[first];
+  const laterMultiplier = MUTATION_PRICE_MULTIPLIERS[later];
+  if (firstMultiplier === undefined || laterMultiplier === undefined) {
+    return { ok: false, first, second_and_subsequent: later };
+  }
+  return { ok: true, first: firstMultiplier, second_and_subsequent: laterMultiplier };
+}
+
 /** Printed price multiplier: the second mutation and later cost double. */
-export function mutationPriceMultiplier(purchased: number): number {
-  return purchased <= 0 ? 1 : 2;
+export function mutationPriceMultiplier(purchased: number, policy: MutationPricingPolicy): number | null {
+  if (!policy.ok) return null;
+  return purchased <= 0 ? policy.first : policy.second_and_subsequent;
 }
 
 /** Listed price of a mutation for a warrior who already owns `purchased`. */
 export function mutationPrice(reader: MutationReader, mutationId: IdString, purchased: number): number | null {
   const mutation = mutationCatalogue(reader).find((row) => row.id === mutationId);
   if (!mutation || mutation.cost_gc === null) return null;
-  return mutation.cost_gc * mutationPriceMultiplier(purchased);
+  const multiplier = mutationPriceMultiplier(purchased, mutationPricingPolicy(reader));
+  if (multiplier === null) return null;
+  return mutation.cost_gc * multiplier;
+}
+
+/**
+ * Whether a member joined during the pending post-battle. The recruitment flow
+ * records one event per addition (`recruit` for a new profile, `recruit_member`
+ * for a member added to an existing group) with the `warrior_id` it created, so
+ * the moment of recruitment survives a save and a reopen instead of being
+ * inferred from the mere existence of a post-battle.
+ */
+export function recruitedDuringPost(
+  post: { readonly event_log?: readonly unknown[] } | OpenPayload | undefined | null,
+  warriorId: IdString,
+): boolean {
+  const log = post && typeof post === "object" ? post["event_log"] : undefined;
+  if (!Array.isArray(log)) return false;
+  return log.some((entry) => {
+    if (!entry || typeof entry !== "object") return false;
+    const event = entry as OpenPayload;
+    const type = String(event["type"] ?? "");
+    return (
+      (type === "recruit" || type === "recruit_member") &&
+      String(event["warrior_id"] ?? "") === warriorId
+    );
+  });
 }
 
 /**
@@ -159,13 +222,24 @@ export function buyMutation(
 ): UseCaseResult {
   const bandId = document.campaign.identity.band_id;
   const warrior = document.campaign.warriors.find((row) => row.id === input.warrior_id);
+  const draft = document.campaign.configuration.is_draft;
   const post = document.campaign.post_battles.find((row) => !row.complete);
-  const recruiting = document.campaign.configuration.is_draft || post !== undefined;
-  if (!recruiting) {
+  if (!draft && !post) {
     return { ok: false, reason: "not_permitted_when_committed", message: "Mutations may only be bought while a member is being recruited." };
   }
   if (!warrior) {
     return { ok: false, reason: "not_found", message: `${input.warrior_id} is not a member of this warband.`, subject_ids: [input.warrior_id] };
+  }
+  // The printed rule is `at_recruitment_only`: a post-battle is the moment a
+  // member *joins*, not a window to mutate a veteran. Only the members this
+  // pending post-battle recruited may buy, and the event log says who they are.
+  if (!draft && !recruitedDuringPost(post, warrior.id)) {
+    return {
+      ok: false,
+      reason: "not_permitted_when_committed",
+      message: `${warrior.name} joined before this post-battle: mutations are bought when a member is recruited, not later.`,
+      subject_ids: [warrior.id],
+    };
   }
   const rule = mutationGrantRulesOf(reader, bandId).find((row) => row.mutation_ids.includes(input.mutation_id));
   if (!rule) {
@@ -192,11 +266,20 @@ export function buyMutation(
   if (rule.limit_per_warrior !== null && owned.length >= rule.limit_per_warrior) {
     return { ok: false, reason: "limit_reached", message: `${warrior.name} may hold at most ${rule.limit_per_warrior} mutation(s).`, subject_ids: [warrior.id] };
   }
+  const pricing = mutationPricingPolicy(reader);
+  if (!pricing.ok) {
+    return {
+      ok: false,
+      reason: "not_available",
+      message: `The mutation purchase policy "${pricing.first}" / "${pricing.second_and_subsequent}" has no contract.`,
+      subject_ids: [input.mutation_id],
+    };
+  }
   const price = mutationPrice(reader, input.mutation_id, owned.length);
   if (price === null) {
     return { ok: false, reason: "not_found", message: `No listed price is published for ${input.mutation_id}.`, subject_ids: [input.mutation_id] };
   }
-  const available = document.campaign.configuration.is_draft
+  const available = draft
     ? treasury(document.campaign)
     : (currentState(document)?.gold ?? 0) + (post?.gold_delta ?? 0);
   if (price > available) {
@@ -222,10 +305,10 @@ export function buyMutation(
   // During the draft the purchase raises the member's recruitment cost, which is
   // exactly what `treasury` subtracts; after a battle the cost leaves the
   // pending post-battle's gold.
-  const warriors = document.campaign.configuration.is_draft
+  const warriors = draft
     ? document.campaign.warriors.map((row) => row.id === warrior.id ? { ...row, cost: row.cost + price } : row)
     : document.campaign.warriors;
-  const postBattles = document.campaign.configuration.is_draft || !post
+  const postBattles = draft || !post
     ? document.campaign.post_battles
     : document.campaign.post_battles.map((row) =>
         row === post

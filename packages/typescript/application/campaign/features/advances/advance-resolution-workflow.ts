@@ -1,6 +1,6 @@
 import type { CampaignDocument, KnowledgeReader, OpenPayload, Warrior } from "../../../../domain/campaign/index";
 import { withCampaign } from "../../../../domain/campaign/kernel/document";
-import { profileFactsOf, skillIssueFor } from "../../../../domain/campaign/construction";
+import { profileFactsOf, racialMaximumResolutionFor, skillIssueFor, type RacialMaximumResolution } from "../../../../domain/campaign/construction";
 import { promotionRemovalClauseFor } from "../../../../domain/campaign/kernel/lifecycle";
 import { additionalSkillListsFor } from "../../../../domain/campaign/kernel/advance-access";
 
@@ -8,14 +8,23 @@ interface CatalogueReader extends KnowledgeReader {
   campaignSection?(section: string): Readonly<Record<string, unknown>>;
   list?(kind: "profile" | "skill" | "warband_group" | "racial_maximum"): readonly Readonly<Record<string, unknown>>[];
 }
-type Result = { ok: true; document: CampaignDocument; needs_subroll?: boolean } | { ok: false; message: string };
+type Result = { ok: true; document: CampaignDocument; needs_subroll?: boolean } | { ok: false; message: string; reason?: string; subject_ids?: readonly string[] };
 function appendHistory(row: OpenPayload, event: OpenPayload, legacy: string): OpenPayload {
   const old = Array.isArray(row["roll_history"]) ? row["roll_history"] : [];
   const facts = Array.isArray(row["roll_history_events"]) ? row["roll_history_events"] : old.map((text) => ({ kind: "legacy", text }));
   return { roll_history: [...old, legacy], roll_history_events: [...facts, event] };
 }
 const CHARACTERISTICS: Record<string, string> = { movement:"M", weapon_skill:"WS", ballistic_skill:"BS", strength:"S", toughness:"T", wounds:"W", initiative:"I", attacks:"A", leadership:"Ld" };
-const BAND_RACE: Record<string,string> = { "warband-group.human":"human", "warband-group.chaos-human":"human", "warband-group.human-mercenary":"human", "warband-group.elf":"elf", "warband-group.high-elf":"elf", "warband-group.dark-elf":"elf", "warband-group.dwarf":"dwarf", "warband-group.chaos-dwarf":"dwarf", "warband-group.skaven":"skaven", "warband-group.ogre":"ogre", "warband-group.goblin":"goblin", "warband-group.orc":"orc", "warband-group.halfling":"halfling", "warband-group.beastmen":"other_beastmen", "warband-group.undead":"human" };
+/**
+ * Where an advance cap comes from: the published racial maximum of the
+ * warrior's profile, the printed profile itself (a henchman may advance one
+ * point above it), or nothing at all.
+ *
+ * `unknown` is an explicit state, never a silent exemption: the catalogue
+ * publishes no row for the profile (or too many to choose), the increase is
+ * applied and the advance row records that it was unbounded and why.
+ */
+interface AdvanceCap { readonly cap: number | null; readonly source: "racial-maximum" | "printed-profile" | "unknown"; readonly resolution: RacialMaximumResolution | null; }
 
 function context(document: CampaignDocument, warriorId: string, threshold: number | null) {
   const post = document.campaign.post_battles.find((row) => !row.complete);
@@ -53,25 +62,41 @@ function options(result: Readonly<Record<string,unknown>>, wizard: boolean): Ope
 function update(document: CampaignDocument, battleNumber: number, pending: readonly OpenPayload[], warriors=document.campaign.warriors): CampaignDocument {
   return withCampaign(document,{...document.campaign,warriors,post_battles:document.campaign.post_battles.map((post)=>post.battle_number===battleNumber?{...post,pending_advances:pending}:post)});
 }
-function maximum(reader: CatalogueReader, document: CampaignDocument, key: string): number | null {
-  const long=Object.entries(CHARACTERISTICS).find(([,short])=>short===key)?.[0]; if(!long) return null;
-  const group=reader.list?.("warband_group").find((row)=>Array.isArray(row["band_ids"]) && (row["band_ids"] as string[]).includes(document.campaign.identity.band_id));
-  const race=BAND_RACE[String(group?.["id"] ?? "")]; if(!race) return null;
-  const row=reader.list?.("racial_maximum").find((item)=>item["profile"]===race);
-  return row ? Number((row["characteristics"] as Record<string,unknown>)?.[long] ?? NaN) : null;
+/**
+ * Advance cap of one characteristic, read from the same published rows the
+ * construction contract uses (`racialMaximumsOf` resolved by the band's race
+ * groups and the catalogue's explicit profile keys). The race is never derived
+ * from the profile's printed name, and a profile the catalogue does not key is
+ * reported as `unknown` instead of being left silently uncapped.
+ */
+function racialCapFor(reader: CatalogueReader, document: CampaignDocument, warrior: Warrior, key: string): AdvanceCap {
+  const long=Object.entries(CHARACTERISTICS).find(([,short])=>short===key)?.[0];
+  if(!long) return { cap: null, source: "unknown", resolution: null };
+  const resolution=racialMaximumResolutionFor(reader, document.campaign.identity.band_id, warrior.profile_id ?? "");
+  const bound=resolution.row?.characteristics[long];
+  if(resolution.row && typeof bound === "number") return { cap: bound, source: "racial-maximum", resolution };
+  return { cap: null, source: "unknown", resolution };
 }
 function applyCharacteristic(document: CampaignDocument, reader: CatalogueReader, warrior: Warrior, row: OpenPayload, option: OpenPayload): Result {
   const key=String(option["characteristic"] ?? ""); const current=Number(warrior.stats[key] ?? 0);
   const profile=warrior.profile_id ? reader.queryKnowledge({id:{kind:"profile_id",value:warrior.profile_id}}) : null;
   const base=profile?.ok ? Number((profile.record.data["characteristics"] as Record<string,unknown>)?.[key] ?? NaN) : NaN;
-  const cap=warrior.kind==="henchman" && Number.isFinite(base) ? base+1 : maximum(reader,document,key);
+  const verdict: AdvanceCap = warrior.kind==="henchman" && Number.isFinite(base)
+    ? { cap: base+1, source: "printed-profile", resolution: null }
+    : racialCapFor(reader,document,warrior,key);
+  const cap=verdict.cap;
   if(cap !== null && Number.isFinite(cap) && current>=cap) {
     const reset={...row,roll_total:null,subroll:null,advance_options:[],...appendHistory(row,{kind:"advance-cap",characteristic:key,cap},`Result rejected: ${key} is at its advance cap (${cap}).`)};
     const post=document.campaign.post_battles.find((item)=>!item.complete)!;
     return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?reset:item))};
   }
   const amount=Number(option["amount"] ?? 1); const changed={...warrior,stats:{...warrior.stats,[key]:current+amount},stat_advances:{...(warrior.stat_advances??{}),[key]:(warrior.stat_advances?.[key]??0)+amount}};
-  const committed={...row,committed:true,applied_result:{kind:"characteristic",characteristic:key,amount},applied_label:`+${amount} ${key}`}; const post=document.campaign.post_battles.find((item)=>!item.complete)!;
+  // An uncapped increase is a published gap, and the row says so: the advance is
+  // committed with the reason it had no bound instead of looking like a bounded one.
+  const noted = verdict.source==="unknown"
+    ? {...row,...appendHistory(row,{kind:"advance-cap-unknown",characteristic:key,band_id:document.campaign.identity.band_id,profile_id:warrior.profile_id ?? null,status:verdict.resolution?.status ?? "unknown-profile"},`No published racial maximum for ${warrior.profile_id ?? "this profile"}: +${amount} ${key} is recorded without a bound.`)}
+    : row;
+  const committed={...noted,committed:true,applied_result:{kind:"characteristic",characteristic:key,amount,cap_source:verdict.source,...(verdict.resolution?.row?{race_key:verdict.resolution.row.race_key}:{})},applied_label:`+${amount} ${key}`}; const post=document.campaign.post_battles.find((item)=>!item.complete)!;
   return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?committed:item),document.campaign.warriors.map((item)=>item.id===warrior.id?changed:item))};
 }
 
@@ -110,9 +135,13 @@ export function commitAdvanceChoice(document: CampaignDocument, reader: Catalogu
     // granting the whole special catalogue.
     const profile=warrior.profile_id?profileFactsOf(reader,document.campaign.identity.band_id,warrior.profile_id):null;
     const verdict=profile?skillIssueFor(profile,{id:input.skill_id??"",category,kind:String(skill.record.data["kind"]??"general")}):null;
-    if(verdict?.code==="skill_not_permitted") return {ok:false,message:verdict.message};
-    const pendingSpecialList=verdict?.code==="skill_pending_special_list"?{code:verdict.code,owner_task:verdict.owner_task??"KB",...(verdict.rule_id?{rule_id:verdict.rule_id}:{})}:null;
-    const post=document.campaign.post_battles.find((item)=>!item.complete)!; const committed={...row,committed:true,applied_result:{kind:"skill",id:input.skill_id},applied_label:`Skill: ${name}`,...(pendingSpecialList?{pending_special_list:pendingSpecialList}:{})};
+    if(verdict?.code==="skill_not_permitted") return {ok:false,message:verdict.message,reason:verdict.code,...(verdict.subject_ids?{subject_ids:verdict.subject_ids}:{})};
+    // A band special-skill list still published as prose has no members to be a
+    // member of: the choice is refused with the code that names the gap, so the
+    // whole special catalogue is never granted by accident. The flow opens by
+    // itself as soon as the canonical list is published (T09 `skill_lists`).
+    if(verdict?.code==="skill_pending_special_list") return {ok:false,message:verdict.message,reason:verdict.code,...(verdict.subject_ids?{subject_ids:verdict.subject_ids}:{})};
+    const post=document.campaign.post_battles.find((item)=>!item.complete)!; const committed={...row,committed:true,applied_result:{kind:"skill",id:input.skill_id},applied_label:`Skill: ${name}`};
     return {ok:true,document:update(document,post.battle_number,post.pending_advances!.map((item)=>item===row?committed:item),document.campaign.warriors.map((item)=>item.id===warrior.id?{...item,skills:[...item.skills,name]}:item))};
   }
   if(input.kind==="generate_spell" || input.kind==="duplicate_spell") {

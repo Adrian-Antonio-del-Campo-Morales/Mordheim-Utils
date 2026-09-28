@@ -18,7 +18,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
-import { marketAvailabilityIssueFor } from "@domain/campaign/kernel/market";
+import { marketAssignmentIssueFor, marketAvailabilityIssueFor } from "@domain/campaign/kernel/market";
 
 const REPO_ROOT = join(import.meta.dirname, "..", "..", "..", "..");
 const OVERRIDE = process.env.MORDHEIM_KNOWLEDGE_ARTEFACT;
@@ -60,9 +60,11 @@ describe("T10 market availability verdict", () => {
     expect(marketAvailabilityIssueFor({ offer: forbidden, band_id: OTHER, groups: [], item_name: "Holy Water" })).toBeNull();
   });
 
-  it("treats a prose note beside a structured scope as advisory, not blocking", () => {
+  it("never drops an unscoped note because another restriction carries a scope", () => {
     // The printed Chainsaw Sword pattern: `warband_only` plus the same clause
-    // written again as prose. The scoped restriction decides.
+    // written again as prose. The scope is satisfied, but the note still says
+    // something the catalogue has not published as data, so the buy is refused
+    // with its own code instead of being waved through.
     const offer = {
       availability: { kind: "common" },
       restrictions: [
@@ -70,9 +72,49 @@ describe("T10 market availability verdict", () => {
         { type: "condition", note: "Masters of Horror only. Cost 15 + D6 gc." },
       ],
     };
-    expect(marketAvailabilityIssueFor({ offer, band_id: MASTERS, groups: [], item_name: "Chainsaw Sword" })).toBeNull();
+    const issue = marketAvailabilityIssueFor({ offer, band_id: MASTERS, groups: [], item_name: "Chainsaw Sword" });
+    expect(issue?.code).toBe("market_condition_unstructured");
+    expect(issue?.note).toContain("Cost 15 + D6 gc");
     expect(marketAvailabilityIssueFor({ offer, band_id: OTHER, groups: [], item_name: "Chainsaw Sword" })?.code)
       .toBe("market_warband_only");
+  });
+
+  it("accepts the same entry once the note is declared as a repetition, or structured", () => {
+    const repeated = {
+      availability: { kind: "common" },
+      restrictions: [
+        { type: "warband_only", band_ids: [MASTERS] },
+        { type: "condition", note: "Masters of Horror only. Cost 15 + D6 gc.", structure: { repeats_entry: true } },
+      ],
+    };
+    expect(marketAvailabilityIssueFor({ offer: repeated, band_id: MASTERS, groups: [], item_name: "Chainsaw Sword" })).toBeNull();
+    // A structured creation-only clause is evaluated instead of refused.
+    const creation = {
+      availability: { kind: "common" },
+      restrictions: [
+        { type: "warband_only", band_ids: [MASTERS] },
+        { type: "condition", note: "May only be purchased when the warband is created", structure: { creation_only: true } },
+      ],
+    };
+    expect(marketAvailabilityIssueFor({ offer: creation, band_id: MASTERS, groups: [], item_name: "Standard" })?.code)
+      .toBe("market_creation_only");
+    expect(marketAvailabilityIssueFor({ offer: creation, band_id: MASTERS, groups: [], item_name: "Standard", at_creation: true })).toBeNull();
+  });
+
+  it("carries the recipient-scoped half of a structured condition to the assignment route", () => {
+    const offer = {
+      availability: { kind: "common" },
+      restrictions: [
+        { type: "warband_only", groups: ["warband-group.undead"] },
+        { type: "condition", note: "Vampires, Necromancers and Grave Guards only", structure: { profile_ids: ["vampire", "grave-guards"] } },
+      ],
+    };
+    // The purchase itself is a stash copy: it decides availability, not recipients.
+    expect(marketAvailabilityIssueFor({ offer, band_id: OTHER, groups: ["warband-group.undead"], item_name: "Nightmare" })).toBeNull();
+    const allowed = marketAssignmentIssueFor(offer, { profile_id: "vampire", kind: "hero", skill_ids: [] }, "Nightmare");
+    expect(allowed).toBeNull();
+    const refused = marketAssignmentIssueFor(offer, { profile_id: "dire-wolves", kind: "henchman", skill_ids: [] }, "Nightmare");
+    expect(refused?.message).toContain("vampire");
   });
 
   it("keeps refusing an unscoped editorial note", () => {
@@ -97,6 +139,85 @@ describe.skipIf(!ARTEFACT_PATH)("T10 market obligations against the published ca
   const artefact = JSON.parse(readFileSync(ARTEFACT_PATH as string, "utf8"));
   const reader = ArtefactKnowledgeReader.from(artefact);
   const offers = (artefact.campaign?.["trading-post"]?.items ?? []) as Readonly<Record<string, unknown>>[];
+
+  it("reconciles the 31 unscoped conditions of a scoped entry: structured, blocked or refused, never dropped", () => {
+    // The exact case the review named: an entry whose scope comes from one
+    // restriction and whose printed clause is written again as an unscoped
+    // `condition`. The old verdict read `scoped` once for the whole entry and
+    // dropped the note; the reconciliation decides every one of the 31.
+    const structured: string[] = [];
+    const blocked: string[] = [];
+    const refused: string[] = [];
+    for (const offer of offers) {
+      const restrictions = (offer["restrictions"] ?? []) as Readonly<Record<string, unknown>>[];
+      const scope = restrictions.find((row) => row["band_ids"] || row["groups"]);
+      const conditions = restrictions.filter(
+        (row) => row["type"] === "condition" && !row["band_ids"] && !row["groups"],
+      );
+      if (!scope || conditions.length === 0) continue;
+      const itemId = String(offer["item_id"]);
+      // A published `structure` is the machine-readable form of the clause; it
+      // decides the purchase, or (for the buyer-scoped keys) travels to the
+      // assignment route the rarity rule also gates.
+      if (conditions.every((row) => row["structure"] !== undefined)) {
+        structured.push(itemId);
+        continue;
+      }
+      // Without one, an entry that is rare or not sold is refused by
+      // availability before its restrictions: the clause is explicitly blocked,
+      // never dropped.
+      if ((offer["availability"] as { kind?: string } | undefined)?.kind !== "common") {
+        blocked.push(itemId);
+        continue;
+      }
+      // With the scope satisfied, only the condition itself can refuse the buy,
+      // and a clause the catalogue does not publish structurally is reported
+      // with its own code instead of being waved through.
+      const bandId = ((scope["band_ids"] as string[] | undefined) ?? [])[0] ?? OTHER;
+      const groups = (scope["groups"] as string[] | undefined) ?? [];
+      const issue = marketAvailabilityIssueFor({ offer, band_id: bandId, groups, item_name: itemId });
+      expect(issue?.code, itemId).toBe("market_condition_unstructured");
+      refused.push(itemId);
+    }
+    expect([...structured].sort()).toEqual([
+      "bearcloak",
+      "blessed_bolts",
+      "chainsaw_sword",
+      "chest_talon",
+      "darksteel_blade",
+      "electric_trident",
+      "finger_pendant",
+      "nightmare",
+      "pigback_mount",
+      "pry_bar",
+      "shield_of_sigmar",
+      "silver_tip_stake",
+      "slingshot",
+      "small_pebble",
+      "society_familiar",
+      "staff_of_damnation",
+      "standard_of_nagarythe",
+      "unholy_relic",
+      "whirling_blades",
+    ]);
+    expect([...blocked].sort()).toEqual([
+      "amulet_of_the_moon",
+      "beastwhip",
+      "black_lotus",
+      "blessed_water",
+      "blowpipe",
+      "chaos_steed",
+      "dark_elf_blade_weapon_upgrade",
+      "dark_venom",
+      "temple_dog",
+      "thingcatcher",
+    ]);
+    // The two whose printed clause has no vocabulary yet (a second-copy price,
+    // a weapon-upgrade price) are refused with `market_condition_unstructured`:
+    // reported to the KB, never silently ignored.
+    expect([...refused].sort()).toEqual(["poisoned_weapon", "sharp_stuff"]);
+    expect(structured.length + blocked.length + refused.length).toBe(31);
+  });
 
   it("publishes the Masters of Horror clause as a scope on the Repeater Pistol (Masters of Horror)", () => {
     const offer = offers.find((row) => row["item_id"] === "repeater_pistol_moh")!;

@@ -133,7 +133,7 @@
       ]
     },
     "restriction": {
-      "description": "A typed buying restriction. `condition` and `profile_only` carry the source wording in `note`; a `condition` may also declare the `band_ids` or `groups` the printed clause names, and only then is it a scope an application evaluates. `warband_only` and `warband_forbidden` are always evaluated. A warband restriction names either the individual bands (`band_ids`) or the shared groups (`groups`), never both.",
+      "description": "A typed buying restriction. `condition` and `profile_only` carry the source wording in `note`; a `condition` may also declare the `band_ids` or `groups` the printed clause names, and only then is it a scope an application evaluates. `warband_only` and `warband_forbidden` are always evaluated. A warband restriction names either the individual bands (`band_ids`) or the shared groups (`groups`), never both. An unscoped `condition` may publish its printed clause as data in `structure`; the market never drops such a clause — it evaluates a structured one (and carries the buyer-scoped keys to the assignment route) and otherwise refuses the purchase (`market_condition_unstructured`) with the note, so the gap is surfaced rather than ignored. `structure` and a scope are alternatives, never combined on the same restriction.",
       "type": "object",
       "required": ["type"],
       "additionalProperties": false,
@@ -142,7 +142,8 @@
         "band_ids": { "$ref": "defs.schema.json#/$defs/id_list" },
         "groups": { "$ref": "defs.schema.json#/$defs/id_list" },
         "value": { "type": "integer", "minimum": 1 },
-        "note": { "$ref": "defs.schema.json#/$defs/display_text" }
+        "note": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "structure": { "$ref": "#/$defs/condition_structure" }
       },
       "allOf": [
         {
@@ -165,8 +166,31 @@
         {
           "if": { "properties": { "type": { "enum": ["condition", "profile_only"] } }, "required": ["type"] },
           "then": { "required": ["note"] }
+        },
+        {
+          "if": { "required": ["structure"] },
+          "then": { "not": { "anyOf": [{ "required": ["band_ids"] }, { "required": ["groups"] }] } }
+        },
+        {
+          "if": { "not": { "properties": { "type": { "const": "condition" } }, "required": ["type"] } },
+          "then": { "not": { "required": ["structure"] } }
         }
       ]
+    },
+    "condition_structure": {
+      "description": "The printed clause of an unscoped `condition` written as data, so the market evaluates or surfaces it instead of dropping it. `repeats_entry` is an editorial declaration, verified against the source at ingestion, that the note adds no requirement beyond what the entry already publishes (scope, availability kind or price); `creation_only` is the printed 'only when the warband is created'; `characteristic_roll` is the test the buyer must pass; `purchase_unit` names the unit the printed price covers. `profile_ids`, `skill_ids` and `max_per_wizard` scope the buyer rather than the purchase, so the market carries them to the assignment route (a stash copy has no recipient) instead of refusing the buy.",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "repeats_entry": { "type": "boolean" },
+        "creation_only": { "type": "boolean" },
+        "profile_ids": { "$ref": "defs.schema.json#/$defs/id_list" },
+        "skill_ids": { "$ref": "defs.schema.json#/$defs/id_list" },
+        "max_per_wizard": { "type": "integer", "minimum": 1 },
+        "characteristic_roll": { "enum": ["M", "WS", "BS", "S", "T", "W", "I", "A", "Ld"] },
+        "purchase_unit": { "enum": ["copy", "pair", "brace", "set"] }
+      }
     },
     "purchase_option": {
       "description": "An alternative way of buying the item.",

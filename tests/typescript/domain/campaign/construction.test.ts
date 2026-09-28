@@ -29,6 +29,7 @@ import {
   pendingBindingsFor,
   profileExclusionFor,
   profileFactsOf,
+  racialMaximumResolutionFor,
   racialMaximumsOf,
   rosterIssuesOf,
   skillFactsOf,
@@ -195,6 +196,10 @@ function baseReader(overrides: Record<string, Record<string, unknown>> = {}): Kn
         id: "campaign.limit.racial-maximum.corpse-master",
         applies_to: "profile",
         profile: "corpse_master",
+        // The row names the profile it governs by stable id; the band's race
+        // groups are deliberately left undeclared so a sibling profile of the
+        // same band stays unkeyed (the explicit-exemption case below).
+        profile_keys: [{ band_id: BAND.id, profile_id: "corpse-master" }],
         characteristics: {
           movement: 4,
           weapon_skill: 4,
@@ -550,17 +555,55 @@ describe("construction contracts: skill access", () => {
 });
 
 describe("construction contracts: characteristic bounds", () => {
-  it("rejects a value above the published maximum and leaves exempt profiles free", () => {
+  it("resolves the row by id, bounds an unprinted increase and leaves unkeyed profiles exempt", () => {
     const reader = baseReader();
     const rows = racialMaximumsOf(reader);
     expect(rows).toHaveLength(1);
+    const row = rows[0]!;
+    // Identity comes from the published key, never from the profile's name.
+    expect(row.race_key).toBe("corpse_master");
+    expect(row.profile_keys).toEqual([{ band_id: BAND.id, profile_id: "corpse-master" }]);
+    expect(racialMaximumResolutionFor(reader, BAND.id, "corpse-master").status).toBe("resolved");
     const facts = profileFactsOf(reader, BAND.id, "corpse-master")!;
-    expect(characteristicBoundIssueFor({ profile: facts, stat: "S", value: 4, rows })).toBeNull();
-    const over = characteristicBoundIssueFor({ profile: facts, stat: "S", value: 5, rows });
+    expect(characteristicBoundIssueFor({ profile: facts, stat: "S", value: 4, row, printed: 4 })).toBeNull();
+    // A profile printed above its race's maximum is legal: the table bounds
+    // increases, not the printed statline.
+    expect(characteristicBoundIssueFor({ profile: facts, stat: "S", value: 5, row, printed: 5 })).toBeNull();
+    const over = characteristicBoundIssueFor({ profile: facts, stat: "S", value: 5, row, printed: 4 });
     expect(over?.code).toBe("characteristic_bound_exceeded");
     expect(over?.rule_id).toBe("campaign.limit.racial-maximum.corpse-master");
+    // A sibling profile of the same band carries no key: no row, no bound, and
+    // the resolution says exactly which state it is in.
+    const unkeyed = racialMaximumResolutionFor(reader, BAND.id, "spirit-hosts");
+    expect(unkeyed.status).toBe("no-race-key");
     const exempt = profileFactsOf(reader, BAND.id, "spirit-hosts")!;
-    expect(characteristicBoundIssueFor({ profile: exempt, stat: "S", value: 9, rows })).toBeNull();
+    expect(characteristicBoundIssueFor({ profile: exempt, stat: "S", value: 9, row: unkeyed.row }) ).toBeNull();
+  });
+
+  it("reports several rows claiming the band's race instead of guessing one", () => {
+    const reader = baseReader();
+    const withGroups: KnowledgeReader = {
+      ...reader,
+      list: (kind: string) =>
+        kind === "racial_maximum"
+          ? [
+              { id: "campaign.limit.racial-maximum.a", profile: "a", groups: ["warband-group.undead"], characteristics: { strength: 4 } },
+              { id: "campaign.limit.racial-maximum.b", profile: "b", groups: ["warband-group.undead"], characteristics: { strength: 5 } },
+            ]
+          : (reader as KnowledgeReader & { list(kind: string): readonly Record<string, unknown>[] }).list(kind),
+    } as KnowledgeReader;
+    const ambiguous = racialMaximumResolutionFor(withGroups, BAND.id, "spirit-hosts");
+    expect(ambiguous.status).toBe("ambiguous-race-key");
+    expect(ambiguous.row).toBeNull();
+    // The single-row case resolves through the same group declaration.
+    const grouped: KnowledgeReader = {
+      ...reader,
+      list: (kind: string) =>
+        kind === "racial_maximum"
+          ? [{ id: "campaign.limit.racial-maximum.undead", profile: "undead", groups: ["warband-group.undead"], characteristics: { strength: 4 } }]
+          : (reader as KnowledgeReader & { list(kind: string): readonly Record<string, unknown>[] }).list(kind),
+    } as KnowledgeReader;
+    expect(racialMaximumResolutionFor(grouped, BAND.id, "spirit-hosts").row?.id).toBe("campaign.limit.racial-maximum.undead");
   });
 
   it("reports printed characteristics that are not fixed numbers", () => {
@@ -570,13 +613,59 @@ describe("construction contracts: characteristic bounds", () => {
     expect(new Set(issues.map((issue) => issue.code))).toEqual(new Set(["characteristic_not_fixed"]));
   });
 
-  it("rejects a starting characteristic above the maximum when the profile is created", () => {
+  it("accepts a printed profile above its race's maximum and rejects an unprinted increase", () => {
+    // Printed statline S 5 with a racial maximum of S 4: the maximum bounds
+    // increases, so the profile the source prints is legal to compose.
     const reader = baseReader({ "profile:corpse-master": { characteristics: { ...CORPSE_MASTER.characteristics, S: 5 } } });
     const composed = compose(draftOf(reader), reader, [
       { profile_id: "corpse-master", kind: "hero", quantity: 1, equipment: [] },
     ]);
-    expect(composed.ok).toBe(false);
-    if (!composed.ok) expect(composed.message).toContain("exceeds the racial maximum");
+    expect(composed.ok, composed.ok ? "" : composed.message).toBe(true);
+    if (!composed.ok) return;
+    // The same roster with a characteristic raised above both the maximum and
+    // the printed profile is a construction error, and the commit gate refuses it.
+    const inflated = {
+      ...composed.state,
+      campaign: {
+        ...composed.state.campaign,
+        warriors: composed.state.campaign.warriors.map((warrior) =>
+          warrior.profile_id === "corpse-master" ? { ...warrior, stats: { ...warrior.stats, S: 6 } } : warrior,
+        ),
+      },
+    };
+    const issues = constructionIssuesOf(reader, inflated.campaign);
+    const bound = issues.find((issue) => issue.code === "characteristic_bound_exceeded");
+    expect(bound?.subject_ids).toEqual([BAND.id, "corpse-master", "S"]);
+    if (bound?.rule_id) expect(bound.rule_id).toBe("campaign.limit.racial-maximum.corpse-master");
+    const commit = commitInitialWarband(inflated, reader);
+    expect(commit.ok).toBe(false);
+  });
+
+  it("reports an unprinted increase of a profile with no published maximum", () => {
+    const reader = baseReader();
+    const composed = compose(draftOf(reader), reader, [
+      { profile_id: "spirit-hosts", kind: "henchman", quantity: 1, equipment: [] },
+      { profile_id: "corpse-master", kind: "hero", quantity: 1, equipment: [] },
+    ]);
+    expect(composed.ok, composed.ok ? "" : composed.message).toBe(true);
+    if (!composed.ok) return;
+    const inflated = {
+      ...composed.state,
+      campaign: {
+        ...composed.state.campaign,
+        warriors: composed.state.campaign.warriors.map((warrior) =>
+          warrior.profile_id === "spirit-hosts" ? { ...warrior, stats: { ...warrior.stats, S: 9 } } : warrior,
+        ),
+      },
+    };
+    const warriorId = inflated.campaign.warriors.find((warrior) => warrior.profile_id === "spirit-hosts")!.id;
+    const issue = constructionIssuesOf(reader, inflated.campaign).find(
+      (entry) => entry.code === "characteristic_bound_unknown",
+    );
+    expect(issue?.subject_ids).toEqual([BAND.id, warriorId, "S"]);
+    expect(issue?.owner_task).toBe("KB");
+    // The gap is reported, never silently unbounded and never a blocked roster.
+    expect(constructionIssuesOf(reader, inflated.campaign).some((entry) => entry.code === "characteristic_bound_exceeded")).toBe(false);
   });
 });
 

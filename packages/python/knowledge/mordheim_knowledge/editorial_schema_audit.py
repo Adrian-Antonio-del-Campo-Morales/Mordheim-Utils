@@ -188,6 +188,25 @@ JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str] = {
         "unused_enum_value",
         "#/$defs/step.resolves",
     ): "the sibling catalogue documents a step may hand over to; the guardian test derives the enum from the directory",
+    # The printed purchase conditions of the trading post. `condition_structure`
+    # mirrors the vocabulary the market evaluator reads
+    # (`kernel/market.ts`): the compiler accepts the whole set, and the printed
+    # data exercises only the branches the sources publish today.
+    (
+        "campaign-trading-post.yaml.schema.json",
+        "unused_property",
+        "#/$defs/condition_structure",
+    ): "buyer-scoped vocabulary of the market evaluator; no printed clause scopes a condition by skill today",
+    (
+        "campaign-trading-post.yaml.schema.json",
+        "unused_enum_value",
+        "#/$defs/condition_structure.characteristic_roll",
+    ): "the nine characteristic names a printed acquisition test may roll against; only Strength is printed (Bearcloak)",
+    (
+        "campaign-trading-post.yaml.schema.json",
+        "unused_enum_value",
+        "#/$defs/condition_structure.purchase_unit",
+    ): "the units a printed price covers; only `pair` is printed (Whirling Blades)",
     # -- shapes the two profile families share --------------------------
     # A Hired Sword and a Dramatis Persona declare the same profile shape; a
     # declaration unused in one family is exercised by the other (`hire_eligibility`

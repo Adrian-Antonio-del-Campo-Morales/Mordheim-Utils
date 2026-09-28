@@ -57,8 +57,15 @@ import { resolveScenarioEncampment, resolveScenarioSpellReward } from "./feature
 import { acknowledgeFollowUp, followUpNeedsResolution } from "./features/review/follow-up-acknowledgement-workflow";
 import { selectedWarbandVariant, warbandVariants } from "../../domain/campaign/band-variants";
 import { treasury } from "../../domain/campaign/kernel/document";
-import { marketAvailabilityIssueFor } from "../../domain/campaign/kernel/market";
+import { marketAssignmentIssueFor, marketAvailabilityIssueFor } from "../../domain/campaign/kernel/market";
+import {
+  equipmentChangeIssueFor,
+  equipmentSetOf,
+  equipmentVerdictIsFatal,
+  equipmentVerdictReason,
+} from "../../domain/campaign/kernel/equipment-verdicts";
 import { resolveCreationDecision } from "../../domain/campaign/kernel/creation-decisions";
+import { recruitmentGateIssueFor } from "../../domain/campaign/kernel/lifecycle";
 import { withdrawLeftTableMembers } from "../../domain/campaign/kernel/withdrawal";
 import { succeedLeader } from "../../domain/campaign/kernel/succession";
 import { buyMutation } from "../../domain/campaign/kernel/mutations";
@@ -88,9 +95,65 @@ function equipmentViolation(document: CampaignDocument, knowledge: CampaignAppDe
   const carried=warrior.equipment.filter((row)=>row.acquisition!=="fixed"), models=warrior.quantity??1;
   const hands=(knowledge as typeof knowledge & { weaponHandsFor?(id:string):number|null }).weaponHandsFor?.(itemId);
   const limit=warrior.equipment_limits?.["maximum_one_handed_weapons"];
-  if(hands===1&&limit!==undefined){const carriedHands=carried.filter((row)=>(knowledge as typeof knowledge & { weaponHandsFor?(id:string):number|null }).weaponHandsFor?.(row.base_item_id??row.item_id)===1).reduce((sum,row)=>sum+row.quantity,0);if(carriedHands+amount>limit*models)return `Injury limits this warrior to ${limit} one-handed weapon(s) per model.`;}
-  if(!["close-combat-weapon","ranged-weapon"].includes(category)&&carried.filter((row)=>row.item_id===itemId).reduce((sum,row)=>sum+row.quantity,0)+amount>models)return `${item.record.names["en"]??itemId} is already carried; a warrior carries one of these.`;
-  return null;
+  if(hands===1&&limit!==undefined){const carriedHands=carried.filter((row)=>(knowledge as typeof knowledge & { weaponHandsFor?(id:string):number|null }).weaponHandsFor?.(row.base_item_id??row.item_id)===1).reduce((sum,row)=>sum+row.quantity,0);if(carriedHands+amount>limit*models)return `Injury limits this warrior to ${limit} one-handed weapon(s) per model.`;}    if(!["close-combat-weapon","ranged-weapon"].includes(category)&&carried.filter((row)=>row.item_id===itemId).reduce((sum,row)=>sum+row.quantity,0)+amount>models)return `${item.record.names["en"]??itemId} is already carried; a warrior carries one of these.`;
+    return null;
+  }
+
+  /**
+   * T09 construction verdict of an equipment change that already happened in a
+   * candidate document. Every warrior the change touches is judged on the kit
+   * it holds afterwards: the item being added against its prohibitions and the
+   * complete set against the band's whole-set limits. The contract lives in the
+   * domain (`construction.ts`); this helper only routes the verdict to the
+   * service's error shape, so no token table is duplicated here.
+   */
+  function equipmentContractIssue(
+    document: CampaignDocument,
+    knowledge: CampaignAppDeps["knowledge"],
+    changes: readonly { readonly warrior_id: string; readonly added_item_ids?: readonly string[] }[],
+  ): ReturnType<typeof equipmentChangeIssueFor> {
+    for (const change of changes) {
+      const warrior = document.campaign.warriors.find((row) => row.id === change.warrior_id);
+      if (!warrior) continue;
+      const issue = equipmentChangeIssueFor({
+        document,
+        reader: knowledge,
+        warrior_id: change.warrior_id,
+        ...(change.added_item_ids ? { added_item_ids: change.added_item_ids } : {}),
+        resulting_item_ids: equipmentSetOf(warrior),
+      });
+      if (issue && equipmentVerdictIsFatal(issue.code)) return issue;
+    }
+    return null;
+  }
+
+/**
+ * Whether one service action adds a row or a member to the roster, and which
+ * profile it adds. Every route that increases the roster is listed here once, so
+ * the lifecycle gate above can be applied without repeating the rule in each
+ * feature module or in the interface. A route whose profile is not published
+ * (`hireDramatisSearch`) reports `null`: it can never be the member a clause
+ * owes, so the gate refuses it while the clause is unmet.
+ */
+function memberAdditionProfileId(
+  action: string,
+  document: CampaignDocument,
+  input: Readonly<Record<string, unknown>>,
+): { readonly adds: boolean; readonly profile_id: string | null } {
+  switch (action) {
+    case "recruitBandProfile":
+      return { adds: true, profile_id: String(input["profile_id"] ?? "") || null };
+    case "recruitGroupMember": {
+      const warrior = document.campaign.warriors.find((row) => row.id === String(input["warrior_id"] ?? ""));
+      return { adds: true, profile_id: warrior?.profile_id ?? null };
+    }
+    case "hireHireling":
+      return { adds: true, profile_id: String(input["profile_id"] ?? "") || null };
+    case "hireDramatisSearch":
+      return { adds: true, profile_id: null };
+    default:
+      return { adds: false, profile_id: null };
+  }
 }
 
 interface ServiceState {
@@ -116,10 +179,20 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
     return { ok: false, reason, message, ...(detail ? { detail } : {}) };
   }
 
-  /** Apply a use-case result to the service state on success. */
+  /**
+   * Apply a use-case result to the service state on success.
+   *
+   * A rejection keeps its stable `reason` **and** the ids the use case
+   * identified (`subject_ids`): the interface resolves names from them instead
+   * of parsing the English diagnostic, so the technical id never reaches a
+   * person and the English sentence is never the only representation (T11).
+   */
   function applyResult(result: UseCaseResult): AppResult {
     if (!result.ok) {
-      return error("rejected", result.message, { reason: result.reason });
+      return error("rejected", result.message, {
+        reason: result.reason,
+        ...(result.subject_ids ? { subject_ids: result.subject_ids } : {}),
+      });
     }
     if (state.current) {
       state.history.push(state.current);
@@ -242,6 +315,22 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         return error("no_campaign_loaded", `Cannot run "${action}": no campaign is loaded.`);
       }
       const knowledge = deps.knowledge;
+      // A printed lifecycle clause can owe the warband a member
+      // (`band--dame-of-the-mare-succession`: the Dame must be replaced before
+      // anything else joins). The rule is one domain function applied here, at
+      // the single point every roster increase crosses, so no route — a profile,
+      // a member of an existing group, a Hired Sword or a Dramatis Personae — can
+      // add a row around it and no interface has to repeat the condition.
+      const addition = memberAdditionProfileId(action, state.current, input);
+      if (addition.adds) {
+        const gate = recruitmentGateIssueFor(state.current, knowledge, addition.profile_id ?? "");
+        if (gate) {
+          return error("rejected", gate.message, {
+            reason: gate.code,
+            subject_ids: [gate.clause_id, ...gate.profile_ids],
+          });
+        }
+      }
       const selected = state.current.view.selected_moment;
       const pending = state.current.campaign.post_battles.find((post) => !post.complete);
       const editable = !selected || selected === "draft:0" || selected.startsWith("new-battle:") || selected === `state:${state.current.campaign.current_state_number}` || (pending && selected === `post:${pending.battle_number}`);
@@ -413,12 +502,12 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
         }
         case "resolveAdvanceRoll": {
           const result = resolveAdvanceRoll(state.current, knowledge, input as never);
-          if (!result.ok) return error("rejected", result.message);
+          if (!result.ok) return error("rejected", result.message, { ...(result.reason ? { reason: result.reason } : {}), ...(result.subject_ids ? { subject_ids: result.subject_ids } : {}) });
           return applyResult({ ok: true, state: result.document });
         }
         case "commitAdvanceChoice": {
           const result = commitAdvanceChoice(state.current, knowledge, input as never);
-          if (!result.ok) return error("rejected", result.message);
+          if (!result.ok) return error("rejected", result.message, { ...(result.reason ? { reason: result.reason } : {}), ...(result.subject_ids ? { subject_ids: result.subject_ids } : {}) });
           return applyResult({ ok: true, state: result.document });
         }
         case "promoteHenchman": {
@@ -494,6 +583,14 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const tradingEntry=(Array.isArray(trading?.["items"])?trading["items"] as Readonly<Record<string,unknown>>[]:[]).find((row)=>row["item_id"]===itemId);
           const heroesOnly=(Array.isArray(tradingEntry?.["restrictions"])?tradingEntry["restrictions"] as Readonly<Record<string,unknown>>[]:[]).some((row)=>row["type"]==="heroes_only");
           if(direction==="equip"&&heroesOnly&&warrior.kind!=="hero") return error("rejected", "This item may only be assigned to Heroes.");
+          // The recipient-scoped half of a structured market condition
+          // (`profile_ids`, `skill_ids`) is read from the same published entry the
+          // purchase uses, so an item reserved for named profiles cannot reach
+          // another warrior through the stash.
+          if(direction==="equip"&&tradingEntry){
+            const assignmentIssue=marketAssignmentIssueFor(tradingEntry, { profile_id: warrior.profile_id ?? null, kind: warrior.kind, skill_ids: warrior.skills }, itemId);
+            if(assignmentIssue) return error("rejected", assignmentIssue.message, { reason: assignmentIssue.code, subject_ids: [itemId, warriorId] });
+          }
           if(direction==="equip"&&warrior.profile_id&&!warrior.profile_id.startsWith("hireling.")) {
             const profile=knowledge.queryKnowledge({id:{kind:"profile_id",value:warrior.profile_id}}), item=knowledge.queryKnowledge({id:{kind:"item_id",value:itemId}});
             if(profile.ok) {
@@ -509,6 +606,11 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           if(direction==="equip"){const violation=equipmentViolation(state.current,knowledge,warriorId,itemId,quantity);if(violation)return error("rejected",violation);}
           const result=useCases.assignEquipment(state.current, { warrior_id:warriorId,item_id:itemId,quantity,direction });
           if(!result.ok)return applyResult(result);
+          // A move that would leave the member's kit invalid (the compulsory
+          // family removed, the missile-weapon cap exceeded, the item forbidden)
+          // is refused before the state is replaced.
+          const contractIssue=equipmentContractIssue(result.state, knowledge, [{ warrior_id:warriorId, ...(direction==="equip"?{ added_item_ids:[itemId] }:{} ) }]);
+          if(contractIssue)return error("rejected", contractIssue.message, { reason: equipmentVerdictReason(contractIssue.code), subject_ids: contractIssue.subject_ids });
           const resultPost=result.state.campaign.post_battles.find((row)=>!row.complete);
           if(!resultPost)return applyResult(result);
           const obligations=(resultPost.equipment_obligations??[]).flatMap((obligation)=>{const subject=result.state.campaign.warriors.find((row)=>row.id===String(obligation["warrior_id"]??""));if(!subject)return[];const required=(subject.quantity??1)*Number(obligation["copies_per_model"]??1),carried=subject.equipment.filter((row)=>row.item_id===String(obligation["item_id"]??"")).reduce((sum,row)=>sum+row.quantity,0),missing=Math.max(0,required-carried);return missing?[{...obligation,quantity:missing}]:[];});
@@ -519,6 +621,14 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const violation=target?equipmentViolation(state.current,knowledge,targetId,itemId,amount):"Choose a valid destination.";if(violation)return error("rejected",violation);
           const result = transferEquippedItem(state.current, input as never);
           if (!result.ok) return error("rejected", result.message);
+          // Both ends of the transfer must end legal: the target may not be
+          // given a forbidden item, and the source may not be left without its
+          // compulsory kit.
+          const contractIssue = equipmentContractIssue(result.document, knowledge, [
+            { warrior_id: String(input["target_id"] ?? ""), added_item_ids: [String(input["item_id"] ?? "")] },
+            { warrior_id: String(input["source_id"] ?? "") },
+          ]);
+          if (contractIssue) return error("rejected", contractIssue.message, { reason: equipmentVerdictReason(contractIssue.code), subject_ids: contractIssue.subject_ids });
           return applyResult({ ok: true, state: result.document });
         }
         case "buyDraftEquipment":
@@ -570,8 +680,8 @@ export function createCampaignAppService(deps: CampaignAppDeps): CampaignAppServ
           const restrictions = Array.isArray(catalogueEntry?.["restrictions"]) ? catalogueEntry["restrictions"] as Readonly<Record<string,unknown>>[] : [];
           const groups=new Set(((knowledge as typeof knowledge & { list?(kind:string):readonly Readonly<Record<string,unknown>>[] }).list?.("warband_group")??[]).filter((row)=>Array.isArray(row["band_ids"])&&(row["band_ids"] as unknown[]).map(String).includes(state.current!.campaign.identity.band_id)).map((row)=>String(row["id"]??"")));
           const marketItem=knowledge.queryKnowledge({id:{kind:"item_id",value:itemId}});
-          const availabilityIssue=marketAvailabilityIssueFor({offer:catalogueEntry,band_id:state.current.campaign.identity.band_id,groups:[...groups],item_name:marketItem.ok?String(marketItem.record.names["en"]??itemId):itemId});
-          if(availabilityIssue)return error("rejected", availabilityIssue.message, { reason: availabilityIssue.code });
+          const availabilityIssue=marketAvailabilityIssueFor({offer:catalogueEntry,band_id:state.current.campaign.identity.band_id,groups:[...groups],item_name:marketItem.ok?String(marketItem.record.names["en"]??itemId):itemId,at_creation:false});
+          if(availabilityIssue)return error("rejected", availabilityIssue.message, { reason: availabilityIssue.code, subject_ids: [itemId] });
           const inferredOne = restrictions.some((row) => row["type"] === "profile_only" && String(row["note"] ?? "").toLocaleLowerCase().startsWith("one "));
           const declaredLimit = restrictions.find((row) => row["type"] === "limit_per_warband")?.["value"];
           const limit = Number.isInteger(declaredLimit) ? Number(declaredLimit) : inferredOne ? 1 : null;

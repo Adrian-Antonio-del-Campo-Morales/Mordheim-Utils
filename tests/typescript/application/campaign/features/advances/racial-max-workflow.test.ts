@@ -21,8 +21,11 @@ function racialReader(): CatalogueReader {
     queryKnowledge: () => ({ ok: false as const, reason: "not_found" }),
     queryMany: (queries) => queries.map(() => ({ ok: false as const, reason: "not_found" })),
     list: (kind) => {
-      if (kind === "warband_group") return [{ id: "warband-group.human", band_ids: ["sisters-of-sigmar"] }];
-      if (kind === "racial_maximum") return [{ profile: "human", characteristics: { toughness: 4 } }];
+      // The published race link is the group's `kind` plus the row's `groups`:
+      // the race is resolved by id, never by a printed name.
+      if (kind === "warband_group") return [{ id: "warband-group.human", kind: "race", band_ids: ["sisters-of-sigmar"] }];
+      if (kind === "racial_maximum")
+        return [{ id: "campaign.limit.racial-maximum.human", profile: "human", groups: ["warband-group.human"], characteristics: { toughness: 4 } }];
       return [];
     },
     campaignSection: (section) =>

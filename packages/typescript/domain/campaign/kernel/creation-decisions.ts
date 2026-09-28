@@ -175,6 +175,28 @@ export function resolveCreationDecision(
       subject_ids: [input.decision_id],
     };
   }
+  // A printed creation roll belongs to the creation phase: it is recorded while
+  // the roster is being built, never inserted later as a persistent effect in the
+  // middle of a post-battle.
+  if (!document.campaign.configuration.is_draft) {
+    return {
+      ok: false,
+      reason: "not_permitted_when_committed",
+      message: `${decision.name} is rolled while the warband is created.`,
+      subject_ids: [decision.id],
+    };
+  }
+  // The roll must be owed by the roster in front of it: a decision whose
+  // recipient profiles are absent would only persist an effect nobody carries.
+  const profiles = new Set(document.campaign.warriors.map((warrior) => warrior.profile_id ?? ""));
+  if (decision.profile_ids.length > 0 && !decision.profile_ids.some((profileId) => profiles.has(profileId))) {
+    return {
+      ok: false,
+      reason: "prerequisite_missing",
+      message: `${decision.name} applies to ${decision.profile_ids.join(", ")}, which the warband does not include.`,
+      subject_ids: [decision.id, ...decision.profile_ids],
+    };
+  }
   const { count, sides } = decision.dice;
   if (!Number.isInteger(input.roll) || input.roll < count || input.roll > count * sides) {
     return {

@@ -23,6 +23,8 @@ items:
       If successful, the Sheepherder finds and slays the bear and can wear its cloak as a mark of skill
       and prowess. Sheepherders may buy bearcloaks when starting their warband without making a test for
       availability.
+    structure:
+      characteristic_roll: S
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -78,6 +80,8 @@ items:
   - type: heroes_only
   - type: condition
     note: Common (25 gc). Heroes only in the Protectorate Equipment List.
+    structure:
+      repeats_entry: true
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -99,6 +103,8 @@ items:
     - masters-of-horror-sylv
   - type: condition
     note: Masters of Horror only. Cost 15 + D6 gc.
+    structure:
+      repeats_entry: true
   source_refs:
   - manual: sylvania-supplement
     printed_page: 0
@@ -116,6 +122,8 @@ items:
     - survivors-of-strigos-sylv
   - type: condition
     note: Strigany only. Cost 15 gc.
+    structure:
+      repeats_entry: true
   source_refs:
   - manual: sylvania-supplement
     printed_page: 0
@@ -174,6 +182,8 @@ items:
     - druchii-mic
   - type: condition
     note: Cost 3 x base weapon price.
+    structure:
+      repeats_entry: true
   source_refs:
   - manual: mordheim-index-catalog
     printed_page: 0
@@ -195,6 +205,8 @@ items:
     - masters-of-horror-sylv
   - type: condition
     note: Masters of Horror only. Cost 15 + D6 gc.
+    structure:
+      repeats_entry: true
   source_refs:
   - manual: sylvania-supplement
     printed_page: 0
@@ -213,6 +225,8 @@ items:
   - type: heroes_only
   - type: condition
     note: Grave Robbers only. Cost 15 gold crowns.
+    structure:
+      repeats_entry: true
   source_refs:
   - manual: sylvania-supplement
     printed_page: 0
@@ -299,6 +313,8 @@ items:
   - type: heroes_only
   - type: condition
     note: Common (Gnoblar Heroes Only). 50 gold crowns.
+    structure:
+      repeats_entry: true
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -334,6 +350,8 @@ items:
   - type: heroes_only
   - type: condition
     note: Grave Robbers only. Cost 10 gold crowns.
+    structure:
+      repeats_entry: true
   source_refs:
   - manual: sylvania-supplement
     printed_page: 0
@@ -425,6 +443,8 @@ items:
   - type: heroes_only
   - type: condition
     note: Heroes only (Protectorate of Sigmar Equipment List). Cost 20 gold crowns.
+    structure:
+      repeats_entry: true
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -446,6 +466,8 @@ items:
       both the Hero Equipment List and the Pilgrim Equipment List print 10 gc for the same item — the
       15 gc figure is an internal erratum of the original LotD #5 PDF (both prices verified verbatim on
       p.10 of LOD5.pdf).'
+    structure:
+      repeats_entry: true
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -463,6 +485,8 @@ items:
     - snotlings-web
   - type: condition
     note: Common (Snotling Warband Only). Cost 2 gc.
+    structure:
+      repeats_entry: true
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -480,6 +504,8 @@ items:
     - snotlings-web
   - type: condition
     note: Common (Snotling Warband Only). Free.
+    structure:
+      repeats_entry: true
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -503,6 +529,8 @@ items:
   - type: heroes_only
   - type: condition
     note: 20+2D6 gc; Heroes only; one per Wizard.
+    structure:
+      max_per_wizard: 1
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -520,6 +548,8 @@ items:
     - necrarchs-the-soul-stealers-lotd1
   - type: condition
     note: Necrarch only. Cost 25 gc.
+    structure:
+      repeats_entry: true
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -593,6 +623,8 @@ items:
   - type: heroes_only
   - type: condition
     note: Heroes only (Necrarch Hero Equipment List). Cost 15 gc.
+    structure:
+      repeats_entry: true
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -611,6 +643,9 @@ items:
     - dwarf-slayer-cult-web
   - type: condition
     note: 30 gold crowns per pair; Slayers only.
+    structure:
+      profile_ids: [giant-slayer, doomseeker, rememberer, troll-slayers, axe-hurlers, stubbles]
+      purchase_unit: pair
   source_refs:
   - manual: mordheimer.net
     printed_page: 0

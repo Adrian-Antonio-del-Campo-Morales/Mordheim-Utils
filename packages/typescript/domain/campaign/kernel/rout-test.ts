@@ -20,6 +20,7 @@
 
 import type { CampaignDocument, IdString, OpenPayload } from "../index";
 import type { KnowledgeReader } from "./ports";
+import { profileFactsOf } from "../construction";
 
 export interface RoutTestMemberFacts {
   readonly warrior_id: IdString;
@@ -51,11 +52,20 @@ function quantityOf(value: unknown): number {
   return Number.isInteger(quantity) && quantity > 0 ? quantity : 1;
 }
 
-/** Whether the profile publishes the printed Rout-test exemption. */
-function profileIsRoutExempt(reader: KnowledgeReader, profileId: IdString | null): boolean {
+/**
+ * Whether the profile publishes the printed Rout-test exemption.
+ *
+ * The profile is resolved by band **and** id (`profileFactsOf`): the exemption is
+ * a property of one band's rule, and the same profile id is printed by several
+ * bands, so a global lookup by id would import another band's rule.
+ */
+function profileIsRoutExempt(
+  reader: KnowledgeReader,
+  bandId: IdString,
+  profileId: IdString | null,
+): boolean {
   if (!profileId) return false;
-  const profile = reader.queryKnowledge({ id: { kind: "profile_id", value: profileId } });
-  return profile.ok && profile.record.data["rout_test_exempt"] === true;
+  return profileFactsOf(reader, bandId, profileId)?.rout_test_exempt === true;
 }
 
 /**
@@ -84,7 +94,7 @@ export function routTestFactsFor(
     const warrior = roster.find((item) => item.id === warriorId) ?? null;
     const profileId = warrior?.profile_id ?? null;
     const quantity = quantityOf(row["quantity"] ?? warrior?.quantity);
-    const exempt = profileIsRoutExempt(reader, profileId);
+    const exempt = profileIsRoutExempt(reader, document.campaign.identity.band_id, profileId);
     const casualty = outOfAction.has(warriorId);
     const counted = !(exempt && casualty);
     return {

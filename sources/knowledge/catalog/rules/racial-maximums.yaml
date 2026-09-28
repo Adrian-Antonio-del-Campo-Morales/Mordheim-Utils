@@ -6,6 +6,7 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.human
   applies_to: profile
   profile: human
+  groups: [warband-group.human]
   characteristics:
     movement: 4
     weapon_skill: 6
@@ -24,6 +25,10 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.elf
   applies_to: profile
   profile: elf
+  groups: [warband-group.elf, warband-group.high-elf, warband-group.dark-elf]
+  profile_keys:
+  - band_id: adventurers-kaz
+    profile_id: elf
   characteristics:
     movement: 5
     weapon_skill: 7
@@ -42,6 +47,10 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.dwarf
   applies_to: profile
   profile: dwarf
+  groups: [warband-group.dwarf, warband-group.chaos-dwarf]
+  profile_keys:
+  - band_id: adventurers-kaz
+    profile_id: dwarf
   characteristics:
     movement: 3
     weapon_skill: 7
@@ -60,6 +69,10 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.ogre
   applies_to: profile
   profile: ogre
+  groups: [warband-group.ogre]
+  profile_keys:
+  - band_id: ostlanders
+    profile_id: ogre
   characteristics:
     movement: 6
     weapon_skill: 6
@@ -78,6 +91,7 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.halfling
   applies_to: profile
   profile: halfling
+  groups: [warband-group.halfling]
   characteristics:
     movement: 4
     weapon_skill: 5
@@ -96,6 +110,11 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.possessed
   applies_to: profile
   profile: possessed
+  profile_keys:
+  - band_id: cult-of-the-possessed
+    profile_id: the-possessed
+  - band_id: trollheim-cult-of-the-possessed
+    profile_id: the-possessed
   characteristics:
     movement: 6
     weapon_skill: 8
@@ -114,6 +133,15 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.vampire
   applies_to: profile
   profile: vampire
+  profile_keys:
+  - band_id: blood-dragons-mou
+    profile_id: vampire
+  - band_id: strigoi-kaz
+    profile_id: vampire
+  - band_id: undead
+    profile_id: vampire
+  - band_id: trollheim-undead
+    profile_id: vampire
   characteristics:
     movement: 6
     weapon_skill: 8
@@ -132,6 +160,7 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.skaven
   applies_to: profile
   profile: skaven
+  groups: [warband-group.skaven]
   characteristics:
     movement: 6
     weapon_skill: 6
@@ -150,6 +179,19 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.skaven-clan-pestilens
   applies_to: profile
   profile: skaven_clan_pestilens
+  profile_keys:
+  - band_id: lustria-clan-pestilens
+    profile_id: plague-monks
+  - band_id: lustria-clan-pestilens
+    profile_id: pestilens-sorcerer
+  - band_id: skaven-clan-pestilens
+    profile_id: plague-monks
+  - band_id: skaven-clan-pestilens
+    profile_id: pestilens-sorcerer
+  - band_id: skaven-of-clan-pestilens-lus
+    profile_id: plague-monks
+  - band_id: skaven-of-clan-pestilens-mou
+    profile_id: plague-monk
   characteristics:
     movement: 5
     weapon_skill: 6
@@ -168,6 +210,9 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.ghoul
   applies_to: profile
   profile: ghoul
+  profile_keys:
+  - band_id: chaos-streets-undead-bloodlines
+    profile_id: ghoul
   characteristics:
     movement: 5
     weapon_skill: 5
@@ -186,6 +231,21 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.saurus
   applies_to: profile
   profile: saurus
+  profile_keys:
+  - band_id: lizardmen
+    profile_id: saurus-braves
+  - band_id: lizardmen
+    profile_id: saurus-totem-warrior
+  - band_id: lizardmen-lus
+    profile_id: saurus-braves
+  - band_id: lizardmen-lus
+    profile_id: saurus-totem-warriors
+  - band_id: lustria-lizardmen
+    profile_id: saurus-braves
+  - band_id: lustria-lizardmen
+    profile_id: saurus-totem-warrior
+  - band_id: lustria-lizardmen
+    profile_id: saurus-totem-warriors
   characteristics:
     movement: 4
     weapon_skill: 6
@@ -205,6 +265,25 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.skink
   applies_to: profile
   profile: skink
+  profile_keys:
+  - band_id: lizardmen
+    profile_id: skink-braves
+  - band_id: lizardmen
+    profile_id: skink-great-crests
+  - band_id: lizardmen
+    profile_id: skink-priest
+  - band_id: lizardmen-lus
+    profile_id: skink-braves
+  - band_id: lizardmen-lus
+    profile_id: skink-great-crests
+  - band_id: lizardmen-lus
+    profile_id: skink-priest
+  - band_id: lustria-lizardmen
+    profile_id: skink-braves
+  - band_id: lustria-lizardmen
+    profile_id: skink-priest
+  - band_id: lustria-lizardmen
+    profile_id: skink-great-crest
   characteristics:
     movement: 6
     weapon_skill: 5
@@ -223,6 +302,7 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.goblin
   applies_to: profile
   profile: goblin
+  groups: [warband-group.goblin]
   characteristics:
     movement: 4
     weapon_skill: 5
@@ -241,6 +321,7 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.orc
   applies_to: profile
   profile: orc
+  groups: [warband-group.orc]
   characteristics:
     movement: 4
     weapon_skill: 6
@@ -296,6 +377,11 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.tomb-lord
   applies_to: profile
   profile: tomb_lord
+  profile_keys:
+  - band_id: tomb-guardians
+    profile_id: tomb-lord
+  - band_id: khemri-tomb-guardians
+    profile_id: tomb-lord
   characteristics:
     movement: 4
     weapon_skill: 6
@@ -314,6 +400,9 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.liche-priest
   applies_to: profile
   profile: liche_priest
+  profile_keys:
+  - band_id: tomb-guardians
+    profile_id: liche-priest
   characteristics:
     movement: 4
     weapon_skill: 6
@@ -351,6 +440,11 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.grave-guard
   applies_to: profile
   profile: grave_guard
+  profile_keys:
+  - band_id: blood-dragons-mou
+    profile_id: grave-guards
+  - band_id: restless-dead
+    profile_id: grave-guards
   characteristics:
     movement: 5
     weapon_skill: 5
@@ -369,6 +463,9 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.bull-centaur-black-dwarfs
   applies_to: profile
   profile: bull_centaur_black_dwarfs
+  profile_keys:
+  - band_id: black-dwarfs
+    profile_id: bull-centaur
   characteristics:
     movement: 8
     weapon_skill: 7
@@ -387,6 +484,9 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.bull-centaur-sons-of-hashut
   applies_to: profile
   profile: bull_centaur_sons_of_hashut
+  profile_keys:
+  - band_id: sons-of-hashut
+    profile_id: bull-centaur
   characteristics:
     movement: 7
     weapon_skill: 7
@@ -405,6 +505,13 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.hobgoblin-sons-of-hashut
   applies_to: profile
   profile: hobgoblin_sons_of_hashut
+  profile_keys:
+  - band_id: khemri-hobgoblin-raiders
+    profile_id: hobgoblin-shaman
+  - band_id: khemri-hobgoblin-raiders
+    profile_id: hobgoblin-warriors
+  - band_id: sons-of-hashut
+    profile_id: hobgoblins
   characteristics:
     movement: 4
     weapon_skill: 5
@@ -423,6 +530,17 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.marauder-of-chaos
   applies_to: profile
   profile: marauder_of_chaos
+  profile_keys:
+  - band_id: marauders-of-chaos
+    profile_id: chaos-marauders
+  - band_id: marauders-of-chaos
+    profile_id: marauder-chieftain
+  - band_id: lustria-norse
+    profile_id: marauders
+  - band_id: norse-explorers-btb
+    profile_id: marauders
+  - band_id: norse-explorers-lustria
+    profile_id: marauders
   characteristics:
     movement: 4
     weapon_skill: 7
@@ -459,6 +577,9 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.ungor
   applies_to: profile
   profile: ungor
+  profile_keys:
+  - band_id: beastmen-raiders
+    profile_id: ungor
   characteristics:
     movement: 6
     weapon_skill: 6
@@ -477,6 +598,9 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.centigor
   applies_to: profile
   profile: centigor
+  profile_keys:
+  - band_id: beastmen-raiders
+    profile_id: centigors
   characteristics:
     movement: 9
     weapon_skill: 7
@@ -495,6 +619,9 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.minotaur
   applies_to: profile
   profile: minotaur
+  profile_keys:
+  - band_id: beastmen-raiders
+    profile_id: minotaur
   characteristics:
     movement: 6
     weapon_skill: 6
@@ -513,6 +640,7 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.other-beastmen
   applies_to: profile
   profile: other_beastmen
+  groups: [warband-group.beastmen]
   characteristics:
     movement: 5
     weapon_skill: 7
@@ -532,6 +660,23 @@ racial_maximums:
 - id: campaign.limit.racial-maximum.troll
   applies_to: profile
   profile: troll
+  profile_keys:
+  - band_id: black-orcs
+    profile_id: troll
+  - band_id: crooked-moon-kep
+    profile_id: troll
+  - band_id: night-goblins-kaz
+    profile_id: troll
+  - band_id: night-goblins-mic
+    profile_id: troll
+  - band_id: night-goblins-web
+    profile_id: troll
+  - band_id: orc-mob
+    profile_id: troll
+  - band_id: savage-orcs-sar
+    profile_id: troll
+  - band_id: chaos-streets-greenskins
+    profile_id: troll
   characteristics:
     movement: 6
     weapon_skill: 6

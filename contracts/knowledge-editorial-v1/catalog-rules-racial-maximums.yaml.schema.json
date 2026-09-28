@@ -36,8 +36,18 @@
           "enum": ["profile"]
         },
         "profile": {
-          "description": "Profile or race the maximums describe (`human`, `elf`, `orc`, …).",
+          "description": "Stable race key the maximums describe (`human`, `elf`, `orc`, …). Never a display name: every lookup resolves it by id.",
           "$ref": "defs.schema.json#/$defs/id"
+        },
+        "groups": {
+          "description": "Race warband groups (`warband-group.*`) whose bands this race governs by default. A profile of a band that belongs to several race groups that resolve to different rows is not decided by the group and needs its own `profile_keys` entry: ambiguity is reported, never guessed.",
+          "$ref": "defs.schema.json#/$defs/id_list"
+        },
+        "profile_keys": {
+          "description": "Profiles of a single race (a Vampire inside an Undead band, an Ogre hired by Ostlanders, a Troll in an Orc mob) that this row governs instead of the band's race. Declared, so construction and advances resolve them by id and no identity depends on the printed name.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/profile_key" }
         },
         "characteristics": { "$ref": "#/$defs/maximum_characteristics" },
         "note": {
@@ -46,6 +56,15 @@
           "minLength": 1
         },
         "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+      }
+    },
+    "profile_key": {
+      "type": "object",
+      "required": ["band_id", "profile_id"],
+      "additionalProperties": false,
+      "properties": {
+        "band_id": { "$ref": "defs.schema.json#/$defs/id" },
+        "profile_id": { "$ref": "defs.schema.json#/$defs/id" }
       }
     },
     "maximum_characteristics": {

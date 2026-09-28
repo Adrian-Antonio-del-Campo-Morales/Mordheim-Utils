@@ -266,8 +266,9 @@ describe.skipIf(!ARTEFACT_PATH)("T10 campaign obligations (application service)"
     expect(refused.ok).toBe(false);
     if (!refused.ok) expect(refused.message).toContain("imperial-captain");
 
-    // A band whose printed list is still prose is allowed, but the gap is
-    // recorded on the advance instead of silently granting the catalogue.
+    // A band whose printed list is still prose cannot grant anything: the choice
+    // is refused with the code that names the gap, so the whole special catalogue
+    // is never handed over. The flow opens when the canonical list is published.
     const campaign = baseCampaign({
       band: "khemri-mages",
       warriors: [warrior("hero", "archmage", { skill_access: ["academic", "speed", "special"] })],
@@ -275,14 +276,15 @@ describe.skipIf(!ARTEFACT_PATH)("T10 campaign obligations (application service)"
       post_battles: [pendingPost(1, { pending_advances: [pendingAdvance("hero")] })],
     });
     const prose = await loadService(campaign, reader);
-    const granted = await prose.run("commitAdvanceChoice", { warrior_id: "hero", threshold: 2, kind: "choose_skill", skill_id: "skill.monster-slayer" });
-    expect(granted.ok, granted.ok ? "" : granted.message).toBe(true);
-    if (granted.ok) {
-      expect(granted.document.campaign.post_battles[0]?.pending_advances?.[0]?.["pending_special_list"]).toMatchObject({
-        code: "skill_pending_special_list",
-        owner_task: "KB",
-      });
+    const refusedProse = await prose.run("commitAdvanceChoice", { warrior_id: "hero", threshold: 2, kind: "choose_skill", skill_id: "skill.monster-slayer" });
+    expect(refusedProse.ok).toBe(false);
+    if (!refusedProse.ok) {
+      expect(refusedProse.detail?.["reason"]).toBe("skill_pending_special_list");
+      expect(refusedProse.message).toContain("prose-only");
     }
+    // Nothing was granted and the advance is still pending for a reroll.
+    expect(prose.current()!.campaign.warriors[0]?.skills).toEqual([]);
+    expect(prose.current()!.campaign.post_battles[0]?.pending_advances?.[0]?.["committed"]).toBeFalsy();
   });
 
   it("requires the missing Dame of the Mare before any other recruit", async () => {
@@ -321,6 +323,50 @@ describe.skipIf(!ARTEFACT_PATH)("T10 campaign obligations (application service)"
     const reopened = createCampaignAppService({ files: adapter, knowledge: reader });
     expect((await reopened.importCampaign({ text: serialized.text })).ok).toBe(true);
     expect((await reopened.run("recruitBandProfile", { profile_id: "bowmen", quantity: 1 })).ok).toBe(true);
+  });
+
+  it("applies the lifecycle gate to every route that can add a row to the roster", async () => {
+    // The published clause is one rule applied at the single point every roster
+    // increase crosses (the service dispatch), not a condition repeated in each
+    // feature module: a profile, a member of an existing group, a Hired Sword
+    // and a Dramatis Persona all cross it. A draft owns no lost member, so the
+    // campaign is committed (see the `is_draft` case in `lifecycle.test`).
+    const campaign = baseCampaign({
+      band: "order-of-the-mare-web",
+      warriors: [warrior("paragon", "paragon"), warrior("bowmen", "bowmen", { kind: "henchman", quantity: 1 })],
+      battles: [battle(1)],
+      post_battles: [pendingPost(1)],
+    });
+    const service = await loadService(campaign, reader);
+
+    const additions: readonly (readonly [string, Record<string, unknown>])[] = [
+      ["recruitBandProfile", { profile_id: "bowmen", quantity: 1 }],
+      ["recruitGroupMember", { warrior_id: "bowmen" }],
+      ["hireHireling", { profile_id: "hireling.hired-sword.bard", fee: 20 }],
+      ["hireDramatisSearch", { hero_id: "paragon" }],
+    ];
+
+    // While the Dame is missing, no route adds anything, and only the clause's
+    // own profile is allowed through.
+    for (const [action, input] of additions) {
+      const refused = await service.run(action, input);
+      expect(refused.ok, action).toBe(false);
+      if (!refused.ok) {
+        expect(refused.detail?.["reason"], action).toBe("lifecycle_member_required");
+        expect(refused.message, action).toContain("dame-of-the-mare");
+      }
+    }
+
+    const replacement = await service.run("recruitBandProfile", { profile_id: "dame-of-the-mare", quantity: 1 });
+    expect(replacement.ok, replacement.ok ? "" : replacement.message).toBe(true);
+    if (!replacement.ok) return;
+
+    // The clause is discharged: every route is reached again (its own outcome is
+    // the route's business, but none is refused by the lifecycle gate).
+    for (const [action, input] of additions) {
+      const reached = await service.run(action, input);
+      if (!reached.ok) expect(reached.detail?.["reason"], action).not.toBe("lifecycle_member_required");
+    }
   });
 
   it("removes a doomed promotion instead of creating the Hero", async () => {

@@ -23,6 +23,7 @@ import type {
   CampaignDocument,
   DraftCompositionInput,
   EquipmentEntry,
+  InventoryItem,
   UseCaseResult,
   Warrior,
 } from "./usecases";
@@ -33,8 +34,10 @@ import {
   bandFactsOf,
   characteristicBoundIssueFor,
   equipmentIssueFor,
+  itemFactsOf,
   profileExclusionFor,
   profileFactsOf,
+  racialMaximumResolutionFor,
   racialMaximumsOf,
   variantFrameOf,
 } from "../construction";
@@ -128,6 +131,39 @@ function makeItemName(knowledge: KnowledgeReader): (itemId: IdString) => string 
     const names = result.record.names as Readonly<Record<string, string>>;
     return names["en"] ?? itemId;
   };
+}
+
+/**
+ * Cheapest item of one family the profile's lists offer, at its creation price.
+ * Used by the starter for a band rule that requires a compulsory family
+ * (`profile.equipment-restrictions` `required_tag`).
+ */
+function requiredTagOffer(
+  knowledge: KnowledgeReader,
+  bandId: IdString,
+  profileId: IdString,
+  tag: string,
+): { readonly item_id: IdString; readonly cost: number } | null {
+  const profile = profileRecord(knowledge, bandId, profileId);
+  if (!profile) return null;
+  const offers = Array.isArray(profile["equipment_access"])
+    ? (profile["equipment_access"] as OpenPayload[])
+    : [];
+  const candidates = offers.flatMap((offer) => {
+    const itemId = offer["item_id"];
+    if (typeof itemId !== "string") return [];
+    if (!(itemFactsOf(knowledge, itemId)?.tags ?? []).includes(tag)) return [];
+    const listed = offer["cost"];
+    const item = knowledge.queryKnowledge({ id: { kind: "item_id", value: itemId } });
+    const cost =
+      typeof listed === "number"
+        ? listed
+        : item.ok && typeof item.record.data["value"] === "number"
+          ? (item.record.data["value"] as number)
+          : 0;
+    return [{ item_id: itemId, cost }];
+  });
+  return candidates.sort((left, right) => left.cost - right.cost)[0] ?? null;
 }
 
 /**
@@ -404,6 +440,69 @@ export function createDraft(
     }
   }
 
+  // 4. A band rule can require every member's kit to include an item family
+  //    (`profile.equipment-restrictions` `required_tag`). The starter buys the
+  //    cheapest permitted item of that family for every member the rule does not
+  //    exempt, so the automatically built warband is the legal one the commit
+  //    gate accepts — never a roster the construction contract refuses.
+  const requiredTag = band?.equipment_limits?.required_tag?.trim() ?? "";
+  const exemptProfiles = new Set(band?.equipment_limits?.exempt_profile_ids ?? []);
+  const compulsory: { readonly item_id: IdString; readonly name: string; readonly copies: number; readonly cost: number }[] = [];
+  const roster: Warrior[] = requiredTag
+    ? rows.map((row) => {
+        const copies = row.quantity ?? 1;
+        if (!row.profile_id || exemptProfiles.has(row.profile_id)) return row;
+        const holds = row.equipment.some(
+          (entry) => (itemFactsOf(knowledge, entry.item_id)?.tags ?? []).includes(requiredTag),
+        );
+        if (holds) return row;
+        const offer = requiredTagOffer(knowledge, bandId, row.profile_id, requiredTag);
+        if (!offer) return row;
+        compulsory.push({ item_id: offer.item_id, name: itemName(offer.item_id), copies, cost: offer.cost });
+        return {
+          ...row,
+          equipment: [
+            ...row.equipment,
+            {
+              item_id: offer.item_id,
+              name: itemName(offer.item_id),
+              quantity: copies,
+              acquisition: "purchase" as const,
+              unit_cost: offer.cost,
+              per_model: true,
+              acquisition_costs: Array(copies).fill(offer.cost),
+            },
+          ],
+        };
+      })
+    : rows;
+  let compulsoryInventory: InventoryItem[] = [];
+  for (const entry of compulsory) {
+    const existing = compulsoryInventory.find((item) => item.id === entry.item_id);
+    compulsoryInventory = existing
+      ? compulsoryInventory.map((item) => item === existing
+          ? {
+              ...item,
+              owned: item.owned + entry.copies,
+              equipped: item.equipped + entry.copies,
+              acquisition_costs: [...(item.acquisition_costs ?? []), ...Array(entry.copies).fill(entry.cost)],
+            }
+          : item)
+      : [
+          ...compulsoryInventory,
+          {
+            id: entry.item_id,
+            name: entry.name,
+            category: "Equipment",
+            owned: entry.copies,
+            equipped: entry.copies,
+            stash: 0,
+            value: entry.cost,
+            acquisition_costs: Array(entry.copies).fill(entry.cost),
+          },
+        ];
+  }
+
   const collectionValue = bandRecord.data["collection"];
   const identity: CampaignIdentity = {
     campaign_name: campaignName,
@@ -424,11 +523,11 @@ export function createDraft(
     },
     resources: { stash_value: 0, rare_finds: 0, treasures: 0, campaign_points: 0 },
     current_state_number: 0,
-    warriors: rows,
+    warriors: roster,
     battles: [],
     states: [],
     post_battles: [],
-    inventory: [],
+    inventory: compulsoryInventory,
     special_rules: [],
     manual_log: [],
   };
@@ -582,16 +681,27 @@ export function composeDraft(
     planned.push({ warrior: built, purchased });
   }
 
-  // Starting characteristics must stay inside the published racial maximum;
-  // a profile with no row is exempt (the bound is what the KB declares).
+  // Starting characteristics must stay inside the published racial maximum; the
+  // row is resolved by stable ids (the band's race groups and the catalogue's
+  // explicit profile keys), never by the printed name. A profile the catalogue
+  // leaves without a key stays explicitly unbounded here: the profile itself is
+  // printed and legal, so the missing maximum is a KB report, not a rejection.
   const maximums = racialMaximumsOf(knowledge);
   for (const row of planned) {
     if (!row.warrior.profile_id) continue;
     const facts = profileFactsOf(knowledge, campaign.identity.band_id, row.warrior.profile_id);
     if (!facts) continue;
+    const bound = racialMaximumResolutionFor(knowledge, campaign.identity.band_id, row.warrior.profile_id, maximums);
     for (const [stat, value] of Object.entries(row.warrior.stats)) {
       if (typeof value !== "number") continue;
-      const issue = characteristicBoundIssueFor({ profile: facts, stat, value, rows: maximums });
+      const printed = facts.characteristics[stat];
+      const issue = characteristicBoundIssueFor({
+        profile: facts,
+        stat,
+        value,
+        row: bound.row,
+        printed: typeof printed === "number" ? printed : null,
+      });
       if (issue) return rejected("limit_violated", issue.message);
     }
   }

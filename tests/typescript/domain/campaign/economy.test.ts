@@ -101,6 +101,53 @@ const knowledge: KnowledgeReader = {
   queryMany: (queries) => queries.map((q) => knowledge.queryKnowledge(q)),
 };
 
+/**
+ * The commit gate always takes a reader, and it evaluates the whole T09
+ * construction contract over the roster (an unknown band cannot commit). The
+ * economy suite commits rosters built from fixtures (`sorcerer`, `crew`), so it
+ * supplies the matching construction facts: the band the fixture names and the
+ * two profiles it uses. Whether a *published* band accepts a real roster is the
+ * construction contract's own business (`construction.test.ts`,
+ * `construction-kb-sweep.test.ts`).
+ */
+const BAND_ID = "skaven-clan-pestilens";
+const economicsCatalogue: KnowledgeReader = {
+  queryKnowledge: (query) => {
+    const rows: Record<string, Record<string, unknown>> = {
+      [`band_id:${BAND_ID}`]: {
+        id: BAND_ID,
+        name: "Clan Pestilens",
+        roster: {
+          minimum_models: 3,
+          maximum_models: 15,
+          starting_gold: 500,
+          members: [
+            { profile_id: "sorcerer", minimum: 1, maximum: 1 },
+            { profile_id: "crew", minimum: 0, maximum: 3, group_size: { minimum: 1, maximum: 3 } },
+          ],
+        },
+      },
+      "profile_id:sorcerer": { id: "sorcerer", band_id: BAND_ID, name: "Sorcerer", type: "hero", characteristics: { WS: 3 }, equipment_access: [{ item_id: "rat_familiar_scroll" }], fixed_equipment: [], skill_access: [] },
+      "profile_id:crew": { id: "crew", band_id: BAND_ID, name: "Crew", type: "henchman", characteristics: { WS: 2 }, equipment_access: [{ item_id: "rat_familiar_scroll" }], fixed_equipment: [], skill_access: [] },
+    };
+    const data = rows[`${query.id.kind}:${query.id.value}`];
+    if (!data) return { ok: false as const, reason: "not_found" };
+    return {
+      ok: true as const,
+      record: { kind: query.id.kind, id: query.id, names: { en: String(data["name"]) }, data },
+    };
+  },
+  queryMany: (queries) => queries.map((query) => economicsCatalogue.queryKnowledge(query)),
+  list: (kind) =>
+    kind === "profile"
+      ? [
+          { id: "sorcerer", band_id: BAND_ID, name: "Sorcerer", type: "hero", characteristics: { WS: 3 }, equipment_access: [{ item_id: "rat_familiar_scroll" }], fixed_equipment: [], skill_access: [] },
+          { id: "crew", band_id: BAND_ID, name: "Crew", type: "henchman", characteristics: { WS: 2 }, equipment_access: [{ item_id: "rat_familiar_scroll" }], fixed_equipment: [], skill_access: [] },
+        ]
+      : [],
+  campaignSection: () => ({}),
+};
+
 function hero(id: string, profileId: string): Warrior {
   return { id, name: id, profile_name: profileId, kind: "hero", profile_id: profileId, stats: { WS: 3 }, equipment: [], skills: [], experience: 0, cost: 30 };
 }
@@ -145,7 +192,9 @@ describe("desktop test_economy_sequence_matrix.py → web draft economy parity",
     for (const item_id of ["light_armour", "shield", "buckler"]) {
       const result = buyDraftEquipment(doc, { warrior_id: "h1", item_id, unit_price: 1 }, knowledge);
       expect(result.ok).toBe(false);
-      if (!result.ok) expect(result.message).toBe("This warrior cannot wear armour, shields or bucklers.");
+      // The T09 construction contract phrases the verdict now: the purchase is
+      // refused by the published prohibition, not by a second table of tokens.
+      if (!result.ok) expect(result.message).toContain("is forbidden for");
     }
   });
 
@@ -274,7 +323,7 @@ describe("desktop test_economy_sequence_matrix.py → web draft economy parity",
     const doc = committed([hero("h1", "sorcerer"), group("monks", "monk-initiates", 2)]);
     expect(doc.campaign.warriors.filter((w) => w.kind === "hero").every((w) => (w.quantity ?? 1) === 1)).toBe(true);
     const bad = draft([{ ...hero("bad", "sorcerer"), quantity: 2 }]);
-    const commit = commitInitialWarband(bad);
+    const commit = commitInitialWarband(bad, economicsCatalogue);
     expect(commit.ok).toBe(false);
   });
 
@@ -288,7 +337,8 @@ describe("desktop test_economy_sequence_matrix.py → web draft economy parity",
       const assigned = assignEquipment(doc, { warrior_id: "crew", item_id: "rat_familiar_scroll", quantity: 2, direction: "equip" });
       expect(assigned.ok).toBe(true);
       if (!assigned.ok) continue;
-      const committed = commitInitialWarband(assigned.state);
+      const committed = commitInitialWarband(assigned.state, economicsCatalogue);
+      if (!committed.ok) throw new Error(committed.message);
       expect(committed.ok).toBe(true);
       if (!committed.ok) continue;
       const battle = recordBattle(committed.state, { scenario: "skirmish", opponent: "Audit", result: "draw", gold_delta: 0, wyrdstone: 0, xp_delta: 0, casualties: 0, out_of_action_ids: null }, knowledge);

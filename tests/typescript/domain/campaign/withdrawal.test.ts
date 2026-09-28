@@ -102,17 +102,46 @@ describe("T10 withdrawal (campaign consequence)", () => {
     expect(result.state.campaign.warriors.some((row) => row.id === "deck")).toBe(false);
   });
 
-  it("refuses a duplicate id in the same request and a second call for the same member", () => {
+  it("removes one member per occurrence of a repeated group id", () => {
+    // The battle records the ids of the members that left, so a group that lost
+    // two members appears twice; each occurrence takes exactly one model and
+    // its per-model share of the kit, and the audit keeps both.
+    const group = warrior("deck", "deck-hands", "henchman", 3, [
+      { item_id: "sword", name: "Sword", quantity: 3, per_model: true, acquisition: "purchase" },
+    ]);
+    const result = withdrawLeftTableMembers(document([warrior("warlord", "disgraced-warlord", "hero"), group]), {
+      member_ids: ["deck", "deck"],
+      battle_number: 1,
+    });
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    const row = result.state.campaign.warriors.find((item) => item.id === "deck");
+    expect(row?.quantity).toBe(1);
+    expect(row?.equipment[0]?.quantity).toBe(1);
+    expect(withdrawalLog(result.state)[0]?.members).toEqual([
+      { warrior_id: "deck", name: "deck-hands deck", profile_id: "deck-hands", quantity: 1 },
+      { warrior_id: "deck", name: "deck-hands deck", profile_id: "deck-hands", quantity: 1 },
+    ]);
+  });
+
+  it("an already-withdrawn hero is not withdrawn twice", () => {
+    // Repeated in one request: the first occurrence removes the row, so the
+    // second cannot take a second model and the whole request is refused
+    // without applying anything.
     const duplicate = withdrawLeftTableMembers(document([warrior("mate", "shanghaires", "hero")]), { member_ids: ["mate", "mate"] });
     expect(duplicate.ok).toBe(false);
     if (!duplicate.ok) expect(duplicate.reason).toBe("not_found");
+    expect("state" in duplicate).toBe(false);
 
+    // A later call for the same member is refused too, and leaves the roster as
+    // the first withdrawal left it.
     const first = withdrawLeftTableMembers(document([warrior("mate", "shanghaires", "hero")]), { member_ids: ["mate"] });
     expect(first.ok).toBe(true);
     if (!first.ok) return;
     const again = withdrawLeftTableMembers(first.state, { member_ids: ["mate"] });
     expect(again.ok).toBe(false);
     if (!again.ok) expect(again.reason).toBe("conflict");
+    expect(first.state.campaign.warriors.some((row) => row.id === "mate")).toBe(false);
   });
 
   it("rejects an unknown id and an empty request", () => {

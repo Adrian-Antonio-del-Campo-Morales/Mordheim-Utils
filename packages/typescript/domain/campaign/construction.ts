@@ -47,6 +47,7 @@ export type ConstructionIssueCode =
   | "skill_not_permitted"
   | "skill_pending_special_list"
   | "characteristic_bound_exceeded"
+  | "characteristic_bound_unknown"
   | "characteristic_not_fixed"
   | "hiring_not_permitted"
   | "hiring_clause_unstructured"
@@ -166,6 +167,13 @@ export interface ProfileFacts {
   readonly characteristics: Readonly<Record<string, unknown>>;
   /** Bloodline option the profile belongs to (`profiles.yaml` `bloodline`). */
   readonly bloodline: string | null;
+  /**
+   * The printed rules exclude this profile from the Rout-test count (the
+   * derived `rout_test_exempt` fact of the band rule that names it). It is read
+   * from the band-scoped profile on purpose: a profile id shared by several
+   * bands must never import another band's exemption.
+   */
+  readonly rout_test_exempt: boolean;
 }
 
 export interface ProfileExclusionTable {
@@ -343,6 +351,7 @@ export function profileFactsOf(
     characteristics: row["characteristics"] && typeof row["characteristics"] === "object"
       ? (row["characteristics"] as OpenPayload)
       : {},
+    rout_test_exempt: row["rout_test_exempt"] === true,
   };
 }
 
@@ -961,62 +970,159 @@ export function memberEquipmentIssuesFor(
 /** One `campaign.racial_maximums` row. */
 export interface RacialMaximumFacts {
   readonly id: string;
-  readonly profile_key: string;
+  /** Stable race key of the row (`human`, `troll`, …); never a display name. */
+  readonly race_key: string;
+  /** Race groups whose bands the row governs by default. */
+  readonly group_ids: readonly IdString[];
+  /** Band/profile pairs the row governs instead of the band's race. */
+  readonly profile_keys: readonly RacialMaximumProfileKey[];
   readonly characteristics: Readonly<Record<string, number>>;
 }
 
-/** Key used to match a profile against the racial-maximum table. */
-export function racialMaximumKey(value: string): string {
-  return value.trim().toLocaleLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+/** One profile of a single race, by stable ids. */
+export interface RacialMaximumProfileKey {
+  readonly band_id: IdString;
+  readonly profile_id: IdString;
 }
+
+/** Reader that can also list the artefact's collected tables. */
+type ListingReader = KnowledgeReader & {
+  list?(kind: "racial_maximum" | "warband_group"): readonly OpenPayload[];
+};
 
 /** Every racial-maximum row the artefact publishes, when the reader lists them. */
 export function racialMaximumsOf(reader: KnowledgeReader): readonly RacialMaximumFacts[] {
-  const listing = reader as KnowledgeReader & {
-    list?(kind: "racial_maximum"): readonly OpenPayload[];
-  };
+  const listing = reader as ListingReader;
   return (listing.list?.("racial_maximum") ?? []).flatMap((row) => {
     const id = typeof row["id"] === "string" ? (row["id"] as string) : "";
-    const profileKey = typeof row["profile"] === "string" ? (row["profile"] as string) : "";
+    const raceKey = typeof row["profile"] === "string" ? (row["profile"] as string) : "";
     const characteristics = row["characteristics"];
-    if (!id || !profileKey || !characteristics || typeof characteristics !== "object") return [];
+    if (!id || !raceKey || !characteristics || typeof characteristics !== "object") return [];
     const bounds: Record<string, number> = {};
     for (const [key, value] of Object.entries(characteristics as OpenPayload)) {
       if (typeof value === "number") bounds[key] = value;
     }
-    return [{ id, profile_key: profileKey, characteristics: bounds }];
+    const profileKeys = Array.isArray(row["profile_keys"])
+      ? (row["profile_keys"] as OpenPayload[]).flatMap((entry) => {
+          if (!entry || typeof entry !== "object") return [];
+          const bandId = String(entry["band_id"] ?? "");
+          const profileId = String(entry["profile_id"] ?? "");
+          return bandId && profileId ? [{ band_id: bandId, profile_id: profileId }] : [];
+        })
+      : [];
+    return [{
+      id,
+      race_key: raceKey,
+      group_ids: strings(row["groups"]),
+      profile_keys: profileKeys,
+      characteristics: bounds,
+    }];
   });
 }
 
-/** Racial-maximum row that governs one profile, or `null` when it is exempt. */
-export function racialMaximumFor(
-  profile: ProfileFacts,
-  rows: readonly RacialMaximumFacts[],
-): RacialMaximumFacts | null {
-  const keys = new Set([racialMaximumKey(profile.name), racialMaximumKey(profile.profile_id)]);
-  return rows.find((row) => keys.has(racialMaximumKey(row.profile_key))) ?? null;
+/**
+ * The race warband groups a band belongs to (`warband-group.*` rows of kind
+ * `race`), by stable id. Alignment, faction and culture groups never take part:
+ * they say who the band may hire, not what its members are.
+ */
+export function bandRaceGroupIdsOf(reader: KnowledgeReader, bandId: IdString): readonly IdString[] {
+  const source = reader as ListingReader & {
+    campaignRows?(section: string): readonly OpenPayload[];
+  };
+  if (!bandId) return [];
+  // The artefact exposes the same rows as a collected table (`list`) and as a
+  // campaign section (`campaignRows`); both are the published registry.
+  const rows = [
+    ...(source.list?.("warband_group") ?? []),
+    ...(source.campaignRows?.("warband_groups") ?? []),
+  ];
+  return [
+    ...new Set(
+      rows
+        .filter((row) => row["kind"] === "race")
+        .filter((row) => strings(row["band_ids"]).includes(bandId))
+        .map((row) => String(row["id"] ?? ""))
+        .filter((id) => id !== ""),
+    ),
+  ].sort();
+}
+
+/** How a profile's racial maximum was decided. */
+export type RacialMaximumStatus =
+  | "resolved"
+  | "no-race-key"
+  | "ambiguous-race-key"
+  | "unknown-profile";
+
+export interface RacialMaximumResolution {
+  /** The row that bounds the profile, or `null` when it has none. */
+  readonly row: RacialMaximumFacts | null;
+  readonly status: RacialMaximumStatus;
+  /** Race groups the band belongs to, in stable order. */
+  readonly race_group_ids: readonly IdString[];
+}
+
+/**
+ * Racial-maximum row that governs one profile, resolved by the stable ids the
+ * catalogue publishes and never by the printed name.
+ *
+ * Two declarations decide it, in this order: an explicit `profile_keys` entry
+ * for the exact band/profile pair (an Ogre hired by Ostlanders, a Vampire in an
+ * Undead band), and then the single row that claims one of the band's race
+ * groups. When several rows claim the same group the profile is `ambiguous`: the
+ * callers report the state instead of guessing and instead of exempting it.
+ */
+export function racialMaximumResolutionFor(
+  reader: KnowledgeReader,
+  bandId: IdString,
+  profileId: IdString,
+  rows: readonly RacialMaximumFacts[] = racialMaximumsOf(reader),
+): RacialMaximumResolution {
+  const raceGroupIds = bandRaceGroupIdsOf(reader, bandId);
+  if (!bandId || !profileId) return { row: null, status: "unknown-profile", race_group_ids: raceGroupIds };
+  const explicit = rows.find((row) =>
+    row.profile_keys.some((key) => key.band_id === bandId && key.profile_id === profileId),
+  );
+  if (explicit) return { row: explicit, status: "resolved", race_group_ids: raceGroupIds };
+  const candidates = rows.filter((row) => row.group_ids.some((id) => raceGroupIds.includes(id)));
+  if (candidates.length === 1) return { row: candidates[0]!, status: "resolved", race_group_ids: raceGroupIds };
+  return {
+    row: null,
+    status: candidates.length > 1 ? "ambiguous-race-key" : "no-race-key",
+    race_group_ids: raceGroupIds,
+  };
 }
 
 /**
  * Characteristic verdict for an explicit value: a bound the profile exceeds is
  * rejected; a bound the profile does not have leaves it exempt.
+ *
+ * The printed value is the anchor the maximum is measured from: the table caps
+ * *increases* (its own source section is
+ * `Campaigns / Experience / Characteristic Increase / Racial Maximum
+ * Characteristics`), so a printed profile that is printed above its race's
+ * maximum is legal and only an unprinted increase — a value above both the
+ * maximum and the profile's own characteristics — is a construction error.
  */
 export function characteristicBoundIssueFor(args: {
   readonly profile: ProfileFacts;
   readonly stat: string;
   readonly value: number;
-  readonly rows: readonly RacialMaximumFacts[];
+  /** Row that governs the profile; `null` when the KB publishes none. */
+  readonly row: RacialMaximumFacts | null;
+  /** Printed characteristic of the profile, when it is a fixed number. */
+  readonly printed?: number | null;
 }): ConstructionIssue | null {
-  const row = racialMaximumFor(args.profile, args.rows);
   const key = RACIAL_MAXIMUM_KEYS[args.stat];
-  if (!row || !key) return null;
-  const bound = row.characteristics[key];
+  if (!args.row || !key) return null;
+  const bound = args.row.characteristics[key];
   if (typeof bound !== "number" || args.value <= bound) return null;
+  if (typeof args.printed === "number" && args.value <= args.printed) return null;
   return {
     code: "characteristic_bound_exceeded",
     subject_ids: [args.profile.band_id, args.profile.profile_id, args.stat],
-    rule_id: row.id,
-    message: `${args.stat} ${args.value} exceeds the racial maximum ${bound} of ${row.profile_key}.`,
+    rule_id: args.row.id,
+    message: `${args.stat} ${args.value} exceeds the racial maximum ${bound} of ${args.row.race_key}.`,
   };
 }
 
@@ -1467,10 +1573,32 @@ export function constructionIssuesOf(
         warrior.equipment.map((entry) => entry.item_id),
       ),
     );
+    const bound = racialMaximumResolutionFor(reader, band.band_id, warrior.profile_id, rows);
     for (const [stat, value] of Object.entries(warrior.stats)) {
       if (typeof value !== "number") continue;
-      const issue = characteristicBoundIssueFor({ profile, stat, value, rows });
-      if (issue) issues.push(issue);
+      const printed = profile.characteristics[stat];
+      const issue = characteristicBoundIssueFor({
+        profile,
+        stat,
+        value,
+        row: bound.row,
+        printed: typeof printed === "number" ? printed : null,
+      });
+      if (issue) {
+        issues.push(issue);
+        continue;
+      }
+      // No published row governs the profile: an increase above the printed
+      // characteristic is reported with its ids instead of being silently
+      // unbounded, and never blocks a printed profile.
+      if (bound.row === null && typeof printed === "number" && value > printed) {
+        issues.push({
+          code: "characteristic_bound_unknown",
+          subject_ids: [band.band_id, warrior.id, stat],
+          owner_task: "KB",
+          message: `${stat} of ${band.band_id}/${warrior.profile_id} is above the printed profile with no published racial maximum (${bound.status}): the increase is reported, not bounded.`,
+        });
+      }
     }
     for (const ruleId of warrior.skills) {
       const pending = PENDING_BINDINGS.find((entry) => entry.rule_id === ruleId);

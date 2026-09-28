@@ -21,6 +21,7 @@ import {
   mutationGrantRulesOf,
   mutationPrice,
   mutationsOf,
+  recruitedDuringPost,
 } from "@domain/campaign/kernel/mutations";
 import type { Campaign, CampaignDocument, Warrior } from "@domain/campaign/kernel/usecases";
 
@@ -135,13 +136,64 @@ describe.skipIf(!ARTEFACT_PATH)("T10 mutations (generated artefact)", () => {
     if (!result.ok) expect(result.reason).toBe("limit_violated");
   });
 
-  it("buys during a post-battle recruitment and books the cost on the pending battle", () => {
-    const post = { battle_number: 1, complete: false, active_step: 7, completed_steps: [], review_open: false, gold_delta: 0, wyrdstone_delta: 0, pending_advances: [], step_state: {}, event_log: [] };
+  it("buys for a member this post-battle recruited and books the cost on the pending battle", () => {
+    const post = { battle_number: 1, complete: false, active_step: 7, completed_steps: [], review_open: false, gold_delta: 0, wyrdstone_delta: 0, pending_advances: [], step_state: {}, event_log: [{ step: 7, type: "recruit", warrior_id: "reaver", profile_id: "reavers", quantity: 1, gold: 40 }] };
     const postBattle: CampaignDocument = { campaign: campaign([warrior("reaver", "reavers")], false, [post]), view: {} };
     const bought = buyMutation(postBattle, reader, { warrior_id: "reaver", mutation_id: BLACKBLOOD });
     expect(bought.ok, bought.ok ? "" : bought.message).toBe(true);
     if (!bought.ok) return;
     expect(bought.state.campaign.post_battles[0]?.gold_delta).toBe(-30);
     expect(bought.state.campaign.post_battles[0]?.event_log?.at(-1)).toMatchObject({ type: "mutation", mutation_id: BLACKBLOOD });
+    // Reopening the file keeps the recruitment moment: the persisted event log
+    // still says who joined this post-battle, so the gate stays open for the
+    // member it recruited (and only for him).
+    // Reopening the file: the fixture records no battle row, so this exercises the
+    // persisted document (the adapter round trip is asserted in the creation
+    // test above), which is what the gate reads after a reload.
+    const restored: CampaignDocument = JSON.parse(JSON.stringify(bought.state)) as CampaignDocument;
+    const pending = restored.campaign.post_battles.find((row) => !row.complete)!;
+    expect(recruitedDuringPost(pending, "reaver")).toBe(true);
+    expect(recruitedDuringPost(pending, "someone-else")).toBe(false);
+    expect(mutationsOf(restored, "reaver")).toEqual([BLACKBLOOD]);
+    expect(restored.campaign.post_battles[0]?.gold_delta).toBe(-30);
+    // The printed grant allows one mutation per warrior, so the refusal after the
+    // reopen is the grant limit and no longer the recruitment moment.
+    const second = buyMutation(restored, reader, { warrior_id: "reaver", mutation_id: TENTACLE });
+    expect(second.ok).toBe(false);
+    if (!second.ok) expect(second.reason).toBe("limit_reached");
+  });
+
+  it("refuses a veteran during a post-battle that did not recruit him", () => {
+    const post = { battle_number: 1, complete: false, active_step: 7, completed_steps: [], review_open: false, gold_delta: 0, wyrdstone_delta: 0, pending_advances: [], step_state: {}, event_log: [{ step: 7, type: "recruit", warrior_id: "other", profile_id: "reavers", quantity: 1, gold: 40 }] };
+    const postBattle: CampaignDocument = { campaign: campaign([warrior("reaver", "reavers")], false, [post]), view: {} };
+    const late = buyMutation(postBattle, reader, { warrior_id: "reaver", mutation_id: BLACKBLOOD });
+    expect(late.ok).toBe(false);
+    if (late.ok) return;
+    expect(late.reason).toBe("not_permitted_when_committed");
+    expect(late.subject_ids).toEqual(["reaver"]);
+  });
+
+  it("buys for a member added to an existing group by this post-battle", () => {
+    const post = { battle_number: 1, complete: false, active_step: 7, completed_steps: [], review_open: false, gold_delta: 0, wyrdstone_delta: 0, pending_advances: [], step_state: {}, event_log: [{ step: 7, type: "recruit_member", warrior_id: "wrecker", profile_id: "wreckers", quantity: 1, gold: 20 }] };
+    const postBattle: CampaignDocument = { campaign: campaign([warrior("wrecker", "wreckers")], false, [post]), view: {} };
+    const bought = buyMutation(postBattle, reader, { warrior_id: "wrecker", mutation_id: BLACKBLOOD });
+    expect(bought.ok, bought.ok ? "" : bought.message).toBe(true);
+    if (!bought.ok) return;
+    expect(mutationsOf(bought.state, "wrecker")).toEqual([BLACKBLOOD]);
+  });
+
+  it("refuses a purchase policy the catalogue does not publish", () => {
+    const unknown: typeof reader = {
+      ...reader,
+      campaignSection: (section: string) => {
+        const data = reader.campaignSection!(section);
+        if (section !== "mutations") return data;
+        return { ...data, rules: { ...(data["rules"] as Record<string, unknown>), purchase: { timing: "at_recruitment_only", pricing: { first_mutation: "listed_price", second_and_subsequent: "triple_listed_price" } } } };
+      },
+    } as typeof reader;
+    const result = buyMutation(draft([warrior("reaver", "reavers")]), unknown, { warrior_id: "reaver", mutation_id: BLACKBLOOD });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toBe("not_available");
+    expect(mutationPrice(unknown, BLACKBLOOD, 0)).toBeNull();
   });
 });
