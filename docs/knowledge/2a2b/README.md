@@ -71,7 +71,7 @@ La columna «depende de» determina autorización de escritura, salvo la explora
 | [x] | [T08 — Validación y cierre de la KB](tasks/T08.md) | completada | T07 | Coordinador/integrador | 2399 IDs reconciliados, carga canónica única y gates de KB aceptados 2026-09-26 |
 | [x] | [T09 — Construcción y selección para Web](tasks/T09.md) | completada | T08 | Agente ejecutor | Contratos de construcción aceptados; 161/161 bandas construibles y T10/T11 liberadas 2026-09-27 |
 | [x] | [T10 — Automatización de campaña Web](tasks/T10.md) | completada | T09 | Agente ejecutor | 567 obligaciones reconciliadas; automatización de campaña aceptada 2026-09-28 |
-| [ ] | [T11 — Interfaz Warband Manager Web](tasks/T11.md) | pendiente | T09; cierre tras T10 | Sin asignar | — |
+| [x] | [T11 — Interfaz Warband Manager Web](tasks/T11.md) | completada | T09; cierre tras T10 | Agente ejecutor | Contratos finales de T10 conectados; interfaz y flujos Web aceptados 2026-09-28 |
 | [ ] | [T12 — Artefactos, validación Web y cierre](tasks/T12.md) | pendiente | T10/T11 | Coordinador/integrador | — |
 | [ ] | [T13 — Reglas del Combat Simulator](tasks/T13.md) | pendiente | T12 | Sin asignar | — |
 | [ ] | [T14 — Validación y paridad de combate](tasks/T14.md) | pendiente | T13 | Sin asignar | — |
@@ -201,5 +201,6 @@ No es una orden de ejecutar todas las suites en cada tarea. Cada documento concr
 | 2026-09-26 | T08 / cierre de fase 1 | Aceptar la KB integrada tras reparar los 80 efectos de objeto sin traducción y normalizar la regla pendiente; liberar T09 | 2399 IDs reproducidos, 0 referencias rotas, 396/396 objetos y 4305/4305 nodos con efectos ES, promoción idempotente y suite knowledge 602 pasadas/10 omitidas | Sí |
 | 2026-09-27 | T09 | Aceptar los contratos de construcción y selección; adjudicar 12 obligaciones de magia como sistema excluido/X4 y liberar T10/T11 en paralelo | Artefacto fresco con 161/161 bandas construibles, 0 bloqueos abiertos, 25 gates focales verificados y promoción sin escrituras | Sí |
 | 2026-09-28 | T10 | Aceptar la automatización de campaña y liberar su integración final en T11; conservar cinco obligaciones como bloqueo de fuente documentado | 567 obligaciones reconciliadas, retirada/sucesión/mutaciones/Born Marksmen cubiertos, 10 gates focales verificados y 30 errores semánticos heredados sin incremento | Sí |
+| 2026-09-28 | T11 | Aceptar la interfaz Web tras reconciliar los contratos finales de T10 y liberar T12 | Categorías 2A/2B, variantes y obligaciones de campaña verificadas; 25 pruebas focales y typechecks Web/dominio verdes; artefactos, presentación y PDF transferidos a T12 | Sí |
 
 Añadir aquí solo decisiones de coordinación. Para una regla, enlazar su interpretación y evidencia en el sistema semántico existente. No mantener dos versiones divergentes de una misma decisión.

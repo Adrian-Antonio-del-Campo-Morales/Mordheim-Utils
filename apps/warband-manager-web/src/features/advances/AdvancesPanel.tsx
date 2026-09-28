@@ -7,7 +7,7 @@ import type { OpenPayload } from "@domain/campaign/index";
 import { DiceResolver } from "../dice/DiceResolver";
 import { useCampaignApp } from "../campaign/useCampaignApp";
 import type { CampaignDocument } from "../campaign/types";
-import { promotionHeroTables, wizardLore } from "@app/campaign/features/advances/advance-resolution-workflow";
+import { promotionTablesForWarrior, wizardLore } from "@app/campaign/features/advances/advance-resolution-workflow";
 import { knowledgeName, localizedLabel } from "../campaign/displayText";
 import { advanceResultDetails, advanceResultText } from "./advanceResultText";
 import { KnowledgeHint } from "../campaign/KnowledgeHint";
@@ -19,7 +19,10 @@ function PromotionOffer({ warriorId, threshold, locale }: { warriorId: string; t
 }
 
 function PromotionSetup({ document, knowledge, warriorId, locale }: { document: CampaignDocument; knowledge: ArtefactKnowledgeReader; warriorId: string; locale:"es"|"en" }) {
-  const app=useCampaignApp(); const [selected,setSelected]=useState<string[]>([]); const tables=promotionHeroTables(document,knowledge);
+  // T10: the promoted profile's own tables, including the printed grant
+  // (`axe-hurlers--born-marksmen` opens Shooting). The domain picks the set; the
+  // interface only renders it.
+  const app=useCampaignApp(); const [selected,setSelected]=useState<string[]>([]); const tables=promotionTablesForWarrior(document,knowledge,warriorId);
   return <fieldset><legend>{presentationOutput(translate({ key: "ui.d524ac64caf5" }, locale))}</legend>{tables.map((table)=><label key={table}><input type="checkbox" checked={selected.includes(table)} disabled={!selected.includes(table)&&selected.length>=2} data-disabled-reason={!selected.includes(table)&&selected.length>=2 ? presentationOutput(translate({ key: "disabled.2c5f879a96" }, locale)) : undefined} onChange={(event)=>setSelected((current)=>event.target.checked?[...current,table]:current.filter((item)=>item!==table))}/>{presentationOutput(localizedLabel(table, locale))}</label>)}<button className="primary" disabled={selected.length!==2} data-disabled-reason={selected.length!==2 ? presentationOutput(translate({ key: "disabled.b4f4928f05" }, locale)) : undefined} onClick={()=>void app.runAction("setPromotionSkillTables",{warrior_id:warriorId,tables:selected})}>{presentationOutput(translate({ key: "ui.7290ecbbca36" }, locale))}</button></fieldset>;
 }
 
@@ -42,7 +45,15 @@ export function AdvancesPanel({ document, knowledge, locale: requestedLocale }: 
     const needsSpells = choices.some((choice) => choice["kind"] === "generate_spell"); const loreId = needsSpells && warrior ? wizardLore(knowledge, document, warrior) : null; const lore = loreId ? knowledge.queryKnowledge({ id: { kind: "lore_id", value: loreId } }) : null; const spells = lore?.ok ? (lore.record.data["spells"] ?? []) as readonly Record<string, unknown>[] : [];
     const storedHistory = row["roll_history_events"] ?? row["roll_history"] ?? []; const history = Array.isArray(storedHistory) ? storedHistory : [undefined];
     const result = advanceResultDetails(row["applied_result"] ?? row["applied_label"] ?? t.committed, knowledge, locale);
+    // T10 contract at rest: a row that carries the persisted mark — written
+    // while the contract marked the row instead of refusing — says the band
+    // special-skill list is still prose. The final contract refuses the choice
+    // with `skill_pending_special_list` instead, which the shell phrases from
+    // the code (`campaign.advance.pending-special-list`); the mark is kept so a
+    // campaign written before that change still reports the missing datum.
+    const pendingSpecialList = row["pending_special_list"] != null;
     return <tr key={`${id}:${String(threshold)}:${index}`}><td data-label={presentationOutput(translate({ key: "ui.dca4e7aa700c" }, locale))}><strong>{presentationOutput(warriorPersonalName(warrior, locale))}</strong><small>{presentationOutput(textJoin([localizedLabel(row["table"] ?? "hero", locale), threshold === null ? t.immediate : textJoin([textNumber(threshold, locale), t.threshold])], " · "))}</small></td><td data-label={presentationOutput(translate({ key: "ui.0a91171a8d9f" }, locale))}><strong>{committed ? result.skillId ? <>{presentationOutput(result.text)} <KnowledgeHint knowledge={knowledge} kind="skill" id={result.skillId} locale={locale} compact /></> : presentationOutput(result.text) : presentationOutput(total === null ? t.pending : textJoin([translate({ key: "ui.9a5040b02281" }, locale), textNumber(total, locale)]))}</strong>{history.map((message, historyIndex) => <small key={historyIndex}>{presentationOutput(advanceResultText(message, knowledge, locale))}</small>)}</td><td data-label={presentationOutput(translate({ key: "ui.e9906fb3a302" }, locale))}>
+      {pendingSpecialList && <small role="status">{presentationOutput(translate({ key: "campaign.advance.pending-special-list" }, locale))}</small>}
       {promotionSetup && <PromotionSetup document={document} knowledge={knowledge} warriorId={id} locale={locale}/>}
       {!promotionSetup && !committed && total === null && <DiceResolver disabled={Boolean(processing)} key={`advance:${id}:${String(threshold)}:main`} locale={locale} count={2} sides={6} label={t.roll} onResolve={(dice) => void runAdvance(`roll:${id}:${threshold}`, "resolveAdvanceRoll", { warrior_id: id, threshold, roll_total: dice[0] + dice[1] })} />}
       {needsSubroll && <DiceResolver disabled={Boolean(processing)} key={`advance:${id}:${String(threshold)}:subroll:${total}`} locale={locale} count={1} sides={6} label={textJoin([t.subroll, textNumber(total, locale), textDice(1, 6, locale)])} onResolve={(dice) => void runAdvance(`subroll:${id}:${threshold}`, "resolveAdvanceRoll", { warrior_id: id, threshold, roll_total: total, subroll: dice[0] })} />}

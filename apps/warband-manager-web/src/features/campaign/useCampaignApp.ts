@@ -23,8 +23,25 @@ import type {
 import { createDefaultDeps, createDefaultDepsAsync } from "./default-deps";
 import { withOperationProgress } from "../common/operationProgressEvents";
 import { isUiMessageKey, translate, type UiText } from "./i18n-core";
+import { campaignIssueSignal, campaignIssueText, type CampaignIssueCode, type CampaignIssueSignal, type ObligationNames } from "./campaign-obligations";
 
-const CampaignServiceContext = createContext<{ service: CampaignAppService; locale: "es" | "en"; profileName?: (id: string) => PresentationValue } | null>(null);
+/**
+ * Name resolvers the shell injects so domain diagnostics never print an id.
+ * `bandName`/`variantName` are additive: a caller that omits them gets the
+ * shared unavailable message instead of a leaked identifier (T11).
+ * `obligationNames` resolves campaign-catalogue names (decisions, clauses,
+ * items) so a rejection can be phrased from its stable code and parameters.
+ */
+export interface ErrorNameResolvers {
+  readonly profileName?: (id: string) => PresentationValue;
+  readonly bandName?: (bandId: string) => PresentationValue;
+  readonly variantName?: (bandId: string, variantId: string) => PresentationValue;
+  readonly obligationNames?: ObligationNames;
+  /** Band the current document belongs to, for id-free diagnostics. */
+  readonly bandId?: string | null;
+}
+
+const CampaignServiceContext = createContext<{ service: CampaignAppService; locale: "es" | "en"; profileName?: (id: string) => PresentationValue; bandName?: (id: string) => PresentationValue; variantName?: (bandId: string, variantId: string) => PresentationValue; obligationNames?: ObligationNames } | null>(null);
 const CAMPAIGN_ERROR_EVENT = "warband-manager:campaign-error";
 
 type CampaignError = AppError | string | null;
@@ -44,9 +61,9 @@ export function useCloseOnCampaignError(close: () => void): void {
   }, [close]);
 }
 
-export function CampaignAppProvider({ service, locale: requestedLocale, profileName, children }: { service: CampaignAppService; locale?: "es" | "en"; profileName?: (id: string) => PresentationValue; children: ReactNode }) {
+export function CampaignAppProvider({ service, locale: requestedLocale, profileName, bandName, variantName, obligationNames, children }: { service: CampaignAppService; locale?: "es" | "en"; profileName?: (id: string) => PresentationValue; bandName?: (id: string) => PresentationValue; variantName?: (bandId: string, variantId: string) => PresentationValue; obligationNames?: ObligationNames; children: ReactNode }) {
   const locale = useLocale(requestedLocale);
-  return createElement(CampaignServiceContext.Provider, { value: { service, locale, profileName } }, children);
+  return createElement(CampaignServiceContext.Provider, { value: { service, locale, profileName, bandName, variantName, obligationNames } }, children);
 }
 
 export interface CampaignAppView {
@@ -54,6 +71,10 @@ export interface CampaignAppView {
   document: CampaignDocument | null;
   /** Resolved display error of the last failed operation, if any. */
   error: PresentationValue | null;
+  /** Raw rejection of the last failed operation: stable code plus parameters. */
+  lastError: AppError | null;
+  /** Stable code and parameters of that rejection, or `null` when none applies. */
+  errorIssue: CampaignIssueSignal | null;
   /** True when there are unexported campaign changes. */
   dirty: boolean;
   /** P5.2 acceptance: true while the real KB artefact is being fetched. */
@@ -82,7 +103,9 @@ async function readFileText(file: File): Promise<string> {
   });
 }
 
-export function localizeErrorMessage(message: string, locale: "es" | "en", profileName: (id: string) => PresentationValue = () => translate({ key: "knowledge.unavailable" }, locale)): UiText {
+export function localizeErrorMessage(message: string, locale: "es" | "en", profileName: (id: string) => PresentationValue = () => translate({ key: "knowledge.unavailable" }, locale), names: ErrorNameResolvers = {}): UiText {
+  const unresolved = () => translate({ key: "knowledge.unavailable" }, locale);
+  const optionName = (variantId: string) => names.variantName && names.bandId ? names.variantName(names.bandId, variantId) : unresolved();
   const exact = {
     "Roster or group limit reached for this recruit.": "error.legacy.36e60dfb0630",
     "Historical moments are read-only.": "error.legacy.53754a37f21a",
@@ -135,6 +158,21 @@ export function localizeErrorMessage(message: string, locale: "es" | "en", profi
     "Source and destination are the same warrior.": "error.legacy.22d03256b346",
   } as const;
   if (Object.hasOwn(exact, message)) return translate({ key: exact[message as keyof typeof exact] }, locale);
+
+  // T09 construction/variant verdicts. The domain returns a diagnostic naming
+  // internal ids; the interface resolves them or restates the verdict, so no
+  // technical id ever reaches a person (T11).
+  if (message === "Choose a valid warband variant.") return translate({ key: "error.variant-required" }, locale);
+  if (message === "This warband has no variants.") return translate({ key: "error.variant-not-published" }, locale);
+  if (message === "The warband variant is locked after selection.") return translate({ key: "error.variant-locked" }, locale);
+  if (/^Unknown warband variant for /.test(message)) return translate({ key: "error.variant-unknown" }, locale);
+  if (/is not a published warband variant of/.test(message)) return translate({ key: "error.variant-unknown" }, locale);
+  if (/requires choosing a warband variant, but the knowledge base publishes no variant options/.test(message)) return translate({ key: "error.variant-options-missing" }, locale);
+  if (/requires choosing one warband variant to commit/.test(message)) return translate({ key: "error.variant-required" }, locale);
+  const variantMember = message.match(/^"(.+?)" is not available under the selected warband variant "(.+?)"(?: of "(.+?)")?\.$/);
+  if (variantMember) return translate({ key: "error.variant-member-forbidden", args: { name: profileName(variantMember[1]), option: optionName(variantMember[2]) } }, locale);
+  const animal = message.match(/^".+?" may not field animals: "(.+?)" is an animal profile\.$/);
+  if (animal) return translate({ key: "error.animal-not-permitted", args: { name: profileName(animal[1]) } }, locale);
   
   let match = message.match(/^(.+): Rejected import$/);
   if (match) return translate({ key: "ui.95b83565ade4" }, locale);
@@ -180,9 +218,50 @@ export function localizeErrorMessage(message: string, locale: "es" | "en", profi
   return translate({ key: "error.action-failed" }, locale);
 }
 
-function messageOf(err: AppError, locale: "es" | "en", profileName?: (id: string) => PresentationValue): UiText {
+/** Names the current document supplies for id-free diagnostics. */
+function resolversFor(shared: { profileName?: (id: string) => PresentationValue; bandName?: (id: string) => PresentationValue; variantName?: (bandId: string, variantId: string) => PresentationValue; obligationNames?: ObligationNames } | null, document: CampaignDocument | null): ErrorNameResolvers {
+  return {
+    ...(shared?.profileName ? { profileName: shared.profileName } : {}),
+    ...(shared?.bandName ? { bandName: shared.bandName } : {}),
+    ...(shared?.variantName ? { variantName: shared.variantName } : {}),
+    ...(shared?.obligationNames ? { obligationNames: shared.obligationNames } : {}),
+    bandId: document?.campaign.identity.band_id ?? null,
+  };
+}
+
+/** Sentence a stable campaign code keeps when no name resolvers were injected. */
+const CAMPAIGN_CODE_MESSAGES: Readonly<Record<CampaignIssueCode, string>> = {
+  prerequisite_missing: "campaign.error-prerequisite",
+  not_found: "campaign.error-not-found",
+  invalid_input: "campaign.error-invalid",
+  conflict: "campaign.error-conflict",
+  limit_reached: "campaign.error-limit",
+  limit_violated: "campaign.error-unmet",
+  not_available: "campaign.error-unavailable",
+  not_permitted_in_draft: "campaign.error-draft-only",
+  not_permitted_when_committed: "campaign.error-recruiting-only",
+  lifecycle_member_required: "campaign.lifecycle.required",
+  skill_pending_special_list: "campaign.advance.pending-special-list",
+  market_not_listed: "campaign.market.not-listed",
+  market_not_common: "campaign.market.not-common",
+  market_warband_only: "campaign.market.warband-only",
+  market_warband_forbidden: "campaign.market.warband-forbidden",
+  market_creation_only: "campaign.market.creation-only",
+  market_condition_unstructured: "campaign.market.condition-unstructured",
+};
+
+function messageOf(err: AppError, locale: "es" | "en", profileName?: (id: string) => PresentationValue, names: ErrorNameResolvers = {}): UiText {
   if (isUiMessageKey(err.message_key)) {
     return translate({ key: err.message_key }, locale);
+  }
+  // T10 contract: the stable code plus its parameters come first. The English
+  // diagnostic is only a fallback for paths that publish no code (T11).
+  const signal = campaignIssueSignal(err);
+  if (signal.code) {
+    const structured = names.obligationNames ? campaignIssueText(signal, names.obligationNames, locale) : null;
+    if (structured) return structured.text;
+    const fallback = CAMPAIGN_CODE_MESSAGES[signal.code];
+    return translate(isUiMessageKey(fallback) ? { key: fallback } : { key: "error.action-failed" }, locale);
   }
   const detail = err.detail as Record<string, unknown> | undefined;
   const fileReason = detail?.file_reason;
@@ -202,7 +281,7 @@ function messageOf(err: AppError, locale: "es" | "en", profileName?: (id: string
   if (fileReason === "schema_violation") {
     return translate({ key: "ui.95b83565ade4" }, locale);
   }
-  return localizeErrorMessage(err.message, locale, profileName);
+  return localizeErrorMessage(err.message, locale, profileName, names);
 }
 
 export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
@@ -364,9 +443,12 @@ export function useCampaignApp(service?: CampaignAppService): CampaignAppView {
     [app],
   );
 
+  const lastError = typeof error === "object" && error !== null ? error : null;
   return {
     document,
-    error: error === null ? null : typeof error === "string" ? localizeErrorMessage(error, locale, profileName) : messageOf(error, locale, profileName),
+    error: error === null ? null : typeof error === "string" ? localizeErrorMessage(error, locale, profileName, resolversFor(shared, document)) : messageOf(error, locale, profileName, resolversFor(shared, document)),
+    lastError,
+    errorIssue: lastError ? campaignIssueSignal(lastError) : null,
     dirty,
     kbLoading,
     kbError: kbFailed ? (translate({ key: "ui.5d3df48f8f3f" }, locale)) : null,

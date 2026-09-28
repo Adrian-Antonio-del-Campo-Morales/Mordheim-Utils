@@ -26,6 +26,7 @@ import type { HirelingOfferRow, KnowledgeListings, TradingOfferRow } from "@app/
 import { DiceResolver } from "../dice/DiceResolver";
 import { KnowledgeHint } from "../campaign/KnowledgeHint";
 import { NumberStepper } from "../common/NumberStepper";
+import { marketAvailabilityFacts } from "../campaign/campaign-obligations";
 
 interface HirelingsPanelProps {
   readonly document: CampaignDocument;
@@ -195,7 +196,14 @@ export function HirelingsPanel({ document, listings, locale: requestedLocale, mo
             <tr key={good.offer_id}>
                 <td data-label={presentationOutput(t.item)}><KnowledgeHint knowledge={listings} kind="item" id={good.item_id} locale={locale}>{presentationOutput(displayName(good.item_id))}</KnowledgeHint>{good.restriction_notes.length > 0 && <small className="restriction-note">{presentationOutput(textJoin(good.restriction_notes, " · "))}</small>}</td>
               <td data-label={presentationOutput(t.price)}>{presentationOutput(good.price_dice ? textJoin([textJoin([textNumber(good.price_base, locale), textSymbol("+"), textDice(...good.price_dice, locale)], ""), translate({ key: "unit.gold" }, locale)]) : good.base_price === null ? t.dice : textJoin([textNumber(good.base_price, locale), translate({ key: "unit.gold" }, locale)]))}</td>
-              <td data-label={presentationOutput(t.availability)}>{presentationOutput(good.availability === "common" ? translate({ key: "availability.common" }, locale) : unavailableText(locale))}</td>
+              <td data-label={presentationOutput(t.availability)}>{(() => {
+                if (good.availability !== "common") return presentationOutput(unavailableText(locale));
+                // T10 verdict, phrased by the interface. The service keeps the
+                // authority: the buy action stays available and a printed
+                // scope that refuses it returns its own stable code.
+                const verdict = marketAvailabilityFacts(document, listings ?? {}, good.item_id, locale);
+                return <>{presentationOutput(translate({ key: "campaign.market.available" }, locale))}{verdict.text && <small className="restriction-note" role="status"> {presentationOutput(verdict.text)}</small>}</>;
+              })()}</td>
               <td data-label={presentationOutput(t.action)}><NumberStepper locale={locale} label={textJoin([translate({ key: "number.quantity" }, locale), itemLabel(good.item_id)])} value={amount(`buy:${good.item_id}`)} min={1} onChange={(value)=>setQuantities((current)=>({...current,[`buy:${good.item_id}`]:value}))} />
                 {good.price_dice ? <VariableTradingPurchase offer={good} name={displayName(good.item_id)} quantity={amount(`buy:${good.item_id}`)} busy={busy} locale={locale} onBuy={(price) => void buy(good.item_id, price)} /> : <button
                   type="button"

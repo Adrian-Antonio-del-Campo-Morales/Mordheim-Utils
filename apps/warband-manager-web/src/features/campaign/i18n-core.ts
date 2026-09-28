@@ -9,6 +9,12 @@ const messages = {
   "shell.band-set-1a": { es: "1A", en: "1A" },
   "shell.band-set-1b": { es: "1B", en: "1B" },
   "shell.band-set-1c": { es: "1C", en: "1C" },
+  // T11: the 2A/2B families are published by the KB artefact (`grade`), so the
+  // picker derives its toggles from data and only the labels live here.
+  "shell.band-set-2a": { es: "2A", en: "2A" },
+  "shell.band-set-2b": { es: "2B", en: "2B" },
+  "band-picker.no-data": { es: "El artefacto de conocimiento no publica ninguna banda.", en: "The knowledge artefact publishes no warband." },
+  "band-picker.no-match": { es: "Ninguna banda publicada pertenece a las categorías activadas. Activa alguna categoría en Ajustes.", en: "No published warband belongs to the enabled categories. Enable a category in Settings." },
   "shell.mordheim": { es: "Mordheim", en: "Mordheim" },
   "shell.language-es": { es: "Español", en: "Español" },
   "shell.language-en": { es: "English", en: "English" },
@@ -45,6 +51,10 @@ const messages = {
   "draft.start": {"es": "Crear borrador", "en": "Start draft"},
   "draft.select-first": {"es": "Selecciona primero una banda.", "en": "Select a warband first."},
   "draft.commit": {"es": "Confirmar banda inicial (Estado #0)", "en": "Commit initial warband (State #0)"},
+  "draft.variant-gated": {"es": "No disponible con la variante", "en": "Not available with variant"},
+  "draft.variant-frame": {"es": "La variante habilita", "en": "The variant enables"},
+  "draft.variant-maximum-unpublished": {"es": "Tope impreso aún sin publicar", "en": "Printed bound not published yet"},
+  "draft.variant-pending": {"es": "Elige la variante de banda antes de añadir miembros que dependen de ella.", "en": "Choose the warband variant before adding the members that depend on it."},
   "draft.illegal": {"es": "El borrador necesita las miniaturas requeridas, un héroe y una tesorería no negativa.", "en": "The draft needs the required models, a Hero, and a non-negative treasury."},
 
   "error.import-invalid": { es: "No se pudo importar el archivo: la campaña no es válida.", en: "Could not import the file: the campaign is invalid." },
@@ -55,7 +65,63 @@ const messages = {
   "error.no-pending": { es: "No hay ninguna resolución pendiente para esta acción.", en: "There is no pending resolution for this action." },
   "error.previous-step": { es: "Falta resolver algún paso anterior de la postbatalla.", en: "Resolve the preceding post-battle steps first." },
   "error.selection": { es: "La selección o el valor introducido no es válido para esta acción.", en: "The selection or entered value is invalid for this action." },
+  // T11: verdicts returned by the T09 construction/variant contract.
+  "error.variant-required": { es: "Elige una variante de banda antes de continuar.", en: "Choose a warband variant before continuing." },
+  "error.variant-locked": { es: "La variante de banda queda fijada en cuanto se elige.", en: "The warband variant is locked once it is chosen." },
+  "error.variant-unknown": { es: "Esa variante no pertenece a esta banda. Elige una de las opciones publicadas.", en: "That variant does not belong to this warband. Choose one of the published options." },
+  "error.variant-options-missing": { es: "La banda exige una variante, pero la base de conocimiento todavía no publica sus opciones. No es una elección tuya pendiente: es un dato que falta.", en: "The warband demands a variant, but the knowledge base does not publish its options yet. It is a missing fact, not a choice you owe." },
+  "error.variant-not-published": { es: "Esta banda no publica variantes de banda.", en: "This warband publishes no variants." },
   "error.already-resolved": { es: "Esta acción ya se había resuelto anteriormente.", en: "This action has already been resolved." },
+  // T11: generic verdicts of the T10 campaign contracts. The specific sentence
+  // is chosen from the stable `reason` code, and every parameter is resolved
+  // from the knowledge base (never an id, never the English diagnostic).
+  "campaign.error-prerequisite": { es: "Falta un paso o un dato obligatorio antes de esta acción.", en: "A mandatory step or datum is still missing before this action." },
+  "campaign.error-not-found": { es: "La campaña no contiene el elemento que pide esa acción.", en: "The campaign holds no such element for that action." },
+  "campaign.error-invalid": { es: "El valor indicado no es válido para esta acción.", en: "The entered value is not valid for this action." },
+  "campaign.error-conflict": { es: "Esa acción ya se había aplicado en esta campaña.", en: "That action had already been applied in this campaign." },
+  "campaign.error-limit": { es: "Esa acción supera un límite impreso de la banda.", en: "That action exceeds a printed bound of the warband." },
+  "campaign.error-unmet": { es: "La campaña todavía no cumple la condición impresa de esa acción.", en: "The campaign does not meet the printed condition for that action yet." },
+  "campaign.error-unavailable": { es: "Esa opción no está disponible en este momento de la campaña.", en: "That option is not available at this point of the campaign." },
+  "campaign.error-draft-only": { es: "Esta operación pertenece a una banda ya confirmada, no a la creación inicial.", en: "This operation belongs to a committed warband, not to the initial creation." },
+  "campaign.error-recruiting-only": { es: "Esta compra solo puede hacerse mientras el miembro se recluta.", en: "This purchase is only possible while the member is being recruited." },
+  "campaign.obligations.title": { es: "Obligaciones de campaña", en: "Campaign obligations" },
+  "campaign.heading.mutations": { es: "Mutaciones de la banda", en: "Warband mutations" },
+  "campaign.decision.heading": { es: "Decisiones de creación", en: "Creation decisions" },
+  "campaign.decision.pending": { es: "Tirada obligatoria pendiente", en: "Mandatory roll pending" },
+  "campaign.decision.roll-label": { es: "Resultado de la tirada", en: "Roll result" },
+  "campaign.decision.record": { es: "Registrar la tirada", en: "Record the roll" },
+  "campaign.decision.none": { es: "No queda ninguna tirada de creación pendiente.", en: "No creation roll is pending." },
+  "campaign.decision.recorded": { es: "Tiradas registradas", en: "Recorded rolls" },
+  "campaign.decision.hint": { es: "La aplicación registra el resultado; la tabla impresa no se reproduce aquí.", en: "The application records the result; the printed table is not reproduced here." },
+  "campaign.lifecycle.heading": { es: "Miembros obligatorios de la plantilla", en: "Mandatory roster members" },
+  "campaign.lifecycle.recruit": { es: "Reclutar", en: "Recruit" },
+  "campaign.succession.heading": { es: "Líder y sucesión", en: "Leader and succession" },
+  "campaign.succession.leader": { es: "Líder actual", en: "Current leader" },
+  "campaign.succession.none": { es: "La banda no tiene líder registrado.", en: "The warband has no recorded leader." },
+  "campaign.succession.choose": { es: "Elige quién asume el mando", en: "Choose who takes over" },
+  "campaign.succession.confirm": { es: "Confirmar la sucesión", en: "Confirm the succession" },
+  "campaign.succession.source-limit": { es: "La fuente disponible no publica el desempate ni la consecuencia de quedarse sin candidato: esos casos se resuelven en la mesa.", en: "The available source does not publish the tie-break or the consequence of having no candidate: those cases are resolved at the table." },
+  "campaign.mutation.heading": { es: "Mutaciones", en: "Mutations" },
+  "campaign.mutation.list": { es: "Mutación", en: "Mutation" },
+  "campaign.mutation.buy": { es: "Comprar mutación", en: "Buy mutation" },
+  "campaign.mutation.owned": { es: "Ya la tiene", en: "Already owned" },
+  "campaign.mutation.unpriced": { es: "La regla impresa nombra mutaciones que el catálogo publicado todavía no tasa; el dato falta en la base de conocimiento.", en: "The printed rule names mutations the published catalogue does not price yet; the datum is missing from the knowledge base." },
+  "campaign.mutation.window": { es: "Las mutaciones solo pueden comprarse mientras se recluta al miembro.", en: "Mutations may only be bought while the member is being recruited." },
+  "campaign.mutation.none": { es: "Esta banda no publica ninguna regla de concesión de mutaciones.", en: "This warband publishes no mutation grant rule." },
+  "campaign.rout.heading": { es: "Prueba de Retirada (datos de la batalla)", en: "Rout test (battle facts)" },
+  "campaign.rout.none": { es: "No hay ninguna batalla registrada para calcular la Retirada.", en: "No recorded battle is available to compute the Rout facts." },
+  "campaign.rout.exempt": { es: "Exentos de contar", en: "Excluded from the count" },
+  "campaign.rout.counted-members": { es: "Miembros que cuentan", en: "Members that count" },
+  "campaign.rout.pending": { es: "La prueba en sí se resuelve en la mesa; la campaña solo aporta estos hechos.", en: "The test itself is resolved at the table; the campaign only supplies these facts." },
+  "campaign.withdrawal.heading": { es: "Retiradas por abandono de mesa", en: "Withdrawals after leaving the table" },
+  "campaign.withdrawal.none": { es: "Ningún miembro se ha retirado por haber abandonado la mesa.", en: "No member has been withdrawn after leaving the table." },
+  "campaign.withdrawal.event": { es: "Retirado de la plantilla tras abandonar la mesa", en: "Removed from the roster after leaving the table" },
+  "campaign.unique.heading": { es: "Hallazgos únicos", en: "Unique finds" },
+  "campaign.unique.none": { es: "La banda no conserva ningún hallazgo único.", en: "The warband holds no unique find." },
+  "campaign.unique.legacy": { es: "Guardado con el identificador anterior; es el mismo objeto.", en: "Saved under the earlier identifier; it is the same object." },
+  "campaign.market.available": { es: "Disponible en el puesto comercial", en: "Available at the Trading Post" },
+  "campaign.market.creation-only": { es: "Solo puede comprarse mientras se crea la banda.", en: "It may only be bought while the warband is being created." },
+  "campaign.advance.pending-special-list": { es: "La lista especial de la banda sigue publicada como prosa: la base de conocimiento debe publicar sus miembros antes de conceder habilidades especiales.", en: "The warband's special list is still published as prose: the knowledge base must publish its members before special skills can be granted." },
   "error.legacy.36e60dfb0630": {"es": "Se ha alcanzado el límite permitido para este recluta o grupo.", "en": "Roster or group limit reached for this recruit."},
   "error.legacy.53754a37f21a": {"es": "Los momentos históricos son de solo lectura.", "en": "Historical moments are read-only."},
   "error.legacy.54d33a418d04": {"es": "Es obligatorio introducir un nombre.", "en": "A name is required."},
@@ -998,6 +1064,80 @@ const parameterMessages = {
     es: ({ name, modifier }: SpellArgs) => `Hechizo duplicado: ${name} (dificultad ${modifier})`,
     en: ({ name, modifier }: SpellArgs) => `Duplicated spell: ${name} (difficulty ${modifier})`,
   },
+  // T11: the T09 contract names the member and the chosen option; both are
+  // solved from the KB, never printed from the message payload.
+  "error.variant-member-forbidden": {
+    es: ({ name, option }: { name: PresentationValue; option: PresentationValue }) => `${name} no está disponible con la variante ${option}.`,
+    en: ({ name, option }: { name: PresentationValue; option: PresentationValue }) => `${name} is not available under the ${option} variant.`,
+  },
+  "error.animal-not-permitted": {
+    es: ({ name }: { name: PresentationValue }) => `Esta banda no puede alinear animales: ${name} es un perfil animal.`,
+    en: ({ name }: { name: PresentationValue }) => `This warband may not field animals: ${name} is an animal profile.`,
+  },
+  "campaign.decision.required": {
+    es: ({ name }: { name: PresentationValue }) => `Falta registrar la tirada de creación obligatoria: ${name}.`,
+    en: ({ name }: { name: PresentationValue }) => `The mandatory creation roll is still missing: ${name}.`,
+  },
+  "campaign.decision.resolved": {
+    es: ({ name, roll, outcome }: { name: PresentationValue; roll: number; outcome: PresentationValue }) => `${name}: tirada ${roll} · ${outcome}`,
+    en: ({ name, roll, outcome }: { name: PresentationValue; roll: number; outcome: PresentationValue }) => `${name}: roll ${roll} · ${outcome}`,
+  },
+  "campaign.lifecycle.required": {
+    es: ({ clause, profile }: { clause: PresentationValue; profile: PresentationValue }) => `${clause}: la plantilla necesita a ${profile} antes de reclutar a nadie más.`,
+    en: ({ clause, profile }: { clause: PresentationValue; profile: PresentationValue }) => `${clause}: the roster needs ${profile} before anyone else is recruited.`,
+  },
+  "campaign.succession.no-candidate": {
+    es: ({ name }: { name: PresentationValue }) => `Ninguno de los sucesores publicados está en la plantilla: ${name}.`,
+    en: ({ name }: { name: PresentationValue }) => `None of the published successors is in the roster: ${name}.`,
+  },
+  "campaign.market.not-common": {
+    es: ({ item }: { item: PresentationValue }) => `${item} no se vende en el puesto comercial; solo puede obtenerse con una búsqueda rara o con un hallazgo único.`,
+    en: ({ item }: { item: PresentationValue }) => `${item} is not sold at the Trading Post; it can only be obtained through a rare search or as a unique find.`,
+  },
+  "campaign.market.not-listed": {
+    es: ({ item }: { item: PresentationValue }) => `${item} no figura en el catálogo del puesto comercial.`,
+    en: ({ item }: { item: PresentationValue }) => `${item} is not listed in the Trading Post catalogue.`,
+  },
+  "campaign.market.warband-only": {
+    es: ({ item }: { item: PresentationValue }) => `${item} solo lo publican las bandas que la regla impresa nombra, y esta no está entre ellas.`,
+    en: ({ item }: { item: PresentationValue }) => `${item} is published only for the warbands the printed rule names, and this one is not among them.`,
+  },
+  "campaign.market.warband-forbidden": {
+    es: ({ item }: { item: PresentationValue }) => `La regla impresa prohíbe a esta banda comprar ${item}.`,
+    en: ({ item }: { item: PresentationValue }) => `The printed rule forbids this warband from buying ${item}.`,
+  },
+  "campaign.market.creation-only": {
+    es: ({ item }: { item: PresentationValue }) => `${item} solo puede comprarse mientras se crea la banda; en este momento de la campaña no está disponible.`,
+    en: ({ item }: { item: PresentationValue }) => `${item} may only be bought while the warband is being created; at this point of the campaign it is not available.`,
+  },
+  "campaign.market.condition-unstructured": {
+    es: ({ item }: { item: PresentationValue }) => `${item} publica una condición de compra sin ámbito estructurado: el dato falta en la base de conocimiento y la compra no puede autorizarse.`,
+    en: ({ item }: { item: PresentationValue }) => `${item} publishes a purchase condition without a structured scope: the datum is missing from the knowledge base and the purchase cannot be authorised.`,
+  },
+  "campaign.withdrawal.member": {
+    es: ({ name, quantity }: { name: PresentationValue; quantity: number }) => `${name} × ${quantity}`,
+    en: ({ name, quantity }: { name: PresentationValue; quantity: number }) => `${name} × ${quantity}`,
+  },
+  "campaign.withdrawal.entry": {
+    es: ({ order, members }: { order: number; members: PresentationValue }) => `Retirada #${order}: ${members}`,
+    en: ({ order, members }: { order: number; members: PresentationValue }) => `Withdrawal #${order}: ${members}`,
+  },
+  "campaign.rout.summary": {
+    es: ({ models, counted }: { models: number; counted: number }) => `${counted} de ${models} miniaturas cuentan para la prueba de Retirada.`,
+    en: ({ models, counted }: { models: number; counted: number }) => `${counted} of ${models} models count towards the Rout test.`,
+  },
+  "campaign.rout.member": {
+    es: ({ name, counted }: { name: PresentationValue; counted: number }) => `${name} · ${counted} cuentan`,
+    en: ({ name, counted }: { name: PresentationValue; counted: number }) => `${name} · ${counted} count`,
+  },
+  "campaign.mutation.offer": {
+    es: ({ name, price }: { name: PresentationValue; price: number }) => `${name} · ${price} co`,
+    en: ({ name, price }: { name: PresentationValue; price: number }) => `${name} · ${price} gc`,
+  },
+  "campaign.unique.entry": {
+    es: ({ name, owned, stash }: { name: PresentationValue; owned: number; stash: number }) => `${name} · ${owned} en la banda · ${stash} en la reserva`,
+    en: ({ name, owned, stash }: { name: PresentationValue; owned: number; stash: number }) => `${name} · ${owned} in the warband · ${stash} in the stash`,
+  },
 } as const;
 type ParameterMessage = { [K in keyof typeof parameterMessages]: { readonly key: K; readonly args: Parameters<typeof parameterMessages[K]["en"]>[0] } }[keyof typeof parameterMessages];
 export type UiMessage = { readonly key: keyof typeof messages } | ParameterMessage;
@@ -1009,7 +1149,7 @@ export function isUiMessageKey(value: unknown): value is keyof typeof messages {
 export function translate(message: UiMessage, locale: Locale): UiText {
   if ("args" in message) {
     if (Object.entries(message.args).some(([key, value]) =>
-      (["number", "models", "quantity", "modifier", "amount", "gold", "count", "rating", "cap", "total", "limit", "sides", "maximum"].includes(key) || (message.key === "battle.deployment-opponent" && key === "opponent"))
+      (["number", "models", "quantity", "modifier", "amount", "gold", "count", "rating", "cap", "total", "limit", "sides", "maximum", "roll", "order", "counted", "price", "owned", "stash"].includes(key) || (message.key === "battle.deployment-opponent" && key === "opponent"))
         ? typeof value !== "number" || !Number.isFinite(value)
         : typeof value !== "string"
     )) return messages["knowledge.unavailable"][locale] as UiText;
@@ -1076,6 +1216,24 @@ export function translate(message: UiMessage, locale: Locale): UiText {
       case "advance.skill": return parameterMessages[message.key][locale](message.args) as UiText;
       case "advance.spell": return parameterMessages[message.key][locale](message.args) as UiText;
       case "advance.duplicate-spell": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "error.variant-member-forbidden": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "error.animal-not-permitted": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.decision.required": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.decision.resolved": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.lifecycle.required": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.succession.no-candidate": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.market.not-common": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.market.not-listed": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.market.warband-only": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.market.warband-forbidden": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.market.creation-only": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.market.condition-unstructured": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.withdrawal.member": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.withdrawal.entry": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.rout.summary": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.rout.member": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.mutation.offer": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "campaign.unique.entry": return parameterMessages[message.key][locale](message.args) as UiText;
     }
   }
   return messages[message.key][locale] as UiText;

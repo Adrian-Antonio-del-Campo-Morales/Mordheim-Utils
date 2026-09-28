@@ -30,6 +30,7 @@ import { warbandVariants } from "@domain/campaign/band-variants";
 import { variantName, warriorAbilityRef, knowledgeName, localizedLabel, readableValue, resourceAmount, persistedSystemText, numberText } from "./displayText";
 import { KnowledgeHint } from "./KnowledgeHint";
 import { WarriorCard } from "./WarriorCard";
+import { CampaignObligations } from "./CampaignObligations";
 
 function RosterOverview({ document, stateNumber, editable, locale, section, knowledge }: { document: CampaignDocument; stateNumber: number; editable: boolean; locale: "es" | "en"; section: "overview" | "warriors"; knowledge?: ArtefactKnowledgeReader }) {
   const app = useCampaignApp(); const [name, setName] = useState("");
@@ -116,6 +117,7 @@ export function CampaignSlice({ knowledge, locale: requestedLocale }: { knowledg
             {selected.startsWith("post:") && (selectedPost?.complete ? <PostBattleHistory document={doc} battleNumber={battleNumber} locale={locale} knowledge={knowledge} /> : <PostBattleWorkspace document={doc} knowledge={knowledge} locale={locale} />)}
             {selected.startsWith("new-battle:") && <BattlePanel document={doc} knowledge={knowledge} locale={locale} />}
           </>}
+        {knowledge && <CampaignObligations document={doc} knowledge={knowledge} locale={locale} />}
       </div>
     </div>
   </section>;

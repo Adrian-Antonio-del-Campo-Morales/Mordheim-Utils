@@ -98,6 +98,8 @@ function defaultView() {
   return {
     document: null,
     error: null as UiText | null,
+    lastError: null,
+    errorIssue: null,
     dirty: false,
     kbLoading: false,
     kbError: null,
