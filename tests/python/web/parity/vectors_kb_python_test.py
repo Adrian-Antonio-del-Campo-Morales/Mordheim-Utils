@@ -135,8 +135,21 @@ def test_rules_prose_documents_present() -> None:
     assert {"special-rules", "conditions", "core-combat"} <= set(PROSE)
 
 
+def _rules_expectation(vector_id: str) -> dict:
+    data = json.loads((VECTORS / "rules_catalogue.json").read_text(encoding="utf-8"))
+    return next(vector for vector in data["vectors"] if vector["id"] == vector_id)["expect"]
+
+
 def test_rules_special_rules_count() -> None:
-    assert sum(row["id"].startswith("shared-rule.") for row in PROSE["special-rules"]) == 68
+    # The count comes from the shared vector, so the fixture cannot drift from
+    # the artefact; `special-rules` is the shared catalogue (no band scope) and
+    # band rules belong to `profile-special-rules`.
+    expected = _rules_expectation("rules.special-rules-count")
+    shared = [row for row in PROSE["special-rules"] if row["id"].startswith(expected["shared_prefix"])]
+    assert len(shared) == expected["shared_rules"]
+    assert len(shared) == len(PROSE["special-rules"])
+    assert all(not row.get("band_id") for row in PROSE["special-rules"])
+    assert any(row.get("band_id") for row in PROSE[expected["band_rules_stem"]])
 
 
 def test_rules_categories_ordered() -> None:

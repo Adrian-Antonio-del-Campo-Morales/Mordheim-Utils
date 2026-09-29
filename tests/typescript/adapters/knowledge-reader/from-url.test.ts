@@ -60,8 +60,8 @@ describe("ArtefactKnowledgeReader.fromUrl", () => {
 
   it("loads partitioned display text beside the main artefact", async () => {
     const fetchFn = vi.fn()
-      .mockResolvedValueOnce(new Response(JSON.stringify({ ...validArtefact, display_text_url: "display-text.json" })))
-      .mockResolvedValueOnce(new Response(JSON.stringify({ presentation_entries: [{ ref: { kind: "skill", id: "skill.acrobat" }, source: "skills/0", fields: { name: { es: "Acróbata" } } }] })));
+      .mockResolvedValueOnce(new Response(JSON.stringify({ ...validArtefact, skills: [{ id: "skill.acrobat", names: { en: "Acrobat", es: "Acróbata" } }], display_text_url: "display-text.json" })))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ presentation_entries: [{ ref: { kind: "skill", id: "skill.acrobat" }, source: "skills/[id=skill.acrobat]", fields: { name: { es: "Acróbata" } } }] })));
     const reader = await ArtefactKnowledgeReader.fromUrl("https://example.test/knowledge/knowledge-web.json", fetchFn);
     expect(fetchFn).toHaveBeenNthCalledWith(2, "https://example.test/knowledge/display-text.json", { cache: "no-cache" });
     expect(reader.resolveKbText({ kind: "skill", id: "skill.acrobat" }, "name", "es")).toMatchObject({ ok: true, text: "Acróbata" });

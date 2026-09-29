@@ -146,11 +146,12 @@ class TestKbArtefactPerformance:
         # deliberate KB/catalogue change and must update this test. Updated by
         # T12 for the 2A/2B catalogue delivery (campaign bands, variants and the
         # promoted campaign contracts) and split across the initial document and
-        # the deferred campaign catalogue.
+        # the deferred campaign catalogue. `items` is 388 since the campaign
+        # inventory fix published `holy_relic` as a catalogue item (387 + 1).
         assert counts == {
             "bands": 161,
             "profiles": 1056,
             "skills": 82,
-            "items": 387,
+            "items": 388,
             "campaign_sections": 16,
         }

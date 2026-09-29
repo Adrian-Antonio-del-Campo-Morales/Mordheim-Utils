@@ -79,9 +79,9 @@ function awardsKnowledge() {
     },
     presentation_entries: [
       {
-        ref: { kind: "record", id: "campaign/experience-and-advances/awards/0" },
+        ref: { kind: "record", id: "award.survived" },
         fields: { effect: { es: "Todos los supervivientes ganan 1 EXP", en: "All survivors gain 1 EXP" } },
-        source: "campaign/experience-and-advances/awards/0",
+        source: "campaign/experience-and-advances/awards/[id=award.survived]",
       },
     ],
   });

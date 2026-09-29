@@ -4,7 +4,7 @@ import { translate } from "@src/features/campaign/i18n-core";
 import { presentationOutput } from "@src/features/campaign/presentation-output";
 
 describe("typed presentation messages", () => {
-  const index = new PresentationIndex([{ ref: { kind: "skill", id: "private.skill" }, source: "skills/0", fields: { name: { es: "Luz", en: "Light" } } }]);
+  const index = new PresentationIndex([{ ref: { kind: "skill", id: "private.skill" }, source: "skills/[id=private.skill]", fields: { name: { es: "Luz", en: "Light" } } }]);
   it.each(["es", "en", "es"] as const)("composes resolved names and numeric arguments in %s", (locale) => {
     const result = index.resolve({ kind: "skill", id: "private.skill" }, "name", locale);
     if (!result.ok) throw new Error("Fixture resolution failed");

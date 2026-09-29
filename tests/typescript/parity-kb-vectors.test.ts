@@ -126,8 +126,19 @@ describe.skipIf(!hasArtefact)("shared KB parity vectors (TS mirror)", () => {
     expect(["special-rules", "conditions", "core-combat"].every((s) => s in prose)).toBe(true);
   });
 
-  it("rules: 68 canonical shared rules", () => {
-    expect(prose["special-rules"].filter((row: any) => row.id.startsWith("shared-rule."))).toHaveLength(68);
+  it("rules: the shared document publishes exactly the shared rules of the vector, never a band rule", () => {
+    // The count is read from the shared vector so the fixture cannot drift from
+    // the artefact again: `special-rules` is the shared catalogue (`shared-rule.*`
+    // with no band scope) and band rules live in `profile-special-rules`.
+    const vector = rulesCatalogue.vectors.find((candidate) => candidate.id === "rules.special-rules-count") as
+      | { expect?: { shared_prefix?: string; shared_rules?: number; band_rules_stem?: string } }
+      | undefined;
+    const expected = vector?.expect ?? {};
+    const shared = prose["special-rules"].filter((row: any) => row.id.startsWith(String(expected.shared_prefix)));
+    expect(shared).toHaveLength(Number(expected.shared_rules));
+    expect(shared).toHaveLength(prose["special-rules"].length);
+    expect(shared.every((row: any) => row.band_id == null || row.band_id === "")).toBe(true);
+    expect(prose[String(expected.band_rules_stem)].some((row: any) => row.band_id)).toBe(true);
   });
 
   it("rules: prose stems include canonical documents and generated localization indexes", () => {

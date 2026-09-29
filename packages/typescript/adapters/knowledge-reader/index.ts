@@ -25,7 +25,7 @@ import type {
   KnowledgeArtefact,
 } from "./artefact-types";
 import { validateArtefact } from "./artefact-types";
-import { PresentationIndex, presentationEntries, unavailableText, isTranslatedText, fieldValues, type TextReference, type TextField, type TextResolution, type PresentationEntry, type ResolvedKbText } from "./presentation";
+import { PresentationIndex, presentationEntries, unavailableText, isTranslatedText, fieldValues, locatorSteps, parseLocatorStep, rowMatchesSelector, selectorValue, type ParsedLocatorStep, type TextReference, type TextField, type TextResolution, type PresentationEntry, type ResolvedKbText } from "./presentation";
 export { fieldValues, unavailableText, isTranslatedText } from "./presentation";
 export type { TextReference, TextField, TextResolution } from "./presentation";
 
@@ -166,6 +166,12 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   private readonly presentation: PresentationIndex;
   private readonly presentationErrors = new Map<string, Extract<TextResolution, { ok: false }>>();
   private readonly presentationRows = new WeakMap<object, TextReference>();
+  /**
+   * Lazily built `field` → `value` → rows index per array, so a locator step is
+   * a lookup instead of a scan of every sibling for every entry. Only the
+   * fields a locator actually names are indexed, once each.
+   */
+  private readonly arrayFieldIndex = new WeakMap<readonly unknown[], Map<string, Map<string, readonly unknown[]>>>();
   private readonly presentationEntries: readonly PresentationEntry[];
   private readonly bands: Map<string, ArtefactRow>;
   private readonly profiles: Map<string, ArtefactRow>;
@@ -222,20 +228,151 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
   }
 
   /**
-   * Binds every presentation entry to the row object its `source` points at.
-   * The constructor binds the whole document; a deferred catalogue re-binds
-   * only the families it merged, so `recordText` keeps working on loaded rows.
+   * Binds every presentation entry to the row object its stable locator
+   * addresses. The constructor binds every family the document publishes,
+   * including none beyond it: a family that travels in the deferred catalogue
+   * is absent here and is bound once it is merged.
+   *
+   * The position of a row in an array is never the join. A row the source
+   * identifies is addressed by the conjunction of published fields that names
+   * exactly it; a row no conjunction tells apart from a sibling is addressed by
+   * a positional hint that must still publish exactly the text of the entry.
+   * Inserting, removing or reordering rows can therefore neither move an entry
+   * onto another row nor drop it silently: a locator that addresses no row, an
+   * identity two rows carry, and a hint two rows could claim all reject the
+   * document with a specific error instead of resolving one of the candidates.
    */
-  private bindPresentationRows(families?: ReadonlySet<string>): void {
+  private bindPresentationRows(): void {
     for (const entry of this.presentationEntries) {
-      const segments = entry.source.split("/");
-      if (families && !families.has(segments[0])) continue;
-      let row: unknown = this.document;
-      for (const segment of segments) {
-        row = row && typeof row === "object" ? (row as Record<string, unknown>)[segment] : undefined;
+      const root = locatorSteps(entry.source)[0];
+      // A family this document does not publish is not a broken reference.
+      if (!Object.hasOwn(this.document as object, root)) continue;
+      const row = this.resolveLocator(entry);
+      if (row === undefined) {
+        throw new KnowledgeReaderError(
+          `Presentation locator ${JSON.stringify(entry.source)} (${entry.ref.kind} ${entry.ref.id}) does not address a row of this document`,
+        );
       }
-      if (row && typeof row === "object") this.presentationRows.set(row, entry.ref);
+      this.presentationRows.set(row, entry.ref);
     }
+  }
+
+  /**
+   * The row a locator addresses, or `undefined` when it addresses none. The
+   * addressed row must still publish exactly the text of the entry: a step that
+   * shifted, or a text that was rewritten under an unchanged identity, is a
+   * reject rather than a silent resolution onto another row's prose.
+   */
+  private resolveLocator(entry: PresentationEntry): ArtefactRow | undefined {
+    let node: unknown = this.document;
+    let container: readonly unknown[] | null = null;
+    let final: ParsedLocatorStep | null = null;
+    for (const raw of locatorSteps(entry.source)) {
+      const step = parseLocatorStep(raw);
+      if (!step) return undefined;
+      if (Array.isArray(node)) {
+        container = node;
+        final = step;
+        node = this.resolveListStep(node, step);
+        if (node === undefined) return undefined;
+        continue;
+      }
+      if (!node || typeof node !== "object" || step.kind !== "key") return undefined;
+      container = null;
+      final = null;
+      node = (node as Record<string, unknown>)[step.key];
+    }
+    if (!node || typeof node !== "object" || Array.isArray(node)) return undefined;
+    const row = node as ArtefactRow;
+    if (!ArtefactKnowledgeReader.publishesText(entry) || this.describesRow(row, entry)) return row;
+    // A positional hint can shift with the rows around it: the entry still
+    // addresses the unique row of that array which publishes its text.
+    if (final?.kind === "hint" && container) {
+      const matches = container.filter((candidate) => this.describesRow(candidate, entry));
+      if (matches.length > 1) {
+        throw new KnowledgeReaderError(
+          `Ambiguous presentation locator ${JSON.stringify(entry.source)}: ${matches.length} rows publish the same text`,
+        );
+      }
+      return matches[0] as ArtefactRow | undefined;
+    }
+    return undefined;
+  }
+
+  /**
+   * One step inside an array: a field conjunction names the unique row that
+   * publishes it, a positional hint names the row at that index. An ambiguous
+   * conjunction is never resolved by picking one of its candidates.
+   */
+  private resolveListStep(rows: readonly unknown[], step: ParsedLocatorStep): unknown {
+    if (step.kind === "selector") {
+      const matches = this.candidatesFor(rows, step.pairs).filter((candidate) => rowMatchesSelector(candidate, step.pairs));
+      if (matches.length > 1) {
+        throw new KnowledgeReaderError(
+          `Ambiguous presentation identity ${JSON.stringify(step.pairs.map(([field, value]) => `${field}=${value}`).join(","))}: ${matches.length} rows carry it`,
+        );
+      }
+      return matches[0];
+    }
+    return step.kind === "hint" ? rows[step.index] : undefined;
+  }
+
+  /**
+   * The rows an array can still offer for the first field of a conjunction.
+   * The index is built once per array, so binding the whole document stays
+   * linear instead of rescanning a sister array for every entry.
+   */
+  private candidatesFor(rows: readonly unknown[], pairs: readonly (readonly [string, string])[]): readonly unknown[] {
+    const [field, value] = pairs[0];
+    let byField = this.arrayFieldIndex.get(rows);
+    if (!byField) {
+      byField = new Map();
+      this.arrayFieldIndex.set(rows, byField);
+    }
+    let buckets = byField.get(field);
+    if (!buckets) {
+      buckets = new Map<string, readonly unknown[]>();
+      for (const candidate of rows) {
+        if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) continue;
+        const published = selectorValue((candidate as Record<string, unknown>)[field]);
+        if (published === null) continue;
+        const bucket = buckets.get(published);
+        if (bucket) (bucket as unknown[]).push(candidate);
+        else buckets.set(published, [candidate]);
+      }
+      byField.set(field, buckets);
+    }
+    // A field/value pair no sibling publishes addresses no row at all: the
+    // producer only writes selector pairs it read from a published row.
+    return buckets.get(value) ?? [];
+  }
+
+  /** Does the entry publish any real translation at all? */
+  private static publishesText(entry: PresentationEntry): boolean {
+    return Object.values(entry.fields).some((values) => Object.values(values ?? {}).some((text) => isTranslatedText(text)));
+  }
+
+  /**
+   * Does this row still publish exactly the text of the entry? Pending
+   * placeholders are never compared: only real translations, so a row whose
+   * prose changed is no longer the row the entry describes.
+   */
+  private describesRow(row: unknown, entry: PresentationEntry): boolean {
+    if (!row || typeof row !== "object" || Array.isArray(row)) return false;
+    const candidate = row as ArtefactRow;
+    let compared = 0;
+    for (const [field, values] of Object.entries(entry.fields)) {
+      const declared = fieldValues(candidate, field as TextField);
+      // A row that publishes only a `result` is presented under `name`; the
+      // comparison mirrors that single alias of the producer.
+      const published = Object.keys(declared).length || field !== "name" ? declared : fieldValues(candidate, "result");
+      for (const [locale, text] of Object.entries(values ?? {})) {
+        if (!isTranslatedText(text)) continue;
+        compared += 1;
+        if (published[locale] !== text) return false;
+      }
+    }
+    return compared > 0;
   }
 
   /**
@@ -471,7 +608,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
       ...(this.deferredFamilies.has("items") ? { items: Array.isArray(fragment.items) ? fragment.items as readonly ArtefactRow[] : [] } : {}),
       ...(this.deferredFamilies.has("campaign") ? { campaign: this.campaignRaw } : {}),
     };
-    this.bindPresentationRows(new Set<string>(["items", "campaign"]));
+    this.bindPresentationRows();
     for (const kind of ["items", "campaign"] as const) this.loadedFamilies.add(kind);
   }
 

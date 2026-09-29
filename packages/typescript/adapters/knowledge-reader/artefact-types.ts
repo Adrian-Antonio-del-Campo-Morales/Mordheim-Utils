@@ -6,6 +6,7 @@
  * the *document* as stored — the adapter (index.ts) flattens it into the
  * domain's `KnowledgeRecord`s.
  */
+import { locatorError } from "./presentation";
 
 export type LocaleText = Readonly<Record<string, string>>;
 
@@ -97,6 +98,13 @@ export function validateArtefact(value: unknown): ArtefactValidation {
     for (const entry of artefact.presentation_entries) {
       if (!object(entry) || !object(entry.ref) || typeof entry.ref.kind !== "string" || !entry.ref.kind || typeof entry.ref.id !== "string" || !entry.ref.id || typeof entry.source !== "string" || !entry.source || !object(entry.fields)) {
         return { ok: false, reason: "bad_presentation", message: "Invalid presentation entry" };
+      }
+      // The locator grammar is part of the contract: a document that still
+      // addresses rows by bare array positions (the superseded format) is
+      // rejected here, not resolved by guessing.
+      const locator = locatorError(entry.source);
+      if (locator) {
+        return { ok: false, reason: "bad_presentation", message: `Invalid presentation locator ${JSON.stringify(entry.source)}: ${locator}` };
       }
       for (const scope of ["bandId", "profileId", "tableId"] as const) {
         if (entry.ref[scope] !== undefined && (typeof entry.ref[scope] !== "string" || !entry.ref[scope])) return { ok: false, reason: "bad_presentation", message: "Invalid presentation scope" };

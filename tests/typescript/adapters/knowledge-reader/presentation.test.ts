@@ -16,7 +16,7 @@ describe("strict presentation contract", () => {
     expect(index.resolve({ kind: "rule", id: "same", bandId: "wrong" }, "name", "es")).toMatchObject({ ok: false, reason: "unknown-reference" });
   });
   it.each([undefined, "", "TODO-TRANSLATE"])("rejects missing or pending translations: %s", (es) => {
-    const index = new PresentationIndex([{ ref: { kind: "item", id: "technical_id" }, source: "items/0", fields: { name: { en: "English", ...(es === undefined ? {} : { es }) } } }]);
+    const index = new PresentationIndex([{ ref: { kind: "item", id: "technical_id" }, source: "items/[item_id=technical_id]", fields: { name: { en: "English", ...(es === undefined ? {} : { es }) } } }]);
     expect(index.resolve({ kind: "item", id: "technical_id" }, "name", "es")).toMatchObject({ ok: false, reason: "missing-translation" });
     expect(resolveName({ id: "technical_id", names: { en: "English", es } }, "es")).toBe("Información no disponible");
   });
@@ -54,8 +54,8 @@ describe("strict presentation contract", () => {
   });
   it.each([
     null,
-    [{ ref: { kind: "item", id: "id" }, source: "items/0", fields: { name: { es: 1 } } }],
-    [{ ref: { kind: "item", id: "id", bandId: 7 }, source: "items/0", fields: {} }],
+    [{ ref: { kind: "item", id: "id" }, source: "items/[item_id=id]", fields: { name: { es: 1 } } }],
+    [{ ref: { kind: "item", id: "id", bandId: 7 }, source: "items/[item_id=id]", fields: {} }],
     [entries[0], entries[0]],
   ])("rejects malformed or duplicate presentation data at the input boundary", (presentation_entries) => {
     expect(() => ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", bands: [], profiles: [], items: [], skills: [], presentation_entries })).toThrow();

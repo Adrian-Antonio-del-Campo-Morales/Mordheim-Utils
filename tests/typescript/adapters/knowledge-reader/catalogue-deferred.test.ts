@@ -69,11 +69,11 @@ function initialDocument(digest: string = digestOf(FRAGMENT)): Record<string, un
     catalogue_url: CATALOGUE_URL,
     catalogue_digest: digest,
     presentation_entries: [
-      { ref: { kind: "item", id: "sword" }, fields: { name: { en: "Sword", es: "Espada" } }, source: "items/0" },
+      { ref: { kind: "item", id: "sword" }, fields: { name: { en: "Sword", es: "Espada" } }, source: "items/[item_id=sword]" },
       {
         ref: { kind: "scenario", id: "scenario.skirmish" },
         fields: { name: { en: "Skirmish", es: "Escaramuza" } },
-        source: "campaign/scenarios/scenarios/0",
+        source: "campaign/scenarios/scenarios/[id=scenario.skirmish]",
       },
     ],
   };

@@ -1,5 +1,5 @@
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
-import { presentationEntries, type PresentationEntry } from "@adapters/knowledge-reader/presentation";
+import { locatorStep, presentationEntries, type PresentationEntry } from "@adapters/knowledge-reader/presentation";
 /**
  * P6.4 component tests: the battle panel records a battle against a real
  * committed campaign document (built through the draft workflow) and walks
@@ -52,7 +52,7 @@ function presentationReader(source?: { list(kind: string): readonly Record<strin
   const entries: PresentationEntry[] = [...presentationEntries(artefact)];
   const nested = (value: unknown, source: string) => {
     if (!value || typeof value !== "object") return;
-    if (Array.isArray(value)) { value.forEach((row, index) => nested(row, `${source}/${index}`)); return; }
+    if (Array.isArray(value)) { value.forEach((row, index) => nested(row, `${source}/${locatorStep(value, index)}`)); return; }
     const row = value as Record<string, unknown>;
     const fields: PresentationEntry["fields"] = {};
     if (typeof row.label === "string") fields.label = { en: row.label };
