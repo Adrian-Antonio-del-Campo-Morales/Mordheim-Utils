@@ -158,7 +158,10 @@ describe("desktop test_rules_catalogue.py → web RulesCatalogue", () => {
   it("never substitutes English or identifiers for missing Spanish catalogue text", () => {
     const data = structuredClone(ARTEFACT);
     const rules = data.rules_prose as Record<string, Record<string, unknown>[]>;
-    rules["special-rules"] = [{ id: "technical_rule_id", names: { en: "English only" }, effect: "Untranslated prose" }];
+    // The presentation index addresses prose rows by their position in the stem,
+    // so append the fixture: a row that replaced index 0 would inherit the shared
+    // rule published there. The appended row is genuinely unindexed.
+    rules["special-rules"] = [...rules["special-rules"], { id: "technical_rule_id", names: { en: "English only" }, effect: "Untranslated prose" }];
     const c = new RulesCatalogue(ArtefactKnowledgeReader.from(data));
     const entry = c.entry("special-rules", "technical_rule_id", "es");
     expect(entry?.name).toBe("Información no disponible");
