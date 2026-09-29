@@ -298,6 +298,21 @@ form untranslated.
 | Sword Breaker | Rompe Espadas |
 | Pavise | Pavesa |
 
+### Magical artefact names
+
+Names of the six exploration magical artefacts published by
+`catalog/campaign/exploration-and-income.yaml`; the campaign table's
+`result` / `result_i18n` is the source of the inventory item's name.
+
+| English | Spanish |
+| --- | --- |
+| The Boots and Rope of Pieter | Las Botas y la Cuerda de Pieter |
+| The Count of Ventimiglia's Misericordia | La Misericordia del Conde de Ventimiglia (Misericordia stays a proper noun) |
+| Att'la's Plate Mail | Coraza de Placas de Att'la (reuses `runic_attlas_plate_mail`'s published name) |
+| Bow of Seeking | Arco Buscador |
+| Executioner's Hood | Capucha del Verdugo |
+| All-seeing Eye of Numas | Ojo que Todo lo Ve de Numas |
+
 ### Scenario names
 
 Names of the nine scenarios printed in the Spanish Mordheim rulebook (1999),

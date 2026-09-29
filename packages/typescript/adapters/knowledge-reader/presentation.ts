@@ -27,6 +27,18 @@ export function unavailableText(locale: PresentationLocale): ResolvedKbText {
   return (locale === "es" ? "Información no disponible" : "Information unavailable") as ResolvedKbText;
 }
 
+/**
+ * The specific, localized notice for a record whose source publishes no
+ * description at all. It is a structured absence, not a resolution failure:
+ * rendering the generic `unavailableText` (or an id) here would be the visible
+ * fallback defect the completeness gate rejects.
+ */
+export function sourceDescriptionUnavailableText(locale: PresentationLocale): ResolvedKbText {
+  return (locale === "es"
+    ? "La fuente no publica una descripción para este objeto."
+    : "The source does not publish a description for this entry.") as ResolvedKbText;
+}
+
 export function isTranslatedText(value: unknown): value is string {
   return typeof value === "string" && Boolean(value.trim()) && !value.includes("TODO-TRANSLATE");
 }

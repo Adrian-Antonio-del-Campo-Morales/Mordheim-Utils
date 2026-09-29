@@ -14,7 +14,7 @@ import {
   ArtefactKnowledgeReader,
 } from "../../adapters/knowledge-reader/index";
 import type { ArtefactRow } from "../../adapters/knowledge-reader/artefact-types";
-import { fieldValues, unavailableText, type ResolvedKbText } from "../../adapters/knowledge-reader/presentation";
+import { fieldValues, unavailableText, sourceDescriptionUnavailableText, type ResolvedKbText } from "../../adapters/knowledge-reader/presentation";
 import { adaptDistanceText } from "./distance-display";
 import { catalogueJoin, catalogueLabel, catalogueNumber, cataloguePunctuation, isCatalogueLabel, type CatalogueText } from "./catalogue-text";
 
@@ -100,7 +100,12 @@ export class RulesCatalogue {
   }
 
   private localizedEffect(row: Readonly<Record<string, unknown>>, locale: Locale): ResolvedKbText {
-    return this.translatedText(row, locale) ?? unavailableText(locale);
+    // No declared prose field means the source publishes no description for
+    // this row: that is a structured absence, not a failed resolution, so it
+    // must never surface the generic unavailable notice. A declared field that
+    // fails to resolve (unknown/ambiguous reference, missing translation) still
+    // reports the resolution failure through `translatedText`.
+    return this.translatedText(row, locale) ?? sourceDescriptionUnavailableText(locale);
   }
 
   /** The browsable categories, in display order, excluding empty ones. */

@@ -209,6 +209,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     if (!this.deferredFamilies.has("items")) {
       for (const item of ArtefactKnowledgeReader.magicalArtefactItems(artefact.campaign ?? {})) {
         this.items.set(String(item.item_id), item);
+        this.bindMagicalArtefactPresentation(item);
       }
     }
     this.skills = ArtefactKnowledgeReader.indexById(artefact.skills, "id");
@@ -235,6 +236,21 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
       }
       if (row && typeof row === "object") this.presentationRows.set(row, entry.ref);
     }
+  }
+
+  /**
+   * Bind an exploration magical artefact to the presentation entry published
+   * for its inventory id (`magical_artefact.<slug>`). The item is a derived copy
+   * of the campaign table row, so the source-path binding never reaches it and
+   * `recordText` would otherwise report the generic fallback for a name and an
+   * effect the artefact actually publishes.
+   */
+  private bindMagicalArtefactPresentation(row: ArtefactRow): void {
+    const id = String(row.item_id ?? "");
+    const entry = this.presentationEntries.find(
+      (candidate) => candidate.ref.kind === "item" && candidate.ref.id === id,
+    );
+    if (entry) this.presentationRows.set(row, entry.ref);
   }
 
   /**
@@ -447,6 +463,7 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
     if (this.deferredFamilies.has("items")) {
       for (const item of ArtefactKnowledgeReader.magicalArtefactItems(this.campaignRaw)) {
         this.items.set(String(item.item_id), item);
+        this.bindMagicalArtefactPresentation(item);
       }
     }
     this.document = {
