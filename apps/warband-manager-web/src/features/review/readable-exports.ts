@@ -1,7 +1,7 @@
 import type { CampaignDocument } from "../campaign/types";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { translate, type Locale } from "../campaign/i18n-core";
-import { knowledgeName, warriorAbilityRef } from "../campaign/displayText";
+import { knowledgeName, scenarioText, warriorAbilityRef } from "../campaign/displayText";
 import { localizedLabel } from "../campaign/presentation-enums";
 import { textJoin, textNumber, textDate, textSymbol, campaignPersonalName, warbandPersonalName, warriorPersonalName, opponentPersonalName, battlePersonalNotes, manualCorrectionReason, type PresentationValue } from "../campaign/presentation-values";
 import { historyEventText } from "./history-presentation";
@@ -18,7 +18,7 @@ function header(document: CampaignDocument, locale: Locale, knowledge?: Artefact
 export function localizedLedger(document: CampaignDocument, locale: Locale, knowledge?: ArtefactKnowledgeReader): PresentationValue {
   const rows = header(document, locale, knowledge);
   for (const battle of document.campaign.battles) {
-    rows.push(textJoin([translate({ key: "pdf.battle", args: { number: battle.number } }, locale), textDate(battle.date, locale), knowledgeName(knowledge, "scenario", battle.scenario, locale), textSymbol("vs."), opponentPersonalName(battle, locale), localizedLabel(battle.result, locale)], " · "));
+    rows.push(textJoin([translate({ key: "pdf.battle", args: { number: battle.number } }, locale), textDate(battle.date, locale), scenarioText(knowledge, battle.scenario, locale), textSymbol("vs."), opponentPersonalName(battle, locale), localizedLabel(battle.result, locale)], " · "));
     rows.push(textJoin([localizedLabel("gold_crowns", locale), textNumber(battle.gold_delta, locale), localizedLabel("experience", locale), textNumber(battle.xp_delta, locale)], " · "));
     if (battle.notes) rows.push(battlePersonalNotes(battle, locale));
   }

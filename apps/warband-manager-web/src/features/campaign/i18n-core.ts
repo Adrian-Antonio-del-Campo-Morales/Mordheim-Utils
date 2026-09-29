@@ -822,6 +822,7 @@ const messages = {
   "disabled.e9af446561": {"es":"Introduce un nombre para la campaña.","en":"Enter a campaign name."},
   "knowledge.unavailable": { es: "Información no disponible", en: "Information unavailable" },
   "knowledge.description-unavailable": { es: "No hay una descripción disponible para este elemento.", en: "No description is available for this entry." },
+  "scenario.unavailable": { es: "El escenario no está reconocido en la base de conocimiento.", en: "The scenario is not recognized in the knowledge base." },
   "error.action-failed": { es: "No se pudo completar la acción.", en: "The action could not be completed." },
 } as const;
 

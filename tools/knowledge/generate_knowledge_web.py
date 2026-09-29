@@ -61,6 +61,11 @@ INCLUDED_ITEM_KINDS = frozenset({
     "trollheim-equipment",
 })
 
+#: Campaign-only item ids the browser must be able to resolve. They sit outside
+#: the market item kinds but a warband roster or its campaign inventory can
+#: carry them, so the catalogue still publishes their names and effects.
+CAMPAIGN_ONLY_ITEM_IDS = frozenset({"rope_hook", "healing_herbs", "elven_cloak", "holy_relic"})
+
 #: Catalogue stems used by ``CampaignCatalog.catalogue``.
 CAMPAIGN_CATALOGUE_STEMS = (
     "trading-post", "scenarios", "serious-injuries",
@@ -379,7 +384,7 @@ def _build_items(ruleset: str) -> list[dict]:
     items = []
     for row in load_items(ruleset):
         kind = str(row.get("kind") or "")
-        if kind not in INCLUDED_ITEM_KINDS and str(row.get("id") or "") not in {"rope_hook", "healing_herbs", "elven_cloak"}:
+        if kind not in INCLUDED_ITEM_KINDS and str(row.get("id") or "") not in CAMPAIGN_ONLY_ITEM_IDS:
             continue  # campaign-only items are needed by web tooltips
         entry = _row(row, drop=("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n", "effect_ids"))
         entry["item_id"] = entry.pop("id", "")

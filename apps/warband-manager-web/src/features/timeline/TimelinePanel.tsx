@@ -17,7 +17,7 @@ import { useLocale } from "../campaign/i18n-context";
 import type { CampaignDocument, MomentSelection } from "../campaign/types";
 import { enumerateMoments, momentLabel } from "./moments";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
-import { knowledgeName } from "../campaign/displayText";
+import { scenarioText } from "../campaign/displayText";
 
 interface TimelinePanelProps {
   readonly document: CampaignDocument;
@@ -37,7 +37,7 @@ export function TimelinePanel({ document, onSelect, locale: requestedLocale, kno
   return (
     <nav aria-label={presentationOutput(translate({ key: "ui.d77ec83a8d1d" }, locale))} className="campaign-timeline">
       <header><h3>{presentationOutput(translate({ key: "ui.5402e494dc86" }, locale))}</h3><p>{presentationOutput(campaign.configuration.is_draft ? (translate({ key: "ui.19d4ed8b537c" }, locale)) : translate({ key: "timeline.completed", args: { count: completed } }, locale))}</p></header>
-      <label className="mobile-timeline-picker"><span>{presentationOutput(translate({ key: "ui.4507edf1d4e1" }, locale))}</span><select aria-label={presentationOutput(translate({ key: "ui.b51e84524689" }, locale))} value={selectedMoment} onChange={(event) => onSelect(event.target.value as MomentSelection)}>{moments.map((moment) => <option key={moment} value={moment}>{presentationOutput(momentLabel(moment, campaign, locale, knowledgeName(knowledge, "scenario", campaign.battles.find((battle) => `battle:${battle.number}` === moment)?.scenario, locale)))}</option>)}</select></label>
+      <label className="mobile-timeline-picker"><span>{presentationOutput(translate({ key: "ui.4507edf1d4e1" }, locale))}</span><select aria-label={presentationOutput(translate({ key: "ui.b51e84524689" }, locale))} value={selectedMoment} onChange={(event) => onSelect(event.target.value as MomentSelection)}>{moments.map((moment) => <option key={moment} value={moment}>{presentationOutput(momentLabel(moment, campaign, locale, scenarioText(knowledge, campaign.battles.find((battle) => `battle:${battle.number}` === moment)?.scenario, locale)))}</option>)}</select></label>
       <ol>
         {moments.map((moment) => {
           const isCurrent = moment === selected;
@@ -46,9 +46,9 @@ export function TimelinePanel({ document, onSelect, locale: requestedLocale, kno
           const state = kind === "state" ? campaign.states.find((row) => row.number === number) : undefined;
           const battle = kind === "battle" ? campaign.battles.find((row) => row.number === number) : undefined;
           const post = kind === "post" ? campaign.post_battles.find((row) => row.battle_number === number) : undefined;
-          const scenarioName = battle ? knowledgeName(knowledge, "scenario", battle.scenario, locale) : undefined;
+          const scenarioName = battle ? scenarioText(knowledge, battle.scenario, locale) : undefined;
           const detail = state ? textJoin([translate({ key: "ui.f60eeb2b86e6" }, locale), textNumber(state.rating, locale), textJoin([textNumber(state.models, locale), textSymbol("/"), textNumber(state.max_models, locale)], ""), translate({ key: "ui.e9882ce840bb" }, locale)])
-            : battle ? textJoin([scenarioName ?? translate({ key: "knowledge.unavailable" }, locale), textSymbol("vs."), opponentPersonalName(battle, locale)])
+            : battle ? textJoin([scenarioName ?? translate({ key: "scenario.unavailable" }, locale), textSymbol("vs."), opponentPersonalName(battle, locale)])
             : post && !post.complete ? textJoin([translate({ key: "ui.b3b55860db42" }, locale), textJoin([textNumber(post.active_step + 1, locale), textSymbol("/"), textNumber(8, locale)], "")])
             : kind === "new-battle" ? translate({ key: "ui.1defb9c60306" }, locale) : undefined;
           return (

@@ -1,5 +1,5 @@
 import { enumReadableValue } from "./presentation-enums";
-import { titleCaseDisplay, type ArtefactKnowledgeReader, type DisplayRef, type LocalizedText } from "@adapters/knowledge-reader/index";
+import { fieldValues, titleCaseDisplay, type ArtefactKnowledgeReader, type DisplayRef, type LocalizedText } from "@adapters/knowledge-reader/index";
 import { unavailableText, type ResolvedKbText } from "@adapters/knowledge-reader/presentation";
 import type { Warrior } from "./types";
 import { translate, uiMessageForText, type UiText, type Locale } from "./i18n-core";
@@ -80,6 +80,24 @@ export function knowledgeText(knowledge: ArtefactKnowledgeReader | undefined, ki
 export function knowledgeName(knowledge: Partial<Pick<ArtefactKnowledgeReader, "resolveKbText">> | undefined, kind: DisplayKind, id: unknown, locale: Locale, profileId?: string, bandId?: string): ResolvedKbText {
   const result = knowledge?.resolveKbText?.({ kind, id: String(id ?? ""), ...(profileId ? { profileId } : {}), ...(bandId ? { bandId } : {}) }, "name", locale);
   return result?.ok ? result.text : unavailableText(locale);
+}
+
+/**
+ * Battle scenario presentation. The web writer stores the canonical scenario id
+ * (`scenario.skirmish`); the desktop reference writer stores the display label
+ * it captured at battle time (`Skirmish`). Both resolve against the KB — the id
+ * directly, the captured label by exact, unique match on the published scenario
+ * names, never by parsing prose. An unresolved reference yields a specific
+ * localized absence notice, never the generic one and never the raw id.
+ */
+export function scenarioText(knowledge: ArtefactKnowledgeReader | undefined, value: unknown, locale: Locale): PresentationValue {
+  const raw = typeof value === "string" ? value.trim() : "";
+  if (!raw) return translate({ key: "scenario.unavailable" }, locale);
+  const direct = knowledge?.resolveKbText?.({ kind: "scenario", id: raw }, "name", locale);
+  if (direct?.ok) return direct.text;
+  const matches = (knowledge?.list?.("scenario") ?? []).filter((row) => Object.values(fieldValues(row, "name")).includes(raw));
+  if (matches.length === 1 && knowledge?.recordText) return knowledge.recordText(matches[0], "name", locale);
+  return translate({ key: "scenario.unavailable" }, locale);
 }
 
 export function knowledgeDescription(knowledge: Partial<Pick<ArtefactKnowledgeReader, "resolveKbText">> | undefined, ref: DisplayRef, locale: Locale): { readonly text: ResolvedKbText; readonly sourceLocale: Locale; readonly status: "translated" } | { readonly text: UiText; readonly sourceLocale: null; readonly status: "missing" } {
