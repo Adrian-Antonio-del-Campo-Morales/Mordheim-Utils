@@ -19,9 +19,11 @@
  * 4. Rendered surfaces: the dynamic sweep test (`tests/web/tools/
  *    presentation-completeness-sweep.test.tsx`) renders the rules page and all
  *    categories, the band picker, band construction, equipment/market, a loaded
- *    campaign, history, advances and the PDF text model against the real
- *    artefacts, and rejects supported campaign formats before render. Its
- *    findings are parsed here from vitest's JSON reporter and merged.
+ *    campaign, history, advances, the record-battle panel with real scenario
+ *    rewards, the exploration panel with a resolved result, and the PDF text
+ *    model against the real artefacts, and rejects supported campaign formats
+ *    before render. Its findings are parsed here from vitest's JSON reporter
+ *    and merged.
  *
  * Findings of this layer never mix with the static report's 700+ findings:
  * they are written to `gui-text-completeness.{json,md}` and exit non-zero when
@@ -85,6 +87,8 @@ export async function auditRulesCatalogue(artefact) {
         findings.push({ kind: "missing-presentation-entry", surface: `rules-catalogue/${categoryId}`, locale, category: categoryId, found: String(error), expected: "readable entries", origin: "rules-catalogue" });
         continue;
       }
+      // Every entry of the category is audited — including the first one: an
+      // off-by-one skip here was a false zero for the category's head row.
       for (const [index, entry] of entries.entries()) {
         const publishedName = artefact.display_names?.[entry.entry_id];
         // Tags are visible chips (e.g. a spell's `lore · difficulty`), so they
@@ -105,7 +109,6 @@ export async function auditRulesCatalogue(artefact) {
           });
           if (finding) findings.push(finding);
         }
-        if (index === 0) continue;
       }
     }
     // Composition: declared once per category (locale-independent).

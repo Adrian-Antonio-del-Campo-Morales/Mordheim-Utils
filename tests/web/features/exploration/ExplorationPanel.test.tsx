@@ -32,13 +32,13 @@ describe("ExplorationPanel", () => {
     const resolved = structuredClone(base) as CampaignDocument;
     const post = resolved.campaign.post_battles[0] as unknown as { experience_applied: boolean; step_state: Record<string, unknown> };
     post.experience_applied = true;
-    post.step_state = { exploration: { resolved: true, dice: [5, 4, 5, 2, 1, 5], dice_count: 6, total: 22, shards: 4, follow_up_rolls: [{ label: { es: "Cantidad de coronas" }, dice: [4, 3], total: 7 }, { label: { es: "Tabla de artefactos" }, dice: [6], total: 6 }] } };
+    post.step_state = { exploration: { resolved: true, dice: [5, 4, 5, 2, 1, 5], dice_count: 6, total: 22, shards: 4, follow_up_rolls: [{ label_key: "resource", resource: "gold_crowns", dice: [4, 3], total: 7 }, { label_key: "magical_artefact", dice: [6], total: 6 }] } };
     const localKnowledge = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", bands: [], profiles: [], items: [], skills: [], campaign: {} });
     render(<CampaignAppProvider service={service}><ExplorationPanel document={resolved} knowledge={localKnowledge} locale="es" /></CampaignAppProvider>);
     const history = screen.getByRole("region", { name: "Tiradas posteriores" });
-    expect(history).toHaveTextContent("Información no disponible4, 3 → 7");
-    expect(history).toHaveTextContent("Información no disponible6 → 6");
-    expect(history).not.toHaveTextContent("Cantidad de coronas");
+    expect(history).toHaveTextContent("Recompensa de Coronas de Oro4, 3 → 7");
+    expect(history).toHaveTextContent("Tirada de artefacto mágico6 → 6");
+    expect(history).not.toHaveTextContent("Información no disponible");
   });
 
   it("rejects technical identifiers in the next roll or decision column", () => {

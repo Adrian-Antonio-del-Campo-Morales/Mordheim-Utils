@@ -118,6 +118,55 @@ function parseEnvelope(text: string): ParseResult {
  */
 import { validateCampaignSemantics } from "./semantics";
 
+/**
+ * Exploration follow-up captions are canonical `label_key` references, not
+ * stored sentences: the contract allows no captured text, no single-locale
+ * objects and no mirrored pairs. A document whose history carries any of
+ * those belongs to an earlier format and is rejected at load with the
+ * specific `incompatible_format` error — before any component can render it.
+ */
+const CAPTION_KEYS: ReadonlySet<string> = new Set([
+  "resource",
+  "item",
+  "characteristic_test",
+  "roll_table",
+  "magical_artefact",
+]);
+
+function isCaptionRow(row: unknown): row is Record<string, unknown> {
+  return typeof row === "object" && row !== null && !Array.isArray(row);
+}
+
+function incompatibleCaption(location: string): CampaignFileError {
+  return error(
+    "incompatible_format",
+    "This file stores exploration follow-up captions as captured text. Current documents persist a canonical label_key per follow-up roll; captured-caption files belong to an earlier format and cannot be opened.",
+    { location },
+  );
+}
+
+function validateExplorationCaptions(doc: Record<string, unknown>): CampaignFileError | null {
+  const campaign = doc["campaign"];
+  if (typeof campaign !== "object" || campaign === null || Array.isArray(campaign)) return null;
+  const posts = (campaign as Record<string, unknown>)["post_battles"];
+  if (!Array.isArray(posts)) return null;
+  for (const [postIndex, post] of posts.entries()) {
+    if (!isCaptionRow(post)) continue;
+    const states = post["step_state"];
+    if (!isCaptionRow(states)) continue;
+    const exploration = states["exploration"];
+    if (!isCaptionRow(exploration)) continue;
+    const rolls = exploration["follow_up_rolls"];
+    if (!Array.isArray(rolls)) continue;
+    for (const [rollIndex, roll] of rolls.entries()) {
+      if (!isCaptionRow(roll)) continue;
+      if (typeof roll["label_key"] === "string" && CAPTION_KEYS.has(roll["label_key"])) continue;
+      return incompatibleCaption(`campaign.post_battles[${postIndex}].step_state.exploration.follow_up_rolls[${rollIndex}].label_key`);
+    }
+  }
+  return null;
+}
+
 export class CampaignFileV5Adapter implements CampaignFilePort {
   parseCampaignFile(text: string): ParseResult {
     const envelope = parseEnvelope(text);
@@ -138,6 +187,8 @@ export class CampaignFileV5Adapter implements CampaignFilePort {
     if (semanticErrors.length > 0) {
       return error("schema_violation", semanticErrors[0].message, { location: "campaign" });
     }
+    const captionError = validateExplorationCaptions(doc);
+    if (captionError) return captionError;
     return { ok: true, document: envelope.document };
   }
 

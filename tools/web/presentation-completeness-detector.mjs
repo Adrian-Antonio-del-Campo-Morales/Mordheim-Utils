@@ -149,11 +149,15 @@ export function genericFallbackFragments(value) {
 
 /**
  * Dotted/underscored lowercase identifiers (`item.sword`, `shared-rule.fear`,
- * `magical_artefact.x`) never occur in prose. Kebab-only shapes are NOT id
- * evidence by themselves — a known id shown as text is caught through the
- * inventory or the reference instead, so prose like "close-combat" is safe.
+ * `magical_artefact.x`) never occur in prose. Their segments may themselves
+ * carry hyphens (`shared-rule.leader`, `scenario.hidden-treasure.loot.1.1`),
+ * and the band-rule grammar is pure kebab with the `--` owner separator
+ * (`band--knights-feats`). The shape therefore requires the id character set,
+ * a leading letter, an alnum tail, and at least one dot/underscore separator
+ * or the `--` grammar — prose ("close-combat", "p. ej.", "3.5") stays outside,
+ * and a known id shown bare is still caught through the inventory/reference.
  */
-const ID_SHAPE = /^[a-z][a-z0-9]*(?:[._][a-z0-9]+)+$/;
+const ID_SHAPE = /^(?=.*(?:[._][a-z0-9]+|--))[a-z][a-z0-9._-]*[a-z0-9]$/;
 
 /**
  * Classify one visible value.

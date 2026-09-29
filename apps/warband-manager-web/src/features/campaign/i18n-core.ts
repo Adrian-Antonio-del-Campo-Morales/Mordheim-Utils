@@ -823,6 +823,7 @@ const messages = {
   "knowledge.unavailable": { es: "Información no disponible", en: "Information unavailable" },
   "knowledge.description-unavailable": { es: "No hay una descripción disponible para este elemento.", en: "No description is available for this entry." },
   "scenario.unavailable": { es: "El escenario no está reconocido en la base de conocimiento.", en: "The scenario is not recognized in the knowledge base." },
+  "error.incompatible-format": { es: "Este archivo usa un formato anterior: los seguimientos de exploración guardan su texto en lugar de una clave de etiqueta. Vuelve a registrar las tiradas con la versión actual y guarda de nuevo.", en: "This file uses an earlier format: its exploration follow-up captions are incompatible. Replay the rolls with the current version and save again." },
   "error.action-failed": { es: "No se pudo completar la acción.", en: "The action could not be completed." },
 } as const;
 
@@ -849,6 +850,13 @@ const parameterMessages = {
   "error.gold-needed": {
     es: ({ amount }: { amount: number }) => `No hay suficientes CO: se necesitan ${amount}.`,
     en: ({ amount }: { amount: number }) => `Not enough gold: ${amount} gc needed.`,
+  },
+  // The caption of a follow-up roll history row: fixed application vocabulary,
+  // resolved from the persisted label key (and resource), never stored as one
+  // locale's sentence for later display.
+  "exploration.follow-up-caption": {
+    es: ({ kind, resource }: { kind: string; resource: string }) => kind === "resource" ? (resource === "gold_crowns" ? "Recompensa de Coronas de Oro" : "Recompensa de Fragmentos de Piedra Bruja") : kind === "item" ? "Cantidad del objeto" : kind === "characteristic_test" ? "Chequeo de característica" : kind === "roll_table" ? "Tirada de tabla" : kind === "magical_artefact" ? "Tirada de artefacto mágico" : "Tirada de exploración",
+    en: ({ kind, resource }: { kind: string; resource: string }) => kind === "resource" ? (resource === "gold_crowns" ? "Gold Crowns Reward" : "Wyrdstone Fragments Reward") : kind === "item" ? "Item quantity" : kind === "characteristic_test" ? "Characteristic test" : kind === "roll_table" ? "Table roll" : kind === "magical_artefact" ? "Magical artefact roll" : "Follow-up roll",
   },
   "error.resource-balance": {
     es: ({ resource, amount, count }: { resource: PresentationValue; amount: number; count: number }) => `No hay suficientes ${resource.toLocaleLowerCase("es")}: se necesitan ${amount} y hay ${count} disponibles.`,
@@ -1178,6 +1186,7 @@ export function translate(message: UiMessage, locale: Locale): UiText {
       case "error.gold-balance": return parameterMessages[message.key][locale](message.args) as UiText;
       case "error.gold-needed": return parameterMessages[message.key][locale](message.args) as UiText;
       case "error.resource-balance": return parameterMessages[message.key][locale](message.args) as UiText;
+      case "exploration.follow-up-caption": return parameterMessages[message.key][locale](message.args) as UiText;
       case "error.group-limit": return parameterMessages[message.key][locale](message.args) as UiText;
       case "error.profile-unavailable": return parameterMessages[message.key][locale](message.args) as UiText;
       case "error.profile-group-limit": return parameterMessages[message.key][locale](message.args) as UiText;

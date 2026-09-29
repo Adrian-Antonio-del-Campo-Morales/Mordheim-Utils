@@ -60,6 +60,18 @@ function ExplorationDice({ dice, diceLabel, locale, onSelect, controls }: { dice
   return <ol className="exploration-dice" aria-label={presentationOutput(diceLabel)}>{dice.map((die, index) => <li key={`${index}:${die}`}>{onSelect ? <button type="button" className="exploration-die-button" aria-label={presentationOutput(textJoin([diceLabel, textJoin([textDieIndex(index + 1, locale), textSymbol(":")], ""), textNumber(die, locale)]))} onClick={() => onSelect(index)}><small>{presentationOutput(textDieIndex(index + 1, locale))}</small><strong>{presentationOutput(textNumber(die, locale))}</strong></button> : <><small>{presentationOutput(textDieIndex(index + 1, locale))}</small><strong>{presentationOutput(textNumber(die, locale))}</strong></>}{controls?.(index, die)}</li>)}</ol>;
 }
 
+/**
+ * The caption of one follow-up roll history row. The workflow persists the
+ * canonical `label_key` (plus the resource it rolled for); the caption is
+ * localized on display through the application message catalogue. Documents
+ * that store captions as captured text are rejected at load, so the panel
+ * never renders one and no generic notice can ever appear here.
+ */
+function followUpRollLabel(row: OpenPayload | undefined, locale: "en" | "es", fallback: PresentationValue): PresentationValue {
+  if (!row) return fallback;
+  return translate({ key: "exploration.follow-up-caption", args: { kind: String(row["label_key"] ?? ""), resource: String(row["resource"] ?? "") } }, locale);
+}
+
 export function ExplorationPanel({
   document,
   knowledge,
@@ -153,7 +165,7 @@ export function ExplorationPanel({
             </td>
             <td data-label={presentationOutput(t.action)}>
               {state?.["resolved"] ? (
-                !followup && <><span role="status">{presentationOutput(resolvedDice.length ? textJoin([textJoin([t.roll, textSymbol(":")], ""), textJoin(resolvedDice.map((die) => textNumber(die, locale)), ", "), textSymbol("→"), textNumber(state["total"], locale)]) : t.resolved)}</span>{followUpRolls.length > 0 && <section className="exploration-roll-history" aria-label={presentationOutput(t.subsequentRolls)}>{followUpRolls.map((row, index) => { const dice=Array.isArray(row["dice"]) ? (row["dice"] as unknown[]).map(Number) : []; return <div key={`${index}:${String(row["total"])}`}><strong>{presentationOutput(visibleText(row["label"], locale, textJoin([t.followUpRoll, textNumber(index + 1, locale)])))}</strong><span>{presentationOutput(textJoin([...(dice.length ? [textJoin(dice.map((die) => textNumber(die, locale)), ", "), textSymbol("→")] : []), textNumber(row["total"], locale)]))}</span></div>; })}</section>}</>
+                !followup && <><span role="status">{presentationOutput(resolvedDice.length ? textJoin([textJoin([t.roll, textSymbol(":")], ""), textJoin(resolvedDice.map((die) => textNumber(die, locale)), ", "), textSymbol("→"), textNumber(state["total"], locale)]) : t.resolved)}</span>{followUpRolls.length > 0 && <section className="exploration-roll-history" aria-label={presentationOutput(t.subsequentRolls)}>{followUpRolls.map((row, index) => { const dice=Array.isArray(row["dice"]) ? (row["dice"] as unknown[]).map(Number) : []; return <div key={`${index}:${String(row["total"])}`}><strong>{presentationOutput(followUpRollLabel(row, locale, textJoin([t.followUpRoll, textNumber(index + 1, locale)])))}</strong><span>{presentationOutput(textJoin([...(dice.length ? [textJoin(dice.map((die) => textNumber(die, locale)), ", "), textSymbol("→")] : []), textNumber(row["total"], locale)]))}</span></div>; })}</section>}</>
               ) : !post.experience_applied || advances ? (
                 <p role="status">{presentationOutput(t.first)}</p>
               ) : count === 0 ? (
