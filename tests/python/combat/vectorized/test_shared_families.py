@@ -1,6 +1,7 @@
 """Canonical families shared by the vectorized runtime."""
 from __future__ import annotations
 
+from collections import Counter
 from mordheim_combat.vectorized import OUT
 from mordheim_combat.vectorized import STANDING
 from mordheim_combat.vectorized import _critical_wound_threshold
@@ -16,6 +17,7 @@ from mordheim_core.models import EffectSet
 from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import load_bands
 from mordheim_knowledge.loader import runtime_bindings
+import json as json
 import numpy as np
 from pathlib import Path
 import pytest as pytest
@@ -40,6 +42,29 @@ def build(band, profile, *, collection="mordheim", **kwargs):
     return FighterBuild("mordheim", band_id=band, profile_id=profile, collection=collection, **kwargs)
 
 
+def _family_binding(rule: dict, kind: str, family_id: str, member: str = "member") -> dict:
+    """Return the family's own binding, or fail naming the contract violation.
+
+    The family id names exactly one combat binding (``compiler.*``,
+    ``mechanic.*`` or ``trait.*``): the catalogue is the membership contract of
+    that binding, not an inventory of every binding a member rule carries.
+    Construction obligations (``profile.*``) belong to warband construction and
+    have their own owners (T06 effect matrix, T09 contracts), so an additional
+    profile binding next to the family binding is legitimate — but it can never
+    substitute or shadow the family's own executable binding.
+    """
+    bindings = list(runtime_bindings(rule))
+    matches = [binding for binding in bindings if (binding["kind"], binding["id"]) == (kind, family_id)]
+    if not matches:
+        raise AssertionError(
+            f"{member}: family binding ({kind}, {family_id}) absent; "
+            f"rule carries {[(binding['kind'], binding['id']) for binding in bindings]}"
+        )
+    if len(matches) != 1:
+        raise AssertionError(f"{member}: family binding ({kind}, {family_id}) declared {len(matches)} times")
+    return matches[0]
+
+
 def test_all_implemented_canonical_families_are_executable_for_every_member():
     document = yaml.safe_load((ROOT / "catalog/rules/implemented-canonical-families.yaml").read_text(encoding="utf-8"))
     assert document["counts"] == {"families": 66, "rules": 101, "kinds": {"compiler": 41, "mechanic": 20, "trait": 5}}
@@ -54,9 +79,119 @@ def test_all_implemented_canonical_families_are_executable_for_every_member():
             band_id, rule_id = member.split("/", 1)
             rule = next(rule for rule in packages[band_id].special_rules if rule["id"] == rule_id)
             assert rule["runtime"]["implemented"] == "YES"
-            assert {(binding["kind"], binding["id"]) for binding in runtime_bindings(rule)} == {
-                (family["kind"], family["id"])
-            }
+            _family_binding(rule, family["kind"], family["id"], member)
+            carried = {(binding["kind"], binding["id"]) for binding in runtime_bindings(rule)}
+            # No additional binding of the family's own kind: a second compiler,
+            # mechanic or trait binding would make family membership ambiguous.
+            additional = carried - {(family["kind"], family["id"])}
+            assert all(kind != family["kind"] for kind, _ in additional), (
+                f"{member}: additional same-kind bindings shadow the family: {sorted(additional)}"
+            )
+
+
+def test_family_binding_lookup_accepts_only_the_family_contract():
+    kind, family_id = "compiler", "compiler.bow-discipline"
+
+    def rule_with(*bindings):
+        return {"runtime": {"implemented": "YES", "effects": [
+            {"id": binding["id"], "binding": binding} for binding in bindings
+        ]}}
+
+    # The family's own binding alone satisfies the contract.
+    rule = rule_with({"kind": kind, "id": family_id})
+    assert _family_binding(rule, kind, family_id)["id"] == family_id
+    # An additional binding owned by another subsystem (warband construction)
+    # is legitimate next to the family binding: Bow Discipline carries both its
+    # compiler contract and its profile.equipment-restrictions obligation.
+    rule = rule_with(
+        {"kind": kind, "id": family_id},
+        {"kind": "profile", "id": "profile.equipment-restrictions"},
+    )
+    assert _family_binding(rule, kind, family_id)["id"] == family_id
+    # A rule carrying only the additional binding does not provide the family.
+    with pytest.raises(AssertionError, match="absent"):
+        _family_binding(rule_with({"kind": "profile", "id": "profile.equipment-restrictions"}), kind, family_id)
+    # A different binding id does not substitute the family binding.
+    with pytest.raises(AssertionError, match="absent"):
+        _family_binding(rule_with({"kind": kind, "id": "compiler.some-other-contract"}), kind, family_id)
+
+
+def test_unique_effect_members_share_the_family_binding_parameters():
+    """Identical-effect families must share the family binding parameters.
+
+    ``basis: unique-effect`` declares one identical effect everywhere, so the
+    binding parameters cannot differ between members. Wider bases
+    (``equivalent-effects``, ``shared-effect``) legitimately parameterise the
+    same binding per band, e.g. ``compiler.forbid-item-categories`` forbids
+    only poison for the monk bands and poison plus drugs for the honourable
+    ones.
+    """
+    document = yaml.safe_load((ROOT / "catalog/rules/implemented-canonical-families.yaml").read_text(encoding="utf-8"))
+    packages = {
+        package.band["id"]: package
+        for collection in ("mordheim", "trollheim")
+        for package in load_bands(collection, ROOT)
+    }
+    for family in document["families"]:
+        if family["basis"] != "unique-effect":
+            continue
+        observed = {}
+        for member in family["members"]:
+            band_id, rule_id = member.split("/", 1)
+            rule = next(rule for rule in packages[band_id].special_rules if rule["id"] == rule_id)
+            binding = _family_binding(rule, family["kind"], family["id"], member)
+            parameters = json.dumps(binding.get("parameters") or {}, sort_keys=True)
+            observed.setdefault(parameters, []).append(member)
+        assert len(observed) == 1, (
+            f"family {family['id']}: unique-effect members disagree on parameters: {observed}"
+        )
+
+
+def test_family_roster_covers_each_declared_binding_exactly_once():
+    document = yaml.safe_load((ROOT / "catalog/rules/implemented-canonical-families.yaml").read_text(encoding="utf-8"))
+    families = document["families"]
+    family_ids = [(family["kind"], family["id"]) for family in families]
+    assert len(family_ids) == len(set(family_ids)) == document["counts"]["families"]
+    assert Counter(family["kind"] for family in families) == document["counts"]["kinds"]
+    members = [member for family in families for member in family["members"]]
+    assert len(members) == len(set(members)) == document["counts"]["rules"]
+
+
+def test_bow_discipline_keeps_both_of_its_declared_bindings():
+    """Bow Discipline owns a combat contract and a construction obligation.
+
+    The compiler binding (``compiler.bow-discipline``) is the family's own
+    executable contract — the one T13's Combat Simulator consumes; the profile
+    binding (``profile.equipment-restrictions``) carries the printed band-wide
+    equipment restriction (at most one missile weapon, it must be a bow, the
+    Cleric is exempt) consumed by warband construction. Neither can replace the
+    other, and both stay materialized on the rule.
+    """
+    packages = {
+        package.band["id"]: package
+        for collection in ("mordheim", "trollheim")
+        for package in load_bands(collection, ROOT)
+    }
+    members = (
+        ("mordheim", "outlaws-of-stirwood-forest", "band--bow-discipline"),
+        ("mordheim", "outlaws-of-stirwood-forest-redux-fbg", "band--bow-restrictions"),
+    )
+    for collection, band_id, rule_id in members:
+        package = next(
+            package for package in load_bands(collection, ROOT)
+            if str(package.band["id"]) == band_id
+        )
+        rule = next(rule for rule in package.special_rules if rule["id"] == rule_id)
+        assert rule["runtime"]["implemented"] == "YES"
+        bindings = {(binding["kind"], binding["id"]): binding for binding in runtime_bindings(rule)}
+        assert ("compiler", "compiler.bow-discipline") in bindings
+        restriction = bindings.get(("profile", "profile.equipment-restrictions"))
+        assert restriction is not None, f"{band_id}/{rule_id}: profile.equipment-restrictions binding missing"
+        parameters = restriction.get("parameters") or {}
+        assert parameters.get("forbids") == "crossbow"
+        assert parameters.get("max_missile_weapons") == 1
+        assert parameters.get("required_tag") == "bow"
+        assert list(parameters.get("exempt_profile_ids") or ()) == ["cleric"]
 
 
 def test_unarmed_fighting_and_eshin_mastery_have_their_exact_attack_bonuses():
@@ -116,9 +251,7 @@ def test_art_of_silent_death_kb_texts_use_to_wound_and_share_the_eshin_contract(
         rule = next(rule for rule in packages[band_id].special_rules if rule["id"] == rule_id)
         text = rule["effect"].lower()
         assert "to wound" in text and "to hit roll of 5-6" not in text
-        assert {(binding["kind"], binding["id"]) for binding in runtime_bindings(rule)} == {
-            ("mechanic", "skill.art-of-silent-death")
-        }
+        _family_binding(rule, "mechanic", "skill.art-of-silent-death", f"{band_id}/{rule_id}")
 
 
 def test_black_hunger_adds_attack_and_resolves_armour_ignoring_backlash():
