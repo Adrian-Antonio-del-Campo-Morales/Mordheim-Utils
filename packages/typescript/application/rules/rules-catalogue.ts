@@ -278,10 +278,7 @@ export class RulesCatalogue {
     if (experience.length) {
       parts.push(catalogueJoin([catalogueLabel("experience", locale), cataloguePunctuation(":")], ""));
       for (const award of experience) {
-        const ref = String(award.ref ?? "");
-        const resolution = this.knowledge.resolveKbText({ kind: "record", id: ref }, "name", locale);
-        const text = this.translatedText(award, locale) ?? (resolution.ok ? resolution.text : unavailableText(locale));
-        parts.push(catalogueJoin([cataloguePunctuation("• "), text], ""));
+        parts.push(catalogueJoin([cataloguePunctuation("• "), this.awardText(award, locale)], ""));
       }
     }
     const loot = progression.loot && typeof progression.loot === "object"
@@ -304,6 +301,25 @@ export class RulesCatalogue {
       parts.push(catalogueJoin([catalogueLabel("notes", locale), this.knowledge.recordText(progression, "notes", locale)], ": "));
     }
     return catalogueJoin(parts, "\n\n");
+  }
+
+  /**
+   * One experience award of a scenario.
+   *
+   * An award is either declared inline (the scenario publishes its own prose) or
+   * referenced by id (`campaign.experience-and-advances.awards.*`). The canonical
+   * awards declare no prose field at all — only recipient, trigger, amount and
+   * their source references — so a reference that resolves to no published text
+   * is a structured absence, exactly like a row with no declared prose: it must
+   * name that absence, never the generic unavailable notice. A declared award
+   * text that fails to resolve still reports its resolution failure indirectly
+   * through the referenced text, as every other field does.
+   */
+  private awardText(award: Readonly<Record<string, unknown>>, locale: Locale): ResolvedKbText | CatalogueText {
+    const declared = this.translatedText(award, locale);
+    if (declared) return declared;
+    const resolution = this.knowledge.resolveKbText({ kind: "record", id: String(award.ref ?? "") }, "name", locale);
+    return resolution.ok ? resolution.text : sourceDescriptionUnavailableText(locale);
   }
 
   private injuryTableText(row: Readonly<Record<string, unknown>>, locale: Locale): CatalogueText {

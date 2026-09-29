@@ -32,6 +32,7 @@ import { PDFPage } from "pdf-lib";
 
 import { CampaignFileV5Adapter } from "@adapters/campaign-file/index";
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
+import { RulesCatalogue } from "@app/rules/rules-catalogue";
 import { CampaignSlice } from "@src/features/campaign/CampaignSlice";
 import { CampaignAppProvider } from "@src/features/campaign/useCampaignApp";
 import { ProductApp } from "@src/ProductApp";
@@ -44,6 +45,17 @@ vi.mock("@src/features/campaign/default-deps", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@src/features/campaign/default-deps")>()),
   loadKnowledge: vi.fn(),
 }));
+
+/**
+ * Measured per-test budget for the two rules-page sweeps.
+ *
+ * Each one renders the real `ProductApp`, walks nine category tabs and
+ * classifies what is visible: ~2.1 s on its own, so the 5 s default left no
+ * margin and they timed out under a parallel full-suite run. 20 s is ~10x the
+ * measured isolated cost and ~4x the default — enough for scheduler contention
+ * without touching the global timeout or dropping any coverage.
+ */
+const SWEEP_TIMEOUT_MS = 20_000;
 
 const PUBLISHED = resolve(process.cwd(), "..", "..", "outputs", "web-public", "knowledge", "knowledge-web.json");
 const OUTPUT = process.env.PRESENTATION_COMPLETENESS_OUTPUT
@@ -102,6 +114,26 @@ function classifyAll(values: readonly string[], context: Record<string, unknown>
     if (finding?.kind === "generic-fallback" && !fallbackTexts.includes(value.trim())) continue;
     if (finding) emit(finding);
   }
+}
+
+/**
+ * The award bullet lines of one composed scenario effect.
+ *
+ * `RulesCatalogue` joins the scenario parts with a blank line, so the experience
+ * list is the run of `• ` blocks that follows its own `Experience:` heading.
+ */
+const EXPERIENCE_HEADINGS = { es: "Experiencia:", en: "Experience:" } as const;
+function awardLines(effect: string, locale: "es" | "en"): string[] {
+  const blocks = String(effect).split("\n\n");
+  const start = blocks.findIndex((block) => block.trim() === EXPERIENCE_HEADINGS[locale]);
+  if (start < 0) return [];
+  const lines: string[] = [];
+  for (const block of blocks.slice(start + 1)) {
+    const line = block.trim();
+    if (!line.startsWith("•")) break;
+    lines.push(line.replace(/^•\s*/, "").trim());
+  }
+  return lines;
 }
 
 /** The real v5 import path for a contract fixture. */
@@ -174,8 +206,40 @@ describe("dynamic visible-completeness sweeps (real artefacts, real consumers)",
       } finally {
         view.unmount();
       }
-    }));
+    }), SWEEP_TIMEOUT_MS);
   }
+
+  /**
+   * The scenario experience list composes the canonical awards every scenario
+   * references (`campaign.experience-and-advances.awards.*`). Those awards
+   * publish no prose at all — only recipient, trigger, amount and their source
+   * references — so the composition must name the specific absence, never the
+   * generic notice. The composed effect is one visible string, so the generic
+   * notice used to hide inside it, out of reach of the classifier; this sweep
+   * classifies the award lines themselves, in both locales, and pins the
+   * coverage so a silently dropped award list fails here too.
+   */
+  it("scenario experience awards resolve to real prose or the specific absence", () => tracked("scenario experience awards", async () => {
+    const scenarioRows = (((artefact.campaign as Record<string, unknown> | undefined)?.scenarios as Record<string, unknown> | undefined)?.scenarios as readonly Record<string, unknown>[] | undefined) ?? [];
+    const declared = scenarioRows.reduce((total, scenario) => {
+      const experience = (scenario.progression as Record<string, unknown> | undefined)?.experience;
+      return total + (Array.isArray(experience) ? experience.length : 0);
+    }, 0);
+    const catalogue = new RulesCatalogue(knowledge);
+    let inspected = 0;
+    for (const locale of ["es", "en"] as const) {
+      for (const entry of catalogue.entries("scenarios", locale)) {
+        for (const line of awardLines(String(entry.effect), locale)) {
+          inspected += 1;
+          const finding = classifyVisibleText(line, { locale, surface: "rules-catalogue/scenarios", category: "scenarios", field: "effect", ref: { kind: "scenario", id: entry.entry_id }, idInventory: inventory });
+          if (finding) emit(finding);
+          expect(finding, `${entry.entry_id} award line (${locale}) -> "${line}"`).toBeNull();
+        }
+      }
+    }
+    expect(declared, "the published scenarios declare experience awards").toBeGreaterThan(0);
+    expect(inspected, "every declared award of every scenario is inspected in both locales").toBe(declared * 2);
+  }));
 
   // Loaded campaigns through the product's real file import: the four v5
   // contract fixtures are the current (and only supported) format. Old

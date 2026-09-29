@@ -73,6 +73,33 @@ describe("desktop test_rules_catalogue.py → web RulesCatalogue", () => {
     expect(names).toEqual([...names].sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" })));
   });
 
+  it("names the specific absence of an award whose source publishes no prose", () => {
+    const c = catalogue();
+    const absence = {
+      es: "La fuente no publica una descripción para este objeto.",
+      en: "The source does not publish a description for this entry.",
+    } as const;
+    const awardLines = (scenarioId: string, locale: "es" | "en"): string[] =>
+      String(c.entry("scenarios", scenarioId, locale)?.effect)
+        .split("\n")
+        .filter((line) => line.startsWith("• "))
+        .map((line) => line.slice(2).trim());
+    for (const locale of ["es", "en"] as const) {
+      // The three canonical awards this scenario references
+      // (`campaign.experience-and-advances.awards.*`) declare only recipient,
+      // trigger and amount: the source publishes no prose for them at all, so
+      // the composition names that absence instead of the generic notice.
+      expect(awardLines("scenario.defend-the-find", locale)).toEqual([absence[locale], absence[locale], absence[locale]]);
+      // An award the scenario declares inline keeps its own published prose.
+      const inline = awardLines("scenario.wyrdstone-hunt", locale);
+      expect(inline).toHaveLength(4);
+      expect(inline.filter((line) => line === absence[locale]), `${locale} referenced awards`).toHaveLength(3);
+      const declared = inline.filter((line) => line !== absence[locale]);
+      expect(declared, `${locale} inline award`).toHaveLength(1);
+      expect(declared[0]).toContain(locale === "es" ? "Piedra bruja" : "Wyrdstone counter");
+    }
+  });
+
   it("adapts distances in Spanish entries and search results", () => {
     const c = catalogue();
     const english = c.entry("spells", "spell.lesser-magic.fires-of-uzhul");

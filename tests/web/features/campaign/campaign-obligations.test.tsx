@@ -83,7 +83,7 @@ const pv = <T extends Record<string, string>>(value: T): { readonly [K in keyof 
 const NAMES = {
   es: pv({
     decision: "Reliquia Familiar", noble: "Noble Imperial", dame: "Dama de la Yegua",
-    mareClause: "Sucesión de la Dama de la Yegua", cathayClause: "Sucesión (Piratas de Cathay)",
+    mareClause: "Dama de la Yegua: Sucesión", cathayClause: "Sucesión (Piratas de Cathay)",
     warlord: "Señor de la Guerra Degradado", shanghaire: "Shanghaiers", buccaneer: "Bucanero",
     repeater: "Pistola de Repetición (Maestros del Horror)", attlas: "Coraza de Placas de Att'la",
     recruits: "Reclutas Novatos", blackblood: "Sangre Negra", greatClaw: "Garra Enorme", tentacle: "Tentáculo",
