@@ -4,7 +4,7 @@ import { translate } from "../campaign/i18n-core";
 import { useState } from "react";
 import type { CampaignDocument } from "../campaign/types";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
-import { knowledgeName, localizedLabel } from "../campaign/displayText";
+import { knowledgeName, localizedLabel, scenarioText } from "../campaign/displayText";
 
 type Battle = CampaignDocument["campaign"]["battles"][number];
 function highlightsFor(battle: Battle, locale: "es" | "en", knowledge?: ArtefactKnowledgeReader): PresentationValue[] {
@@ -50,7 +50,7 @@ export function BattleHistory({ battle, locale, knowledge }: { readonly battle: 
   const casualtySummary = casualties.length ? textJoin(casualties.map((row) => battleParticipantName(battle, row.id, locale)), " · ") : battle.casualties ? t.unknownCasualties : t.survived;
   const xpRows = participants.filter((row) => Number(battle.xp_awards?.[String(row.id)] ?? 0) > 0);
   return <section className="page battle-history" aria-label={presentationOutput(translate({ key: "pdf.battle", args: { number: battle.number } }, locale))}>
-    <header className={`battle-hero ${resultTone}`}><div><span>{presentationOutput(textJoin([translate({ key: "pdf.battle", args: { number: battle.number } }, locale), textDate(battle.date, locale)], " · "))}</span><h2>{presentationOutput(knowledgeName(knowledge, "scenario", battle.scenario, locale))}</h2><p>{presentationOutput(translate({ key: "battle.against", args: { opponent: opponentPersonalName(battle, locale) } }, locale))}</p></div><strong>{presentationOutput(outcome)}</strong></header>
+    <header className={`battle-hero ${resultTone}`}><div><span>{presentationOutput(textJoin([translate({ key: "pdf.battle", args: { number: battle.number } }, locale), textDate(battle.date, locale)], " · "))}</span><h2>{presentationOutput(scenarioText(knowledge, battle.scenario, locale))}</h2><p>{presentationOutput(translate({ key: "battle.against", args: { opponent: opponentPersonalName(battle, locale) } }, locale))}</p></div><strong>{presentationOutput(outcome)}</strong></header>
     <nav aria-label={presentationOutput(translate({ key: "ui.9e09b7814634" }, locale))} className="segmented-tabs">{(["overview","participants","notes"] as const).map((key)=><button key={key} className={section===key ? "active" : ""} aria-pressed={section===key} onClick={()=>setSection(key)}>{presentationOutput(key === "overview" ? (translate({ key: "ui.8334ecd1c008" }, locale)) : key === "participants" ? t.participants : t.notes)}</button>)}</nav>
     {section === "overview" && <div className="battle-report">
       <section className="battle-story" aria-labelledby="battle-story-title"><span>{presentationOutput(t.story)}</span><h3 id="battle-story-title">{presentationOutput(translate({ key: "battle.outcome", args: { outcome, opponent: opponentPersonalName(battle, locale) } }, locale))}</h3><p>{presentationOutput(battle.opponent_rating ? translate({ key: "battle.deployment-opponent", args: { models: battle.models_before, rating: battle.rating_before, opponent: battle.opponent_rating } }, locale) : translate({ key: "battle.deployment", args: { models: battle.models_before, rating: battle.rating_before } }, locale))}</p></section>

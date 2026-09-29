@@ -25,7 +25,7 @@ import { experienceTotal, modelCount, rating, treasury } from "@domain/campaign/
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 
 import type { Battle, CampaignDocument, InventoryItem, TimelineState, Warrior } from "../campaign/types";
-import { knowledgeName, localizedLabel, variantName, warriorAbilityRef } from "../campaign/displayText";
+import { knowledgeName, localizedLabel, scenarioText, variantName, warriorAbilityRef } from "../campaign/displayText";
 import { translate } from "../campaign/i18n-core";
 import { presentationOutput, type PresentationText } from "../campaign/presentation-output";
 import { textJoin, textNumber, textSymbol, textHeading, textDate, warriorPersonalName, warbandPersonalName, opponentPersonalName, warriorCharacteristic } from "../campaign/presentation-values";
@@ -700,7 +700,7 @@ function renderSummaryPage(
   const battleLines = campaign.battles
     .filter((battle) => !snapshot || battle.number <= snapshot.number)
     .map((battle: Battle) => {
-      const scenario = knowledgeName(knowledge, "scenario", battle.scenario, locale);
+      const scenario = scenarioText(knowledge, battle.scenario, locale);
       return textJoin([labels.battle(battle.number), textJoin([scenario, textSymbol("vs."), opponentPersonalName(battle, locale)]), localizedLabel(battle.result, locale)], " - ");
     });
   const boxH = PAGE_H - y - 30 - 20;

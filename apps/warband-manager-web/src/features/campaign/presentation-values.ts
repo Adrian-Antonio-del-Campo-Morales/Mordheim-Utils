@@ -37,10 +37,28 @@ export function textDieIndex(index: unknown, locale: Locale): FormattedText | Ui
     ? `D${index}` as FormattedText : translate({ key: "knowledge.unavailable" }, locale);
 }
 
+const STORED_DATE_MONTHS: Readonly<Record<string, number>> = Object.freeze({
+  jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12,
+});
+
+/**
+ * The two persisted v5 date shapes: the web writer stores an ISO date
+ * (`record-battle.ts`) and the desktop reference writer stores `%d %b %Y`
+ * (`battle_service.py`). Both are recognized; anything else is not a date.
+ */
+function parseStoredDate(value: string): { readonly year: number; readonly month: number; readonly day: number } | null {
+  const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (iso) return { year: Number(iso[1]), month: Number(iso[2]), day: Number(iso[3]) };
+  const captured = /^(\d{1,2}) ([A-Za-z]{3}) (\d{4})$/.exec(value);
+  const month = captured ? STORED_DATE_MONTHS[captured[2].toLowerCase()] : undefined;
+  return captured && month ? { year: Number(captured[3]), month, day: Number(captured[1]) } : null;
+}
+
 export function textDate(value: unknown, locale: Locale): FormattedText | UiText {
-  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return translate({ key: "knowledge.unavailable" }, locale);
-  const date = new Date(`${value}T00:00:00Z`);
-  if (!Number.isFinite(date.valueOf()) || date.toISOString().slice(0, 10) !== value) return translate({ key: "knowledge.unavailable" }, locale);
+  const parsed = typeof value === "string" ? parseStoredDate(value) : null;
+  if (!parsed) return translate({ key: "knowledge.unavailable" }, locale);
+  const date = new Date(Date.UTC(parsed.year, parsed.month - 1, parsed.day));
+  if (date.getUTCFullYear() !== parsed.year || date.getUTCMonth() !== parsed.month - 1 || date.getUTCDate() !== parsed.day) return translate({ key: "knowledge.unavailable" }, locale);
   return new Intl.DateTimeFormat(locale, { timeZone: "UTC" }).format(date) as FormattedText;
 }
 

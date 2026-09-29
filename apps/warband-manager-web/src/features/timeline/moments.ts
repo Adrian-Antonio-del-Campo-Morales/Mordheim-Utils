@@ -1,5 +1,4 @@
 import { textJoin, textNumber, textSymbol, textDate, type PresentationValue } from "../campaign/presentation-values";
-import type { ResolvedKbText } from "@adapters/knowledge-reader/presentation";
 import { translate } from "../campaign/i18n-core";
 /**
  * Campaign timeline moment helpers — kept separate from the component so
@@ -39,7 +38,7 @@ export function enumerateMoments(campaign: CampaignDocument["campaign"]): Moment
   return moments;
 }
 
-export function momentLabel(moment: MomentSelection, campaign: CampaignDocument["campaign"], locale: "es" | "en", scenarioName?: ResolvedKbText): PresentationValue {
+export function momentLabel(moment: MomentSelection, campaign: CampaignDocument["campaign"], locale: "es" | "en", scenarioName?: PresentationValue): PresentationValue {
   const [kind, raw] = moment.split(":");
   const number = Number(raw);
   const numbered = textJoin([textSymbol("#"), textNumber(number, locale)], "");
@@ -53,7 +52,7 @@ export function momentLabel(moment: MomentSelection, campaign: CampaignDocument[
   if (kind === "battle") {
     const battle = campaign.battles.find((item) => item.number === number);
     const title = textJoin([translate({ key: "ui.8731a48db4a4" }, locale), numbered]);
-    return battle ? textJoin([title, textSymbol("—"), scenarioName ?? translate({ key: "ui.eab86554d72e" }, locale)]) : title;
+    return battle ? textJoin([title, textSymbol("—"), scenarioName ?? translate({ key: "scenario.unavailable" }, locale)]) : title;
   }
   const post = campaign.post_battles.find((row) => row.battle_number === number);
   const status = post?.complete ? translate({ key: "ui.bfe16a390bab" }, locale) : translate({ key: "ui.4f5ab93e035b" }, locale);
