@@ -50,6 +50,7 @@ export interface ProfileLink {
   readonly band: ResolvedKbText;
   readonly profile: ResolvedKbText;
   readonly profile_id: string;
+  readonly band_id: string;
   readonly relation: CatalogueText;
 }
 
@@ -183,6 +184,7 @@ export class RulesCatalogue {
         band: bands.get(String(profile.band_id ?? "")) ?? unavailableText(locale),
         profile: this.knowledge.recordText(profile, "name", locale),
         profile_id: profileId,
+        band_id: String(profile.band_id ?? ""),
         relation: catalogueLabel(relation, locale),
       });
     }

@@ -8,35 +8,54 @@ scenarios:
   - id: scenario.defend-the-find.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: One shard of wyrdstone for each Hero of either warband who is inside the objective building at the end
-      of the game, up to a maximum of three shards per warband.
+    rule: One shard of wyrdstone for each Hero of either warband who is inside the objective building
+      at the end of the game, up to a maximum of three shards per warband.
+    rule_i18n:
+      es: Un fragmento de piedra bruja por cada Héroe de cualquiera de las bandas que esté dentro del
+        edificio objetivo al final de la partida, hasta un máximo de tres fragmentos por banda.
     quantity_input: true
 - scenario_id: scenario.wyrdstone-hunt
   rewards:
   - id: scenario.wyrdstone-hunt.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: Warriors earn one shard of wyrdstone for each counter still in their possession at the end of the battle.
+    rule: Warriors earn one shard of wyrdstone for each counter still in their possession at the end of
+      the battle.
+    rule_i18n:
+      es: Los guerreros obtienen un fragmento de piedra bruja por cada contador que siga en su poder al
+        final de la batalla.
     quantity_input: true
 - scenario_id: scenario.chance-encounter
   rewards:
   - id: scenario.chance-encounter.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: Each warband starts the battle carrying D3 shards of wyrdstone, recorded before the game. At the end,
-      each warband gains all the wyrdstone it was carrying minus one shard per Hero of its own that was taken out
-      of action during the game (down to a minimum of zero), plus one extra shard for each enemy Hero it took out
-      of action, up to the maximum number of shards the opposing warband was carrying at the beginning of the battle.
+    rule: Each warband starts the battle carrying D3 shards of wyrdstone, recorded before the game. At
+      the end, each warband gains all the wyrdstone it was carrying minus one shard per Hero of its own
+      that was taken out of action during the game (down to a minimum of zero), plus one extra shard for
+      each enemy Hero it took out of action, up to the maximum number of shards the opposing warband was
+      carrying at the beginning of the battle.
+    rule_i18n:
+      es: Cada banda comienza la batalla llevando 1D3 fragmentos de piedra bruja, anotados antes de la
+        partida. Al final, cada banda obtiene toda la piedra bruja que llevaba menos un fragmento por
+        cada Héroe propio puesto fuera de combate durante la partida (hasta un mínimo de cero), más un
+        fragmento adicional por cada Héroe enemigo que haya puesto fuera de combate, hasta el número máximo
+        de fragmentos que la banda rival llevaba al comienzo de la batalla.
     quantity_input: true
 - scenario_id: scenario.hidden-treasure
   rewards:
   - id: scenario.hidden-treasure.loot
     kind: loot_table
-    rule: Whoever recovers the chest rolls on the contents chart after the game; each item is rolled for separately,
-      apart from the gold crowns which are always found.
+    rule: Whoever recovers the chest rolls on the contents chart after the game; each item is rolled for
+      separately, apart from the gold crowns which are always found.
+    rule_i18n:
+      es: Quien recupere el cofre tira en la tabla de contenidos después de la partida; cada objeto se
+        tira por separado, salvo las coronas de oro, que siempre se encuentran.
     contents:
     - id: scenario.hidden-treasure.loot.1.1
       label: 3D6 gold crowns
+      label_i18n:
+        es: 3D6 coronas de oro
       roll: automatic
       grant:
         kind: resource
@@ -49,6 +68,8 @@ scenarios:
         modifier: 0
     - id: scenario.hidden-treasure.loot.2.1
       label: D3 pieces of wyrdstone
+      label_i18n:
+        es: 1D3 fragmentos de piedra bruja
       roll: 5+
       grant:
         kind: resource
@@ -66,6 +87,8 @@ scenarios:
         target: 5
     - id: scenario.hidden-treasure.loot.3.1
       label: Suit of light armour
+      label_i18n:
+        es: Armadura ligera
       roll: 4+
       grant:
         kind: item
@@ -78,6 +101,8 @@ scenarios:
         target: 4
     - id: scenario.hidden-treasure.loot.4.1
       label: Sword
+      label_i18n:
+        es: Espada
       roll: 3+
       grant:
         kind: item
@@ -90,6 +115,8 @@ scenarios:
         target: 3
     - id: scenario.hidden-treasure.loot.5.1
       label: D3 gems worth 10 gc each
+      label_i18n:
+        es: 1D3 gemas por valor de 10 co cada una
       roll: 5+
       grant:
         kind: resource
@@ -111,18 +138,28 @@ scenarios:
   - id: scenario.treasure-hunt.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: Warriors earn one shard of wyrdstone for each counter in their possession at the end of the battle.
+    rule: Warriors earn one shard of wyrdstone for each counter in their possession at the end of the
+      battle.
+    rule_i18n:
+      es: Los guerreros obtienen un fragmento de piedra bruja por cada contador en su poder al final de
+        la batalla.
     quantity_input: true
 - scenario_id: scenario.the-lost-prince
   rewards:
   - id: scenario.the-lost-prince.loot
     kind: loot_table
-    rule: The grateful father awards the winning warband with the following treasure; each item is rolled for separately
-      apart from the gold crowns, which are always received. If the merchant's son is killed, no reward is issued
-      to the winning warband.
+    rule: The grateful father awards the winning warband with the following treasure; each item is rolled
+      for separately apart from the gold crowns, which are always received. If the merchant's son is killed,
+      no reward is issued to the winning warband.
+    rule_i18n:
+      es: El padre agradecido concede a la banda ganadora el siguiente tesoro; cada objeto se tira por
+        separado, salvo las coronas de oro, que siempre se reciben. Si el hijo del mercader muere, no
+        se entrega recompensa alguna a la banda ganadora.
     contents:
     - id: scenario.the-lost-prince.loot.1.1
       label: 5D6 gold crowns
+      label_i18n:
+        es: 5D6 coronas de oro
       roll: automatic
       grant:
         kind: resource
@@ -135,6 +172,8 @@ scenarios:
         modifier: 0
     - id: scenario.the-lost-prince.loot.2.1
       label: D3 swords
+      label_i18n:
+        es: 1D3 espadas
       roll: 4+
       grant:
         kind: item
@@ -152,6 +191,8 @@ scenarios:
         target: 4
     - id: scenario.the-lost-prince.loot.3.1
       label: Suit of heavy armour
+      label_i18n:
+        es: Armadura pesada
       roll: 5+
       grant:
         kind: item
@@ -164,6 +205,8 @@ scenarios:
         target: 5
     - id: scenario.the-lost-prince.loot.4.1
       label: Suit of light armour
+      label_i18n:
+        es: Armadura ligera
       roll: 4+
       grant:
         kind: item
@@ -176,6 +219,8 @@ scenarios:
         target: 4
     - id: scenario.the-lost-prince.loot.5.1
       label: Shield
+      label_i18n:
+        es: Escudo
       roll: 4+
       grant:
         kind: item
@@ -188,6 +233,8 @@ scenarios:
         target: 4
     - id: scenario.the-lost-prince.loot.6.1
       label: Helmet
+      label_i18n:
+        es: Yelmo
       roll: 4+
       grant:
         kind: item
@@ -200,6 +247,8 @@ scenarios:
         target: 4
     - id: scenario.the-lost-prince.loot.7.1
       label: D3 gems worth 10 gc each
+      label_i18n:
+        es: 1D3 gemas por valor de 10 co cada una
       roll: 5+
       grant:
         kind: resource
@@ -220,12 +269,18 @@ scenarios:
   rewards:
   - id: scenario.wizards-mansion.loot
     kind: loot_table
-    rule: At the end of the game the winning warband finds all of the items of the defender's pre-battle chart that
-      were not found before the battle, plus the mansion chart below; each item is rolled for separately apart from
-      the gold crowns, which are always found.
+    rule: At the end of the game the winning warband finds all of the items of the defender's pre-battle
+      chart that were not found before the battle, plus the mansion chart below; each item is rolled for
+      separately apart from the gold crowns, which are always found.
+    rule_i18n:
+      es: Al final de la partida la banda ganadora encuentra todos los objetos de la tabla previa a la
+        batalla del defensor que no se encontraron antes de la batalla, más la tabla de la mansión de
+        abajo; cada objeto se tira por separado, salvo las coronas de oro, que siempre se encuentran.
     contents:
     - id: scenario.wizards-mansion.loot.1.1
       label: 5D6 gold crowns
+      label_i18n:
+        es: 5D6 coronas de oro
       roll: automatic
       grant:
         kind: resource
@@ -238,6 +293,8 @@ scenarios:
         modifier: 0
     - id: scenario.wizards-mansion.loot.2.1
       label: D3 gems worth 10 gc each
+      label_i18n:
+        es: 1D3 gemas por valor de 10 co cada una
       roll: 5+
       grant:
         kind: resource
@@ -255,6 +312,8 @@ scenarios:
         target: 5
     - id: scenario.wizards-mansion.loot.3.1
       label: Tome of magic
+      label_i18n:
+        es: Tomo de magia
       roll: 4+
       grant:
         kind: item
@@ -267,6 +326,8 @@ scenarios:
         target: 4
     - id: scenario.wizards-mansion.loot.4.1
       label: Gromril sword
+      label_i18n:
+        es: Espada de Gromril
       roll: 5+
       grant:
         kind: item
@@ -279,6 +340,8 @@ scenarios:
         target: 5
     - id: scenario.wizards-mansion.loot.5.1
       label: Athame
+      label_i18n:
+        es: Athame
       roll: 4+
       grant:
         kind: special
@@ -291,6 +354,8 @@ scenarios:
         target: 4
     - id: scenario.wizards-mansion.loot.6.1
       label: D3 doses of healing herbs
+      label_i18n:
+        es: 1D3 dosis de hierbas curativas
       roll: 4+
       grant:
         kind: item
@@ -308,6 +373,8 @@ scenarios:
         target: 4
     - id: scenario.wizards-mansion.loot.7.1
       label: Dispel scroll
+      label_i18n:
+        es: Pergamino de Disipación
       roll: 5+
       grant:
         kind: special
@@ -324,29 +391,45 @@ scenarios:
   - id: scenario.the-pool.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: The pool contains D3+3 pieces of wyrdstone; a Hero spending a whole turn within 1" of the pool doing nothing
-      else finds one piece on a D6 roll of 1-2 at the end of his turn (no Hero may search within 1" of another model).
-      Only as many pieces may be found as were rolled at the start of the game.
+    rule: The pool contains D3+3 pieces of wyrdstone; a Hero spending a whole turn within 1" of the pool
+      doing nothing else finds one piece on a D6 roll of 1-2 at the end of his turn (no Hero may search
+      within 1" of another model). Only as many pieces may be found as were rolled at the start of the
+      game.
+    rule_i18n:
+      es: El estanque contiene 1D3+3 fragmentos de piedra bruja; un Héroe que pase una vuelta completa
+        a 1" del estanque sin hacer nada más encuentra un fragmento con un resultado de 1-2 en 1D6 al
+        final de su turno (ningún Héroe puede buscar a menos de 1" de otra miniatura). Solo puede encontrarse
+        la cantidad de fragmentos obtenida en la tirada inicial de la partida.
     quantity_input: true
 - scenario_id: scenario.ambush
   rewards:
   - id: scenario.ambush.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: Each Hero of the defending warband carries D3 pieces of wyrdstone; if a Hero carrying wyrdstone is taken
-      out of action, place counters equal to the amount he was carrying where he fell, and any Hero may pick them
-      up. The warband that gets the most wyrdstone shards off the table (or held by one of its Heroes when the game
-      ends) is the winner.
+    rule: Each Hero of the defending warband carries D3 pieces of wyrdstone; if a Hero carrying wyrdstone
+      is taken out of action, place counters equal to the amount he was carrying where he fell, and any
+      Hero may pick them up. The warband that gets the most wyrdstone shards off the table (or held by
+      one of its Heroes when the game ends) is the winner.
+    rule_i18n:
+      es: Cada Héroe de la banda defensora lleva 1D3 fragmentos de piedra bruja; si un Héroe que lleva
+        piedra bruja es puesto fuera de combate, coloca contadores igual a la cantidad que llevaba donde
+        cayó, y cualquier Héroe puede recogerlos. La banda que saque más fragmentos de piedra bruja de
+        la mesa (o que los sostenga con uno de sus Héroes cuando termine la partida) es la ganadora.
     quantity_input: true
 - scenario_id: scenario.monster-hunt
   rewards:
   - id: scenario.monster-hunt.loot
     kind: loot_table
-    rule: Whichever warband has control of the monster's lair at the end of the game may search it; each item is
-      rolled for separately apart from the gold crowns, which are always found.
+    rule: Whichever warband has control of the monster's lair at the end of the game may search it; each
+      item is rolled for separately apart from the gold crowns, which are always found.
+    rule_i18n:
+      es: La banda que controle la guarida del monstruo al final de la partida puede registrarla; cada
+        objeto se tira por separado, salvo las coronas de oro, que siempre se encuentran.
     contents:
     - id: scenario.monster-hunt.loot.1.1
       label: 5D6 gold crowns
+      label_i18n:
+        es: 5D6 coronas de oro
       roll: automatic
       grant:
         kind: resource
@@ -359,6 +442,8 @@ scenarios:
         modifier: 0
     - id: scenario.monster-hunt.loot.2.1
       label: Magical artefact (roll on the artefact table)
+      label_i18n:
+        es: Artefacto mágico (tira en la tabla de artefactos)
       roll: 6+
       grant:
         kind: special
@@ -371,6 +456,8 @@ scenarios:
         target: 6
     - id: scenario.monster-hunt.loot.3.1
       label: D3+1 pieces of wyrdstone
+      label_i18n:
+        es: 1D3+1 fragmentos de piedra bruja
       roll: 4+
       grant:
         kind: resource
@@ -388,6 +475,8 @@ scenarios:
         target: 4
     - id: scenario.monster-hunt.loot.4.1
       label: Gromril axe
+      label_i18n:
+        es: Hacha de Gromril
       roll: 5+
       grant:
         kind: item
@@ -400,6 +489,8 @@ scenarios:
         target: 5
     - id: scenario.monster-hunt.loot.5.1
       label: Suit of heavy armour
+      label_i18n:
+        es: Armadura pesada
       roll: 5+
       grant:
         kind: item
@@ -412,6 +503,8 @@ scenarios:
         target: 5
     - id: scenario.monster-hunt.loot.6.1
       label: Suit of light armour
+      label_i18n:
+        es: Armadura ligera
       roll: 4+
       grant:
         kind: item
@@ -424,6 +517,8 @@ scenarios:
         target: 4
     - id: scenario.monster-hunt.loot.7.1
       label: Suit of light armour
+      label_i18n:
+        es: Armadura ligera
       roll: 4+
       grant:
         kind: item
@@ -436,6 +531,8 @@ scenarios:
         target: 4
     - id: scenario.monster-hunt.loot.8.1
       label: Shield
+      label_i18n:
+        es: Escudo
       roll: 4+
       grant:
         kind: item
@@ -448,6 +545,8 @@ scenarios:
         target: 4
     - id: scenario.monster-hunt.loot.9.1
       label: Helmet
+      label_i18n:
+        es: Yelmo
       roll: 4+
       grant:
         kind: item
@@ -460,6 +559,8 @@ scenarios:
         target: 4
     - id: scenario.monster-hunt.loot.10.1
       label: D3 swords
+      label_i18n:
+        es: 1D3 espadas
       roll: 4+
       grant:
         kind: item
@@ -477,6 +578,8 @@ scenarios:
         target: 4
     - id: scenario.monster-hunt.loot.11.1
       label: D3 gems worth 10 gc each
+      label_i18n:
+        es: 1D3 gemas por valor de 10 co cada una
       roll: 5+
       grant:
         kind: resource
@@ -494,6 +597,8 @@ scenarios:
         target: 5
     - id: scenario.monster-hunt.loot.12.1
       label: Jewellery worth D6 x 10 gc
+      label_i18n:
+        es: Joyería por valor de 1D6×10 co
       roll: 5+
       grant:
         kind: resource
@@ -515,18 +620,28 @@ scenarios:
   - id: scenario.kidnapped.income
     kind: resource
     resource: gold_crowns
-    rule: If the sacrificial victim escapes, the rescuing warband gains a reward of 50 gold crowns added directly
-      to its treasury.
+    rule: If the sacrificial victim escapes, the rescuing warband gains a reward of 50 gold crowns added
+      directly to its treasury.
+    rule_i18n:
+      es: Si la víctima sacrificial escapa, la banda rescatadora gana una recompensa de 50 coronas de
+        oro añadida directamente a su tesorería.
     quantity_input: true
 - scenario_id: scenario.forbidden-square
   rewards:
   - id: scenario.forbidden-square.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: D6+2 Wyrdstone counters are placed before deployment. Warriors pick them up by moving into contact; when
-      a warrior is knocked down, stunned or taken Out of Action he drops all counters he is carrying. Each side
-      carries its counters off through the gate (or offers them to the totem for the Possessed). When all counters
-      have been carried away or absorbed the game ends and the player with the most stones wins.
+    rule: D6+2 Wyrdstone counters are placed before deployment. Warriors pick them up by moving into contact;
+      when a warrior is knocked down, stunned or taken Out of Action he drops all counters he is carrying.
+      Each side carries its counters off through the gate (or offers them to the totem for the Possessed).
+      When all counters have been carried away or absorbed the game ends and the player with the most
+      stones wins.
+    rule_i18n:
+      es: Se colocan 1D6+2 contadores de piedra bruja antes del despliegue. Los guerreros los recogen
+        moviéndose en contacto; cuando un guerrero es derribado, aturdido o puesto Fuera de Combate suelta
+        todos los contadores que lleva. Cada bando saca sus contadores por la puerta (o los ofrece al
+        tótem en el caso de los Poseídos). Cuando todos los contadores hayan sido retirados o absorbidos,
+        la partida termina y gana el jugador con más piedras.
     quantity_input: true
 - scenario_id: scenario.stake-out
   rewards:
@@ -534,26 +649,38 @@ scenarios:
     kind: resource
     resource: wyrdstone_fragments
     rule: The loser earns D6 shards of wyrdstone and the winner D6+1 shards.
+    rule_i18n:
+      es: El perdedor obtiene 1D6 fragmentos de piedra bruja y el ganador 1D6+1 fragmentos.
     quantity_input: true
 - scenario_id: scenario.the-caravan
   rewards:
   - id: scenario.the-caravan.income
     kind: resource
     resource: gold_crowns
-    rule: The defender receives 5D6 gold crowns as a starting payment plus 5D6 gold crowns for each wagon that escapes,
-      with an additional bonus of 5D6 gold crowns if all three wagons escape. The attacker receives 3D6 gold crowns
-      for each wagon he loots. A traitorous defender who attacks the caravan he was hired to protect receives 3D6
-      gold crowns per looted wagon instead.
+    rule: The defender receives 5D6 gold crowns as a starting payment plus 5D6 gold crowns for each wagon
+      that escapes, with an additional bonus of 5D6 gold crowns if all three wagons escape. The attacker
+      receives 3D6 gold crowns for each wagon he loots. A traitorous defender who attacks the caravan
+      he was hired to protect receives 3D6 gold crowns per looted wagon instead.
+    rule_i18n:
+      es: El defensor recibe 5D6 coronas de oro como pago inicial más 5D6 coronas de oro por cada carro
+        que escape, con una bonificación adicional de 5D6 coronas de oro si los tres carros escapan. El
+        atacante recibe 3D6 coronas de oro por cada carro que saquee. Un defensor traidor que ataque la
+        caravana que fue contratado para proteger recibe 3D6 coronas de oro por carro saqueado en su lugar.
     quantity_input: true
 - scenario_id: scenario.the-secrets-of-beujuntae
   rewards:
   - id: scenario.the-secrets-of-beujuntae.loot
     kind: loot_table
-    rule: The winning player gets to open the tomb of a long-dead Slann Mage Priest and rolls on the items chart
-      to see what he finds within.
+    rule: The winning player gets to open the tomb of a long-dead Slann Mage Priest and rolls on the items
+      chart to see what he finds within.
+    rule_i18n:
+      es: El jugador ganador puede abrir la tumba de un Sacerdote Mago Slann muerto hace mucho tiempo
+        y tira en la tabla de objetos para ver qué encuentra dentro.
     contents:
     - id: scenario.the-secrets-of-beujuntae.loot.1.1
       label: 2D6 gc
+      label_i18n:
+        es: 2D6 co
       roll: automatic
       grant:
         kind: resource
@@ -566,6 +693,8 @@ scenarios:
         modifier: 0
     - id: scenario.the-secrets-of-beujuntae.loot.2.1
       label: Magic Sickle (raises WS of the bearer +1)
+      label_i18n:
+        es: Hoz Mágica (aumenta la HA del portador +1)
       roll: 6+
       grant:
         kind: special
@@ -578,6 +707,8 @@ scenarios:
         target: 6
     - id: scenario.the-secrets-of-beujuntae.loot.3.1
       label: D6 gems worth 10 gc each
+      label_i18n:
+        es: 1D6 gemas por valor de 10 co cada una
       roll: 7+
       grant:
         kind: resource
@@ -595,6 +726,9 @@ scenarios:
         target: 7
     - id: scenario.the-secrets-of-beujuntae.loot.4.1
       label: Ancient Bone Armour (confers a 4+ save and in all other respects acts like light armour)
+      label_i18n:
+        es: Armadura de Huesos Antiguos (confiere una salvación de 4+ y en todo lo demás actúa como armadura
+          ligera)
       roll: 8+
       grant:
         kind: item
@@ -610,12 +744,18 @@ scenarios:
   rewards:
   - id: scenario.the-night-of-the-headless-one.loot
     kind: loot_table
-    rule: A warband that captures the Skull of the Headless One (by moving it off the table) may keep it and, in
-      a campaign, attempt to summon the Headless One at the start of any subsequent game.
+    rule: A warband that captures the Skull of the Headless One (by moving it off the table) may keep
+      it and, in a campaign, attempt to summon the Headless One at the start of any subsequent game.
+    rule_i18n:
+      es: Una banda que capture el Cráneo del Descabezado (alejándolo de la mesa) puede quedárselo y,
+        en campaña, intentar invocar al Descabezado al comienzo de cualquier partida posterior.
     contents:
     - id: scenario.the-night-of-the-headless-one.loot.1
-      label: A warband that captures the Skull of the Headless One (by moving it off the table) may keep it and,
-        in a campaign, attempt to summon the Headless One at the start of any subsequent game.
+      label: A warband that captures the Skull of the Headless One (by moving it off the table) may keep
+        it and, in a campaign, attempt to summon the Headless One at the start of any subsequent game.
+      label_i18n:
+        es: Una banda que capture el Cráneo del Descabezado (alejándolo de la mesa) puede quedárselo y,
+          en campaña, intentar invocar al Descabezado al comienzo de cualquier partida posterior.
       roll: manual
       grant:
         kind: special
@@ -627,21 +767,33 @@ scenarios:
   - id: scenario.the-hunters-become-the-hunted.income
     kind: resource
     resource: gold_crowns
-    rule: If the winning warband captures the Cold Ones alive they can either mount a unit on them or sell them
-      for 80 gc; if one or both Cold Ones are dead they can be sold for 40 gc each. The artefacts taken from the
-      Beastmaster are the equivalent of a Wyrdstone shard each and can also be sold.
+    rule: If the winning warband captures the Cold Ones alive they can either mount a unit on them or
+      sell them for 80 gc; if one or both Cold Ones are dead they can be sold for 40 gc each. The artefacts
+      taken from the Beastmaster are the equivalent of a Wyrdstone shard each and can also be sold.
+    rule_i18n:
+      es: Si la banda ganadora captura los Sangre Fría vivos puede montar una unidad sobre ellos o venderlos
+        por 80 co; si uno o ambos Sangre Fría están muertos pueden venderse por 40 co cada uno. Los artefactos
+        tomados al Maestro de Bestias equivalen cada uno a un fragmento de piedra bruja y también pueden
+        venderse.
     quantity_input: true
 - scenario_id: scenario.lost-temple-of-the-slann
   rewards:
   - id: scenario.lost-temple-of-the-slann.loot
     kind: loot_table
-    rule: At the end of the game the winning warband finds all of the items of the defender's booty table that were
-      not found before the battle, plus it rolls once on the relics chart for each Hero it has that is not Out of
-      Action (maximum 6 rolls). Each item is rolled for separately apart from the gold crowns, which are always
-      found.
+    rule: At the end of the game the winning warband finds all of the items of the defender's booty table
+      that were not found before the battle, plus it rolls once on the relics chart for each Hero it has
+      that is not Out of Action (maximum 6 rolls). Each item is rolled for separately apart from the gold
+      crowns, which are always found.
+    rule_i18n:
+      es: Al final de la partida la banda ganadora encuentra todos los objetos de la tabla de botín del
+        defensor que no se encontraron antes de la batalla, y además tira una vez en la tabla de reliquias
+        por cada Héroe que tenga que no esté Fuera de Combate (máximo 6 tiradas). Cada objeto se tira
+        por separado, salvo las coronas de oro, que siempre se encuentran.
     contents:
     - id: scenario.lost-temple-of-the-slann.loot.1.1
       label: 3D6 gc
+      label_i18n:
+        es: 3D6 co
       roll: automatic
       grant:
         kind: resource
@@ -654,6 +806,8 @@ scenarios:
         modifier: 0
     - id: scenario.lost-temple-of-the-slann.loot.2.1
       label: D3 gems worth 10 gc each
+      label_i18n:
+        es: 1D3 gemas por valor de 10 co cada una
       roll: 5+
       grant:
         kind: resource
@@ -671,6 +825,8 @@ scenarios:
         target: 5
     - id: scenario.lost-temple-of-the-slann.loot.3.1
       label: Tome of Magic
+      label_i18n:
+        es: Tomo de Magia
       roll: 4+
       grant:
         kind: item
@@ -683,6 +839,8 @@ scenarios:
         target: 4
     - id: scenario.lost-temple-of-the-slann.loot.4.1
       label: Gromril Sword
+      label_i18n:
+        es: Espada de Gromril
       roll: 5+
       grant:
         kind: item
@@ -695,6 +853,8 @@ scenarios:
         target: 5
     - id: scenario.lost-temple-of-the-slann.loot.5.1
       label: Cloak of Mists
+      label_i18n:
+        es: Capa de Brumas
       roll: 5+
       grant:
         kind: special
@@ -707,6 +867,8 @@ scenarios:
         target: 5
     - id: scenario.lost-temple-of-the-slann.loot.6.1
       label: Healing Herbs (D3 doses)
+      label_i18n:
+        es: Hierbas Curativas (1D3 dosis)
       roll: 4+
       grant:
         kind: item
@@ -724,6 +886,8 @@ scenarios:
         target: 4
     - id: scenario.lost-temple-of-the-slann.loot.7.1
       label: Dispel Scroll
+      label_i18n:
+        es: Pergamino de Disipación
       roll: 5+
       grant:
         kind: special
@@ -740,37 +904,55 @@ scenarios:
   - id: scenario.the-sword-of-the-herald.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: Each Star Stone splinter is worth 3 additional wyrdstone in the post battle sequence when removed from
-      the table. Note that additional experience is not earned for removing the Star Stone splinters or the Sword
-      of the Herald.
+    rule: Each Star Stone splinter is worth 3 additional wyrdstone in the post battle sequence when removed
+      from the table. Note that additional experience is not earned for removing the Star Stone splinters
+      or the Sword of the Herald.
+    rule_i18n:
+      es: Cada astilla de Piedra Estelar vale 3 piezas adicionales de piedra bruja en la secuencia de
+        posbatalla al retirarla de la mesa. Ten en cuenta que no se gana experiencia adicional por retirar
+        las astillas de Piedra Estelar ni la Espada del Heraldo.
     quantity_input: true
 - scenario_id: scenario.finders-keepers
   rewards:
   - id: scenario.finders-keepers.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: Warriors earn one shard of wyrdstone for each counter still in their possession at the end of the battle
-      (the stash holds 1D3 counters).
+    rule: Warriors earn one shard of wyrdstone for each counter still in their possession at the end of
+      the battle (the stash holds 1D3 counters).
+    rule_i18n:
+      es: Los guerreros obtienen un fragmento de piedra bruja por cada contador que siga en su poder al
+        final de la batalla (la reserva contiene 1D3 contadores).
     quantity_input: true
 - scenario_id: scenario.mule-train
   rewards:
   - id: scenario.mule-train.income
     kind: resource
     resource: gold_crowns
-    rule: If the attackers recover one or more mules they may keep or sell them, and the goods on the mules are
-      determined as if the warband found a Slaughtered Warband in the exploration phase, adding +1 to the dice roll
-      for every mule recovered over the first. The defenders gain 2D6 gc for each mule they lead off the table.
-      Both warbands may explore as normal at the end of the scenario.
+    rule: If the attackers recover one or more mules they may keep or sell them, and the goods on the
+      mules are determined as if the warband found a Slaughtered Warband in the exploration phase, adding
+      +1 to the dice roll for every mule recovered over the first. The defenders gain 2D6 gc for each
+      mule they lead off the table. Both warbands may explore as normal at the end of the scenario.
+    rule_i18n:
+      es: Si los atacantes recuperan una o más mulas pueden quedárselas o venderlas, y los bienes de las
+        mulas se determinan como si la banda hubiera encontrado una Banda Degollada en la fase de exploración,
+        sumando +1 a la tirada de dados por cada mula recuperada además de la primera. Los defensores
+        ganan 2D6 co por cada mula que saquen de la mesa. Ambas bandas pueden explorar con normalidad
+        al final del escenario.
     quantity_input: true
 - scenario_id: scenario.gift-of-the-truthsayers
   rewards:
   - id: scenario.gift-of-the-truthsayers.loot
     kind: loot_table
-    rule: The warband in possession of the artefact at the end of the game may examine it to discover its worth;
-      roll 2D6.
+    rule: The warband in possession of the artefact at the end of the game may examine it to discover
+      its worth; roll 2D6.
+    rule_i18n:
+      es: La banda en posesión del artefacto al final de la partida puede examinarlo para descubrir su
+        valor; tira 2D6.
     contents:
     - id: scenario.gift-of-the-truthsayers.loot.1.1
       label: The artefact is valuable and worth 5D6 gold coins
+      label_i18n:
+        es: El artefacto es valioso y vale 5D6 monedas de oro
       roll: 2D6
       grant:
         kind: resource
@@ -791,8 +973,11 @@ scenarios:
         min: 1
         max: 4
     - id: scenario.gift-of-the-truthsayers.loot.2.1
-      label: Enchanted Totem of Light (bearer immune to psychology and all alone tests; +1 Leadership if given to
-        the warband's leader)
+      label: Enchanted Totem of Light (bearer immune to psychology and all alone tests; +1 Leadership
+        if given to the warband's leader)
+      label_i18n:
+        es: Tótem Encantado de la Luz (el portador es inmune a la psicología y a los chequeos de estar
+          solo; +1 Liderazgo si se entrega al líder de la banda)
       roll: 2D6
       grant:
         kind: special
@@ -808,7 +993,10 @@ scenarios:
         min: 5
         max: 6
     - id: scenario.gift-of-the-truthsayers.loot.3.1
-      label: Silver Sickle (acts like a normal sword, +1 Weapon Skill, +1 Strength vs Daemons, Possessed and Undead)
+      label: Silver Sickle (acts like a normal sword, +1 Weapon Skill, +1 Strength vs Daemons, Possessed
+        and Undead)
+      label_i18n:
+        es: Hoz de Plata (actúa como una espada normal, +1 HA, +1 F contra Demonios, Poseídos y No Muertos)
       roll: 2D6
       grant:
         kind: item
@@ -825,6 +1013,8 @@ scenarios:
         max: 8
     - id: scenario.gift-of-the-truthsayers.loot.4.1
       label: Talisman of Light (nullifies any harmful spell cast at the wearer on a 4+)
+      label_i18n:
+        es: Talismán de la Luz (anula cualquier hechizo dañino lanzado contra el portador con un 4+)
       roll: 2D6
       grant:
         kind: special
@@ -840,8 +1030,11 @@ scenarios:
         min: 9
         max: 9
     - id: scenario.gift-of-the-truthsayers.loot.5.1
-      label: Tome of the Truthsayers (cast a single randomly determined Lore of Light spell once per battle without
-        difficulty roll)
+      label: Tome of the Truthsayers (cast a single randomly determined Lore of Light spell once per battle
+        without difficulty roll)
+      label_i18n:
+        es: Tomo de los Decidores de Verdades (lanza un único hechizo de la Sabiduría de la Luz determinado
+          al azar una vez por batalla sin tirada de dificultad)
       roll: 2D6
       grant:
         kind: special
@@ -858,6 +1051,9 @@ scenarios:
         max: 11
     - id: scenario.gift-of-the-truthsayers.loot.6.1
       label: Vambrace of Silver (any ranged weapon that hits the wearer is deflected harmlessly on a 5+)
+      label_i18n:
+        es: Brazal de Plata (cualquier arma a distancia que golpee al portador se desvía inofensivamente
+          con un 5+)
       roll: 2D6
       grant:
         kind: special
@@ -877,11 +1073,16 @@ scenarios:
   rewards:
   - id: scenario.the-mummy.loot
     kind: loot_table
-    rule: Once KaHotep is vanquished the warriors may loot the hoard. Roll 1D6 for each item separately except for
-      the gold crowns, which are found automatically.
+    rule: Once KaHotep is vanquished the warriors may loot the hoard. Roll 1D6 for each item separately
+      except for the gold crowns, which are found automatically.
+    rule_i18n:
+      es: Una vez derrotado KaHotep, los guerreros pueden saquer el tesoro. Tira 1D6 por cada objeto por
+        separado, salvo las coronas de oro, que se encuentran automáticamente.
     contents:
     - id: scenario.the-mummy.loot.1.1
       label: 5D6 Gold Crowns and a Lucky Charm
+      label_i18n:
+        es: 5D6 coronas de oro y un Amuleto de la Suerte
       roll: automatic
       grant:
         kind: resource
@@ -894,6 +1095,8 @@ scenarios:
         modifier: 0
     - id: scenario.the-mummy.loot.1.2
       label: 5D6 Gold Crowns and a Lucky Charm
+      label_i18n:
+        es: 5D6 coronas de oro y un Amuleto de la Suerte
       roll: automatic
       grant:
         kind: item
@@ -906,6 +1109,8 @@ scenarios:
         modifier: 0
     - id: scenario.the-mummy.loot.2.1
       label: Gromril Sword
+      label_i18n:
+        es: Espada de Gromril
       roll: 5+
       grant:
         kind: item
@@ -918,6 +1123,8 @@ scenarios:
         target: 5
     - id: scenario.the-mummy.loot.3.1
       label: Suit of heavy armour
+      label_i18n:
+        es: Armadura pesada
       roll: 5+
       grant:
         kind: item
@@ -930,6 +1137,8 @@ scenarios:
         target: 5
     - id: scenario.the-mummy.loot.4.1
       label: Suit of light armour
+      label_i18n:
+        es: Armadura ligera
       roll: 4+
       grant:
         kind: item
@@ -942,6 +1151,8 @@ scenarios:
         target: 4
     - id: scenario.the-mummy.loot.5.1
       label: Suit of light armour
+      label_i18n:
+        es: Armadura ligera
       roll: 4+
       grant:
         kind: item
@@ -954,6 +1165,8 @@ scenarios:
         target: 4
     - id: scenario.the-mummy.loot.6.1
       label: Shield
+      label_i18n:
+        es: Escudo
       roll: 4+
       grant:
         kind: item
@@ -966,6 +1179,8 @@ scenarios:
         target: 4
     - id: scenario.the-mummy.loot.7.1
       label: Helmet
+      label_i18n:
+        es: Yelmo
       roll: 4+
       grant:
         kind: item
@@ -978,6 +1193,8 @@ scenarios:
         target: 4
     - id: scenario.the-mummy.loot.8.1
       label: D3 Swords
+      label_i18n:
+        es: 1D3 espadas
       roll: 4+
       grant:
         kind: item
@@ -995,6 +1212,8 @@ scenarios:
         target: 4
     - id: scenario.the-mummy.loot.9.1
       label: D3 Gems worth 10 gc each
+      label_i18n:
+        es: 1D3 gemas por valor de 10 co cada una
       roll: 5+
       grant:
         kind: resource
@@ -1012,6 +1231,8 @@ scenarios:
         target: 5
     - id: scenario.the-mummy.loot.10.1
       label: Jewellery worth D6 x 10 gc
+      label_i18n:
+        es: Joyería por valor de 1D6×10 co
       roll: 5+
       grant:
         kind: resource
@@ -1029,6 +1250,8 @@ scenarios:
         target: 5
     - id: scenario.the-mummy.loot.11.1
       label: Telescope
+      label_i18n:
+        es: Telescopio
       roll: 5+
       grant:
         kind: item
@@ -1041,6 +1264,8 @@ scenarios:
         target: 5
     - id: scenario.the-mummy.loot.12.1
       label: Dispel Scroll
+      label_i18n:
+        es: Pergamino de Disipación
       roll: 5+
       grant:
         kind: special
@@ -1053,6 +1278,8 @@ scenarios:
         target: 5
     - id: scenario.the-mummy.loot.13.1
       label: Bugman's Ale
+      label_i18n:
+        es: Cerveza de Bugman
       roll: 4+
       grant:
         kind: item
@@ -1065,6 +1292,8 @@ scenarios:
         target: 4
     - id: scenario.the-mummy.loot.14.1
       label: Tome of Magic
+      label_i18n:
+        es: Tomo de Magia
       roll: 4+
       grant:
         kind: item
@@ -1081,18 +1310,26 @@ scenarios:
   - id: scenario.the-ogham-stones.income
     kind: resource
     resource: gold_crowns
-    rule: The winning warband is rewarded by the Truthsayer or Dark Emissary they serve and gains 5D6 gold coins
-      worth of gems and jewels.
+    rule: The winning warband is rewarded by the Truthsayer or Dark Emissary they serve and gains 5D6
+      gold coins worth of gems and jewels.
+    rule_i18n:
+      es: La banda ganadora es recompensada por el Decidor de Verdades o el Emisario Oscuro al que sirve
+        y gana gemas y joyas por valor de 5D6 monedas de oro.
     quantity_input: true
 - scenario_id: scenario.haunted-treasure
   rewards:
   - id: scenario.haunted-treasure.loot
     kind: loot_table
-    rule: Whoever recovers the chest may roll on the contents chart after the game; each item is rolled for separately
-      apart from the gold crowns, which are always found.
+    rule: Whoever recovers the chest may roll on the contents chart after the game; each item is rolled
+      for separately apart from the gold crowns, which are always found.
+    rule_i18n:
+      es: Quien recupere el cofre puede tirar en la tabla de contenidos después de la partida; cada objeto
+        se tira por separado, salvo las coronas de oro, que siempre se encuentran.
     contents:
     - id: scenario.haunted-treasure.loot.1.1
       label: D3 pieces of wyrdstone
+      label_i18n:
+        es: 1D3 fragmentos de piedra bruja
       roll: 4+
       grant:
         kind: resource
@@ -1110,6 +1347,8 @@ scenarios:
         target: 4
     - id: scenario.haunted-treasure.loot.2.1
       label: 5D6 gc
+      label_i18n:
+        es: 5D6 co
       roll: automatic
       grant:
         kind: resource
@@ -1122,6 +1361,8 @@ scenarios:
         modifier: 0
     - id: scenario.haunted-treasure.loot.3.1
       label: Holy relic
+      label_i18n:
+        es: Reliquia sagrada
       roll: 5+
       grant:
         kind: item
@@ -1134,6 +1375,8 @@ scenarios:
         target: 5
     - id: scenario.haunted-treasure.loot.4.1
       label: Suit of heavy armour
+      label_i18n:
+        es: Armadura pesada
       roll: 5+
       grant:
         kind: item
@@ -1146,6 +1389,8 @@ scenarios:
         target: 5
     - id: scenario.haunted-treasure.loot.5.1
       label: D3 gems worth 10 gc each
+      label_i18n:
+        es: 1D3 gemas por valor de 10 co cada una
       roll: 4+
       grant:
         kind: resource
@@ -1163,6 +1408,8 @@ scenarios:
         target: 4
     - id: scenario.haunted-treasure.loot.6.1
       label: Elven cloak
+      label_i18n:
+        es: Capa élfica
       roll: 5+
       grant:
         kind: item
@@ -1175,6 +1422,8 @@ scenarios:
         target: 5
     - id: scenario.haunted-treasure.loot.7.1
       label: Holy tome
+      label_i18n:
+        es: Tomo sagrado
       roll: 5+
       grant:
         kind: item
@@ -1187,6 +1436,8 @@ scenarios:
         target: 5
     - id: scenario.haunted-treasure.loot.8.1
       label: Magical artefact
+      label_i18n:
+        es: Artefacto mágico
       roll: 5+
       grant:
         kind: special
@@ -1203,34 +1454,48 @@ scenarios:
   - id: scenario.a-night-in-the-graveyard.income
     kind: resource
     resource: gold_crowns
-    rule: If Erasmus is taken Out of Action or driven off, any warrior close enough to his mausoleum gets to loot
-      his grave and gains 4D6 + 20 gc in addition to their normal Exploration roll.
+    rule: If Erasmus is taken Out of Action or driven off, any warrior close enough to his mausoleum gets
+      to loot his grave and gains 4D6 + 20 gc in addition to their normal Exploration roll.
+    rule_i18n:
+      es: Si Erasmus es puesto Fuera de Combate o expulsado, cualquier guerrero lo bastante cerca de su
+        mausoleo puede saquear su tumba y gana 4D6 + 20 co además de su tirada de Exploración normal.
     quantity_input: true
 - scenario_id: scenario.bar-room-brawl
   rewards:
   - id: scenario.bar-room-brawl.income
     kind: resource
     resource: gold_crowns
-    rule: If Sam is out of action, the winning warband gets 3D6 gc from the cash register and a supply of Bugman's
-      Ale, in addition to anything from normal exploring.
+    rule: If Sam is out of action, the winning warband gets 3D6 gc from the cash register and a supply
+      of Bugman's Ale, in addition to anything from normal exploring.
+    rule_i18n:
+      es: Si Sam queda fuera de combate, la banda ganadora obtiene 3D6 co de la caja registradora y un
+        suministro de Cerveza de Bugman, además de lo que obtenga de la exploración normal.
     quantity_input: true
 - scenario_id: scenario.defend-the-oasis
   rewards:
   - id: scenario.defend-the-oasis.income
     kind: resource
     resource: gold_crowns
-    rule: The winner fills his water supply to the maximum (no more water and treasure than his burden limit) and,
-      when trading, may remain at the oasis rolling for a caravan (3+) as normal. The defeated warband must roll
-      on the Exploration chart with a -1 modifier.
+    rule: The winner fills his water supply to the maximum (no more water and treasure than his burden
+      limit) and, when trading, may remain at the oasis rolling for a caravan (3+) as normal. The defeated
+      warband must roll on the Exploration chart with a -1 modifier.
+    rule_i18n:
+      es: El ganador llena su suministro de agua al máximo (no más agua y tesoros que su límite de carga)
+        y, al comerciar, puede permanecer en el oasis tirando por una caravana (3+) como de costumbre.
+        La banda derrotada debe tirar en la tabla de Exploración con un modificador de -1.
     quantity_input: true
 - scenario_id: scenario.tomb-raid
   rewards:
   - id: scenario.tomb-raid.loot
     kind: loot_table
     rule: In the tomb the winner gets D3 items of treasure, rolling a D6 for each one.
+    rule_i18n:
+      es: En la tumba el ganador obtiene 1D3 objetos de tesoro, tirando 1D6 por cada uno.
     contents:
     - id: scenario.tomb-raid.loot.1.1
       label: Heavy armour
+      label_i18n:
+        es: Armadura pesada
       roll: D6
       grant:
         kind: item
@@ -1247,6 +1512,8 @@ scenarios:
         max: 1
     - id: scenario.tomb-raid.loot.2.1
       label: D3 Scimitars
+      label_i18n:
+        es: 1D3 cimitarras
       roll: D6
       grant:
         kind: item
@@ -1268,6 +1535,8 @@ scenarios:
         max: 2
     - id: scenario.tomb-raid.loot.3.1
       label: D6 Jambiyas (daggers)
+      label_i18n:
+        es: 1D6 Jambiyas (dagas)
       roll: D6
       grant:
         kind: item
@@ -1289,6 +1558,8 @@ scenarios:
         max: 3
     - id: scenario.tomb-raid.loot.4.1
       label: Gem-encrusted helmet worth D6 x 10 gc
+      label_i18n:
+        es: Yelmo enjoyado por valor de 1D6×10 co
       roll: D6
       grant:
         kind: resource
@@ -1310,6 +1581,8 @@ scenarios:
         max: 4
     - id: scenario.tomb-raid.loot.4.2
       label: Gem-encrusted helmet worth D6 x 10 gc
+      label_i18n:
+        es: Yelmo enjoyado por valor de 1D6×10 co
       roll: D6
       grant:
         kind: item
@@ -1329,6 +1602,8 @@ scenarios:
       when: *id001
     - id: scenario.tomb-raid.loot.5.1
       label: Shield
+      label_i18n:
+        es: Escudo
       roll: D6
       grant:
         kind: item
@@ -1345,6 +1620,8 @@ scenarios:
         max: 5
     - id: scenario.tomb-raid.loot.6.1
       label: Monkey's paw (see Town Cryer
+      label_i18n:
+        es: Pata de mono (ver el Pregonero
       roll: D6
       grant:
         kind: item
@@ -1365,8 +1642,13 @@ scenarios:
   - id: scenario.protect-the-prince.income
     kind: resource
     resource: gold_crowns
-    rule: If the prince escapes he rewards his protectors with 4D6 gold crowns from his purse; if he is killed the
-      winning warband finds 2D6 gold crowns plus jewellery equivalent to two pieces of treasure on his body.
+    rule: If the prince escapes he rewards his protectors with 4D6 gold crowns from his purse; if he is
+      killed the winning warband finds 2D6 gold crowns plus jewellery equivalent to two pieces of treasure
+      on his body.
+    rule_i18n:
+      es: Si el príncipe escapa recompensa a sus protectores con 4D6 coronas de oro de su bolsa; si muere,
+        la banda ganadora encuentra 2D6 coronas de oro más joyería equivalente a dos piezas de tesoro
+        en su cuerpo.
     quantity_input: true
 - scenario_id: scenario.burn-the-witches
   rewards:
@@ -1374,27 +1656,41 @@ scenarios:
     kind: resource
     resource: wyrdstone_fragments
     rule: The attackers can pilfer the tomb after the battle and find D3+1 wyrdstone shards.
+    rule_i18n:
+      es: Los atacantes pueden saquear la tumba después de la batalla y encontrar 1D3+1 fragmentos de
+        piedra bruja.
     quantity_input: true
 - scenario_id: scenario.one-mans-rescue
   rewards:
   - id: scenario.one-mans-rescue.income
     kind: resource
     resource: gold_crowns
-    rule: The winning warband gains 5D6 + 10 gc as a ransom/reward; if the victim dies neither side gets the win
-      bonus, additional Experience or gold.
+    rule: The winning warband gains 5D6 + 10 gc as a ransom/reward; if the victim dies neither side gets
+      the win bonus, additional Experience or gold.
+    rule_i18n:
+      es: La banda ganadora gana 5D6 + 10 co como rescate/recompensa; si la víctima muere, ninguno de
+        los bandos obtiene la bonificación por victoria, Experiencia adicional ni oro.
     quantity_input: true
 - scenario_id: scenario.assault-on-the-rock
   rewards:
   - id: scenario.assault-on-the-rock.loot
     kind: loot_table
-    rule: The tome of magic allows the user to gain two spells from the lesser magic list, two new spells from his
-      own list, or any combination thereof; any warband may use it except Sisters of Sigmar, Witch Hunters and warbands
-      containing a priest of Morr.
+    rule: The tome of magic allows the user to gain two spells from the lesser magic list, two new spells
+      from his own list, or any combination thereof; any warband may use it except Sisters of Sigmar,
+      Witch Hunters and warbands containing a priest of Morr.
+    rule_i18n:
+      es: El tomo de magia permite al usuario obtener dos hechizos de la lista de magia menor, dos hechizos
+        nuevos de su propia lista, o cualquier combinación de ambas; cualquier banda puede usarlo excepto
+        las Hermanas de Sigmar, los Cazadores de Brujas y las bandas que contengan un sacerdote de Morr.
     contents:
     - id: scenario.assault-on-the-rock.loot.1
-      label: The tome of magic allows the user to gain two spells from the lesser magic list, two new spells from
-        his own list, or any combination thereof; any warband may use it except Sisters of Sigmar, Witch Hunters
-        and warbands containing a priest of Morr.
+      label: The tome of magic allows the user to gain two spells from the lesser magic list, two new
+        spells from his own list, or any combination thereof; any warband may use it except Sisters of
+        Sigmar, Witch Hunters and warbands containing a priest of Morr.
+      label_i18n:
+        es: El tomo de magia permite al usuario obtener dos hechizos de la lista de magia menor, dos hechizos
+          nuevos de su propia lista, o cualquier combinación de ambas; cualquier banda puede usarlo excepto
+          las Hermanas de Sigmar, los Cazadores de Brujas y las bandas que contengan un sacerdote de Morr.
       roll: manual
       grant:
         kind: special
@@ -1407,13 +1703,19 @@ scenarios:
     kind: resource
     resource: wyrdstone_fragments
     rule: The winning warband recovers D3 shards of Wyrdstone left over from the ritual.
+    rule_i18n:
+      es: La banda ganadora recupera 1D3 fragmentos de Piedra Bruja que quedaron del ritual.
     quantity_input: true
 - scenario_id: scenario.a-stroll-in-the-garden
   rewards:
   - id: scenario.a-stroll-in-the-garden.exploration
     kind: exploration
-    rule: At the end of the game each player receives one additional dice for Exploration; after rolling, each player
-      may re-roll ALL of his Exploration dice (never keeping some and re-rolling others).
+    rule: At the end of the game each player receives one additional dice for Exploration; after rolling,
+      each player may re-roll ALL of his Exploration dice (never keeping some and re-rolling others).
+    rule_i18n:
+      es: Al final de la partida cada jugador recibe un dado adicional para la Exploración; después de
+        tirar, cada jugador puede repetir TODOS sus dados de Exploración (nunca conservando algunos y
+        repitiendo otros).
     extra_dice: 1
     reroll_all: true
 - scenario_id: scenario.the-bodyguards
@@ -1421,16 +1723,25 @@ scenarios:
   - id: scenario.the-bodyguards.income
     kind: resource
     resource: gold_crowns
-    rule: If the merchant survives he gives the defender 7D6 + 20 gold pieces plus a 2D6 roll on the defender reward
-      table. An attacking warband that snatches the merchant or his head and returns it to his overlord receives
-      4D6 + 15 gold pieces plus a 2D6 roll on the attacker reward table.
+    rule: If the merchant survives he gives the defender 7D6 + 20 gold pieces plus a 2D6 roll on the defender
+      reward table. An attacking warband that snatches the merchant or his head and returns it to his
+      overlord receives 4D6 + 15 gold pieces plus a 2D6 roll on the attacker reward table.
+    rule_i18n:
+      es: Si el mercader sobrevive, entrega al defensor 7D6 + 20 monedas de oro más una tirada de 2D6
+        en la tabla de recompensas del defensor. Una banda atacante que rapte al mercader o a su cabeza
+        y se la devuelva a su señor recibe 4D6 + 15 monedas de oro más una tirada de 2D6 en la tabla de
+        recompensas del atacante.
     quantity_input: true
   - id: scenario.the-bodyguards.loot
     kind: loot_table
     rule: Reward tables for each side; roll 2D6 once (rows carry the side that receives them).
+    rule_i18n:
+      es: Tablas de recompensa para cada bando; tira 2D6 una vez (cada fila indica el bando que la recibe).
     contents:
     - id: scenario.the-bodyguards.loot.1.1
       label: Holy or Unholy Relic
+      label_i18n:
+        es: Reliquia Sagrada o Impía
       roll: 2D6
       grant:
         kind: special
@@ -1447,6 +1758,8 @@ scenarios:
         max: 2
     - id: scenario.the-bodyguards.loot.2.1
       label: Cathayan Silk Clothes
+      label_i18n:
+        es: Ropas de Seda de Cathay
       roll: 2D6
       grant:
         kind: special
@@ -1463,6 +1776,8 @@ scenarios:
         max: 5
     - id: scenario.the-bodyguards.loot.3.1
       label: Ithilmar Armour
+      label_i18n:
+        es: Armadura de Ithilmar
       roll: 2D6
       grant:
         kind: item
@@ -1479,6 +1794,8 @@ scenarios:
         max: 8
     - id: scenario.the-bodyguards.loot.4.1
       label: Elven Cloak
+      label_i18n:
+        es: Capa Élfica
       roll: 2D6
       grant:
         kind: item
@@ -1495,6 +1812,8 @@ scenarios:
         max: 10
     - id: scenario.the-bodyguards.loot.5.1
       label: Gromril Armour
+      label_i18n:
+        es: Armadura de Gromril
       roll: 2D6
       grant:
         kind: item
@@ -1511,6 +1830,8 @@ scenarios:
         max: 12
     - id: scenario.the-bodyguards.loot.6.1
       label: Throwing Knives
+      label_i18n:
+        es: Cuchillos de Lanzamiento
       roll: 2D6
       grant:
         kind: item
@@ -1527,6 +1848,8 @@ scenarios:
         max: 2
     - id: scenario.the-bodyguards.loot.7.1
       label: Crossbow Pistol
+      label_i18n:
+        es: Pistola Ballesta
       roll: 2D6
       grant:
         kind: item
@@ -1543,6 +1866,8 @@ scenarios:
         max: 5
     - id: scenario.the-bodyguards.loot.8.1
       label: Hunting Arrows
+      label_i18n:
+        es: Flechas de Caza
       roll: 2D6
       grant:
         kind: item
@@ -1559,6 +1884,8 @@ scenarios:
         max: 8
     - id: scenario.the-bodyguards.loot.9.1
       label: Repeater Crossbow
+      label_i18n:
+        es: Ballesta de Repetición
       roll: 2D6
       grant:
         kind: item
@@ -1575,6 +1902,8 @@ scenarios:
         max: 10
     - id: scenario.the-bodyguards.loot.10.1
       label: Hunting Rifle
+      label_i18n:
+        es: Rifle de Caza
       roll: 2D6
       grant:
         kind: item
@@ -1595,15 +1924,22 @@ scenarios:
   - id: scenario.bounty-hunting.income
     kind: resource
     resource: gold_crowns
-    rule: The bandits may be turned in to the authorities for 5 + 1D6 gc per head (roll separately for each bandit).
-      There are 6 plus the number of warbands bandits in the hideout.
+    rule: The bandits may be turned in to the authorities for 5 + 1D6 gc per head (roll separately for
+      each bandit). There are 6 plus the number of warbands bandits in the hideout.
+    rule_i18n:
+      es: Los bandidos pueden entregarse a las autoridades por 5 + 1D6 co por cabeza (tira por separado
+        por cada bandido). Hay 6 bandidos en el escondite más uno por cada banda participante.
     quantity_input: true
   - id: scenario.bounty-hunting.loot
     kind: loot_table
     rule: The winning warband captures the bandits' equipment.
+    rule_i18n:
+      es: La banda ganadora captura el equipo de los bandidos.
     contents:
     - id: scenario.bounty-hunting.loot.1.1
       label: 6 Crossbows
+      label_i18n:
+        es: 6 ballestas
       roll: automatic
       grant:
         kind: item
@@ -1611,6 +1947,8 @@ scenarios:
         quantity_input: true
     - id: scenario.bounty-hunting.loot.2.1
       label: D3 swords
+      label_i18n:
+        es: 1D3 espadas
       roll: automatic
       grant:
         kind: item
@@ -1623,6 +1961,8 @@ scenarios:
         modifier: 0
     - id: scenario.bounty-hunting.loot.3.1
       label: 2D6 daggers
+      label_i18n:
+        es: 2D6 dagas
       roll: automatic
       grant:
         kind: item
@@ -1638,12 +1978,20 @@ scenarios:
   rewards:
   - id: scenario.down-at-the-docks.loot
     kind: loot_table
-    rule: Any crates removed from the battlefield may be prised open after the battle; roll 4D6 per crate and consult
-      the table. The defending warband instead receives 25 gc per crate remaining on the battlefield at the end
-      of the game.
+    rule: Any crates removed from the battlefield may be prised open after the battle; roll 4D6 per crate
+      and consult the table. The defending warband instead receives 25 gc per crate remaining on the battlefield
+      at the end of the game.
+    rule_i18n:
+      es: Cualquier caja retirada del campo de batalla puede forzarse después de la batalla; tira 4D6
+        por caja y consulta la tabla. La banda defensora recibe en su lugar 25 co por cada caja que permanezca
+        en el campo de batalla al final de la partida.
     contents:
     - id: scenario.down-at-the-docks.loot.1.1
-      label: Gems worth 100 gc (fence value 40 gc, or worn adds +1 to rarity finds) and a pack of Tarot cards
+      label: Gems worth 100 gc (fence value 40 gc, or worn adds +1 to rarity finds) and a pack of Tarot
+        cards
+      label_i18n:
+        es: Gemas por valor de 100 co (valor de venta 40 co, o llevadas otorgan +1 a los hallazgos raros)
+          y una baraja de cartas de Tarot
       roll: 4D6
       grant:
         kind: resource
@@ -1659,7 +2007,11 @@ scenarios:
         min: 4
         max: 4
     - id: scenario.down-at-the-docks.loot.1.2
-      label: Gems worth 100 gc (fence value 40 gc, or worn adds +1 to rarity finds) and a pack of Tarot cards
+      label: Gems worth 100 gc (fence value 40 gc, or worn adds +1 to rarity finds) and a pack of Tarot
+        cards
+      label_i18n:
+        es: Gemas por valor de 100 co (valor de venta 40 co, o llevadas otorgan +1 a los hallazgos raros)
+          y una baraja de cartas de Tarot
       roll: 4D6
       grant:
         kind: item
@@ -1674,6 +2026,8 @@ scenarios:
       when: *id002
     - id: scenario.down-at-the-docks.loot.2.1
       label: Blunderbuss and shot
+      label_i18n:
+        es: Trabuco y postas
       roll: 4D6
       grant:
         kind: item
@@ -1689,8 +2043,11 @@ scenarios:
         min: 5
         max: 5
     - id: scenario.down-at-the-docks.loot.3.1
-      label: Medicine chest usable as D6 doses of Healing Herbs or as a one-off re-roll on the Hero Serious Injury
-        table
+      label: Medicine chest usable as D6 doses of Healing Herbs or as a one-off re-roll on the Hero Serious
+        Injury table
+      label_i18n:
+        es: Botiquín utilizable como 1D6 dosis de Hierbas Curativas o como una repetición única en la
+          tabla de Heridas Graves de Héroe
       roll: 4D6
       grant:
         kind: item
@@ -1711,8 +2068,11 @@ scenarios:
         min: 6
         max: 6
     - id: scenario.down-at-the-docks.loot.3.2
-      label: Medicine chest usable as D6 doses of Healing Herbs or as a one-off re-roll on the Hero Serious Injury
-        table
+      label: Medicine chest usable as D6 doses of Healing Herbs or as a one-off re-roll on the Hero Serious
+        Injury table
+      label_i18n:
+        es: Botiquín utilizable como 1D6 dosis de Hierbas Curativas o como una repetición única en la
+          tabla de Heridas Graves de Héroe
       roll: 4D6
       grant:
         kind: item
@@ -1732,6 +2092,8 @@ scenarios:
       when: *id003
     - id: scenario.down-at-the-docks.loot.4.1
       label: Suit of heavy armour
+      label_i18n:
+        es: Armadura pesada
       roll: 4D6
       grant:
         kind: item
@@ -1748,6 +2110,8 @@ scenarios:
         max: 7
     - id: scenario.down-at-the-docks.loot.5.1
       label: Elven Cloak
+      label_i18n:
+        es: Capa Élfica
       roll: 4D6
       grant:
         kind: item
@@ -1764,6 +2128,8 @@ scenarios:
         max: 8
     - id: scenario.down-at-the-docks.loot.6.1
       label: D3 shields and swords
+      label_i18n:
+        es: 1D3 escudos y espadas
       roll: 4D6
       grant:
         kind: item
@@ -1785,6 +2151,8 @@ scenarios:
         max: 9
     - id: scenario.down-at-the-docks.loot.6.2
       label: D3 shields and swords
+      label_i18n:
+        es: 1D3 escudos y espadas
       roll: 4D6
       grant:
         kind: item
@@ -1804,6 +2172,8 @@ scenarios:
       when: *id004
     - id: scenario.down-at-the-docks.loot.7.1
       label: Beer worth 2D6 gc per crate; on a D6 roll of 6 there is one dose of Bugman's Ale
+      label_i18n:
+        es: Cerveza por valor de 2D6 co por caja; con un 6 en 1D6 hay una dosis de Cerveza de Bugman
       roll: 4D6
       grant:
         kind: resource
@@ -1825,6 +2195,8 @@ scenarios:
         max: 11
     - id: scenario.down-at-the-docks.loot.7.2
       label: Beer worth 2D6 gc per crate; on a D6 roll of 6 there is one dose of Bugman's Ale
+      label_i18n:
+        es: Cerveza por valor de 2D6 co por caja; con un 6 en 1D6 hay una dosis de Cerveza de Bugman
       roll: 4D6
       grant:
         kind: item
@@ -1843,8 +2215,11 @@ scenarios:
           modifier: 0
       when: *id005
     - id: scenario.down-at-the-docks.loot.8.1
-      label: Food worth D6 gc per crate, including one clove of Garlic per warband member; on a D6 roll of 6 also
-        one dose of Dark Venom (1-2), Black Lotus (3-4) or Crimson Shade (5-6)
+      label: Food worth D6 gc per crate, including one clove of Garlic per warband member; on a D6 roll
+        of 6 also one dose of Dark Venom (1-2), Black Lotus (3-4) or Crimson Shade (5-6)
+      label_i18n:
+        es: Comida por valor de 1D6 co por caja, incluido un diente de Ajo por miembro de la banda; con
+          un 6 en 1D6 también una dosis de Veneno Oscuro (1-2), Loto Negro (3-4) o Sombra Carmesí (5-6)
       roll: 4D6
       grant:
         kind: resource
@@ -1865,8 +2240,11 @@ scenarios:
         min: 12
         max: 16
     - id: scenario.down-at-the-docks.loot.8.2
-      label: Food worth D6 gc per crate, including one clove of Garlic per warband member; on a D6 roll of 6 also
-        one dose of Dark Venom (1-2), Black Lotus (3-4) or Crimson Shade (5-6)
+      label: Food worth D6 gc per crate, including one clove of Garlic per warband member; on a D6 roll
+        of 6 also one dose of Dark Venom (1-2), Black Lotus (3-4) or Crimson Shade (5-6)
+      label_i18n:
+        es: Comida por valor de 1D6 co por caja, incluido un diente de Ajo por miembro de la banda; con
+          un 6 en 1D6 también una dosis de Veneno Oscuro (1-2), Loto Negro (3-4) o Sombra Carmesí (5-6)
       roll: 4D6
       grant:
         kind: item
@@ -1885,8 +2263,11 @@ scenarios:
           modifier: 0
       when: *id006
     - id: scenario.down-at-the-docks.loot.8.3
-      label: Food worth D6 gc per crate, including one clove of Garlic per warband member; on a D6 roll of 6 also
-        one dose of Dark Venom (1-2), Black Lotus (3-4) or Crimson Shade (5-6)
+      label: Food worth D6 gc per crate, including one clove of Garlic per warband member; on a D6 roll
+        of 6 also one dose of Dark Venom (1-2), Black Lotus (3-4) or Crimson Shade (5-6)
+      label_i18n:
+        es: Comida por valor de 1D6 co por caja, incluido un diente de Ajo por miembro de la banda; con
+          un 6 en 1D6 también una dosis de Veneno Oscuro (1-2), Loto Negro (3-4) o Sombra Carmesí (5-6)
       roll: 4D6
       grant:
         kind: item
@@ -1905,8 +2286,11 @@ scenarios:
           modifier: 0
       when: *id006
     - id: scenario.down-at-the-docks.loot.8.4
-      label: Food worth D6 gc per crate, including one clove of Garlic per warband member; on a D6 roll of 6 also
-        one dose of Dark Venom (1-2), Black Lotus (3-4) or Crimson Shade (5-6)
+      label: Food worth D6 gc per crate, including one clove of Garlic per warband member; on a D6 roll
+        of 6 also one dose of Dark Venom (1-2), Black Lotus (3-4) or Crimson Shade (5-6)
+      label_i18n:
+        es: Comida por valor de 1D6 co por caja, incluido un diente de Ajo por miembro de la banda; con
+          un 6 en 1D6 también una dosis de Veneno Oscuro (1-2), Loto Negro (3-4) o Sombra Carmesí (5-6)
       roll: 4D6
       grant:
         kind: item
@@ -1925,8 +2309,11 @@ scenarios:
           modifier: 0
       when: *id006
     - id: scenario.down-at-the-docks.loot.8.5
-      label: Food worth D6 gc per crate, including one clove of Garlic per warband member; on a D6 roll of 6 also
-        one dose of Dark Venom (1-2), Black Lotus (3-4) or Crimson Shade (5-6)
+      label: Food worth D6 gc per crate, including one clove of Garlic per warband member; on a D6 roll
+        of 6 also one dose of Dark Venom (1-2), Black Lotus (3-4) or Crimson Shade (5-6)
+      label_i18n:
+        es: Comida por valor de 1D6 co por caja, incluido un diente de Ajo por miembro de la banda; con
+          un 6 en 1D6 también una dosis de Veneno Oscuro (1-2), Loto Negro (3-4) o Sombra Carmesí (5-6)
       roll: 4D6
       grant:
         kind: item
@@ -1946,6 +2333,8 @@ scenarios:
       when: *id006
     - id: scenario.down-at-the-docks.loot.9.1
       label: Clothing worth 2D6 gc per crate, including D3 sets of toughened leathers
+      label_i18n:
+        es: Ropa por valor de 2D6 co por caja, incluidos 1D3 juegos de cueros endurecidos
       roll: 4D6
       grant:
         kind: resource
@@ -1967,6 +2356,8 @@ scenarios:
         max: 18
     - id: scenario.down-at-the-docks.loot.9.2
       label: Clothing worth 2D6 gc per crate, including D3 sets of toughened leathers
+      label_i18n:
+        es: Ropa por valor de 2D6 co por caja, incluidos 1D3 juegos de cueros endurecidos
       roll: 4D6
       grant:
         kind: item
@@ -1985,8 +2376,11 @@ scenarios:
           modifier: 0
       when: *id007
     - id: scenario.down-at-the-docks.loot.10.1
-      label: Luxury goods worth 4D6 gc per crate; hidden inside is a Wyrdstone pendulum (1-3) or a set of Cathayan
-        Silks (4-6)
+      label: Luxury goods worth 4D6 gc per crate; hidden inside is a Wyrdstone pendulum (1-3) or a set
+        of Cathayan Silks (4-6)
+      label_i18n:
+        es: Bienes de lujo por valor de 4D6 co por caja; escondido en su interior hay un Péndulo de Piedra
+          Bruja (1-3) o un juego de Sedas de Cathay (4-6)
       roll: 4D6
       grant:
         kind: resource
@@ -2007,8 +2401,11 @@ scenarios:
         min: 19
         max: 19
     - id: scenario.down-at-the-docks.loot.10.2
-      label: Luxury goods worth 4D6 gc per crate; hidden inside is a Wyrdstone pendulum (1-3) or a set of Cathayan
-        Silks (4-6)
+      label: Luxury goods worth 4D6 gc per crate; hidden inside is a Wyrdstone pendulum (1-3) or a set
+        of Cathayan Silks (4-6)
+      label_i18n:
+        es: Bienes de lujo por valor de 4D6 co por caja; escondido en su interior hay un Péndulo de Piedra
+          Bruja (1-3) o un juego de Sedas de Cathay (4-6)
       roll: 4D6
       grant:
         kind: resource
@@ -2027,8 +2424,11 @@ scenarios:
           modifier: 0
       when: *id008
     - id: scenario.down-at-the-docks.loot.10.3
-      label: Luxury goods worth 4D6 gc per crate; hidden inside is a Wyrdstone pendulum (1-3) or a set of Cathayan
-        Silks (4-6)
+      label: Luxury goods worth 4D6 gc per crate; hidden inside is a Wyrdstone pendulum (1-3) or a set
+        of Cathayan Silks (4-6)
+      label_i18n:
+        es: Bienes de lujo por valor de 4D6 co por caja; escondido en su interior hay un Péndulo de Piedra
+          Bruja (1-3) o un juego de Sedas de Cathay (4-6)
       roll: 4D6
       grant:
         kind: item
@@ -2048,6 +2448,8 @@ scenarios:
       when: *id008
     - id: scenario.down-at-the-docks.loot.11.1
       label: Blackpowder worth 5D6 per crate, containing one pack of Superior Blackpowder
+      label_i18n:
+        es: Pólvora Negra por valor de 5D6 por caja, que contiene un paquete de Pólvora Negra Superior
       roll: 4D6
       grant:
         kind: item
@@ -2069,6 +2471,8 @@ scenarios:
         max: 20
     - id: scenario.down-at-the-docks.loot.12.1
       label: D3 Crossbows each with Hunting Bolts (same as Hunting Arrows) for one game
+      label_i18n:
+        es: 1D3 ballestas, cada una con Virote de Caza (igual que Flechas de Caza) para una partida
       roll: 4D6
       grant:
         kind: item
@@ -2090,6 +2494,8 @@ scenarios:
         max: 21
     - id: scenario.down-at-the-docks.loot.12.2
       label: D3 Crossbows each with Hunting Bolts (same as Hunting Arrows) for one game
+      label_i18n:
+        es: 1D3 ballestas, cada una con Virote de Caza (igual que Flechas de Caza) para una partida
       roll: 4D6
       grant:
         kind: item
@@ -2109,6 +2515,8 @@ scenarios:
       when: *id009
     - id: scenario.down-at-the-docks.loot.13.1
       label: D3 Elven bows
+      label_i18n:
+        es: 1D3 arcos élficos
       roll: 4D6
       grant:
         kind: item
@@ -2130,6 +2538,8 @@ scenarios:
         max: 22
     - id: scenario.down-at-the-docks.loot.14.1
       label: Hunting Rifle
+      label_i18n:
+        es: Rifle de Caza
       roll: 4D6
       grant:
         kind: item
@@ -2146,6 +2556,8 @@ scenarios:
         max: 23
     - id: scenario.down-at-the-docks.loot.15.1
       label: Suit of Gromril armour
+      label_i18n:
+        es: Armadura de Gromril
       roll: 4D6
       grant:
         kind: item
@@ -2166,17 +2578,30 @@ scenarios:
   - id: scenario.the-item-lost.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: If the warband that Nicodemus has hired successfully retrieves the wand, they are considered to have found
-      two additional Wyrdstone shards as their payment.
+    rule: If the warband that Nicodemus has hired successfully retrieves the wand, they are considered
+      to have found two additional Wyrdstone shards as their payment.
+    rule_i18n:
+      es: Si la banda que Nicodemo contrató recupera con éxito la varita, se considera que ha encontrado
+        dos fragmentos adicionales de Piedra Bruja como pago.
     quantity_input: true
   - id: scenario.the-item-lost.loot
     kind: loot_table
-    rule: The Wand of Phyrros allows the wielder to use the spell Fires of U'Zhul once per game (automatically successful,
-      no need to be a spell caster, but the wielder must be a Hero); it may be sold for 100 gc.
+    rule: The Wand of Phyrros allows the wielder to use the spell Fires of U'Zhul once per game (automatically
+      successful, no need to be a spell caster, but the wielder must be a Hero); it may be sold for 100
+      gc.
+    rule_i18n:
+      es: La Varita de Phyrros permite a su portador usar el hechizo Fuegos de U'Zhul una vez por partida
+        (tiene éxito automáticamente, sin necesidad de ser lanzador de hechizos, pero el portador debe
+        ser un Héroe); puede venderse por 100 co.
     contents:
     - id: scenario.the-item-lost.loot.1
       label: The Wand of Phyrros allows the wielder to use the spell Fires of U'Zhul once per game (automatically
-        successful, no need to be a spell caster, but the wielder must be a Hero); it may be sold for 100 gc.
+        successful, no need to be a spell caster, but the wielder must be a Hero); it may be sold for
+        100 gc.
+      label_i18n:
+        es: La Varita de Phyrros permite a su portador usar el hechizo Fuegos de U'Zhul una vez por partida
+          (tiene éxito automáticamente, sin necesidad de ser lanzador de hechizos, pero el portador debe
+          ser un Héroe); puede venderse por 100 co.
       roll: manual
       grant:
         kind: special
@@ -2187,10 +2612,16 @@ scenarios:
   rewards:
   - id: scenario.the-watchers.loot
     kind: loot_table
-    rule: Players may roll once on the table for each Swag counter they still possess at the end of the game.
+    rule: Players may roll once on the table for each Swag counter they still possess at the end of the
+      game.
+    rule_i18n:
+      es: Los jugadores pueden tirar una vez en la tabla por cada contador de Botín que sigan poseyendo
+        al final de la partida.
     contents:
     - id: scenario.the-watchers.loot.1.1
       label: Lucky Charm
+      label_i18n:
+        es: Amuleto de la Suerte
       roll: D6
       grant:
         kind: item
@@ -2207,6 +2638,8 @@ scenarios:
         max: 1
     - id: scenario.the-watchers.loot.2.1
       label: Tears of Shallya
+      label_i18n:
+        es: Lágrimas de Shallya
       roll: D6
       grant:
         kind: special
@@ -2223,6 +2656,8 @@ scenarios:
         max: 2
     - id: scenario.the-watchers.loot.3.1
       label: Crimson Shade
+      label_i18n:
+        es: Sombra Carmesí
       roll: D6
       grant:
         kind: item
@@ -2239,6 +2674,8 @@ scenarios:
         max: 3
     - id: scenario.the-watchers.loot.4.1
       label: Dark Venom
+      label_i18n:
+        es: Veneno Oscuro
       roll: D6
       grant:
         kind: item
@@ -2255,6 +2692,8 @@ scenarios:
         max: 4
     - id: scenario.the-watchers.loot.5.1
       label: Cathayan Silks
+      label_i18n:
+        es: Sedas de Cathay
       roll: D6
       grant:
         kind: special
@@ -2271,6 +2710,8 @@ scenarios:
         max: 5
     - id: scenario.the-watchers.loot.6.1
       label: Tome of Magic
+      label_i18n:
+        es: Tomo de Magia
       roll: D6
       grant:
         kind: item
@@ -2290,12 +2731,18 @@ scenarios:
   rewards:
   - id: scenario.encampment-raid.loot
     kind: loot_table
-    rule: If the attacker succeeds in capturing the camp he may either destroy it or occupy it, and claims the defender's
-      stash for his own; the defender must then roll for a new camp.
+    rule: If the attacker succeeds in capturing the camp he may either destroy it or occupy it, and claims
+      the defender's stash for his own; the defender must then roll for a new camp.
+    rule_i18n:
+      es: Si el atacante logra capturar el campamento puede destruirlo u ocuparlo, y se queda con la reserva
+        del defensor; el defensor debe entonces tirar por un campamento nuevo.
     contents:
     - id: scenario.encampment-raid.loot.1
-      label: If the attacker succeeds in capturing the camp he may either destroy it or occupy it, and claims the
-        defender's stash for his own; the defender must then roll for a new camp.
+      label: If the attacker succeeds in capturing the camp he may either destroy it or occupy it, and
+        claims the defender's stash for his own; the defender must then roll for a new camp.
+      label_i18n:
+        es: Si el atacante logra capturar el campamento puede destruirlo u ocuparlo, y se queda con la
+          reserva del defensor; el defensor debe entonces tirar por un campamento nuevo.
       roll: manual
       grant:
         kind: special
@@ -2307,17 +2754,26 @@ scenarios:
   - id: scenario.the-rats-lair.income
     kind: resource
     resource: gold_crowns
-    rule: Each warband earns 5 gold crowns for each vermin it takes Out of Action (the head of each rat killed).
+    rule: Each warband earns 5 gold crowns for each vermin it takes Out of Action (the head of each rat
+      killed).
+    rule_i18n:
+      es: Cada banda gana 5 coronas de oro por cada alimaña que ponga Fuera de Combate (la cabeza de cada
+        rata muerta).
     quantity_input: true
 - scenario_id: scenario.battle-for-the-farm
   rewards:
   - id: scenario.battle-for-the-farm.loot
     kind: loot_table
-    rule: At the end of a turn, a model inside a farm building that has taken no other action may loot it once per
-      building.
+    rule: At the end of a turn, a model inside a farm building that has taken no other action may loot
+      it once per building.
+    rule_i18n:
+      es: Al final de una vuelta, una miniatura dentro de un edificio de granja que no haya realizado
+        ninguna otra acción puede saquearlo, una vez por edificio.
     contents:
     - id: scenario.battle-for-the-farm.loot.1.1
       label: Nothing of value
+      label_i18n:
+        es: Nada de valor
       roll: D6
       grant:
         kind: special
@@ -2334,6 +2790,8 @@ scenarios:
         max: 1
     - id: scenario.battle-for-the-farm.loot.2.1
       label: Valuables worth 2D6 gold crowns
+      label_i18n:
+        es: Objetos valiosos por valor de 2D6 coronas de oro
       roll: D6
       grant:
         kind: resource
@@ -2355,6 +2813,8 @@ scenarios:
         max: 5
     - id: scenario.battle-for-the-farm.loot.3.1
       label: A single shard of wyrdstone
+      label_i18n:
+        es: Un único fragmento de piedra bruja
       roll: D6
       grant:
         kind: resource
@@ -2375,77 +2835,120 @@ scenarios:
   - id: scenario.brigands-in-the-pasturelands.income
     kind: resource
     resource: gold_crowns
-    rule: If the attackers win they gain D6 gold crowns for each Henchman they put out of action and D6 x 5 gold
-      crowns for each Hero put out of action; in a campaign, if a Hero rolls a Captured result on the Serious Injuries
-      chart the Baron pays an additional D6 x 10 gold crowns for that Hero.
+    rule: If the attackers win they gain D6 gold crowns for each Henchman they put out of action and D6
+      x 5 gold crowns for each Hero put out of action; in a campaign, if a Hero rolls a Captured result
+      on the Serious Injuries chart the Baron pays an additional D6 x 10 gold crowns for that Hero.
+    rule_i18n:
+      es: Si los atacantes ganan, obtienen 1D6 coronas de oro por cada Secuaz que pongan fuera de combate
+        y 1D6×5 coronas de oro por cada Héroe puesto fuera de combate; en campaña, si un Héroe saca un
+        resultado de Capturado en la tabla de Heridas Graves, el Barón paga 1D6×10 coronas de oro adicionales
+        por ese Héroe.
     quantity_input: true
 - scenario_id: scenario.wolf-hunt
   rewards:
   - id: scenario.wolf-hunt.income
     kind: resource
     resource: gold_crowns
-    rule: The baron rewards any warband a bounty of 10 gold crowns for each slain wolf (there is no reward for slaying
-      a bear).
+    rule: The baron rewards any warband a bounty of 10 gold crowns for each slain wolf (there is no reward
+      for slaying a bear).
+    rule_i18n:
+      es: El barón recompensa a cualquier banda con una recompensa de 10 coronas de oro por cada lobo
+        abatido (no hay recompensa por matar un oso).
     quantity_input: true
 - scenario_id: scenario.protect-hornsbys-ferry
   rewards:
   - id: scenario.protect-hornsbys-ferry.income
     kind: resource
     resource: gold_crowns
-    rule: In addition to normal exploration money, if the attackers win the scenario they receive 3D6 gc each (rolled
-      separately per warband). Any attacking warband that has a warrior taking part in roughing up the Hornsbys
-      receives 2D6 gc whether they win or not. If the defenders win and the Hornsbys have NOT been roughed up, the
-      defenders receive 5D6 gc from the Hornsbys (subtract 2D6 gc if the win came from the turn limit, representing
-      the patrol's fees). If the defenders win but the Hornsbys were roughed up they receive no pay.
+    rule: In addition to normal exploration money, if the attackers win the scenario they receive 3D6
+      gc each (rolled separately per warband). Any attacking warband that has a warrior taking part in
+      roughing up the Hornsbys receives 2D6 gc whether they win or not. If the defenders win and the Hornsbys
+      have NOT been roughed up, the defenders receive 5D6 gc from the Hornsbys (subtract 2D6 gc if the
+      win came from the turn limit, representing the patrol's fees). If the defenders win but the Hornsbys
+      were roughed up they receive no pay.
+    rule_i18n:
+      es: Además del dinero de exploración normal, si los atacantes ganan el escenario reciben 3D6 co
+        cada uno (tiran por separado por banda). Cualquier banda atacante que tenga un guerrero participando
+        en aporrear a los Hornsby recibe 2D6 co, gane o pierda. Si los defensores ganan y los Hornsby
+        NO han sido aporreados, los defensores reciben 5D6 co de los Hornsby (resta 2D6 co si la victoria
+        vino del límite de vueltas, en concepto de los honorarios de la patrulla). Si los defensores ganan
+        pero los Hornsby fueron aporreados, no reciben pago alguno.
     quantity_input: true
 - scenario_id: scenario.stop-thief
   rewards:
   - id: scenario.stop-thief.income
     kind: resource
     resource: gold_crowns
-    rule: If the defending warband wins, the Thief hocks the stolen items (half value, as usual for selling equipment)
-      and gives the proceeds to his warband. If the attackers win they get all their items back and additionally
-      find 2D6 gc worth of valuables the Thief stole from other victims.
+    rule: If the defending warband wins, the Thief hocks the stolen items (half value, as usual for selling
+      equipment) and gives the proceeds to his warband. If the attackers win they get all their items
+      back and additionally find 2D6 gc worth of valuables the Thief stole from other victims.
+    rule_i18n:
+      es: Si gana la banda defensora, el Ladrón empeña los objetos robados (la mitad de su valor, como
+        es habitual al vender equipo) y entrega lo recaudado a su banda. Si ganan los atacantes, recuperan
+        todos sus objetos y además encuentran 2D6 co en objetos valiosos que el Ladrón robó a otras víctimas.
     quantity_input: true
 - scenario_id: scenario.hunt-the-heretic
   rewards:
   - id: scenario.hunt-the-heretic.income
     kind: resource
     resource: gold_crowns
-    rule: If the Witch Hunter's warband wins they gain D6 x 15 gold crowns as payment and D3 vials of Blessed Water.
-      If the Warlock's warband wins he concocts D3 doses of any poison or drug of their choice.
+    rule: If the Witch Hunter's warband wins they gain D6 x 15 gold crowns as payment and D3 vials of
+      Blessed Water. If the Warlock's warband wins he concocts D3 doses of any poison or drug of their
+      choice.
+    rule_i18n:
+      es: Si gana la banda del Cazador de Brujas, gana 1D6×15 coronas de oro como pago y 1D3 viales de
+        Agua Bendita. Si gana la banda del Brujo, este prepara 1D3 dosis de cualquier veneno o droga a
+        su elección.
     quantity_input: true
 - scenario_id: scenario.river-watch
   rewards:
   - id: scenario.river-watch.income
     kind: resource
     resource: gold_crowns
-    rule: If the defender wins they are paid D6 x 20 gold crowns plus 5 gold crowns extra for each enemy they take
-      out of action.
+    rule: If the defender wins they are paid D6 x 20 gold crowns plus 5 gold crowns extra for each enemy
+      they take out of action.
+    rule_i18n:
+      es: Si gana el defensor, se le paga 1D6×20 coronas de oro más 5 coronas de oro extra por cada enemigo
+        que ponga fuera de combate.
     quantity_input: true
 - scenario_id: scenario.night-of-the-dead
   rewards:
   - id: scenario.night-of-the-dead.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: A pile of wyrdstone sits in an 8" circle in the centre of the board; the pile is brought to safety as
-      D6+2 wyrdstone. Each time a model takes wyrdstone from the pile, D3+1 Zombies per warband are generated 8"
-      away around the pile.
+    rule: A pile of wyrdstone sits in an 8" circle in the centre of the board; the pile is brought to
+      safety as D6+2 wyrdstone. Each time a model takes wyrdstone from the pile, D3+1 Zombies per warband
+      are generated 8" away around the pile.
+    rule_i18n:
+      es: Un montón de piedra bruja se sitúa en un círculo de 8" en el centro del tablero; el montón se
+        lleva a salvo como 1D6+2 de piedra bruja. Cada vez que una miniatura toma piedra bruja del montón,
+        se generan 1D3+1 Zombis por banda a 8" alrededor del montón.
     quantity_input: true
 - scenario_id: scenario.happy-harpy-hunting-grounds
   rewards:
   - id: scenario.happy-harpy-hunting-grounds.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: 'The nest contains a number of wyrdstone shards: roll D3 at set-up to determine how many are included.'
+    rule: 'The nest contains a number of wyrdstone shards: roll D3 at set-up to determine how many are
+      included.'
+    rule_i18n:
+      es: 'El nido contiene una cantidad de fragmentos de piedra bruja: tira 1D3 en el despliegue para
+        determinar cuántos contiene.'
     quantity_input: true
   - id: scenario.happy-harpy-hunting-grounds.loot
     kind: loot_table
-    rule: The warband that does not rout is the winner and may roll on the nest contents chart if all three Harpies
-      were taken out of action first; otherwise no one receives the rewards. Each item is rolled for separately.
+    rule: The warband that does not rout is the winner and may roll on the nest contents chart if all
+      three Harpies were taken out of action first; otherwise no one receives the rewards. Each item is
+      rolled for separately.
+    rule_i18n:
+      es: La banda que no huya es la ganadora y puede tirar en la tabla de contenidos del nido si primero
+        se ponen fuera de combate a las tres Arpías; de lo contrario, nadie recibe las recompensas. Cada
+        objeto se tira por separado.
     contents:
     - id: scenario.happy-harpy-hunting-grounds.loot.1.1
       label: 2D6 gc.
+      label_i18n:
+        es: 2D6 co.
       roll: 5+
       grant:
         kind: resource
@@ -2463,6 +2966,8 @@ scenarios:
         target: 5
     - id: scenario.happy-harpy-hunting-grounds.loot.2.1
       label: Jeweled Dagger.
+      label_i18n:
+        es: Daga enjoyada.
       roll: 3+
       grant:
         kind: item
@@ -2475,6 +2980,8 @@ scenarios:
         target: 3
     - id: scenario.happy-harpy-hunting-grounds.loot.3.1
       label: Heavy Armour.
+      label_i18n:
+        es: Armadura pesada.
       roll: 5+
       grant:
         kind: item
@@ -2487,6 +2994,8 @@ scenarios:
         target: 5
     - id: scenario.happy-harpy-hunting-grounds.loot.4.1
       label: Ithilmar Sword.
+      label_i18n:
+        es: Espada de Ithilmar.
       roll: 6+
       grant:
         kind: item
@@ -2499,6 +3008,8 @@ scenarios:
         target: 6
     - id: scenario.happy-harpy-hunting-grounds.loot.5.1
       label: Gems worth 30 gc.
+      label_i18n:
+        es: Gemas por valor de 30 co.
       roll: 3+
       grant:
         kind: resource
@@ -2511,6 +3022,8 @@ scenarios:
         target: 3
     - id: scenario.happy-harpy-hunting-grounds.loot.6.1
       label: Wolfcloak.
+      label_i18n:
+        es: Manto de lobo.
       roll: 6+
       grant:
         kind: item
@@ -2522,8 +3035,11 @@ scenarios:
           sides: 6
         target: 6
     - id: scenario.happy-harpy-hunting-grounds.loot.7.1
-      label: 'Straggler: an unfortunate captive who may aid the warband in its exploration phase either this game
-        or next.'
+      label: 'Straggler: an unfortunate captive who may aid the warband in its exploration phase either
+        this game or next.'
+      label_i18n:
+        es: 'Retrasado: un cautivo desdichado que puede ayudar a la banda en su fase de exploración en
+          esta partida o en la siguiente.'
       roll: 5+
       grant:
         kind: special
@@ -2536,6 +3052,8 @@ scenarios:
         target: 5
     - id: scenario.happy-harpy-hunting-grounds.loot.8.1
       label: Lucky Charm.
+      label_i18n:
+        es: Amuleto de la Suerte.
       roll: 3+
       grant:
         kind: item
@@ -2548,6 +3066,8 @@ scenarios:
         target: 3
     - id: scenario.happy-harpy-hunting-grounds.loot.9.1
       label: D3 Shields.
+      label_i18n:
+        es: 1D3 escudos.
       roll: 4+
       grant:
         kind: item
@@ -2565,6 +3085,8 @@ scenarios:
         target: 4
     - id: scenario.happy-harpy-hunting-grounds.loot.10.1
       label: D3 Helmets.
+      label_i18n:
+        es: 1D3 yelmos.
       roll: 5+
       grant:
         kind: item
@@ -2582,6 +3104,8 @@ scenarios:
         target: 5
     - id: scenario.happy-harpy-hunting-grounds.loot.11.1
       label: D3 Swords.
+      label_i18n:
+        es: 1D3 espadas.
       roll: 6+
       grant:
         kind: item
@@ -2603,41 +3127,64 @@ scenarios:
   - id: scenario.round-up-at-the-mordheim-corral.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: 'The boars have swallowed the wyrdstone. Each boar must be killed before it can be searched: roll D6,
-      on 1-3 the warrior cannot locate the stomach and may try again next turn, on 4-6 he rolls D3 to determine
-      how many shards are found. A warrior carrying wyrdstone who is killed, stunned or knocked down drops counters
-      where he fell.'
+    rule: 'The boars have swallowed the wyrdstone. Each boar must be killed before it can be searched:
+      roll D6, on 1-3 the warrior cannot locate the stomach and may try again next turn, on 4-6 he rolls
+      D3 to determine how many shards are found. A warrior carrying wyrdstone who is killed, stunned or
+      knocked down drops counters where he fell.'
+    rule_i18n:
+      es: 'Los jabalíes se han tragado la piedra bruja. Cada jabalí debe morir antes de poder registrarlo:
+        tira 1D6; con un 1-3 el guerrero no localiza el estómago y puede intentarlo de nuevo en la siguiente
+        vuelta; con un 4-6 tira 1D3 para determinar cuántos fragmentos encuentra. Un guerrero que lleve
+        piedra bruja y sea muerto, aturdido o derribado suelta los contadores donde cayó.'
     quantity_input: true
 - scenario_id: scenario.the-recipe
   rewards:
   - id: scenario.the-recipe.income
     kind: resource
     resource: gold_crowns
-    rule: 'The winning warband is considered to have captured Geefer: turning him in is worth 5D6 gc (if two or
-      more warbands share the win they must decide which one turns him in). Pies that have not been ruined may also
-      be turned in: worth 1 gc each for a non-winning warband, or half that amount rounded up for the winning warband.
-      A winning warband also gets any pies held by its warriors or still in the cart at the end of the game.'
+    rule: 'The winning warband is considered to have captured Geefer: turning him in is worth 5D6 gc (if
+      two or more warbands share the win they must decide which one turns him in). Pies that have not
+      been ruined may also be turned in: worth 1 gc each for a non-winning warband, or half that amount
+      rounded up for the winning warband. A winning warband also gets any pies held by its warriors or
+      still in the cart at the end of the game.'
+    rule_i18n:
+      es: 'Se considera que la banda ganadora ha capturado a Geefer: entregarlo vale 5D6 co (si dos o
+        más bandas comparten la victoria deben decidir cuál lo entrega). Los pasteles que no se hayan
+        estropeado también pueden entregarse: valen 1 co cada uno para una banda no ganadora, o la mitad
+        de esa cantidad redondeada hacia arriba para la banda ganadora. Una banda ganadora también se
+        queda con los pasteles que lleven sus guerreros o que sigan en el carro al final de la partida.'
     quantity_input: true
 - scenario_id: scenario.ambush-surrounded
   rewards:
   - id: scenario.ambush-surrounded.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: The defender starts the battle carrying D6 pieces of wyrdstone, but never more than the number of Heroes
-      in the warband. The defending warband gains all the wyrdstone it was carrying at the beginning, minus the
-      number of its own Heroes taken Out of Action during the game, down to a minimum of zero. The attacking warband
-      gains one shard for each enemy Hero it takes Out of Action, up to the number of shards the opposing warband
-      was carrying at the start.
+    rule: The defender starts the battle carrying D6 pieces of wyrdstone, but never more than the number
+      of Heroes in the warband. The defending warband gains all the wyrdstone it was carrying at the beginning,
+      minus the number of its own Heroes taken Out of Action during the game, down to a minimum of zero.
+      The attacking warband gains one shard for each enemy Hero it takes Out of Action, up to the number
+      of shards the opposing warband was carrying at the start.
+    rule_i18n:
+      es: El defensor comienza la batalla llevando 1D6 fragmentos de piedra bruja, pero nunca más que
+        el número de Héroes de la banda. La banda defensora gana toda la piedra bruja que llevaba al comienzo,
+        menos el número de sus propios Héroes puestos Fuera de Combate durante la partida, hasta un mínimo
+        de cero. La banda atacante gana un fragmento por cada Héroe enemigo que ponga Fuera de Combate,
+        hasta el número de fragmentos que la banda rival llevaba al inicio.
     quantity_input: true
 - scenario_id: scenario.defend-the-village
   rewards:
   - id: scenario.defend-the-village.loot
     kind: loot_table
-    rule: The winning player rolls D6 to see what reward the villagers provide (defender) or what loot is squeezed
-      from them (attacker). If the attacker won he adds +1 to the roll.
+    rule: The winning player rolls D6 to see what reward the villagers provide (defender) or what loot
+      is squeezed from them (attacker). If the attacker won he adds +1 to the roll.
+    rule_i18n:
+      es: El jugador ganador tira 1D6 para ver qué recompensa aportan los aldeanos (defensor) o qué botín
+        se les extorsiona (atacante). Si ganó el atacante, suma +1 a la tirada.
     contents:
     - id: scenario.defend-the-village.loot.1.1
       label: Nothing. The villagers were on their last legs and tricked the defenders about the hire fee.
+      label_i18n:
+        es: Nada. Los aldeanos estaban en sus últimas y engañaron a los defensores sobre el pago acordado.
       roll: D6
       grant:
         kind: special
@@ -2654,6 +3201,8 @@ scenarios:
         max: 2
     - id: scenario.defend-the-village.loot.2.1
       label: 2D6 gc worth of food, personal possessions and tools.
+      label_i18n:
+        es: 2D6 co en comida, posesiones personales y herramientas.
       roll: D6
       grant:
         kind: resource
@@ -2675,6 +3224,8 @@ scenarios:
         max: 4
     - id: scenario.defend-the-village.loot.3.1
       label: 1D3 Wyrdstone shards.
+      label_i18n:
+        es: 1D3 fragmentos de piedra bruja.
       roll: D6
       grant:
         kind: resource
@@ -2699,12 +3250,19 @@ scenarios:
   rewards:
   - id: scenario.dont-wake-the-giant.loot
     kind: loot_table
-    rule: The giant holds two treasure chests and a bag of gold. A model reaching a chest must pass an Initiative
-      test to steal it; taking the bag requires a -1 Initiative test. Carrying the chest follows the Hidden Treasure
-      scenario rules. Each treasure is rolled on its own table.
+    rule: The giant holds two treasure chests and a bag of gold. A model reaching a chest must pass an
+      Initiative test to steal it; taking the bag requires a -1 Initiative test. Carrying the chest follows
+      the Hidden Treasure scenario rules. Each treasure is rolled on its own table.
+    rule_i18n:
+      es: El gigante porta dos cofres del tesoro y un saco de oro. Una miniatura que llegue a un cofre
+        debe superar un chequeo de Iniciativa para robarlo; llevarse el saco exige un chequeo de Iniciativa
+        con -1. Portar el cofre sigue las reglas del escenario Tesoro Escondido. Cada tesoro se tira en
+        su propia tabla.
     contents:
     - id: scenario.dont-wake-the-giant.loot.1.1
       label: 'Chest: 3D6 gold crowns.'
+      label_i18n:
+        es: 'Cofre: 3D6 coronas de oro.'
       roll: automatic
       grant:
         kind: resource
@@ -2717,6 +3275,8 @@ scenarios:
         modifier: 0
     - id: scenario.dont-wake-the-giant.loot.1.2
       label: 'Chest: 3D6 gold crowns.'
+      label_i18n:
+        es: 'Cofre: 3D6 coronas de oro.'
       roll: automatic
       grant:
         kind: item
@@ -2729,6 +3289,8 @@ scenarios:
         modifier: 0
     - id: scenario.dont-wake-the-giant.loot.2.1
       label: 'Chest: D3 pieces of wyrdstone.'
+      label_i18n:
+        es: 'Cofre: 1D3 fragmentos de piedra bruja.'
       roll: 5+
       grant:
         kind: resource
@@ -2746,6 +3308,8 @@ scenarios:
         target: 5
     - id: scenario.dont-wake-the-giant.loot.2.2
       label: 'Chest: D3 pieces of wyrdstone.'
+      label_i18n:
+        es: 'Cofre: 1D3 fragmentos de piedra bruja.'
       roll: 5+
       grant:
         kind: item
@@ -2763,6 +3327,8 @@ scenarios:
         target: 5
     - id: scenario.dont-wake-the-giant.loot.3.1
       label: 'Chest: D3 gems worth 10 gc each.'
+      label_i18n:
+        es: 'Cofre: 1D3 gemas por valor de 10 co cada una.'
       roll: 5+
       grant:
         kind: resource
@@ -2780,6 +3346,8 @@ scenarios:
         target: 5
     - id: scenario.dont-wake-the-giant.loot.3.2
       label: 'Chest: D3 gems worth 10 gc each.'
+      label_i18n:
+        es: 'Cofre: 1D3 gemas por valor de 10 co cada una.'
       roll: 5+
       grant:
         kind: item
@@ -2797,6 +3365,8 @@ scenarios:
         target: 5
     - id: scenario.dont-wake-the-giant.loot.4.1
       label: 'Chest: Mordheim map.'
+      label_i18n:
+        es: 'Cofre: Mapa de Mordheim.'
       roll: 4+
       grant:
         kind: item
@@ -2809,6 +3379,8 @@ scenarios:
         target: 4
     - id: scenario.dont-wake-the-giant.loot.5.1
       label: 'Chest: Suit of light armour.'
+      label_i18n:
+        es: 'Cofre: Armadura ligera.'
       roll: 4+
       grant:
         kind: item
@@ -2821,6 +3393,8 @@ scenarios:
         target: 4
     - id: scenario.dont-wake-the-giant.loot.6.1
       label: 'Chest: Lucky charm.'
+      label_i18n:
+        es: 'Cofre: Amuleto de la Suerte.'
       roll: 3+
       grant:
         kind: item
@@ -2833,6 +3407,8 @@ scenarios:
         target: 3
     - id: scenario.dont-wake-the-giant.loot.7.1
       label: 'Bag of gold: D6 x 10 gold crowns.'
+      label_i18n:
+        es: 'Saco de oro: 1D6×10 coronas de oro.'
       roll: automatic
       grant:
         kind: resource
@@ -2845,6 +3421,8 @@ scenarios:
         modifier: 0
     - id: scenario.dont-wake-the-giant.loot.8.1
       label: 'Bag of gold: D3 gems worth 10 gc each.'
+      label_i18n:
+        es: 'Saco de oro: 1D3 gemas por valor de 10 co cada una.'
       roll: 5+
       grant:
         kind: resource
@@ -2865,11 +3443,16 @@ scenarios:
   rewards:
   - id: scenario.haunted-treasure-archive-pestilens.loot
     kind: loot_table
-    rule: Whoever recovers the chest rolls on the contents chart after the game; each item is rolled for separately,
-      apart from the gold crowns which are always found.
+    rule: Whoever recovers the chest rolls on the contents chart after the game; each item is rolled for
+      separately, apart from the gold crowns which are always found.
+    rule_i18n:
+      es: Quien recupere el cofre tira en la tabla de contenidos después de la partida; cada objeto se
+        tira por separado, salvo las coronas de oro, que siempre se encuentran.
     contents:
     - id: scenario.haunted-treasure-archive-pestilens.loot.1.1
       label: D3 pieces of wyrdstone.
+      label_i18n:
+        es: 1D3 fragmentos de piedra bruja.
       roll: 4+
       grant:
         kind: resource
@@ -2887,6 +3470,8 @@ scenarios:
         target: 4
     - id: scenario.haunted-treasure-archive-pestilens.loot.2.1
       label: 5D6 x 5 gc.
+      label_i18n:
+        es: 5D6×5 co.
       roll: automatic
       grant:
         kind: resource
@@ -2899,6 +3484,8 @@ scenarios:
         modifier: 0
     - id: scenario.haunted-treasure-archive-pestilens.loot.3.1
       label: Holy relic.
+      label_i18n:
+        es: Reliquia sagrada.
       roll: 5+
       grant:
         kind: item
@@ -2911,6 +3498,8 @@ scenarios:
         target: 5
     - id: scenario.haunted-treasure-archive-pestilens.loot.4.1
       label: Suit of heavy armour.
+      label_i18n:
+        es: Armadura pesada.
       roll: 5+
       grant:
         kind: item
@@ -2923,6 +3512,8 @@ scenarios:
         target: 5
     - id: scenario.haunted-treasure-archive-pestilens.loot.5.1
       label: D3 gems worth 10 gc each.
+      label_i18n:
+        es: 1D3 gemas por valor de 10 co cada una.
       roll: 4+
       grant:
         kind: resource
@@ -2940,6 +3531,8 @@ scenarios:
         target: 4
     - id: scenario.haunted-treasure-archive-pestilens.loot.6.1
       label: Elven cloak.
+      label_i18n:
+        es: Capa élfica.
       roll: 5+
       grant:
         kind: item
@@ -2952,6 +3545,8 @@ scenarios:
         target: 5
     - id: scenario.haunted-treasure-archive-pestilens.loot.7.1
       label: Holy tome.
+      label_i18n:
+        es: Tomo sagrado.
       roll: 5+
       grant:
         kind: item
@@ -2964,6 +3559,8 @@ scenarios:
         target: 5
     - id: scenario.haunted-treasure-archive-pestilens.loot.8.1
       label: A magical artefact.
+      label_i18n:
+        es: Un artefacto mágico.
       roll: 5+
       grant:
         kind: special
@@ -2980,21 +3577,36 @@ scenarios:
   - id: scenario.raids.income
     kind: resource
     resource: gold_crowns
-    rule: 'After the raid the Jewelleries are sold: multiply the total number of Jewelleries by five to get the
-      gold crowns paid. Warriors may also capture slaves: three Inhabitants or one Townsman put out of action count
-      as one Slave, recorded on the roster and usable in a later post-battle phase to add one die to the warband
-      dice pool (then crossed off). After the raid roll D6 minus 1 per Slave captured plus 1 per building set on
-      fire; on 1 or less the warband was traced and ambushed: randomly roll D6 Henchmen and roll on the Injury table
-      for each.'
+    rule: 'After the raid the Jewelleries are sold: multiply the total number of Jewelleries by five to
+      get the gold crowns paid. Warriors may also capture slaves: three Inhabitants or one Townsman put
+      out of action count as one Slave, recorded on the roster and usable in a later post-battle phase
+      to add one die to the warband dice pool (then crossed off). After the raid roll D6 minus 1 per Slave
+      captured plus 1 per building set on fire; on 1 or less the warband was traced and ambushed: randomly
+      roll D6 Henchmen and roll on the Injury table for each.'
+    rule_i18n:
+      es: 'Tras la incursión se venden las Joyerías: multiplica el número total de Joyerías por cinco
+        para obtener las coronas de oro pagadas. Los guerreros también pueden capturar esclavos: tres
+        Habitantes o un Paisano puestos fuera de combate cuentan como un Esclavo, anotado en la plantilla
+        y utilizable en una fase de posbatalla posterior para añadir un dado a la pool de dados de la
+        banda (y tacharlo después). Tras la incursión tira 1D6 menos 1 por Esclavo capturado más 1 por
+        edificio incendiado; con 1 o menos, la banda fue rastreada y emboscada: tira 1D6 Secuaces al azar
+        y tira en la tabla de Heridas por cada uno.'
     quantity_input: true
   - id: scenario.raids.loot
     kind: loot_table
-    rule: The raiders search the settlement buildings (one Hero or two Henchmen must enter and spend the next turn
-      searching an empty building). Roll on the Search table, applying the modifier from the Townsfolk table; a
-      roll of 1 always fails. Jewelleries are later sold at 5 gc each.
+    rule: The raiders search the settlement buildings (one Hero or two Henchmen must enter and spend the
+      next turn searching an empty building). Roll on the Search table, applying the modifier from the
+      Townsfolk table; a roll of 1 always fails. Jewelleries are later sold at 5 gc each.
+    rule_i18n:
+      es: Los asaltantes registran los edificios del asentamiento (un Héroe o dos Secuaces deben entrar
+        y gastar la siguiente vuelta registrando un edificio vacío). Tira en la tabla de Búsqueda aplicando
+        el modificador de la tabla de Paisanos; con un resultado de 1 siempre falla. Las Joyerías se venden
+        después a 5 co cada una.
     contents:
     - id: scenario.raids.loot.1.1
       label: 'Failure: the building is empty; nothing is found.'
+      label_i18n:
+        es: 'Fallo: el edificio está vacío; no se encuentra nada.'
       roll: D6
       grant:
         kind: special
@@ -3011,6 +3623,8 @@ scenarios:
         max: 2
     - id: scenario.raids.loot.2.1
       label: Worthless inventories; nothing is taken but the next house searched gains +1 to the roll.
+      label_i18n:
+        es: Inventarios sin valor; no se toma nada, pero la próxima casa registrada obtiene +1 en la tirada.
       roll: D6
       grant:
         kind: special
@@ -3027,6 +3641,8 @@ scenarios:
         max: 3
     - id: scenario.raids.loot.3.1
       label: A chest with valuable trinkets; add 1 Jewellery to the warband total.
+      label_i18n:
+        es: Un cofre con baratijas valiosas; añade 1 Joyería al total de la banda.
       roll: D6
       grant:
         kind: resource
@@ -3043,6 +3659,8 @@ scenarios:
         max: 4
     - id: scenario.raids.loot.3.2
       label: A chest with valuable trinkets; add 1 Jewellery to the warband total.
+      label_i18n:
+        es: Un cofre con baratijas valiosas; añade 1 Joyería al total de la banda.
       roll: D6
       grant:
         kind: item
@@ -3057,6 +3675,8 @@ scenarios:
       when: *id010
     - id: scenario.raids.loot.4.1
       label: A bureau full of jewelleries; add D6 Jewelleries.
+      label_i18n:
+        es: Una cómoda llena de joyerías; añade 1D6 Joyerías.
       roll: D6
       grant:
         kind: resource
@@ -3078,6 +3698,8 @@ scenarios:
         max: 5
     - id: scenario.raids.loot.5.1
       label: A treasure chest under a trapdoor; add 2D6 Jewelleries.
+      label_i18n:
+        es: Un cofre del tesoro bajo una trampilla; añade 2D6 Joyerías.
       roll: D6
       grant:
         kind: resource
@@ -3099,6 +3721,8 @@ scenarios:
         max: 6
     - id: scenario.raids.loot.5.2
       label: A treasure chest under a trapdoor; add 2D6 Jewelleries.
+      label_i18n:
+        es: Un cofre del tesoro bajo una trampilla; añade 2D6 Joyerías.
       roll: D6
       grant:
         kind: item
@@ -3122,32 +3746,54 @@ scenarios:
   - id: scenario.rawhide.income
     kind: resource
     resource: gold_crowns
-    rule: Before the game the Marienburger player chooses one wagon to carry his wyrdstone and remaining gold (gaining
-      vast profits if it gets through, losing it all if it does not), or leaves all wagons empty for no bonus. If
-      the ambushers stop the wyrdstone from leaving the table they gain whatever amount was placed in the wagon.
-      If the Marienburgers get the wyrdstone off the table they gain 30% of the amount placed in the wagon (e.g.
-      100 gc of wyrdstone becomes 130 gc).
+    rule: Before the game the Marienburger player chooses one wagon to carry his wyrdstone and remaining
+      gold (gaining vast profits if it gets through, losing it all if it does not), or leaves all wagons
+      empty for no bonus. If the ambushers stop the wyrdstone from leaving the table they gain whatever
+      amount was placed in the wagon. If the Marienburgers get the wyrdstone off the table they gain 30%
+      of the amount placed in the wagon (e.g. 100 gc of wyrdstone becomes 130 gc).
+    rule_i18n:
+      es: Antes de la partida, el jugador marienburgués elige un carro para transportar su piedra bruja
+        y el oro restante (obteniendo grandes beneficios si llega a destino, perdiéndolo todo si no),
+        o deja todos los carros vacíos sin bonificación alguna. Si los emboscadores impiden que la piedra
+        bruja salga de la mesa, ganan la cantidad que se colocara en el carro. Si los marienburgueses
+        sacan la piedra bruja de la mesa, ganan el 30% de la cantidad colocada en el carro (p. ej., 100
+        co de piedra bruja se convierten en 130 co).
     quantity_input: true
 - scenario_id: scenario.the-caravan-archive-pestilens
   rewards:
   - id: scenario.the-caravan-archive-pestilens.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: The merchant carries a small chest with D3+1 shards of wyrdstone. If a warband ends the game in possession
-      of the cargo it keeps all of the wyrdstone. If the merchant successfully keeps the cargo, the guarding warband
-      receives 1 shard plus D6 x 5 gold crowns for their trouble.
+    rule: The merchant carries a small chest with D3+1 shards of wyrdstone. If a warband ends the game
+      in possession of the cargo it keeps all of the wyrdstone. If the merchant successfully keeps the
+      cargo, the guarding warband receives 1 shard plus D6 x 5 gold crowns for their trouble.
+    rule_i18n:
+      es: El mercader lleva un pequeño cofre con 1D3+1 fragmentos de piedra bruja. Si una banda termina
+        la partida en posesión del cargamento, se queda con toda la piedra bruja. Si el mercader logra
+        conservar el cargamento, la banda guardiana recibe 1 fragmento más 1D6×5 coronas de oro por sus
+        servicios.
     quantity_input: true
 - scenario_id: scenario.the-wizards-tower
   rewards:
   - id: scenario.the-wizards-tower.loot
     kind: loot_table
-    rule: 'The Heroes carry chests out of the Wizard''s Tower (a D6 per appearing Hero: on a 6 he brings a chest;
-      if no Hero brings one, a random Hero is given one, so there is always at least one chest). In the post-battle
-      sequence, roll D6 for each chest removed from the table. After this battle no Exploration rolls are made:
-      no one dares search the cursed ruins of the tower.'
+    rule: 'The Heroes carry chests out of the Wizard''s Tower (a D6 per appearing Hero: on a 6 he brings
+      a chest; if no Hero brings one, a random Hero is given one, so there is always at least one chest).
+      In the post-battle sequence, roll D6 for each chest removed from the table. After this battle no
+      Exploration rolls are made: no one dares search the cursed ruins of the tower.'
+    rule_i18n:
+      es: 'Los Héroes sacan cofres de la Torre del Mago (un 1D6 por cada Héroe presente: con un 6 trae
+        un cofre; si ningún Héroe trae uno, se entrega uno a un Héroe al azar, de modo que siempre hay
+        al menos un cofre). En la secuencia de posbatalla, tira 1D6 por cada cofre retirado de la mesa.
+        Después de esta batalla no se hacen tiradas de Exploración: nadie se atreve a registrar las ruinas
+        malditas de la torre.'
     contents:
     - id: scenario.the-wizards-tower.loot.1.1
-      label: 'Illusions: the treasures were simple illusions and vanish before the warband returns to camp.'
+      label: 'Illusions: the treasures were simple illusions and vanish before the warband returns to
+        camp.'
+      label_i18n:
+        es: 'Ilusiones: los tesoros eran simples ilusiones y desaparecen antes de que la banda vuelva
+          al campamento.'
       roll: D6
       grant:
         kind: special
@@ -3164,6 +3810,8 @@ scenarios:
         max: 2
     - id: scenario.the-wizards-tower.loot.2.1
       label: 'Valuables: roll 3D6, the result being the gc the items are traded for.'
+      label_i18n:
+        es: 'Objetos valiosos: tira 3D6; el resultado son las co por las que se venden los objetos.'
       roll: D6
       grant:
         kind: resource
@@ -3185,6 +3833,8 @@ scenarios:
         max: 5
     - id: scenario.the-wizards-tower.loot.3.1
       label: 'Gold, Gold, GOLD: roll 6D6 and add the result to the Treasury.'
+      label_i18n:
+        es: 'Oro, Oro, ORO: tira 6D6 y suma el resultado a la Tesorería.'
       roll: D6
       grant:
         kind: resource
@@ -3210,7 +3860,11 @@ scenarios:
   - id: scenario.mordheims-burning.wyrdstone
     kind: resource
     resource: wyrdstone_fragments
-    rule: The winning warband is the only warband that may search for wyrdstone after the battle (it does not roll
-      the extra exploration D6). Due to the increased demand after the city's destruction, wyrdstone sells for triple
-      the normal gold crowns.
+    rule: The winning warband is the only warband that may search for wyrdstone after the battle (it does
+      not roll the extra exploration D6). Due to the increased demand after the city's destruction, wyrdstone
+      sells for triple the normal gold crowns.
+    rule_i18n:
+      es: La banda ganadora es la única que puede buscar piedra bruja después de la batalla (no tira el
+        1D6 adicional de exploración). Debido a la mayor demanda tras la destrucción de la ciudad, la
+        piedra bruja se vende al triple de las coronas de oro normales.
     quantity_input: true

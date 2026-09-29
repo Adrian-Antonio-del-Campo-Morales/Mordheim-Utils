@@ -60,6 +60,7 @@
           "description": "How the amount is determined, faithful to the source.",
           "$ref": "defs.schema.json#/$defs/display_text"
         },
+        "rule_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "quantity_input": {
           "description": "Whether the player enters the resolved quantity when the reward is applied.",
           "type": "boolean"
@@ -78,6 +79,7 @@
           "description": "When and how the chart is rolled, faithful to the source.",
           "$ref": "defs.schema.json#/$defs/display_text"
         },
+        "rule_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "contents": {
           "description": "The rows of the chart.",
           "type": "array",
@@ -99,6 +101,7 @@
         "id": { "$ref": "defs.schema.json#/$defs/id" },
         "kind": { "const": "exploration" },
         "rule": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "rule_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "extra_dice": {
           "description": "Exploration dice the bonus adds.",
           "type": "integer",
@@ -124,6 +127,7 @@
           "description": "What the row gives, as printed, e.g. `3D6 gold crowns`.",
           "$ref": "defs.schema.json#/$defs/display_text"
         },
+        "label_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "roll": {
           "description": "The roll that reaches the row, as printed: `2D6`, `6-8` or `automatic`.",
           "$ref": "defs.schema.json#/$defs/display_text"

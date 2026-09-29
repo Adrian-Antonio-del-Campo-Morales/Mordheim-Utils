@@ -24,6 +24,8 @@ def test_contract_files_exist():
         "active-campaign.json",
         "pending-post-battle.json",
         "full-inventory.json",
+        "battle-with-rewards.json",
+        "exploration-results.json",
     }
 
 

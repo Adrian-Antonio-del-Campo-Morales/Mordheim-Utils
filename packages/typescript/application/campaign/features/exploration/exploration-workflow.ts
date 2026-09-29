@@ -395,6 +395,33 @@ function pendingFollowup(document: CampaignDocument) {
   );
   return { post, followup };
 }
+/** The canonical caption vocabulary the file contract validates on load. */
+type CaptionKey = "resource" | "item" | "characteristic_test" | "roll_table" | "magical_artefact";
+
+/**
+ * The canonical caption of a follow-up roll pending: the resource it rolls for,
+ * the item it counts, or the source node's type. Two persisted shapes reach
+ * the queue — a grant that defers its roll (top-level `resource`) and a source
+ * node carried as `spec` — and both name the rolled resource the same way; a
+ * resource outside the published pair is never given a specific caption it
+ * does not have. Every queued roll carries a caption key; the UI resolves it
+ * through the application message catalogue, so a stored caption is never
+ * displayed as a sentence and a history row without a key belongs to an
+ * earlier format.
+ */
+function captionOf(pending: OpenPayload): { readonly key: CaptionKey; readonly resource?: string } {
+  const spec = pending["spec"];
+  const specRow = spec && typeof spec === "object" ? (spec as Readonly<Record<string, unknown>>) : null;
+  const type = String(specRow?.["type"] ?? "");
+  const resource = typeof pending["resource"] === "string"
+    ? (pending["resource"] as string)
+    : typeof specRow?.["resource"] === "string" ? (specRow["resource"] as string) : "";
+  if (resource === "gold_crowns" || resource === "wyrdstone_fragments") return { key: "resource", resource };
+  if (resource.startsWith("item:")) return { key: "item" };
+  if (type === "characteristic_test" || type === "roll_table" || type === "magical_artefact") return { key: type };
+  return { key: "roll_table" };
+}
+
 function processQueue(
   document: CampaignDocument,
   reader: CatalogueReader,
@@ -1500,7 +1527,11 @@ export function continueExploration(
         message: `Roll must be between ${count} and ${count * sides}.`,
       };
     const spec = (pending["spec"] ?? {}) as OpenPayload;
-    current = { ...current, last_roll: roll, roll_history: [...((current["roll_history"] ?? []) as OpenPayload[]), { label: pending["label"], dice, total: roll }] };
+    // The caption travels as its canonical key only: labels are localized on
+    // display through the application message catalogue, never stored as
+    // sentences (a captured label would belong to an earlier format).
+    const caption = captionOf(pending);
+    current = { ...current, last_roll: roll, roll_history: [...((current["roll_history"] ?? []) as OpenPayload[]), { label_key: caption.key, dice, total: roll, ...(caption.resource ? { resource: caption.resource } : {}) }] };
     if (pending["continuation"]) {
       queue.unshift(pending["continuation"] as OpenPayload);
       queue.unshift({

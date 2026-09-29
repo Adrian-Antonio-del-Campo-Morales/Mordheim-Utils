@@ -270,6 +270,9 @@ function messageOf(err: AppError, locale: "es" | "en", profileName?: (id: string
   if (fileReason === "retired_version") {
     return translate({ key: "error.retired-version", args: { version } }, locale);
   }
+  if (fileReason === "incompatible_format") {
+    return translate({ key: "error.incompatible-format" }, locale);
+  }
   if (fileReason === "unsupported_version") {
     return translate({ key: "error.unsupported-version", args: { version } }, locale);
   }

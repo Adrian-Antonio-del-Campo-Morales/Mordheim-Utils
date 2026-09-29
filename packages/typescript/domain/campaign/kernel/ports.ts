@@ -111,6 +111,7 @@ export type CampaignFileErrorReason =
   | "retired_version"
   | "unsupported_version"
   | "schema_violation"
+  | "incompatible_format"
   | "unknown_section"
   | "io_error";
 

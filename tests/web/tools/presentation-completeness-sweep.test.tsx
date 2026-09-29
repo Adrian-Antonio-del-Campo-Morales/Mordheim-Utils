@@ -5,8 +5,9 @@
  * Everything here runs against the REAL generated artefacts via the maintained
  * loader (`tests/support/kb-artefact.ts`) and the REAL consumers: the product
  * shell (ProductApp) with the real reader, the real v5 import path for the
- * contract fixtures, and the real PDF writer's drawText calls (its pre-write
- * text model). What is visible is captured per surface — textContent, title,
+ * contract fixtures, the record-battle panel with real scenario rewards, the
+ * exploration panel with a resolved result, and the real PDF writer's drawText
+ * calls (its pre-write text model). What is visible is captured per surface — textContent, title,
  * alt, placeholder, aria-label, aria-description, data-tooltip,
  * data-disabled-reason, visible input values, export text — and classified with
  * the shared detector (`tools/web/presentation-completeness-detector.mjs`).
@@ -31,10 +32,13 @@ import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { PDFPage } from "pdf-lib";
 
 import { CampaignFileV5Adapter } from "@adapters/campaign-file/index";
+import { translate } from "@src/features/campaign/i18n-core";
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { RulesCatalogue } from "@app/rules/rules-catalogue";
 import { CampaignSlice } from "@src/features/campaign/CampaignSlice";
 import { CampaignAppProvider } from "@src/features/campaign/useCampaignApp";
+import { BattlePanel } from "@src/features/battle/BattlePanel";
+import { ExplorationPanel } from "@src/features/exploration/ExplorationPanel";
 import { ProductApp } from "@src/ProductApp";
 import { createService, loadKnowledge } from "@src/features/campaign/default-deps";
 import { createWarbandPdf } from "@src/features/export/warband-pdf";
@@ -245,6 +249,125 @@ describe("dynamic visible-completeness sweeps (real artefacts, real consumers)",
     }
     expect(declared, "the published scenarios declare experience awards").toBeGreaterThan(0);
     expect(inspected, "every declared award of every scenario is inspected in both locales").toBe(declared * 2);
+  }));
+
+  /**
+   * The record-battle panel with real rewards, in both locales.
+   *
+   * The fixture's `pending_battle_draft` selects `scenario.hidden-treasure`, a
+   * scenario whose rewards are a resource grant and a loot chart of 8 rows:
+   * the panel composes every loot label and the loot-chart rule from the
+   * artefact through `recordText`. A missing or pending translation used to
+   * surface as the generic notice glued to the row — classified here row by
+   * row, so it can no longer hide inside the composed fieldset.
+   */
+  for (const locale of ["es", "en"] as const) {
+    it(`record-battle panel with real rewards stays complete in ${locale}`, () => tracked(`battle panel ${locale}`, async () => {
+      const parsed = importFixture("battle-with-rewards");
+      if (!parsed.ok) throw new Error(parsed.message);
+      const view = render(
+        <CampaignAppProvider service={await loadService("battle-with-rewards")} locale={locale}>
+          <BattlePanel document={parsed.document as never} knowledge={knowledge} locale={locale} />
+        </CampaignAppProvider>,
+      );
+      try {
+        const fieldsets = await view.findAllByRole("group");
+        expect(fieldsets.length, "the reward fieldsets rendered").toBeGreaterThan(0);
+        for (const fieldset of fieldsets) classifyAll(capture(fieldset), { locale, surface: `battle/rewards/${locale}`, idInventory: inventory });
+      } finally {
+        view.unmount();
+      }
+    }));
+  }
+
+  /**
+   * The exploration panel with a resolved result, in both locales.
+   *
+   * The fixture resolves a 2,2 roll ("Shop"): the panel shows the event label
+   * (`outcome` through `recordText`), the tooltip (`description`), the applied
+   * special effects and the follow-up roll history. The outcome translation is
+   * published for every result, so a missing one must surface as a finding,
+   * never as the generic notice; the persisted `special_effects` text is
+   * classified too (wrong-locale detection needs both locales' published
+   * values, provided per line).
+   */
+  for (const locale of ["es", "en"] as const) {
+    it(`exploration panel with a resolved result stays complete in ${locale}`, () => tracked(`exploration panel ${locale}`, async () => {
+      const parsed = importFixture("exploration-results");
+      if (!parsed.ok) throw new Error(parsed.message);
+      const service = await loadService("exploration-results");
+      const view = render(
+        <CampaignAppProvider service={service} locale={locale}>
+          <ExplorationPanel document={parsed.document as never} knowledge={knowledge} locale={locale} />
+        </CampaignAppProvider>,
+      );
+      try {
+        const results = await view.findByRole("table");
+        classifyAll(capture(results), { locale, surface: `exploration/results/${locale}`, idInventory: inventory });
+        // Persisted history text, classified per line with the published
+        // translations of its reference: the wrong-locale comparison is real.
+        const sections = (artefact.campaign ?? {}) as Record<string, unknown>;
+        const explorationSection = (sections["exploration-and-income"] ?? {}) as Record<string, unknown>;
+        const publishedResults = ((explorationSection["exploration"] ?? {}) as Record<string, unknown>)["results"];
+        const shopRows = (Array.isArray(publishedResults) ? publishedResults : []) as readonly Record<string, unknown>[];
+        const shop = shopRows.find((row) => row["id"] === "campaign.exploration.result.22-shop") as Record<string, unknown>;
+        const outcome = shop["outcome"] as string;
+        const shopI18n = (shop["outcome_i18n"] ?? {}) as Record<string, string>;
+        const published = { es: shopI18n.es ?? outcome, en: outcome };
+        const rawFixture = JSON.parse(readFileSync(resolve(process.cwd(), "..", "..", "contracts", "campaign-file-v5", "fixtures", "exploration-results.json"), "utf8")) as {
+          campaign: { post_battles: { step_state?: Record<string, { special_effects?: string[]; follow_up_rolls?: { label_key: string; resource?: string; total: number }[] } | undefined> }[] };
+        };
+        const history = rawFixture.campaign.post_battles.find((row) => row.step_state?.exploration?.special_effects);
+        const stepState = history?.step_state?.exploration;
+        for (const effect of stepState?.special_effects ?? []) {
+          const finding = classifyVisibleText(effect, { locale, surface: `exploration/special-effects/${locale}`, published });
+          if (finding) emit(finding);
+          expect(finding, `persisted special effect (${locale}): ${effect}`).toBeNull();
+        }
+        // Follow-up roll history labels resolve like the panel does: through
+        // the persisted canonical caption key. A row without one belongs to an
+        // earlier format and is rejected at load, so a persisted row always
+        // carries a key — never a stored locale pair, never the generic notice.
+        for (const roll of stepState?.follow_up_rolls ?? []) {
+          expect(typeof roll.label_key, `persisted follow-up roll label_key (${locale})`).toBe("string");
+          const resolved = String(translate({ key: "exploration.follow-up-caption", args: { kind: roll.label_key, resource: String(roll.resource ?? "") } }, locale));
+          const finding = classifyVisibleText(resolved, { locale, surface: `exploration/follow-up-rolls/${locale}` });
+          if (finding) emit(finding);
+          expect(finding, `follow-up roll label (${locale}): ${resolved}`).toBeNull();
+        }
+      } finally {
+        view.unmount();
+      }
+    }));
+  }
+
+  /**
+   * Reopening: the exploration campaign is serialized through the product's
+   * real export path and re-imported, and the panel re-renders from the
+   * reopened document. The persisted captions/effects must resolve again in
+   * the active locale — a fallback after reopen is the same defect.
+   */
+  it("reopened exploration campaign stays complete", () => tracked("exploration reopen", async () => {
+    const service = await loadService("exploration-results");
+    const exported = await service.prepareExport();
+    expect(exported.ok, "the campaign exports").toBe(true);
+    if (!exported.ok) throw new Error("export failed");
+    const text = (exported as { payload?: { text: string } }).payload?.text ?? "";
+    expect(text.length, "the export carries the campaign text").toBeGreaterThan(0);
+    const reopened = adapter.parseCampaignFile(text);
+    expect(reopened.ok, reopened.ok ? "" : reopened.message).toBe(true);
+    if (!reopened.ok) throw new Error(reopened.message);
+    for (const locale of ["es", "en"] as const) {
+      const view = render(
+        <ExplorationPanel document={reopened.document as never} knowledge={knowledge} locale={locale} />,
+      );
+      try {
+        const results = await view.findByRole("table");
+        classifyAll(capture(results), { locale, surface: `exploration/reopened/${locale}`, idInventory: inventory });
+      } finally {
+        view.unmount();
+      }
+    }
   }));
 
   // Loaded campaigns through the product's real file import: the four v5
