@@ -3,7 +3,7 @@ import { textJoin, textNumber, textSymbol, warriorPersonalName, warriorCharacter
 import { translate } from "./i18n-core";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import type { Warrior } from "./types";
-import { knowledgeName, localizedLabel, readableValue, resourceAmount, warriorAbilities, warriorAbilityRef } from "./displayText";
+import { abilityNameText, knowledgeName, localizedLabel, readableValue, resourceAmount, warriorAbilities, warriorAbilityRef } from "./displayText";
 import { KnowledgeHint } from "./KnowledgeHint";
 import { ExperienceTrack } from "../draft/DraftWorkspace";
 
@@ -12,7 +12,7 @@ export function WarriorCard({ warrior, knowledge, locale, bandId }: { warrior: W
   const profileKind = warrior.kind === "hireling" ? "hireling" : "profile";
   const rules = [...new Map(warriorAbilities(knowledge, warrior).map((id) => {
     const ref = warriorAbilityRef(knowledge, id, warrior.profile_id, bandId);
-    const label = knowledgeName(knowledge, ref.kind, ref.id, locale, ref.profileId, ref.bandId);
+    const label = abilityNameText(knowledge, ref, locale);
     return [label, { ...ref, kind: ref.kind === "skill" ? "skill" as const : "rule" as const, label }] as const;
   })).values()];
   return <article className="draft-warrior-card">

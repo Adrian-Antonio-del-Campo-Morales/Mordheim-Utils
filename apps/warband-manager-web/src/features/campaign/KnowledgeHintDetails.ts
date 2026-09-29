@@ -1,7 +1,7 @@
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { adaptDistanceText } from "@app/rules/distance-display";
 
-import { knowledgeName, knowledgeDescription } from "./displayText";
+import { abilityNameText, conditionDetailText, knowledgeName, knowledgeDescription } from "./displayText";
 import type { ResolvedKbText } from "@adapters/knowledge-reader/presentation";
 import type { Locale } from "./i18n-core";
 import type { PresentationText } from "./presentation-output";
@@ -14,7 +14,15 @@ export function knowledgeHintDetails({ knowledge, kind, id, profileId, bandId, l
   const description = knowledgeDescription(knowledge, ref, locale);
   const tooltip = description.status === "translated" ? adaptDistanceText(description.text, locale, id) : description.text;
   return {
-    name: knowledgeName(knowledge, kind, id, locale, profileId, bandId),
+    // Abilities and condition details travel as captured v5 labels: an
+    // unresolved one is an unknown stored reference, which the compatibility
+    // boundary names specifically instead of showing the generic unavailable
+    // text.
+    name: kind === "skill" || kind === "rule"
+      ? abilityNameText(knowledge, ref, locale)
+      : kind === "injury"
+        ? conditionDetailText(knowledge, id, locale)
+        : knowledgeName(knowledge, kind, id, locale, profileId, bandId),
     tooltip,
   };
 }

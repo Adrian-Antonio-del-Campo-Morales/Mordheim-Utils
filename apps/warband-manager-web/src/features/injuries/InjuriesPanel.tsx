@@ -22,7 +22,7 @@ import { injuryOverview } from "@app/campaign/features/injuries/injuries-workflo
 import { injuryFollowUpDice } from "@app/campaign/features/injuries/injury-followup-workflow";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { DiceResolver } from "../dice/DiceResolver";
-import { knowledgeName, readableValue } from "../campaign/displayText";
+import { conditionDetailText, readableValue } from "../campaign/displayText";
 import { KnowledgeHint } from "../campaign/KnowledgeHint";
 
 interface InjuriesPanelProps {
@@ -80,7 +80,7 @@ export function InjuriesPanel({ document, knowledge, locale: requestedLocale }: 
             <tr key={row.warrior_id} data-restricted={row.restricted || undefined}>
               <td data-label={presentationOutput(t.warrior)}>{presentationOutput(warriorPersonalName(document.campaign.warriors.find((warrior) => warrior.id === row.warrior_id), locale))}</td>
               <td data-label={presentationOutput(t.condition)}>
-                {row.condition ? <>{presentationOutput(readableValue(row.condition, locale))}{row.condition_detail ? <>{presentationOutput(textSymbol("("))}{knowledge ? <KnowledgeHint knowledge={knowledge} kind="injury" id={row.condition_detail} locale={locale}>{presentationOutput(knowledgeName(knowledge, "injury", row.condition_detail, locale))}</KnowledgeHint> : presentationOutput(knowledgeName(knowledge, "injury", row.condition_detail, locale))}{presentationOutput(textSymbol(")"))}</> : presentationOutput(textSymbol(""))}</> : presentationOutput(textSymbol("—"))}
+                {row.condition ? <>{presentationOutput(readableValue(row.condition, locale))}{row.condition_detail ? <>{presentationOutput(textSymbol("("))}{knowledge ? <KnowledgeHint knowledge={knowledge} kind="injury" id={row.condition_detail} locale={locale}>{presentationOutput(conditionDetailText(knowledge, row.condition_detail, locale))}</KnowledgeHint> : presentationOutput(conditionDetailText(knowledge, row.condition_detail, locale))}{presentationOutput(textSymbol(")"))}</> : presentationOutput(textSymbol(""))}</> : presentationOutput(textSymbol("—"))}
               </td>
               <td data-label={presentationOutput(t.missingGames)}>{presentationOutput(row.games_to_miss > 0 ? textJoin([textNumber(row.games_to_miss, locale), textJoin([textSymbol("("), row.absence_reason ? readableValue(row.absence_reason, locale) : translate({ key: "ui.5655edebe128" }, locale), textSymbol(")")], "")], " ") : textNumber(0, locale))}</td>
               <td data-label={presentationOutput(t.recovery)}>

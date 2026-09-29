@@ -11,7 +11,7 @@ import {
   injuryEffects,
   injuryFollowUpDice,
 } from "@app/campaign/features/injuries/injury-followup-workflow";
-import { knowledgeName, knowledgeDescription } from "../campaign/displayText";
+import { conditionDetailText, knowledgeDescription } from "../campaign/displayText";
 import { KnowledgeHint } from "../campaign/KnowledgeHint";
 import { NumberStepper } from "../common/NumberStepper";
 
@@ -141,7 +141,7 @@ export function PostBattleInjuries({
                       <>
                         <strong>
                           <KnowledgeHint knowledge={knowledge} kind="injury" id={resultId} locale={locale}>
-                            {presentationOutput(knowledgeName(knowledge, "injury", resultId, locale))}
+                            {presentationOutput(conditionDetailText(knowledge, resultId, locale))}
                           </KnowledgeHint>
                         </strong>
                         {effect && <small>{presentationOutput(effect)}</small>}
@@ -154,7 +154,7 @@ export function PostBattleInjuries({
                         ) : null}
                         {warrior.condition_detail && (
                           <small>
-                            {presentationOutput(knowledgeName(knowledge, "injury", warrior.condition_detail, locale))}
+                            {presentationOutput(conditionDetailText(knowledge, warrior.condition_detail, locale))}
                           </small>
                         )}
                       </>

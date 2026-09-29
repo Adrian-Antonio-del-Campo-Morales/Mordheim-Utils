@@ -1,6 +1,6 @@
 import { enumReadableValue } from "./presentation-enums";
-import { fieldValues, titleCaseDisplay, type ArtefactKnowledgeReader, type DisplayRef, type LocalizedText } from "@adapters/knowledge-reader/index";
-import { unavailableText, type ResolvedKbText } from "@adapters/knowledge-reader/presentation";
+import { fieldValues, isTranslatedText, titleCaseDisplay, type ArtefactKnowledgeReader, type DisplayRef, type LocalizedText } from "@adapters/knowledge-reader/index";
+import { sourceReferenceUnavailableText, unavailableText, type ResolvedKbText } from "@adapters/knowledge-reader/presentation";
 import type { Warrior } from "./types";
 import { translate, uiMessageForText, type UiText, type Locale } from "./i18n-core";
 import { textJoin, textNumber, textSymbol, type PresentationValue } from "./presentation-values";
@@ -134,6 +134,60 @@ export function warriorAbilityRef(knowledge: ArtefactKnowledgeReader | undefined
   const ref = knowledge?.legacyAbilityRef?.(value, profileId, bandId);
   if (ref && (ref.kind === "skill" || ref.kind === "rule")) return { ...ref, kind: ref.kind };
   return { kind: value.startsWith("skill.") || value.startsWith("spell.") ? "skill" : "rule", id: value, ...(profileId ? { profileId } : {}), ...(bandId ? { bandId } : {}) };
+}
+
+/**
+ * The published name of an ability reference, or the specific notice for a
+ * reference the KB does not recognize. The generic unavailable text is never a
+ * correct answer here: an ability the reader cannot resolve is an unknown
+ * stored reference, not published prose.
+ */
+export function abilityNameText(knowledge: Partial<Pick<ArtefactKnowledgeReader, "resolveKbText">> | undefined, ref: DisplayRef, locale: Locale): ResolvedKbText {
+  const result = knowledge?.resolveKbText?.(ref, "name", locale);
+  return result?.ok ? result.text : sourceReferenceUnavailableText(locale);
+}
+
+/** Name of a captured ability label, resolved inside the warrior's owner context. */
+export function warriorAbilityName(knowledge: ArtefactKnowledgeReader | undefined, value: string, profileId: string | undefined, bandId: string | undefined, locale: Locale): ResolvedKbText {
+  return abilityNameText(knowledge, warriorAbilityRef(knowledge, value, profileId, bandId), locale);
+}
+
+/**
+ * The condition detail a warrior carries. Current records persist an injury
+ * result id; older campaign files captured the desktop's result label, which the
+ * recognized legacy shape still names. Anything else is an unknown stored
+ * reference: it shows the specific notice, never the generic unavailable text.
+ */
+type ConditionDetailKnowledge = Partial<Pick<ArtefactKnowledgeReader, "resolveKbText" | "list" | "isCatalogueLoaded">>;
+
+export function conditionDetailText(knowledge: ConditionDetailKnowledge | undefined, value: unknown, locale: Locale): ResolvedKbText {
+  const detail = typeof value === "string" ? value.trim() : "";
+  if (!detail) return sourceReferenceUnavailableText(locale);
+  const direct = knowledge?.resolveKbText?.({ kind: "injury", id: detail }, "name", locale);
+  if (direct?.ok) return direct.text;
+  return legacyInjuryLabel(knowledge, detail, locale) ?? sourceReferenceUnavailableText(locale);
+}
+
+/**
+ * The unique published injury result a captured legacy detail names. The
+ * desktop kept the mechanical suffix in the capture (`Leg Wound (M -1)`); the
+ * result label is the published content, and the modifier it repeats already
+ * lives in the warrior's characteristics, so the label alone is resolved.
+ */
+function legacyInjuryLabel(knowledge: ConditionDetailKnowledge | undefined, detail: string, locale: Locale): ResolvedKbText | undefined {
+  if (!knowledge || typeof knowledge.list !== "function" || typeof knowledge.isCatalogueLoaded !== "function" || typeof knowledge.resolveKbText !== "function") return undefined;
+  if (!knowledge.isCatalogueLoaded("campaign")) return undefined;
+  const matches = knowledge.list("injury").filter((row) => {
+    // Injury rows publish their label as `result` (the generated name mirrors
+    // it); the requested locale must be published before the row can be shown.
+    if (!isTranslatedText(fieldValues(row, "result")[locale])) return false;
+    return (["result", "name"] as const).some((field) => Object.values(fieldValues(row, field)).some(
+      (value) => Boolean(value) && (detail === value || detail.startsWith(`${value} (`)),
+    ));
+  });
+  if (matches.length !== 1) return undefined;
+  const resolved = knowledge.resolveKbText({ kind: "injury", id: String(matches[0].id ?? "") }, "name", locale);
+  return resolved.ok ? resolved.text : undefined;
 }
 
 export function resourceAmount(resource: unknown, amount: unknown, locale: Locale): PresentationValue {

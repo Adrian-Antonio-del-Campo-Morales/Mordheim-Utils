@@ -88,11 +88,19 @@ explicit structured absence message; the fallback itself remains a failure.
 No allowlists, exclusions, file suppressions or snapshot auto-accepts are
 accepted in this layer.
 
+The classification is fragment-aware, not whole-value only: a composed text
+(`Autor: …`, `• 5+ …`, `Notas: …`, `Piedra bruja: …`, `lore · difficulty …`,
+`11-15 — …`) is split at the catalogue's own delimiters (line breaks, `·` and
+`•` chips, `: ` labels and ` — ` table rows) and every fragment is classified.
+A notice glued to a label, a bullet, a die result or a chip is therefore the
+same finding as a bare one, and it is reported as the fragment that carries it,
+not as the surrounding page text.
+
 ### Finding classes of the dynamic layer and how to resolve them
 
 | Class | Meaning | Required response |
 |---|---|---|
-| `generic-fallback` | "Información no disponible" / "Information unavailable" (or an equivalent generic notice) reached a visible surface. | Give the row a real resolution (fix the generator or data) or a specific localized absence message; never the generic notice. |
+| `generic-fallback` | "Información no disponible" / "Information unavailable" (or an equivalent generic notice) reached a visible surface, alone or embedded in a composed text (after `Autor:`, inside notes, after a die result or a loot bullet, inside a chip). | Give the row a real resolution (fix the generator or data) or a specific localized absence message; never the generic notice. |
 | `unexpected-row-in-category` | A row appears in a category whose declared composition it does not match (e.g. a band-local copy inside the shared `special-rules` catalogue). | Fix the generator so the category publishes only its declared rows; band rules belong to "band-rules". |
 | `missing-presentation-entry` | A published row cannot be resolved at all through the presentation index. | Regenerate so the row gets a presentation entry, or stop publishing the row. |
 | `wrong-locale` | The other locale's published text is shown although this locale publishes a different translation. | Route the field through the resolver in the active locale; never fall back to the other language. |
@@ -104,11 +112,23 @@ Each finding in `gui-text-completeness.{json,md}` records surface, locale,
 category, the internal id (diagnostic only), the found text, the expected
 reference and the artefact origin when known. The command exits non-zero when
 the dynamic layer finds at least one problem, even if every static gate is
-green. To reproduce the current known defect (the "Reglas compartidas" tab
-rendering 1,856 band-local rows as generic fallbacks), run
-`npm run audit:completeness` in `apps/warband-manager-web` and read the report,
-or run the regression suite `tests/web/tools/presentation-completeness-regression.test.tsx`,
-which stays red until the generator, the catalogue or the data fix the defect.
+green. Run `npm run audit:completeness` in `apps/warband-manager-web` and read
+the report to inspect the layer directly.
+
+The "Reglas compartidas" defect (band-local rows published in the shared stem as
+generic fallbacks) is guarded by
+`tests/web/tools/presentation-completeness-regression.test.tsx`, which stays red
+whenever the generator, the catalogue or the data leak band-local rows into the
+special-rules category again.
+
+The per-family gate for the visible fallbacks closed after `4631eae` — scenario
+authors, wyrdstone, notes, loot rewards, `difficulty: auto` and the
+serious-injury result names — is
+`tests/web/features/campaign/visible-fallback-families.test.ts`. It asserts both
+directions: the generated artefact and the composed catalogue text of every
+family carry no `TODO-TRANSLATE`, no generic fallback and no missing resolution,
+and the pre-fix shapes still redden the shared classifier, so the gate can never
+pass by being vacuous.
 
 ### Interpret the report
 

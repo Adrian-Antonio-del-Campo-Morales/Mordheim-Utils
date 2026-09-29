@@ -13,7 +13,7 @@ import type { OpenPayload } from "@domain/campaign/index";
 import type { CampaignDocument } from "../campaign/types";
 import { useCampaignApp } from "../campaign/useCampaignApp";
 import { DiceResolver } from "../dice/DiceResolver";
-import { knowledgeName, knowledgeDescription, warriorAbilityRef, localizedLabel, readableValue, numberText } from "../campaign/displayText";
+import { abilityNameText, knowledgeDescription, warriorAbilityRef, localizedLabel, readableValue, numberText } from "../campaign/displayText";
 
 function legacyVisibleText(value: unknown, locale: "en" | "es", fallback: PresentationValue, knowledge: ArtefactKnowledgeReader): PresentationValue {
   if (!value) return fallback;
@@ -123,7 +123,7 @@ export function ExplorationPanel({
   return (
     <section aria-label={presentationOutput(t.title)}>
       <h3>{presentationOutput(textJoin([textNumber(3, locale, 2), t.title], " · "))}</h3>
-      {modifiers.sources.length > 0 && <aside className="exploration-modifiers"><strong>{presentationOutput(t.modifiers)}</strong><ul>{modifiers.sources.map((source) => { const ref = warriorAbilityRef(knowledge, source.id, source.profileId, source.bandId); return <li key={source.id}><b>{presentationOutput(knowledgeName(knowledge, ref.kind, ref.id, locale, ref.profileId, ref.bandId))}</b><small>{presentationOutput(knowledgeDescription(knowledge, ref, locale).text)}</small></li>; })}</ul></aside>}
+      {modifiers.sources.length > 0 && <aside className="exploration-modifiers"><strong>{presentationOutput(t.modifiers)}</strong><ul>{modifiers.sources.map((source) => { const ref = warriorAbilityRef(knowledge, source.id, source.profileId, source.bandId); return <li key={source.id}><b>{presentationOutput(abilityNameText(knowledge, ref, locale))}</b><small>{presentationOutput(knowledgeDescription(knowledge, ref, locale).text)}</small></li>; })}</ul></aside>}
       <table className="mobile-cards exploration-results">
         <caption>{presentationOutput(t.title)}</caption>
         <thead>

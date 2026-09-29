@@ -65,7 +65,8 @@ describe("desktop test_rules_catalogue.py → web RulesCatalogue", () => {
     expect(hungry?.name).toBe("Siempre Hambriento");
     expect(c.entry("skills", "skill.acrobat", "es")?.effect).toContain("Iniciativa");
     expect(c.entry("equipment", "sword", "es")?.effect).toContain("Cuerpo a cuerpo");
-    expect(c.entry("injuries", "campaign.serious-injuries.hero", "es")?.effect).toContain("11-15 — Información no disponible");
+    expect(c.entry("injuries", "campaign.serious-injuries.hero", "es")?.effect).toContain("11-15 — Muerto");
+    expect(c.entry("injuries", "campaign.serious-injuries.hero", "es")?.effect).not.toContain("Información no disponible");
     expect(c.entry("injuries", "campaign.serious-injuries.hero", "es")?.name).toBe("Tabla de Heridas Graves de Héroes");
     expect(c.entry("injuries", "campaign.serious-injuries.henchman", "es")?.name).toBe("Tabla de Heridas Graves de Secuaces");
     expect(c.entry("scenarios", "scenario.hidden-treasure", "es")?.effect).toContain("Experiencia:");
@@ -194,6 +195,29 @@ describe("desktop test_rules_catalogue.py → web RulesCatalogue", () => {
     expect(entry?.name).toBe("Información no disponible");
     expect(entry?.effect).toBe("Información no disponible");
     expect(c.categories("es").find((category) => category.category_id === "special-rules")?.label).toBe("Reglas compartidas");
+  });
+
+  it("localizes `difficulty: auto` as a published value in both locales", () => {
+    const c = catalogue();
+    const lores = ((ARTEFACT as { campaign?: { magic?: { lores?: readonly Record<string, unknown>[] } } }).campaign?.magic?.lores) ?? [];
+    const automatic = lores.flatMap((lore) =>
+      (Array.isArray(lore.spells) ? (lore.spells as readonly Record<string, unknown>[]) : [])
+        .filter((spell) => spell.difficulty === "auto")
+        .map((spell) => String(spell.id)),
+    );
+    // The eight spells the source publishes as always succeeding.
+    expect(automatic).toHaveLength(8);
+    for (const id of automatic) {
+      const en = c.entry("spells", id, "en");
+      const es = c.entry("spells", id, "es");
+      expect(en, `${id} (en)`).not.toBeNull();
+      expect(es, `${id} (es)`).not.toBeNull();
+      // The label vocabulary carries the value; the chip never falls back.
+      expect(en!.tags.join(" "), `${id} (en)`).toContain("difficulty Automatic");
+      expect(es!.tags.join(" "), `${id} (es)`).toContain("Dificultad Automática");
+      expect(en!.tags.join(" "), `${id} (en) fallback`).not.toMatch(/unavailable/i);
+      expect(es!.tags.join(" "), `${id} (es) fallback`).not.toMatch(/no disponible/i);
+    }
   });
 
   it("localizes scenario enums and rule relations instead of displaying internal values", () => {

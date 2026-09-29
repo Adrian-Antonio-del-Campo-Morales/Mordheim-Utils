@@ -45,6 +45,19 @@ export function sourceDescriptionUnavailableText(locale: PresentationLocale): Re
     : "The source does not publish a description for this entry.") as ResolvedKbText;
 }
 
+/**
+ * The specific, localized notice for a stored reference the knowledge base does
+ * not recognize at all — an ability label or condition detail an older campaign
+ * file captured. It is a structured absence, not a resolution failure:
+ * rendering the generic `unavailableText` here would be the visible fallback
+ * defect the completeness gate rejects.
+ */
+export function sourceReferenceUnavailableText(locale: PresentationLocale): ResolvedKbText {
+  return (locale === "es"
+    ? "La referencia no está reconocida en la base de conocimiento."
+    : "The reference is not recognized in the knowledge base.") as ResolvedKbText;
+}
+
 export function isTranslatedText(value: unknown): value is string {
   return typeof value === "string" && Boolean(value.trim()) && !value.includes("TODO-TRANSLATE");
 }
@@ -154,6 +167,10 @@ export function fieldValues(row: ArtefactRow, field: TextField): Readonly<Record
   const values: Record<string, string> = {};
   const canonical = field === "notes" && Array.isArray(row[field]) && row[field].every((line) => typeof line === "string") ? row[field].join("\n") : row[field];
   if (isTranslatedText(canonical)) values.en = canonical;
+  // Personal or editorial credits: a proper name is not translated, so its
+  // published text stands in every locale unless the source declares a real
+  // translation (the same policy as `presentation_contract.py`).
+  const personalCredit = field === "author" && isTranslatedText(canonical) ? canonical : undefined;
   for (const candidate of [row[`${field}_i18n`], row[field === "name" ? "names" : field === "effect" ? "effects" : `${field}_i18n`]]) {
     if (candidate && typeof candidate === "object" && !Array.isArray(candidate)) {
       for (const [locale, value] of Object.entries(candidate)) {
@@ -163,6 +180,7 @@ export function fieldValues(row: ArtefactRow, field: TextField): Readonly<Record
       }
     }
   }
+  if (personalCredit) for (const locale of ["en", "es"]) if (!isTranslatedText(values[locale])) values[locale] = personalCredit;
   return values;
 }
 

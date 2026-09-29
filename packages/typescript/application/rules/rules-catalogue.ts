@@ -16,7 +16,7 @@ import {
 import type { ArtefactRow } from "../../adapters/knowledge-reader/artefact-types";
 import { fieldValues, unavailableText, sourceDescriptionUnavailableText, type ResolvedKbText } from "../../adapters/knowledge-reader/presentation";
 import { adaptDistanceText } from "./distance-display";
-import { catalogueJoin, catalogueLabel, catalogueNumber, cataloguePunctuation, isCatalogueLabel, type CatalogueText } from "./catalogue-text";
+import { catalogueDifficulty, catalogueJoin, catalogueLabel, catalogueNumber, cataloguePunctuation, isCatalogueLabel, type CatalogueText } from "./catalogue-text";
 
 /** Locale code used for display text (matches the KB artefact locales). */
 export type Locale = "en" | "es";
@@ -363,8 +363,9 @@ export class RulesCatalogue {
           ? this.knowledge.recordText(row._lore as ArtefactRow, "name", locale)
           : unavailableText(locale);
         const difficulty = row.difficulty;
-        return [difficulty !== undefined && difficulty !== null
-          ? catalogueJoin([loreName, catalogueJoin([catalogueLabel("difficulty", locale), catalogueNumber(difficulty) ?? unavailableText(locale)]),], " · ")
+        const difficultyText = catalogueDifficulty(difficulty, locale);
+        return [difficulty !== undefined && difficulty !== null && difficultyText
+          ? catalogueJoin([loreName, catalogueJoin([catalogueLabel("difficulty", locale), difficultyText], " ")], " · ")
           : loreName];
       }
       case "scenarios": {

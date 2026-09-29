@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import type { Warrior } from "@src/features/campaign/types";
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
-import { warriorAbilities, variantName, knowledgeDescription, knowledgeName, localizedLabel, warriorName, readableValue, numberText, persistedSystemText } from "@src/features/campaign/displayText";
+import { warriorAbilities, variantName, knowledgeDescription, knowledgeName, localizedLabel, warriorName, readableValue, numberText, persistedSystemText, warriorAbilityName, warriorAbilityRef, conditionDetailText } from "@src/features/campaign/displayText";
 
 describe("saved presentation boundaries", () => {
   it("uses declared prose fields but never substitutes for a missing translation", () => {
@@ -66,6 +66,41 @@ describe("warriorAbilities", () => {
       "hireling.hired-sword.elf-ranger.rule.seeker",
       "hireling.hired-sword.elf-ranger.rule.excellent-sight",
     ]);
+  });
+});
+
+describe("captured ability labels and condition details", () => {
+  /** Two global rules share the display name "Leader"; one is the profile's own. */
+  const reader = ArtefactKnowledgeReader.from({
+    schema_version: 1, ruleset: "mordheim", bands: [], items: [],
+    profiles: [{ id: "matriarch", names: { en: "Matriarch", es: "Matriarca" }, rule_ids: ["matriarch--leader"] }],
+    skills: [{ id: "skill.dodge", names: { en: "Dodge", es: "Esquivar" } }],
+    rules_prose: { rules: [
+      { id: "matriarch--leader", names: { en: "Leader", es: "Líder" } },
+      { id: "foreign--leader", names: { en: "Leader", es: "Líder ajeno" } },
+    ] },
+    campaign: { "serious-injuries": { tables: [{ id: "hero", results: [{ id: "injury.leg", result: "Leg Wound", result_i18n: { es: "Herida en la Pierna" } }] }] } },
+  });
+
+  it("resolves an ambiguous captured label inside the warrior's own owner context", () => {
+    // The exact name match is ambiguous, so only the profile that owns the rule
+    // identifies it; a unique catalogue skill keeps resolving exactly.
+    expect(warriorAbilityRef(reader, "Dodge", "matriarch")).toEqual({ kind: "skill", id: "skill.dodge" });
+    expect(warriorAbilityName(reader, "Leader", "matriarch", undefined, "es")).toBe("Líder");
+    expect(warriorAbilityName(reader, "Leader", "matriarch", undefined, "en")).toBe("Leader");
+  });
+
+  it("never shows the generic fallback for an ability the knowledge base cannot recognize", () => {
+    // A stored label no row publishes is an unknown reference, not a fallback.
+    expect(warriorAbilityName(reader, "Faith", "matriarch", undefined, "es")).toBe("La referencia no está reconocida en la base de conocimiento.");
+    expect(warriorAbilityName(reader, "Faith", "matriarch", undefined, "en")).toBe("The reference is not recognized in the knowledge base.");
+  });
+
+  it("resolves the captured legacy injury label, and refuses an unknown detail", () => {
+    expect(conditionDetailText(reader, "injury.leg", "es")).toBe("Herida en la Pierna");
+    expect(conditionDetailText(reader, "Leg Wound (M -1)", "es")).toBe("Herida en la Pierna");
+    expect(conditionDetailText(reader, "Leg Wound (M -1)", "en")).toBe("Leg Wound");
+    expect(conditionDetailText(reader, "Mystery Injury (T -1)", "es")).toBe("La referencia no está reconocida en la base de conocimiento.");
   });
 });
 

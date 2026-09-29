@@ -87,7 +87,12 @@ export async function auditRulesCatalogue(artefact) {
       }
       for (const [index, entry] of entries.entries()) {
         const publishedName = artefact.display_names?.[entry.entry_id];
-        for (const [field, text, published] of [["name", entry.name, publishedName], ["effect", entry.effect, artefact.display_effects?.[entry.entry_id]]]) {
+        // Tags are visible chips (e.g. a spell's `lore · difficulty`), so they
+        // are audited too: an unpublished difficulty or an embedded fallback
+        // hiding inside a chip must be reported like any other field.
+        const fields = [["name", entry.name, publishedName], ["effect", entry.effect, artefact.display_effects?.[entry.entry_id]]];
+        for (const [tagIndex, tag] of entry.tags.entries()) fields.push([`tag:${tagIndex}`, tag, undefined]);
+        for (const [field, text, published] of fields) {
           const finding = classifyVisibleText(text, {
             locale,
             surface: `rules-catalogue/${categoryId}`,

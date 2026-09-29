@@ -1,7 +1,7 @@
 import type { CampaignDocument } from "../campaign/types";
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { translate, type Locale } from "../campaign/i18n-core";
-import { knowledgeName, scenarioText, warriorAbilityRef } from "../campaign/displayText";
+import { knowledgeName, scenarioText, warriorAbilityName } from "../campaign/displayText";
 import { localizedLabel } from "../campaign/presentation-enums";
 import { textJoin, textNumber, textDate, textSymbol, campaignPersonalName, warbandPersonalName, warriorPersonalName, opponentPersonalName, battlePersonalNotes, manualCorrectionReason, type PresentationValue } from "../campaign/presentation-values";
 import { historyEventText } from "./history-presentation";
@@ -51,9 +51,7 @@ export function localizedRoster(document: CampaignDocument, locale: Locale, know
     if ((warrior.games_to_miss ?? 0) > 0) rows.push(textJoin([translate({ key: "ui.fe761e3b6394" }, locale), textNumber(warrior.games_to_miss, locale), localizedLabel(warrior.absence_reason, locale)]));
     for (const item of warrior.equipment) rows.push(textJoin([textNumber(item.quantity, locale), knowledgeName(knowledge, "item", item.item_id, locale)]));
     for (const id of warrior.skills) {
-      const ref = warriorAbilityRef(knowledge, id, warrior.profile_id, document.campaign.identity.band_id);
-      const value = knowledge?.resolveKbText(ref, "name", locale);
-      rows.push(value?.ok ? value.text : translate({ key: "knowledge.unavailable" }, locale));
+      rows.push(warriorAbilityName(knowledge, id, warrior.profile_id, document.campaign.identity.band_id, locale));
     }
   }
   return textJoin(rows, "\n");

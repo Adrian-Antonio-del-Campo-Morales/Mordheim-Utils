@@ -167,8 +167,15 @@ describe("UI strict locale resolution", () => {
     expect(knowledgeName(reader, "skill", "No Armour", "es")).toBe("Información no disponible");
   });
 
-  it("shows a localized notice for pending injury translations", () => {
-    expect(knowledgeName(reader, "injury", "campaign.serious-injury.hero.41-55-full-recovery", "es")).toBe("Información no disponible");
+  it("resolves the published serious-injury result names in both locales", () => {
+    const fullRecovery = "campaign.serious-injury.hero.41-55-full-recovery";
+    expect(knowledgeName(reader, "injury", fullRecovery, "es")).toBe("Recuperación Total");
+    expect(knowledgeName(reader, "injury", fullRecovery, "en")).toBe("Full Recovery");
+  });
+
+  it("shows a localized notice for an injury reference the knowledge base does not know", () => {
+    // The row publishes no such result: the name is a notice, never the id.
+    expect(knowledgeName(reader, "injury", "campaign.serious-injury.hero.00-unknown-result", "es")).toBe("Información no disponible");
   });
 });
 

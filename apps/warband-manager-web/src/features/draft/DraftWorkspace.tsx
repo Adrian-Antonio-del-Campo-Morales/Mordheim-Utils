@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 import { effectiveMaximumModels, memberCount, treasury as draftTreasury } from "@domain/campaign/kernel/document";
 import { useCampaignApp, useCloseOnCampaignError } from "../campaign/useCampaignApp";
-import { knowledgeName, localizedLabel, warriorAbilities, warriorAbilityRef, warriorName, resourceAmount, variantName } from "../campaign/displayText";
+import { abilityNameText, knowledgeName, localizedLabel, warriorAbilities, warriorAbilityRef, warriorName, resourceAmount, variantName } from "../campaign/displayText";
 import { presentationOutput } from "../campaign/presentation-output";
 import { textJoin, textNumber, textSymbol, warbandPersonalName, warriorCharacteristic, warriorPersonalName } from "../campaign/presentation-values";
 // T09 construction contract: the interface presents the variant frame the
@@ -78,7 +78,7 @@ export function DraftWorkspace({ document, knowledge, locale }: { document: Camp
         const equipment = warrior.equipment.map((item) => ({ id: item.item_id, quantity: item.quantity }));
         const skillNames = [...new Map(warriorAbilities(knowledge, warrior).map((skill) => {
           const ref = warriorAbilityRef(knowledge, skill, warrior.profile_id, document.campaign.identity.band_id);
-          const entry = { ...ref, kind: ref.kind === "skill" ? "skill" as const : "rule" as const, text: knowledgeName(knowledge, ref.kind, ref.id, locale, ref.profileId, ref.bandId) };
+          const entry = { ...ref, kind: ref.kind === "skill" ? "skill" as const : "rule" as const, text: abilityNameText(knowledge, ref, locale) };
           return [entry.text, entry] as const;
         })).values()];
         return <article className={`draft-warrior-card${warrior.kind !== "hireling" ? " has-options" : ""}`} key={warrior.id}>

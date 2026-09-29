@@ -25,7 +25,7 @@ import { experienceTotal, modelCount, rating, treasury } from "@domain/campaign/
 import type { ArtefactKnowledgeReader } from "@adapters/knowledge-reader/index";
 
 import type { Battle, CampaignDocument, InventoryItem, TimelineState, Warrior } from "../campaign/types";
-import { knowledgeName, localizedLabel, scenarioText, variantName, warriorAbilityRef } from "../campaign/displayText";
+import { conditionDetailText, knowledgeName, localizedLabel, scenarioText, variantName, warriorAbilityName } from "../campaign/displayText";
 import { translate } from "../campaign/i18n-core";
 import { presentationOutput, type PresentationText } from "../campaign/presentation-output";
 import { textJoin, textNumber, textSymbol, textHeading, textDate, warriorPersonalName, warbandPersonalName, opponentPersonalName, warriorCharacteristic } from "../campaign/presentation-values";
@@ -433,14 +433,11 @@ function equipmentLines(warrior: Warrior, knowledge: ArtefactKnowledgeReader | u
 }
 
 function skillsLines(warrior: Warrior, labels: Labels, knowledge: ArtefactKnowledgeReader | undefined, locale: Locale, bandId: string): PresentationText {
-  const lines: PresentationText[] = warrior.skills.map((skill) => {
-    const ref = warriorAbilityRef(knowledge, skill, warrior.profile_id, bandId);
-    return knowledgeName(knowledge, ref.kind, ref.id, locale, ref.profileId, ref.bandId);
-  });
+  const lines: PresentationText[] = warrior.skills.map((skill) => warriorAbilityName(knowledge, skill, warrior.profile_id, bandId, locale));
   if (warrior.condition) {
     let line: PresentationText = localizedLabel(warrior.condition, locale);
     if (warrior.condition_detail) {
-      line = textJoin([line, textJoin([textSymbol("("), knowledgeName(knowledge, "injury", warrior.condition_detail, locale), textSymbol(")")], "")]);
+      line = textJoin([line, textJoin([textSymbol("("), conditionDetailText(knowledge, warrior.condition_detail, locale), textSymbol(")")], "")]);
     }
     lines.push(line);
   }

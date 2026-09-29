@@ -24,6 +24,11 @@ from __future__ import annotations
 
 FIELDS = ("name", "effect", "description", "text", "note", "notes", "label", "result", "outcome", "rule", "reward", "author", "wyrdstone")
 TODO_TRANSLATE = "TODO-TRANSLATE"
+# Personal or editorial credits: a proper name is not translated, so its
+# published text stands in every locale unless the source declares a real
+# translation (translatable prose, e.g. "Anonymous"). A credit must never turn
+# into a pending translation or a generic fallback for merely being text.
+PERSONAL_FIELDS = frozenset({"author"})
 # Canonical identifier fields a catalogue row may publish for itself.
 LOCATOR_FIELDS = ("id", "item_id", "result_id")
 # Characters the locator grammar reserves: a step is one path key or one
@@ -187,6 +192,13 @@ def build_presentation_entries(artefact: dict) -> list[dict]:
                     for lang, text in translations.items():
                         locales[lang] = text if isinstance(text, str) and text.strip() else TODO_TRANSLATE
             if locales:
+                if field in PERSONAL_FIELDS:
+                    published = value.get(field)
+                    if isinstance(published, str) and published.strip():
+                        for locale in ("en", "es"):
+                            current = locales.get(locale)
+                            if not isinstance(current, str) or not current.strip() or current == TODO_TRANSLATE:
+                                locales[locale] = published
                 for locale in ("en", "es"):
                     locales.setdefault(locale, TODO_TRANSLATE)
                 fields[field] = locales

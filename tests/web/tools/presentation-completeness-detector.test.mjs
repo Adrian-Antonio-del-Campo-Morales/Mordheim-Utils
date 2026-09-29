@@ -62,6 +62,35 @@ test("flags raw persisted text and poison markers (raw-text)", () => {
   assert.equal(classifyVisibleText("RAW_KB_POISON_profile_name", EN)?.kind, "raw-text");
 });
 
+test("flags a pending injury-table translation inside a composed result row (raw-text)", () => {
+  // The serious-injury results used to reach the catalogue as `11-15 — TODO-TRANSLATE`.
+  assert.equal(classifyVisibleText("11-15 — TODO-TRANSLATE", { ...ES, category: "injuries", field: "result" })?.kind, "raw-text");
+  assert.equal(classifyVisibleText("22 — TODO-TRANSLATE: Leg Wound", { ...ES, category: "injuries", field: "name" })?.kind, "raw-text");
+});
+
+// Each visible family the dynamic layer must never accept as "complete": a
+// fallback glued to a label, a bullet, a die result or a chip. Exact-match
+// detection missed all of them; fragment detection must flag each one and name
+// the fragment that carries it, never the surrounding composed text.
+test("flags a generic fallback embedded in a composed value, per family", () => {
+  const cases = [
+    ["Autor: Información no disponible", ES],
+    ["Autor: Information unavailable", EN],
+    ["Notas: Información no disponible", ES],
+    ["• 5+ Información no disponible", ES],
+    ["• 4+ Information unavailable", EN],
+    ["Nigromancia · Dificultad Información no disponible", ES],
+    ["Lesser Magic · difficulty Information unavailable", EN],
+    ["Fear\nAutor: Información no disponible", ES],
+  ];
+  for (const [text, context] of cases) {
+    const finding = classifyVisibleText(text, context);
+    assert.equal(finding?.kind, "generic-fallback", `not flagged: ${text}`);
+    assert.ok(finding.found === "Información no disponible" || finding.found === "Information unavailable" || finding.found.endsWith("Información no disponible") || finding.found.endsWith("Information unavailable"), `fragment not tight: ${finding.found}`);
+    assert.ok(!finding.found.includes("\n"), `fragment crossed a line: ${finding.found}`);
+  }
+});
+
 test("flags a problem inside an aria-label (attribute context)", () => {
   const finding = classifyVisibleText("Información no disponible", { ...ES, attribute: "aria-label", surface: "test/attribute" });
   assert.equal(finding?.kind, "generic-fallback");
@@ -112,6 +141,28 @@ test("does not flag correctly resolved ES and EN text", () => {
   // Real effects, both locales.
   assert.equal(classifyVisibleText("Las Abominaciones son criaturas retorcidas y repulsivas que causan Miedo.", ES), null);
   assert.equal(classifyVisibleText("Abominations are twisted and repulsive looking creatures, which cause Fear.", EN), null);
+});
+
+test("does not flag the localized difficulty value or other real chip text", () => {
+  // `difficulty: auto` is a published semantic value, labelled in place.
+  assert.equal(classifyVisibleText("Nigromancia · Dificultad Automática", ES), null);
+  assert.equal(classifyVisibleText("Lesser Magic · difficulty Automatic", EN), null);
+});
+
+test("does not flag resolved loot, note, author or condition fragments", () => {
+  // The composed scenario and roster texts the six families used to leak into.
+  assert.equal(classifyVisibleText("Autor: Tuomas Pirinen", ES), null);
+  assert.equal(classifyVisibleText("Notas: El escenario se juega de noche.", ES), null);
+  assert.equal(classifyVisibleText("• 5+ Fragmento de piedra bruja", ES), null);
+  assert.equal(classifyVisibleText("Herido (Herida en la Pierna)", ES), null);
+  assert.equal(classifyVisibleText("Injured (Leg Wound)", EN), null);
+});
+
+test("does not flag the specific unknown-reference notice", () => {
+  // A stored label the KB cannot recognize is a structured absence, not a
+  // generic fallback: the reader names it specifically in both locales.
+  assert.equal(classifyVisibleText("La referencia no está reconocida en la base de conocimiento.", ES), null);
+  assert.equal(classifyVisibleText("The reference is not recognized in the knowledge base.", EN), null);
 });
 
 test("does not flag specific localized error or absence messages", () => {

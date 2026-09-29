@@ -155,6 +155,10 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     wyrdstone: One shard of wyrdstone for each Hero of either warband who is inside the objective building
       at the end of the game, up to a maximum of three shards per warband.
+    wyrdstone_i18n:
+      es: >-
+        Un fragmento de Piedra bruja por cada Héroe de cualquiera de las bandas que esté dentro del
+        edificio objetivo al final de la partida, hasta un máximo de tres fragmentos por banda.
   name_i18n:
     es: Defender el Botín
 - id: scenario.skirmish
@@ -213,6 +217,10 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     wyrdstone: Warriors earn one shard of wyrdstone for each counter still in their possession at the
       end of the battle.
+    wyrdstone_i18n:
+      es: >-
+        Los guerreros ganan un fragmento de Piedra bruja por cada ficha que aún posean al final de la
+        batalla.
   name_i18n:
     es: A la Búsqueda de Piedra Bruja
 - id: scenario.breakthrough
@@ -308,6 +316,13 @@ scenarios:
       own that was taken out of action during the game (down to a minimum of zero), plus one extra shard
       for each enemy Hero it took out of action, up to the maximum number of shards the opposing warband
       was carrying at the beginning of the battle.
+    wyrdstone_i18n:
+      es: >-
+        Cada banda empieza la batalla llevando D3 fragmentos de Piedra bruja, anotados antes de la
+        partida. Al final, cada banda gana toda la Piedra bruja que llevaba menos un fragmento por
+        cada Héroe propio que haya quedado Fuera de Combate durante la partida (hasta un mínimo de
+        cero), más un fragmento adicional por cada Héroe enemigo que haya dejado Fuera de Combate,
+        hasta el máximo de fragmentos que la banda contraria llevaba al comenzar la batalla.
   name_i18n:
     es: Encuentro Casual
 - id: scenario.hidden-treasure
@@ -348,16 +363,31 @@ scenarios:
           se tira por separado, salvo las coronas de oro, que siempre se encuentran.
       contents:
       - reward: 3D6 gold crowns
+        reward_i18n:
+          es: >-
+            3D6 coronas de oro
         roll: automatic
       - reward: D3 pieces of wyrdstone
+        reward_i18n:
+          es: >-
+            D3 fragmentos de Piedra bruja
         roll: 5+
       - reward: Suit of light armour
+        reward_i18n:
+          es: >-
+            Armadura ligera
         item_id: light_armour
         roll: 4+
       - reward: Sword
+        reward_i18n:
+          es: >-
+            Espada
         item_id: sword
         roll: 3+
       - reward: D3 gems worth 10 gc each
+        reward_i18n:
+          es: >-
+            D3 gemas por valor de 10 co cada una
         roll: 5+
   name_i18n:
     es: Tesoro Escondido
@@ -451,6 +481,10 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     wyrdstone: Warriors earn one shard of wyrdstone for each counter in their possession at the end of
       the battle.
+    wyrdstone_i18n:
+      es: >-
+        Los guerreros ganan un fragmento de Piedra bruja por cada ficha que posean al final de la
+        batalla.
   name_i18n:
     es: A la Búsqueda del Tesoro
 - id: scenario.street-brawl
@@ -516,21 +550,42 @@ scenarios:
           muere, no se entrega recompensa alguna a la banda ganadora.
       contents:
       - reward: 5D6 gold crowns
+        reward_i18n:
+          es: >-
+            5D6 coronas de oro
         roll: automatic
       - reward: D3 swords
+        reward_i18n:
+          es: >-
+            D3 espadas
         item_id: sword
         roll: 4+
       - reward: Suit of heavy armour
+        reward_i18n:
+          es: >-
+            Armadura pesada
         item_id: heavy_armour
         roll: 5+
       - reward: Suit of light armour
+        reward_i18n:
+          es: >-
+            Armadura ligera
         item_id: light_armour
         roll: 4+
       - reward: Shield
+        reward_i18n:
+          es: >-
+            Escudo
         roll: 4+
       - reward: Helmet
+        reward_i18n:
+          es: >-
+            Yelmo
         roll: 4+
       - reward: D3 gems worth 10 gc each
+        reward_i18n:
+          es: >-
+            D3 gemas por valor de 10 co cada una
         roll: 5+
   name_i18n:
     es: El Príncipe Perdido
@@ -570,24 +625,51 @@ scenarios:
           se encuentran.
       contents:
       - reward: 5D6 gold crowns
+        reward_i18n:
+          es: >-
+            5D6 coronas de oro
         roll: automatic
       - reward: D3 gems worth 10 gc each
+        reward_i18n:
+          es: >-
+            D3 gemas por valor de 10 co cada una
         roll: 5+
       - reward: Tome of magic
+        reward_i18n:
+          es: >-
+            Tomo de magia
         roll: 4+
       - reward: Gromril sword
+        reward_i18n:
+          es: >-
+            Espada de Gromril
         roll: 5+
       - reward: Athame
+        reward_i18n:
+          es: >-
+            Athame
         roll: 4+
       - reward: D3 doses of healing herbs
+        reward_i18n:
+          es: >-
+            D3 dosis de Hierbas Curativas
         roll: 4+
       - reward: Dispel scroll
+        reward_i18n:
+          es: >-
+            Pergamino de disipación
         roll: 5+
     notes:
     - 'The defender receives, in addition, one roll on the initial equipment table per additional attacking
       warband (Wooden Man, Mandrake Root, Crimson Shade, Lucky Charm, Holy/Unholy Relic or Cathayan Silk
       Cloak); each item may be found only once. Verify the special rules of those items in Town Cryer
       #5 before modelling them.'
+    notes_i18n:
+      es: >-
+        El defensor recibe, además, una tirada en la tabla de equipo inicial por cada banda atacante
+        adicional (Hombre de Madera, Raíz de Mandrágora, Sombra Carmesí, Amuleto de la Suerte,
+        Reliquia Santa/Impía o Capa de Seda de Cathay); cada objeto solo puede encontrarse una vez.
+        Verificar las reglas especiales de esos objetos en Town Cryer #5 antes de modelarlos.
   name_i18n:
     es: La Mansión del Hechicero
 - id: scenario.the-pool
@@ -623,10 +705,21 @@ scenarios:
       pool doing nothing else finds one piece on a D6 roll of 1-2 at the end of his turn (no Hero may
       search within 1" of another model). Only as many pieces may be found as were rolled at the start
       of the game.
+    wyrdstone_i18n:
+      es: >-
+        El estanque contiene D3+3 fragmentos de Piedra bruja; un Héroe que pase un turno entero a 1"
+        del estanque sin hacer otra cosa encuentra un fragmento con un resultado de 1-2 en un D6 al
+        final de su turno (ningún Héroe puede buscar a 1" de otra miniatura). Solo se pueden encontrar
+        tantos fragmentos como se hayan tirado al comenzar la partida.
     notes:
     - 'The page does not repeat the final conversion of counters into shards (one shard per counter held
       at the end); the same convention as Treasure Hunt, which does declare it, is assumed. Verify against
       the Town Cryer #5 print.'
+    notes_i18n:
+      es: >-
+        La página no repite la conversión final de fichas en fragmentos (un fragmento por ficha
+        conservada al final); se asume la misma convención que A la Búsqueda del Tesoro, que sí la
+        declara. Verificar contra la impresión de Town Cryer #5.
   name_i18n:
     es: El Estanque
 - id: scenario.ambush
@@ -663,10 +756,21 @@ scenarios:
       is taken out of action, place counters equal to the amount he was carrying where he fell, and any
       Hero may pick them up. The warband that gets the most wyrdstone shards off the table (or held by
       one of its Heroes when the game ends) is the winner.
+    wyrdstone_i18n:
+      es: >-
+        Cada Héroe de la banda defensora lleva D3 fragmentos de Piedra bruja; si un Héroe que lleva
+        Piedra bruja queda Fuera de Combate, coloca en el lugar donde cayó tantas fichas como llevaba,
+        y cualquier Héroe puede recogerlas. La banda que saque más fragmentos de Piedra bruja de la
+        mesa (o los conserve en uno de sus Héroes al terminar la partida) es la ganadora.
     notes:
     - 'The page does not declare the conversion of counters held at the end into earned wyrdstone shards;
       the standard convention of wyrdstone scenarios is assumed (see Treasure Hunt). Verify against Town
       Cryer #5.'
+    notes_i18n:
+      es: >-
+        La página no declara la conversión de las fichas que se conservan al final en fragmentos de
+        Piedra bruja ganados; se asume la convención estándar de los escenarios de Piedra bruja (ver A
+        la Búsqueda del Tesoro). Verificar contra Town Cryer #5.
   name_i18n:
     es: ¡Emboscada!
 - id: scenario.monster-hunt
@@ -712,36 +816,76 @@ scenarios:
           cada objeto se tira por separado, salvo las coronas de oro, que siempre se encuentran.
       contents:
       - reward: 5D6 gold crowns
+        reward_i18n:
+          es: >-
+            5D6 coronas de oro
         roll: automatic
       - reward: Magical artefact (roll on the artefact table)
+        reward_i18n:
+          es: >-
+            Artefacto mágico (tira en la tabla de artefactos)
         roll: 6+
       - reward: D3+1 pieces of wyrdstone
+        reward_i18n:
+          es: >-
+            D3+1 fragmentos de Piedra bruja
         roll: 4+
       - reward: Gromril axe
+        reward_i18n:
+          es: >-
+            Hacha de Gromril
         roll: 5+
       - reward: Suit of heavy armour
+        reward_i18n:
+          es: >-
+            Armadura pesada
         item_id: heavy_armour
         roll: 5+
       - reward: Suit of light armour
+        reward_i18n:
+          es: >-
+            Armadura ligera
         item_id: light_armour
         roll: 4+
       - reward: Suit of light armour
+        reward_i18n:
+          es: >-
+            Armadura ligera
         item_id: light_armour
         roll: 4+
       - reward: Shield
+        reward_i18n:
+          es: >-
+            Escudo
         roll: 4+
       - reward: Helmet
+        reward_i18n:
+          es: >-
+            Yelmo
         roll: 4+
       - reward: D3 swords
+        reward_i18n:
+          es: >-
+            D3 espadas
         item_id: sword
         roll: 4+
       - reward: D3 gems worth 10 gc each
+        reward_i18n:
+          es: >-
+            D3 gemas por valor de 10 co cada una
         roll: 5+
       - reward: Jewellery worth D6 x 10 gc
+        reward_i18n:
+          es: >-
+            Joyas por valor de D6 x 10 co
         roll: 5+
     notes:
     - 'The ''Suit of light armour'' row appears twice in the source (Town Cryer #5); it is transcribed
       as-is for fidelity, pending verification of whether it is an errata or two independent rolls.'
+    notes_i18n:
+      es: >-
+        La fila «Armadura ligera» aparece dos veces en la fuente (Town Cryer #5); se transcribe tal
+        cual por fidelidad, a la espera de verificar si es una errata o dos tiradas independientes.
   name_i18n:
     es: Cacería de Monstruos
 - id: scenario.kidnapped
@@ -830,6 +974,13 @@ scenarios:
       +1 per enemy out of action; the page itself marks it as a probable errata (''should probably read
       +1 additional Experience for each Skaven enemy put out of action''). The notice is transcribed without
       fixing the amount until verifying the Town Cryer #7 print.'
+    notes_i18n:
+      es: >-
+        La fuente incluye además «+2 por dejar Fuera de Combate a un Skaven» con el texto de un +1
+        genérico por enemigo Fuera de Combate; la propia página lo marca como probable errata
+        («probablemente debería decir +1 de Experiencia adicional por cada enemigo Skaven dejado Fuera
+        de Combate»). El aviso se transcribe sin fijar la cantidad hasta verificar la impresión de
+        Town Cryer #7.
   name_i18n:
     es: Ataque de Rata
 - id: scenario.scourge-and-purge
@@ -892,6 +1043,11 @@ scenarios:
     notes:
     - 'The ''+2 Purge'' and ''+6 Scourge'' awards mix amount and text (''earns double Experience''); both
       are transcribed as-is, pending verification against Town Cryer #7.'
+    notes_i18n:
+      es: >-
+        Las recompensas «+2 Purga» y «+6 Azote» mezclan cantidad y texto («gana el doble de
+        Experiencia»); ambas se transcriben tal cual, a la espera de verificarlas contra Town Cryer
+        #7.
   name_i18n:
     es: Flagelo y Purga
 - id: scenario.surrounded
@@ -964,11 +1120,25 @@ scenarios:
       is carrying. Each side carries its counters off through the gate (or offers them to the totem for
       the Possessed). When all counters have been carried away or absorbed the game ends and the player
       with the most stones wins.
+    wyrdstone_i18n:
+      es: >-
+        Antes del despliegue se colocan D6+2 fichas de Piedra bruja. Los guerreros las recogen al
+        moverse en contacto; cuando un guerrero queda derribado, aturdido o Fuera de Combate, suelta
+        todas las fichas que llevaba. Cada bando saca sus fichas por la puerta (o las ofrece al tótem
+        en el caso de los Poseídos). Cuando todas las fichas hayan sido sacadas o absorbidas, termina
+        la partida y gana el jugador con más piedras.
     notes:
     - 'The page does not declare the conversion of counters held at the end into earned wyrdstone shards.
       The text of the ''+1 Winning Leader'' award declares ''+2 Experience''; the page header cites Town
       Cryer #7 / Christian Ellegaard while the site index assigns it to Town Cryer #8 / Donato Ranzato.
       Verify both ends against the prints.'
+    notes_i18n:
+      es: >-
+        La página no declara la conversión de las fichas que se conservan al final en fragmentos de
+        Piedra bruja ganados. El texto de la recompensa «+1 por Líder Ganador» declara «+2 de
+        Experiencia»; el encabezado de la página cita Town Cryer #7 / Christian Ellegaard, mientras
+        que el índice del sitio lo asigna a Town Cryer #8 / Donato Ranzato. Verificar ambos extremos
+        contra las impresiones.
   name_i18n:
     es: Plaza Prohibida
 - id: scenario.stake-out
@@ -1009,9 +1179,16 @@ scenarios:
     - ref: campaign.experience.award.winning-leader
     - ref: campaign.experience.award.per-enemy-out-of-action
     wyrdstone: The loser earns D6 shards of wyrdstone and the winner D6+1 shards.
+    wyrdstone_i18n:
+      es: >-
+        El perdedor gana D6 fragmentos de Piedra bruja y el ganador D6+1 fragmentos.
     notes:
     - '''Fame'' is not a standard campaign metric; the page itself marks it as a possible leftover of
       a previous version. Verify against Town Cryer #8.'
+    notes_i18n:
+      es: >-
+        La «Fama» no es una métrica estándar de campaña; la propia página la marca como un posible
+        resto de una versión anterior. Verificar contra Town Cryer #8.
   name_i18n:
     es: Acecho
 - id: scenario.the-lair-of-the-snake
@@ -1055,6 +1232,11 @@ scenarios:
     - 'The text of the first award declares ''+2 experience'' under the ''+1 First to reach the platform''
       label; 2 is fixed as the amount and the label discrepancy is left documented for verification against
       Town Cryer #9.'
+    notes_i18n:
+      es: >-
+        El texto de la primera recompensa declara «+2 de experiencia» bajo la etiqueta «+1 por el
+        primero en alcanzar la plataforma»; se fija el 2 como cantidad y la discrepancia de la
+        etiqueta queda documentada para verificarla contra Town Cryer #9.
   name_i18n:
     es: La Guarida de la Serpiente
 - id: scenario.the-script-of-sigmar
@@ -1110,6 +1292,11 @@ scenarios:
     notes:
     - The five brotherhood soldiers patrolling outside in mission 1 do not count as part of the warband
       and gain no experience, unless real warband members are used (who then do gain normal experience).
+    notes_i18n:
+      es: >-
+        Los cinco soldados de la hermandad que patrullan fuera en la misión 1 no cuentan como parte de
+        la banda ni ganan experiencia, salvo que se usen miembros reales de la banda (que entonces sí
+        ganan experiencia normal).
   name_i18n:
     es: El Guión de Sigmar
 - id: scenario.thats-all-mine
@@ -1219,6 +1406,11 @@ scenarios:
     - The traitor defender warband can never escort another caravan in the campaign and suffers -1 when
       searching for rare items over the next D6 games. Defenders can only be Mercenaries, Witch Hunters,
       Sisters of Sigmar or Bretonnians.
+    notes_i18n:
+      es: >-
+        La banda defensora traidora nunca puede escoltar otra caravana en la campaña y sufre -1 al
+        buscar objetos raros durante las siguientes D6 partidas. Los defensores solo pueden ser
+        Mercenarios, Cazadores de Brujas, Hermanas de Sigmar o Bretonianos.
   name_i18n:
     es: La Caravana
 - id: scenario.the-secrets-of-beujuntae
@@ -1263,17 +1455,35 @@ scenarios:
           mucho tiempo y tira en la tabla de objetos para ver qué encuentra dentro.
       contents:
       - reward: 2D6 gc
+        reward_i18n:
+          es: >-
+            2D6 co
         roll: automatic
       - reward: Magic Sickle (raises WS of the bearer +1)
+        reward_i18n:
+          es: >-
+            Hoz Mágica (eleva en +1 la HA del portador)
         roll: 6+
       - reward: D6 gems worth 10 gc each
+        reward_i18n:
+          es: >-
+            D6 gemas por valor de 10 co cada una
         roll: 7+
       - reward: Ancient Bone Armour (confers a 4+ save and in all other respects acts like light armour)
+        reward_i18n:
+          es: >-
+            Armadura de Hueso Antigua (otorga una salvación de 4+ y por lo demás funciona como una
+            armadura ligera)
         roll: 8+
     notes:
     - 'The page reward table is badly formatted (''Roll 2D6'' heading with confusing columns); it is interpreted
       like other treasure tables of the site: automatic crowns and each item with its required roll. Verify
       against Town Cryer #12.'
+    notes_i18n:
+      es: >-
+        La tabla de recompensas de la página está mal formateada (encabezado «Tira 2D6» con columnas
+        confusas); se interpreta como las demás tablas de tesoro del sitio: coronas automáticas y cada
+        objeto con su tirada requerida. Verificar contra Town Cryer #12.
   name_i18n:
     es: Los Secretos de Beujuntae
 - id: scenario.jungle-skirmish
@@ -1388,6 +1598,11 @@ scenarios:
     - The skull summoning roll (1 it is lost; 2-5 the Headless One does not appear; 6 it appears and increases
       the warband rating by +125 for the game) remains pending modelling together with the Headless One
       profile.
+    notes_i18n:
+      es: >-
+        La tirada de invocación de la calavera (1 se pierde; 2-5 el Hombre sin Cabeza no aparece; 6
+        aparece y aumenta la valoración de la banda en +125 durante la partida) queda pendiente de
+        modelar junto con el perfil del Hombre sin Cabeza.
   name_i18n:
     es: La Noche del Descabezado
 - id: scenario.the-hunters-become-the-hunted
@@ -1432,6 +1647,12 @@ scenarios:
     - 'The unit that puts the Beastmaster Out of Action obtains his whip and control of the Cold Ones;
       it also carries D3 artefacts. The Beastmaster and Cold Ones profiles (Town Cryer #11) are not modelled
       here. A model killed by a carnivorous plant is removed from the campaign on a 1 (D6).'
+    notes_i18n:
+      es: >-
+        La unidad que deje Fuera de Combate al Señor de las Bestias obtiene su látigo y el control de
+        los Lagartos Fríos; también lleva D3 artefactos. Los perfiles del Señor de las Bestias y los
+        Lagartos Fríos (Town Cryer #11) no se modelan aquí. Una miniatura muerta por una planta
+        carnívora se elimina de la campaña con un 1 (D6).
   name_i18n:
     es: Los Cazadores Se Convierten en Presas
 - id: scenario.lost-temple-of-the-slann
@@ -1470,24 +1691,52 @@ scenarios:
           Cada objeto se tira por separado, salvo las coronas de oro, que siempre se encuentran.
       contents:
       - reward: 3D6 gc
+        reward_i18n:
+          es: >-
+            3D6 co
         roll: automatic
       - reward: D3 gems worth 10 gc each
+        reward_i18n:
+          es: >-
+            D3 gemas por valor de 10 co cada una
         roll: 5+
       - reward: Tome of Magic
+        reward_i18n:
+          es: >-
+            Tomo de Magia
         roll: 4+
       - reward: Gromril Sword
+        reward_i18n:
+          es: >-
+            Espada de Gromril
         roll: 5+
       - reward: Cloak of Mists
+        reward_i18n:
+          es: >-
+            Capa de Nieblas
         roll: 5+
       - reward: Healing Herbs (D3 doses)
+        reward_i18n:
+          es: >-
+            Hierbas Curativas (D3 dosis)
         roll: 4+
       - reward: Dispel Scroll
+        reward_i18n:
+          es: >-
+            Pergamino de Disipación
         roll: 5+
     notes:
     - The defender receives, in addition, one roll on the loot table per additional attacking warband
       (1 Temple Stone Guard; 2 1D3 doses of Dark Venom; 3 1D3 doses of Crimson Shade; 4 Holy/Unholy Relic;
       5 Lucky Charm; 6 Heavy Armour); each item may only be found once. The magic items (Cloak of Mists,
       Dispel Scroll, Gromril Sword, Tome of Magic) have no entry in the canonical Trading Post.
+    notes_i18n:
+      es: >-
+        El defensor recibe, además, una tirada en la tabla de botín por cada banda atacante adicional
+        (1 Guardia de Piedra del Templo; 2 1D3 dosis de Veneno Oscuro; 3 1D3 dosis de Sombra Carmesí;
+        4 Reliquia Santa/Impía; 5 Amuleto de la Suerte; 6 Armadura Pesada); cada objeto solo puede
+        encontrarse una vez. Los objetos mágicos (Capa de Nieblas, Pergamino de Disipación, Espada de
+        Gromril, Tomo de Magia) no tienen entrada en el Mercado canónico.
   name_i18n:
     es: Templo Perdido de los Slann
 - id: scenario.the-sword-of-the-herald
@@ -1526,10 +1775,21 @@ scenarios:
     wyrdstone: Each Star Stone splinter is worth 3 additional wyrdstone in the post battle sequence when
       removed from the table. Note that additional experience is not earned for removing the Star Stone
       splinters or the Sword of the Herald.
+    wyrdstone_i18n:
+      es: >-
+        Cada esquirla de Piedra Estelar vale 3 de Piedra bruja adicionales en la secuencia posterior a
+        la batalla cuando se retira de la mesa. Ten en cuenta que no se gana experiencia adicional por
+        retirar las esquirlas de Piedra Estelar ni la Espada del Heraldo.
     notes:
     - Players who choose that the game 'does not count' gain no experience, do not roll serious injuries
       and do not search for wyrdstone in the post-battle sequence, but they can still gain the awards
       for drawing the sword and the shards. The sword value is left to the referee's discretion.
+    notes_i18n:
+      es: >-
+        Los jugadores que elijan que la partida «no cuenta» no ganan experiencia, no tiran heridas
+        graves ni buscan Piedra bruja en la secuencia posterior a la batalla, pero aún pueden ganar
+        las recompensas por desenvainar la espada y los fragmentos. El valor de la espada queda a
+        discreción del árbitro.
   name_i18n:
     es: La Espada del Heraldo
 - id: scenario.finders-keepers
@@ -1566,6 +1826,10 @@ scenarios:
     - ref: campaign.experience.award.per-enemy-out-of-action
     wyrdstone: Warriors earn one shard of wyrdstone for each counter still in their possession at the
       end of the battle (the stash holds 1D3 counters).
+    wyrdstone_i18n:
+      es: >-
+        Los guerreros ganan un fragmento de Piedra bruja por cada ficha que aún posean al final de la
+        batalla (el alijo contiene 1D3 fichas).
   name_i18n:
     es: ¡Quien Se Lo Encuentra Se Lo Queda!
 - id: scenario.mule-train
@@ -1606,6 +1870,10 @@ scenarios:
     notes:
     - 'The page shows ''(4 4 4 4 4 4)'' next to the reference of the warband wiped out in exploration
       without clarifying its meaning; verify against Town Cryer #14.'
+    notes_i18n:
+      es: >-
+        La página muestra «(4 4 4 4 4 4)» junto a la referencia de la banda aniquilada en la
+        exploración sin aclarar su significado; verificar contra Town Cryer #14.
   name_i18n:
     es: Recua de Mulas
 - id: scenario.death-in-the-mists
@@ -1673,35 +1941,57 @@ scenarios:
           max: 4
         roll: 2D6
         reward: The artefact is valuable and worth 5D6 gold coins
+        reward_i18n:
+          es: >-
+            El artefacto es valioso y vale 5D6 monedas de oro
       - when:
           min: 5
           max: 6
         roll: 2D6
         reward: Enchanted Totem of Light (bearer immune to psychology and all alone tests; +1 Leadership
           if given to the warband's leader)
+        reward_i18n:
+          es: >-
+            Tótem Encantado de Luz (el portador es inmune a la psicología y a las pruebas en
+            solitario; +1 de Liderazgo si se entrega al líder de la banda)
       - when:
           min: 7
           max: 8
         roll: 2D6
         reward: Silver Sickle (acts like a normal sword, +1 Weapon Skill, +1 Strength vs Daemons, Possessed
           and Undead)
+        reward_i18n:
+          es: >-
+            Hoz de Plata (funciona como una espada normal, +1 de Habilidad de Armas, +1 de Fuerza
+            contra Demonios, Poseídos y No Muertos)
       - when:
           min: 9
           max: 9
         roll: 2D6
         reward: Talisman of Light (nullifies any harmful spell cast at the wearer on a 4+)
+        reward_i18n:
+          es: >-
+            Talismán de Luz (anula cualquier hechizo dañino lanzado contra el portador con un 4+)
       - when:
           min: 10
           max: 11
         roll: 2D6
         reward: Tome of the Truthsayers (cast a single randomly determined Lore of Light spell once per
           battle without difficulty roll)
+        reward_i18n:
+          es: >-
+            Tomo de los Decidores de la Verdad (lanza un único hechizo de la Senda de la Luz
+            determinado al azar una vez por batalla sin tirada de dificultad)
       - when:
           min: 12
           max: 12
         roll: 2D6
         reward: Vambrace of Silver (any ranged weapon that hits the wearer is deflected harmlessly on
           a 5+)
+        reward_i18n:
+          es: >-
+            Brazalete de Plata (cualquier arma a distancia que alcance al portador se desvía sin
+            causar daño con un 5+)
   name_i18n:
     es: Don de los Decidores de Verdades
 - id: scenario.the-mummy
@@ -1755,41 +2045,88 @@ scenarios:
           objeto por separado, salvo las coronas de oro, que se encuentran automáticamente.
       contents:
       - reward: 5D6 Gold Crowns and a Lucky Charm
+        reward_i18n:
+          es: >-
+            5D6 coronas de oro y un Amuleto de la Suerte
         roll: automatic
       - reward: Gromril Sword
+        reward_i18n:
+          es: >-
+            Espada de Gromril
         roll: 5+
       - reward: Suit of heavy armour
+        reward_i18n:
+          es: >-
+            Armadura pesada
         item_id: heavy_armour
         roll: 5+
       - reward: Suit of light armour
+        reward_i18n:
+          es: >-
+            Armadura ligera
         item_id: light_armour
         roll: 4+
       - reward: Suit of light armour
+        reward_i18n:
+          es: >-
+            Armadura ligera
         item_id: light_armour
         roll: 4+
       - reward: Shield
+        reward_i18n:
+          es: >-
+            Escudo
         roll: 4+
       - reward: Helmet
+        reward_i18n:
+          es: >-
+            Yelmo
         roll: 4+
       - reward: D3 Swords
+        reward_i18n:
+          es: >-
+            D3 Espadas
         item_id: sword
         roll: 4+
       - reward: D3 Gems worth 10 gc each
+        reward_i18n:
+          es: >-
+            D3 Gemas por valor de 10 co cada una
         roll: 5+
       - reward: Jewellery worth D6 x 10 gc
+        reward_i18n:
+          es: >-
+            Joyas por valor de D6 x 10 co
         roll: 5+
       - reward: Telescope
+        reward_i18n:
+          es: >-
+            Telescopio
         roll: 5+
       - reward: Dispel Scroll
+        reward_i18n:
+          es: >-
+            Pergamino de Disipación
         roll: 5+
       - reward: Bugman's Ale
+        reward_i18n:
+          es: >-
+            Cerveza de Bugman
         roll: 4+
       - reward: Tome of Magic
+        reward_i18n:
+          es: >-
+            Tomo de Magia
         roll: 4+
     notes:
     - 'The page treasure table appears with the column order altered; the required rolls are reconstructed
       following the pattern of equivalent tables of the same site (Monster Hunt, Hidden Treasure) and
       remain pending verification against Town Cryer #15.'
+    notes_i18n:
+      es: >-
+        La tabla de tesoros de la página aparece con el orden de las columnas alterado; las tiradas
+        requeridas se reconstruyen siguiendo el patrón de tablas equivalentes del mismo sitio (Cacería
+        de Monstruos, Tesoro Escondido) y quedan pendientes de verificar contra Town Cryer #15.
   name_i18n:
     es: La Momia
 - id: scenario.the-ogham-stones
@@ -1878,25 +2215,53 @@ scenarios:
           objeto se tira por separado, salvo las coronas de oro, que siempre se encuentran.
       contents:
       - reward: D3 pieces of wyrdstone
+        reward_i18n:
+          es: >-
+            D3 fragmentos de Piedra bruja
         roll: 4+
       - reward: 5D6 gc
+        reward_i18n:
+          es: >-
+            5D6 co
         roll: automatic
       - reward: Holy relic
+        reward_i18n:
+          es: >-
+            Reliquia santa
         roll: 5+
       - reward: Suit of heavy armour
+        reward_i18n:
+          es: >-
+            Armadura pesada
         item_id: heavy_armour
         roll: 5+
       - reward: D3 gems worth 10 gc each
+        reward_i18n:
+          es: >-
+            D3 gemas por valor de 10 co cada una
         roll: 4+
       - reward: Elven cloak
+        reward_i18n:
+          es: >-
+            Capa élfica
         roll: 5+
       - reward: Holy tome
+        reward_i18n:
+          es: >-
+            Tomo sagrado
         roll: 5+
       - reward: Magical artefact
+        reward_i18n:
+          es: >-
+            Artefacto mágico
         roll: 5+
     notes:
     - 'The page header cites Town Cryer #14 while the site index assigns it to Town Cryer #18; verify
       against the prints.'
+    notes_i18n:
+      es: >-
+        El encabezado de la página cita Town Cryer #14, mientras que el índice del sitio lo asigna a
+        Town Cryer #18; verificar contra las impresiones.
   name_i18n:
     es: Tesoro Embrujado
 - id: scenario.a-night-in-the-graveyard
@@ -1969,6 +2334,11 @@ scenarios:
     notes:
     - 'The Sam award label says ''+1 Taking Out Sam'' but the text declares ''+3 Experience''; 3 is fixed
       and the discrepancy is documented for verification against Town Cryer #19.'
+    notes_i18n:
+      es: >-
+        La etiqueta de la recompensa de Sam dice «+1 por dejar Fuera de Combate a Sam», pero el texto
+        declara «+3 de Experiencia»; se fija el 3 y la discrepancia queda documentada para verificarla
+        contra Town Cryer #19.
   name_i18n:
     es: Pelea de Taberna
 - id: scenario.defend-the-oasis
@@ -2003,6 +2373,10 @@ scenarios:
     notes:
     - The water and caravan mechanics of the scenario belong to the Khemri campaign (water as a resource)
       and are documented without modelling.
+    notes_i18n:
+      es: >-
+        Las mecánicas de agua y caravana del escenario pertenecen a la campaña de Khemri (el agua como
+        recurso) y quedan documentadas sin modelarse.
   name_i18n:
     es: Defender el Oasis
 - id: scenario.tomb-raid
@@ -2041,33 +2415,51 @@ scenarios:
           max: 1
         roll: D6
         reward: Heavy armour
+        reward_i18n:
+          es: >-
+            Armadura pesada
         item_id: heavy_armour
       - when:
           min: 2
           max: 2
         roll: D6
         reward: D3 Scimitars
+        reward_i18n:
+          es: >-
+            D3 Cimitarras
         item_id: sword_scimitar
       - when:
           min: 3
           max: 3
         roll: D6
         reward: D6 Jambiyas (daggers)
+        reward_i18n:
+          es: >-
+            D6 Yambiyas (dagas)
       - when:
           min: 4
           max: 4
         roll: D6
         reward: Gem-encrusted helmet worth D6 x 10 gc
+        reward_i18n:
+          es: >-
+            Yelmo con incrustaciones de gemas por valor de D6 x 10 co
       - when:
           min: 5
           max: 5
         roll: D6
         reward: Shield
+        reward_i18n:
+          es: >-
+            Escudo
       - when:
           min: 6
           max: 6
         roll: D6
         reward: Monkey's paw (see Town Cryer
+        reward_i18n:
+          es: >-
+            Pata de mono (ver Town Cryer
   name_i18n:
     es: Saqueo de Tumba
 - id: scenario.protect-the-prince
@@ -2141,9 +2533,17 @@ scenarios:
       amount: 1
     - ref: campaign.experience.award.per-enemy-out-of-action
     wyrdstone: The attackers can pilfer the tomb after the battle and find D3+1 wyrdstone shards.
+    wyrdstone_i18n:
+      es: >-
+        Los atacantes pueden saquear la tumba tras la batalla y encuentran D3+1 fragmentos de Piedra
+        bruja.
     notes:
     - The three relics (Holy Tome, Holy Relic and Blessed Water) are chosen by the defender if only some
       are rescued; the attackers do not use them.
+    notes_i18n:
+      es: >-
+        El defensor elige las tres reliquias (Tomo Sagrado, Reliquia Santa y Agua Bendita) si solo se
+        rescatan algunas; los atacantes no las usan.
   name_i18n:
     es: Quemad a las Brujas
 - id: scenario.one-mans-rescue
@@ -2218,6 +2618,11 @@ scenarios:
     notes:
     - The 'Great Treasure' is defined by the referee (magic items, chest, etc.) and there are D3 extra
       wyrdstone/treasure counters in the central room; the concrete value is not fixed in the source.
+    notes_i18n:
+      es: >-
+        El «Gran Tesoro» lo define el árbitro (objetos mágicos, cofre, etc.) y hay D3 fichas
+        adicionales de Piedra bruja/tesoro en la sala central; el valor concreto no está fijado en la
+        fuente.
   name_i18n:
     es: El Guantelete
 - id: scenario.assault-on-the-rock
@@ -2266,6 +2671,13 @@ scenarios:
       during the battle may join the warband; the Witch Hunters and warbands with a priest of Morr destroy
       the book and gain +D6 Experience to share, the Witch Hunters additionally +2 Experience per Augur/Matriarch
       out of action and 50 gc.'
+    notes_i18n:
+      es: >-
+        Recompensas por facción: las Hermanas ganan 100 co y +2 de Experiencia para la Matriarca, y
+        las Hermanas reclutadas durante la batalla pueden unirse a la banda; los Cazadores de Brujas y
+        las bandas con un sacerdote de Morr destruyen el libro y ganan +D6 de Experiencia a repartir;
+        los Cazadores de Brujas ganan además +2 de Experiencia por cada Augur/Matriarca Fuera de
+        Combate y 50 co.
   name_i18n:
     es: Asalto a la Roca
 - id: scenario.in-the-dead-of-the-night
@@ -2302,9 +2714,17 @@ scenarios:
           Muerto Fuera de Combate y detener el ritual
       amount: 3
     wyrdstone: The winning warband recovers D3 shards of Wyrdstone left over from the ritual.
+    wyrdstone_i18n:
+      es: >-
+        La banda ganadora recupera D3 fragmentos de Piedra bruja sobrantes del ritual.
     notes:
     - If the defender completes the ritual he retains D3+3 of the summoned Zombies (without exceeding
       his warband limit); the rival models out of action come back as Zombies keeping their original equipment.
+    notes_i18n:
+      es: >-
+        Si el defensor completa el ritual, conserva D3+3 de los Zombis invocados (sin superar el
+        límite de su banda); las miniaturas rivales Fuera de Combate vuelven como Zombis conservando
+        su equipo original.
   name_i18n:
     es: En Mitad de la Noche
 - id: scenario.a-stroll-in-the-garden
@@ -2312,6 +2732,8 @@ scenarios:
   setting: Mordheim
   source: Town Cryer
   author: Anonymous
+  author_i18n:
+    es: Anónimo
   player_mode: 1v1
   effect: >-
     Skirmish set in Mordheim's Steinhardt Memorial Gardens. Warriors within 2" of a tree or bush
@@ -2349,6 +2771,8 @@ scenarios:
   setting: Mordheim
   source: Town Cryer
   author: Anonymous
+  author_i18n:
+    es: Anónimo
   player_mode: 1v1
   effect: Town Cryer edit of "Now Keep Me Safe, You Hear!?"
   effect_i18n:
@@ -2382,60 +2806,90 @@ scenarios:
           max: 2
         roll: 2D6
         reward: Holy or Unholy Relic
+        reward_i18n:
+          es: >-
+            Reliquia Santa o Impía
       - side: defender
         when:
           min: 3
           max: 5
         roll: 2D6
         reward: Cathayan Silk Clothes
+        reward_i18n:
+          es: >-
+            Ropas de Seda de Cathay
       - side: defender
         when:
           min: 6
           max: 8
         roll: 2D6
         reward: Ithilmar Armour
+        reward_i18n:
+          es: >-
+            Armadura de Ithilmar
       - side: defender
         when:
           min: 9
           max: 10
         roll: 2D6
         reward: Elven Cloak
+        reward_i18n:
+          es: >-
+            Capa Élfica
       - side: defender
         when:
           min: 11
           max: 12
         roll: 2D6
         reward: Gromril Armour
+        reward_i18n:
+          es: >-
+            Armadura de Gromril
       - side: attacker
         when:
           min: 2
           max: 2
         roll: 2D6
         reward: Throwing Knives
+        reward_i18n:
+          es: >-
+            Cuchillos Arrojadizos
       - side: attacker
         when:
           min: 3
           max: 5
         roll: 2D6
         reward: Crossbow Pistol
+        reward_i18n:
+          es: >-
+            Pistola Ballesta
       - side: attacker
         when:
           min: 6
           max: 8
         roll: 2D6
         reward: Hunting Arrows
+        reward_i18n:
+          es: >-
+            Flechas de Caza
       - side: attacker
         when:
           min: 9
           max: 10
         roll: 2D6
         reward: Repeater Crossbow
+        reward_i18n:
+          es: >-
+            Ballesta de Repetición
       - side: attacker
         when:
           min: 11
           max: 12
         roll: 2D6
         reward: Hunting Rifle
+        reward_i18n:
+          es: >-
+            Rifle de Caza
   name_i18n:
     es: Los Guardaespaldas
 - id: scenario.blood-hunt
@@ -2475,6 +2929,12 @@ scenarios:
     - Each warband receives the services of a Dramatis Personae free of charge during the scenario; if
       that Dramatis Personae is put Out of Action, the warband automatically routs at the start of its
       next turn. The Dramatis Personae catalogue (hired-swords-and-dramatis.yaml) remains in draft.
+    notes_i18n:
+      es: >-
+        Cada banda recibe los servicios de un Dramatis Personae gratis durante el escenario; si ese
+        Dramatis Personae queda Fuera de Combate, la banda se desbanda automáticamente al comienzo de
+        su siguiente turno. El catálogo de Dramatis Personae (hired-swords-and-dramatis.yaml) sigue en
+        borrador.
   name_i18n:
     es: Cacería de Sangre
 - id: scenario.bounty-hunting
@@ -2519,11 +2979,20 @@ scenarios:
           La banda ganadora captura el equipo de los bandidos.
       contents:
       - reward: 6 Crossbows
+        reward_i18n:
+          es: >-
+            6 Ballestas
         roll: automatic
       - reward: D3 swords
+        reward_i18n:
+          es: >-
+            D3 espadas
         item_id: sword
         roll: automatic
       - reward: 2D6 daggers
+        reward_i18n:
+          es: >-
+            2D6 dagas
         roll: automatic
   name_i18n:
     es: Cazarrecompensas
@@ -2575,80 +3044,131 @@ scenarios:
         roll: 4D6
         reward: Gems worth 100 gc (fence value 40 gc, or worn adds +1 to rarity finds) and a pack of Tarot
           cards
+        reward_i18n:
+          es: >-
+            Gemas por valor de 100 co (valor al venderlas 40 co, o si se llevan puestas añaden +1 a
+            las tiradas de rareza) y una baraja de Cartas del Tarot
       - when:
           min: 5
           max: 5
         roll: 4D6
         reward: Blunderbuss and shot
+        reward_i18n:
+          es: >-
+            Trabuco y munición
       - when:
           min: 6
           max: 6
         roll: 4D6
         reward: Medicine chest usable as D6 doses of Healing Herbs or as a one-off re-roll on the Hero
           Serious Injury table
+        reward_i18n:
+          es: >-
+            Botiquín utilizable como D6 dosis de Hierbas Curativas o como una única repetición en la
+            tabla de Heridas Graves de Héroes
       - when:
           min: 7
           max: 7
         roll: 4D6
         reward: Suit of heavy armour
+        reward_i18n:
+          es: >-
+            Armadura pesada
         item_id: heavy_armour
       - when:
           min: 8
           max: 8
         roll: 4D6
         reward: Elven Cloak
+        reward_i18n:
+          es: >-
+            Capa Élfica
       - when:
           min: 9
           max: 9
         roll: 4D6
         reward: D3 shields and swords
+        reward_i18n:
+          es: >-
+            D3 escudos y espadas
       - when:
           min: 10
           max: 11
         roll: 4D6
         reward: Beer worth 2D6 gc per crate; on a D6 roll of 6 there is one dose of Bugman's Ale
+        reward_i18n:
+          es: >-
+            Cerveza por valor de 2D6 co por caja; con un 6 en un D6 hay una dosis de Cerveza de Bugman
       - when:
           min: 12
           max: 16
         roll: 4D6
         reward: Food worth D6 gc per crate, including one clove of Garlic per warband member; on a D6
           roll of 6 also one dose of Dark Venom (1-2), Black Lotus (3-4) or Crimson Shade (5-6)
+        reward_i18n:
+          es: >-
+            Comida por valor de D6 co por caja, incluido un diente de Ajo por cada miembro de la
+            banda; con un 6 en un D6 también una dosis de Veneno Oscuro (1-2), Loto Negro (3-4) o
+            Sombra Carmesí (5-6)
       - when:
           min: 17
           max: 18
         roll: 4D6
         reward: Clothing worth 2D6 gc per crate, including D3 sets of toughened leathers
+        reward_i18n:
+          es: >-
+            Ropa por valor de 2D6 co por caja, incluidos D3 conjuntos de Cuero Endurecido
       - when:
           min: 19
           max: 19
         roll: 4D6
         reward: Luxury goods worth 4D6 gc per crate; hidden inside is a Wyrdstone pendulum (1-3) or a
           set of Cathayan Silks (4-6)
+        reward_i18n:
+          es: >-
+            Artículos de lujo por valor de 4D6 co por caja; escondido dentro hay un Péndulo de Piedra
+            bruja (1-3) o un conjunto de Sedas de Cathay (4-6)
       - when:
           min: 20
           max: 20
         roll: 4D6
         reward: Blackpowder worth 5D6 per crate, containing one pack of Superior Blackpowder
+        reward_i18n:
+          es: >-
+            Pólvora por valor de 5D6 por barril, que contiene un paquete de Pólvora Superior
       - when:
           min: 21
           max: 21
         roll: 4D6
         reward: D3 Crossbows each with Hunting Bolts (same as Hunting Arrows) for one game
+        reward_i18n:
+          es: >-
+            D3 Ballestas, cada una con Virotes de Caza (iguales que las Flechas de Caza) para una
+            partida
       - when:
           min: 22
           max: 22
         roll: 4D6
         reward: D3 Elven bows
+        reward_i18n:
+          es: >-
+            D3 Arcos Élficos
       - when:
           min: 23
           max: 23
         roll: 4D6
         reward: Hunting Rifle
+        reward_i18n:
+          es: >-
+            Rifle de Caza
       - when:
           min: 24
           max: 24
         roll: 4D6
         reward: Suit of Gromril armour
+        reward_i18n:
+          es: >-
+            Armadura de Gromril
   name_i18n:
     es: Un Paseo por los Muelles
 - id: scenario.lost-in-the-bogs
@@ -2723,6 +3243,11 @@ scenarios:
     notes:
     - The page URL keeps the site typo ('stagecoash'); the scenario is published as 'Stagecoach Ambush'.
       Roadwarden and Highwayman can be hired at half price in this scenario.
+    notes_i18n:
+      es: >-
+        La URL de la página conserva la errata del sitio («stagecoash»); el escenario se publica como
+        «Stagecoach Ambush». El Guardacaminos y el Bandolero pueden contratarse a mitad de precio en
+        este escenario.
   name_i18n:
     es: Emboscada a la Diligencia
 - id: scenario.the-item-lost
@@ -2759,6 +3284,10 @@ scenarios:
       amount: 1
     wyrdstone: If the warband that Nicodemus has hired successfully retrieves the wand, they are considered
       to have found two additional Wyrdstone shards as their payment.
+    wyrdstone_i18n:
+      es: >-
+        Si la banda contratada por Nicodemus recupera con éxito la varita, se considera que ha
+        encontrado dos fragmentos adicionales de Piedra bruja como pago.
     loot:
       effect: >-
         The Wand of Phyrros allows the wielder to use the spell Fires of U'Zhul once per game
@@ -2805,6 +3334,11 @@ scenarios:
     notes:
     - A warrior cursed by the Balewolf's lycanthropy may disappear from the warband roster (roll 1 after
       the battle); exceptional progression rule dependent on the Balewolf profile (TC28), not yet modelled.
+    notes_i18n:
+      es: >-
+        Un guerrero maldecido por la licantropía del Balewolf puede desaparecer de la plantilla de la
+        banda (tira 1 después de la batalla); regla de progresión excepcional dependiente del perfil
+        del Balewolf (TC28), aún sin modelar.
   name_i18n:
     es: ¡Algo Se Mueve en el Bosque!
 - id: scenario.gathering-of-the-horde
@@ -2900,31 +3434,49 @@ scenarios:
           max: 1
         roll: D6
         reward: Lucky Charm
+        reward_i18n:
+          es: >-
+            Amuleto de la Suerte
       - when:
           min: 2
           max: 2
         roll: D6
         reward: Tears of Shallya
+        reward_i18n:
+          es: >-
+            Lágrimas de Shallya
       - when:
           min: 3
           max: 3
         roll: D6
         reward: Crimson Shade
+        reward_i18n:
+          es: >-
+            Sombra Carmesí
       - when:
           min: 4
           max: 4
         roll: D6
         reward: Dark Venom
+        reward_i18n:
+          es: >-
+            Veneno Oscuro
       - when:
           min: 5
           max: 5
         roll: D6
         reward: Cathayan Silks
+        reward_i18n:
+          es: >-
+            Sedas de Cathay
       - when:
           min: 6
           max: 6
         roll: D6
         reward: Tome of Magic
+        reward_i18n:
+          es: >-
+            Tomo de Magia
   name_i18n:
     es: Los Observadores
 - id: scenario.the-frenzied-mob
@@ -2932,6 +3484,8 @@ scenarios:
   setting: The Empire
   source: Town Cryer
   author: Anonymous
+  author_i18n:
+    es: Anónimo
   player_mode: 1v1
   effect: >-
     An Empire In Flames scenario. Warbands attempt to loot a village consisting of D3+1 buildings,
@@ -2965,6 +3519,8 @@ scenarios:
   setting: The Empire
   source: Town Cryer
   author: Anonymous
+  author_i18n:
+    es: Anónimo
   player_mode: 1v1
   effect: >-
     Attackers attempt to take the defenders' camp. Plays as Defend The Find except the defenders
@@ -2998,6 +3554,11 @@ scenarios:
     - The scenario is played as Defend the Find with exceptions, so its experience section is not repeated
       on the page; the standard awards equivalent to those of scenario.defend-the-find are assumed. The
       page does not detail the contents of the captured stash.
+    notes_i18n:
+      es: >-
+        El escenario se juega como Defender el Botín con excepciones, así que su sección de
+        experiencia no se repite en la página; se asumen las recompensas estándar equivalentes a las
+        de scenario.defend-the-find. La página no detalla el contenido del alijo capturado.
   name_i18n:
     es: Asalto al Campamento
 - id: scenario.the-rats-lair
@@ -3067,6 +3628,10 @@ scenarios:
     notes:
     - A model that wanders off the table edge lost in the fog is removed from the warband roster (never
       seen again); exceptional progression rule not modelled.
+    notes_i18n:
+      es: >-
+        Una miniatura que se pierde por el borde de la mesa desorientada por la niebla se elimina de
+        la plantilla de la banda (no se la vuelve a ver); regla de progresión excepcional sin modelar.
   name_i18n:
     es: En las Lomas Siniestras
 - id: scenario.battle-for-the-farm
@@ -3119,16 +3684,25 @@ scenarios:
           max: 1
         roll: D6
         reward: Nothing of value
+        reward_i18n:
+          es: >-
+            Nada de valor
       - when:
           min: 2
           max: 5
         roll: D6
         reward: Valuables worth 2D6 gold crowns
+        reward_i18n:
+          es: >-
+            Objetos de valor por 2D6 coronas de oro
       - when:
           min: 6
           max: 6
         roll: D6
         reward: A single shard of wyrdstone
+        reward_i18n:
+          es: >-
+            Un único fragmento de Piedra bruja
   name_i18n:
     es: Batalla por la Granja
 - id: scenario.blood-on-the-pasturelands
@@ -3170,6 +3744,10 @@ scenarios:
     notes:
     - Successfully stolen horses are added to the warband roster; if a warband fails its fleeing test
       it loses D3-1 of its stolen horses in the confusion.
+    notes_i18n:
+      es: >-
+        Los caballos robados con éxito se añaden a la plantilla de la banda; si una banda falla su
+        chequeo de huida, pierde D3-1 de sus caballos robados en la confusión.
   name_i18n:
     es: Sangre en los Pastizales
 - id: scenario.through-black-fire-pass
@@ -3202,6 +3780,11 @@ scenarios:
     notes:
     - Because of how hard his task is, the Defender gains double Experience for surviving or for being
       the winning leader; the page shows the +1 awards with the double applied to the Defender.
+    notes_i18n:
+      es: >-
+        Debido a lo duro de su tarea, el Defensor gana el doble de Experiencia por sobrevivir o por
+        ser el líder ganador; la página muestra las recompensas de +1 con el doble aplicado al
+        Defensor.
   name_i18n:
     es: A Través del Paso del Fuego Negro
 - id: scenario.brigands-in-the-pasturelands
@@ -3244,6 +3827,11 @@ scenarios:
     notes:
     - If the defenders win, one of the hired mercenaries still standing joins the warband for free (even
       if he is a hired sword normally not allowed); his subsequent upkeep is normal.
+    notes_i18n:
+      es: >-
+        Si ganan los defensores, uno de los mercenarios contratados que siga en pie se une gratis a la
+        banda (aunque sea una espada a sueldo normalmente no permitida); su manutención posterior es
+        normal.
   name_i18n:
     es: Bandidos en los Pastizales
 - id: scenario.the-watchtower
@@ -3501,11 +4089,23 @@ scenarios:
     wyrdstone: A pile of wyrdstone sits in an 8" circle in the centre of the board; the pile is brought
       to safety as D6+2 wyrdstone. Each time a model takes wyrdstone from the pile, D3+1 Zombies per warband
       are generated 8" away around the pile.
+    wyrdstone_i18n:
+      es: >-
+        Un montón de Piedra bruja se encuentra en un círculo de 8" en el centro del tablero; el montón
+        se pone a salvo como D6+2 de Piedra bruja. Cada vez que una miniatura coge Piedra bruja del
+        montón, se generan D3+1 Zombis por banda a 8" alrededor del montón.
     notes:
     - Multiplayer (one or several players; adapted from Troll 23). Only one Hero and one group of henchmen
       chosen at random are on the table at a time; upon returning to the deployment zone with wyrdstone,
       another of the same type may come out. The fog limits visibility to 4" with its own 2D6 table. Victory
       is decided by the agreed option (most wyrdstone recovered, last one standing, etc.).
+    notes_i18n:
+      es: >-
+        Multijugador (uno o varios jugadores; adaptado de Troll 23). Solo un Héroe y un grupo de
+        secuaces elegidos al azar están en la mesa a la vez; al regresar a la zona de despliegue con
+        Piedra bruja, puede salir otro del mismo tipo. La niebla limita la visibilidad a 4" con su
+        propia tabla de 2D6. La victoria se decide por la opción acordada (más Piedra bruja
+        recuperada, el último en pie, etc.).
   name_i18n:
     es: Noche de los Muertos
 - id: scenario.happy-harpy-hunting-grounds
@@ -3543,6 +4143,10 @@ scenarios:
       amount: 1
     wyrdstone: 'The nest contains a number of wyrdstone shards: roll D3 at set-up to determine how many
       are included.'
+    wyrdstone_i18n:
+      es: >-
+        El nido contiene varios fragmentos de Piedra bruja: al desplegar, tira D3 para determinar
+        cuántos incluye.
     loot:
       effect: >-
         The warband that does not rout is the winner and may roll on the nest contents chart if all
@@ -3556,36 +4160,74 @@ scenarios:
       contents:
       - roll: 5+
         reward: 2D6 gc.
+        reward_i18n:
+          es: >-
+            2D6 co.
       - roll: 3+
         reward: Jeweled Dagger.
+        reward_i18n:
+          es: >-
+            Daga Enjoyada.
       - roll: 5+
         reward: Heavy Armour.
+        reward_i18n:
+          es: >-
+            Armadura Pesada.
         item_id: heavy_armour
       - roll: 6+
         reward: Ithilmar Sword.
+        reward_i18n:
+          es: >-
+            Espada de Ithilmar.
       - roll: 3+
         reward: Gems worth 30 gc.
+        reward_i18n:
+          es: >-
+            Gemas por valor de 30 co.
       - roll: 6+
         reward: Wolfcloak.
+        reward_i18n:
+          es: >-
+            Capa de Lobo.
         item_id: wolfcloak
       - roll: 5+
         reward: 'Straggler: an unfortunate captive who may aid the warband in its exploration phase either
           this game or next.'
+        reward_i18n:
+          es: >-
+            Rezagado: un desgraciado cautivo que puede ayudar a la banda en su fase de exploración, ya
+            sea esta partida o la siguiente.
       - roll: 3+
         reward: Lucky Charm.
+        reward_i18n:
+          es: >-
+            Amuleto de la Suerte.
         item_id: lucky_charm
       - roll: 4+
         reward: D3 Shields.
+        reward_i18n:
+          es: >-
+            D3 Escudos.
         item_id: shield
       - roll: 5+
         reward: D3 Helmets.
+        reward_i18n:
+          es: >-
+            D3 Yelmos.
         item_id: helmet
       - roll: 6+
         reward: D3 Swords.
+        reward_i18n:
+          es: >-
+            D3 Espadas.
         item_id: sword
     notes:
     - 'Multiplayer scenario for three players: one controls a warband of three Harpies (own profile, never
       flee) and the other two try to kill them to get the treasure.'
+    notes_i18n:
+      es: >-
+        Escenario multijugador para tres jugadores: uno controla una banda de tres Arpías (perfil
+        propio, nunca huyen) y los otros dos intentan matarlas para conseguir el tesoro.
   name_i18n:
     es: Felices Cotos de Caza de Arpías
 - id: scenario.round-up-at-the-mordheim-corral
@@ -3626,9 +4268,21 @@ scenarios:
       roll D6, on 1-3 the warrior cannot locate the stomach and may try again next turn, on 4-6 he rolls
       D3 to determine how many shards are found. A warrior carrying wyrdstone who is killed, stunned or
       knocked down drops counters where he fell.'
+    wyrdstone_i18n:
+      es: >-
+        Los jabalíes se han tragado la Piedra bruja. Hay que matar a cada jabalí antes de poder
+        registrarlo: tira D6; con 1-3 el guerrero no encuentra el estómago y puede volver a intentarlo
+        en el siguiente turno; con 4-6 tira D3 para determinar cuántos fragmentos encuentra. Un
+        guerrero que lleve Piedra bruja y sea matado, aturdido o derribado suelta las fichas donde
+        cayó.
     notes:
     - Multiplayer; the boars (own profile, D3+1 per warband, do not flee) move first. Optional mutation
       rules (5+ per boar from its second turn) and domestication by Orc Heroes.
+    notes_i18n:
+      es: >-
+        Multijugador; los jabalíes (perfil propio, D3+1 por banda, no huyen) se mueven primero. Reglas
+        opcionales de mutación (5+ por jabalí desde su segundo turno) y domesticación por Héroes
+        Orcos.
   name_i18n:
     es: Redada en el Corral de Mordheim
 - id: scenario.the-recipe
@@ -3670,6 +4324,11 @@ scenarios:
     - Multiplayer (two or more). Geefer Lugbottom (own profile, ignores psychology) and his six halfling
       guards (bows) defend the pie cart (3D6+6 pies). If all warbands flee leaving Geefer or his guards
       in play, all lose.
+    notes_i18n:
+      es: >-
+        Multijugador (dos o más). Geefer Lugbottom (perfil propio, ignora la psicología) y sus seis
+        guardias halflings (arcos) defienden el carro de empanadas (3D6+6 empanadas). Si todas las
+        bandas huyen dejando a Geefer o a sus guardias en juego, todas pierden.
   name_i18n:
     es: La Receta
 - id: scenario.ambush-archive-pestilens
@@ -3737,6 +4396,14 @@ scenarios:
       the beginning, minus the number of its own Heroes taken Out of Action during the game, down to a
       minimum of zero. The attacking warband gains one shard for each enemy Hero it takes Out of Action,
       up to the number of shards the opposing warband was carrying at the start.
+    wyrdstone_i18n:
+      es: >-
+        El defensor empieza la batalla llevando D6 fragmentos de Piedra bruja, pero nunca más que el
+        número de Héroes de la banda. La banda defensora gana toda la Piedra bruja que llevaba al
+        principio, menos el número de sus propios Héroes que hayan quedado Fuera de Combate durante la
+        partida, hasta un mínimo de cero. La banda atacante gana un fragmento por cada Héroe enemigo
+        que deje Fuera de Combate, hasta el número de fragmentos que la banda contraria llevaba al
+        inicio.
   name_i18n:
     es: Emboscada
 - id: scenario.breakthrough-archive-pestilens
@@ -3811,19 +4478,33 @@ scenarios:
         roll: D6
         reward: Nothing. The villagers were on their last legs and tricked the defenders about the hire
           fee.
+        reward_i18n:
+          es: >-
+            Nada. Los aldeanos estaban en las últimas y engañaron a los defensores con el precio de la
+            contratación.
       - when:
           min: 3
           max: 4
         roll: D6
         reward: 2D6 gc worth of food, personal possessions and tools.
+        reward_i18n:
+          es: >-
+            2D6 co en comida, objetos personales y herramientas.
       - when:
           min: 5
           max: 7
         roll: D6
         reward: 1D3 Wyrdstone shards.
+        reward_i18n:
+          es: >-
+            1D3 fragmentos de Piedra bruja.
     notes:
     - The original reward table lists the 5-7 range with a D6; the attacker's +1 explains the 7 (when
       the attacker wins, the effective range becomes 2-3 / 4-5 / 6-8).
+    notes_i18n:
+      es: >-
+        La tabla de recompensas original incluye el intervalo 5-7 con un D6; el +1 del atacante
+        explica el 7 (cuando gana el atacante, el intervalo efectivo pasa a ser 2-3 / 4-5 / 6-8).
   name_i18n:
     es: ¡Defender la Aldea!
 - id: scenario.dont-wake-the-giant
@@ -3889,23 +4570,47 @@ scenarios:
       contents:
       - roll: automatic
         reward: 'Chest: 3D6 gold crowns.'
+        reward_i18n:
+          es: >-
+            Arcón: 3D6 coronas de oro.
       - roll: 5+
         reward: 'Chest: D3 pieces of wyrdstone.'
+        reward_i18n:
+          es: >-
+            Arcón: D3 fragmentos de Piedra bruja.
       - roll: 5+
         reward: 'Chest: D3 gems worth 10 gc each.'
+        reward_i18n:
+          es: >-
+            Arcón: D3 gemas por valor de 10 co cada una.
       - roll: 4+
         reward: 'Chest: Mordheim map.'
+        reward_i18n:
+          es: >-
+            Arcón: Mapa de Mordheim.
         item_id: mordheim_map
       - roll: 4+
         reward: 'Chest: Suit of light armour.'
+        reward_i18n:
+          es: >-
+            Arcón: Armadura ligera.
         item_id: light_armour
       - roll: 3+
         reward: 'Chest: Lucky charm.'
+        reward_i18n:
+          es: >-
+            Arcón: Amuleto de la suerte.
         item_id: lucky_charm
       - roll: automatic
         reward: 'Bag of gold: D6 x 10 gold crowns.'
+        reward_i18n:
+          es: >-
+            Bolsa de oro: D6 x 10 coronas de oro.
       - roll: 5+
         reward: 'Bag of gold: D3 gems worth 10 gc each.'
+        reward_i18n:
+          es: >-
+            Bolsa de oro: D3 gemas por valor de 10 co cada una.
   name_i18n:
     es: No Despertar al Gigante
 - id: scenario.grudge-match
@@ -3998,24 +4703,48 @@ scenarios:
       contents:
       - roll: 4+
         reward: D3 pieces of wyrdstone.
+        reward_i18n:
+          es: >-
+            D3 fragmentos de Piedra bruja.
       - roll: automatic
         reward: 5D6 x 5 gc.
+        reward_i18n:
+          es: >-
+            5D6 x 5 co.
       - roll: 5+
         reward: Holy relic.
+        reward_i18n:
+          es: >-
+            Reliquia santa.
         item_id: holy_relic
       - roll: 5+
         reward: Suit of heavy armour.
+        reward_i18n:
+          es: >-
+            Armadura pesada.
         item_id: heavy_armour
       - roll: 4+
         reward: D3 gems worth 10 gc each.
+        reward_i18n:
+          es: >-
+            D3 gemas por valor de 10 co cada una.
       - roll: 5+
         reward: Elven cloak.
+        reward_i18n:
+          es: >-
+            Capa élfica.
         item_id: elven_cloak
       - roll: 5+
         reward: Holy tome.
+        reward_i18n:
+          es: >-
+            Tomo sagrado.
         item_id: holy_tome
       - roll: 5+
         reward: A magical artefact.
+        reward_i18n:
+          es: >-
+            Un artefacto mágico.
   name_i18n:
     es: Tesoro Embrujado
 - id: scenario.its-all-mine
@@ -4078,6 +4807,11 @@ scenarios:
     notes:
     - 'The page does not detail rewards in gc or wyrdstone: only Experience per side. The Attackers receive
       two barrels of gunpowder (gunpowder rules, not described in the article itself).'
+    notes_i18n:
+      es: >-
+        La página no detalla recompensas en co ni en Piedra bruja: solo Experiencia por bando. Los
+        atacantes reciben dos barriles de pólvora (reglas de pólvora, no descritas en el propio
+        artículo).
   name_i18n:
     es: ¡¡Es Todo MÍO!!
 - id: scenario.raid
@@ -4140,26 +4874,42 @@ scenarios:
           max: 2
         roll: D6
         reward: 'Failure: the building is empty; nothing is found.'
+        reward_i18n:
+          es: >-
+            Fracaso: el edificio está vacío; no se encuentra nada.
       - when:
           min: 3
           max: 3
         roll: D6
         reward: Worthless inventories; nothing is taken but the next house searched gains +1 to the roll.
+        reward_i18n:
+          es: >-
+            Inventarios sin valor; no se coge nada, pero la siguiente casa registrada gana +1 a la
+            tirada.
       - when:
           min: 4
           max: 4
         roll: D6
         reward: A chest with valuable trinkets; add 1 Jewellery to the warband total.
+        reward_i18n:
+          es: >-
+            Un arcón con baratijas valiosas; añade 1 Joya al total de la banda.
       - when:
           min: 5
           max: 5
         roll: D6
         reward: A bureau full of jewelleries; add D6 Jewelleries.
+        reward_i18n:
+          es: >-
+            Un escritorio lleno de joyas; añade D6 Joyas.
       - when:
           min: 6
           max: 6
         roll: D6
         reward: A treasure chest under a trapdoor; add 2D6 Jewelleries.
+        reward_i18n:
+          es: >-
+            Un cofre del tesoro bajo una trampilla; añade 2D6 Joyas.
     income: 'After the raid the Jewelleries are sold: multiply the total number of Jewelleries by five
       to get the gold crowns paid. Warriors may also capture slaves: three Inhabitants or one Townsman
       put out of action count as one Slave, recorded on the roster and usable in a later post-battle phase
@@ -4169,6 +4919,10 @@ scenarios:
     notes:
     - 'The page has no Experience section nor winning-leader awards: it is a campaign event with its own
       rewards (building searches, slaves and burning).'
+    notes_i18n:
+      es: >-
+        La página no tiene sección de Experiencia ni recompensas de líder ganador: es un evento de
+        campaña con sus propias recompensas (registros de edificios, esclavos e incendios).
   name_i18n:
     es: Incursiones
 - id: scenario.rawhide
@@ -4228,6 +4982,12 @@ scenarios:
     - The page adapts the original print awards (which used +20 xp to the leader, +5 xp per driver, D6
       xp per survivor, +5 xp per wound and for stopping a wagon) to the site standard +1 system; the originals
       are listed on the page itself under Original Experience.
+    notes_i18n:
+      es: >-
+        La página adapta las recompensas de la impresión original (que usaban +20 px para el líder, +5
+        px por conductor, D6 px por superviviente, +5 px por herida y por detener un carro) al sistema
+        estándar de +1 del sitio; los originales se enumeran en la propia página bajo Experiencia
+        Original.
   name_i18n:
     es: Cuero Crudo
 - id: scenario.rescue
@@ -4256,6 +5016,10 @@ scenarios:
     notes:
     - The page wrongly copies the Grudge Match Single Combat sentence into the +1 Per Enemy Out of Action
       award, inapplicable here.
+    notes_i18n:
+      es: >-
+        La página copia por error la frase de Combate Singular de la Partida de Rencores en la
+        recompensa +1 por Enemigo Fuera de Combate, inaplicable aquí.
   name_i18n:
     es: Rescate
 - id: scenario.romeros-pride
@@ -4280,6 +5044,12 @@ scenarios:
     - 'The page has no Experience, wyrdstone or gc reward section: only the zombie horde rules (arrival
       1D3 per exit at the end of turn 3, 1D4 on the 4th and 1D6 from the 5th onwards). Victory and its
       awards remain undefined in the source; documented for later steps.'
+    notes_i18n:
+      es: >-
+        La página no tiene sección de recompensas de Experiencia, Piedra bruja ni co: solo las reglas
+        de la horda de zombis (llegada de 1D3 por salida al final del turno 3, 1D4 en el 4.º y 1D6 a
+        partir del 5.º). La victoria y sus recompensas quedan sin definir en la fuente; documentado
+        para pasos posteriores.
   name_i18n:
     es: Orgullo de Romero
 - id: scenario.the-battle-at-koleshire-keep
@@ -4305,6 +5075,12 @@ scenarios:
     - 'The page has no Experience or rewards section: the first side to flee or be destroyed loses. The
       scenario uses own profiles (Jarsyn Gaylord, Reikland mercenary captain with 2 Wounds and Expert
       Swordsman, 80 gc; Skaggle, Orc Boss with Ld 9 and low-blow, 90 gc); no documented progression awards.'
+    notes_i18n:
+      es: >-
+        La página no tiene sección de Experiencia ni de recompensas: el primer bando que huya o sea
+        destruido pierde. El escenario usa perfiles propios (Jarsyn Gaylord, capitán mercenario de
+        Reikland con 2 Heridas y Espadachín Experto, 80 co; Skaggle, Jefe Orco con Ld 9 y golpe bajo,
+        90 co); sin recompensas de progresión documentadas.
   name_i18n:
     es: La Batalla en la Fortaleza de Koleshire
 - id: scenario.the-caravan-archive-pestilens
@@ -4312,6 +5088,8 @@ scenarios:
   setting: Mordheim
   source: Archive Pestilen
   author: Unknown
+  author_i18n:
+    es: Desconocido
   player_mode: 1v1
   effect: Guard or plunder a caravan of gold before it gets to the other side.
   effect_i18n:
@@ -4338,11 +5116,24 @@ scenarios:
     wyrdstone: The merchant carries a small chest with D3+1 shards of wyrdstone. If a warband ends the
       game in possession of the cargo it keeps all of the wyrdstone. If the merchant successfully keeps
       the cargo, the guarding warband receives 1 shard plus D6 x 5 gold crowns for their trouble.
+    wyrdstone_i18n:
+      es: >-
+        El mercader lleva un pequeño arcón con D3+1 fragmentos de Piedra bruja. Si una banda termina
+        la partida en posesión del cargamento, conserva toda la Piedra bruja. Si el mercader logra
+        conservar el cargamento, la banda que lo escolta recibe 1 fragmento más D6 x 5 coronas de oro
+        por sus molestias.
     notes:
     - 'The editorial note of the page says the scenario proved very difficult for the defender in four
       games; they suggest toughening the merchant (T4, shield, lucky bastard) and that the defenders should
       not fail the fleeing test except voluntarily. Optional variants: Lucky Fool, Two''s a Crowd, Greedy
       Bastard and A Friend in the Business (20% discount/surcharge on equipment until the next battle).'
+    notes_i18n:
+      es: >-
+        La nota editorial de la página dice que el escenario resultó muy difícil para el defensor en
+        cuatro partidas; se sugiere endurecer al mercader (R4, escudo, tipo con suerte) y que los
+        defensores no fallen el chequeo de huida salvo de forma voluntaria. Variantes opcionales:
+        Tonto con Suerte, Dos Son Multitud, Avaro y Un Amigo en el Negocio (20% de descuento/recargo
+        en el equipo hasta la siguiente batalla).
   name_i18n:
     es: La Caravana
 - id: scenario.the-restless-dead
@@ -4367,6 +5158,12 @@ scenarios:
     - 'The page has no Experience, wyrdstone or rewards section: only the undead invasion rules (appearance
       from turn 2 on 6+, turn 3 on 5+, and from turn 4+ onwards on 4+; D6 skeletons or zombies per appearance).
       Victory and its awards remain undefined in the source; documented for later steps.'
+    notes_i18n:
+      es: >-
+        La página no tiene sección de Experiencia, Piedra bruja ni recompensas: solo las reglas de
+        invasión de no muertos (aparición a partir del turno 2 con 6+, del turno 3 con 5+ y del turno
+        4+ en adelante con 4+; D6 esqueletos o zombis por aparición). La victoria y sus recompensas
+        quedan sin definir en la fuente; documentado para pasos posteriores.
   name_i18n:
     es: Los Muertos Inquietos
 - id: scenario.the-square-of-the-snake
@@ -4401,6 +5198,13 @@ scenarios:
       that reaches the platform and receives a random opponent, 1 for putting any warrior out of action,
       2 for the chosen enemy warrior, and 10 for returning to the platform after eliminating the chosen
       enemy. There are no gc or wyrdstone rewards on the page.'
+    notes_i18n:
+      es: >-
+        Escenario multijugador por puntos de victoria, no experiencia estándar: 10 puntos para la
+        primera banda que alcance la plataforma y reciba un oponente aleatorio, 1 por dejar Fuera de
+        Combate a cualquier guerrero, 2 por el guerrero enemigo elegido y 10 por volver a la
+        plataforma tras eliminar al enemigo elegido. La página no incluye recompensas en co ni en
+        Piedra bruja.
   name_i18n:
     es: La Plaza de la Serpiente
 - id: scenario.the-wizards-tower
@@ -4451,16 +5255,26 @@ scenarios:
         roll: D6
         reward: 'Illusions: the treasures were simple illusions and vanish before the warband returns
           to camp.'
+        reward_i18n:
+          es: >-
+            Ilusiones: los tesoros eran simples ilusiones y se desvanecen antes de que la banda
+            regrese al campamento.
       - when:
           min: 3
           max: 5
         roll: D6
         reward: 'Valuables: roll 3D6, the result being the gc the items are traded for.'
+        reward_i18n:
+          es: >-
+            Objetos de valor: tira 3D6, y el resultado son las co por las que se cambian los objetos.
       - when:
           min: 6
           max: 6
         roll: D6
         reward: 'Gold, Gold, GOLD: roll 6D6 and add the result to the Treasury.'
+        reward_i18n:
+          es: >-
+            ¡Oro, Oro, ORO!: tira 6D6 y añade el resultado a la Tesorería.
   name_i18n:
     es: La Torre del Mago
 - id: scenario.mordheims-burning
@@ -4499,11 +5313,23 @@ scenarios:
     wyrdstone: The winning warband is the only warband that may search for wyrdstone after the battle
       (it does not roll the extra exploration D6). Due to the increased demand after the city's destruction,
       wyrdstone sells for triple the normal gold crowns.
+    wyrdstone_i18n:
+      es: >-
+        La banda ganadora es la única banda que puede buscar Piedra bruja después de la batalla (no
+        tira el D6 adicional de exploración). Debido a la mayor demanda tras la destrucción de la
+        ciudad, la Piedra bruja se vende por el triple de coronas de oro de lo normal.
     notes:
     - 'Multiplayer end-of-campaign scenario (at least three warbands with rating 300+). Special injury
       table: anyone out of action rolls on the own table (1-5 death, 6 the warrior escapes unhurt and
       gains +1 Experience). No voluntary fleeing: fleeing tests only start at 50% casualties, with unmodified
       Ld 10 while the leader lives. Random events occur automatically every turn.'
+    notes_i18n:
+      es: >-
+        Escenario multijugador de final de campaña (al menos tres bandas con valoración 300+). Tabla
+        de heridas especial: cualquiera Fuera de Combate tira en su propia tabla (1-5 muerte, 6 el
+        guerrero escapa ileso y gana +1 de Experiencia). Sin huida voluntaria: los chequeos de huida
+        solo comienzan al 50% de bajas, con Ld 10 sin modificar mientras viva el líder. Los eventos
+        aleatorios ocurren automáticamente cada turno.
   name_i18n:
     es: Mordheim Arde
 effect_ids:

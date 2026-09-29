@@ -32,6 +32,9 @@ const labels = {
   "special rule": ["special rule", "regla especial"],
   "spell lore": ["spell lore", "saber mágico"],
   difficulty: ["difficulty", "Dificultad"],
+  // A spell whose difficulty is not a number publishes the semantic value
+  // `auto` (it always succeeds): it is a published meaning, never an absence.
+  Automatic: ["Automatic", "Automática"],
   setting: ["Setting", "Ambientación"], mode: ["Mode", "Modalidad"], author: ["Author", "Autor"],
   experience: ["Experience", "Experiencia"], loot: ["Loot", "Botín"],
   wyrdstone: ["Wyrdstone", "Piedra bruja"], notes: ["Notes", "Notas"],
@@ -55,6 +58,17 @@ export function catalogueJoin(parts: readonly CataloguePart[], separator: "" | "
 export function catalogueNumber(value: unknown): CatalogueText | null {
   if (typeof value === "number" && Number.isFinite(value)) return String(value) as CatalogueText;
   if (typeof value === "string" && /^\d+(?:-\d+)?$/.test(value)) return value as CatalogueText;
+  return null;
+}
+/**
+ * A published spell difficulty: a numeric value, or the fixed semantic token
+ * `auto` (the spell always succeeds) resolved through the localized label
+ * vocabulary. Anything else is not a difficulty the source publishes.
+ */
+export function catalogueDifficulty(value: unknown, locale: CatalogueLocale): CatalogueText | null {
+  const numeric = catalogueNumber(value);
+  if (numeric) return numeric;
+  if (typeof value === "string" && value.trim().toLocaleLowerCase() === "auto") return catalogueLabel("Automatic", locale);
   return null;
 }
 export function cataloguePunctuation(value: "• " | ":" | "D"): CatalogueText {

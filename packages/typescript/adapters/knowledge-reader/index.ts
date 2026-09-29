@@ -26,7 +26,7 @@ import type {
 } from "./artefact-types";
 import { validateArtefact } from "./artefact-types";
 import { PresentationIndex, presentationEntries, unavailableText, isTranslatedText, fieldValues, locatorSteps, parseLocatorStep, rowMatchesSelector, selectorValue, type ParsedLocatorStep, type TextReference, type TextField, type TextResolution, type PresentationEntry, type ResolvedKbText } from "./presentation";
-export { fieldValues, unavailableText, isTranslatedText } from "./presentation";
+export { fieldValues, unavailableText, sourceReferenceUnavailableText, isTranslatedText } from "./presentation";
 export type { TextReference, TextField, TextResolution } from "./presentation";
 
 export type { ArtefactValidation, KnowledgeArtefact } from "./artefact-types";
@@ -843,14 +843,49 @@ export class ArtefactKnowledgeReader implements KnowledgeReader {
 
   /** Isolated v5 compatibility: exact stored ability id/name, never approximate. */
   legacyAbilityRef(value: string, profileId?: string, bandId?: string): TextReference | undefined {
-    const matches = this.presentationEntries.filter((entry) => {
-      if (entry.ref.kind !== "skill" && entry.ref.kind !== "rule") return false;
-      if (entry.source.startsWith("rules_prose/localized-labels/")) return false;
-      if (entry.ref.profileId !== undefined && entry.ref.profileId !== profileId) return false;
-      if (entry.ref.bandId !== undefined && entry.ref.bandId !== bandId) return false;
-      return entry.ref.id === value || Object.values(entry.fields.name ?? {}).includes(value);
-    });
-    return matches.length === 1 ? matches[0].ref : undefined;
+    if (typeof value !== "string" || !value) return undefined;
+    const matches = this.presentationEntries.filter((entry) => this.capturedAbility(entry, value, profileId, bandId));
+    if (matches.length === 1) return matches[0].ref;
+    // A capture the exact match cannot single out — the same display name is
+    // published by several rows — is resolved inside the warrior's own owner
+    // context: the profile declares by id which rules it owns, so "Leader" is
+    // that profile's leader rule, never a foreign band's copy. A band context
+    // narrows to the rules published for that band. Ambiguity still never
+    // selects a row.
+    const owned = this.ownedAbilityIds(profileId, bandId);
+    if (!owned.size) return undefined;
+    const scoped = new Map<string, TextReference>();
+    for (const entry of this.presentationEntries) {
+      if (!owned.has(entry.ref.id) || !this.capturedAbility(entry, value, profileId, bandId)) continue;
+      scoped.set(entry.ref.id, entry.ref);
+    }
+    return scoped.size === 1 ? [...scoped.values()][0] : undefined;
+  }
+
+  /** Does one row carry this captured ability label under the given context? */
+  private capturedAbility(entry: PresentationEntry, value: string, profileId?: string, bandId?: string): boolean {
+    if (entry.ref.kind !== "skill" && entry.ref.kind !== "rule") return false;
+    if (entry.source.startsWith("rules_prose/localized-labels/")) return false;
+    if (entry.ref.profileId !== undefined && entry.ref.profileId !== profileId) return false;
+    if (entry.ref.bandId !== undefined && entry.ref.bandId !== bandId) return false;
+    return entry.ref.id === value || Object.values(entry.fields.name ?? {}).includes(value);
+  }
+
+  /**
+   * Ability ids the owner context declares: the profile's own rules (and the
+   * starting skills it grants) plus the rules published for the band. Only
+   * declared ids are ever considered, so the context narrows a capture without
+   * inventing a match.
+   */
+  private ownedAbilityIds(profileId?: string, bandId?: string): ReadonlySet<string> {
+    const ids = new Set<string>();
+    const profile = profileId !== undefined ? this.profiles.get(profileId) : undefined;
+    for (const key of ["rule_ids", "starting_skill_ids"] as const) {
+      const declared = profile?.[key];
+      if (Array.isArray(declared)) for (const id of declared) if (typeof id === "string" && id) ids.add(id);
+    }
+    if (bandId !== undefined) for (const entry of this.presentationEntries) if (entry.ref.bandId === bandId) ids.add(entry.ref.id);
+    return ids;
   }
 
   /** Original records only; a caller cannot supply an unrelated text fallback. */

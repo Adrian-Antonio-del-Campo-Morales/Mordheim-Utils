@@ -64,11 +64,25 @@ def test_scenario_metadata_and_notes_have_explicit_translation_slots():
     }]}}})
     fields = {entry["source"]: entry["fields"] for entry in entries}
     scenario = "campaign/scenarios/scenarios/[id=scenario.test]"
-    assert fields[scenario]["author"]["es"] == "TODO-TRANSLATE"
+    # A personal or editorial credit keeps the published text in both locales by
+    # itself: lacking a translation is never a pending translation for a name.
+    assert fields[scenario]["author"] == {"en": "Author", "es": "Author"}
     progression = fields[f"{scenario}/progression"]
     assert progression["notes"] == {"en": "First note\nSecond note", "es": "TODO-TRANSLATE"}
     assert progression["wyrdstone"]["es"] == "TODO-TRANSLATE"
-    assert len(presentation_issues(entries)) == 4
+    assert len(presentation_issues(entries)) == 3
+
+
+def test_personal_credit_is_published_in_both_locales_and_a_declared_translation_wins():
+    entries = build_presentation_entries({"campaign": {"scenarios": {"scenarios": [
+        {"id": "scenario.anonymous", "author": "Anonymous", "author_i18n": {"es": "Anónimo"}},
+        {"id": "scenario.named", "author": "Tuomas Pirinen"},
+    ]}}})
+    fields = {entry["source"]: entry["fields"] for entry in entries}
+    # Translatable prose is honoured: the declared canonical translation wins.
+    assert fields["campaign/scenarios/scenarios/[id=scenario.anonymous]"]["author"] == {"en": "Anonymous", "es": "Anónimo"}
+    # A proper name is preserved in both locales, never a missing translation.
+    assert fields["campaign/scenarios/scenarios/[id=scenario.named]"]["author"] == {"en": "Tuomas Pirinen", "es": "Tuomas Pirinen"}
 
 
 # ---------------------------------------------------------------------------

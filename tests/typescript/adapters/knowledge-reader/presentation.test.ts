@@ -52,6 +52,21 @@ describe("strict presentation contract", () => {
     expect(reader.legacyAbilityRef("same", "mage", "a")).toBeUndefined();
     expect(reader.legacyAbilityRef("a--rule", "mage", "b")).toBeUndefined();
   });
+  it("resolves an ambiguous captured label inside the owning profile's declared rules", () => {
+    const reader = ArtefactKnowledgeReader.from({ schema_version: 1, ruleset: "test", bands: [], items: [], skills: [],
+      profiles: [{ id: "matriarch", names: { en: "Matriarch", es: "Matriarca" }, rule_ids: ["matriarch--leader"] }],
+      rules_prose: { rules: [
+        { id: "matriarch--leader", names: { en: "Leader", es: "Líder" } },
+        { id: "foreign--leader", names: { en: "Leader", es: "Líder ajeno" } },
+      ] },
+    });
+    // The shared display name alone stays unresolved: no owner context, no row.
+    expect(reader.legacyAbilityRef("Leader")).toBeUndefined();
+    // The profile declares exactly one of them, so its own capture resolves.
+    expect(reader.legacyAbilityRef("Leader", "matriarch")).toEqual({ kind: "rule", id: "matriarch--leader" });
+    // A profile that declares no such rule gains nothing from the label.
+    expect(reader.legacyAbilityRef("Leader", "stranger")).toBeUndefined();
+  });
   it.each([
     null,
     [{ ref: { kind: "item", id: "id" }, source: "items/[item_id=id]", fields: { name: { es: 1 } } }],

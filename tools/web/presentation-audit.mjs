@@ -12,7 +12,11 @@ const unsafeProperties = new Set(["id", "item_id", "profile_id", "band_id", "tag
 // `variantName` returns `ResolvedKbText` from `recordText` (or the unavailable
 // message); it was missing here, which made a non-GUI sink that takes a band id
 // through it look like raw system text (T12, §presentación).
-const resolvers = new Set(["knowledgeName", "knowledgeText", "knowledgeDescription", "resolveName", "resolveNameText", "localizedLabel", "readableValue", "resourceAmount", "translate", "advanceResultText", "recordText", "legacyText", "unavailableText", "itemName", "variantName"]);
+// `abilityNameText`/`warriorAbilityName`/`conditionDetailText` are the same kind
+// of resolver for captured v5 ability labels and condition details: each returns
+// a resolved `ResolvedKbText` or the reader's specific unknown-reference notice,
+// never the stored label.
+const resolvers = new Set(["knowledgeName", "knowledgeText", "knowledgeDescription", "resolveName", "resolveNameText", "localizedLabel", "readableValue", "resourceAmount", "translate", "advanceResultText", "recordText", "legacyText", "unavailableText", "itemName", "variantName", "abilityNameText", "warriorAbilityName", "conditionDetailText"]);
 // Only structural native attributes may bypass presentation validation. Unknown
 // attributes are review findings, including future browser/custom extensions.
 const structuralAttributes = new Set("key ref id className htmlFor role type name disabled checked defaultChecked selected multiple required readOnly autoFocus autoComplete tabIndex hidden inert open href target rel download width height rows cols min max step pattern inputMode form method action accept acceptCharset encType colSpan rowSpan scope xmlns viewBox d fill stroke strokeWidth cx cy r x y x1 y1 x2 y2 points transform focusable preserveAspectRatio aria-hidden aria-expanded aria-controls aria-describedby aria-labelledby aria-details aria-errormessage aria-live aria-atomic aria-busy aria-current aria-selected aria-checked aria-disabled aria-required aria-invalid aria-pressed aria-modal aria-haspopup aria-level aria-valuemin aria-valuemax aria-valuenow aria-posinset aria-setsize".split(" "));

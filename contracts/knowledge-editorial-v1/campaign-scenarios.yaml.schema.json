@@ -117,6 +117,7 @@
           "enum": ["Archive Pestilen", "Fanatic Magazine", "Fanatic Online", "Mordheim Rulebook", "Rynn Tyrr", "Town Cryer"]
         },
         "author": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "author_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "player_mode": {
           "description": "How many players the scenario is written for.",
           "enum": ["1v1", "multiplayer"]
@@ -166,6 +167,7 @@
           "description": "The wyrdstone obtained, in the words of the source (per shard in possession, with the cap the source declares).",
           "$ref": "defs.schema.json#/$defs/display_text"
         },
+        "wyrdstone_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "income": {
           "description": "The income in crowns, in the words of the source.",
           "$ref": "defs.schema.json#/$defs/display_text"
@@ -194,7 +196,8 @@
           "description": "Doubts, errata and clarifications of the source for later steps; also where a scenario states that it grants no progression reward.",
           "type": "array",
           "items": { "$ref": "defs.schema.json#/$defs/display_text" }
-        }
+        },
+        "notes_i18n": { "$ref": "defs.schema.json#/$defs/i18n" }
       },
       "anyOf": [
         { "required": ["experience"] },
@@ -259,6 +262,7 @@
           "description": "What is found, in the words of the source.",
           "$ref": "defs.schema.json#/$defs/display_text"
         },
+        "reward_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "roll": {
           "description": "The roll that finds it, as printed: `4D6` or `automatic`.",
           "$ref": "defs.schema.json#/$defs/display_text"

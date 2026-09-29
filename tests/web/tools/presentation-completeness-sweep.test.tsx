@@ -38,7 +38,7 @@ import { CampaignAppProvider } from "@src/features/campaign/useCampaignApp";
 import { ProductApp } from "@src/ProductApp";
 import { createService, loadKnowledge } from "@src/features/campaign/default-deps";
 import { createWarbandPdf } from "@src/features/export/warband-pdf";
-import { classifyVisibleText, buildIdInventory, GENERIC_FALLBACKS } from "../../../tools/web/presentation-completeness-detector.mjs";
+import { classifyVisibleText, buildIdInventory } from "../../../tools/web/presentation-completeness-detector.mjs";
 import { readArtefactDocument } from "../../support/kb-artefact";
 
 vi.mock("@src/features/campaign/default-deps", async (importOriginal) => ({
@@ -85,7 +85,6 @@ function emit(finding: Record<string, unknown>): void {
 const artefact = readArtefactDocument(PUBLISHED);
 const knowledge = ArtefactKnowledgeReader.from(artefact);
 const inventory = buildIdInventory(artefact);
-const fallbackTexts = Object.values(GENERIC_FALLBACKS).flat();
 const adapter = new CampaignFileV5Adapter();
 vi.mocked(loadKnowledge).mockResolvedValue(knowledge as never);
 
@@ -107,11 +106,18 @@ function capture(container: HTMLElement): string[] {
   return values;
 }
 
-/** Classify captured values; the product's localized absence notices are not fallbacks. */
+/**
+ * Classify captured values.
+ *
+ * A captured value is often a composed text (the whole page, a scenario effect,
+ * a table cell): the detector inspects its fragments, so a fallback joined to a
+ * label, a bullet, a die result or a chip is reported as the fragment that
+ * carries it and can no longer hide inside the surrounding prose. The product's
+ * specific localized absence notices are not fallbacks and are not flagged.
+ */
 function classifyAll(values: readonly string[], context: Record<string, unknown>): void {
   for (const value of values) {
     const finding = classifyVisibleText(value, context);
-    if (finding?.kind === "generic-fallback" && !fallbackTexts.includes(value.trim())) continue;
     if (finding) emit(finding);
   }
 }

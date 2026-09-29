@@ -93,6 +93,61 @@ export function isGenericFallback(value) {
 }
 
 /**
+ * The separators a composed visible text is built from: line breaks and the
+ * catalogue's punctuation (`". "` label joins, ` · ` chips, `• ` bullets and
+ * ` — ` table rows). They delimit the fragment a value carries, so a fallback
+ * glued to a label (`Autor: …`, `5+ …`, `Dificultad …`) is still its own
+ * fragment and cannot hide behind the surrounding text.
+ */
+const FRAGMENT_DELIMITERS = Object.freeze(["\n", " · ", " • ", "• ", ": ", " — "]);
+
+/**
+ * The fragment of `text` around a match at `[start, end)`: the run of text
+ * between the nearest delimiter before and the nearest delimiter after it.
+ */
+function fragmentAround(text, start, end) {
+  let begin = 0;
+  for (const delimiter of FRAGMENT_DELIMITERS) {
+    const at = text.lastIndexOf(delimiter, start - 1);
+    if (at >= 0) begin = Math.max(begin, at + delimiter.length);
+  }
+  let finish = text.length;
+  for (const delimiter of FRAGMENT_DELIMITERS) {
+    const at = text.indexOf(delimiter, end);
+    if (at >= 0) finish = Math.min(finish, at);
+  }
+  return text.slice(begin, finish).trim();
+}
+
+/**
+ * Every generic fallback embedded in a composed text, as the fragment that
+ * carries it. Exact-match detection cannot see a notice joined to a label, a
+ * bullet or a die result, which is exactly how the reader's notice used to hide
+ * inside a composed scenario, note, loot line or difficulty chip.
+ *
+ * @param {unknown} value the visible text.
+ * @returns {string[]} the delimiting fragments that contain a fallback.
+ */
+export function genericFallbackFragments(value) {
+  if (typeof value !== "string" || !value) return [];
+  const lower = value.toLocaleLowerCase();
+  const fragments = [];
+  for (const phrase of Object.values(GENERIC_FALLBACKS).flat()) {
+    const needle = phrase.toLocaleLowerCase();
+    if (!needle) continue;
+    let from = 0;
+    for (;;) {
+      const at = lower.indexOf(needle, from);
+      if (at < 0) break;
+      const fragment = fragmentAround(value, at, at + phrase.length);
+      if (fragment && !fragments.includes(fragment)) fragments.push(fragment);
+      from = at + needle.length;
+    }
+  }
+  return fragments;
+}
+
+/**
  * Dotted/underscored lowercase identifiers (`item.sword`, `shared-rule.fear`,
  * `magical_artefact.x`) never occur in prose. Kebab-only shapes are NOT id
  * evidence by themselves — a known id shown as text is caught through the
@@ -147,6 +202,11 @@ export function classifyVisibleText(value, context = {}) {
   });
   // 1. Generic fallbacks, in any locale, case/accent-insensitive.
   if (isGenericFallback(found)) return finding("generic-fallback");
+  // 1b. A fallback embedded in a composed text (after a label, a bullet, a
+  //     die result or inside a chip) is the same defect: report the fragment
+  //     that carries it, never the surrounding page text.
+  const embedded = genericFallbackFragments(found);
+  if (embedded.length) return finding("generic-fallback", { found: embedded[0], fragment: true });
   // 2. Raw persisted text and poison markers.
   if (RAW_MARKERS.some((marker) => found.includes(marker))) return finding("raw-text");
   // 3. Wrong locale: the other locale's published value is shown while this

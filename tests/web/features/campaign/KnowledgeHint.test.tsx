@@ -101,9 +101,10 @@ describe("KnowledgeHint", () => {
     for (const id of ids) expect(knowledgeName(reader, id.includes(".skill.") || id.startsWith("skill.") ? "skill" : "rule", id, "es")).not.toBe(readableValue(id, "es"));
   }, 10000);
 
-  it("shows the localized serious-injury description from the knowledge base", () => {
+  it("shows the localized serious-injury name and description from the knowledge base", () => {
     const reader = loadReader();
     render(<KnowledgeHint knowledge={reader} kind="injury" id="campaign.serious-injury.hero.34-hand-injury" locale="es">Herida en la Mano</KnowledgeHint>);
-    expect(screen.getByRole("button", { name: "Información no disponible" })).toHaveAttribute("data-tooltip", "La mano herida reduce permanentemente en 1 la Habilidad de Armas del guerrero.");
+    // Both halves of the row resolve now: the published result name and its note.
+    expect(screen.getByRole("button", { name: "Herida en la Mano" })).toHaveAttribute("data-tooltip", "La mano herida reduce permanentemente en 1 la Habilidad de Armas del guerrero.");
   });
 });
