@@ -499,6 +499,13 @@ def _build_rules_prose(ruleset: str) -> tuple[dict, list[dict]]:
     the band rules that delegate their prose to a shared ``rule_ref`` rule. Those
     rows stay out of the published prose (the shared rule owns it) but a warrior
     card still shows their name, taken from the referenced rule.
+
+    The ``special-rules`` stem is the shared catalogue and only the shared
+    catalogue: the ``shared-rule.*`` rows read from
+    ``catalog/rules/special-rules.yaml``. A band-specific rule granted directly
+    by a profile lives in ``profile-special-rules`` (the browsable band rules
+    document) and is never copied into the shared stem, where it carries no
+    presentation entry and renders as the generic unavailable notice.
     """
     catalog = load_rules_catalog(ruleset)
     documents: dict[str, list[dict]] = {}
@@ -507,8 +514,10 @@ def _build_rules_prose(ruleset: str) -> tuple[dict, list[dict]]:
         rows = document.get("rules") or document.get("conditions") or ()
         documents[stem] = sorted((_row(row) for row in rows), key=_sort_key)
     # A profile can grant a band-specific rule directly, rather than a shared
-    # ``rule_ref``. Keep every direct rule scoped by band, while publishing
-    # globally unique ids with the shared catalogue for legacy lookups.
+    # ``rule_ref``. Every direct rule stays scoped by band in
+    # ``profile-special-rules``; the shared stem keeps the promoted
+    # ``shared-rule.*`` catalogue untouched. This mapping only resolves the
+    # ``rule_ref`` delegation below, which always targets the shared catalogue.
     special_rules = {str(row["id"]): row for row in documents.get("special-rules", ())}
     band_rules: list[dict] = []
     label_rules: list[dict] = []
@@ -546,15 +555,10 @@ def _build_rules_prose(ruleset: str) -> tuple[dict, list[dict]]:
                     })
                     continue
                 band_rules.append({**_row(rule), "band_id": str(package.band["id"])})
-    direct_counts: dict[str, int] = {}
-    for entry in band_rules:
-        identifier = str(entry["id"])
-        direct_counts[identifier] = direct_counts.get(identifier, 0) + 1
-    for entry in band_rules:
-        identifier = str(entry["id"])
-        if direct_counts[identifier] == 1 and identifier not in special_rules:
-            special_rules[identifier] = entry
     documents["special-rules"] = sorted(special_rules.values(), key=_sort_key)
+    # Every direct rule is published here, including the ids that happen to be
+    # globally unique: the band rules document is where a band-local rule stays
+    # visible and searchable.
     # Tooltips rendered from a warrior card know the profile id, so they can
     # safely disambiguate direct rules whose ids are reused by several bands.
     documents["profile-special-rules"] = sorted(band_rules, key=_sort_key)

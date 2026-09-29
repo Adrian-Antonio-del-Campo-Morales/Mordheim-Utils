@@ -85,14 +85,47 @@ def test_profiles_materialize_equipment_forbids_from_special_rules() -> None:
     assert profile["equipment_forbids"] == ["armour"]
 
 
-def test_band_specific_special_rules_include_localized_prose() -> None:
+def test_shared_special_rules_stem_publishes_only_the_shared_catalogue() -> None:
+    """The ``special-rules`` stem is the promoted ``shared-rule.*`` catalogue and
+    nothing else.
+
+    A band-local rule published here reached the "Reglas compartidas" tab of the
+    web rules browser, which indexes that stem positionally: the copy carried no
+    presentation entry and rendered as the generic unavailable notice. Band-local
+    rules belong to ``profile-special-rules``, the browsable band rules document.
+    """
     artefact = _artefact()
-    rule = next(
-        row for row in artefact["rules_prose"]["special-rules"]
-        if row["id"] == "bergjaeger--set-traps"
-    )
-    assert rule["names"]["es"] == "Colocar Trampas"
-    assert "Bergjäger" in rule["effects"]["es"]
+    shared = artefact["rules_prose"]["special-rules"]
+    assert shared, "the shared catalogue must not be empty"
+    assert [str(row["id"]) for row in shared
+            if not str(row["id"]).startswith("shared-rule.")] == []
+    assert [str(row["id"]) for row in shared if row.get("band_id")] == []
+
+
+def test_band_specific_special_rules_include_localized_prose() -> None:
+    """A band-specific rule keeps its prose in the band document only.
+
+    ``bergjaeger--set-traps`` is granted directly by an Averlander profile, so it
+    is published under ``profile-special-rules`` — the "Reglas de banda" surface
+    of the web rules browser — and never copied into the shared stem.
+    """
+    artefact = _artefact()
+
+    def band_rows(identifier: str) -> list[dict]:
+        return [row for row in artefact["rules_prose"]["profile-special-rules"]
+                if row["id"] == identifier]
+
+    rules = band_rows("bergjaeger--set-traps")
+    assert rules, "the band document must keep publishing the Bergjäger rule"
+    assert {str(row["band_id"]) for row in rules} == {"averlanders"}
+    assert rules[0]["names"]["es"] == "Colocar Trampas"
+    assert "Bergjäger" in rules[0]["effects"]["es"]
+    assert [row["id"] for row in artefact["rules_prose"]["special-rules"]
+            if row["id"] == "bergjaeger--set-traps"] == []
+    # Every band-local rule id the shared stem used to duplicate stays published.
+    assert {str(row["id"]) for row in artefact["rules_prose"]["profile-special-rules"]} >= {
+        "bergjaeger--set-traps", "abomination--fear",
+    }
 
 
 def test_every_translated_band_rule_publishes_a_legacy_name_label() -> None:
