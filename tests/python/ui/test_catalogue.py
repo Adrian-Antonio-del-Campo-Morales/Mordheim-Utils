@@ -6,6 +6,7 @@ from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics
 from mordheim_core.models import FighterBuild
 from mordheim_knowledge.loader import load_skills
+import pytest as pytest
 
 
 def test_catalogue_exposes_kb_profiles_and_profile_equipment():
@@ -171,11 +172,49 @@ def test_free_selection_lists_every_warband_skill_but_does_not_grant_band_access
     skills = catalogue.skills(None)
     warband_skills = [skill for skill in skills if skill.selection_kind == "warband_skill"]
 
-    assert len(warband_skills) == 305
+    # 382 listing rows over 300 unique rules: the same printed warband skill
+    # legitimately appears once per band that carries it (one row per collection).
+    # The 2A/2B promotion (commit c837758) brought the catalogue from 305 rows
+    # over 237 unique rules to today's counts.
+    assert len(warband_skills) == 382
+    assert len({skill.rule_id for skill in warband_skills}) == 300
     hit_and_run = next(skill for skill in warband_skills if skill.rule_id == "band--arabian-tomb-raiders-special-skills-hit-and-run")
     assert not hit_and_run.runtime_available
     assert hit_and_run.unavailable_reason
     assert hit_and_run.name.endswith("· Arabian Tomb Raiders")
+
+
+def test_free_selection_listing_never_grants_band_access_to_a_listed_rule():
+    """Negative test: listing a warband skill must not make it selectable outside its band.
+
+    Force of Will is listed by the free-selection surface because the Pit
+    Fighters band carries it; the compiler must still reject it on any other
+    band. Band-wide rules such as the Outlaws' Bow Discipline are not part of
+    the selectable listing at all, so listing cannot grant them either.
+    """
+    catalogue = CombatCatalogue()
+    listed = {skill.rule_id for skill in catalogue.skills(None) if skill.selection_kind == "warband_skill"}
+    assert "band--pit-fighter-skill-force-of-will" in listed
+    # Band-wide rules are not listed as selectable skills at all.
+    assert "band--bow-discipline" not in listed
+
+    with pytest.raises(ValueError, match="special rule is not available"):
+        compile_fighter(FighterBuild(
+            "mordheim", Characteristics(4, 3, 3, 1, 4, 1),
+            band_id="mercenaries", profile_id="mercenary-captain",
+            special_rule_ids=("band--pit-fighter-skill-force-of-will",),
+        ))
+
+    # The owning band keeps its construction obligation: the missile-weapon
+    # limit reaches the compiler through the family's compiler binding (the
+    # bow-tag requirement, the crossbow refusal and the Cleric exemption reach
+    # the web construction domain through profile.equipment-restrictions and
+    # are proven by the campaign construction blockers suite).
+    outcast = compile_fighter(FighterBuild(
+        "mordheim", Characteristics(4, 3, 3, 1, 4, 1),
+        band_id="outlaws-of-stirwood-forest", profile_id="bandit-leader",
+    ))
+    assert outcast.missile_weapon_limit == 1
 
 
 def test_selected_band_omits_the_redundant_warband_name_from_special_skills():
