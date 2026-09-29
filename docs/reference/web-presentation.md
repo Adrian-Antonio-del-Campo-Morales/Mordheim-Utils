@@ -50,14 +50,65 @@ The equivalent command from `apps/warband-manager-web` is:
 npm run check:presentation
 ```
 
-The command runs detector regressions followed by the strict, deep audit. It
-writes `outputs/web-presentation/gui-text-audit-deep.json` for machines and
-`outputs/web-presentation/gui-text-audit-deep.md` for human review.
+The command runs detector regressions, the strict deep audit and the dynamic
+visible-completeness audit, in that order. It writes
+`outputs/web-presentation/gui-text-audit-deep.json` for machines and
+`outputs/web-presentation/gui-text-audit-deep.md` for human review, and the
+dynamic layer writes `outputs/web-presentation/gui-text-completeness.{json,md}`
+next to them (never mixed with the static findings).
 
 A finding does not always prove that the current UI is wrong. It proves that
 the detector cannot establish that the output is protected. That uncertainty
 blocks acceptance until the source and destination are classified. Never hide
 it with a cast or suppression.
+
+## Presentation security versus visible completeness
+
+The static gate (steps 1–4) is about **security of presentation**: it proves,
+from the source, that every value that reaches a GUI sink travels through the
+resolvers and presentation types. Its 700+ findings are "the detector cannot
+demonstrate protection", not confirmed leaks.
+
+The dynamic layer (step 5, `tools/web/presentation-completeness-audit.mjs` plus
+`tests/web/tools/presentation-completeness-sweep.test.tsx`) is about
+**visible completeness**: it executes the real consumers (the `RulesCatalogue`,
+the rendered shell pages, loaded v5 campaigns, the PDF text model) against the
+real generated artefacts in ES and EN, captures what a person would actually
+see (textContent, tooltips, aria-labels, disabled reasons, visible control
+values, export text — never option `value` identity, React keys or structural
+attributes), and classifies each captured text with
+`tools/web/presentation-completeness-detector.mjs`.
+
+The policy of the dynamic layer: for published data and supported formats,
+every visible text must resolve to real, localized content. A generic fallback
+visible to a person is a defect — also for unknown references, old data,
+missing translations and rows without a presentation entry. Those cases must
+be fixed with a specific error, a migration, a document rejection or an
+explicit structured absence message; the fallback itself remains a failure.
+No allowlists, exclusions, file suppressions or snapshot auto-accepts are
+accepted in this layer.
+
+### Finding classes of the dynamic layer and how to resolve them
+
+| Class | Meaning | Required response |
+|---|---|---|
+| `generic-fallback` | "Información no disponible" / "Information unavailable" (or an equivalent generic notice) reached a visible surface. | Give the row a real resolution (fix the generator or data) or a specific localized absence message; never the generic notice. |
+| `unexpected-row-in-category` | A row appears in a category whose declared composition it does not match (e.g. a band-local copy inside the shared `special-rules` catalogue). | Fix the generator so the category publishes only its declared rows; band rules belong to "band-rules". |
+| `missing-presentation-entry` | A published row cannot be resolved at all through the presentation index. | Regenerate so the row gets a presentation entry, or stop publishing the row. |
+| `wrong-locale` | The other locale's published text is shown although this locale publishes a different translation. | Route the field through the resolver in the active locale; never fall back to the other language. |
+| `technical-id` | A known id, a dotted/underscored identifier or the row's own id is shown as text. | Resolve the reference through `recordText`/`knowledgeName`; keep ids in `value`/identity only. |
+| `raw-text` | A `TODO-TRANSLATE` or poison marker reached the surface. | Fix the source data; markers are editorial/test signals, never user-visible. |
+| `unsupported-document-rendered` | A format the product does not support was rendered instead of being rejected by its specific error. | Reject before render (retired/newer version); never render unknown documents. |
+
+Each finding in `gui-text-completeness.{json,md}` records surface, locale,
+category, the internal id (diagnostic only), the found text, the expected
+reference and the artefact origin when known. The command exits non-zero when
+the dynamic layer finds at least one problem, even if every static gate is
+green. To reproduce the current known defect (the "Reglas compartidas" tab
+rendering 1,856 band-local rows as generic fallbacks), run
+`npm run audit:completeness` in `apps/warband-manager-web` and read the report,
+or run the regression suite `tests/web/tools/presentation-completeness-regression.test.tsx`,
+which stays red until the generator, the catalogue or the data fix the defect.
 
 ### Interpret the report
 

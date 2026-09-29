@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "npm --prefix ../.. run lint",
-    "check:presentation": "node --test ../../tests/web/tools/presentation-audit.test.mjs ../../tests/web/tools/presentation-types.test.mjs ../../tests/web/tools/presentation-flow-audit.test.mjs && node ../../tools/web/presentation-audit.mjs --strict --deep --check",
+    "check:presentation": "node ../../tools/web/presentation-gate.mjs",
+    "audit:completeness": "node ../../tools/web/presentation-completeness-audit.mjs",
     "audit:gui:deep": "node ../../tools/web/presentation-audit.mjs --strict --deep --check",
     "audit:gui": "node ../../tools/web/presentation-audit.mjs --strict --check",
     "typecheck": "tsc --noEmit"
