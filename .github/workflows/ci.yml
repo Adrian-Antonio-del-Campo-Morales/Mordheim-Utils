@@ -63,7 +63,7 @@ jobs:
 
       - name: Generate the KB artefact for the tests and the browser
         run: |
-          pip install -e .
+          pip install -e ".[dev]"
           python tools/knowledge/generate_knowledge_web.py
           python tools/knowledge/generate_knowledge_web.py --check
 
