@@ -169,6 +169,7 @@ No es una orden de ejecutar todas las suites en cada tarea. Cada documento concr
 - Las notas históricas pueden describir transformaciones ya hechas. La evidencia actual manda.
 - La ausencia de caché puede hacer que un auditor omita comprobaciones. Registrar cobertura real, no solo código de salida.
 - `NO` en una regla de campaña puede referirse al motor de duelo; no implica que deba seguir manual en el gestor de campaña.
+- Límites aceptados del cierre de la fase 2 (`D1`–`D5`): registrados en la [entrega de T12](tasks/T12.md) §13.3; no son defectos corregidos.
 
 ## Criterios globales de aceptación
 
@@ -203,5 +204,6 @@ No es una orden de ejecutar todas las suites en cada tarea. Cada documento concr
 | 2026-09-28 | T10 | Aceptar la automatización de campaña y liberar su integración final en T11; conservar cinco obligaciones como bloqueo de fuente documentado | 567 obligaciones reconciliadas, retirada/sucesión/mutaciones/Born Marksmen cubiertos, 10 gates focales verificados y 30 errores semánticos heredados sin incremento | Sí |
 | 2026-09-28 | T11 | Aceptar la interfaz Web tras reconciliar los contratos finales de T10 y liberar T12 | Categorías 2A/2B, variantes y obligaciones de campaña verificadas; 25 pruebas focales y typechecks Web/dominio verdes; artefactos, presentación y PDF transferidos a T12 | Sí |
 | 2026-09-28 | T12 / cierre de fase 2 | Aceptar Warband Manager Web y liberar T13 | Carga inicial particionada a 282,3 kB gzip bajo el presupuesto de 350 kB; catálogo diferido verificado, 1270 obligaciones Web reconciliadas, Web/PDF ES-EN y navegador real validados | Sí |
+| 2026-09-30 | T12 / cierre técnico de fase 2 | Cerrar la fase 2 tras la auditoría independiente final: corregir el recurso de fuente web (D6) y registrar los límites D1–D5 | Worktree limpio de `913d93a`; artefactos reproducidos (sha256 en T12 §13.1); 136/136 detectores, 739 estáticos heredados, 0 dinámicos; Web 428 y TS 738 verdes; sin push | Sí |
 
 Añadir aquí solo decisiones de coordinación. Para una regla, enlazar su interpretación y evidencia en el sistema semántico existente. No mantener dos versiones divergentes de una misma decisión.
