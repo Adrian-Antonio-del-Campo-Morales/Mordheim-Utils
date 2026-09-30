@@ -58,9 +58,7 @@ profiles:
   equipment_lists:
   - mortuary-priest-equipment-list
   fixed_equipment: []
-  equipment_restrictions:
-  - May select weapons from the Mortuary Priest Equipment List, but may never wear armour because it interferes
-    with the Priest's powers.
+  equipment_restrictions: []
   skill_access:
   - academic
   source:
@@ -156,6 +154,8 @@ profiles:
   combat_traits:
     starting_skills:
     - skill.ignore-pain
+  equipment_restrictions_i18n:
+    es: No puede llevar armadura; la Lista de equipo del Sacerdote Mortuario no contiene opciones de armadura.
 - id: skeleton-warriors
   name: Skeleton Warriors
   type: henchman
@@ -258,6 +258,8 @@ profiles:
   - tomb-scorpions--animal
   - tomb-scorpions--scorpion-sting
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: Los Escorpiones de Tumba no usan armas ni armaduras.
 - id: stone-golem
   name: Stone Golem
   type: henchman
@@ -299,3 +301,5 @@ profiles:
   - stone-golem--animated
   combat_traits:
     natural_armour_save: 4
+  equipment_restrictions_i18n:
+    es: Los Golems de Piedra nunca usan armas ni armaduras y no sufren penalización por luchar sin armas.

@@ -42,6 +42,8 @@ profiles:
   - prophet--corrupting-influence
   - prophet--his-masters-gift
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: No puede usar armas de proyectil.
 - id: questing-knights
   name: Questing Knights
   type: hero
@@ -83,6 +85,8 @@ profiles:
   - questing-knights--corruption
   - questing-knights--his-masters-gift
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: No puede usar armas de proyectil.
 - id: squires
   name: Squires
   type: hero
@@ -121,6 +125,8 @@ profiles:
   - squires--oath-of-servitude
   - squires--in-his-lords-footsteps
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: Nunca más Escuderos que Caballeros
 - id: mercenaries
   name: Mercenary Guards
   type: henchman
@@ -141,8 +147,7 @@ profiles:
   - men-at-arms-equipment-list
   fixed_equipment: []
   equipment_restrictions:
-  - May be equipped from the Mercenary Equipment list before the first game of a new campaign; after that
-    only from the Squire or Men-at-Arms Equipment Lists.
+  - May be equipped from the Mercenary Equipment list before the first game of a new campaign; after that only from the Squire or Men-at-Arms Equipment Lists.
   - May not use missile weapons.
   skill_access: []
   source:
@@ -157,6 +162,9 @@ profiles:
     es: Guardias Mercenarios
   rule_ids: []
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: "Puede equiparse de la lista de equipo de los mercenarios antes de la primera partida de una nueva campaña; después solo de las Listas de equipo de escuderos o de hombres de armas. \n No puede usar\
+      \ armas de proyectil."
 - id: men-at-arms
   name: Men-at-Arms
   type: henchman
@@ -191,3 +199,5 @@ profiles:
     es: Hombres de Armas
   rule_ids: []
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: "0-4 por Caballero Andante \n No puede usar armas de proyectil."

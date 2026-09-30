@@ -46,14 +46,14 @@ KB_BAND_KEYS = {'id', 'canonical_family', 'name', 'name_i18n', 'original_locale'
 KB_ROSTER_KEYS = {'minimum_models', 'maximum_models', 'starting_gold', 'members'}
 KB_MEMBER_KEYS = {'profile_id', 'minimum', 'maximum', 'group_size'}
 KB_PROFILE_KEYS = {'id', 'name', 'type', 'cost', 'experience', 'characteristics',
-                   'equipment_lists', 'fixed_equipment', 'equipment_restrictions',
+                   'equipment_lists', 'fixed_equipment', 'equipment_restrictions', 'equipment_restrictions_i18n',
                    'skill_access', 'source', 'source_path', 'name_i18n', 'rule_ids',
                    'combat_traits', 'group_size', 'components'}
 KB_TYPES = {'hero', 'henchman', 'animal', 'summoned'}
 KB_CHARS = ['M', 'WS', 'BS', 'S', 'T', 'W', 'I', 'A', 'Ld']
 KB_EQ_DOC_KEYS = {'schema_version', 'band_id', 'equipment_lists'}
-KB_EQ_LIST_KEYS = {'id', 'name', 'items', 'source', 'loadouts'}
-KB_ITEM_KEYS = {'item_id', 'cost', 'notes', 'price_override'}
+KB_EQ_LIST_KEYS = {'id', 'name', 'name_i18n', 'notes', 'notes_i18n', 'applies_to', 'items', 'source', 'loadouts'}
+KB_ITEM_KEYS = {'item_id', 'cost', 'notes', 'notes_i18n', 'price_override'}
 KB_RULE_KEYS = {'id', 'name', 'name_i18n', 'effect', 'effect_i18n', 'source', 'applies_to',
                 'runtime', 'rule_ref', 'kind', 'eligibility', 'skill_category',
                 'runtime_selectable'}

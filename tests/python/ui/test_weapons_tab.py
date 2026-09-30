@@ -1,6 +1,8 @@
 """external.test_weapons_tab: Weapons tab behaviour tests."""
 from __future__ import annotations
 
+from threading import Event, Lock
+from types import SimpleNamespace
 import tkinter as tk
 from tkinter import ttk
 
@@ -9,6 +11,7 @@ import pytest
 from mordheim_combat_lab.application.analyses import compare_builds  # noqa: F401  (import surface check)
 from mordheim_combat_lab.application.catalogue import CombatCatalogue, ProfileChoice
 from mordheim_combat_lab.application.settings import DuelExecutionSettings
+from mordheim_combat_lab.ui.editors import FighterEditor
 from mordheim_combat_lab.ui.tabs.weapons import WeaponAnalysisTab
 from mordheim_core.models import Characteristics, FighterBuild
 
@@ -117,6 +120,51 @@ def test_weapons_tab_runs_selected_weapons(root):
     for row in rows:
         assert tab.tree.set(row, "main") in {"Mace", "Sigmarite Hammer"}
         assert tab.tree.set(row, "optimal"), "missing win-rate cell"
+
+
+def test_weapons_tab_runs_free_hand_from_real_editor(root):
+    catalogue = CombatCatalogue()
+    editor = FighterEditor(root, "Candidate", catalogue)
+    editor.load_build(FighterBuild(
+        "mordheim", Characteristics(3, 3, 3, 1, 3, 1),
+        collection="mordheim", band_id="sisters-of-sigmar",
+        profile_id="sister-superior", main_weapon_id="weapon.mace",
+    ))
+    tab = _make_tab(root, catalogue, editor, simulations_value=100)
+    tab.workers.set(0)
+    tab._open_weapon_popover(); tab._close_weapon_popover()
+    assert None in tab._weapon_selection
+    for item_id, variable in tab._weapon_selection.items():
+        variable.set(item_id in {None, "weapon.mace"})
+
+    _run_and_wait(root, tab)
+
+    rows = tab.tree.get_children()
+    assert len(rows) == 2, tab.status.get()
+    free_hand = next(row for row in rows if tab.tree.set(row, "main") == "Free hand")
+    assert tab.tree.set(free_hand, "single")
+    assert tab.tree.set(free_hand, "cost") == "0 gc"
+    assert not tab.run_button.instate(("disabled",))
+    tab.destroy()
+    editor.destroy()
+
+
+def test_weapons_worker_simulates_free_hand_without_a_display():
+    tab = object.__new__(WeaponAnalysisTab)
+    tab.catalogue = CombatCatalogue()
+    tab._outcome_event = Event()
+    tab._progress_lock = Lock()
+    tab._worker_progress = 0
+    editor = SimpleNamespace(_weapon_options={None: "Free hand", "weapon.mace": "Mace"})
+    options = FighterEditor.main_weapon_options(editor)
+    candidate = FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1))
+
+    tab._compare(candidate, candidate, options, DuelExecutionSettings(100, 0, 100, 2), Event())
+
+    assert tab._outcome_event.is_set()
+    assert tab._outcome[0] == "finished", tab._outcome
+    assert {row[0] for row in tab._outcome[1]} == {None, "weapon.mace"}
+    assert tab._worker_progress == 2
 
 
 def test_weapons_tab_passes_workers_to_the_battery_service(root):

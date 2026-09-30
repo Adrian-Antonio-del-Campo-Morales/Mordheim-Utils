@@ -308,7 +308,7 @@ def _build_profiles(ruleset: str) -> list[dict]:
                 for equipment_list in package.equipment_lists
             }
             for profile in package.profiles:
-                entry = _row(profile, drop=("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n"))
+                entry = _row(profile, drop=("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n", "equipment_restrictions_i18n"))
                 entry["collection"] = str(collection)
                 entry["band_id"] = str(package.band["id"])
                 entry["can_gain_experience"] = _profile_can_gain_experience(package, profile)
@@ -356,6 +356,16 @@ def _build_profiles(ruleset: str) -> list[dict]:
                             row["cost"] = item["cost"]
                         if isinstance(item.get("notes"), str) and item["notes"].strip():
                             row["notes"] = item["notes"].strip()
+                            # The printed note travels with its translations: a
+                            # prose field the source publishes makes both
+                            # locales mandatory, and the same text is what the
+                            # equipment list itself already resolves.
+                            translations = item.get("notes_i18n")
+                            if isinstance(translations, dict):
+                                published = {str(locale): str(text) for locale, text in translations.items()
+                                             if isinstance(text, str) and text.strip()}
+                                if published:
+                                    row["notes_i18n"] = published
                         access.append(row)
                 entry["equipment_access"] = sorted(
                     access,
@@ -375,6 +385,15 @@ def _build_profiles(ruleset: str) -> list[dict]:
 
 
 def _build_items(ruleset: str) -> list[dict]:
+    referenced_items: set[str] = set()
+    for collection in (row["id"] for row in load_collections() if ruleset in set(row.get("rulesets") or ())):
+        for package in load_bands(str(collection)):
+            if package.ruleset != ruleset:
+                continue
+            referenced_items.update(str(item["item_id"]) for equipment_list in package.equipment_lists
+                                    for item in equipment_list.get("items") or () if item.get("item_id"))
+            referenced_items.update(str(item if isinstance(item, str) else item.get("item_id") or "")
+                                    for profile in package.profiles for item in profile.get("fixed_equipment") or ())
     mechanics = {
         str(row.get("id") or ""): row
         for family in ("weapons", "armours", "defences", "materials", "preparations", "poisons")
@@ -384,8 +403,8 @@ def _build_items(ruleset: str) -> list[dict]:
     items = []
     for row in load_items(ruleset):
         kind = str(row.get("kind") or "")
-        if kind not in INCLUDED_ITEM_KINDS and str(row.get("id") or "") not in CAMPAIGN_ONLY_ITEM_IDS:
-            continue  # campaign-only items are needed by web tooltips
+        if kind not in INCLUDED_ITEM_KINDS and str(row.get("id") or "") not in (CAMPAIGN_ONLY_ITEM_IDS | referenced_items):
+            continue  # Publish campaign tooltip items and every band-referenced item.
         entry = _row(row, drop=("schema_version", "ruleset", "original_locale", "name_i18n", "effect_i18n", "effect_ids"))
         entry["item_id"] = entry.pop("id", "")
         mechanic = mechanics.get(str(row.get("mechanic_id") or "")) or mechanics_by_name.get(str(row.get("name") or "").casefold())
@@ -596,6 +615,35 @@ def _build_rules_prose(ruleset: str) -> tuple[dict, list[dict]]:
     return dict(sorted(documents.items())), rule_ref_labels
 
 
+def _build_warband_reference(ruleset: str) -> dict:
+    """Original list metadata, translated restrictions and scoped delegations."""
+    rows = []
+    for collection in (row["id"] for row in load_collections() if ruleset in set(row.get("rulesets") or ())):
+        for package in load_bands(str(collection)):
+            if package.ruleset != ruleset:
+                continue
+            lists = []
+            for equipment_list in package.equipment_lists:
+                entry = _row(equipment_list)
+                entry["items"] = sorted((dict(item) for item in equipment_list.get("items") or ()), key=_sort_key)
+                lists.append(entry)
+            refs = [{key: rule[key] for key in ("id", "rule_ref", "applies_to", "kind", "source", "source_path") if key in rule}
+                    for rule in package.special_rules if rule.get("rule_ref")]
+            restrictions = []
+            for profile in package.profiles:
+                notes = profile.get("equipment_restrictions") or ()
+                if not notes:
+                    continue
+                translations = dict(profile.get("equipment_restrictions_i18n") or {})
+                restrictions.append({"profile_id": str(profile["id"]), "notes": "\n".join(notes),
+                                     "notes_i18n": translations, "source": dict(profile.get("source") or {})})
+            rows.append({"band_id": str(package.band["id"]),
+                         "equipment_lists": sorted(lists, key=_sort_key),
+                         "profile_restrictions": sorted(restrictions, key=lambda row: row["profile_id"]),
+                         "rule_refs": sorted(refs, key=_sort_key)})
+    return {"rows": sorted(rows, key=lambda row: row["band_id"])}
+
+
 def _build_campaign_section(ruleset: str, item_ids: set[str]) -> dict:
     catalogue = load_campaign_catalog(ruleset)
     section: dict = {}
@@ -625,6 +673,7 @@ def _build_campaign_section(ruleset: str, item_ids: set[str]) -> dict:
     section["racial_maximums"] = sorted(
         (dict(row) for row in load_racial_maximums(ruleset)), key=_sort_key,
     )
+    section["warband-reference"] = _build_warband_reference(ruleset)
     # Post-battle sequence: step ids and their resolved catalogue references.
     sequence = load_post_battle_sequence(ruleset)
     step_rows = {row["id"]: row for row in catalogue.catalogue("post-battle-sequence")["sequence"]["steps"]}

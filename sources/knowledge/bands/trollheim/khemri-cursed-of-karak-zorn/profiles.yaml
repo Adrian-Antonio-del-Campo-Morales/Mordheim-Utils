@@ -128,9 +128,7 @@ profiles:
   equipment_lists:
   - cursed-of-karak-zorn-equipment-list
   fixed_equipment: []
-  equipment_restrictions:
-  - May select close-combat weapons from the Cursed of Karak-Zorn Equipment List.
-  - May never use missile weapons or any form of armour.
+  equipment_restrictions: []
   skill_access:
   - combat
   - strength
@@ -213,6 +211,8 @@ profiles:
   rule_ids:
   - cannibal-dwarfs--fear
   combat_traits: *id001
+  equipment_restrictions_i18n:
+    es: No puede usar otras armas ni armadura alguna. Sus huesos primitivos cuentan como Garrotes.
 - id: shadowed
   name: Shadowed
   type: henchman
@@ -253,3 +253,5 @@ profiles:
     starting_skills:
     - skill.ignore-pain
     - skill.hard-to-kill
+  equipment_restrictions_i18n:
+    es: Los Umbríos no pueden usar armas ni armaduras y no sufren penalización por luchar sin equipo.

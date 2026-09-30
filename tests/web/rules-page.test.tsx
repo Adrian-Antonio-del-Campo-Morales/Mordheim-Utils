@@ -38,7 +38,7 @@ describe("RulesPage magic groups", () => {
     await waitFor(() => expect(screen.getByRole("button", { name: "Reglas" })).toBeEnabled());
     fireEvent.click(screen.getByRole("button", { name: "Reglas" }));
     expect(screen.getByRole("button", { name: "Reglas compartidas" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Reglas de banda" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Bandas" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Hechizos" }));
 
     const prayers = screen.getByText("Plegarias", { selector: "summary" }).closest("details");
@@ -53,20 +53,16 @@ describe("RulesPage magic groups", () => {
     expect(screen.queryByRole("button", { name: /Fuego/ })).not.toBeInTheDocument();
   });
 
-  it("nests warband rules under their localized warband", async () => {
+  it("opens a warband sheet from its localized band list", async () => {
     render(<ProductApp />);
     await waitFor(() => expect(screen.getByRole("button", { name: "Reglas" })).toBeEnabled());
     fireEvent.click(screen.getByRole("button", { name: "Reglas" }));
-    fireEvent.click(screen.getByRole("button", { name: "Reglas de banda" }));
-
-    const reiklandersSummary = screen.getByText("Reiklandeses", { selector: "summary" });
-    const reiklanders = reiklandersSummary.closest("details");
-    const sisters = screen.getByText("Hermanas de Sigmar", { selector: "summary" }).closest("details");
-    expect(reiklanders).not.toHaveAttribute("open");
-    expect(sisters).not.toHaveAttribute("open");
-    fireEvent.click(reiklandersSummary);
-    expect(reiklanders).toHaveAttribute("open");
-    expect(within(reiklanders!).getByRole("button", { name: "Jefe" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Bandas" }));
+    fireEvent.click(screen.getByRole("button", { name: /Reiklandeses/ }));
+    const sheet = screen.getByRole("article", { name: "Reiklandeses" });
+    expect(within(sheet).getByRole("heading", { name: "Composición" })).toBeInTheDocument();
+    expect(within(sheet).getByRole("button", { name: "Jefe" })).toHaveAttribute("data-tooltip");
+    expect(screen.getByRole("button", { name: /Hermanas de Sigmar/ })).toBeInTheDocument();
   });
 
   it("returns to the same filtered result and restores mobile focus and scroll", async () => {

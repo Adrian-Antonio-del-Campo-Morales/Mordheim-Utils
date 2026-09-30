@@ -12,6 +12,22 @@
 
 El documento es una checklist viva, no un certificado. Solo el coordinador cambia sus estados. Cada tarea tiene un [documento auxiliar](tasks/) con pasos y prompts de ejecución, revisión y reanudación.
 
+## Frontera de producto vigente (2026-09-30)
+
+Combat Lab y Warband Manager son aplicaciones independientes; comparten la KB canónica, no documentos, servicios ni estado de campaña. El orden de las fases organiza el trabajo sobre reglas compartidas y no establece una integración entre aplicaciones. Esta decisión sustituye las antiguas atribuciones de un productor de eventos de campaña a T13 en T09–T12.
+
+| Responsabilidad | Propietario y límite |
+| --- | --- |
+| Identificadores de plantilla, `member_ids`, `battle_number`, adquisición de mutaciones y retirada definitiva | Warband Manager. Los hechos de la mesa son entradas de sus propios flujos; Combat Lab no los produce ni llama a sus servicios. |
+| Hechos de Rout de participantes registrados | Warband Manager; la prueba de la partida se resuelve en la mesa. Una regla de psicología simulable se evalúa separadamente en Combat Lab cuando pertenece al alcance reconciliado de T13. |
+| Modificadores de combate de una mutación | Combat Lab, desde selección y compilación propias basadas en la KB; no consume `campaign.special_rules`. |
+| Movimiento, psicología y proximidad incluidos en T13 | Contexto explícito mínimo de simulación, con participantes locales; sin tablero autónomo ni estado de campaña. |
+| «Transferencia a T13» en los inventarios históricos | Candidatura de una cláusula de fuente para reconciliación, no contrato de comunicación ni garantía de inclusión. Se mantienen las exclusiones acordadas. |
+
+La operación `withdrawLeftTableMembers` y su adaptador Web existen y tienen pruebas con entradas explícitas. El adaptador no tiene llamador de producción Web: sus llamadores actuales son pruebas. La detección y captura de quién abandonó la mesa no quedan acreditadas por esas pruebas y no se trasladan a T13. Cualquier trabajo para ofrecer esa captura pertenece al Warband Manager y requiere su propio alcance.
+
+Los totales y dictámenes de T09–T12 se conservan como evidencia histórica. T13.0 debe reconciliar las cláusulas con esta frontera y las exclusiones, sin sumar transferencias como si fueran obligaciones nuevas ni declarar completa una funcionalidad ausente. Véase el [plan de implementación](tasks/T13-implementation-plan.md).
+
 ## Estado y protocolo de trabajo
 
 Estados válidos: `pendiente`, `en progreso`, `bloqueada`, `en revisión`, `completada`. La casilla `[x]` se usa exclusivamente para `completada`; el resto permanece `[ ]`. No usar `[~]`, que no es una casilla Markdown estándar.
@@ -34,7 +50,10 @@ Vacía al publicar el plan. Añadir una fila antes de iniciar cualquier trabajo.
 
 | Tarea/lote | Agente | Revisión de entrada | Archivos reservados | Inicio UTC | Estado/última entrega |
 |---|---|---|---|---|---|
-| — | — | — | — | — | Sin trabajos de implementación iniciados |
+
+T13.0 aceptada el 2026-09-30; archivos de documentación y evidencia liberados.
+T13.1 todavía no tiene reserva de escritura. Los cambios paralelos del usuario
+no pertenecían a la reserva de T13.0.
 
 ### Plantilla de entrega del agente
 
@@ -73,7 +92,7 @@ La columna «depende de» determina autorización de escritura, salvo la explora
 | [x] | [T10 — Automatización de campaña Web](tasks/T10.md) | completada | T09 | Agente ejecutor | 567 obligaciones reconciliadas; automatización de campaña aceptada 2026-09-28 |
 | [x] | [T11 — Interfaz Warband Manager Web](tasks/T11.md) | completada | T09; cierre tras T10 | Agente ejecutor | Contratos finales de T10 conectados; interfaz y flujos Web aceptados 2026-09-28 |
 | [x] | [T12 — Artefactos, validación Web y cierre](tasks/T12.md) | completada | T10/T11 | Coordinador/integrador | Artefactos diferidos, Web y PDF validados; fase 2 cerrada 2026-09-28 |
-| [ ] | [T13 — Reglas del Combat Simulator](tasks/T13.md) | pendiente | T12 | Sin asignar | — |
+| [ ] | [T13 — Reglas del Combat Simulator](tasks/T13.md) | en progreso | T12 | Coordinador | T13.0 aceptada: [1.692 orígenes reconciliados](tasks/T13-inventory.md), matriz y preguntas asignadas; mecanismos T13.1–T13.7 pendientes |
 | [ ] | [T14 — Validación y paridad de combate](tasks/T14.md) | pendiente | T13 | Sin asignar | — |
 | [ ] | [T15 — Revisión y cierre del Combat Simulator](tasks/T15.md) | pendiente | T14 | Coordinador | — |
 
@@ -95,7 +114,7 @@ Fin: las bandas 2A/2B pueden crearse, operar, persistirse, reabrirse y exportars
 
 ### Fase 3 — Combat Simulator (T13–T15)
 
-Inicio: fase 2 cerrada. T13 implementa solo las obligaciones de combate clasificadas por T06; T14 demuestra semántica y paridad; T15 revisa el conjunto y cierra la fase.
+Inicio: fase 2 cerrada. T13 implementa las obligaciones admitidas por la reconciliación de T13.0 contra T06, transferencias, fuentes canónicas y exclusiones; el reparto heurístico inicial no decide por sí solo el alcance. T14 demuestra semántica y paridad; T15 revisa el conjunto y cierra la fase.
 
 Fin: cada efecto de combate incluido tiene prueba determinista y paridad en todos los backends aplicables, con RNG, decisiones y estado observable correctos. Gate integral vigente y commit local de fase 3 creados; sin push ni despliegue.
 
@@ -205,5 +224,7 @@ No es una orden de ejecutar todas las suites en cada tarea. Cada documento concr
 | 2026-09-28 | T11 | Aceptar la interfaz Web tras reconciliar los contratos finales de T10 y liberar T12 | Categorías 2A/2B, variantes y obligaciones de campaña verificadas; 25 pruebas focales y typechecks Web/dominio verdes; artefactos, presentación y PDF transferidos a T12 | Sí |
 | 2026-09-28 | T12 / cierre de fase 2 | Aceptar Warband Manager Web y liberar T13 | Carga inicial particionada a 282,3 kB gzip bajo el presupuesto de 350 kB; catálogo diferido verificado, 1270 obligaciones Web reconciliadas, Web/PDF ES-EN y navegador real validados | Sí |
 | 2026-09-30 | T12 / cierre técnico de fase 2 | Cerrar la fase 2 tras la auditoría independiente final: corregir el recurso de fuente web (D6) y registrar los límites D1–D5 | Worktree limpio de `913d93a`; artefactos reproducidos (sha256 en T12 §13.1); 136/136 detectores, 739 estáticos heredados, 0 dinámicos; Web 428 y TS 738 verdes; sin push | Sí |
+| 2026-09-30 | Preparación T13 / frontera de producto | Corregir la atribución de productores y servicios de campaña a Combat Lab: ambas aplicaciones comparten exclusivamente la KB como entrada de producto | Decisión del usuario; T10/T11 y comentarios corregidos. El adaptador de retiradas solo tiene llamadores en pruebas; no se acredita captura desde Web ni se completa T13 | Sí |
+| 2026-09-30 | T13.0 / inventario y entrada | Aceptar la reconciliación documental completa y liberar el lote; T13 continúa en progreso | 1.692 orígenes únicos; 712 incluidos, 266 mixtos, 35 construcción, 354 campaña, 269 excluidos, 22 datos, 34 bloqueados por fuente; 185 preguntas asignadas. Verificación estructural válida, 455 diferencias de fuente en KB local y 30 en copia de HEAD; sin certificación semántica ni cambios de motor/KB | Sí |
 
 Añadir aquí solo decisiones de coordinación. Para una regla, enlazar su interpretación y evidencia en el sistema semántico existente. No mantener dos versiones divergentes de una misma decisión.

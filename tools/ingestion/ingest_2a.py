@@ -703,7 +703,10 @@ def validate_band_references(band_id: str, documents: Path, problems: list[str])
         problems.append(f"{band_id}: equipment-access.yaml key {key!r} is not a KB key")
     for equipment_list in equipment_doc.get("equipment_lists") or ():
         list_id = str(equipment_list.get("id") or "?")
-        stray_list_keys = sorted(set(equipment_list) - {"id", "name", "items", "source", "loadouts"})
+        stray_list_keys = sorted(set(equipment_list) - {
+            "id", "name", "name_i18n", "notes", "notes_i18n", "applies_to",
+            "items", "source", "loadouts",
+        })
         if stray_list_keys:
             problems.append(
                 f"{band_id}: equipment list {list_id!r} carries non-KB key(s) {stray_list_keys}"
@@ -716,7 +719,9 @@ def validate_band_references(band_id: str, documents: Path, problems: list[str])
                 problems.append(
                     f"{band_id}: equipment list {list_id!r} references unknown item {item_id!r}"
                 )
-            stray_item_keys = sorted(set(entry) - {"item_id", "cost", "notes", "price_override"})
+            stray_item_keys = sorted(
+                set(entry) - {"item_id", "cost", "notes", "notes_i18n", "price_override"}
+            )
             if stray_item_keys:
                 problems.append(
                     f"{band_id}: equipment list {list_id!r} entry {item_id!r} carries "

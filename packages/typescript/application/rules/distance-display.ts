@@ -47,7 +47,7 @@ const IMPETUOUS_KNIGHT_IDS = new Set([
   "band--virtue-of-the-impetuous-knight",
 ]);
 
-const DISTANCE_UNIT = '(?:"|″|”|inches?\\b)';
+const DISTANCE_UNIT = '(?:"|″|”|inches?\\b|pulgadas?\\b)';
 
 function adaptSpecialCase(text: string, recordId: string): string {
   if (BLACK_HUNGER_IDS.has(recordId)) {
@@ -82,6 +82,17 @@ export function adaptDistanceText(
   adapted = adapted.replace(
     new RegExp(`\\b12\\s*\\+\\s*D6\\s*${DISTANCE_UNIT}`, "gi"),
     "30+3D6 cm",
+  );
+
+  // Convert the entire dice expression before a fixed-distance matcher can
+  // consume only its offset (e.g. the Sewer Squig's 2D6-1 inches).
+  adapted = adapted.replace(
+    new RegExp(`\\b(\\d*)D6\\s*([+-])\\s*(\\d+)\\s*${DISTANCE_UNIT}`, "gi"),
+    (match: string, count: string, sign: string, offset: string) => {
+      const convertedCount = D6_DISTANCE_CM[count];
+      const convertedOffset = FIXED_DISTANCE_CM[offset];
+      return convertedCount && convertedOffset ? `${convertedCount}D6${sign}${convertedOffset} cm` : match;
+    },
   );
 
   adapted = adapted.replace(

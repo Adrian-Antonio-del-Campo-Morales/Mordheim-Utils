@@ -96,8 +96,7 @@ profiles:
   - henchmen-list
   fixed_equipment: []
   equipment_restrictions:
-  - May use the Henchmen List, but Double-handed weapons are for Boyz and Nuttaz only and Crossbows are
-    for Shootaz only.
+  - May use the Henchmen List, but Double-handed weapons are for Boyz and Nuttaz only and Crossbows are for Shootaz only.
   skill_access:
   - combat
   - shooting
@@ -115,6 +114,8 @@ profiles:
   rule_ids:
   - younguns--black-orc-blood
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: Puede usar la Lista de secuaces, pero las armas a dos manos son solo para los Chicos y los Chalados y las ballestas solo para los Disparadores.
 - id: orc-boyz
   name: Orc Boyz
   type: henchman
@@ -152,6 +153,8 @@ profiles:
   rule_ids:
   - orc-boyz--animosity
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: No puede usar Ballestas; están restringidas a los Disparadores.
 - id: orc-shootaz
   name: Orc Shootaz
   type: henchman
@@ -190,6 +193,8 @@ profiles:
   - orc-shootaz--animosity
   - orc-shootaz--uncommon
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: No puede usar armas a dos manos; están restringidas a los Chicos y los Chalados.
 - id: orc-nuttaz
   name: Orc Nuttaz
   type: henchman
@@ -211,8 +216,7 @@ profiles:
   equipment_lists:
   - henchmen-list
   fixed_equipment: []
-  equipment_restrictions:
-  - May use the Henchmen List, but Savage prevents them from using any armour or ranged weapons.
+  equipment_restrictions: []
   skill_access: []
   source:
     manual: mordheimer.net
@@ -269,3 +273,5 @@ profiles:
   - troll--always-hungry
   - troll--vomit-attack
   - troll--large-target
+  equipment_restrictions_i18n:
+    es: A los Trolls nunca se les pueden dar armas ni armaduras.

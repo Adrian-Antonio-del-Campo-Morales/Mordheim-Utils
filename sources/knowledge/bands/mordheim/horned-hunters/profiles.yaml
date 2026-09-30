@@ -81,6 +81,8 @@ profiles:
   - priest-of-taal--prayers
   - priest-of-taal--strictures
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: "Puede seleccionar armas de la Lista de equipo de los Cazadores de Cuernos. \n Nunca puede llevar armadura pesada (Preceptos)."
 - id: initiates
   name: Initiates
   type: hero
@@ -99,9 +101,7 @@ profiles:
   equipment_lists:
   - horned-hunter-equipment-lists
   fixed_equipment: []
-  equipment_restrictions:
-  - May select weapons from the Horned Hunter Equipment List.
-  - May never wear armour (Strictures).
+  equipment_restrictions: []
   skill_access:
   - combat
   - shooting
@@ -157,6 +157,8 @@ profiles:
   rule_ids:
   - drunken-gang--drunk
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: Puede seleccionar armas de la Lista de equipo de los secuaces; la entrada del perfil no permite armadura.
 - id: zealots
   name: Zealots
   type: henchman
@@ -175,9 +177,7 @@ profiles:
   equipment_lists:
   - henchmen-equipment-list
   fixed_equipment: []
-  equipment_restrictions:
-  - May select weapons from the Henchmen Equipment List.
-  - May never wear armour (Strictures).
+  equipment_restrictions: []
   skill_access: []
   source:
     manual: mordheimer.net
@@ -225,3 +225,5 @@ profiles:
   rule_ids:
   - warhounds--animals
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: Los Perros de Guerra nunca usan ni necesitan armas ni armaduras.

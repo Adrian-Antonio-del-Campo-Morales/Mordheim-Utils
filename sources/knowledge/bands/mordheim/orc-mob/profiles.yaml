@@ -57,8 +57,7 @@ profiles:
   equipment_lists:
   - orc-equipment-list
   fixed_equipment: []
-  equipment_restrictions:
-  - May select weapons from the Orc Equipment List, but may never wear armour.
+  equipment_restrictions: []
   skill_access:
   - strength
   - special
@@ -216,6 +215,8 @@ profiles:
   - cave-squigs--not-orcs
   - cave-squigs--animals
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: Los Squigs de Cueva nunca usan ni necesitan armas ni armaduras.
 - id: troll
   name: Troll
   type: henchman
@@ -257,3 +258,5 @@ profiles:
   combat_traits:
     starting_skills:
     - skill.regeneration
+  equipment_restrictions_i18n:
+    es: A los Trolls nunca se les pueden dar armas ni armaduras.

@@ -149,6 +149,8 @@ profiles:
   combat_traits:
     starting_skills:
     - skill.ignore-pain
+  equipment_restrictions_i18n:
+    es: Los Zombis nunca pueden usar armas ni armaduras y no sufren penalización por luchar sin ellas.
 - id: ghouls
   name: Ghouls
   type: henchman
@@ -167,8 +169,7 @@ profiles:
   equipment_lists: []
   fixed_equipment: []
   equipment_restrictions:
-  - Ghouls never use weapons or armour; the bones they carry are merely primitive improvised weapons and
-    are not modelled as equipment.
+  - Ghouls never use weapons or armour; the bones they carry are merely primitive improvised weapons and are not modelled as equipment.
   skill_access: []
   source:
     manual: trollheim
@@ -182,6 +183,8 @@ profiles:
   rule_ids:
   - ghouls--fear
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: Los Carroñeros nunca usan armas ni armaduras; los huesos que llevan son meras armas improvisadas primitivas y no se modelan como equipo.
 - id: dire-wolves
   name: Dire Wolves
   type: animal
@@ -222,3 +225,5 @@ profiles:
   combat_traits:
     starting_skills:
     - skill.ignore-pain
+  equipment_restrictions_i18n:
+    es: Los Lobos Terribles no usan armas ni armaduras; sus ataques son naturales.

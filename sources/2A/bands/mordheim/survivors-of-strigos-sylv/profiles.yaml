@@ -19,8 +19,7 @@ profiles:
   equipment_lists: []
   fixed_equipment: []
   equipment_restrictions:
-  - A Strigoi Vampire may not wield any weapons, as it relies upon brute strength, tooth and claw. They
-    do not suffer from any penalties for fighting unarmed.
+  - A Strigoi Vampire may not wield any weapons, as it relies upon brute strength, tooth and claw. They do not suffer from any penalties for fighting unarmed.
   skill_access:
   - combat
   - strength
@@ -44,6 +43,8 @@ profiles:
   - strigoi-vampire--immune-to-poison
   - strigoi-vampire--no-pain
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: Un Vampiro Estigio no puede empuñar armas, pues se apoya en la fuerza bruta, los dientes y las garras. No sufre penalización alguna por luchar sin armas.
 - id: seer
   name: Seer
   type: hero
@@ -183,6 +184,8 @@ profiles:
   rule_ids:
   - ghouls--cause-fear
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: Los Carroñeros nunca llevan equipo alguno, aparte de unos pocos huesos que usan como armas primitivas.
 - id: giant-bats
   name: Giant Bats
   type: henchman
@@ -219,3 +222,5 @@ profiles:
   - giant-bats--large
   - giant-bats--sonic
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: Fauces y brutalidad.

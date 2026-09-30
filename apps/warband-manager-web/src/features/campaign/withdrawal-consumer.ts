@@ -1,13 +1,13 @@
 /**
- * T11: the typed integration point for "these members left the table".
+ * T11: the Warband Manager adapter for "these members left the table".
  *
- * Detecting that a member already left the table is a battle-time fact owned by
- * T13 — `kernel/withdrawal.ts` states it explicitly and refuses to invent battle
- * state. The interface therefore never guesses who left: it exposes this thin
- * adapter, which hands the ordered list the battle produced to the campaign
- * service and returns the stable verdict.
+ * The Warband Manager caller supplies the recorded table facts. This adapter
+ * forwards the ordered roster-row ids to the campaign service and returns the
+ * stable verdict. Combat Lab is independent and neither produces this list
+ * nor calls the campaign service. Tests exercise explicit caller input; they
+ * do not establish table-fact detection or a production UI capture flow.
  *
- * Contract handed to T13 (2026-09-28):
+ * Contract for a Warband Manager caller:
  * - call it **once per battle**, with the roster-row ids whose models had
  *   already left the table when the warband withdrew; a henchman-group id
  *   repeats once per model that left;
@@ -23,7 +23,7 @@
 import type { AppResult, CampaignAppService } from "./types";
 import { campaignIssueSignal, type CampaignIssueCode } from "./campaign-obligations";
 
-/** Battle-produced list of the members that left the table, in recorded order. */
+/** Caller-supplied Warband Manager roster ids, in recorded order. */
 export interface LeftTableWithdrawalEvent {
   readonly member_ids: readonly string[];
   /** Free-text reason captured from the caller; never an identity. */

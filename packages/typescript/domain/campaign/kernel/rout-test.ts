@@ -1,7 +1,8 @@
 /**
  * T10: the campaign side of the Rout test.
  *
- * The Rout test itself is a battle rule (T13). What the campaign owns is the
+ * The actual game's Rout test is resolved at the table, not by Combat Lab.
+ * What the campaign owns is the
  * *roster fact* the test reads: which recorded participants count towards the
  * warband's muster, and which ones the printed rules remove from that count.
  *

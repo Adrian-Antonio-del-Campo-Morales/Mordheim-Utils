@@ -31,6 +31,8 @@ describe("adaptDistanceText", () => {
   });
 
   it("adapts decimal wording, dice and composite expressions", () => {
+    expect(adaptDistanceText("2D6-1 pulgadas en tierra y 2D6 pulgadas en el agua", "es"))
+      .toBe("5D6-2,5 cm en tierra y 5D6 cm en el agua");
     expect(adaptDistanceText("D6\" / 2D6\" / 3D6\" / D6 inches", "es"))
       .toBe("3D6 cm / 5D6 cm / 8D6 cm / 3D6 cm");
     expect(adaptDistanceText("Move 12+D6\" and roll +D6\".", "es"))

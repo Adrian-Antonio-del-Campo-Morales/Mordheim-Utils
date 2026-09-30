@@ -193,6 +193,7 @@ LAST_KEYS: tuple[str, ...] = (
     "name",
     "name_i18n",
     "note",
+    "note_i18n",
     "spells",
     "source_refs",
 )

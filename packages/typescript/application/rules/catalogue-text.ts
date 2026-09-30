@@ -1,4 +1,6 @@
 import type { ResolvedKbText } from "../../adapters/knowledge-reader/presentation";
+import { unavailableText } from "../../adapters/knowledge-reader/presentation";
+import { adaptCharacteristicValue } from "./distance-display";
 
 declare const catalogueTextBrand: unique symbol;
 /** Text assembled by the rules catalogue from resolved KB text and fixed UI vocabulary. */
@@ -8,7 +10,39 @@ export type CatalogueLocale = "en" | "es";
 
 const labels = {
   "special-rules": ["Shared Rules", "Reglas compartidas"],
-  "band-rules": ["Warband Rules", "Reglas de banda"],
+  "band-rules": ["Warbands", "Bandas"],
+  "warband-search": ["Search warbands", "Buscar bandas"],
+  "warband-empty": ["No warbands match this name.", "Ninguna banda coincide con este nombre."],
+  "warband-back": ["Back to warbands", "Volver a bandas"],
+  "warband-index": ["On this sheet", "En esta ficha"],
+  composition: ["Composition", "Composición"], warriors: ["Warriors", "Guerreros"],
+  "starting-gold": ["Starting gold", "Oro inicial"],
+  "model-limits": ["Warband size", "Tamaño de banda"],
+  recruitment: ["Recruitment limit", "Límite de reclutamiento"],
+  "group-size": ["Group size", "Tamaño de grupo"],
+  cost: ["Cost", "Coste"], crowns: ["gc", "co"],
+  "starting-equipment-not-published": ["No starting equipment declared", "Sin equipo inicial declarado"],
+  "no-profile-maximum": ["Up to the warband limit", "Hasta el límite de la banda"],
+  "variant-only": ["Available through a variant", "Disponible mediante una variante"],
+  "skill-table": ["Skill table", "Tabla de habilidades"],
+  "special-abilities": ["Special abilities", "Habilidades especiales"],
+  "band-special-rules": ["Warband special rules", "Reglas especiales de la banda"],
+  "magic-prayers": ["Magic and prayers", "Magia y plegarias"],
+  variants: ["Variants", "Variantes"], sources: ["Sources", "Fuentes"],
+  recipients: ["Profiles using this list", "Perfiles que usan esta lista"],
+  "recruitment-equipment": ["Recruitment equipment", "Equipo de reclutamiento"],
+  "list-metadata-missing": ["The published data does not yet include full list names and notes.", "Los datos publicados aún no incluyen los nombres y notas completos de las listas."],
+  "equipment-restrictions": ["Equipment restrictions", "Restricciones de equipo"],
+  "restriction-text-missing": ["Restriction text is not available in this language.", "El texto de las restricciones no está disponible en este idioma."],
+  "profile-rules": ["Warrior special rules", "Reglas especiales del guerrero"],
+  "other-warriors": ["Other warriors", "Otros guerreros"],
+  heroes: ["Heroes", "Héroes"], henchmen: ["Henchmen", "Secuaces"],
+  animal: ["Animals", "Animales"], summoned: ["Summoned warriors", "Guerreros invocados"],
+  "profile-bonuses": ["Characteristic bonuses", "Bonificaciones de características"],
+  "equipment-access-note": ["List access remains subject to each warrior's equipment restrictions.", "El acceso a las listas está sujeto a las restricciones de equipo de cada guerrero."],
+  "access-yes": ["✓", "✓"], "access-no": ["—", "—"],
+  "characteristic-not-published": ["Not published", "No publicada"],
+  "item-not-published": ["Item absent from the published catalogue", "Objeto ausente del catálogo publicado"],
   conditions: ["Conditions", "Estados"],
   "core-rules": ["Core Rules", "Reglas básicas"],
   skills: ["Skills", "Habilidades"],
@@ -22,6 +56,8 @@ const labels = {
   "Ranged Weapon": ["Ranged Weapon", "Arma a distancia"], Armour: ["Armour", "Armadura"],
   "Shield Or Defence": ["Shield Or Defence", "Escudo o defensa"],
   "Combat Equipment": ["Combat Equipment", "Equipo de combate"],
+  "Miscellaneous Equipment": ["Miscellaneous Equipment", "Equipo diverso"],
+  "armour-defences": ["Armour and defences", "Armaduras y defensas"],
   "Material Or Upgrade": ["Material Or Upgrade", "Material o mejora"],
   Hero: ["Hero", "Héroe"], Henchman: ["Henchman", "Secuaz"], Multiplayer: ["Multiplayer", "Multijugador"],
   "starting skill": ["starting skill", "habilidad inicial"],
@@ -59,6 +95,12 @@ export function catalogueNumber(value: unknown): CatalogueText | null {
   if (typeof value === "number" && Number.isFinite(value)) return String(value) as CatalogueText;
   if (typeof value === "string" && /^\d+(?:-\d+)?$/.test(value)) return value as CatalogueText;
   return null;
+}
+/** Published profile value, validated before adapting the Movement unit. */
+export function catalogueCharacteristic(key: string, value: unknown, locale: CatalogueLocale): CatalogueText | ResolvedKbText {
+  if (value === null || value === undefined) return catalogueLabel("characteristic-not-published", locale);
+  if (!(typeof value === "number" && Number.isFinite(value)) && !(typeof value === "string" && /^(?:\d+(?:\.\d+)?|\d*D\d+(?:[+-]\d+)?|[-*])$/.test(value))) return unavailableText(locale);
+  return adaptCharacteristicValue(key, value, locale) as CatalogueText;
 }
 /**
  * A published spell difficulty: a numeric value, or the fixed semantic token

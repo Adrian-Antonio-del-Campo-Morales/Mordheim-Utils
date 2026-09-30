@@ -621,13 +621,18 @@ def validate_band_references(band_id: str, documents: Path, problems: list[str])
                 problems.append(
                     f"{band_id}: equipment list {list_id!r} references unknown item {item_id!r}"
                 )
-            stray_keys = sorted(set(entry) - {"item_id", "cost", "notes", "price_override"})
+            stray_keys = sorted(
+                set(entry) - {"item_id", "cost", "notes", "notes_i18n", "price_override"}
+            )
             if stray_keys:
                 problems.append(
                     f"{band_id}: equipment list {list_id!r} item {item_id!r} has non-KB keys "
                     f"{stray_keys}; availability remarks belong in 'notes'"
                 )
-        stray_list_keys = sorted(set(equipment_list) - {"id", "name", "items", "source", "loadouts"})
+        stray_list_keys = sorted(set(equipment_list) - {
+            "id", "name", "name_i18n", "notes", "notes_i18n", "applies_to",
+            "items", "source", "loadouts",
+        })
         if stray_list_keys:
             problems.append(
                 f"{band_id}: equipment list {list_id!r} carries non-KB key(s) {stray_list_keys}"

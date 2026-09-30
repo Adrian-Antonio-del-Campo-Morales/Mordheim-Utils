@@ -336,6 +336,10 @@ exploration:
               value: 1
           note: Jewelled sword and dagger, saleable at twice the normal value (the jewelled sword sells
             for 10 gc, for instance).
+          note_i18n:
+            es: >-
+              Espada y daga enjoyadas, vendibles al doble de su valor normal (la espada enjoyada
+              se vende, por ejemplo, por 10 co).
     source_refs:
     - manual: mordheimer.net
       printed_page: 0
@@ -395,6 +399,8 @@ exploration:
                 count: 4
                 sides: 6
           note: The warband automatically passes the test.
+          note_i18n:
+            es: La banda supera el chequeo automáticamente.
       default:
       - type: characteristic_test
         actor: leader
@@ -608,6 +614,8 @@ exploration:
               sides: 6
       - type: choose_henchman_group
         label: Choose a human Henchman group for the prisoner, or decline
+        label_i18n:
+          es: Elige un grupo de secuaces humanos para el prisionero, o rechaza
         allow_decline: true
     source_refs:
     - manual: mordheimer.net
@@ -730,6 +738,8 @@ exploration:
     follow_up:
       type: choose_hireling
       label: Choose the Hired Sword who returns the favour
+      label_i18n:
+        es: Elige a la espada a sueldo que devuelve el favor
     source_refs:
     - manual: mordheimer.net
       printed_page: 0
@@ -856,6 +866,8 @@ exploration:
                   sides: 6
           - type: choose_equipment
             label: Choose the weapon to bless
+            label_i18n:
+              es: Elige el arma que bendecir
             text: 'Blessed weapon ({item}): wounds Undead and Possessed on 2+.'
             text_i18n:
               es: 'Arma bendecida ({item}): hiere a No-muertos y Endemoniados con 2+.'
@@ -917,9 +929,13 @@ exploration:
         then:
         - type: choose_option
           label: Choose the armour found
+          label_i18n:
+            es: Elige la armadura encontrada
           options:
           - id: shields
             label: D3 Shields
+            label_i18n:
+              es: 1D3 escudos
             then:
             - type: grant
               recipient: warband
@@ -932,6 +948,8 @@ exploration:
                     sides: 3
           - id: bucklers
             label: D3 Bucklers
+            label_i18n:
+              es: 1D3 rodelas
             then:
             - type: grant
               recipient: warband
@@ -1026,6 +1044,8 @@ exploration:
                 count: 1
                 sides: 6
           note: The warband seals the graves.
+          note_i18n:
+            es: La banda sella las tumbas.
       default:
       - type: grant
         recipient: warband
@@ -1066,6 +1086,8 @@ exploration:
     follow_up:
       type: choose_warriors
       label: Choose up to three fighters for the Catacombs deployment
+      label_i18n:
+        es: Elige hasta tres guerreros para el despliegue en las Catacumbas
       maximum: 3
       exclude_profiles:
       - Rat Ogre
@@ -1129,9 +1151,13 @@ exploration:
       - type: grant
         recipient: hero
         note: Alchemist's notebook
+        note_i18n:
+          es: Cuaderno del alquimista
       - type: grant_rule
         recipient: hero
         label: Choose the Hero who studies the notebook
+        label_i18n:
+          es: Elige al héroe que estudia el cuaderno
         text: Academic skill access (Alchemist's notebook)
         text_i18n:
           es: Acceso a habilidades académicas (cuaderno del Alquimista)
@@ -1153,9 +1179,13 @@ exploration:
     follow_up:
       type: choose_option
       label: Sell the jewels or let one Hero keep them?
+      label_i18n:
+        es: ¿Vender las joyas o dejar que un héroe se las quede?
       options:
       - id: jewelsmith-sell
         label: Sell the jewels
+        label_i18n:
+          es: Vende las joyas
         then:
         - type: roll_table
           dice:
@@ -1176,6 +1206,8 @@ exploration:
                     sides: 6
                   multiplier: 5
               note: Quartz stones
+              note_i18n:
+                es: Piedras de cuarzo
           - when:
               min: 3
               max: 4
@@ -1187,6 +1219,8 @@ exploration:
                   kind: fixed
                   value: 20
               note: Amethyst
+              note_i18n:
+                es: Amatista
           - when:
               min: 5
               max: 5
@@ -1198,6 +1232,8 @@ exploration:
                   kind: fixed
                   value: 50
               note: Necklace
+              note_i18n:
+                es: Collar
           - when:
               min: 6
               max: 6
@@ -1212,12 +1248,18 @@ exploration:
                     sides: 6
                   multiplier: 15
               note: Ruby
+              note_i18n:
+                es: Rubí
       - id: jewelsmith-keep
         label: Give the jewels to a Hero
+        label_i18n:
+          es: Da las joyas a un héroe
         then:
         - type: grant_rule
           recipient: hero
           label: Choose the Hero who keeps the jewels
+          label_i18n:
+            es: Elige al héroe que se queda las joyas
           text: +1 to rolls for locating rare items (Jewelsmith's gems)
           text_i18n:
             es: +1 a las tiradas para localizar objetos raros (gemas del Joyero)
@@ -1265,6 +1307,8 @@ exploration:
           - type: grant_rule
             recipient: hero
             label: Choose the Hero who keeps the symbol
+            label_i18n:
+              es: Elige al héroe que se queda el símbolo
             text: Haggle (Symbol of the Order of Freetraders)
             text_i18n:
               es: Regateo (Símbolo de la Orden de Mercaderes Libres)
@@ -1311,6 +1355,8 @@ exploration:
               kind: fixed
               value: 1
           note: A wardog that was guarding the building joins the warband.
+          note_i18n:
+            es: Un perro de guerra que custodiaba el edificio se une a la banda.
         on_failure: []
     source_refs:
     - manual: mordheimer.net
@@ -1367,6 +1413,8 @@ exploration:
           - type: roster.remove_warrior
             subject: $searching_hero
             note: The Hero is devoured by the guardians of the Pit and never seen again.
+            note_i18n:
+              es: El héroe es devorado por los guardianes del Foso y nunca se le vuelve a ver.
         - when:
             min: 2
             max: 6
@@ -1408,6 +1456,8 @@ exploration:
               sides: 6
             multiplier: 5
         note: Automatic.
+        note_i18n:
+          es: Automático.
       - type: roll_table
         dice:
           count: 1
@@ -1479,6 +1529,8 @@ exploration:
                   sides: 3
                 multiplier: 10
             note: D3 gems worth 10 gc each.
+            note_i18n:
+              es: 1D3 gemas por valor de 10 co cada una.
         default: []
       - type: roll_table
         dice:
@@ -1558,6 +1610,8 @@ exploration:
                 count: 1
                 sides: 3
           note: D3 double-handed axes
+          note_i18n:
+            es: 1D3 hachas a dos manos
       - when:
           min: 2
           max: 2
@@ -1579,6 +1633,8 @@ exploration:
           reward_id: scenario_reward.gromril_axe
           base_item_id: axe
           name: Gromril Axe
+          name_i18n:
+            es: Hacha de Gromril
           category: Weapon
           rules:
           - Gromril weapon
@@ -1590,6 +1646,8 @@ exploration:
           reward_id: scenario_reward.gromril_hammer
           base_item_id: hammer
           name: Gromril Hammer
+          name_i18n:
+            es: Martillo de Gromril
           category: Weapon
           rules:
           - Gromril weapon
@@ -1601,6 +1659,8 @@ exploration:
           reward_id: scenario_reward.gromril_two_handed_axe
           base_item_id: two_handed_weapon
           name: Double-Handed Gromril Axe
+          name_i18n:
+            es: Hacha de Gromril a Dos Manos
           category: Weapon
           rules:
           - Two-handed weapon
@@ -1644,6 +1704,8 @@ exploration:
               sides: 6
             multiplier: 5
         note: Automatic.
+        note_i18n:
+          es: Automático.
       - type: roll_table
         dice:
           count: 1
@@ -1690,6 +1752,8 @@ exploration:
               count: 1
               sides: 6
         note: Automatic.
+        note_i18n:
+          es: Automático.
       - type: roll_table
         dice:
           count: 1
@@ -1820,9 +1884,13 @@ exploration:
     follow_up:
       type: choose_option
       label: What will the warband do with the training manual?
+      label_i18n:
+        es: ¿Qué hará la banda con el manual de entrenamiento?
       options:
       - id: fighting-arena-sell
         label: Sell it for 100 gc
+        label_i18n:
+          es: Véndelo por 100 co
         then:
         - type: grant
           recipient: warband
@@ -1832,10 +1900,14 @@ exploration:
               value: 100
       - id: fighting-arena-study
         label: Give it to a Hero
+        label_i18n:
+          es: Dáselo a un héroe
         then:
         - type: grant_rule
           recipient: hero
           label: Choose the Hero who studies the manual
+          label_i18n:
+            es: Elige al héroe que estudia el manual
           text: Combat skill access; WS racial maximum increased by 1 (Fighting Arena manual)
           text_i18n:
             es: Acceso a habilidades de combate; máximo racial de HA aumentado en 1 (manual de la Arena
@@ -2293,6 +2365,10 @@ magical_artefacts:
     url: https://mordheimer.net/docs/campaigns/income
   note: In a campaign none of these items can appear more than once; if a magic item is already in someone
     else's possession, roll again.
+  note_i18n:
+    es: >-
+      En una campaña ninguno de estos objetos puede aparecer más de una vez; si un objeto mágico
+      ya está en posesión de otra persona, vuelve a tirar.
   results:
   - id: campaign.magical-artefact.boots-and-rope-of-pieter
     roll: '1'

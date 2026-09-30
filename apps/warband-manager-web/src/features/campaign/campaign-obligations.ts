@@ -594,7 +594,7 @@ export function routPresentationFor(document: CampaignDocument, reader: Artefact
 }
 
 // ---------------------------------------------------------------------------
-// Withdrawals that came from the battle (T13's trigger, T10's consequence)
+// Warband Manager withdrawals from caller-supplied table facts (no Combat Lab producer)
 // ---------------------------------------------------------------------------
 
 export interface WithdrawalAuditFacts {

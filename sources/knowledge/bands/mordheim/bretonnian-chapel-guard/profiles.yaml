@@ -19,10 +19,7 @@ profiles:
   equipment_lists:
   - knights-equipment-list
   fixed_equipment: []
-  equipment_restrictions:
-  - May not take a Lance (Vow of Poverty).
-  - As a Knight, may not use missile weapons except Holy Water, drugs or poisons, and may not learn spells
-    (prayers are allowed).
+  equipment_restrictions: []
   skill_access:
   - combat
   - academic
@@ -81,6 +78,8 @@ profiles:
   rule_ids:
   - damsel--prayercaster
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: Solo puede usar objetos que no sean armas de proyectil ni armaduras de la Lista de equipo de los arqueros.
 - id: knights-errant
   name: Knights Errant
   type: hero
@@ -99,10 +98,7 @@ profiles:
   equipment_lists:
   - knights-equipment-list
   fixed_equipment: []
-  equipment_restrictions:
-  - May not wear a Helmet (Vain).
-  - As Knights, may not use missile weapons except Holy Water, drugs or poisons, and may not learn spells
-    (prayers are allowed).
+  equipment_restrictions: []
   skill_access:
   - combat
   - strength
@@ -148,8 +144,7 @@ profiles:
   equipment_restrictions:
   - May use weapons and armour from the Pilgrims and Bowmen Equipment Lists.
   - May not take the Holy Relic entry, which is Pilgrim only.
-  - May not ride a horse unless the Questing Knight and every Knight Errant in the warband are riding
-    warhorses.
+  - May not ride a horse unless the Questing Knight and every Knight Errant in the warband are riding warhorses.
   skill_access: []
   source:
     manual: mordheimer.net
@@ -164,6 +159,9 @@ profiles:
   rule_ids:
   - squires--knighthood
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: "Puede usar armas y armaduras de las Listas de equipo de los peregrinos y los arqueros. \n No puede elegir la entrada Reliquia Santa, que es solo para peregrinos. \n No puede montar a caballo a\
+      \ menos que el Caballero Andante y todos los Caballeros Noveles de la banda monten corceles de guerra."
 - id: battle-pilgrims
   name: Battle Pilgrims
   type: henchman

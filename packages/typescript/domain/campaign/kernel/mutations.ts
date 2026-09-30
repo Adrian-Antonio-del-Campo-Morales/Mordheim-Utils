@@ -7,7 +7,8 @@
  * grant a mutation list their selectable ids in
  * `campaign.mutations.grant_rules`, so this module never reads the rule prose.
  *
- * A mutation's *battle* effect stays with T13; what the campaign owns is the
+ * Combat Lab configures any included combat effect independently from KB data;
+ * it does not consume the persisted campaign mutation. What the campaign owns is the
  * acquisition, the cost and the persisted state. Only catalogue ids carry a
  * published cost — the "Corrupted Characters" ids the band rules name but the
  * KB does not publish are refused here (`not_found`) and enumerated in the

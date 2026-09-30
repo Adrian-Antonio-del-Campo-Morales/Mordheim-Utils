@@ -120,6 +120,12 @@ profiles:
       notes: Resolves to the active-KB item `beastlash` (catalog/items/weapons-close-combat.yaml, "Látigo
         de Señor de las Bestias"). The MiM Specialists source prints no price/rarity for it; the KB entry's
         Beastbane effect (Fear in animals) applies.
+      notes_i18n:
+        es: >-
+          Se resuelve como el objeto `beastlash` del KB activo
+          (catalog/items/weapons-close-combat.yaml, "Látigo de Señor de las Bestias"). La fuente
+          de Especialistas de MiM no imprime precio ni rareza para él; se aplica el efecto
+          Bestiazoa del registro del KB (Miedo a los animales).
     - item_id: net
       quantity:
         kind: fixed
@@ -219,11 +225,15 @@ profiles:
         kind: fixed
         value: 1
       notes: Harpoon gun counts as harpoon crossbow.
+      notes_i18n:
+        es: El fusil de arpón cuenta como ballesta de arpón.
     - item_id: javelin
       quantity:
         kind: fixed
         value: 1
       notes: Harpoons count as javelins.
+      notes_i18n:
+        es: Los arpones cuentan como jabalinas.
   skill_access:
   - strength
   - shooting
@@ -314,22 +324,33 @@ profiles:
         kind: fixed
         value: 2
       notes: Brace of pistols.
+      notes_i18n:
+        es: Pareja de pistolas.
     - item_id: axe
       quantity:
         kind: fixed
         value: 1
       notes: Anchor counts as an axe.
+      notes_i18n:
+        es: El ancla cuenta como hacha.
     - item_id: man_catcher
       quantity:
         kind: fixed
         value: 1
       notes: Fishing rod & tackle counts as a man-catcher.
+      notes_i18n:
+        es: La caña y los aparejos de pesca cuentan como atrapahombres.
     - item_id: diving_bell_helmet
       quantity:
         kind: fixed
         value: 1
       notes: Rusted diving equipment including a diving bell for a helmet (flavour gear); REL/MiM-specific,
         no KB item — deliberate dangling ref, define at promotion if ever needed mechanically.
+      notes_i18n:
+        es: >-
+          Equipo de buceo oxidado, incluida una campana de buceo como yelmo (equipo de
+          ambientación); específico de REL/MiM, sin objeto en el KB; referencia pendiente
+          deliberada, definir en la promoción si alguna vez se necesita mecánicamente.
   skill_access:
   - combat
   - strength
@@ -429,6 +450,10 @@ profiles:
         value: 1
       notes: Counts as an axe; MiM-specific item, no KB equivalent — deliberate dangling ref, define at
         promotion if ever needed mechanically.
+      notes_i18n:
+        es: >-
+          Cuenta como hacha; objeto específico de MiM, sin equivalente en el KB; referencia
+          pendiente deliberada, definir en la promoción si alguna vez se necesita mecánicamente.
     - item_id: toughened_leathers
       quantity:
         kind: fixed
@@ -587,6 +612,8 @@ profiles:
         kind: fixed
         value: 1
       notes: Box of cigars counts as a torch.
+      notes_i18n:
+        es: La caja de puros cuenta como antorcha.
   skill_access:
   - speed
   - shooting
@@ -754,6 +781,13 @@ profiles:
         vs shooting) as the closest existing cloak item; the MiM source grants no effect for it. Review
         the equivalence at promotion (distinct from the MW White Wolf Pelt Cloak, which is a different
         6+-save item).
+      notes_i18n:
+        es: >-
+          Capa de lobo: se resuelve como el objeto `wolfcloak` del KB (capa de caza de
+          Middenheim, +1 a las salvaciones de armadura contra disparos) como el objeto de capa
+          existente más cercano; la fuente de MiM no le concede ningún efecto. Revisar la
+          equivalencia en la promoción (distinta de la Capa de Piel de Lobo Blanco de MW, que es
+          otro objeto con salvación de 6+).
   skill_access:
   - combat
   - strength
@@ -833,6 +867,10 @@ profiles:
         value: 1
       notes: MiM-specific item (see the Fire-Stick rule); no KB or 2B catalog equivalent — deliberate
         dangling ref, define at promotion.
+      notes_i18n:
+        es: >-
+          Objeto específico de MiM (véase la regla Palo de Fuego); sin equivalente en el KB ni
+          en el catálogo 2B; referencia pendiente deliberada, definir en la promoción.
   skill_access: []
   starting_skill_ids: []
   rules:
@@ -901,6 +939,9 @@ profiles:
         kind: fixed
         value: 1
       notes: Sigmarite Warhammer — resolved to the KB `sigmarite_hammer` item.
+      notes_i18n:
+        es: >-
+          Martillo de Guerra Sigmarita: resuelto como el objeto `sigmarite_hammer` del KB.
     - item_id: light_armour
       quantity:
         kind: fixed
@@ -910,12 +951,20 @@ profiles:
         kind: fixed
         value: 1
       notes: Vial of blessed water — resolves to the KB out-of-scope `blessed_water` item.
+      notes_i18n:
+        es: >-
+          Vial de agua bendita: se resuelve como el objeto `blessed_water` del KB, fuera de
+          alcance.
     - item_id: arcane_candelabrum
       quantity:
         kind: fixed
         value: 1
       notes: MiM-specific item (see the Candle Tree rule); no KB or 2B catalog equivalent — deliberate
         dangling ref, define at promotion.
+      notes_i18n:
+        es: >-
+          Objeto específico de MiM (véase la regla Árbol de Velas); sin equivalente en el KB ni
+          en el catálogo 2B; referencia pendiente deliberada, definir en la promoción.
   skill_access:
   - combat
   - academic
@@ -979,11 +1028,15 @@ profiles:
         kind: fixed
         value: 1
       notes: Resolved to the KB `long_boathook` item (trollheim catalog).
+      notes_i18n:
+        es: Resuelto como el objeto `long_boathook` del KB (catálogo de trollheim).
     - item_id: sword
       quantity:
         kind: fixed
         value: 1
       notes: Cutlass counts as a sword.
+      notes_i18n:
+        es: El sable cuenta como espada.
     - item_id: pistol
       quantity:
         kind: fixed
@@ -1071,6 +1124,9 @@ profiles:
         kind: fixed
         value: 1
       notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: >-
+          Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.
     choices:
     - choose: 1
       options:
@@ -1081,6 +1137,10 @@ profiles:
             value: 1
           notes: Priest of Manann only; 15 gc in the chapter's priest equipment list; Strike first, Parry;
             Rarity 7 per Unknowable Cargo.
+          notes_i18n:
+            es: >-
+              Solo Sacerdote de Manann; 15 co en la lista de equipo de sacerdotes del capítulo;
+              Golpe primero, Parada; Rareza 7 según Carga Inescrutable.
   skill_access:
   - combat
   - academic
@@ -1193,6 +1253,9 @@ profiles:
         kind: fixed
         value: 1
       notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: >-
+          Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.
     - item_id: scythe
       quantity:
         kind: fixed
@@ -1200,6 +1263,12 @@ profiles:
       notes: Scythe (chapter special weapon — Close combat, As user +1, Difficult to use, Two-handed;
         no cost/rarity printed in the article). Resolves to the KB item `scythe` (catalog/items/trollheim.yaml);
         the chapter's +1 Strength variant is noted for promotion merge.
+      notes_i18n:
+        es: >-
+          Guadaña (arma especial del capítulo: cuerpo a cuerpo, Como el usuario +1, Difícil de
+          usar, a dos manos; el artículo no imprime coste ni rareza). Se resuelve como el objeto
+          `scythe` del KB (catalog/items/trollheim.yaml); la variante del capítulo con +1 a la
+          Fuerza se anota para la fusión en la promoción.
   skill_access:
   - academic
   - speed
@@ -1331,6 +1400,9 @@ profiles:
         kind: fixed
         value: 1
       notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: >-
+          Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.
   skill_access:
   - combat
   - academic
@@ -1421,17 +1493,29 @@ profiles:
         kind: fixed
         value: 1
       notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: >-
+          Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.
     - item_id: throwing_knives
       quantity:
         kind: fixed
         value: 1
       notes: Stricture armament — see rules. Resolves to KB item throwing_knives (catalog/items/weapons-ranged.yaml).
+      notes_i18n:
+        es: >-
+          Armamento de estricta observancia; véanse las reglas. Se resuelve como el objeto
+          throwing_knives del KB (catalog/items/weapons-ranged.yaml).
     - item_id: sword
       quantity:
         kind: fixed
         value: 1
       notes: Stiletto (counts as a sword per the chapter); stricture armament. The KB has no stiletto
         item (only mechanic weapon.stiletto), so the chapter's own equivalence is used.
+      notes_i18n:
+        es: >-
+          Estilete (cuenta como espada según el capítulo); armamento de estricta observancia. El
+          KB no tiene objeto estilete (solo la mecánica weapon.stiletto), así que se usa la
+          equivalencia del propio capítulo.
   skill_access:
   - academic
   - speed
@@ -1536,11 +1620,16 @@ profiles:
         kind: fixed
         value: 1
       notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: >-
+          Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.
     - item_id: staff
       quantity:
         kind: fixed
         value: 1
       notes: Walking staff (counts as a staff); stricture armament.
+      notes_i18n:
+        es: Bastón de caminar (cuenta como bastón); armamento de estricta observancia.
   skill_access:
   - academic
   starting_skill_ids: []
@@ -1654,6 +1743,9 @@ profiles:
         kind: fixed
         value: 1
       notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: >-
+          Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.
   skill_access:
   - combat
   - academic
@@ -1730,6 +1822,9 @@ profiles:
         kind: fixed
         value: 1
       notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: >-
+          Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.
   skill_access:
   - combat
   - academic
@@ -1819,6 +1914,9 @@ profiles:
         kind: fixed
         value: 1
       notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: >-
+          Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.
     - item_id: wolf_pelt_cloak
       quantity:
         kind: fixed
@@ -1826,6 +1924,13 @@ profiles:
       notes: White wolf pelt cloak — 6+ saving throw. Item defined in the Grade-2b staging catalog (miracle-workers-gear.yaml)
         from this chapter's strictures; not equivalent to the KB `wolfcloak` (Middenheim hunt cloak, shooting-only
         save) — keep both items and review any merge at promotion.
+      notes_i18n:
+        es: >-
+          Capa de piel de lobo blanco: salvación de 6+. Objeto definido en el catálogo de
+          staging de Grade-2b (miracle-workers-gear.yaml) a partir de las estrictas observancias
+          de este capítulo; no es equivalente al `wolfcloak` del KB (capa de caza de Middenheim,
+          salvación solo contra disparos); conservar ambos objetos y revisar cualquier fusión en
+          la promoción.
   skill_access:
   - combat
   - academic
@@ -1933,11 +2038,17 @@ profiles:
         kind: fixed
         value: 1
       notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: >-
+          Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.
     - item_id: sword
       quantity:
         kind: fixed
         value: 1
       notes: Stricture — Priests of Verena may only be armed with a sword.
+      notes_i18n:
+        es: >-
+          Estricta observancia: los Sacerdotes de Verena solo pueden ir armados con una espada.
   skill_access:
   - academic
   starting_skill_ids: []
@@ -2053,6 +2164,10 @@ profiles:
         value: 1
       notes: Gromril dagger — counts as a dagger with the gromril weapon upgrade (KB materials-and-upgrades
         `gromril_weapon`).
+      notes_i18n:
+        es: >-
+          Daga de gromril: cuenta como una daga con la mejora de arma de gromril (materiales y
+          mejoras del KB, `gromril_weapon`).
     - item_id: sword
       quantity:
         kind: fixed
@@ -2120,11 +2235,15 @@ profiles:
         kind: fixed
         value: 1
       notes: Treat as a double-handed weapon.
+      notes_i18n:
+        es: Se trata como arma a dos manos.
     - item_id: hammer
       quantity:
         kind: fixed
         value: 1
       notes: Blunt hand weapon, treat as a hammer.
+      notes_i18n:
+        es: Arma de mano contundente, se trata como martillo.
   skill_access:
   - strength
   starting_skill_ids: []

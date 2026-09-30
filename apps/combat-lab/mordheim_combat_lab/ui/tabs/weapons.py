@@ -191,11 +191,12 @@ class WeaponAnalysisTab(ttk.Frame):
             by_id = {weapon_id: name for weapon_id, name in options}
             variants = []
             for weapon_id, name in options:
+                main_weapon_id = "weapon.fist" if weapon_id is None else weapon_id
                 off_hand = candidate.off_hand_id
-                if self.catalogue.mechanic(weapon_id).get("hands") == 2:
+                if self.catalogue.mechanic(main_weapon_id).get("hands") == 2:
                     off_hand = None
                 variants.append(ComparisonCandidate(weapon_id, name,
-                    replace(candidate, main_weapon_id=weapon_id, off_hand_id=off_hand)))
+                    replace(candidate, main_weapon_id=main_weapon_id, off_hand_id=off_hand)))
             batch = compare_builds(candidate, enemy, variants, settings, cancel_event,
                 lambda completed: self._advance(completed), workers=workers, observe=observe)
             rows = [(row.candidate.id, row.candidate.label, row.win_rate, row.improvement) for row in batch.results]

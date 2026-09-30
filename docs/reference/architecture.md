@@ -21,6 +21,14 @@ tests                                      Python, TypeScript and web integratio
 
 ## Dependency boundaries
 
+Combat Lab and Warband Manager are independent products. Their shared product
+input is the canonical knowledge base; campaign documents, roster state and
+campaign services are not Combat Lab inputs or outputs. Reusing generic
+widgets or repository utilities does not establish a product integration.
+Combat Lab configures and compiles its own simulation participants from KB
+data. Campaign acquisition and roster removal remain Warband Manager use
+cases; there is no Combat Lab event producer for those operations.
+
 ```text
 knowledge YAML → mordheim_knowledge → mordheim_construction → mordheim_combat
                                          ↓

@@ -7,10 +7,12 @@
  * who have already left the table in previous turns ... Remove them from your
  * warband roster as if they had been killed."
  *
- * Detecting *that* a member left the table is a battle-time fact (T13). What the
+ * A member leaving the table is a fact supplied within Warband Manager. What the
  * campaign owns is the roster consequence, so this module exposes one operation:
  * it receives the ids of the members that left and applies the removal. The
- * caller (the battle flow, later) is the only source of that list; nothing here
+ * Warband Manager caller is the only source of that list; Combat Lab does not
+ * produce it or call this operation. The operation and its tests do not establish
+ * detection or UI capture of the table fact. Nothing here
  * invents battle state.
  *
  * Contract:
@@ -38,7 +40,7 @@ export const WITHDRAWAL_MARKER = "left_table_withdrawal";
 export interface WithdrawalInput {
   /**
    * Ids of the roster rows whose members left the table, in the order the
-   * battle recorded them. A group id may repeat once per member that left.
+   * caller recorded them. A group id may repeat once per member that left.
    */
   readonly member_ids: readonly IdString[];
   /** Free-text reason captured from the caller; never an identity. */

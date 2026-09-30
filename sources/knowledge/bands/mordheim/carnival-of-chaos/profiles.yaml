@@ -153,6 +153,8 @@ profiles:
     poison_immune: true
     undead_or_possessed: true
     cloud_of_flies: true
+  equipment_restrictions_i18n:
+    es: Los Portadores de Plaga no necesitan ni usan armas y no pueden llevar armadura.
 - id: nurglings
   name: Nurglings
   type: henchman
@@ -195,6 +197,8 @@ profiles:
     poison_immune: true
     undead_or_possessed: true
     cloud_of_flies: true
+  equipment_restrictions_i18n:
+    es: Los Nurglings no usan armas ni llevan armadura.
 - id: brethren
   name: Brethren
   type: henchman
@@ -245,6 +249,8 @@ profiles:
   components:
   - id: cart
     name: Cart
+    name_i18n:
+      es: Carro
     characteristics:
       M: null
       WS: null
@@ -257,6 +263,8 @@ profiles:
       Ld: null
   - id: wheel
     name: Wheel
+    name_i18n:
+      es: Rueda
     characteristics:
       M: null
       WS: null
@@ -269,6 +277,8 @@ profiles:
       Ld: null
   - id: horse
     name: Horse
+    name_i18n:
+      es: Caballo
     characteristics:
       M: 8
       WS: null
@@ -281,6 +291,8 @@ profiles:
       Ld: null
   - id: guardian
     name: Guardian
+    name_i18n:
+      es: Guardián
     characteristics:
       M: null
       WS: 3
@@ -312,3 +324,5 @@ profiles:
   - plague-cart--guardian-unarmed
   - plague-cart--immune-to-psychology
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: El Carro de la Plaga y su Guardián no pueden usar armas ni llevar armadura.

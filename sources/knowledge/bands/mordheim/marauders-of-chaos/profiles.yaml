@@ -76,6 +76,8 @@ profiles:
   - seer--wizard
   - seer--mark-of-chaos
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: Puede seleccionar armas de la Lista de equipo de los héroes; la entrada del perfil no permite armadura.
 - id: champions
   name: Champions
   type: hero
@@ -177,6 +179,8 @@ profiles:
   - warhounds-of-chaos--natural-weapons
   - warhounds-of-chaos--animals
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: Los Perros de Guerra no usan armas ni armaduras y luchan sin las penalizaciones normales por luchar sin armas.
 - id: condemned
   name: Condemned
   type: hero
@@ -197,8 +201,7 @@ profiles:
   fixed_equipment: []
   equipment_restrictions:
   - Uses no equipment while any of WS, S, T or A remains variable, but fights unarmed without penalties.
-  - Once all variable characteristics have been permanently fixed, may use weapons, armour and miscellaneous
-    equipment as normal.
+  - Once all variable characteristics have been permanently fixed, may use weapons, armour and miscellaneous equipment as normal.
   skill_access:
   - strength
   - speed
@@ -219,6 +222,9 @@ profiles:
   - condemned--variable-experience
   - condemned--fate
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: "No usa equipo mientras cualquiera de WS, S, T o A siga siendo variable, pero lucha sin armas y sin penalización. \n Una vez fijadas permanentemente todas las características variables, puede usar\
+      \ armas, armaduras y equipo diverso con normalidad."
 - id: spawn-of-chaos
   name: Spawn of Chaos
   type: henchman
@@ -257,3 +263,5 @@ profiles:
   - spawn-of-chaos--no-brain
   - spawn-of-chaos--large
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: Un Engendro del Caos solo usa sus garras, tentáculos y otras extremidades y no puede usar equipo normal.

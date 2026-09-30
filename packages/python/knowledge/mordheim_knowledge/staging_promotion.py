@@ -521,7 +521,13 @@ def market_entry(item: dict, listed: tuple[str, dict] | None) -> dict:
     elif not facts:
         restrictions.append({"type": "condition", "note": UNPRICED_NOTE})
     elif note and _has_prose(note):
-        restrictions.append({"type": "condition", "note": note})
+        condition: dict = {"type": "condition", "note": note}
+        # The KB keeps the translated note beside the printed one, so the
+        # promotion carries the locale block the staged item declares.
+        translated = item.get("availability_note_i18n")
+        if translated:
+            condition["note_i18n"] = translated
+        restrictions.append(condition)
     return {
         "id": f"campaign.trading-post.{item_id.replace('_', '-')}",
         "item_id": item_id,

@@ -85,6 +85,25 @@ def test_profiles_materialize_equipment_forbids_from_special_rules() -> None:
     assert profile["equipment_forbids"] == ["armour"]
 
 
+def test_warband_reference_preserves_equipment_lists_and_notes() -> None:
+    rows = {row["band_id"]: row for row in generator._build_warband_reference("mordheim")["rows"]}
+    sisters = rows["sisters-of-sigmar"]["equipment_lists"][0]
+    assert sisters["names"]["es"] == "Lista de Equipo de las Hermanas de Sigmar"
+    assert sisters["source"]["url"].endswith("/sisters-of-sigmar")
+    items = {row["item_id"]: row for row in sisters["items"]}
+    assert items["dagger"]["cost"] == 2
+    assert items["dagger"]["notes_i18n"]["es"] == "Primera daga gratis; las siguientes cuestan 2 co."
+    assert items["holy_tome"]["notes_i18n"]["es"] == "Solo heroínas."
+    assert len(rows["adventurers-kaz"]["equipment_lists"]) == 6
+    underworld = rows["underworld-alliance-mim"]
+    assert underworld["equipment_lists"][0]["names"]["es"] == "Lista de Equipo de los Pielesverdes"
+    misc = next(row for row in underworld["equipment_lists"] if row["id"] == "miscellaneous-items")
+    assert misc["applies_to"]["profile_types"] == ["hero"]
+    restrictions = {row["profile_id"]: row for row in underworld["profile_restrictions"]}
+    assert restrictions["giant-rats"]["notes_i18n"]["es"] == "Las Ratas Gigantes nunca usan armaduras ni armas."
+    assert "blowpipe" in {row["item_id"] for row in generator._build_items("mordheim")}
+
+
 def test_shared_special_rules_stem_publishes_only_the_shared_catalogue() -> None:
     """The ``special-rules`` stem is the promoted ``shared-rule.*`` catalogue and
     nothing else.

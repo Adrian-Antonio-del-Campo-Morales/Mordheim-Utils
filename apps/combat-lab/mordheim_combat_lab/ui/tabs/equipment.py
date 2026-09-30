@@ -9,6 +9,7 @@ from mordheim_core.models import SimulationCancelled
 from mordheim_combat_lab.ui.widgets.progress import AnalysisProgress
 from mordheim_ui.i18n import tr
 import threading as threading
+import tkinter as tk
 from tkinter import IntVar
 from tkinter import StringVar
 from tkinter import ttk

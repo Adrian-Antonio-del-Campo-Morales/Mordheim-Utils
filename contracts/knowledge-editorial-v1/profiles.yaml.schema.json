@@ -34,6 +34,10 @@
         },
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "equipment_restrictions_i18n": {
+          "description": "Translated equipment restriction prose; multiple original restrictions are joined with newlines.",
+          "$ref": "defs.schema.json#/$defs/i18n"
+        },
         "type": {
           "description": "`hero` and `henchman` are the roster kinds; `animal` and `summoned` are creatures attached to the warband.",
           "enum": ["hero", "henchman", "animal", "summoned"]
@@ -167,6 +171,7 @@
       "properties": {
         "id": { "$ref": "defs.schema.json#/$defs/id" },
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
+        "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "characteristics": { "$ref": "defs.schema.json#/$defs/characteristic_map" }
       }
     }

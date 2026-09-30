@@ -62,7 +62,8 @@
             "properties": {
               "when": { "$ref": "defs.schema.json#/$defs/interval" },
               "scenario": { "$ref": "defs.schema.json#/$defs/id" },
-              "outcome": { "$ref": "defs.schema.json#/$defs/display_text" }
+              "outcome": { "$ref": "defs.schema.json#/$defs/display_text" },
+              "outcome_i18n": { "$ref": "defs.schema.json#/$defs/i18n" }
             },
             "oneOf": [
               { "required": ["scenario"], "not": { "required": ["outcome"] } },
@@ -74,6 +75,7 @@
           "description": "Editorial note about the table.",
           "$ref": "defs.schema.json#/$defs/display_text"
         },
+        "note_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
       }
     },

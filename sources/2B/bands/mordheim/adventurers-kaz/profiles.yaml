@@ -108,6 +108,8 @@ profiles:
   - barbarian--frenzy
   - barbarian--dim-witted
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: Un bárbaro nunca llevará armadura.
 - id: imperial-noble
   name: Imperial Noble
   type: hero
@@ -202,10 +204,8 @@ profiles:
   - cannon-fodder-equipment-list
   fixed_equipment: []
   equipment_restrictions:
-  - Promotion only — the warband gets an Imperial Captain when a Cannon Fodder is promoted with the "Lad's
-    got Talent" result; it can never be hired. The source prints no separate profile — the characteristics
-    above are inherited from the Cannon Fodder profile per the Mixed Bunch rule, pending english-review
-    confirmation.
+  - Promotion only — the warband gets an Imperial Captain when a Cannon Fodder is promoted with the "Lad's got Talent" result; it can never be hired. The source prints no separate profile — the characteristics
+    above are inherited from the Cannon Fodder profile per the Mixed Bunch rule, pending english-review confirmation.
   - Uses the Cannon Fodder equipment list.
   skill_access:
   - combat
@@ -225,6 +225,9 @@ profiles:
     es: Capitán Imperial
   rule_ids: []
   combat_traits: {}
+  equipment_restrictions_i18n:
+    es: "Solo por ascenso — la banda obtiene un Capitán Imperial cuando una Carne de Cañón asciende con el resultado «Chico con Talento»; nunca puede contratarse. La fuente no imprime un perfil separado\
+      \ — las características anteriores se heredan del perfil de Carne de Cañón según la regla Panda Mixta, pendiente de confirmación en la revisión inglesa. \n Usa la lista de equipo de la carne de cañón."
 - id: cannon-fodder
   name: Cannon Fodder
   type: henchman
