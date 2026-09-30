@@ -81,6 +81,7 @@ REPORT_KINDS = {
 #: are not delegated to another parser.
 USAGE = {
     "combat-lab": "python tools/mordheim-utils.py combat-lab",
+    "campaign-manager": "python tools/mordheim-utils.py campaign-manager [vite args ...]",
     "doctor": "python tools/mordheim-utils.py doctor",
     "check-presentation": "python tools/mordheim-utils.py check-presentation",
 }
@@ -88,6 +89,7 @@ USAGE = {
 #: Command help lines, in the order shown by ``--help``.
 COMMANDS = (
     ("combat-lab", "open the Combat Lab graphical application"),
+    ("campaign-manager", "start the web Campaign Manager development server"),
     ("verify", "validate the KB and run the semantic specifications"),
     ("report", "generate the rule and test reports (report rules | report tests)"),
     ("benchmark", "measure the combat engines (modular, NumPy, native) with configurable sizes"),
@@ -95,14 +97,14 @@ COMMANDS = (
     ("coverage-gate", "measure deterministic engine coverage and check the drift budget"),
     ("calibrate", "measure this machine's engine optima and install the calibration profile"),
     ("tests", "run the pytest suites, filtered by --scope"),
-    ("check-presentation", "test the GUI text detector and run its strict, deep audit"),
+    ("check-presentation", "test the GUI text detector and run the strict, deep and dynamic completeness audits"),
     ("run-ci", "run the local equivalent of the CI validation gates before Pages publishing"),
     ("doctor", "report the environment, installed engines and KB location"),
 )
 
 #: Command groups for ``--help``; every name in COMMANDS appears exactly once.
 COMMAND_GROUPS = (
-    ("Applications", ("combat-lab",)),
+    ("Applications", ("combat-lab", "campaign-manager")),
     ("Knowledge base", ("verify", "report")),
     ("Engines", ("benchmark", "parity", "coverage-gate", "calibrate")),
     ("Repository", ("tests", "check-presentation", "run-ci", "doctor")),
@@ -149,9 +151,12 @@ def check_presentation_command(args: list[str]) -> int:
     if any(argument in ("-h", "--help") for argument in args):
         return _print_usage(
             "check-presentation",
-            "Run the web detector tests and strict, deep GUI text audit. "
-            "Requires npm and installed web dependencies. Findings return a "
-            "nonzero exit code; reports: outputs/web-presentation/gui-text-audit-deep.{json,md}.")
+            "Run the web detector tests, the strict deep GUI text audit and the "
+            "dynamic visible-completeness audit (rendered surfaces, ES/EN, old "
+            "formats). Requires npm and installed web dependencies. Findings of "
+            "either layer return a nonzero exit code; reports: "
+            "outputs/web-presentation/gui-text-audit-deep.{json,md} and "
+            "outputs/web-presentation/gui-text-completeness.{json,md}.")
     if args:
         print("check-presentation: no arguments expected", file=sys.stderr)
         return 2
@@ -163,6 +168,15 @@ def combat_lab_command(args: list[str]) -> int:
         return _print_usage(
             "combat-lab", "Open the Combat Lab graphical application (Tkinter).")
     return _run_module("mordheim_combat_lab", "ui")
+
+
+def campaign_manager_command(args: list[str]) -> int:
+    if any(argument in ("-h", "--help") for argument in args):
+        return _print_usage(
+            "campaign-manager",
+            "Start the web Campaign Manager development server. Extra arguments "
+            "are forwarded to Vite (for example, `--port 5199 --strictPort`).")
+    return _run_in(WEB_APP, "npm", "run", "dev", "--", *args)
 
 
 def lab_command(name: str, args: list[str]) -> int:
@@ -365,6 +379,8 @@ def main(argv: list[str] | None = None) -> int:
             "then exit.")
     if name == "combat-lab":
         return combat_lab_command(args)
+    if name == "campaign-manager":
+        return campaign_manager_command(args)
     if name == "report":
         return report_command(args)
     if name == "tests":
