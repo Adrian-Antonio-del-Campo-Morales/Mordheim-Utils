@@ -40,7 +40,7 @@ jobs:
           python tools/knowledge/generate_knowledge_web.py --check
 
       - name: Run the Python regression net
-        run: python -m pytest tests/python/web tests/python/contracts tests/python/campaign tests/python/architecture tests/python/knowledge -q
+        run: python -m pytest tests/python/web tests/python/contracts tests/python/campaign tests/python/architecture tests/python/knowledge tests/python/construction/test_shared_eligibility.py -q
 
       - name: Verify the artefact is deterministic and untouched by a rebuild
         run: python tools/knowledge/generate_knowledge_web.py --check
@@ -68,7 +68,9 @@ jobs:
           python tools/knowledge/generate_knowledge_web.py --check
 
       - name: Typecheck and test the packages
-        run: cd packages/typescript && npm run typecheck && npm test
+        run: |
+          npm run check:eligibility
+          cd packages/typescript && npm run typecheck && npm test
 
       # This is intentionally separate from the complete web suite below:
       # it makes the bilingual KB presentation contract visible in CI and

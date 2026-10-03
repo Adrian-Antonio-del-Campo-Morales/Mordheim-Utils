@@ -97,16 +97,15 @@ rules:
     band: true
 - id: band--dueling-pride
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: LATER
+    implemented: 'NO'
     grant: band
     effects:
     - id: trait.re-roll-hits-vs-heroes
       scope: LATER
       binding: null
       reason: >-
-        Deferred: hero-vs-hero re-roll needs a target-type filter not yet exposed by the trait
-        bindings.
+        Pending L06: first-combat-round failed-hit rerolls require the enemy Hero recipient filter.
   name: Dueling Pride (House Fierezza)
   effect: >-
     Fierezza Heroes may re-roll failed hits during the first round of combat when fighting enemy
@@ -311,16 +310,15 @@ rules:
     - adjutant
 - id: pikemen--pikewall
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: trait.re-roll-hits-when-charged
       scope: LATER
       binding: null
       reason: >-
-        Deferred: requires a conditional re-roll tied to being charged and a first-strike weapon,
-        not yet expressible with current trait bindings.
+        Pending L06/L08: failed-hit rerolls require being charged while wielding a first-strike weapon.
   name: Pikewall
   effect: >-
     Charging a skilled Pikeman is always dangerous, as they may re-roll any failed hits when getting

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import math as math
 from dataclasses import dataclass, replace
+from mordheim_core.models import DuelContext
 from mordheim_core.models import DuelRequest
 from threading import Event
 from typing import Mapping
@@ -147,8 +148,9 @@ class DuelExecutionSettings:
         if min(self.simulations, self.batch_size, self.maximum_rounds) < 1:
             raise ValueError("Simulation count, batch size, and maximum rounds must be positive.")
 
-    def request(self, first, second, cancel_event: Event | None = None) -> DuelRequest:
-        return DuelRequest(first, second, self.simulations, self.seed, self.batch_size, self.maximum_rounds, cancel_event)
+    def request(self, first, second, cancel_event: Event | None = None, *,
+                context: DuelContext | None = None) -> DuelRequest:
+        return DuelRequest(first, second, self.simulations, self.seed, self.batch_size, self.maximum_rounds, cancel_event, context=context)
 
     def large_battery_processes(self, backend: str = "auto") -> int | None:
         """Process-pool workers for large batteries (``None`` = sequential).
@@ -441,7 +443,7 @@ def battery_pool_plan(baseline_seconds: float, settings: "DuelExecutionSettings"
     return workers
 
 
-def _native_segment_eligible(first, second) -> bool:
+def _native_segment_eligible(first, second, context=None) -> bool:
     """Mirror ``simulate_duel(auto)``'s native selection for one plan."""
     from mordheim_combat.vectorized import available_backends
 
@@ -452,7 +454,9 @@ def _native_segment_eligible(first, second) -> bool:
         from mordheim_combat.kernel import compile_duel_plan
     except ImportError:
         return False
-    plan = compile_duel_plan(first, second)
+    plan = compile_duel_plan(first, second, context=context)
+    if context is not None and getattr(_combat_native, "CONTEXT_VERSION", None) != 1:
+        return False
     if not plan.optimization_eligible:
         return False
     return bool(getattr(_combat_native, "supports_plan", lambda _plan: False)(plan))
@@ -475,18 +479,18 @@ def split_battery(simulations: int, batch_size: int, workers: int) -> tuple[tupl
 
 
 def _battery_worker_numpy(first, second, first_batch: int, stop: int,
-                          simulations: int, batch_size: int, seed: int, maximum_rounds: int):
+                          simulations: int, batch_size: int, seed: int, maximum_rounds: int, context=None):
     """Simulate plan batches ``[first_batch, stop)`` on the NumPy driver."""
     from mordheim_combat.vectorized import batch_segment
 
     return batch_segment(
         first, second, first_batch, stop, simulations, batch_size,
-        seed, maximum_rounds, None,
+        seed, maximum_rounds, None, context,
     )
 
 
 def _battery_worker_native(first, second, simulations: int, batch_size: int,
-                           seed: int, maximum_rounds: int):
+                           seed: int, maximum_rounds: int, context=None):
     """Simulate one segment as a whole sample with a shifted seed.
 
     The native engine derives batch ``i``'s stream as ``seed + i*salt`` in
@@ -498,7 +502,7 @@ def _battery_worker_native(first, second, simulations: int, batch_size: int,
     from mordheim_combat.vectorized import simulate_duel
 
     request = DuelRequest(first, second, simulations, seed=seed,
-                          batch_size=batch_size, maximum_rounds=maximum_rounds)
+                          batch_size=batch_size, maximum_rounds=maximum_rounds, context=context)
     result = simulate_duel(request, backend="native")
     return result.first_wins, result.second_wins, result.unresolved
 
@@ -507,7 +511,7 @@ def _battery_worker_native(first, second, simulations: int, batch_size: int,
 
 def simulate_battery(first, second, settings: DuelExecutionSettings,
                      cancel_event: Event | None = None, workers: int | None = None,
-                     pool=None, backend: str | None = None):
+                     pool=None, backend: str | None = None, *, context: DuelContext | None = None):
     """Run one duel sample, optionally through a per-batch process pool.
 
     ``workers`` overrides the battery policy (``0`` forces the in-process
@@ -531,7 +535,7 @@ def simulate_battery(first, second, settings: DuelExecutionSettings,
         workers = settings.large_battery_processes(backend or "auto")
     if not workers or settings.simulations < 2:
         from mordheim_combat.vectorized import simulate_duel
-        return simulate_duel(settings.request(first, second, cancel_event),
+        return simulate_duel(settings.request(first, second, cancel_event, context=context),
                              backend=backend or "auto")
     from concurrent.futures import ProcessPoolExecutor
     from mordheim_combat.vectorized import batch_plan
@@ -539,7 +543,7 @@ def simulate_battery(first, second, settings: DuelExecutionSettings,
 
     sizes = batch_plan(settings.simulations, settings.batch_size)
     segments = split_battery(settings.simulations, settings.batch_size, workers)
-    native = _native_segment_eligible(first, second)
+    native = _native_segment_eligible(first, second, context)
     if backend in ("native", "numpy"):
         if backend == "native" and not native:
             raise ValueError("the native backend does not support this plan")
@@ -553,7 +557,7 @@ def simulate_battery(first, second, settings: DuelExecutionSettings,
                     _battery_worker_native, first, second,
                     sum(sizes[first_batch:stop]), settings.batch_size,
                     (settings.seed + first_batch * salt) % (1 << 64),
-                    settings.maximum_rounds,
+                    settings.maximum_rounds, context,
                 )
                 for first_batch, stop in segments
             ]
@@ -561,7 +565,7 @@ def simulate_battery(first, second, settings: DuelExecutionSettings,
             executor.submit(
                 _battery_worker_numpy, first, second, first_batch, stop,
                 settings.simulations, settings.batch_size, settings.seed,
-                settings.maximum_rounds,
+                settings.maximum_rounds, context,
             )
             for first_batch, stop in segments
         ]

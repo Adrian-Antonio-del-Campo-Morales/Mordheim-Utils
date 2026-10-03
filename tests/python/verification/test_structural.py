@@ -45,36 +45,36 @@ def test_structural_audit_covers_the_current_implemented_catalogue_snapshot():
 
     The three profiles the duel runtime cannot carry (the Gyrocopter, the River
     Boat and the Banshee) are declared exclusions of `runtime-scope.yaml` with
-    their reason, and `trait.spectral-touch` is a rule whose runtime contract is
-    pending, so the compiler withholds it. Neither is an error the audit mutes.
+    their reason. L03 Spectral Touch and L04 Shifty now compile canonically;
+    their optimized support guards do not weaken this structural audit.
     """
     report = audit_phase_verification()
     assert report.errors == ()
     assert report.structural_complete
     # Catalogue snapshot only, never an assertion of semantic completeness.
-    assert report.execution_mechanics == 193
-    assert report.projected_mechanics == 190
-    assert report.projected_trait_bindings == 37
+    assert report.execution_mechanics == 194  # 193 entry + L04 Shifty
+    assert report.projected_mechanics == 191  # 190 entry + L04 Shifty
+    assert report.projected_trait_bindings == 38  # L03 Spectral: 37 -> 38
     assert report.evidenced_profile_bindings == 6
     assert report.projected_automatic_compiler_bindings == 35
     assert report.evidenced_selectable_compiler_bindings == 8
     assert report.evidenced_special_compiler_bindings == 18
-    assert report.observable_canonical_bindings == 173
+    assert report.observable_canonical_bindings == 175  # 173 + L03 Spectral + L04 Shifty
     assert report.evidenced_complex_sequences == 13
-    assert report.modular_tag_consumers == 74
+    assert report.modular_tag_consumers == 75  # L04: Shifty's existing round consumer
     # Field-consumer registry stays in lockstep with the EffectSet contract;
     # derived here from the same static registry the audit reads.
     from mordheim_combat_lab.verification.structural import MODULAR_FIELD_CONSUMERS
     assert report.modular_operator_fields == len(MODULAR_FIELD_CONSUMERS)
     assert len(MODULAR_FIELD_CONSUMERS) == len(set(MODULAR_FIELD_CONSUMERS))
-    assert report.modular_execution_mechanics == 193
+    assert report.modular_execution_mechanics == 194
     # 420 base records + 2 forbid-skill-categories profile rules + the
-    # implemented records of the promoted bands, minus the spectral-touch rule.
+    # implemented records of the promoted bands, including L03/L04 activation.
     # Derived from the knowledge base instead of pinning a number: it moves with
     # legitimately promoted rules and fails on any silent drift.
     assert report.implemented_rule_records == _implemented_rule_records()
-    assert report.implemented_rule_records == 491
-    assert report.canonical_bindings == 173
+    assert report.implemented_rule_records == 493  # 491 + L03 Spectral + L04 Shifty
+    assert report.canonical_bindings == 175
 
 
 def test_every_effect_field_has_an_owned_phase_operator():

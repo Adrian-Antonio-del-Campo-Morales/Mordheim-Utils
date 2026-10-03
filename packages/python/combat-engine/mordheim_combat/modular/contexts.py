@@ -164,6 +164,7 @@ def _injury_context(defender: CompiledFighter, effect: EffectSet, key: str,
         hard_to_kill=phases.has_tag(global_effects, "skill.hard-to-kill"),
         true_grit=phases.has_tag(global_effects, "skill.tough-as-steel"),
         concussion=effect.concussion,
+        shock=phases.has_tag(effect, "weapon.shock-rod"),
         concussion_immune=phases.has_tag(global_effects, "concussion_immune"),
         fragile=phases.has_tag(global_effects, "fragile_halflings"),
         # Poisonous changes injuries inflicted by the attack, not injuries

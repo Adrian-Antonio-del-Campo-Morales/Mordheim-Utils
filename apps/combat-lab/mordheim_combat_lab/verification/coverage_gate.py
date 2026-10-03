@@ -8,8 +8,8 @@ engine suites under ``coverage`` and compares the result against a committed
 
 The gate is deliberately a drift gate rather than a raw percentage gate:
 
-- line numbers shift as the engine evolves, so a percentage baseline would
-  fail spuriously on every refactor;
+- raw line indexes shift as the engine evolves; reconcile them against the
+  budget-origin source before treating an index mismatch as lost coverage;
 - the budget records which lines were covered on the day it was generated
   (``coverage-gate --update-budget``), and the gate fails when any of them
   stops being exercised.  New engine code is *not* in the budget yet, so a
@@ -40,6 +40,8 @@ DEFAULT_SUITES = (
     "tests/python/combat/modular",
     "tests/python/combat/vectorized",
     "tests/python/combat/test_phases.py",
+    "tests/python/combat/test_duel_context.py",
+    "tests/python/verification/test_duel_replay.py",
     "tests/python/verification/test_parity.py",
 )
 
@@ -152,9 +154,11 @@ def measure_coverage(
     started = time.perf_counter()
     cov.start()
     try:
-        pytest.main(["-q", "-p", "no:cacheprovider", "--no-header", *suites])
+        exit_code = pytest.main(["-q", "-p", "no:cacheprovider", "--no-header", *suites])
     finally:
         cov.stop()
+    if exit_code != pytest.ExitCode.OK:
+        raise RuntimeError(f"deterministic coverage tests did not pass (pytest exit code {int(exit_code)})")
     files = tuple(sorted(_engine_files(cov), key=lambda item: item.module))
     return CoverageReport(files=files, suites=suites,
                           seconds=time.perf_counter() - started)

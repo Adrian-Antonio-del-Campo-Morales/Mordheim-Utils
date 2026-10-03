@@ -29,6 +29,8 @@ import {
 } from "./band-variants";
 import type { KnowledgeReader, KnowledgeResult } from "./kernel/ports";
 import type { Campaign, IdString, OpenPayload, Warrior } from "./kernel/state";
+import { equipmentIssue, skillIssue, equipmentSetIssues } from "../eligibility/index";
+export { EQUIPMENT_TAG_VOCABULARY } from "../eligibility/index";
 import TABLES from "./construction-tables.json";
 import CLAUSES from "./construction-clauses.json";
 
@@ -44,6 +46,8 @@ export type ConstructionIssueCode =
   | "equipment_unknown_item"
   | "equipment_limit_exceeded"
   | "equipment_required_missing"
+  | "equipment_slot_occupied"
+  | "equipment_combination_forbidden"
   | "skill_not_permitted"
   | "skill_pending_special_list"
   | "characteristic_bound_exceeded"
@@ -723,59 +727,6 @@ export function itemFactsOf(
 }
 
 /**
- * Closed item-tag vocabulary of `catalog-items.yaml.schema.json`: the families
- * the printed rules reason about as a set. A prohibition token resolves through
- * these tags, so no band keeps its own list of item ids. The contract gate
- * `tests/python/construction/test_construction_contract_tables.py` asserts this
- * list and the schema enum stay identical.
- */
-export const EQUIPMENT_TAG_VOCABULARY: readonly string[] = [
-  "animal",
-  "blackpowder",
-  "bow",
-  "crossbow",
-  "poison",
-];
-
-/** Item kinds the `armour` prohibition token covers (body armour + defences). */
-const ARMOUR_KINDS: readonly string[] = ["armour", "shield-or-defence"];
-
-/**
- * Mechanics the `heavy-armour` prohibition token covers; the promoted item row
- * carries the canonical `mechanic_id`, so the token resolves by id, never by name.
- */
-const HEAVY_ARMOUR_MECHANICS: readonly string[] = [
-  "armour.heavy-armour",
-  "armour.gromril-armour",
-  "armour.ithilmar-armour",
-  "armour.plate-armour",
-];
-
-/** Tokens the contract interprets; anything else is reported, never guessed. */
-const INTERPRETED_TOKENS: readonly string[] = [
-  "armour",
-  "heavy-armour",
-  "ranged-weapons",
-  ...EQUIPMENT_TAG_VOCABULARY,
-];
-
-/** Whether one forbids token designates this item, by id, mechanic or tag. */
-function tokenForbids(
-  token: string,
-  itemId: IdString,
-  item: { readonly kind: string; readonly mechanic_id: string | null; readonly tags: readonly string[] } | null,
-): boolean {
-  if (token === itemId || token === item?.mechanic_id) return true;
-  if (item === null) return false;
-  if (EQUIPMENT_TAG_VOCABULARY.includes(token)) return item.tags.includes(token);
-  if (token === "armour") return ARMOUR_KINDS.includes(item.kind);
-  if (token === "heavy-armour") {
-    return item.mechanic_id !== null && HEAVY_ARMOUR_MECHANICS.includes(item.mechanic_id);
-  }
-  return token === "ranged-weapons" && item.kind === "ranged-weapon";
-}
-
-/**
  * Equipment verdict for one profile, from `equipment_access` plus the KB's
  * `profile.equipment-restrictions` prohibition tokens, plus the lists the
  * selected background variant activates. `null` means the choice is permitted.
@@ -791,69 +742,13 @@ export function equipmentIssueFor(
   itemId: IdString,
   variantId: IdString | null = null,
 ): ConstructionIssue | null {
-  const subject = [profile.band_id, profile.profile_id, itemId];
-  if (profile.fixed_equipment.includes(itemId)) return null;
   const band = bandFactsOf(reader, profile.band_id);
-  const activeLists = band ? variantActiveListsOf(reader, band, profile, variantId) : [];
-  // Lists an option of the band activates are resolved by the choice: until an
-  // option is selected none of them is assigned, so a profile that declares a
-  // candidate list cannot buy from it yet (the printed "Use only the Undead
-  // Equipment List assigned by the selected Foreign or Native background").
-  const gatedLists = band ? variantGatedListsOf(reader, band) : new Set<IdString>();
-  const offers = (profile.equipment_access ?? []).filter(
-    (offer) =>
-      offer.list_id === undefined ||
-      !gatedLists.has(offer.list_id) ||
-      activeLists.includes(offer.list_id),
-  );
-  const declaredAccess = profile.equipment_access !== null;
-  const offered = declaredAccess && offers.some((offer) => offer.item_id === itemId);
-  if (declaredAccess && !offered) {
-    return {
-      code: "equipment_not_permitted",
-      subject_ids: subject,
-      message: `"${itemId}" is not on any equipment list of ${profile.band_id}/${profile.profile_id}.`,
-    };
-  }
-  const item = itemFactsOf(reader, itemId);
-  const bandForbids = band ? band.equipment_forbids : [];
-  for (const token of [...profile.equipment_forbids, ...bandForbids]) {
-    if (tokenForbids(token, itemId, item)) {
-      return {
-        code: "equipment_forbidden",
-        subject_ids: subject,
-        message: `"${token}" is forbidden for ${profile.band_id}/${profile.profile_id}.`,
-      };
-    }
-  }
-  const unknownToken = [...profile.equipment_forbids, ...bandForbids].find(
-    (token) =>
-      !INTERPRETED_TOKENS.includes(token) &&
-      token !== itemId &&
-      !token.startsWith("armour.") &&
-      !token.startsWith("defence.") &&
-      !token.startsWith("weapon."),
-  );
-  if (unknownToken) {
-    return {
-      code: "construction_clause_unstructured",
-      subject_ids: subject,
-      rule_id: unknownToken,
-      owner_task: "KB",
-      message: `The prohibition token "${unknownToken}" of ${profile.band_id}/${profile.profile_id} has no construction contract; the choice is reported, not silently allowed.`,
-    };
-  }
-  if (item === null && offered) {
-    // The list offers an id the artefact publishes no row for (KB `out-of-scope`
-    // kinds): report it — the choice stays legal, the record is the gap.
-    return {
-      code: "equipment_unknown_item",
-      subject_ids: subject,
-      message: `"${itemId}" is offered by ${profile.band_id}/${profile.profile_id} but has no item record in the KB artefact.`,
-      owner_task: "KB",
-    };
-  }
-  return null;
+  return equipmentIssue({
+    profile, item_id: itemId, item: itemFactsOf(reader, itemId),
+    band_forbids: band?.equipment_forbids ?? [],
+    active_lists: band ? variantActiveListsOf(reader, band, profile, variantId) : [],
+    gated_lists: band ? [...variantGatedListsOf(reader, band)] : [],
+  });
 }
 
 /** One catalogue skill, as construction sees it. */
@@ -886,37 +781,7 @@ export function skillFactsOf(reader: KnowledgeReader, skillId: IdString): SkillF
  *   campaign workflows keep their documented convention).
  */
 export function skillIssueFor(profile: ProfileFacts, skill: SkillFacts): ConstructionIssue | null {
-  const subject = [profile.band_id, profile.profile_id, skill.id];
-  if (profile.skill_access.length === 0) return null;
-  if (!profile.skill_access.includes(skill.category)) {
-    return {
-      code: "skill_not_permitted",
-      subject_ids: subject,
-      message: `"${skill.id}" (${skill.category}) is outside the skill access of ${profile.band_id}/${profile.profile_id}.`,
-    };
-  }
-  if (skill.category === "special") {
-    const lists = profile.skill_lists.filter((list) => list.category === "special");
-    if (lists.length === 0) {
-      return {
-        code: "skill_pending_special_list",
-        subject_ids: subject,
-        message: `"${skill.id}" belongs to a band special-skill list whose members are prose-only in the KB; the list rule is not enforced yet.`,
-        owner_task: "KB",
-      };
-    }
-    // The band publishes the printed membership: only those skills are legal, and
-    // a skill of the special catalogue outside them is rejected, never allowed.
-    if (!lists.some((list) => list.skills.includes(skill.id))) {
-      return {
-        code: "skill_not_permitted",
-        subject_ids: subject,
-        rule_id: lists[0]?.rule_id,
-        message: `"${skill.id}" is not on the published special-skill list of ${profile.band_id}/${profile.profile_id} (${lists.map((list) => list.rule_id).join(", ")}).`,
-      };
-    }
-  }
-  return null;
+  return skillIssue(profile, skill);
 }
 
 /**
@@ -934,37 +799,10 @@ export function memberEquipmentIssuesFor(
   profile: ProfileFacts,
   itemIds: readonly IdString[],
 ): readonly ConstructionIssue[] {
-  const band = bandFactsOf(reader, profile.band_id);
-  const limits = band?.equipment_limits ?? null;
-  if (!limits || (limits.exempt_profile_ids ?? []).includes(profile.profile_id)) return [];
-  const subject = [profile.band_id, profile.profile_id];
-  const facts = itemIds.map((itemId) => ({ itemId, item: itemFactsOf(reader, itemId) }));
-  const issues: ConstructionIssue[] = [];
-  const maximum = limits.max_missile_weapons;
-  if (typeof maximum === "number") {
-    const carried = facts.filter((entry) => entry.item?.kind === "ranged-weapon");
-    if (carried.length > maximum) {
-      issues.push({
-        code: "equipment_limit_exceeded",
-        subject_ids: [...subject, ...carried.map((entry) => entry.itemId)],
-        ...(limits.rule_id ? { rule_id: limits.rule_id } : {}),
-        message: `${profile.band_id}/${profile.profile_id} carries ${carried.length} missile weapons; the band allows ${maximum}.`,
-      });
-    }
-  }
-  const required = limits.required_tag;
-  if (required && required.trim() !== "") {
-    const satisfied = facts.some((entry) => entry.item?.tags.includes(required));
-    if (!satisfied) {
-      issues.push({
-        code: "equipment_required_missing",
-        subject_ids: subject,
-        ...(limits.rule_id ? { rule_id: limits.rule_id } : {}),
-        message: `The equipment of ${profile.band_id}/${profile.profile_id} includes no "${required}": the band compiles the kit from that family only.`,
-      });
-    }
-  }
-  return issues;
+  return equipmentSetIssues({
+    profile, limits: bandFactsOf(reader, profile.band_id)?.equipment_limits ?? null,
+    items: itemIds.map((item_id) => ({ item_id, item: itemFactsOf(reader, item_id) })),
+  });
 }
 
 /** One `campaign.racial_maximums` row. */

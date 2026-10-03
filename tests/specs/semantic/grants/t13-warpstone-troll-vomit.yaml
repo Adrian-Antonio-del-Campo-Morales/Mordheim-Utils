@@ -1,0 +1,185 @@
+schema_version: 1
+specifications:
+- id: t13-warpstone-troll-vomit-option
+  scope_digest: ea4090654a79e79bb19b0855371a062c6a9a10c1ab40f7d8abdb42634a425b97
+  category: stateful
+  sources:
+  - target: rule/mordheim/underworld-alliance-mim/warpstone-troll--vomit-attack/weapon.vomit-attack
+    digest: 29f13214ad0296b925ff495e1b73219ca685dc1a0edc1d4cfadba6d96a7c36ec
+  depends_on:
+  - mechanic/weapon.vomit-attack
+  interpretation: 'Underworld Alliance, p. 5: the Warpstone Troll may choose one automatic Strength 5
+    melee hit instead of its normal attacks, ignoring armour. Selecting the canonical rule grants the
+    optional attack separately from equipped hands; the modular round decision accepts or rejects it each
+    round. The existing automatic-hit mechanic forbids parrying. Weapon/material/poison contributions
+    and other normal attacks do not join the replacement; applicable independent special saves and the
+    ordinary injury pipeline remain. This specification certifies the canonical modular route only; optional
+    choice is explicitly refused by unported optimized backends.'
+  interaction_contract:
+    reads:
+    - fighter.attacks
+    writes:
+    - attack.count
+    - hit.success
+    - attack.strength
+    - armour.allowed
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      band_id: underworld-alliance-mim
+      profile_id: warpstone-troll
+    context:
+      rule_id: warpstone-troll--vomit-attack
+    expect:
+      result.recipients:
+      - warpstone-troll
+  - id: compiled-option
+    roles:
+    - compiled
+    operation: compile
+    attacker: &id001
+      band_id: underworld-alliance-mim
+      profile_id: warpstone-troll
+      special_rule_ids:
+      - warpstone-troll--vomit-attack
+    expect:
+      attacker.vomit_attack.fixed_strength: 5
+      attacker.vomit_attack.automatic_hit: true
+      attacker.vomit_attack.ignore_armour: true
+      attacker.vomit_attack.cannot_be_parried: true
+      attacker.main_weapon.automatic_hit: false
+  - id: chosen-replacement
+    roles: &id007
+    - active
+    - boundary
+    - consumer
+    - sequence
+    - consumption
+    operation: replacement_pool
+    attacker: *id001
+    defender: &id002
+      main_weapon_id: weapon.sword
+      off_hand_id: defence.buckler
+      armour_id: armour.gromril-armour
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 4
+        wounds: 2
+        initiative: 1
+        attacks: 1
+    context: &id003
+      first_round: true
+      charging: false
+    decisions: &id008
+    - key: test.vomit-attack
+      value: true
+    rolls: &id009
+    - key: test.attack.0.wound
+      value: 3
+    expect: &id010
+      result.count: 1
+      result.attacks.0.hit: true
+      result.attacks.0.wounded: true
+      result.attacks.0.parried: false
+      result.defender.wounds: 1
+      result.selected.main_weapon.fixed_strength: 5
+      result.selected.main_weapon.cannot_be_parried: true
+  - id: rejected-keeps-four
+    roles: &id004
+    - inactive
+    - boundary
+    - sequence
+    - consumption
+    operation: replacement_pool
+    attacker: *id001
+    defender: *id002
+    context: *id003
+    decisions:
+    - key: test.vomit-attack
+      value: false
+    rolls: &id005
+    - key: test.attack.0.hit
+      value: 1
+    - key: test.attack.1.hit
+      value: 1
+    - key: test.attack.2.hit
+      value: 1
+    - key: test.attack.3.hit
+      value: 1
+    expect: &id006
+      result.count: 4
+      result.defender.wounds: 2
+      result.attacks.3.hit: false
+  - id: absent-keeps-four
+    roles: *id004
+    operation: replacement_pool
+    attacker:
+      band_id: underworld-alliance-mim
+      profile_id: warpstone-troll
+    defender: *id002
+    context: *id003
+    decisions: []
+    rolls: *id005
+    expect: *id006
+  - id: available-after-first-round
+    roles: *id007
+    operation: replacement_pool
+    attacker: *id001
+    defender: *id002
+    context:
+      first_round: false
+      charging: false
+    decisions: *id008
+    rolls: *id009
+    expect: *id010
+  - id: last-wound-follows-injury
+    roles: *id007
+    operation: replacement_pool
+    attacker: *id001
+    defender:
+      main_weapon_id: weapon.sword
+      off_hand_id: defence.buckler
+      armour_id: armour.gromril-armour
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 4
+        wounds: 1
+        initiative: 1
+        attacks: 1
+    context: *id003
+    decisions: *id008
+    rolls:
+    - key: test.attack.0.wound
+      value: 3
+    - key: test.attack.0.injury.0
+      value: 4
+    expect:
+      result.count: 1
+      result.defender.wounds: 0
+      result.defender.condition: STUNNED
+  mutations:
+  - id: remove-option
+    path: attacker.vomit_attack
+    value: null
+    cases:
+    - chosen-replacement
+  - id: lose-automatic-hit
+    path: attacker.vomit_attack.automatic_hit
+    value: false
+    cases:
+    - chosen-replacement
+  - id: strength-four
+    path: attacker.vomit_attack.fixed_strength
+    value: 4
+    cases:
+    - chosen-replacement
+  - id: allow-armour
+    path: attacker.vomit_attack.ignore_armour
+    value: false
+    cases:
+    - chosen-replacement

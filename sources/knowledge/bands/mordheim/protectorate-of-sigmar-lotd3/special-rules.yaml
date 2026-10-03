@@ -353,7 +353,9 @@ rules:
     es: >-
       Solo el Sacerdote Guerrero puede tener esta habilidad, que le permite repetir cualquier tirada
       de Huida fallida.
+  eligibility: [warrior-priest]
   applies_to:
+    profile_ids: [warrior-priest]
     band: true
 - id: band--special-skill-rousing-sermon
   kind: warband_skill
@@ -390,7 +392,9 @@ rules:
       El Sacerdote Guerrero y todas las miniaturas amigas dentro de 6 pulgadas ganan +1 ataque
       durante esa fase de combate cuerpo a cuerpo. Solo puede haber un Sermón Exhortativo por
       partida.
+  eligibility: [warrior-priest]
   applies_to:
+    profile_ids: [warrior-priest]
     band: true
 - id: band--special-skill-sigmars-guidance
   kind: warband_skill

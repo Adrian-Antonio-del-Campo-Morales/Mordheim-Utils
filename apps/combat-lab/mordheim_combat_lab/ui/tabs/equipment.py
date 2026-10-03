@@ -92,12 +92,9 @@ class EquipmentAnalysisTab(ttk.Frame):
             ("Preparation", self.catalogue.preparations(choice), candidate.preparation_ids[0] if candidate.preparation_ids else None),
             ("Main poison", self.catalogue.poisons(choice), candidate.main_poison_id),
         ]
-        arms_master = bool({
-            "band--pit-fighter-skill-arms-master",
-            "band--ogres-special-skills-master-of-arms",
-        } & set(candidate.special_rule_ids))
-        if self.catalogue.mechanic(candidate.main_weapon_id).get("hands") == 2 and not arms_master:
-            slots[0] = ("Off hand", ((None, "Free hand"),), None)
+        # The off-hand candidates stay in the product's scope: the shared
+        # decision decides each combination below, so the tab never narrows
+        # the list locally and never rewrites the configured off hand.
         maximum = int(self.maximum_changed_slots.get())
         values = [options for _name, options, _baseline in slots]
         configurations = []
@@ -132,22 +129,66 @@ class EquipmentAnalysisTab(ttk.Frame):
                 configurations.append((updates, " · ".join(labels)))
         return tuple(configurations)
 
+    def _incompatible(self, candidate, configurations) -> dict[int, str]:
+        """Shared verdict per proposed configuration, submitted as one batch.
+
+        The comparison skips incompatible configurations and explains the
+        omission; the warrior's configured equipment is never changed to make
+        a candidate pass.
+        """
+        # A free build declares no band profile: its access stays permissive.
+        choice = getattr(self.candidate_editor, "choice", None)
+        if choice is None:
+            return {}
+        proposals, index_of = [], {}
+        for index, (updates, _label) in enumerate(configurations):
+            item_id = updates.get("off_hand_id") or updates.get("armour_id")
+            if not item_id:
+                continue
+            index_of[index] = item_id
+            proposals.append({"kind": "add", "id": item_id, "slot": "main"})
+        if not proposals:
+            return {}
+        try:
+            decisions = self.catalogue.selection_decisions(
+                choice, proposals, main_weapon_id=candidate.main_weapon_id,
+                off_hand_id=candidate.off_hand_id,
+                skills=tuple((*candidate.skill_ids, *candidate.special_rule_ids)),
+                exception_rule_ids=self.catalogue.hand_exception_rule_ids(
+                    choice, tuple(candidate.special_rule_ids)),
+            )
+        except (KeyError, TypeError, ValueError) as error:
+            self.after(0, self._failed, str(error))
+            return {}
+        result: dict[int, str] = {}
+        for index, item_id in index_of.items():
+            reason = decisions.get(item_id)
+            if reason:
+                result[index] = reason
+        return result
+
     def _compare(self, candidate, enemy, configurations, settings, cancel_event, workers=0, observe=None) -> None:
         try:
-            variants = tuple(ComparisonCandidate(str(index), label, replace(candidate, **updates))
-                for index, (updates, label) in enumerate(configurations))
-            batch = compare_builds(candidate, enemy, variants, settings, cancel_event,
+            incompatible = self._incompatible(candidate, configurations)
+            variants, omitted = [], []
+            for index, (updates, label) in enumerate(configurations):
+                if incompatible.get(index):
+                    omitted.append((label, incompatible[index]))
+                    continue
+                variants.append(ComparisonCandidate(str(index), label, replace(candidate, **updates)))
+            batch = compare_builds(candidate, enemy, tuple(variants), settings, cancel_event,
                 lambda completed: self.after(0, self.progress.advance, completed), workers=workers, observe=observe)
             rows = [(row.candidate.label, row.win_rate, row.improvement) for row in batch.results]
-            skipped = len(batch.rejected)
+            skipped = len(batch.rejected) + len(omitted)
+            reasons = [reason for _label, reason in omitted] + [message for _candidate, message in batch.rejected]
         except SimulationCancelled:
             self.after(0, self._cancelled)
         except Exception as exc:
             self.after(0, self._failed, str(exc))
         else:
-            self.after(0, self._finished, rows, skipped, settings.simulations)
+            self.after(0, self._finished, rows, skipped, settings.simulations, tuple(reasons))
 
-    def _finished(self, rows, skipped: int, simulations: int) -> None:
+    def _finished(self, rows, skipped: int, simulations: int, reasons=()) -> None:
         for item in self.tree.get_children():
             self.tree.delete(item)
         for equipment, candidate, impact in sorted(rows, key=lambda row: row[1], reverse=True):
@@ -161,6 +202,8 @@ class EquipmentAnalysisTab(ttk.Frame):
                 f"{cost:g} gc" if cost is not None else "—", tr("Current configuration"),
             ))
         skipped_message = tr(" Skipped {} invalid configurations.").format(skipped) if skipped else ""
+        if reasons:
+            skipped_message = f"{skipped_message} " + tr("Reasons: {}").format("; ".join(sorted(set(reasons))))
         self.status.set(tr("Compared {} configurations across {} duels.").format(len(rows), f"{len(rows) * simulations:,}") + skipped_message)
         self.progress.finish(tr("Complete"))
         self._done()

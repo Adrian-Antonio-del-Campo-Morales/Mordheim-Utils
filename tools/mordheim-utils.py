@@ -57,7 +57,8 @@ SCOPE_PATHS = {
     # The per-change engine gate: the deterministic suites that certify rule
     # behaviour without statistical noise (mirrors the coverage-gate budget).
     "deterministic": ("tests/python/combat/modular", "tests/python/combat/vectorized",
-                      "tests/python/combat/test_phases.py", "tests/python/verification/test_parity.py"),
+                      "tests/python/combat/test_phases.py", "tests/python/combat/test_duel_context.py",
+                      "tests/python/verification/test_duel_replay.py", "tests/python/verification/test_parity.py"),
     "campaign": ("tests/python/campaign", "tests/python/application"),
     "knowledge": ("tests/python/knowledge", "tests/specs"),
     "verification": ("tests/python/verification",),
@@ -250,9 +251,12 @@ def run_ci_command(args: list[str]) -> int:
         if _run_in(REPO_ROOT, *command):
             return 1
     if _run_module("pytest", "tests/python/web", "tests/python/contracts", "tests/python/campaign",
-                   "tests/python/architecture", "tests/python/knowledge", "-q"):
+                   "tests/python/architecture", "tests/python/knowledge",
+                   "tests/python/construction/test_shared_eligibility.py", "-q"):
         return 1
     if _run(sys.executable, str(KNOWLEDGE_GENERATOR), "--check"):
+        return 1
+    if _run_in(REPO_ROOT, "npm", "run", "check:eligibility"):
         return 1
     if _run_in(TYPESCRIPT_PACKAGE, "npm", "run", "typecheck"):
         return 1

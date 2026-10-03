@@ -7,6 +7,8 @@ from typing import Collection
 
 from mordheim_core.models import CompiledFighter
 from mordheim_core.models import EffectSet
+from mordheim_core.models import DuelContext
+from mordheim_core.context import PreparedDuelContext, prepare_duel_context
 
 
 EFFECT_VALUE_FIELDS = tuple(field.name for field in fields(EffectSet) if field.name != "tags")
@@ -33,6 +35,8 @@ class FighterKernelPlan:
     ballistic_skill: int
     off_hand_attacks: bool
     mounted: bool
+    movement: int | None = None
+    leadership: int | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -42,6 +46,7 @@ class DuelKernelPlan:
     first: FighterKernelPlan
     second: FighterKernelPlan
     optimization_eligible: bool
+    context: PreparedDuelContext | None = None
 
 
 def _effects(fighter: CompiledFighter) -> tuple[EffectSet, ...]:
@@ -84,17 +89,39 @@ def _fighter_plan(fighter: CompiledFighter, tag_indices: dict[str, int]) -> Figh
         ballistic_skill=fighter.ballistic_skill,
         off_hand_attacks=fighter.off_hand_attacks,
         mounted=fighter.mounted,
+        movement=stats.movement, leadership=stats.leadership,
     )
+
+
+def require_optimized_support(first: CompiledFighter, second: CompiledFighter) -> None:
+    """Refuse modular-only choices before an optimized engine can omit them."""
+    if any(fighter.vomit_attack is not None for fighter in (first, second)):
+        raise ValueError("optional Vomit Attack currently requires the modular engine; optimized ports are pending")
+    if any("trait.spectral-touch" in effect.tags
+           for fighter in (first, second) for effect in _effects(fighter)):
+        raise ValueError("Spectral Touch currently requires the modular engine; optimized ports are pending")
+    if any("skill.shifty" in effect.tags
+           for fighter in (first, second) for effect in _effects(fighter)):
+        raise ValueError("Shifty currently requires the modular engine; optimized ports are pending")
+    if any("mechanic.killing-blow" in effect.tags
+           for fighter in (first, second) for effect in _effects(fighter)):
+        raise ValueError("Killing Blow currently requires the modular engine; optimized ports are pending")
+    if any(set(effect.tags) & {"weapon.pry-bar", "weapon.kanabo", "weapon.wizards-staff", "weapon.katana", "weapon.shock-rod", "weapon.skull-busta", "weapon.long-daggers", "weapon.knuckledusters"}
+           for fighter in (first, second) for effect in _effects(fighter)):
+        raise ValueError("L06 weapon profiles currently require the modular engine; optimized ports are pending")
 
 
 def compile_duel_plan(
     first: CompiledFighter, second: CompiledFighter,
     *, certified_tags: Collection[str] | None = None,
+    context: DuelContext | None = None,
 ) -> DuelKernelPlan:
+    require_optimized_support(first, second)
     tag_ids = tuple(sorted({tag for fighter in (first, second) for effect in _effects(fighter)
                             for tag in effect.tags}))
     indices = {tag: index for index, tag in enumerate(tag_ids)}
     eligible = certified_tags is None or set(tag_ids) <= set(certified_tags)
     return DuelKernelPlan(
         1, tag_ids, _fighter_plan(first, indices), _fighter_plan(second, indices), eligible,
+        prepare_duel_context(first, second, context),
     )

@@ -104,6 +104,8 @@ def validate_rule_runtime(rule: dict, *, context: str = "special rule") -> None:
         effect_scopes.append(effect_scope)
     if len(effect_ids) != len(set(effect_ids)):
         raise ValueError(f"{context} {rule.get('id')}: duplicate runtime effect ids")
+    if implemented == "YES" and not any(isinstance(effect.get("binding"), dict) for effect in effects):
+        raise ValueError(f"{context} {rule.get('id')}: implemented YES rule has no executable binding")
     expected_scope = "YES" if "YES" in effect_scopes else "LATER" if "LATER" in effect_scopes else "NO"
     if scope != expected_scope:
         raise ValueError(f"{context} {rule.get('id')}: runtime scope {scope} does not match effects ({expected_scope})")

@@ -1,0 +1,233 @@
+schema_version: 1
+specifications:
+- id: t13-spirit-host-spectral-touch
+  scope_digest: ea4090654a79e79bb19b0855371a062c6a9a10c1ab40f7d8abdb42634a425b97
+  category: stateful
+  sources:
+  - target: rule/mordheim/call-of-the-night-haint-mim/spirit-hosts--spectral-touch/trait.spectral-touch
+    digest: 13c1185f3d0b40a4b49f15644cb5e16b63a38a83c472aba37ce95e249eb70f37
+  question: T13-Q019
+  ruling: Human accepted Q019 R1-R4, 2026-10-01; docs/decisions/design-rulings.md#spectral-touch-q019.
+  interpretation: 'Call Of The Night Haint, PDF p. 5 (annual printed p. 082), Spirit Host / Spectral Touch:
+    an attack hit roll of six immediately adds one wound, followed by the normal wound roll. The canonical
+    WS2/S2/A3 Spirit Host uses its legal default natural attacks. Accepted Q019 R1-R4 distinguish each physical
+    successful six, inherit attack saves, cap the extra at one, resolve immediate injury/reactions before ordinary
+    continuation and retain collective hit preparation. The explicit free-selection opponent is only a duel
+    control. This specification proves canonical modular execution; F009 optimized ports and Spirit Knife F025
+    remain separate. No injected Spectral tag or foreign Spirit Host loadout is used.'
+  cases:
+  - id: recipients
+    roles:
+    - grant
+    operation: grant
+    defender: &id001
+      band_id: call-of-the-night-haint-mim
+      profile_id: spirit-hosts
+    context:
+      rule_id: spirit-hosts--spectral-touch
+    expect:
+      result.recipients:
+      - spirit-hosts
+  - id: compiled-canonical-trait
+    roles:
+    - compiled
+    operation: compile
+    attacker: *id001
+    expect:
+      attacker.characteristics.attacks: 3
+      attacker.characteristics.strength: 2
+    expect_contains:
+      attacker.global_effects.tags:
+      - trait.spectral-touch
+      attacker.main_weapon.tags:
+      - weapon.natural-attacks
+  - id: six-first
+    roles: &id002
+    - active
+    - boundary
+    - consumer
+    - sequence
+    - consumption
+    operation: pool
+    attacker: *id001
+    defender: &id003
+      main_weapon_id: weapon.fist
+      characteristics: &id004
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 4
+        initiative: 1
+        attacks: 1
+    rolls:
+    - key: test.attack.0.hit
+      value: 6
+    - key: test.attack.1.hit
+      value: 5
+    - key: test.attack.2.hit
+      value: 1
+    - key: test.attack.0.wound
+      value: 1
+    - key: test.attack.1.wound
+      value: 1
+    expect:
+      result.attacks.0.damage: 1
+      result.attacks.1.damage: 0
+      result.attacks.2.damage: 0
+      result.defender.wounds: 3
+  - id: six-second
+    roles: *id002
+    operation: pool
+    attacker: *id001
+    defender: *id003
+    rolls:
+    - key: test.attack.0.hit
+      value: 5
+    - key: test.attack.1.hit
+      value: 6
+    - key: test.attack.2.hit
+      value: 1
+    - key: test.attack.0.wound
+      value: 1
+    - key: test.attack.1.wound
+      value: 1
+    expect:
+      result.attacks.0.damage: 0
+      result.attacks.1.damage: 1
+      result.attacks.2.damage: 0
+      result.defender.wounds: 3
+  - id: non-six-hits
+    roles:
+    - inactive
+    - boundary
+    - consumption
+    operation: pool
+    attacker: *id001
+    defender: *id003
+    rolls:
+    - key: test.attack.0.hit
+      value: 5
+    - key: test.attack.1.hit
+      value: 5
+    - key: test.attack.2.hit
+      value: 1
+    - key: test.attack.0.wound
+      value: 1
+    - key: test.attack.1.wound
+      value: 1
+    expect:
+      result.attacks.0.damage: 0
+      result.attacks.1.damage: 0
+      result.attacks.2.damage: 0
+      result.defender.wounds: 4
+  - id: ordinary-wound-still-resolved
+    roles: *id002
+    operation: attack
+    attacker: *id001
+    defender: *id003
+    rolls:
+    - key: test.hit
+      value: 6
+    - key: test.wound
+      value: 5
+    expect:
+      result.damage: 2
+      result.defender.wounds: 2
+  - id: ordinary-strength-boundary
+    roles: *id002
+    operation: attack
+    attacker: *id001
+    defender: *id003
+    rolls:
+    - key: test.hit
+      value: 6
+    - key: test.wound
+      value: 4
+    expect:
+      result.damage: 1
+      result.defender.wounds: 3
+  - id: saved-extra-keeps-normal-wound-roll
+    roles: *id002
+    operation: attack
+    attacker: *id001
+    defender:
+      main_weapon_id: weapon.fist
+      characteristics: *id004
+      armour_id: armour.light-armour
+    rolls:
+    - key: test.hit
+      value: 6
+    - key: test.spectral-touch.armour
+      value: 6
+    - key: test.wound
+      value: 1
+    expect:
+      result.damage: 0
+      result.defender.wounds: 4
+  - id: immediate-injury-stops-ordinary-and-later-attacks
+    roles: *id002
+    operation: pool
+    attacker: *id001
+    defender:
+      main_weapon_id: weapon.fist
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 1
+        initiative: 1
+        attacks: 1
+    rolls:
+    - key: test.attack.0.hit
+      value: 6
+    - key: test.attack.1.hit
+      value: 5
+    - key: test.attack.2.hit
+      value: 1
+    - key: test.attack.0.spectral-touch.injury.0
+      value: 5
+    expect:
+      result.defender.wounds: 0
+      result.defender.condition: OUT
+      result.attacks.0.damage: 1
+  - id: other-profile-six-has-no-extra
+    roles:
+    - inactive
+    - boundary
+    - consumer
+    operation: attack
+    attacker:
+      band_id: call-of-the-night-haint-mim
+      profile_id: revenants
+    defender: *id003
+    rolls:
+    - key: test.hit
+      value: 6
+    - key: test.wound
+      value: 1
+    expect:
+      result.damage: 0
+      result.defender.wounds: 4
+  mutations:
+  - id: remove-spectral-trait
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - six-first
+    - six-second
+    - ordinary-wound-still-resolved
+  - id: manufacture-hit-instead-of-physical-six
+    path: attacker.main_weapon.automatic_hit
+    value: true
+    cases:
+    - six-first
+  - id: ordinary-strength-three
+    path: attacker.characteristics.strength
+    value: 3
+    cases:
+    - ordinary-strength-boundary
+  - id: discard-inherited-armour-save
+    path: attacker.main_weapon.ignore_armour
+    value: true
+    cases:
+    - saved-extra-keeps-normal-wound-roll

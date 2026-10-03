@@ -51,6 +51,11 @@
           "additionalProperties": false,
           "properties": {
             "band": { "type": "boolean" },
+            "profile_types": {
+              "description": "Configured recipient type; supplied promotion changes this fact, not the canonical starting profile.",
+              "type": "array", "minItems": 1, "uniqueItems": true,
+              "items": { "enum": ["hero", "henchman"] }
+            },
             "profile_ids": {
               "type": "array",
               "minItems": 1,

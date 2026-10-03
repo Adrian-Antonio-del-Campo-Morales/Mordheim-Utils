@@ -8,7 +8,7 @@ The seven clauses T09 had to close by itself are gated here, straight from
      catalogue), and every listed skill is a published `special` skill;
 4.   `silent-brotherhood-sc` `band--the-silence`: a band-wide prohibition whose
      tokens are catalogue item tags — the tag vocabulary is closed and shared
-     with the domain constant of `construction.ts`;
+     with the shared eligibility domain constant;
 5.   `snotlings-web` `runts--teeny-hands`: the Runts prohibit armour by token
      while the shared list keeps carrying the armour items;
 6.   `outlaws-of-stirwood-forest*` bow restrictions: the printed limit (one
@@ -33,7 +33,7 @@ ROOT = Path(__file__).resolve().parents[3]
 KB = ROOT / "sources" / "knowledge"
 CONTRACTS = ROOT / "contracts" / "knowledge-editorial-v1"
 COLLECTION = "mordheim"
-CONSTRUCTION = ROOT / "packages" / "typescript" / "domain" / "campaign" / "construction.ts"
+CONSTRUCTION = ROOT / "packages" / "typescript" / "domain" / "eligibility" / "index.ts"
 
 KAZ = "adventurers-kaz"
 SILENCE = "silent-brotherhood-sc"
@@ -142,7 +142,7 @@ def test_silence_tokens_are_catalogue_item_tags_and_the_vocabulary_is_closed():
         CONSTRUCTION.read_text(encoding="utf-8"),
         re.DOTALL,
     )
-    assert declared is not None, "construction.ts must declare the item-tag vocabulary"
+    assert declared is not None, "shared eligibility must declare the item-tag vocabulary"
     domain = set(re.findall(r'"([a-z-]+)"', declared.group(1)))
     assert domain == vocabulary, (
         f"the domain vocabulary and the item contract diverged: {sorted(domain ^ vocabulary)}"

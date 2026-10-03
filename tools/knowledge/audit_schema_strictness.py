@@ -76,6 +76,7 @@ def main(argv: list[str] | None = None) -> int:
                             "path": finding.path,
                             "detail": finding.detail,
                             "documents": list(finding.documents),
+                            "members": list(finding.members),
                         }
                         for finding in selected
                     ],

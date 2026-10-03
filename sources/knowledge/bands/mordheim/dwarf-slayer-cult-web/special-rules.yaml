@@ -4,15 +4,14 @@ rules:
 - id: band--hard-to-kill
   runtime:
     scope: LATER
-    implemented: 'YES'
+    implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.dwarf-slayer-cult-web.band.hard-to-kill
       scope: LATER
       binding: null
       reason: >-
-        Deferred subsystem: injury-table result conversion is a post-duel/campaign resolution
-        mechanic.
+        Pending L07: bind and verify the source-specific combat Injury conversion (only 6 is out of action); this is admitted combat behavior, not a campaign exclusion.
   name: Hard to Kill
   source:
     manual: mordheimer.net
@@ -27,14 +26,14 @@ rules:
 - id: band--hard-head
   runtime:
     scope: LATER
-    implemented: 'YES'
+    implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.dwarf-slayer-cult-web.band.hard-head
       scope: LATER
       binding: null
       reason: >-
-        Deferred subsystem: weapon special-rule exemptions are outside the current engine scope.
+        Pending L07: bind and verify the printed mace/club special-rule exemption; related profile traits do not implement this origin by themselves.
   name: Hard Head
   source:
     manual: mordheimer.net

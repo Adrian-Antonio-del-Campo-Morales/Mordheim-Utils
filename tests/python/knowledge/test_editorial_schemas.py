@@ -591,5 +591,5 @@ def test_the_audit_reports_the_looseness_it_looks_for(monkeypatch):
     )
     hard = {finding.kind for finding in subject.hard_findings()}
     assert hard == {"open_object", "undeclared_key"}, hard
-    kinds = {kind for kind, _, _ in subject.unexercised()}
+    kinds = {kind for kind, *_ in subject.unexercised()}
     assert kinds == {"unused_property"}, sorted(subject.unexercised())

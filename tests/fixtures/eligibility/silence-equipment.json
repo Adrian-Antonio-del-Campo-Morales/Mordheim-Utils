@@ -1,0 +1,10 @@
+{
+  "provenance": "T13-F019 canonical item facts, copied from sources/knowledge/catalog/items (pistol and sword from weapons-ranged.yaml, pistol_brace from trollheim.yaml, crossbow_pistol from weapons-ranged.yaml, warhound from out-of-scope.yaml). pistol and pistol_brace are the two aliases of mechanic weapon.pistol and carry different kinds with the same blackpowder tag: the documented alias collision. tests/python/construction/test_silence_equipment.py verifies these facts against the live KB.",
+  "items": {
+    "pistol": { "kind": "ranged-weapon", "mechanic_id": "weapon.pistol", "tags": ["blackpowder"] },
+    "pistol_brace": { "kind": "trollheim-equipment", "mechanic_id": "weapon.pistol", "tags": ["blackpowder"] },
+    "crossbow_pistol": { "kind": "ranged-weapon", "mechanic_id": null, "tags": ["blackpowder"] },
+    "warhound": { "kind": "out-of-scope", "mechanic_id": null, "tags": ["animal"] },
+    "sword": { "kind": "close-combat-weapon", "mechanic_id": "weapon.sword", "tags": [] }
+  }
+}

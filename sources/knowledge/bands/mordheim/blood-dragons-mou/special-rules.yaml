@@ -386,16 +386,15 @@ rules:
     - wights
 - id: wights--killing-blow
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.wights.killing-blow
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.killing-blow
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.killing-blow
   name: Killing Blow (Wights)
   effect: >-
     A natural rolled 6 on the to-hit roll wounds automatically; the strike might not be parried, but
@@ -688,16 +687,15 @@ rules:
     - grave-guards
 - id: grave-guards--killing-blow
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.grave-guards.killing-blow
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.killing-blow
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.killing-blow
   name: Killing Blow (Grave Guards)
   effect: >-
     A natural rolled 6 on the to-hit roll wounds automatically; the strike might not be parried, but

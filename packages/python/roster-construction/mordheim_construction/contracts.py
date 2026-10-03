@@ -30,6 +30,7 @@ TRAIT_TYPES = {
     "ward_save_mundane_only": bool,
     "natural_armour_negated_by_magic": bool,
     "magical_attacks": bool,
+    "spectral_touch": bool,
     "regeneration_blocked_by_fire": bool,
     "regeneration_blocked_by_blessed": bool,
     "caught_fire_threshold": int,
@@ -100,31 +101,20 @@ COMPILER_CONTRACTS = {
 }
 
 
-BLACKPOWDER_WEAPONS = {"weapon.pistol", "weapon.duelling-pistol"}
-
-
-MISSILE_WEAPONS = BLACKPOWDER_WEAPONS
-
-
-DRUG_PREPARATIONS = {
-    "preparation.crimson-shade", "preparation.mandrake-root",
-    "preparation.mad-cap-mushrooms", "preparation.head-splitter-mushrooms",
-}
-
-
 SPECIAL_RULE_EFFECTS = {
     "band--beastmen-special-skills-mutant": {},
     "band--marauder-special-skills-mutant": {},
     "band--mutations-tentacle": {"effects": {"incoming_attacks_modifier": -1}},
     "band--blessings-of-nurgle-cloud-of-flies": {"traits": {"cloud_of_flies": True}},
-    "band--blessings-of-nurgle-bloated-foulness": {"stats": {"toughness": 1, "wounds": 1}},
+    # Bloated Foulness: +1 Wound, +1 Toughness and Movement -1 (its source
+    # wording); movement is carried, not consumed by the duel engine.
+    "band--blessings-of-nurgle-bloated-foulness": {"stats": {"toughness": 1, "wounds": 1, "movement": -1}},
     "band--blessings-of-nurgle-mark-of-nurgle": {"stats": {"wounds": 1}, "traits": {"poison_immune": True}},
     "band--blood-dragon-power-red-fury": {"effects": {"attacks_bonus": 1}},
     "band--blood-dragon-power-infallible": {"effects": {"charge_reroll_hits": True}},
     "band--blood-dragon-power-strength-of-steel": {"effects": {"charge_strength_bonus": 1}},
     "band--lahmia-power-lost-innocence": {"effects": {"priority": 10}},
     "band--strigoi-power-monstrosity": {"stats": {"wounds": 1}},
-    "band--strigoi-power-iron-sinews": {"stats": {"strength": 1}},
     "band--strigoi-power-infinite-hatred": {"effects": {"reroll_hits": True}},
     # Optional profile rules are selected through FighterBuild.special_rule_ids.
     # Their persistent 1v1 effects live here; inherent profile rules belong in

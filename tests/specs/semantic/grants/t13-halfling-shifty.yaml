@@ -1,0 +1,275 @@
+schema_version: 1
+specifications:
+- id: t13-halfling-shifty
+  scope_digest: ea4090654a79e79bb19b0855371a062c6a9a10c1ab40f7d8abdb42634a425b97
+  category: stateful
+  sources:
+  - target: mechanic/skill.shifty
+    digest: 78aa9afc72affedfed1fc3c6a44cdea578ee1456c191ee02dd4821c183e4de27
+  - target: rule/mordheim/halflings-mic/halfling-elder--shifty/skill.shifty
+    digest: 7fbd04c2a466a3af92d26523b7012ec93323741e186251ac7d5e0dd58eedb652
+  ruling: Human accepted Shifty S1-S4, 2026-10-02; docs/decisions/design-rulings.md#shifty-s1s4.
+  interpretation: Halflings PDF p. 4, Halfling Special Skills / Shifty, adds one first-striking attack when
+    charged. The printed skill table supports Elder, Cook, Thief and Youths. Only an explicit selection grants
+    the mechanic; the compiled Attack characteristic is unchanged. Accepted S1-S4 govern count, melee nomination,
+    ties and replacement composition. These canonical legal mace builds run actual modular rounds, with a labelled
+    free-selection opponent used only as a control. Strict request tapes distinguish the early bonus from the
+    later ordinary pool in both participant positions. Later rounds and own charges do not repeat the bonus.
+    Configured promoted Scouts/Warriors now use promotion.hero (L05); pistol-only refusal and optimized ports remain
+    explicit pending boundaries, not tabletop prohibitions.
+  cases:
+  - id: four-hero-recipients
+    roles:
+    - grant
+    operation: selectable_grant
+    defender:
+      band_id: halflings-mic
+      profile_id: halfling-elder
+    context:
+      rule_id: halfling-elder--shifty
+    expect:
+      result.recipients:
+      - halfling-cook
+      - halfling-elder
+      - halfling-thief
+      - halfling-youths
+  - id: compiled-halfling-elder
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      band_id: halflings-mic
+      profile_id: halfling-elder
+      main_weapon_id: weapon.mace
+      special_rule_ids:
+      - halfling-elder--shifty
+    expect:
+      attacker.characteristics.attacks: 1
+      attacker.global_effects.attacks_bonus: 0
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.shifty
+  - id: compiled-halfling-cook
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      band_id: halflings-mic
+      profile_id: halfling-cook
+      main_weapon_id: weapon.mace
+      special_rule_ids:
+      - halfling-elder--shifty
+    expect:
+      attacker.characteristics.attacks: 1
+      attacker.global_effects.attacks_bonus: 0
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.shifty
+  - id: compiled-halfling-thief
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      band_id: halflings-mic
+      profile_id: halfling-thief
+      main_weapon_id: weapon.mace
+      special_rule_ids:
+      - halfling-elder--shifty
+    expect:
+      attacker.characteristics.attacks: 1
+      attacker.global_effects.attacks_bonus: 0
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.shifty
+  - id: compiled-halfling-youths
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      band_id: halflings-mic
+      profile_id: halfling-youths
+      main_weapon_id: weapon.mace
+      special_rule_ids:
+      - halfling-elder--shifty
+    expect:
+      attacker.characteristics.attacks: 1
+      attacker.global_effects.attacks_bonus: 0
+    expect_contains:
+      attacker.global_effects.tags:
+      - skill.shifty
+  - id: absence-does-not-auto-grant
+    roles:
+    - inactive
+    - boundary
+    operation: trait_presence
+    attacker:
+      band_id: halflings-mic
+      profile_id: halfling-elder
+      main_weapon_id: weapon.mace
+      special_rule_ids: []
+    context:
+      tag: skill.shifty
+    expect:
+      result.present: false
+  - id: charged-owner-first
+    roles:
+    - active
+    - boundary
+    - sequence
+    - consumption
+    operation: round
+    attacker:
+      band_id: halflings-mic
+      profile_id: halfling-elder
+      main_weapon_id: weapon.mace
+      special_rule_ids:
+      - halfling-elder--shifty
+    defender: &id001
+      main_weapon_id: weapon.mace
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 4
+        initiative: 3
+        attacks: 1
+    context:
+      first_charged: false
+      round_index: 0
+    rolls:
+    - key: round.0.first.shifty.attack.0.hit
+      value: 1
+    - key: round.0.second.attack.0.hit
+      value: 1
+    - key: round.0.first.attack.0.hit
+      value: 1
+    expect:
+      result.state.first.wounds: 1
+      result.state.second.wounds: 4
+      result.attacks.0.hit: false
+      result.attacks.1.hit: false
+      result.attacks.2.hit: false
+  - id: charged-owner-second
+    roles:
+    - active
+    - boundary
+    - sequence
+    - consumption
+    operation: round
+    attacker: *id001
+    defender:
+      band_id: halflings-mic
+      profile_id: halfling-elder
+      main_weapon_id: weapon.mace
+      special_rule_ids:
+      - halfling-elder--shifty
+    context:
+      first_charged: true
+      round_index: 0
+    rolls:
+    - key: round.0.second.shifty.attack.0.hit
+      value: 1
+    - key: round.0.first.attack.0.hit
+      value: 1
+    - key: round.0.second.attack.0.hit
+      value: 1
+    expect:
+      result.state.first.wounds: 4
+      result.state.second.wounds: 1
+      result.attacks.0.hit: false
+      result.attacks.1.hit: false
+      result.attacks.2.hit: false
+  - id: absence-round
+    roles:
+    - inactive
+    - boundary
+    - consumption
+    operation: round
+    attacker:
+      band_id: halflings-mic
+      profile_id: halfling-elder
+      main_weapon_id: weapon.mace
+      special_rule_ids: []
+    defender: *id001
+    context:
+      first_charged: false
+      round_index: 0
+    rolls:
+    - key: round.0.second.attack.0.hit
+      value: 1
+    - key: round.0.first.attack.0.hit
+      value: 1
+    expect:
+      result.state.first.wounds: 1
+      result.state.second.wounds: 4
+      result.attacks.0.hit: false
+      result.attacks.1.hit: false
+  - id: owner-charging-no-bonus
+    roles:
+    - inactive
+    - boundary
+    - consumption
+    operation: round
+    attacker:
+      band_id: halflings-mic
+      profile_id: halfling-elder
+      main_weapon_id: weapon.mace
+      special_rule_ids:
+      - halfling-elder--shifty
+    defender: *id001
+    context:
+      first_charged: true
+      round_index: 0
+    rolls:
+    - key: round.0.first.attack.0.hit
+      value: 1
+    - key: round.0.second.attack.0.hit
+      value: 1
+    expect:
+      result.state.first.wounds: 1
+      result.state.second.wounds: 4
+      result.attacks.0.hit: false
+      result.attacks.1.hit: false
+  - id: later-round-no-repeat
+    roles:
+    - inactive
+    - boundary
+    - consumption
+    operation: round
+    attacker:
+      band_id: halflings-mic
+      profile_id: halfling-elder
+      main_weapon_id: weapon.mace
+      special_rule_ids:
+      - halfling-elder--shifty
+    defender: *id001
+    context:
+      first_charged: false
+      round_index: 1
+    rolls:
+    - key: round.1.first.attack.0.hit
+      value: 1
+    - key: round.1.second.attack.0.hit
+      value: 1
+    expect:
+      result.state.first.wounds: 1
+      result.state.second.wounds: 4
+      result.attacks.0.hit: false
+      result.attacks.1.hit: false
+  mutations:
+  - id: remove-owner-tag-first
+    path: attacker.global_effects.tags
+    value: []
+    cases:
+    - charged-owner-first
+  - id: remove-owner-tag-second
+    path: defender.global_effects.tags
+    value: []
+    cases:
+    - charged-owner-second
+  - id: permanent-extra-attack
+    path: attacker.global_effects.attacks_bonus
+    value: 1
+    cases:
+    - charged-owner-first
+    - later-round-no-repeat

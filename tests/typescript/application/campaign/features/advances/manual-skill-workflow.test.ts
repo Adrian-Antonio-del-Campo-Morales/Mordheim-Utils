@@ -22,7 +22,7 @@ function reader(): KnowledgeReader {
       return { ok: true, record: { kind: "skill", id: { kind: "skill_id", value: id }, names: { en: skill[id] }, data: { category: category[id] } } };
     }
     if (query.id.kind === "profile_id") {
-      return { ok: true, record: { kind: "profile", id: { kind: "profile_id", value: "hero-1" }, names: { en: "Matriarch" }, data: { type: "hero", inherent_rules: ["Start Skill"], combat_traits: { starting_skills: [] } } } };
+      return { ok: true, record: { kind: "profile", id: { kind: "profile_id", value: "hero-1" }, names: { en: "Matriarch" }, data: { type: "hero", skill_access: ["Combat"], inherent_rules: ["Start Skill"], combat_traits: { starting_skills: [] } } } };
     }
     return { ok: false, reason: "not_found" };
   };
@@ -52,6 +52,12 @@ function hero(skills: readonly string[] = []): Warrior {
 }
 
 describe("setManualSkill (desktop set_manual_skill)", () => {
+  it("uses an acquired general table instead of the starting profile access", () => {
+    const promoted = { ...hero(), skill_access: ["Combat", "Strength"] };
+    const result = setManualSkill(makeFixture(promoted), reader(), { warrior_id: "hero-1", skill_id: "str", present: true, reason: "Acquired table" });
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.document.campaign.warriors[0]?.skills).toEqual(["Strength Skill"]);
+  });
   it("adds a legal skill and records the audit entry", () => {
     const result = setManualSkill(makeFixture(hero()), reader(), { warrior_id: "hero-1", skill_id: "combat", present: true, reason: "Campaign reward" });
     expect(result.ok).toBe(true);

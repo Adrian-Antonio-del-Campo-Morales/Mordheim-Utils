@@ -1815,82 +1815,17 @@ class PostBattleEngine:
         self.post.equipment_obligations[:] = remaining
 
     def _profile_assignment_violation(self, item_id: str, warrior) -> str | None:
-        """Enforce the Trading Post's profile-specific bearer restrictions."""
-        category = self.port.item_kind(item_id)
-        if category in {"close-combat-weapon", "ranged-weapon"} and not warrior.profile_id.startswith("hireling."):
-            try:
-                profile = self.port.profile(self.campaign.collection, self.campaign.band_id, warrior.profile_id)
-            except (KeyError, ValueError):
-                profile = None
-            if profile is not None:
-                allowed = {offer.item_id for offer in self.port.items_for_profile(profile)}
-                skill_id = "skill.weapons-expert" if category == "ranged-weapon" else "skill.weapons-training"
-                learned = {str((self.port.skill_by_name(name) or {}).get("id")) for name in warrior.skills}
-                if item_id not in allowed and skill_id not in learned:
-                    return "This weapon is outside the warrior's equipment access."
-        identity = " ".join(
-            (warrior.profile_name, warrior.profile_id, *warrior.skills, *warrior.special_rules)
-        ).replace("-", " ").replace("_", " ").casefold()
-        equipped = " ".join(
-            item.name + " " + item.item_id + " " + item.base_item_id
-            for item in warrior.equipment
-        ).casefold()
-        allowed_terms = {
-            "beastlash": ("beastmaster",),
-            "broadsword": ("chapel guard knight",),
-            "serpent_staff": ("liche priest",),
-            "shortsword": ("chapel guard knight",),
-            "nehekharan_javelin": ("tomb lord",),
-            "swivel_gun": ("gunner",),
-            "kite_shield": ("chapel guard knight",),
-            "asp_arrows": ("tomb lord",),
-            "conch_shell_horn": ("piranha warrior",),
-            "elven_runestones": ("weaver",),
-            "parrot": ("captain", "mate"),
-        }
-        if item_id == "barbed_whip" and warrior.kind != "hero":
-            return "Barbed Whip may only be assigned to a Marauders of Chaos Hero."
-        if item_id == "great_axe" and not (warrior.kind == "hero" and "chosen of chaos" in identity):
-            return "Great Axe requires a Marauders Hero with the Chosen of Chaos skill."
-        if item_id == "reptile_venom" and not (warrior.kind == "henchman" and "skink" in identity):
-            return "Reptile Venom may only be assigned to Skink Henchmen."
-        if item_id in {"familiar", "arcane_familiar"} and "spellcaster" not in identity:
-            return "A Familiar may only be assigned to a spellcaster."
-        if item_id == "book_of_the_dead" and not any(term in identity for term in ("vampire", "necromancer")):
-            return "The Book of the Dead may only be assigned to Vampires or Necromancers."
-        if item_id == "nightmare" and not any(term in identity for term in ("vampire", "necromancer", "grave guard")):
-            return "A Nightmare may only be assigned to Vampires, Necromancers or Grave Guards."
-        if item_id == "temple_dog" and not any(term in identity for term in ("dragon monk", "sister", "priest")):
-            return "A Temple Dog may only be assigned to Dragon Monks, Sisters of Sigmar or Priests."
-        if item_id in {"barding", "bretonnian_barding"} and not any(term in equipped for term in ("warhorse", "horse")):
-            return "Barding requires this warrior to have a Warhorse."
-        if item_id in {"dark_elf_blade_weapon_upgrade", "poisoned_weapon"} and not any(
-            self.port.weapon_hands(item.base_item_id or item.item_id) is not None for item in warrior.equipment
-        ):
-            return f"{self.port.item_name(item_id) or item_id} requires an equipped weapon to upgrade."
-        if item_id == "sword_heroes_only" and warrior.kind != "hero":
-            return "This Sword variant may only be assigned to Heroes."
-        terms = allowed_terms.get(item_id)
-        if terms and not any(term in identity for term in terms):
-            note = "; ".join(self.port.trading_post_restriction(item_id).get("notes") or ())
-            return note or f"{self.port.item_name(item_id) or item_id} cannot be assigned to this warrior."
-        return None
+        """Delegate bearer restrictions without importing campaign state into rules."""
+        return self.port.warrior_equipment_restriction(
+            warrior, item_id, collection=self.campaign.collection,
+            band_id=self.campaign.band_id, stage="profile")
 
     def loadout_violation(self, warrior: "WarriorVM", item_id: str, *, amount: int | None = None) -> str | None:
-        """Validate structured hand and duplicate limits for one assignment."""
+        """Delegate structured hand and duplicate limits for one assignment."""
         amount = amount if amount is not None else (warrior.quantity if warrior.kind == "henchman" else 1)
-        hands = self.port.weapon_hands(item_id)
-        limit = warrior.equipment_limits.get("maximum_one_handed_weapons")
-        if hands == 1 and limit is not None:
-            carried = sum(item.quantity for item in warrior.equipment
-                          if item.acquisition != "starting_grant" and self.port.weapon_hands(item.base_item_id or item.item_id) == 1)
-            if carried + amount > limit * warrior.quantity:
-                return f"Injury limits this warrior to {limit} one-handed weapon(s) per model."
-        kind = self.port.item_kind(item_id)
-        if kind not in ("close-combat-weapon", "ranged-weapon"):
-            if sum(item.quantity for item in warrior.equipment if item.item_id == item_id) + amount > warrior.quantity:
-                return f"{self.port.item_name(item_id) or item_id} is already carried; a warrior carries one of these."
-        return None
+        return self.port.warrior_equipment_restriction(
+            warrior, item_id, collection=self.campaign.collection,
+            band_id=self.campaign.band_id, stage="loadout", amount=amount)
 
     def return_warrior_to_stash(self, item_id: str, warrior_id: str) -> tuple[bool, str]:
         """Return one equipped copy to the stash (keeps ``owned`` intact)."""

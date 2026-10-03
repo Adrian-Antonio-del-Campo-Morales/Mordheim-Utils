@@ -1759,3 +1759,114 @@ mechanics:
   trigger: passive
   application: fighter
   stacking: once
+- id: skill.shifty
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.shifty
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: weapon.long-daggers
+  handler: effect-set
+  parameters:
+    paired: true
+    parry: true
+    tags:
+    - weapon.long-daggers
+    - weapon.dagger
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.knuckledusters
+  handler: effect-set
+  parameters:
+    paired: true
+    tags:
+    - weapon.knuckledusters
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.skull-busta
+  handler: effect-set
+  parameters:
+    first_round_strength_bonus: 1
+    concussion: true
+    tags:
+    - weapon.skull-busta
+    - weapon.mace
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.shock-rod
+  handler: effect-set
+  parameters:
+    priority: 1
+    two_handed: true
+    tags:
+    - weapon.shock-rod
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.pry-bar
+  handler: effect-set
+  parameters:
+    concussion: true
+    parry: true
+    tags:
+    - weapon.pry-bar
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.kanabo
+  handler: effect-set
+  parameters:
+    concussion: true
+    strength_bonus: 1
+    two_handed: true
+    tags:
+    - weapon.kanabo
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.wizards-staff
+  handler: effect-set
+  parameters:
+    concussion: true
+    parry: true
+    two_handed: true
+    tags:
+    - weapon.wizards-staff
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.katana
+  handler: effect-set
+  parameters:
+    strength_bonus: 1
+    parry: true
+    two_handed: true
+    tags:
+    - weapon.katana
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.spirit-knife
+  handler: effect-set
+  parameters:
+    target_armour_bonus: 1
+    tags:
+    - weapon.spirit-knife
+    - trait.spectral-touch
+    - weapon.dagger
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: mechanic.killing-blow
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.killing-blow
+  trigger: passive
+  application: fighter
+  stacking: once

@@ -1,5 +1,7 @@
 import json
 
+import pytest
+
 from mordheim_combat_lab.verification import coverage_gate
 from mordheim_combat_lab.verification.coverage_gate import CoverageFile
 from mordheim_combat_lab.verification.coverage_gate import CoverageReport
@@ -111,3 +113,63 @@ def test_measurement_smoke_requires_coverage_installed():
     assert any(item.area == "vectorized" and item.statements > 0
                for item in report.files)
     assert report.seconds >= 0
+
+
+@pytest.mark.parametrize('exit_code', [1, 2, 3, 4, 5])
+def test_failed_interrupted_or_empty_test_run_cannot_return_measurement(monkeypatch, exit_code):
+    # Failure, interruption/collection error, internal error, usage error and
+    # empty collection all invalidate a coverage measurement.
+    monkeypatch.setattr(pytest, 'main', lambda args: pytest.ExitCode(exit_code))
+    with pytest.raises(RuntimeError, match=f'pytest exit code {exit_code}'):
+        coverage_gate.measure_coverage(('unused-detector',))
+
+
+@pytest.mark.parametrize('entrypoint', ['gate', 'gate-update', 'budget-script'])
+def test_real_failing_detector_cannot_pass_gate_or_overwrite_budget(tmp_path, entrypoint):
+    from pathlib import Path
+    import subprocess
+    import sys
+    root = Path(__file__).resolve().parents[3]
+    detector = tmp_path / 'test_failing_detector.py'
+    detector.write_text('def test_detector():\n    assert False, "deliberate detector failure"\n', encoding='utf-8')
+    budget = tmp_path / 'budget.json'
+    original = json.dumps(_budget({})).encode('utf-8')
+    budget.write_bytes(original)
+    if entrypoint == 'budget-script':
+        command = [sys.executable, '-X', 'utf8', 'tools/verification/update-coverage-budget.py',
+                   '--suites', str(detector), '--output', str(budget)]
+    else:
+        command = [sys.executable, '-X', 'utf8', 'tools/mordheim-utils.py', 'coverage-gate',
+                   '--suites', str(detector), '--budget', str(budget)]
+        if entrypoint == 'gate-update':
+            command.append('--update-budget')
+    completed = subprocess.run(command, cwd=root, capture_output=True, text=True,
+                               encoding='utf-8', timeout=60)
+    output = completed.stdout + completed.stderr
+    assert 'deliberate detector failure' in output, output
+    assert completed.returncode != 0, output
+    assert 'pytest exit code 1' in output, output
+    assert budget.read_bytes() == original
+
+
+def test_failed_area_floor_cannot_overwrite_budget(tmp_path):
+    from pathlib import Path
+    import subprocess
+    import sys
+    root = Path(__file__).resolve().parents[3]
+    detector = tmp_path / 'test_partial_engine_detector.py'
+    detector.write_text('def test_detector():\n'
+        '    from mordheim_combat.modular.state import FighterState\n'
+        '    assert callable(FighterState)\n', encoding='utf-8')
+    budget = tmp_path / 'budget.json'
+    original = json.dumps(_budget({})).encode('utf-8')
+    budget.write_bytes(original)
+    completed = subprocess.run([sys.executable, '-X', 'utf8', 'tools/mordheim-utils.py',
+        'coverage-gate', '--suites', str(detector), '--budget', str(budget),
+        '--update-budget', '--area-floor', 'modular:100'], cwd=root,
+        capture_output=True, text=True, encoding='utf-8', timeout=60)
+    output = completed.stdout + completed.stderr
+    assert '1 passed' in output and 'below the 100.00% floor' in output, output
+    assert completed.returncode != 0, output
+    assert budget.read_bytes() == original
+    assert ' updated' not in output

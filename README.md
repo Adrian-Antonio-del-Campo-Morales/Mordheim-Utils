@@ -2,6 +2,8 @@
 
 Mordheim Utils is a Python/TypeScript monorepo for Mordheim campaign management and close-combat simulation. It has a Combat Lab application, a web campaign manager, a shared knowledge base, and a versioned campaign-file contract.
 
+Both applications use one [warrior eligibility module](docs/reference/eligibility.md) for equipment and skill decisions. Warband Manager imports its TypeScript source; Combat Lab executes the generated JavaScript inside Python through MiniRacer.
+
 ## What is implemented
 
 | Surface | Package / entry point | Purpose |
@@ -17,7 +19,8 @@ The active runtime scope of the duel engine is **one-against-one close combat**.
 sources/knowledge/                         canonical YAML knowledge base
 packages/python/core/mordheim_core          pure domain types and dice
 packages/python/knowledge/mordheim_knowledge KB loaders, validation and paths
-packages/python/roster-construction         legal profile/equipment compilation
+packages/python/roster-construction         shared-rule adapter and fighter compilation
+packages/typescript/domain/eligibility     shared equipment and skill decisions
 packages/python/combat-engine               phases, modular, NumPy and native engines
 packages/python/adapters/desktop-ui         shared Tkinter theme and widgets
 packages/python/campaign                    campaign domain, application and persistence
@@ -50,6 +53,8 @@ The modular combat engine is the correctness oracle. NumPy and native backends a
 
 - Python 3.10+ with Tkinter for the desktop applications.
 - Node.js 20+ for the TypeScript packages and web application.
+
+The Python installation includes MiniRacer and the shared eligibility bundle. Running Combat Lab does not require Node.js. After editing shared eligibility rules, rebuild with `npm run build:eligibility` and verify with `npm run check:eligibility`.
 
 ```powershell
 python -m pip install -e ".[dev]"
@@ -110,7 +115,7 @@ It is generated into `outputs/web-public/knowledge/`; Vite serves that directory
 
 - [Documentation index](docs/README.md)
 - [Architecture and package boundaries](docs/reference/architecture.md)
-- [Architecture and package ownership](docs/reference/architecture.md)
+- [Shared warrior eligibility](docs/reference/eligibility.md)
 - [Knowledge-base reference](docs/reference/knowledge-base.md)
 - [Verification strategy](docs/reference/verification.md)
 - [Campaign-file v5 contract](contracts/campaign-file-v5/README.md)
@@ -128,4 +133,4 @@ The supported build scripts are:
 tools\windows\build_MordheimCombatLab_ONEFILE.bat
 ```
 
-They build the current package layout and bundle `sources/knowledge/`. They are Windows-only packaging helpers; CI publishes the web application separately through GitHub Pages.
+They build the current package layout and bundle `sources/knowledge/`, the generated eligibility JavaScript and MiniRacer's native runtime. Regenerate and check the eligibility bundle before packaging after a rule-source change. These are Windows-only packaging helpers; CI publishes the web application separately through GitHub Pages.

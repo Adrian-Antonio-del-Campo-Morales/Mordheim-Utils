@@ -43,6 +43,7 @@ const labels = {
   "access-yes": ["✓", "✓"], "access-no": ["—", "—"],
   "characteristic-not-published": ["Not published", "No publicada"],
   "item-not-published": ["Item absent from the published catalogue", "Objeto ausente del catálogo publicado"],
+  "racial-maximum-not-published": ["Racial maximums not published in the catalogue", "Máximos raciales no publicados en el catálogo"],
   conditions: ["Conditions", "Estados"],
   "core-rules": ["Core Rules", "Reglas básicas"],
   skills: ["Skills", "Habilidades"],
@@ -88,13 +89,55 @@ export function catalogueLabel(key: CatalogueLabel, locale: CatalogueLocale): Ca
 export function isCatalogueLabel(value: string): value is CatalogueLabel {
   return Object.hasOwn(labels, value);
 }
-export function catalogueJoin(parts: readonly CataloguePart[], separator: "" | " " | "\n" | "\n\n" | " · " | ": " | " — " = " "): CatalogueText {
+export function catalogueJoin(parts: readonly CataloguePart[], separator: "" | " " | ", " | "\n" | "\n\n" | " · " | ": " | " — " = " "): CatalogueText {
   return parts.join(separator) as CatalogueText;
+}
+/**
+ * Compose one resolved KB text with the catalogue phrases that replace its
+ * canonical citations. The citation grammar and the phrase of each match come
+ * from the catalogue resolver; the composition only rewrites resolved text
+ * with catalogue vocabulary, so — exactly like `adaptDistanceText` — the
+ * public contract returns text of the same provenance the input carried: a
+ * text the grammar does not match is the resolved text itself. The
+ * implementation signature stays plain `string` on purpose: neither the
+ * resolved source nor the catalogue phrases pass through an `as` assertion.
+ */
+export function catalogueCitationText(
+  text: ResolvedKbText,
+  citation: RegExp,
+  phraseFor: (key: string) => CatalogueText,
+): ResolvedKbText | CatalogueText;
+export function catalogueCitationText(
+  text: ResolvedKbText,
+  citation: RegExp,
+  phraseFor: (key: string) => string,
+): string {
+  citation.lastIndex = 0;
+  const matched = citation.test(text);
+  citation.lastIndex = 0;
+  if (!matched) return text;
+  return text.replace(citation, (_match: string, key: string) => phraseFor(key));
 }
 export function catalogueNumber(value: unknown): CatalogueText | null {
   if (typeof value === "number" && Number.isFinite(value)) return String(value) as CatalogueText;
   if (typeof value === "string" && /^\d+(?:-\d+)?$/.test(value)) return value as CatalogueText;
   return null;
+}
+/**
+ * Localized abbreviation of a profile characteristic. English prints the
+ * canonical keys (`M`, `WS`, …, `Ld`); Spanish uses the printed abbreviations
+ * (`M`, `HA`, `HP`, `F`, `R`, `H`, `I`, `A`, `L`). The overload keeps the
+ * `CatalogueText` contract for callers while the body stays plain strings, as
+ * `adaptDistanceText` does: no `as` assertion brands a lookup result.
+ */
+const characteristicLabels = {
+  M: ["M", "M"], WS: ["WS", "HA"], BS: ["BS", "HP"], S: ["S", "F"],
+  T: ["T", "R"], W: ["W", "H"], I: ["I", "I"], A: ["A", "A"], Ld: ["Ld", "L"],
+} as const;
+export type CharacteristicDisplayKey = keyof typeof characteristicLabels;
+export function catalogueCharacteristicKey(key: CharacteristicDisplayKey, locale: CatalogueLocale): CatalogueText;
+export function catalogueCharacteristicKey(key: CharacteristicDisplayKey, locale: CatalogueLocale): string {
+  return characteristicLabels[key][locale === "es" ? 1 : 0];
 }
 /** Published profile value, validated before adapting the Movement unit. */
 export function catalogueCharacteristic(key: string, value: unknown, locale: CatalogueLocale): CatalogueText | ResolvedKbText {
@@ -113,6 +156,6 @@ export function catalogueDifficulty(value: unknown, locale: CatalogueLocale): Ca
   if (typeof value === "string" && value.trim().toLocaleLowerCase() === "auto") return catalogueLabel("Automatic", locale);
   return null;
 }
-export function cataloguePunctuation(value: "• " | ":" | "D"): CatalogueText {
+export function cataloguePunctuation(value: "• " | ":" | "D" | "(" | ")"): CatalogueText {
   return value as CatalogueText;
 }

@@ -1,3 +1,4 @@
+import { skillCategoryAllowed } from "../../../../domain/eligibility/index";
 import type { CampaignDocument, KnowledgeReader, OpenPayload, Warrior } from "../../../../domain/campaign/index";
 import { withCampaign } from "../../../../domain/campaign/kernel/document";
 import { profileFactsOf, racialMaximumResolutionFor, skillIssueFor, type RacialMaximumResolution } from "../../../../domain/campaign/construction";
@@ -127,7 +128,7 @@ export function commitAdvanceChoice(document: CampaignDocument, reader: Catalogu
   if(input.kind==="characteristic_increase") { const option=offered.find((item)=>item["kind"]===input.kind&&item["characteristic"]===input.characteristic); return option?applyCharacteristic(document,reader,warrior,row,option):{ok:false,message:"That characteristic is not offered."}; }
   if(input.kind==="choose_skill") {
     const skill=input.skill_id ? reader.queryKnowledge({id:{kind:"skill_id",value:input.skill_id}}):null; if(!skill?.ok||!offered.some((item)=>item["kind"]==="choose_skill")) return {ok:false,message:"That skill is not offered."};
-    const category=String(skill.record.data["category"]??""); if(warrior.skill_access?.length&&!warrior.skill_access.includes(category)) return {ok:false,message:"That skill is outside this Hero's skill tables."};
+    const category=String(skill.record.data["category"]??""); if(!skillCategoryAllowed(warrior.skill_access??[],category)) return {ok:false,message:"That skill is outside this Hero's skill tables."};
     const name=String(skill.record.names["en"]??input.skill_id); if(warrior.skills.includes(name)) return {ok:false,message:"The warrior already knows that skill."};
     // T10: a `special` table is bounded by the printed member list the band
     // publishes (T09 `skill_lists`). A skill off the list is refused; a list

@@ -356,7 +356,7 @@ def test_every_selectable_rule_has_an_explicit_selection_kind():
     # requires it; this test validates selection kinds, not an obsolete count.
     assert selectable
     assert {rule.get("kind") for rule in selectable}==expected
-    assert sum(rule["kind"]=="warband_skill" for rule in selectable)==381  # 305 + T07
+    assert sum(rule["kind"]=="warband_skill" for rule in selectable)==382  # 305 + T07 + L04 Shifty
 
 
 def test_equivalent_no_pain_rules_share_one_runtime_mechanic():

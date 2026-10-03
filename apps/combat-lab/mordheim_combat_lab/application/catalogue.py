@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from mordheim_core.models import FighterBuild
+from mordheim_construction.eligibility import call, construction_call, configuration_context, desktop_call, package_facts
 from mordheim_knowledge.loader import BandPackage
 from mordheim_knowledge.loader import load_bands
 from mordheim_knowledge.loader import load_collections
@@ -45,6 +47,14 @@ class ProfileRule:
 
 
 
+#: Canonical bindings that lift the two-hand loadout restriction. The rule
+#: that carries one is selectable, so the exception is a fact of the current
+#: selection; the shared module reports the binding id and this adapter only
+#: maps it onto the loadout decision.
+HAND_EXCEPTION_BINDINGS = frozenset({
+    "compiler.ignore-difficult-to-use-restrictions", "compiler.master-of-arms",
+})
+
 #: Race-group suffix → ``profile`` key of ``catalog/rules/racial-maximums.yaml``.
 #: Mirrors the campaign engine's band-race heuristics; groups the KB declares
 #: without a single racial-maximum table (lizardmen resolve per profile,
@@ -81,6 +91,7 @@ class CombatCatalogue:
             for family in ("weapons", "defences", "armours", "materials", "preparations", "poisons")
             for row in load_mechanics(ruleset).get(family, ())
         }
+        self._skill_mechanics = {str(row["id"]) for row in load_mechanics(ruleset).get("skills", ())}
         exclusions = load_runtime_scope(ruleset).get("mechanic_exclusions") or ()
         self._excluded_mechanics = {str(row["id"]) for row in exclusions}
         self._excluded_mechanic_reasons = {
@@ -145,10 +156,18 @@ class CombatCatalogue:
             return str(fallback or item_id)
         return display_name(record, fallback or item_id)
 
-    def skills(self, choice: ProfileChoice | None) -> tuple[SkillChoice, ...]:
+    def skills(self, choice: ProfileChoice | None, *, variant_ids: tuple[str, ...] = ()) -> tuple[SkillChoice, ...]:
         """Return every general category plus the selected band's special skills."""
         profile = self.profile(choice) if choice else None
-        allowed_categories = set(profile.get("skill_access") or ()) if profile else None
+        legal = None
+        named = set()
+        if choice is not None:
+            package = self._packages[(choice.collection, choice.band_id)]
+            build = FighterBuild(self.ruleset, collection=choice.collection,
+                                 band_id=choice.band_id, profile_id=choice.profile_id, variant_ids=variant_ids)
+            legal = desktop_call("skillChoices", build, package=package, profile=profile)
+            named = {skill_id for table in desktop_call("profileSkillLists", build, package=package, profile=profile)
+                     for skill_id in table["skills"]}
         banned = self._banned_skill_categories(choice)
         general = tuple(
             SkillChoice(
@@ -158,15 +177,14 @@ class CombatCatalogue:
                 str(skill.get("effect") or ""),
                 banned.get(str(skill.get("category") or "")) or self._skill_unavailable_reason(skill),
                 runtime_available=(
-                    (allowed_categories is None or str(skill.get("category") or "") in allowed_categories)
-                    and str(skill.get("category") or "") not in banned
+                    (legal is None or legal.get(str(skill["id"]), False))
                     and self._catalogue_skill_is_available(skill)
                 ),
             )
             for skill in load_skills(self.ruleset)
-            if str(skill.get("category") or "") != "special"
+            if str(skill.get("category") or "") != "special" or str(skill["id"]) in named
         )
-        return (*general, *self._warband_skills(choice))
+        return (*general, *self._warband_skills(choice, variant_ids=variant_ids))
 
     def _banned_skill_categories(self, choice: ProfileChoice | None) -> dict[str, str]:
         """Skill categories a profile may never acquire, with the KB reason.
@@ -179,22 +197,9 @@ class CombatCatalogue:
             return {}
         package = self._packages[(choice.collection, choice.band_id)]
         profile = self.profile(choice)
-        profile_id = str(profile.get("id") or "")
-        banned: dict[str, str] = {}
-        for rule in package.special_rules:
-            runtime = rule.get("runtime") or {}
-            if runtime.get("grant") != "profile" or runtime.get("implemented") != "YES":
-                continue
-            if profile_id not in set((rule.get("applies_to") or {}).get("profile_ids") or ()):
-                continue
-            reason = self._rule_text(rule)
-            for effect in runtime.get("effects") or ():
-                binding = effect.get("binding") or {}
-                if binding.get("id") != "compiler.forbid-skill-categories":
-                    continue
-                for category in (binding.get("parameters") or {}).get("categories") or ():
-                    banned.setdefault(str(category), reason)
-        return banned
+        banned = call("bannedSkillCategories", package_facts(package), profile)
+        rules = {str(rule["id"]): rule for rule in package.special_rules}
+        return {category: self._rule_text(rules[rule_id]) for category, rule_id in banned.items()}
 
     def in_scope_skill_ids(self, skills) -> set[str]:
         """Return skill IDs executable by the current one-against-one runtime."""
@@ -206,10 +211,13 @@ class CombatCatalogue:
     def skill_rule_ids(self, selected_ids) -> tuple[tuple[str, ...], tuple[str, ...]]:
         """Split UI selections into ordinary skill IDs and band-rule IDs."""
         choices = {skill.id: skill for skill in self.skills(None)}
+        named_ids = {str(skill["id"]) for skill in load_skills(self.ruleset)}
         ordinary, special = [], []
         for selected_id in selected_ids:
             skill = choices.get(selected_id)
             if skill is None:
+                if selected_id in named_ids:
+                    ordinary.append(selected_id)
                 continue
             if skill.selection_kind == "warband_skill" and skill.rule_id:
                 special.append(skill.rule_id)
@@ -233,13 +241,14 @@ class CombatCatalogue:
             reason = str(effect.get("reason") or "").strip()
             if reason:
                 return reason
-        return self._excluded_mechanic_reasons.get(str(skill["id"])) or None
+        return self._excluded_mechanic_reasons.get(str(skill["id"])) or (
+            "No executable duel mechanic." if str(skill["id"]) not in self._skill_mechanics else None)
 
     def _catalogue_skill_is_available(self, skill: dict) -> bool:
         runtime = skill.get("runtime")
         if runtime:
             return runtime.get("scope") == "YES" and runtime.get("implemented") == "YES"
-        return str(skill["id"]) not in self._excluded_mechanics
+        return str(skill["id"]) in self._skill_mechanics and str(skill["id"]) not in self._excluded_mechanics
 
     def _rule_text(self, rule: dict) -> str:
         """Resolve a band rule's display prose, following ``rule_ref``.
@@ -272,13 +281,18 @@ class CombatCatalogue:
     def _warband_skill_id(package: BandPackage, rule: dict) -> str:
         return f"warband-skill:{package.collection}:{package.band['id']}:{rule['id']}"
 
-    def _warband_skills(self, choice: ProfileChoice | None) -> tuple[SkillChoice, ...]:
+    def _warband_skills(self, choice: ProfileChoice | None, *, variant_ids: tuple[str, ...] = ()) -> tuple[SkillChoice, ...]:
         packages = (
             (self._packages[(choice.collection, choice.band_id)],)
             if choice is not None else tuple(self._packages.values())
         )
         profile = self.profile(choice) if choice is not None else None
-        has_special_access = choice is None or "special" in set(profile.get("skill_access") or ())
+        eligible_ids = None
+        if choice is not None:
+            build = FighterBuild(self.ruleset, collection=choice.collection,
+                                 band_id=choice.band_id, profile_id=choice.profile_id, variant_ids=variant_ids)
+            eligible_ids = set(desktop_call("specialRules", build,
+                              package=packages[0], profile=profile))
         result = []
         for package in packages:
             band_name = str(package.band.get("name") or package.band["id"])
@@ -286,16 +300,7 @@ class CombatCatalogue:
                 if rule.get("kind") != "warband_skill":
                     continue
                 runtime = rule.get("runtime") or {}
-                eligible = (
-                    choice is None
-                    or (
-                        has_special_access
-                        and (
-                            not (rule.get("eligibility") or ())
-                            or choice.profile_id in rule.get("eligibility", ())
-                        )
-                    )
-                )
+                eligible = eligible_ids is None or str(rule["id"]) in eligible_ids
                 result.append(SkillChoice(
                     self._warband_skill_id(package, rule),
                     (
@@ -371,6 +376,8 @@ class CombatCatalogue:
         if choice is None:
             return ()
         package = self._packages[(choice.collection, choice.band_id)]
+        build = FighterBuild(self.ruleset, collection=choice.collection, band_id=choice.band_id, profile_id=choice.profile_id)
+        eligible = set(desktop_call("configuredRules", build, package=package, profile=self.profile(choice)))
         return tuple(
             SkillChoice(
                 str(rule["id"]),
@@ -386,7 +393,7 @@ class CombatCatalogue:
             for rule in package.special_rules
             if rule.get("kind") != "warband_skill"
             and (rule.get("runtime") or {}).get("grant") == "selectable"
-            and (not rule.get("eligibility") or choice.profile_id in rule.get("eligibility", ()))
+            and str(rule["id"]) in eligible
         )
 
     def weapons(self, choice: ProfileChoice | None) -> tuple[tuple[str, str], ...]:
@@ -449,42 +456,158 @@ class CombatCatalogue:
     def _equipment(self, choice, families, allowed) -> tuple[tuple[str, str], ...]:
         return self._profile_equipment(choice, families, allowed) if choice else self._runtime_equipment(families, allowed)
 
+    def _selection_context(self, choice: ProfileChoice, *, variant_ids: tuple[str, ...] = ()):
+        """Project the editor's current selections as shared-module facts.
+
+        The adapter supplies facts; the shared module interprets their rule
+        meaning. Item ownership and the active duel loadout stay distinct:
+        only the loadout slots are projected here.
+        """
+        package = self._packages[(choice.collection, choice.band_id)]
+        profile = next(row for row in package.profiles if row["id"] == choice.profile_id)
+        build = FighterBuild(self.ruleset, collection=choice.collection,
+                             band_id=choice.band_id, profile_id=choice.profile_id, variant_ids=variant_ids)
+        return package, profile, build
+
+    def validate_configuration(self, choice: ProfileChoice, *, possession: tuple[str, ...],
+                               slots: dict, variant_ids: tuple[str, ...] = ()) -> tuple[dict, ...]:
+        """Validate a supplied complete kit and its distinct active loadout.
+
+        Item ids may include legal equipment without a duel mechanic. This
+        validates construction, not shooting or campaign purchases.
+        """
+        package, profile, build = self._selection_context(choice, variant_ids=variant_ids)
+        facts = configuration_context(build, package, profile, possession=possession, slots=slots)
+        return tuple(construction_call("validateConstruction", build, facts))
+
+    def equipment_decisions(self, choice: ProfileChoice, item_ids, *, slot: str = "main",
+                            main_weapon_id: str | None = None,
+                            off_hand_id: str | None = None,
+                            skills: tuple[str, ...] = (),
+                            exception_rule_ids: tuple[str, ...] = ()) -> dict[str, str | None]:
+        """Shared decision per candidate item, in one transport call.
+
+        Returns the blocking reason per item id (``None`` when the choice is
+        permitted), so the editor can show incompatible options disabled with
+        their motive instead of filtering them out or deciding locally. The
+        installed catalogue supplies the canonical item facts of every
+        candidate, so a large comparison still submits a single batch.
+        """
+        package, profile, build = self._selection_context(choice)
+        selections = [{"id": str(item_id), "kind": "equipment", "slot": slot}
+                      for item_id in item_ids]
+        selections.extend(entry for entry in (
+            self._hand_fact(main_weapon_id), self._hand_fact(off_hand_id)) if entry)
+        facts = {
+            "profile": self._profile_facts(package, profile, build),
+            "items": {}, "skills": {skill_id: self._skill_facts(skill_id) for skill_id in skills},
+            "selections": selections,
+            "slots": {"main_weapon_id": main_weapon_id, "off_hand_id": off_hand_id},
+            "operation": {"product": "combat-lab",
+                          "ignores_hand_restrictions": list(exception_rule_ids)},
+        }
+        proposals = [{"kind": "add", "id": str(item_id), "slot": slot} for item_id in item_ids]
+        decisions = construction_call("selectionDecisions", build, facts, proposals)
+        result: dict[str, str | None] = {}
+        for decision in decisions:
+            issues = list(decision.get("issues") or ())
+            reports = list(decision.get("reports") or ())
+            blocked = next((str(issue.get("message")) for issue in issues), None)
+            if blocked is None and reports:
+                blocked = str(reports[0].get("message"))
+            result[str(decision["proposal"]["id"])] = blocked
+        return result
+
+    def _hand_fact(self, item_id: str | None) -> dict | None:
+        """Canonical hand count of one mechanic, when the catalogue declares it.
+
+        `hands` is a mechanic fact, not an item fact, so the adapter projects it
+        explicitly: the shared module must not guess a hand count.
+        """
+        if not item_id or item_id not in self._mechanics:
+            return None
+        hands = self._mechanics[item_id].get("hands")
+        return {"id": item_id, "kind": "equipment", "hands": hands} if isinstance(hands, int) else None
+
+    def selection_decisions(self, choice: ProfileChoice, proposals, *, main_weapon_id=None,
+                            off_hand_id=None, skills: tuple[str, ...] = (),
+                            exception_rule_ids: tuple[str, ...] = ()) -> dict[str, str | None]:
+        """Shared verdict per raw proposal, keyed by the proposed entry id.
+
+        The same batch primitive the editor uses, exposed for the comparison
+        tabs so a large candidate list still submits a single transport call.
+        """
+        package, profile, build = self._selection_context(choice)
+        selections = [{"id": str(proposal["id"]), "kind": "equipment",
+                       "slot": proposal.get("slot", "main")} for proposal in proposals]
+        selections.extend(entry for entry in (
+            self._hand_fact(main_weapon_id), self._hand_fact(off_hand_id)) if entry)
+        facts = {
+            "profile": self._profile_facts(package, profile, build),
+            "items": {}, "skills": {skill_id: self._skill_facts(skill_id) for skill_id in skills},
+            "selections": selections,
+            "slots": {"main_weapon_id": main_weapon_id, "off_hand_id": off_hand_id},
+            "operation": {"product": "combat-lab",
+                          "ignores_hand_restrictions": list(exception_rule_ids)},
+        }
+        decisions = construction_call("selectionDecisions", build, facts, list(proposals))
+        return {
+            str(decision["proposal"]["id"]): next(
+                (str(issue["message"]) for issue in decision.get("issues") or ()),
+                str((decision.get("reports") or [{}])[0].get("message")) if decision.get("reports") else None,
+            )
+            for decision in decisions
+        }
+
+    def _profile_facts(self, package, profile, build) -> dict:
+        """Shared `ProfileFacts` projection of one canonical profile.
+
+        The projection resolves the declared equipment lists through the
+        installed catalogue (the same materialisation the offering operation
+        uses), so access enforcement and offered options cannot drift apart.
+        The catalogue belongs to the installed transport, not to the adapter.
+        """
+        return desktop_call("profileFacts", build, package=package, profile=profile)
+
+    def _skill_facts(self, skill_id: str) -> dict | None:
+        row = next((row for row in load_skills(self.ruleset) if str(row["id"]) == skill_id), None)
+        if row is None:
+            return None
+        return {"id": skill_id, "category": str(row.get("category") or ""),
+                "kind": str(row.get("kind") or "general")}
+
+    def hand_exception_rule_ids(self, choice: ProfileChoice | None,
+                                selected_rule_ids: tuple[str, ...] = ()) -> tuple[str, ...]:
+        """Canonical rules whose binding lifts the two-hand loadout limit.
+
+        The exception is a rule the warrior may select (Arms Master, Master of
+        Arms), so the fact depends on the current selection, not only on the
+        profile. The shared module owns the rule meaning: this adapter asks it
+        which selected bindings carry the exception and never keeps its own
+        rule-id table.
+        """
+        if choice is None:
+            return ()
+        package, _profile, build = self._selection_context(choice)
+        selected = tuple(dict.fromkeys((*selected_rule_ids, *build.special_rule_ids)))
+        if not selected:
+            return ()
+        bindings = call("selectedRuleBindings", package_facts(package), list(selected))
+        return tuple(sorted({str(binding["id"]) for binding in bindings
+                             if str(binding.get("id")) in HAND_EXCEPTION_BINDINGS}))
+
     def _profile_equipment(self, choice: ProfileChoice, families, allowed) -> tuple[tuple[str, str], ...]:
         package = self._packages[(choice.collection, choice.band_id)]
         profile = next(row for row in package.profiles if row["id"] == choice.profile_id)
-        lists = {str(row["id"]): row for row in package.equipment_lists}
-        item_ids = set(profile.get("fixed_equipment") or ())
-        list_ids=list(profile.get("equipment_lists") or ())
-        extra_lists=[]
-        if choice.band_id == "lustria-pirates":
-            mercenary=self._packages[("mordheim","mercenaries")]
-            extra_lists.extend(mercenary.equipment_lists)
-        if choice.band_id == "khemri-lahmian-brotherhood" and not list_ids:
-            role="beloved" if choice.profile_id=="beloved" else "undead"
-            list_ids.append(f"foreign-{role}-equipment-list")
-        for list_id in list_ids:
-            equipment_list=lists[str(list_id)]
-            item_ids.update(str(row["item_id"]) for row in equipment_list.get("items") or ())
-            def loadout_items(value):
-                if isinstance(value,str):yield value
-                elif isinstance(value,list):
-                    for entry in value:yield from loadout_items(entry)
-                elif isinstance(value,dict):
-                    for entry in value.values():yield from loadout_items(entry)
-            for loadout in equipment_list.get("loadouts") or ():
-                item_ids.update(loadout_items(loadout.get("items") or ()))
-        for equipment_list in extra_lists:
-            item_ids.update(str(row["item_id"]) for row in equipment_list.get("items") or ())
+        build = FighterBuild(self.ruleset, collection=choice.collection,
+                             band_id=choice.band_id, profile_id=choice.profile_id)
+        item_ids = desktop_call("catalogueEquipment", build, package=package, profile=profile)
         if isinstance(families, str):
             families = (families,)
         prefixes = tuple({"weapons": "weapon.", "defences": "defence.", "armours": "armour.", "materials": "material.", "preparations": "preparation.", "poisons": "poison."}[family] for family in families)
-        result = {
-            self._item_mechanics[item_id]
-            for item_id in item_ids
-            if item_id in self._item_mechanics
-            and self._item_mechanics[item_id].startswith(prefixes)
-            and allowed(self._mechanics[self._item_mechanics[item_id]])
-        }
+        result = {item_id for item_id in item_ids
+                  if item_id in self._mechanics and item_id.startswith(prefixes)
+                  and allowed(self._mechanics[item_id])}
         return tuple(sorted(((item_id, str(self._mechanics[item_id]["name"])) for item_id in result), key=lambda item: item[1]))
 
     def _runtime_equipment(self, families, allowed) -> tuple[tuple[str, str], ...]:

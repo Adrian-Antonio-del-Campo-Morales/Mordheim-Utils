@@ -1,0 +1,187 @@
+{
+  "provenance": "T13-F017 band-rule recipient contract cases. Canonical shapes and IDs copied from sources/knowledge/bands/mordheim/adventurers-kaz/special-rules.yaml (band--dwarf/elf/barbarian/noble-special-skills, band--no-fixed-leader, band--hired-swords, dwarf--hard-to-kill) and sources/knowledge/bands/mordheim/black-dwarfs/special-rules.yaml (band--hard-to-kill eligibility). band--contract-* rules are reduced cases for the conjunction, empty-list and ordering conventions. Expectations come from the canonical facts and the accepted F035 register (T13-F017), never from applicableRules output.",
+  "cases": [
+    {
+      "name": "recipient-scoped band table reaches its named profile only",
+      "package": {
+        "band": { "id": "adventurers-kaz" },
+        "profiles": [],
+        "equipment_lists": [],
+        "special_rules": [
+          { "id": "band--dwarf-special-skills", "applies_to": { "band": true, "profile_ids": ["dwarf"] }, "runtime": { "grant": "band", "implemented": "YES" } },
+          { "id": "band--elf-special-skills", "applies_to": { "band": true, "profile_ids": ["elf"] }, "runtime": { "grant": "band", "implemented": "YES" } },
+          { "id": "band--barbarian-special-skills", "applies_to": { "band": true, "profile_ids": ["barbarian"] }, "runtime": { "grant": "band", "implemented": "YES" } },
+          { "id": "band--noble-special-skills", "applies_to": { "band": true, "profile_ids": ["imperial-noble"] }, "runtime": { "grant": "band", "implemented": "YES" } },
+          { "id": "band--no-fixed-leader", "applies_to": { "band": true }, "runtime": { "grant": "band", "implemented": "NO" } },
+          { "id": "band--hired-swords", "applies_to": { "band": true }, "runtime": { "grant": "band", "implemented": "NO" } }
+        ]
+      },
+      "profile": { "id": "dwarf" },
+      "expected_rule_ids": ["band--dwarf-special-skills", "band--no-fixed-leader", "band--hired-swords"]
+    },
+    {
+      "name": "non-recipient receives only the genuine band-wide grants",
+      "package": {
+        "band": { "id": "adventurers-kaz" },
+        "profiles": [],
+        "equipment_lists": [],
+        "special_rules": [
+          { "id": "band--dwarf-special-skills", "applies_to": { "band": true, "profile_ids": ["dwarf"] }, "runtime": { "grant": "band", "implemented": "YES" } },
+          { "id": "band--elf-special-skills", "applies_to": { "band": true, "profile_ids": ["elf"] }, "runtime": { "grant": "band", "implemented": "YES" } },
+          { "id": "band--barbarian-special-skills", "applies_to": { "band": true, "profile_ids": ["barbarian"] }, "runtime": { "grant": "band", "implemented": "YES" } },
+          { "id": "band--noble-special-skills", "applies_to": { "band": true, "profile_ids": ["imperial-noble"] }, "runtime": { "grant": "band", "implemented": "YES" } },
+          { "id": "band--no-fixed-leader", "applies_to": { "band": true }, "runtime": { "grant": "band", "implemented": "NO" } },
+          { "id": "band--hired-swords", "applies_to": { "band": true }, "runtime": { "grant": "band", "implemented": "NO" } }
+        ]
+      },
+      "profile": { "id": "wizard" },
+      "expected_rule_ids": ["band--no-fixed-leader", "band--hired-swords"]
+    },
+    {
+      "name": "eligibility alone restricts a band grant",
+      "package": {
+        "band": { "id": "black-dwarfs" },
+        "profiles": [],
+        "equipment_lists": [],
+        "special_rules": [
+          { "id": "band--hard-to-kill", "applies_to": { "band": true }, "eligibility": ["sorcerer", "bull-centaur", "gaolers", "chaos-dwarfs"], "runtime": { "grant": "band", "implemented": "YES" } },
+          { "id": "band--contract-wide", "applies_to": { "band": true }, "runtime": { "grant": "band", "implemented": "NO" } }
+        ]
+      },
+      "profile": { "id": "sorcerer" },
+      "expected_rule_ids": ["band--hard-to-kill", "band--contract-wide"]
+    },
+    {
+      "name": "eligibility excludes a profile outside its list",
+      "package": {
+        "band": { "id": "black-dwarfs" },
+        "profiles": [],
+        "equipment_lists": [],
+        "special_rules": [
+          { "id": "band--hard-to-kill", "applies_to": { "band": true }, "eligibility": ["sorcerer", "bull-centaur", "gaolers", "chaos-dwarfs"], "runtime": { "grant": "band", "implemented": "YES" } },
+          { "id": "band--contract-wide", "applies_to": { "band": true }, "runtime": { "grant": "band", "implemented": "NO" } }
+        ]
+      },
+      "profile": { "id": "informers" },
+      "expected_rule_ids": ["band--contract-wide"]
+    },
+    {
+      "name": "profile ids and eligibility must both hold",
+      "package": {
+        "band": { "id": "contract" },
+        "profiles": [],
+        "equipment_lists": [],
+        "special_rules": [
+          { "id": "band--contract-conjunction", "applies_to": { "band": true, "profile_ids": ["dwarf", "elf"] }, "eligibility": ["dwarf"], "runtime": { "grant": "band", "implemented": "NO" } },
+          { "id": "band--contract-wide", "applies_to": { "band": true }, "runtime": { "grant": "band", "implemented": "NO" } }
+        ]
+      },
+      "profile": { "id": "dwarf" },
+      "expected_rule_ids": ["band--contract-conjunction", "band--contract-wide"]
+    },
+    {
+      "name": "a recipient outside the eligibility list is excluded",
+      "package": {
+        "band": { "id": "contract" },
+        "profiles": [],
+        "equipment_lists": [],
+        "special_rules": [
+          { "id": "band--contract-conjunction", "applies_to": { "band": true, "profile_ids": ["dwarf", "elf"] }, "eligibility": ["dwarf"], "runtime": { "grant": "band", "implemented": "NO" } },
+          { "id": "band--contract-wide", "applies_to": { "band": true }, "runtime": { "grant": "band", "implemented": "NO" } }
+        ]
+      },
+      "profile": { "id": "elf" },
+      "expected_rule_ids": ["band--contract-wide"]
+    },
+    {
+      "name": "disjoint recipient and eligibility lists apply to nobody",
+      "package": {
+        "band": { "id": "contract" },
+        "profiles": [],
+        "equipment_lists": [],
+        "special_rules": [
+          { "id": "band--contract-disjoint", "applies_to": { "band": true, "profile_ids": ["dwarf"] }, "eligibility": ["elf"], "runtime": { "grant": "band", "implemented": "NO" } },
+          { "id": "band--contract-wide", "applies_to": { "band": true }, "runtime": { "grant": "band", "implemented": "NO" } }
+        ]
+      },
+      "profile": { "id": "dwarf" },
+      "expected_rule_ids": ["band--contract-wide"]
+    },
+    {
+      "name": "empty lists keep the band-wide convention for one profile",
+      "package": {
+        "band": { "id": "contract" },
+        "profiles": [],
+        "equipment_lists": [],
+        "special_rules": [
+          { "id": "band--contract-empty-both", "applies_to": { "band": true, "profile_ids": [] }, "eligibility": [], "runtime": { "grant": "band", "implemented": "NO" } },
+          { "id": "band--contract-empty-recipients", "applies_to": { "band": true, "profile_ids": [] }, "eligibility": ["wizard"], "runtime": { "grant": "band", "implemented": "NO" } },
+          { "id": "band--contract-empty-eligibility", "applies_to": { "band": true, "profile_ids": ["dwarf"] }, "eligibility": [], "runtime": { "grant": "band", "implemented": "NO" } },
+          { "id": "band--contract-absent", "applies_to": { "band": true }, "runtime": { "grant": "band", "implemented": "NO" } }
+        ]
+      },
+      "profile": { "id": "wizard" },
+      "expected_rule_ids": ["band--contract-empty-both", "band--contract-empty-recipients", "band--contract-absent"]
+    },
+    {
+      "name": "empty lists keep the band-wide convention for its named profile",
+      "package": {
+        "band": { "id": "contract" },
+        "profiles": [],
+        "equipment_lists": [],
+        "special_rules": [
+          { "id": "band--contract-empty-both", "applies_to": { "band": true, "profile_ids": [] }, "eligibility": [], "runtime": { "grant": "band", "implemented": "NO" } },
+          { "id": "band--contract-empty-recipients", "applies_to": { "band": true, "profile_ids": [] }, "eligibility": ["wizard"], "runtime": { "grant": "band", "implemented": "NO" } },
+          { "id": "band--contract-empty-eligibility", "applies_to": { "band": true, "profile_ids": ["dwarf"] }, "eligibility": [], "runtime": { "grant": "band", "implemented": "NO" } },
+          { "id": "band--contract-absent", "applies_to": { "band": true }, "runtime": { "grant": "band", "implemented": "NO" } }
+        ]
+      },
+      "profile": { "id": "dwarf" },
+      "expected_rule_ids": ["band--contract-empty-both", "band--contract-empty-eligibility", "band--contract-absent"]
+    },
+    {
+      "name": "profile-branch rules are listed first and never duplicated",
+      "package": {
+        "band": { "id": "contract" },
+        "profiles": [],
+        "equipment_lists": [],
+        "special_rules": [
+          { "id": "band--contract-wide", "applies_to": { "band": true }, "runtime": { "grant": "band", "implemented": "NO" } },
+          { "id": "band--dwarf-special-skills", "applies_to": { "band": true, "profile_ids": ["dwarf"] }, "runtime": { "grant": "band", "implemented": "YES" } }
+        ]
+      },
+      "profile": { "id": "dwarf", "rule_ids": ["band--dwarf-special-skills"] },
+      "expected_rule_ids": ["band--dwarf-special-skills", "band--contract-wide"]
+    },
+    {
+      "name": "explicit rule ids keep applying outside the recipient filter",
+      "package": {
+        "band": { "id": "contract" },
+        "profiles": [],
+        "equipment_lists": [],
+        "special_rules": [
+          { "id": "dwarf--hard-to-kill", "applies_to": { "profile_ids": ["dwarf"] }, "runtime": { "grant": "profile", "implemented": "YES" } },
+          { "id": "profile--contract-explicit", "applies_to": { "profile_ids": ["elf"] }, "runtime": { "grant": "profile", "implemented": "NO" } },
+          { "id": "band--contract-wide", "applies_to": { "band": true }, "runtime": { "grant": "band", "implemented": "NO" } }
+        ]
+      },
+      "profile": { "id": "wizard", "rule_ids": ["profile--contract-explicit"] },
+      "expected_rule_ids": ["profile--contract-explicit", "band--contract-wide"]
+    },
+    {
+      "name": "named profile grants keep applying without an explicit rule id",
+      "package": {
+        "band": { "id": "contract" },
+        "profiles": [],
+        "equipment_lists": [],
+        "special_rules": [
+          { "id": "dwarf--hard-to-kill", "applies_to": { "profile_ids": ["dwarf"] }, "runtime": { "grant": "profile", "implemented": "YES" } },
+          { "id": "profile--contract-explicit", "applies_to": { "profile_ids": ["elf"] }, "runtime": { "grant": "profile", "implemented": "NO" } },
+          { "id": "band--contract-wide", "applies_to": { "band": true }, "runtime": { "grant": "band", "implemented": "NO" } }
+        ]
+      },
+      "profile": { "id": "dwarf" },
+      "expected_rule_ids": ["dwarf--hard-to-kill", "band--contract-wide"]
+    }
+  ]
+}

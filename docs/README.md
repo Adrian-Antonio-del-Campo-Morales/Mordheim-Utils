@@ -8,6 +8,9 @@ commands.
 
 - [Architecture](reference/architecture.md) — source layout, dependency
   boundaries and data flow.
+- [Shared warrior eligibility](reference/eligibility.md) — the single equipment
+  and skill rule module already used by both products, its Python/browser
+  adapters, bundle maintenance and boundary with combat compilation.
 - [Knowledge base](reference/knowledge-base.md) — canonical data, IDs,
   classification, translation and formatting policy.
 - [Verification](reference/verification.md) — the certification layers,
@@ -74,4 +77,6 @@ that owns it enforces:
 - Unresolved product scope belongs in [TODO](TODO.md).
 - Generated material (`outputs/`, web `dist/`, staged
   knowledge JSON) is working data produced by commands: never hand-edit or
-  commit it.
+  commit it. The generated eligibility bundle is an exception: it is a
+  versioned Python runtime resource; regenerate it from its TypeScript source
+  and commit both together.

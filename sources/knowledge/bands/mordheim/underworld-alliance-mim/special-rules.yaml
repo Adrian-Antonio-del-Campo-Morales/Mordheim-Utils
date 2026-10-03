@@ -251,15 +251,14 @@ rules:
 - id: goblin-bully--one-upmanship
   runtime:
     scope: LATER
-    implemented: 'YES'
+    implemented: 'NO'
     grant: profile
     effects:
     - id: trait.re-roll-melee
       scope: LATER
       binding: null
       reason: >-
-        Deferred: re-roll of to-hit rolls needs a generic conditional re-roll binding not yet
-        exposed.
+        Pending L06/L12: to-hit rerolls require fighting in the same combat as the Skaven Slave King.
   name: One Upmanship
   effect: >-
     The Goblin Bully may re-roll all to hit rolls when fighting in the same combat as the Skaven
@@ -465,11 +464,11 @@ rules:
     implemented: 'YES'
     grant: profile
     effects:
-    - id: skill.regeneration
+    - id: skill.regeneration-5-plus
       scope: 'YES'
       binding:
         kind: mechanic
-        id: skill.regeneration
+        id: skill.regeneration-5-plus
   name: Regeneration
   effect: >-
     Whenever an enemy successfully inflicts a wound on a Boglar, roll a D6; on a result of 5 or more

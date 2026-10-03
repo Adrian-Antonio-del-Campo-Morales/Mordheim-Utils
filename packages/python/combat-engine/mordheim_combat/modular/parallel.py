@@ -23,6 +23,7 @@ import os
 
 from mordheim_combat.modular.duel import simulate_duel_reference
 from mordheim_core.dice import DecisionPolicy
+from mordheim_core.models import DuelContext
 from mordheim_core.models import CompiledFighter
 from mordheim_core.models import DuelResult
 from mordheim_core.models import SimulationCancelled
@@ -50,11 +51,12 @@ def chunk_ranges(total: int, chunks: int) -> tuple[tuple[int, int], ...]:
 
 def _run_chunk(first: CompiledFighter, second: CompiledFighter,
                start: int, count: int, seed: int, maximum_rounds: int,
-               decisions: DecisionPolicy | None) -> DuelResult:
+               decisions: DecisionPolicy | None,
+               context: DuelContext | None = None) -> DuelResult:
     """Run one contiguous chunk through the identical sequential code path."""
     return simulate_duel_reference(
         first, second, count, seed=seed + start,
-        maximum_rounds=maximum_rounds, decisions=decisions,
+        maximum_rounds=maximum_rounds, decisions=decisions, context=context,
     )
 
 
@@ -101,12 +103,13 @@ def resolve_oracle_workers(workers: object | None, simulations: int,
 def _run_chunks(first: CompiledFighter, second: CompiledFighter,
                 simulations: int, *, seed: int, maximum_rounds: int,
                 decisions: DecisionPolicy | None, units: int,
-                executor, cancel_event: object | None) -> DuelResult:
+                executor, cancel_event: object | None,
+                context: DuelContext | None = None) -> DuelResult:
     """Submit one chunk per unit on an existing executor and sum the counts."""
     ranges = chunk_ranges(simulations, units)
     futures = [
         executor.submit(_run_chunk, first, second, start, count, seed,
-                        maximum_rounds, decisions)
+                        maximum_rounds, decisions, context)
         for start, count in ranges
     ]
     first_wins = second_wins = unresolved = 0
@@ -131,6 +134,7 @@ def simulate_duel_reference_parallel(
     workers: int | None = None,
     chunks: int | None = None,
     cancel_event: object | None = None,
+    context: DuelContext | None = None,
 ) -> DuelResult:
     """Bit-for-bit parallel equivalent of ``simulate_duel_reference``.
 
@@ -150,7 +154,7 @@ def simulate_duel_reference_parallel(
     with ProcessPoolExecutor(max_workers=min(available, units)) as pool:
         return _run_chunks(
             first, second, simulations, seed=seed,
-            maximum_rounds=maximum_rounds, decisions=decisions,
+            maximum_rounds=maximum_rounds, decisions=decisions, context=context,
             units=units, executor=pool, cancel_event=cancel_event,
         )
 
@@ -161,6 +165,7 @@ def run_oracle_sample(
     decisions: DecisionPolicy | None = None,
     workers: int | None = None, executor=None,
     cancel_event: object | None = None,
+    context: DuelContext | None = None,
 ) -> DuelResult:
     """Run one bulk oracle sample under a resolved worker policy.
 
@@ -174,18 +179,18 @@ def run_oracle_sample(
     if workers is None or workers < 2:
         return simulate_duel_reference(
             first, second, simulations, seed=seed,
-            maximum_rounds=maximum_rounds, decisions=decisions,
+            maximum_rounds=maximum_rounds, decisions=decisions, context=context,
             cancel_event=cancel_event,
         )
     if executor is not None:
         return _run_chunks(
             first, second, simulations, seed=seed,
-            maximum_rounds=maximum_rounds, decisions=decisions,
+            maximum_rounds=maximum_rounds, decisions=decisions, context=context,
             units=workers, executor=executor, cancel_event=cancel_event,
         )
     with ProcessPoolExecutor(max_workers=workers) as pool:
         return _run_chunks(
             first, second, simulations, seed=seed,
-            maximum_rounds=maximum_rounds, decisions=decisions,
+            maximum_rounds=maximum_rounds, decisions=decisions, context=context,
             units=workers, executor=pool, cancel_event=cancel_event,
         )

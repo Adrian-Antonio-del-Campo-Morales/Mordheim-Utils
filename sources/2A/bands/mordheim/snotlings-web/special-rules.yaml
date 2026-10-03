@@ -801,13 +801,7 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
-    - id: unimplemented.snotlings-web.runts.teeny-hands
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: the single one-handed weapon at a time and the promotion reset are
-        combat/progression mechanics outside the duel scope; the armour prohibition is published as
-        the profile binding above.
+          max_active_one_handed_weapons: 1
   name: Teeny Hands
   effect: >-
     Runts can use Missile Weapons as normal. However, Runt Henchmen can only use a single One-Handed
@@ -831,6 +825,7 @@ rules:
       tipo de armadura. Un Renacuajo que saque "¡Ese Chico Tiene Talento!" pierde la regla "Manitas"
       y puede llevar armas y armadura con normalidad.
   applies_to:
+    profile_types: [henchman]
     profile_ids:
     - runts
 - id: runts--smallest-of-the-small

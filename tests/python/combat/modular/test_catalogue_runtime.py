@@ -102,4 +102,5 @@ def test_every_execution_mechanism_can_enter_the_scalar_round_pipeline():
             state = initialize_duel(fighter, opponent, dice)
             assert resolve_round(fighter, opponent, state, dice).state.round_index == 1
             executed += 1
-    assert executed == 190
+    # L04 adds Shifty; L06 adds nine weapon profiles and Killing Blow.
+    assert executed == 201

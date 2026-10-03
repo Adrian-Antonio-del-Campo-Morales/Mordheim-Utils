@@ -1,0 +1,2070 @@
+[
+  {
+    "name": "unrestricted item",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "other",
+      "item_name": "other",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "beastlash wrong bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "beastlash",
+      "item_name": "beastlash",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "beastlash cannot be assigned to this warrior."
+  },
+  {
+    "name": "beastlash permitted bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Beastmaster",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "beastlash",
+      "item_name": "beastlash",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "broadsword wrong bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "broadsword",
+      "item_name": "broadsword",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "broadsword cannot be assigned to this warrior."
+  },
+  {
+    "name": "broadsword permitted bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Chapel Guard Knight",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "broadsword",
+      "item_name": "broadsword",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "serpent_staff wrong bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "serpent_staff",
+      "item_name": "serpent_staff",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "serpent_staff cannot be assigned to this warrior."
+  },
+  {
+    "name": "serpent_staff permitted bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Liche Priest",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "serpent_staff",
+      "item_name": "serpent_staff",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "shortsword wrong bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "shortsword",
+      "item_name": "shortsword",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "shortsword cannot be assigned to this warrior."
+  },
+  {
+    "name": "shortsword permitted bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Chapel Guard Knight",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "shortsword",
+      "item_name": "shortsword",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "nehekharan_javelin wrong bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "nehekharan_javelin",
+      "item_name": "nehekharan_javelin",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "nehekharan_javelin cannot be assigned to this warrior."
+  },
+  {
+    "name": "nehekharan_javelin permitted bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Tomb Lord",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "nehekharan_javelin",
+      "item_name": "nehekharan_javelin",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "swivel_gun wrong bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "swivel_gun",
+      "item_name": "swivel_gun",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "swivel_gun cannot be assigned to this warrior."
+  },
+  {
+    "name": "swivel_gun permitted bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Gunner",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "swivel_gun",
+      "item_name": "swivel_gun",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "kite_shield wrong bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "kite_shield",
+      "item_name": "kite_shield",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "kite_shield cannot be assigned to this warrior."
+  },
+  {
+    "name": "kite_shield permitted bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Chapel Guard Knight",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "kite_shield",
+      "item_name": "kite_shield",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "asp_arrows wrong bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "asp_arrows",
+      "item_name": "asp_arrows",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "asp_arrows cannot be assigned to this warrior."
+  },
+  {
+    "name": "asp_arrows permitted bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Tomb Lord",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "asp_arrows",
+      "item_name": "asp_arrows",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "conch_shell_horn wrong bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "conch_shell_horn",
+      "item_name": "conch_shell_horn",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "conch_shell_horn cannot be assigned to this warrior."
+  },
+  {
+    "name": "conch_shell_horn permitted bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Piranha Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "conch_shell_horn",
+      "item_name": "conch_shell_horn",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "elven_runestones wrong bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "elven_runestones",
+      "item_name": "elven_runestones",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "elven_runestones cannot be assigned to this warrior."
+  },
+  {
+    "name": "elven_runestones permitted bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Weaver",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "elven_runestones",
+      "item_name": "elven_runestones",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "parrot wrong bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "parrot",
+      "item_name": "parrot",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "parrot cannot be assigned to this warrior."
+  },
+  {
+    "name": "parrot permitted bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Mate",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "parrot",
+      "item_name": "parrot",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "restriction note retained",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "beastlash",
+      "item_name": "beastlash",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile",
+      "profile_restriction_note": "Only a Beastmaster may use this item."
+    },
+    "expected": "Only a Beastmaster may use this item."
+  },
+  {
+    "name": "barbed_whip allowed",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "barbed_whip",
+      "item_name": "barbed_whip",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "barbed_whip refused",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "henchman",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "barbed_whip",
+      "item_name": "barbed_whip",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "Barbed Whip may only be assigned to a Marauders of Chaos Hero."
+  },
+  {
+    "name": "great_axe allowed",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [
+          "Chosen of Chaos"
+        ],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "great_axe",
+      "item_name": "great_axe",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "great_axe refused",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "great_axe",
+      "item_name": "great_axe",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "Great Axe requires a Marauders Hero with the Chosen of Chaos skill."
+  },
+  {
+    "name": "reptile_venom allowed",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Skink",
+        "kind": "henchman",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "reptile_venom",
+      "item_name": "reptile_venom",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "reptile_venom refused",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Skink",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "reptile_venom",
+      "item_name": "reptile_venom",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "Reptile Venom may only be assigned to Skink Henchmen."
+  },
+  {
+    "name": "familiar allowed",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [
+          "Spellcaster"
+        ],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "familiar",
+      "item_name": "familiar",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "familiar refused",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "familiar",
+      "item_name": "familiar",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "A Familiar may only be assigned to a spellcaster."
+  },
+  {
+    "name": "arcane_familiar allowed",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [
+          "Spellcaster"
+        ],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "arcane_familiar",
+      "item_name": "arcane_familiar",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "arcane_familiar refused",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "arcane_familiar",
+      "item_name": "arcane_familiar",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "A Familiar may only be assigned to a spellcaster."
+  },
+  {
+    "name": "book_of_the_dead allowed",
+    "args": {
+      "warrior": {
+        "profile_id": "vampire",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "book_of_the_dead",
+      "item_name": "book_of_the_dead",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "book_of_the_dead refused",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "book_of_the_dead",
+      "item_name": "book_of_the_dead",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "The Book of the Dead may only be assigned to Vampires or Necromancers."
+  },
+  {
+    "name": "nightmare allowed",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Grave Guard",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "nightmare",
+      "item_name": "nightmare",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "nightmare refused",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "nightmare",
+      "item_name": "nightmare",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "A Nightmare may only be assigned to Vampires, Necromancers or Grave Guards."
+  },
+  {
+    "name": "temple_dog allowed",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Dragon Monk",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "temple_dog",
+      "item_name": "temple_dog",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "temple_dog refused",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "temple_dog",
+      "item_name": "temple_dog",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "A Temple Dog may only be assigned to Dragon Monks, Sisters of Sigmar or Priests."
+  },
+  {
+    "name": "sword_heroes_only allowed",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "sword_heroes_only",
+      "item_name": "sword_heroes_only",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "sword_heroes_only refused",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "henchman",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "sword_heroes_only",
+      "item_name": "sword_heroes_only",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "This Sword variant may only be assigned to Heroes."
+  },
+  {
+    "name": "barding without horse",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "barding",
+      "item_name": "barding",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "Barding requires this warrior to have a Warhorse."
+  },
+  {
+    "name": "barding with base horse",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [
+          {
+            "item_id": "custom",
+            "name": "Mount",
+            "base_item_id": "warhorse",
+            "quantity": 1,
+            "acquisition": "purchase"
+          }
+        ],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "barding",
+      "item_name": "barding",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "bretonnian_barding without horse",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "bretonnian_barding",
+      "item_name": "bretonnian_barding",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "Barding requires this warrior to have a Warhorse."
+  },
+  {
+    "name": "bretonnian_barding with base horse",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [
+          {
+            "item_id": "custom",
+            "name": "Mount",
+            "base_item_id": "warhorse",
+            "quantity": 1,
+            "acquisition": "purchase"
+          }
+        ],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "bretonnian_barding",
+      "item_name": "bretonnian_barding",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "dark_elf_blade_weapon_upgrade without weapon",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "dark_elf_blade_weapon_upgrade",
+      "item_name": "Upgrade",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "Upgrade requires an equipped weapon to upgrade."
+  },
+  {
+    "name": "dark_elf_blade_weapon_upgrade with weapon",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [
+          {
+            "item_id": "upgraded",
+            "base_item_id": "sword",
+            "name": "",
+            "quantity": 1,
+            "acquisition": "purchase"
+          }
+        ],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "dark_elf_blade_weapon_upgrade",
+      "item_name": "dark_elf_blade_weapon_upgrade",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {
+        "sword": 1
+      },
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "dark_elf_blade_weapon_upgrade unknown weapon",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [
+          {
+            "item_id": "unknown",
+            "name": "",
+            "base_item_id": "",
+            "quantity": 1,
+            "acquisition": "purchase"
+          }
+        ],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "dark_elf_blade_weapon_upgrade",
+      "item_name": "dark_elf_blade_weapon_upgrade",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "dark_elf_blade_weapon_upgrade requires an equipped weapon to upgrade."
+  },
+  {
+    "name": "poisoned_weapon without weapon",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "poisoned_weapon",
+      "item_name": "Upgrade",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "Upgrade requires an equipped weapon to upgrade."
+  },
+  {
+    "name": "poisoned_weapon with weapon",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [
+          {
+            "item_id": "upgraded",
+            "base_item_id": "sword",
+            "name": "",
+            "quantity": 1,
+            "acquisition": "purchase"
+          }
+        ],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "poisoned_weapon",
+      "item_name": "poisoned_weapon",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {
+        "sword": 1
+      },
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "poisoned_weapon unknown weapon",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [
+          {
+            "item_id": "unknown",
+            "name": "",
+            "base_item_id": "",
+            "quantity": 1,
+            "acquisition": "purchase"
+          }
+        ],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "poisoned_weapon",
+      "item_name": "poisoned_weapon",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "poisoned_weapon requires an equipped weapon to upgrade."
+  },
+  {
+    "name": "close-combat-weapon listed",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "close-combat-weapon",
+      "profile": {
+        "equipment_access": [
+          {
+            "item_id": "sword"
+          }
+        ]
+      },
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "close-combat-weapon outside list",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "close-combat-weapon",
+      "profile": {
+        "equipment_access": [
+          {
+            "item_id": "axe"
+          }
+        ]
+      },
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "This weapon is outside the warrior's equipment access."
+  },
+  {
+    "name": "close-combat-weapon empty canonical list",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "close-combat-weapon",
+      "profile": {
+        "equipment_access": []
+      },
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "This weapon is outside the warrior's equipment access."
+  },
+  {
+    "name": "close-combat-weapon correct localized training",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [
+          "Localized Training"
+        ],
+        "skill_ids": [
+          "skill.weapons-training"
+        ],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "close-combat-weapon",
+      "profile": {
+        "equipment_access": []
+      },
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "close-combat-weapon wrong training category",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [
+          "Weapons Training"
+        ],
+        "skill_ids": [
+          "skill.weapons-expert"
+        ],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "close-combat-weapon",
+      "profile": {
+        "equipment_access": []
+      },
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "This weapon is outside the warrior's equipment access."
+  },
+  {
+    "name": "close-combat-weapon hireling access",
+    "args": {
+      "warrior": {
+        "profile_id": "hireling.fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "close-combat-weapon",
+      "profile": {
+        "equipment_access": []
+      },
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "ranged-weapon listed",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "ranged-weapon",
+      "profile": {
+        "equipment_access": [
+          {
+            "item_id": "sword"
+          }
+        ]
+      },
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "ranged-weapon outside list",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "ranged-weapon",
+      "profile": {
+        "equipment_access": [
+          {
+            "item_id": "axe"
+          }
+        ]
+      },
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "This weapon is outside the warrior's equipment access."
+  },
+  {
+    "name": "ranged-weapon empty canonical list",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "ranged-weapon",
+      "profile": {
+        "equipment_access": []
+      },
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "This weapon is outside the warrior's equipment access."
+  },
+  {
+    "name": "ranged-weapon correct localized training",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [
+          "Localized Training"
+        ],
+        "skill_ids": [
+          "skill.weapons-expert"
+        ],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "ranged-weapon",
+      "profile": {
+        "equipment_access": []
+      },
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "ranged-weapon wrong training category",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [
+          "Weapons Training"
+        ],
+        "skill_ids": [
+          "skill.weapons-training"
+        ],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "ranged-weapon",
+      "profile": {
+        "equipment_access": []
+      },
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": "This weapon is outside the warrior's equipment access."
+  },
+  {
+    "name": "ranged-weapon hireling access",
+    "args": {
+      "warrior": {
+        "profile_id": "hireling.fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "ranged-weapon",
+      "profile": {
+        "equipment_access": []
+      },
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "profile stage does not judge quantities",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {
+          "maximum_one_handed_weapons": 0
+        }
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "close-combat-weapon",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {
+        "sword": 1
+      },
+      "stage": "profile"
+    },
+    "expected": null
+  },
+  {
+    "name": "loadout stage does not judge bearer",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "reptile_venom",
+      "item_name": "reptile_venom",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "loadout"
+    },
+    "expected": null
+  },
+  {
+    "name": "injury limit with purchase",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [
+          {
+            "item_id": "dagger",
+            "acquisition": "purchase",
+            "name": "",
+            "base_item_id": "",
+            "quantity": 1
+          }
+        ],
+        "quantity": 1,
+        "equipment_limits": {
+          "maximum_one_handed_weapons": 1
+        }
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "close-combat-weapon",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {
+        "sword": 1,
+        "dagger": 1
+      },
+      "stage": "loadout"
+    },
+    "expected": "Injury limits this warrior to 1 one-handed weapon(s) per model."
+  },
+  {
+    "name": "injury limit with starting_grant",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [
+          {
+            "item_id": "dagger",
+            "acquisition": "starting_grant",
+            "name": "",
+            "base_item_id": "",
+            "quantity": 1
+          }
+        ],
+        "quantity": 1,
+        "equipment_limits": {
+          "maximum_one_handed_weapons": 1
+        }
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "close-combat-weapon",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {
+        "sword": 1,
+        "dagger": 1
+      },
+      "stage": "loadout"
+    },
+    "expected": null
+  },
+  {
+    "name": "injury limit with fixed",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [
+          {
+            "item_id": "dagger",
+            "acquisition": "fixed",
+            "name": "",
+            "base_item_id": "",
+            "quantity": 1
+          }
+        ],
+        "quantity": 1,
+        "equipment_limits": {
+          "maximum_one_handed_weapons": 1
+        }
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "close-combat-weapon",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {
+        "sword": 1,
+        "dagger": 1
+      },
+      "stage": "loadout"
+    },
+    "expected": "Injury limits this warrior to 1 one-handed weapon(s) per model."
+  },
+  {
+    "name": "injury group at limit",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 3,
+        "equipment_limits": {
+          "maximum_one_handed_weapons": 1
+        }
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "close-combat-weapon",
+      "profile": null,
+      "amount": 3,
+      "weapon_hands": {
+        "sword": 1
+      },
+      "stage": "loadout"
+    },
+    "expected": null
+  },
+  {
+    "name": "injury group over limit",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [],
+        "quantity": 3,
+        "equipment_limits": {
+          "maximum_one_handed_weapons": 1
+        }
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "close-combat-weapon",
+      "profile": null,
+      "amount": 4,
+      "weapon_hands": {
+        "sword": 1
+      },
+      "stage": "loadout"
+    },
+    "expected": "Injury limits this warrior to 1 one-handed weapon(s) per model."
+  },
+  {
+    "name": "base weapon quantity counted",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [
+          {
+            "item_id": "custom",
+            "base_item_id": "sword",
+            "quantity": 2,
+            "name": "",
+            "acquisition": "purchase"
+          }
+        ],
+        "quantity": 1,
+        "equipment_limits": {
+          "maximum_one_handed_weapons": 2
+        }
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "close-combat-weapon",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {
+        "sword": 1
+      },
+      "stage": "loadout"
+    },
+    "expected": "Injury limits this warrior to 2 one-handed weapon(s) per model."
+  },
+  {
+    "name": "duplicate accessory with purchase",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [
+          {
+            "item_id": "charm",
+            "acquisition": "purchase",
+            "name": "",
+            "base_item_id": "",
+            "quantity": 1
+          }
+        ],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "charm",
+      "item_name": "charm",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "loadout"
+    },
+    "expected": "charm is already carried; a warrior carries one of these."
+  },
+  {
+    "name": "duplicate accessory with starting_grant",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [
+          {
+            "item_id": "charm",
+            "acquisition": "starting_grant",
+            "name": "",
+            "base_item_id": "",
+            "quantity": 1
+          }
+        ],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "charm",
+      "item_name": "charm",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "loadout"
+    },
+    "expected": "charm is already carried; a warrior carries one of these."
+  },
+  {
+    "name": "duplicate accessory with fixed",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [
+          {
+            "item_id": "charm",
+            "acquisition": "fixed",
+            "name": "",
+            "base_item_id": "",
+            "quantity": 1
+          }
+        ],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "charm",
+      "item_name": "charm",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "loadout"
+    },
+    "expected": "charm is already carried; a warrior carries one of these."
+  },
+  {
+    "name": "group accessory at limit",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [
+          {
+            "item_id": "charm",
+            "quantity": 2,
+            "name": "",
+            "base_item_id": "",
+            "acquisition": "purchase"
+          }
+        ],
+        "quantity": 3,
+        "equipment_limits": {}
+      },
+      "item_id": "charm",
+      "item_name": "charm",
+      "category": "other",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {},
+      "stage": "loadout"
+    },
+    "expected": null
+  },
+  {
+    "name": "weapon copies are not accessory duplicates",
+    "args": {
+      "warrior": {
+        "profile_id": "fixture",
+        "profile_name": "Warrior",
+        "kind": "hero",
+        "skills": [],
+        "skill_ids": [],
+        "special_rules": [],
+        "equipment": [
+          {
+            "item_id": "sword",
+            "quantity": 2,
+            "name": "",
+            "base_item_id": "",
+            "acquisition": "purchase"
+          }
+        ],
+        "quantity": 1,
+        "equipment_limits": {}
+      },
+      "item_id": "sword",
+      "item_name": "sword",
+      "category": "close-combat-weapon",
+      "profile": null,
+      "amount": 1,
+      "weapon_hands": {
+        "sword": 1
+      },
+      "stage": "loadout"
+    },
+    "expected": null
+  }
+]

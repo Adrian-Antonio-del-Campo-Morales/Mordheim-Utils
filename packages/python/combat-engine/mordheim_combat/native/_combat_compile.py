@@ -306,6 +306,8 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
         "w": stats.wounds,
         "ini": stats.initiative,
         "a": stats.attacks,
+        "movement": stats.movement,
+        "leadership": stats.leadership,
         "armour_save": int(me.armour_save),
         "natural_armour_save": int(me.natural_armour_save),
         "natural_armour_worst_save": int(me.natural_armour_worst_save),
@@ -463,6 +465,8 @@ def _compile_fighter(me: CompiledFighter, foe: CompiledFighter) -> dict:
 
 def compile_duel(first: CompiledFighter, second: CompiledFighter) -> dict:
     """Build the full immutable context consumed by the native batch core."""
+    from mordheim_combat.kernel import require_optimized_support
+    require_optimized_support(first, second)
     optional = _optional_phase_plan(first, second)
     fire_effect = _constructed(
         ("attack.fire", "effect.no-critical"), fixed_strength=4,

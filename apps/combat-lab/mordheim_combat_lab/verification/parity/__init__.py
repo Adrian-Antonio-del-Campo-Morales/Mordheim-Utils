@@ -27,3 +27,5 @@ from mordheim_combat_lab.verification.parity._deep import (
     certify_deep,
     escalation_plan,
 )
+
+from mordheim_combat_lab.verification.parity._replay import ReplayObservation, replay_duel

@@ -13,7 +13,14 @@ describe("warband reference sheets", () => {
     const sheet = real().sheet("sisters-of-sigmar", locale)!;
     expect(sheet.equipment[0].items.find((item) => item.id === "blessed_water")).toMatchObject({ name: locale === "es" ? "Agua Bendita" : "Blessed Water", cost: 10 });
     expect(sheet.equipment[0].items.find((item) => item.id === "holy_tome")).toMatchObject({ name: locale === "es" ? "Tomo Sagrado" : "Holy Tome", cost: 120 });
-    expect(sheet.rules.find((rule) => rule.id === "band--human-maximum-characteristics")?.effect).not.toContain("campaign.limit.");
+    // F050: the canonical citation is rendered as the linked maximum profile,
+    // in the active locale and with the surrounding rule prose preserved.
+    const maximum = sheet.rules.find((rule) => rule.id === "band--human-maximum-characteristics")!;
+    expect(maximum.effect).not.toContain("campaign.limit.");
+    expect(maximum.effect).toContain(locale === "es" ? "Las Hermanas de Sigmar son Humanas" : "Sisters of Sigmar are Humans");
+    expect(maximum.effect).toContain(locale === "es"
+      ? "M 10, HA 6, HP 6, F 4, R 4, H 3, I 6, A 4, L 9"
+      : "M 4, WS 6, BS 6, S 4, T 4, W 3, I 6, A 4, Ld 9");
     const restrictions = sheet.warriors.find((warrior) => warrior.id === "augur")?.restrictions;
     if (locale === "es") expect(restrictions).toBe("La Vidente nunca lleva armadura.");
     else expect(restrictions).toContain("armour");

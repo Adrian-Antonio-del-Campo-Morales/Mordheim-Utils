@@ -17,6 +17,7 @@ import type { ArtefactRow } from "../../adapters/knowledge-reader/artefact-types
 import { fieldValues, unavailableText, sourceDescriptionUnavailableText, type ResolvedKbText } from "../../adapters/knowledge-reader/presentation";
 import { adaptDistanceText } from "./distance-display";
 import { catalogueDifficulty, catalogueJoin, catalogueLabel, catalogueNumber, cataloguePunctuation, isCatalogueLabel, type CatalogueText } from "./catalogue-text";
+import { resolveLimitCitations } from "./reference-citations";
 
 /** Locale code used for display text (matches the KB artefact locales). */
 export type Locale = "en" | "es";
@@ -87,6 +88,9 @@ function sourceRefs(row: Readonly<Record<string, unknown>>): readonly Readonly<R
 }
 
 export class RulesCatalogue {
+  /** Published `campaign.racial_maximums` rows, read once per catalogue. */
+  private racialMaximumRows: readonly ArtefactRow[] | null = null;
+
   constructor(private readonly knowledge: ArtefactKnowledgeReader) {}
 
   private translatedText(row: Readonly<Record<string, unknown>>, locale: Locale): ResolvedKbText | null {
@@ -100,13 +104,22 @@ export class RulesCatalogue {
     return null;
   }
 
-  private localizedEffect(row: Readonly<Record<string, unknown>>, locale: Locale): ResolvedKbText {
+  private localizedEffect(row: Readonly<Record<string, unknown>>, locale: Locale): ResolvedKbText | CatalogueText {
     // No declared prose field means the source publishes no description for
     // this row: that is a structured absence, not a failed resolution, so it
     // must never surface the generic unavailable notice. A declared field that
     // fails to resolve (unknown/ambiguous reference, missing translation) still
     // reports the resolution failure through `translatedText`.
-    return this.translatedText(row, locale) ?? sourceDescriptionUnavailableText(locale);
+    const text = this.translatedText(row, locale);
+    // Canonical `campaign.limit.racial-maximum.*` citations are rendered as the
+    // linked profile, never as catalogue ids; the rows are read lazily so prose
+    // without a citation never touches the campaign catalogue.
+    return text ? resolveLimitCitations(text, () => this.publishedRacialMaximums(), locale) : sourceDescriptionUnavailableText(locale);
+  }
+
+  /** The published racial-maximum rows, read once per catalogue instance. */
+  private publishedRacialMaximums(): readonly ArtefactRow[] {
+    return (this.racialMaximumRows ??= this.knowledge.list("racial_maximum"));
   }
 
   /** The browsable categories, in display order, excluding empty ones. */

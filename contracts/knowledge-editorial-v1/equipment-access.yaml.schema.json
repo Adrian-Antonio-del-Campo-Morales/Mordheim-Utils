@@ -28,15 +28,27 @@
         "id": { "$ref": "defs.schema.json#/$defs/id" },
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
-        "notes": { "$ref": "defs.schema.json#/$defs/display_text" },
-        "notes_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "notes": {
+          "description": "Editorial note of the whole list. The reference sheet reads it from the published list row and resolves it per locale (`warband-reference.ts`); no committed list carries one yet, so the strictness audit keeps this member with that projection as its reason.",
+          "$ref": "defs.schema.json#/$defs/display_text"
+        },
+        "notes_i18n": {
+          "description": "Reviewed Spanish translation of `notes`.",
+          "$ref": "defs.schema.json#/$defs/i18n"
+        },
         "applies_to": {
           "description": "Explicit recipients declared by the source, including lists available to every hero.",
           "type": "object",
           "additionalProperties": false,
           "required": ["profile_types"],
           "properties": {
-            "profile_types": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["hero", "henchman", "animal", "summoned"] } }
+            "profile_types": {
+              "description": "Kinds of profile the source offers the list to. The vocabulary is the one `profiles.yaml` declares for `profile.type` (`hero` and `henchman` are the roster kinds, `animal` and `summoned` are creatures attached to the warband), and `warband-reference.ts` selects the recipients of a list by that kind.",
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "enum": ["hero", "henchman", "animal", "summoned"] }
+            }
           }
         },
         "items": {

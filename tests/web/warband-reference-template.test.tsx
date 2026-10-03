@@ -33,6 +33,12 @@ describe("common warband template", () => {
     expect(screen.getByRole("table", { name: locale === "es" ? "Tabla de habilidades" : "Skill table" })).toBeInTheDocument();
     const specialSkill = screen.getByText(locale === "es" ? "Signo de Sigmar" : "Sign of Sigmar", { selector: "summary" });
     expect(specialSkill.closest(".warband-skill-list")?.querySelector(":scope > summary")).toHaveTextContent(locale === "es" ? "Especiales" : "Special");
+    // F050: the canonical racial-maximum citation is rendered as its profile.
+    const maximumRule = screen.getByText(locale === "es" ? /Las Hermanas de Sigmar son Humanas/ : /Sisters of Sigmar are Humans/, { selector: "p.rule-prose" });
+    expect(maximumRule.textContent).toBe(locale === "es"
+      ? "Las Hermanas de Sigmar son Humanas y usan el perfil máximo racial humano (M 10, HA 6, HP 6, F 4, R 4, H 3, I 6, A 4, L 9)."
+      : "Sisters of Sigmar are Humans and use the Human racial maximum profile (M 4, WS 6, BS 6, S 4, T 4, W 3, I 6, A 4, Ld 9).");
+    expect(maximumRule).not.toHaveTextContent("campaign.limit.");
     expect(screen.getByRole("button", { name: locale === "es" ? "Martillo Sigmarita" : "Sigmarite Hammer" })).toHaveAttribute("data-tooltip");
     expect(screen.getByRole("heading", { name: locale === "es" ? "Lista de Equipo de las Hermanas de Sigmar" : "Sisters of Sigmar Equipment List" })).toBeInTheDocument();
     expect(screen.getByText(locale === "es" ? "Primera daga gratis; las siguientes cuestan 2 co." : "1st free/2 gc")).toBeInTheDocument();

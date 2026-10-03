@@ -43,9 +43,13 @@ SOFT_FINDINGS = ("unused_property", "unused_type", "unused_enum_value", "dead_br
 
 #: Declarations kept on purpose although no document uses them today, keyed by
 #: ``(schema, kind, path)``. The value is the contract or workflow that keeps
-#: the declaration alive; an entry that stops matching a finding is stale and
-#: fails the guardian test.
-JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str] = {
+#: the declaration alive, or a mapping from the exact members the reason covers
+#: (property names, ``_key``-style enum values such as ``str:animal``, branch
+#: indices) to their own reason. A mapping never covers a member it does not
+#: name, so a property or value added later to the same declaration is still a
+#: finding. An entry that stops matching a finding — or a mapped member the
+#: documents start exercising — is stale and fails the guardian test.
+JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str | dict[str, str]] = {
     # -- vocabularies anchored to the executable layer -------------------
     # The execution contract declares every field of the effect set it builds, not
     # only the ones today's mechanics set: `mordheim_construction.contracts.effect_index`
@@ -73,11 +77,16 @@ JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str] = {
         "unused_type",
         "#/$defs/profile.group_size.maximum",
     ): "`int | None` in knowledge_port/profile: the campaign engines branch on `is not None`",
-    (
-        "defs.schema.json",
-        "unused_enum_value",
-        "#/$defs/rule_runtime.grant",
-    ): "grant values of registry/runtime-schema.yaml, compared by the guardian test",
+    # `#/$defs/rule_runtime.grant` was listed here with the reason "grant
+    # values of registry/runtime-schema.yaml, compared by the guardian test"
+    # while the shared evidence was the union of the members each document
+    # schema missed. Pooled member by member, the four values are exercised —
+    # `band`, `profile` and `selectable` by the band special rules, `none` by
+    # `catalog/skills` — so no unused value is left to justify and the entry had
+    # to go: a justification that matches no finding is what the guardian test
+    # refuses. The vocabulary keeps its own guard in
+    # `test_runtime_enums_match_the_registry_contract`, which compares this enum
+    # with `registry/runtime-schema.yaml`.
     (
         "defs.schema.json",
         "unused_enum_value",
@@ -266,6 +275,34 @@ JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str] = {
     # and its justification is gone — keeping one would hide the next real gap,
     # which is exactly what `test_no_strictness_justification_has_gone_stale`
     # refused.
+    # -- the equipment-access lists of the reference sheet ----------------
+    # The maintained generator publishes every `equipment_lists` row of these
+    # documents (`generate_knowledge_web._build_warband_reference` copies the
+    # list through `_row`, which keeps `notes`, `notes_i18n` and `applies_to`),
+    # and `warband-reference.ts` reads both declarations below from that row: a
+    # list-level note resolved per locale, and the recipients, which it selects
+    # by `profile.type` over the same four kinds `profiles.yaml` declares. No
+    # committed list has needed an editorial note yet, and only
+    # `underworld-alliance-mim` prints an explicit recipient block (`[hero]`),
+    # so the members are justified one by one: a new property or enum value at
+    # either path is not covered and still fails the strictness gate.
+    (
+        "equipment-access.yaml.schema.json",
+        "unused_property",
+        "#/$defs/equipment_list",
+    ): {
+        "notes": "list-level note of the published reference sheet; resolved per locale by warband-reference.ts",
+        "notes_i18n": "Spanish translation of the same list-level note",
+    },
+    (
+        "equipment-access.yaml.schema.json",
+        "unused_enum_value",
+        "#/$defs/equipment_list.applies_to.profile_types[]",
+    ): {
+        "str:animal": "a beast attached to a warband is a canonical `profile.type` of profiles.yaml",
+        "str:henchman": "a list printed for a henchman group is a valid recipient; `henchman` is a canonical `profile.type`",
+        "str:summoned": "a summoned creature is a canonical `profile.type` of profiles.yaml",
+    },
 }
 
 #: How many document labels a finding prints before summarising the rest.
@@ -281,6 +318,10 @@ class Finding:
     path: str
     detail: str
     documents: tuple[str, ...] = ()
+    #: Members of the declaration the finding reports as unexercised — property
+    #: names, ``_key``-style enum values, branch indices. Empty for a finding
+    #: that is not about individual members (every hard finding).
+    members: tuple[str, ...] = ()
 
     @property
     def hard(self) -> bool:
@@ -620,46 +661,48 @@ class _SchemaAudit:
             )
         return found
 
-    def declared(self) -> set[tuple[str, str]]:
-        """Every ``(kind, path)`` at which this schema declares vocabulary."""
-        return (
-            {("unused_property", path) for path in self.declared_properties}
-            | {("unused_type", path) for path in self.declared_types}
-            | {("unused_enum_value", path) for path in self.declared_values}
-            | {("dead_branch", path) for path in self.branch_counts}
-        )
+    def vocabulary(self) -> dict[tuple[str, str], tuple[set[str], set[str]]]:
+        """``(kind, path) -> (declared, observed)`` members this schema's documents back.
 
-    def unexercised(self) -> list[tuple[str, str, str]]:
-        """``(kind, path, detail)`` of every declaration no document reaches."""
-        found: list[tuple[str, str, str]] = []
-        for path, declared in sorted(self.declared_properties.items()):
-            missing = sorted(declared - self.seen_properties[path])
+        The pair is the raw evidence of one schema, kept apart so a definition
+        shared by several schemas can be pooled member by member: whether a
+        member is exercised is a question about the whole contract, not about
+        the one schema that happens to report it.
+        """
+        evidence: dict[tuple[str, str], tuple[set[str], set[str]]] = {}
+        for path in sorted(self.declared_properties):
+            evidence[("unused_property", path)] = (
+                set(self.declared_properties[path]),
+                set(self.seen_properties[path]),
+            )
+        for path in sorted(self.declared_types):
+            evidence[("unused_type", path)] = (
+                set(self.declared_types[path]),
+                set(self.seen_types[path]),
+            )
+        for path in sorted(self.declared_values):
+            evidence[("unused_enum_value", path)] = (
+                set(self.declared_values[path]),
+                set(self.seen_values[path]),
+            )
+        for path in sorted(self.branch_counts):
+            evidence[("dead_branch", path)] = (
+                {str(index) for index in range(self.branch_counts[path])},
+                {
+                    str(index)
+                    for index, hits in self.branch_hits[path].items()
+                    if hits
+                },
+            )
+        return evidence
+
+    def unexercised(self) -> list[tuple[str, str, str, tuple[str, ...]]]:
+        """``(kind, path, detail, members)`` of every declaration no document reaches."""
+        found: list[tuple[str, str, str, tuple[str, ...]]] = []
+        for (kind, path), (declared, observed) in self.vocabulary().items():
+            missing = sorted(declared - observed)
             if missing:
-                found.append(
-                    ("unused_property", path, "declared property never present: " + ", ".join(missing))
-                )
-        for path, declared in sorted(self.declared_types.items()):
-            missing = sorted(declared - self.seen_types[path])
-            if missing:
-                found.append(
-                    ("unused_type", path, "declared type never observed: " + ", ".join(missing))
-                )
-        for path, declared in sorted(self.declared_values.items()):
-            missing = sorted(declared - self.seen_values[path])
-            if missing:
-                found.append(
-                    (
-                        "unused_enum_value",
-                        path,
-                        "declared value never present: " + ", ".join(missing),
-                    )
-                )
-        for path, total in sorted(self.branch_counts.items()):
-            missing = [str(index) for index in range(total) if not self.branch_hits[path][index]]
-            if missing:
-                found.append(
-                    ("dead_branch", path, "branch never selected: " + ", ".join(missing))
-                )
+                found.append((kind, path, _unexercised_detail(kind, missing), tuple(missing)))
         return found
 
 
@@ -674,6 +717,23 @@ def _matches(pattern: str, key: str) -> bool:
         return re.search(pattern, key) is not None
     except re.error:
         return False
+
+
+#: The one wording of each unexercised declaration, keyed by finding kind. The
+#: detail is derived from the members the finding carries, so a finding pooled
+#: from the evidence of several schemas cannot describe a different set: the
+#: detail and the members are the same fact told once.
+_DETAIL_LEADS = {
+    "unused_property": "declared property never present: ",
+    "unused_type": "declared type never observed: ",
+    "unused_enum_value": "declared value never present: ",
+    "dead_branch": "branch never selected: ",
+}
+
+
+def _unexercised_detail(kind: str, members: Iterable[str]) -> str:
+    """The detail of an unexercised declaration, built from its own members."""
+    return _DETAIL_LEADS[kind] + ", ".join(members)
 
 
 def _documents(root: Path) -> dict[str, list[tuple[str, dict]]]:
@@ -786,9 +846,11 @@ def audit_strictness(root: Path | None = None) -> list[Finding]:
     """Every declaration of the contract that the documents back or contradict.
 
     A definition of ``defs.schema.json`` is one declaration shared by several
-    document schemas, so it is reported once — with the pooled evidence of every
-    document that uses it — and only when no document of the knowledge base
-    reaches it.
+    document schemas, so it is reported once and its evidence is pooled member
+    by member: a property, type, enum value or branch is unused only when **no**
+    document of any of those schemas observes it. A member one schema exercises
+    is exercised, even when another schema misses it. The detail of the pooled
+    finding is built from the pooled members, so the two describe one set.
     """
     base = root or knowledge_root()
     audits: list[_SchemaAudit] = []
@@ -799,16 +861,16 @@ def audit_strictness(root: Path | None = None) -> list[Finding]:
         audits.append(audit)
 
     findings: list[Finding] = dead_definitions()
-    declared_by: dict[tuple[str, str], set[str]] = defaultdict(set)
-    reported_by: dict[tuple[str, str], set[str]] = defaultdict(set)
+    declared: dict[tuple[str, str], set[str]] = defaultdict(set)
+    observed: dict[tuple[str, str], set[str]] = defaultdict(set)
     pooled_documents: dict[tuple[str, str], set[str]] = defaultdict(set)
-    details: dict[tuple[str, str], str] = {}
     for audit in audits:
         findings.extend(audit.hard_findings())
-        for kind, path in audit.declared():
+        for (kind, path), (members, seen) in audit.vocabulary().items():
             if _shared_definition(path):
-                declared_by[(kind, path)].add(audit.schema_path)
-        for kind, path, detail in audit.unexercised():
+                declared[(kind, path)] |= members
+                observed[(kind, path)] |= seen
+        for kind, path, detail, members in audit.unexercised():
             if not _shared_definition(path):
                 findings.append(
                     Finding(
@@ -817,23 +879,23 @@ def audit_strictness(root: Path | None = None) -> list[Finding]:
                         path,
                         detail,
                         tuple(sorted(audit.documents[path])),
+                        members,
                     )
                 )
                 continue
-            reported_by[(kind, path)].add(audit.schema_path)
             pooled_documents[(kind, path)] |= audit.documents[path]
-            details.setdefault((kind, path), detail)
-    for key in sorted(reported_by):
-        if reported_by[key] != declared_by[key]:
+    for kind, path in sorted(declared):
+        missing = sorted(declared[(kind, path)] - observed[(kind, path)])
+        if not missing:
             continue
-        kind, path = key
         findings.append(
             Finding(
                 editorial_schemas.DEFINITIONS_FILE,
                 kind,
                 path,
-                details[key],
-                tuple(sorted(pooled_documents[key])),
+                _unexercised_detail(kind, missing),
+                tuple(sorted(pooled_documents[(kind, path)])),
+                tuple(missing),
             )
         )
     return findings
@@ -862,16 +924,45 @@ def hard_findings(findings: Iterable[Finding]) -> list[Finding]:
 
 
 def unjustified_findings(findings: Iterable[Finding]) -> list[Finding]:
-    """Findings that are neither hard nor recorded in the allowlist."""
-    known = {(schema, kind, path) for schema, kind, path in JUSTIFIED_FINDINGS}
+    """Findings that are neither hard nor covered by the allowlist.
+
+    A text justification covers the whole finding at its path. A member mapping
+    covers only the members it names, so a declaration the mapping does not
+    mention — a property added later to the same definition — is still a finding.
+    """
     return [
         finding
         for finding in findings
-        if not finding.hard and (finding.schema, finding.kind, finding.path) not in known
+        if not finding.hard and not _justified(finding)
     ]
 
 
+def _justified(finding: Finding) -> bool:
+    """Whether the allowlist covers every member the finding reports."""
+    justification = JUSTIFIED_FINDINGS.get((finding.schema, finding.kind, finding.path))
+    if justification is None:
+        return False
+    if isinstance(justification, str):
+        return True
+    return bool(finding.members) and set(finding.members) <= set(justification)
+
+
 def stale_justifications(findings: Iterable[Finding]) -> list[tuple[str, str, str]]:
-    """Allowlist entries that no longer match a finding."""
-    observed = {(finding.schema, finding.kind, finding.path) for finding in findings}
-    return sorted(entry for entry in JUSTIFIED_FINDINGS if entry not in observed)
+    """Allowlist entries that no longer match a finding, or have outlived a member.
+
+    An entry is stale when its path stops being reported at all; a member
+    mapping is also stale — and has to be narrowed — when one of the members it
+    names is exercised again by the documents.
+    """
+    observed: dict[tuple[str, str, str], set[str]] = defaultdict(set)
+    for finding in findings:
+        observed[(finding.schema, finding.kind, finding.path)].update(finding.members)
+    return sorted(
+        entry
+        for entry, justification in JUSTIFIED_FINDINGS.items()
+        if entry not in observed
+        or (
+            not isinstance(justification, str)
+            and not set(justification) <= observed[entry]
+        )
+    )

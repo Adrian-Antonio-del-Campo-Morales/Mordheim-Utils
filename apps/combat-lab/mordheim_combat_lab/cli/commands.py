@@ -1030,10 +1030,14 @@ def coverage_gate_command(args) -> int:
             file=sys.stderr,
         )
         return 2
+    except RuntimeError as error:
+        print(f"Coverage gate error: {error}", file=sys.stderr)
+        return 1
     budget_path = Path(args.budget).resolve()
     if args.update_budget:
-        coverage_gate.write_budget(budget_path, report)
         result = coverage_gate.evaluate(report, None, minimum_percent=floors)
+        if result.passed:
+            coverage_gate.write_budget(budget_path, report)
     else:
         try:
             budget = coverage_gate.load_budget(budget_path)
@@ -1054,7 +1058,7 @@ def coverage_gate_command(args) -> int:
                 f"coverage {area}: {stats['percent']:.2f}% "
                 f"({stats['covered']}/{stats['statements']} statements)"
             )
-        if args.update_budget:
+        if args.update_budget and result.passed:
             print(f"BUDGET: {budget_path} updated")
         if result.passed:
             print("coverage_gate=passed")
@@ -1069,13 +1073,14 @@ def coverage_gate_command(args) -> int:
 def audit_command(args) -> int:
     from mordheim_combat_lab.verification.audit_export import generate_audit
 
-    path = generate_audit(
+    paths = generate_audit(
         knowledge=Path(args.knowledge).resolve() if args.knowledge else None,
         specs=Path(args.specs).resolve() if args.specs else None,
         output=Path(args.output).resolve() if args.output else None,
         scope=args.scope, status=args.status, review_status=args.review_status,
     )
-    print(path.resolve())
+    for path in paths:
+        print(path.resolve())
     return 0
 
 
@@ -1135,8 +1140,8 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
 
     audit = commands.add_parser(
         "audit", help="generate the auditable rule inventory",
-        description="Generate the auditable per-rule inventory CSV "
-                    "(default: outputs/audit/rules-audit.csv).",
+        description="Generate separate combat-mechanic and editorial-rule CSVs "
+                    "under outputs/audit, with timestamped names by default.",
         formatter_class=_HelpFormatter)
     audit_paths = audit.add_argument_group("paths")
     audit_paths.add_argument("--knowledge", metavar="PATH",
@@ -1144,18 +1149,18 @@ def build_parser(prog: str = "mordheim-combat-lab") -> ArgumentParser:
     audit_paths.add_argument("--specs", metavar="PATH",
                              help="override the specifications directory")
     audit_filters = audit.add_argument_group("filters")
-    audit_filters.add_argument("--scope", choices=("YES", "NO", "LATER"),
+    audit_filters.add_argument("--scope", choices=("YES", "NO", "LATER", "UNCLASSIFIED"),
                                help="filter by scope classification")
-    audit_filters.add_argument("--status", choices=("verified", "pending", "out_of_scope"),
+    audit_filters.add_argument("--status", choices=("verified", "pending", "out_of_scope", "unclassified"),
                                help="filter by semantic status")
     audit_filters.add_argument("--review-status",
                                choices=("ready", "blocked_by_dependency", "needs_ruling",
-                                        "verified", "not_applicable"),
+                                        "verified", "not_applicable", "needs_classification"),
                                help="filter by review status; needs_ruling surfaces "
                                     "the unanswered review questions")
     audit_output = audit.add_argument_group("output")
     audit_output.add_argument("--output", metavar="PATH",
-                              help="output directory for the CSV (default: outputs/audit)")
+                              help="output directory for both CSVs (default: outputs/audit)")
     audit.set_defaults(handler=audit_command)
 
     coverage = commands.add_parser(

@@ -238,11 +238,31 @@ classify:
 - **Soft findings** — a declared property, JSON type, enum value or
   `oneOf`/`anyOf` branch that no document exercises. These are decisions, not
 errors, and each one lives in `editorial_schema_audit.JUSTIFIED_FINDINGS` with
-the contract that keeps it alive: a field of `EffectSet`, a value of
-`registry/runtime-schema.yaml`, a trait of `TRAIT_TYPES`, a recipient the
+the contract that keeps it alive: a field of `EffectSet`, a trait of `TRAIT_TYPES`, a recipient the
 post-battle engine dispatches on, a shape the two hireling families share, or
 `status: draft`, which `docs/guides/campaign-knowledge.md` prescribes. An entry that
 stops matching a finding fails the suite, so the list cannot rot.
+The `rule_runtime.grant` values are all exercised across the skills catalogue
+and band rules; they need no unused-value justification. Their agreement with
+`registry/runtime-schema.yaml` is independently guarded by
+`test_runtime_enums_match_the_registry_contract`. Shared unused-member findings
+use the union of declared and observed evidence across document schemas, then
+report only declared members absent from that global observed set.
+
+A justification covers the whole finding at its path when its value is the
+reason as text; when the value maps members (property names, `_key` enum values
+such as `str:animal`, branch indices) to their own reasons, it covers only the
+members it names. The member form is what keeps a retained declaration narrow:
+the equipment-access list keeps `notes`/`notes_i18n` and the recipient kinds
+`animal`, `henchman` and `summoned` because the published reference sheet
+consumes them — `tools/knowledge/generate_knowledge_web.py`
+(`_build_warband_reference`) publishes the list row and
+`packages/typescript/application/rules/warband-reference.ts` resolves the note
+per locale and selects the recipients by `profile.type`, over the same four
+profile kinds `profiles.yaml` already exercises — while a new property or enum
+value at either path is a member the mapping does not name and stays a finding.
+A mapped member the documents start exercising turns the entry stale, exactly
+like an entry that stops matching a finding.
 
 The audit reads the same merged schemas the validators use, aggregates evidence
 by definition instead of by use site, and counts a branch's vocabulary only when

@@ -27,6 +27,25 @@ on L1–L5.
 
 ## Runtime budget
 
+Equipment and skill eligibility has its own cross-consumer checks:
+`tests/fixtures/eligibility/decisions.json` is exercised by both
+`tests/typescript/domain/shared-eligibility.test.ts` and
+`tests/python/construction/test_shared_eligibility.py`. The latter runs the
+actual embedded JavaScript, checks the source digest, parallel calls and recovery
+after a validation error. `npm run check:eligibility` rebuilds in memory and
+rejects a stale checked-in bundle. Construction and application/UI suites prove
+the adapters' behavior; these checks do not certify a choice's duel effect.
+
+Both CI and `run-ci` include the bundle check and Python transport tests.
+
+For phased integration, apply the
+[existing construction boundary](eligibility.md#construction-boundary-for-phased-implementation).
+Reuse accepted evidence whose inputs still match; revalidate affected adapters
+and both consumers when a shared decision changes. A legal choice, an exactly-once
+compiled effect and correct battle behavior require distinct evidence. F035
+classifies historical T13 construction findings against the current implementation;
+it does not require rebuilding the shared module or repeating accepted Web phases.
+
 Run deterministic suites for ordinary changes. Deep parity, truncation,
 coverage mutation and benchmark matrices are certification jobs for engine
 changes and releases; use their focused CLI options while developing. The
@@ -142,16 +161,28 @@ which no amount of naming discipline can assert by itself.
 
 **Coverage drift gate** (`coverage-gate`). The deterministic suites
 (`tests/python/combat/modular`, `tests/python/combat/vectorized`,
-`tests/python/combat/test_phases.py`, `tests/python/verification/test_parity.py`) run under
+`tests/python/combat/test_phases.py`, `tests/python/combat/test_duel_context.py`,
+`tests/python/verification/test_duel_replay.py`, `tests/python/verification/test_parity.py`) run under
 `coverage` and the result is compared against a committed budget
 (`tests/fixtures/coverage/budget.json`, schema `mordheim-coverage-budget/v1`):
 the engine statements that were exercised when the budget was written (the
 committed file lists every line). The gate **fails when any
 budgeted line stops being exercised** — a line became dead code, or its test
-lost the path; both need a decision, not silence. Because the budget records
-lines rather than percentages, refactors that move code do not fail
-spuriously, while *new* engine code is simply not in the budget until the
-author regenerates it:
+lost the path; both need a decision, not silence. The budget stores raw
+statement line numbers, so moving code can also invalidate indexes. Compare
+the budget-origin source with the current measured source before deciding
+whether a reported loss is an actual missing witness or an index change.
+New engine code is not budgeted until the author adds deterministic evidence
+and regenerates the reviewed budget.
+
+A measurement is valid only after pytest exits successfully. Failed tests,
+collection/interruption/internal errors, invalid usage and empty collection
+abort measurement. Both budget update entry points preserve their destination
+when measurement fails. The CLI also preserves the destination when a requested
+area floor fails during an update. The umbrella deterministic scope includes the same
+context/replay suites as this gate.
+
+After reviewing source movement and real witness gaps:
 
 ```bash
 python tools/mordheim-utils.py coverage-gate                      # check (drift gate)
@@ -260,3 +291,21 @@ construction). The matrix is complete — run `python tools/mordheim-utils.py
 verify --inventory` for the live status (required interactions covered,
 pending, divergences); the executable reports are the source of truth, not a
 number written here.
+
+## Local context and strict engine replay
+
+The [T13.1 contract](../knowledge/2a2b/tasks/T13-contracts.md) documents optional
+local participant IDs, numeric M/Ld preservation, explicit distances/contact, and
+independent charge/player-turn facts. Use `prepare_duel_context` in both production
+and verification; missing required facts must fail rather than become defaults.
+Combat Lab shares canonical KB data and the pure eligibility module with Warband
+Manager; campaign state/services and combat execution remain independent.
+
+For a small deterministic whole-duel proof, use
+`mordheim_combat_lab.verification.parity.replay_duel`. It exercises the
+actual modular, NumPy or compiled native driver with strict, fully consumed dice
+and decisions, then records terminal state/resources. Author each backend's legacy
+physical draw order explicitly; do not assume equal seeds imply equal streams.
+Native replay requires a rebuilt context-aware extension and never falls back.
+The foundation cases live in `tests/python/verification/test_duel_replay.py`; new
+mechanisms still need source-derived specifications, interactions and mutations.

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import re
+from mordheim_construction.eligibility import call, package_facts
 from mordheim_knowledge.campaign import CampaignCatalog
 from mordheim_knowledge.campaign import HirelingCatalogue
 from mordheim_knowledge.campaign import PostBattleSequence
@@ -402,27 +403,19 @@ class KnowledgePort:
     def banned_skill_categories(self, band_id: str, profile_id: str) -> set[str]:
         """Skill categories a profile may never acquire, from implemented rules.
 
-        Reads profile rules whose binding is ``compiler.forbid-skill-categories``
-        (grant ``profile``, implemented YES, applies to ``profile_id``) and
-        returns the forbidden category ids (``strength``, ``academic``, ...).
-        This is decoupled from ``skill_access``: the advance/editor paths must
-        reject these even when a campaign grant would otherwise add the list.
+        The decision itself lives in the shared eligibility module (the binding
+        ``compiler.forbid-skill-categories`` of the applicable implemented
+        rules); this port only resolves the canonical profile row and delegates,
+        so the campaign paths and Combat Lab cannot drift apart. It stays
+        decoupled from ``skill_access``: the advance/editor paths must reject
+        these even when a campaign grant would otherwise add the list.
         """
         package = self.find_package(band_id)
-        banned: set[str] = set()
-        for rule in package.special_rules:
-            runtime = rule.get("runtime") or {}
-            if runtime.get("grant") != "profile" or runtime.get("implemented") != "YES":
-                continue
-            if profile_id not in set((rule.get("applies_to") or {}).get("profile_ids") or ()):
-                continue
-            for effect in runtime.get("effects") or ():
-                binding = effect.get("binding") or {}
-                if binding.get("id") != "compiler.forbid-skill-categories":
-                    continue
-                for category in (binding.get("parameters") or {}).get("categories") or ():
-                    banned.add(str(category))
-        return banned
+        profile = next((row for row in package.profiles if row.get("id") == profile_id), None)
+        if profile is None:
+            return set()
+        banned = call("bannedSkillCategories", package_facts(package), profile)
+        return {str(category) for category in banned}
 
     # -------------------------------------------------------------- equipment
 
@@ -455,6 +448,39 @@ class KnowledgePort:
         """Hands a weapon occupies per the KB mechanics catalogue (None if unknown)."""
         mechanic_id = str((self._items.get(item_id) or {}).get("mechanic_id") or "")
         return self._weapon_hands.get(mechanic_id)
+
+    def warrior_equipment_restriction(self, warrior, item_id: str, *, collection: str,
+                                     band_id: str, stage: str, amount: int = 1) -> str | None:
+        """Project assignment facts; the shared module owns the restriction table."""
+        from mordheim_construction.eligibility import call
+        profile_facts = None
+        try:
+            profile = self.profile(collection, band_id, warrior.profile_id)
+        except (KeyError, ValueError):
+            pass
+        else:
+            profile_facts = {"equipment_access": [
+                {"item_id": offer.item_id} for offer in self.items_for_profile(profile)]}
+        equipment = [{
+            "item_id": entry.item_id, "name": entry.name.casefold(),
+            "base_item_id": entry.base_item_id or entry.item_id,
+            "quantity": entry.quantity, "acquisition": entry.acquisition,
+        } for entry in warrior.equipment]
+        ids = {item_id, *(entry["base_item_id"] for entry in equipment)}
+        return call("warriorEquipmentRestriction", {
+            "stage": stage, "item_id": item_id, "item_name": self.item_name(item_id) or item_id,
+            "category": self.item_kind(item_id), "profile": profile_facts, "amount": amount,
+            "profile_restriction_note": "; ".join(self.trading_post_restriction(item_id).get("notes") or ()),
+            "weapon_hands": {identity: self.weapon_hands(identity) for identity in ids},
+            "warrior": {
+                "profile_id": warrior.profile_id, "profile_name": warrior.profile_name.casefold(),
+                "kind": warrior.kind, "quantity": warrior.quantity,
+                "skills": [name.casefold() for name in warrior.skills],
+                "skill_ids": [str((self.skill_by_name(name) or {}).get("id")) for name in warrior.skills],
+                "special_rules": [name.casefold() for name in warrior.special_rules],
+                "equipment": equipment, "equipment_limits": dict(warrior.equipment_limits),
+            },
+        })
 
     def item_name(self, item_id: str) -> str | None:
         """Display name of one item (KB locale policy), ``None`` if unknown."""

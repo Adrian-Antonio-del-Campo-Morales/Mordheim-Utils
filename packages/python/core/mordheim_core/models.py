@@ -6,6 +6,7 @@ from dataclasses import field
 from mordheim_core.dice import AlwaysAccept
 from mordheim_core.dice import DecisionPolicy
 import numpy as np
+import math
 from threading import Event
 from typing import Mapping
 
@@ -13,9 +14,15 @@ from typing import Mapping
 @dataclass(frozen=True, slots=True)
 class Characteristics:
     weapon_skill: int; strength: int; toughness: int; wounds: int; initiative: int; attacks: int
+    movement: int | None = field(default=None, kw_only=True)
+    leadership: int | None = field(default=None, kw_only=True)
     def __post_init__(self):
         for name in self.__slots__:
             value = getattr(self, name)
+            if name in {"movement", "leadership"} and value is None:
+                continue
+            if name in {"movement", "leadership"} and isinstance(value, bool):
+                raise ValueError(f"{name} must be a non-negative integer or unknown")
             if not isinstance(value, int) or value < 0: raise ValueError(f"{name} must be a non-negative integer")
         if self.wounds < 1 or self.attacks < 1: raise ValueError("wounds and attacks must be at least one")
 
@@ -33,11 +40,14 @@ class FighterBuild:
     energy_focus_attacks: int = 0
     mounted: bool = False
 
+    # promotion.hero is a supplied local Hero result, never an advancement roll.
     variant_ids: tuple[str, ...] = ()
     extra_hand_id: str | None = None
     main_poison_id: str | None = None; off_poison_id: str | None = None
     trait_overrides: Mapping[str, object] = field(default_factory=dict)
     collection: str = "mordheim"
+    # None leaves the complete carried kit unspecified; () supplies an empty kit.
+    owned_item_ids: tuple[str, ...] | None = field(default=None, kw_only=True)
     def __post_init__(self):
         if self.characteristics is None and not (self.band_id and self.profile_id): raise ValueError("provide characteristics or a band/profile pair")
         if bool(self.band_id) != bool(self.profile_id): raise ValueError("band_id and profile_id must be provided together")
@@ -45,6 +55,11 @@ class FighterBuild:
             raise ValueError("collection must be a stable lowercase ID")
         if not isinstance(self.energy_focus_attacks, int) or self.energy_focus_attacks < 0:
             raise ValueError("energy_focus_attacks must be a non-negative integer")
+        if self.owned_item_ids is not None:
+            if not isinstance(self.owned_item_ids, (tuple, list)) or any(
+                    not isinstance(item, str) or not item.strip() for item in self.owned_item_ids):
+                raise ValueError("owned_item_ids must be an item-id sequence or unknown")
+            object.__setattr__(self, "owned_item_ids", tuple(self.owned_item_ids))
 
 
 @dataclass(frozen=True, slots=True)
@@ -106,6 +121,86 @@ class CompiledFighter:
     unarmed_weapon: EffectSet | None = None
     main_hand_slot: str = 'main'
     off_hand_slot: str = 'off'
+    # Optional profile attack, separate from equipped hands and their poisons.
+    # The modular round policy chooses it instead of the normal attack pool.
+    vomit_attack: EffectSet | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class LocalParticipant:
+    """A configured simulation participant, never a campaign roster row."""
+    participant_id: str
+    side_id: str
+    fighter: CompiledFighter
+    condition: str = "standing"
+
+    def __post_init__(self):
+        if any(not isinstance(value, str) or not value.strip() for value in (self.participant_id, self.side_id)):
+            raise ValueError("local participant and side identifiers cannot be empty")
+        if not isinstance(self.fighter, CompiledFighter):
+            raise ValueError("local participant needs a compiled simulation fighter")
+        if self.condition not in {"standing", "knocked-down", "stunned", "paralyzed", "out", "fleeing"}:
+            raise ValueError(f"unknown local participant condition: {self.condition}")
+
+
+@dataclass(frozen=True, slots=True)
+class DuelContext:
+    """Supplied local facts. Missing measurements remain unknown, not zero.
+
+    Distances are edge-to-edge inches; contacts describe the supplied combat
+    snapshot. Terrain labels are facts, not a placement or movement engine.
+    ``charging=None`` preserves legacy random charge selection; ``()`` means
+    neither fighter charges. Explicit charging also requires its player-turn
+    owner. Player-turn ownership is independent of charge.
+    """
+    first_id: str = "first"
+    second_id: str = "second"
+    nearby: tuple[LocalParticipant, ...] = ()
+    distances: tuple[tuple[str, str, float], ...] = ()
+    contacts: tuple[tuple[str, str], ...] | None = None
+    terrain: tuple[tuple[str, str], ...] = ()
+    charging: tuple[str, ...] | None = None
+    active_participant: str | None = None
+
+    def __post_init__(self):
+        for name in ("nearby", "distances", "terrain", "contacts", "charging"):
+            value = getattr(self, name)
+            if value is not None:
+                object.__setattr__(self, name, tuple(tuple(row) if isinstance(row, list) else row for row in value))
+        if any(not isinstance(p, LocalParticipant) for p in self.nearby):
+            raise ValueError("nearby facts need local participants")
+        ids = (self.first_id, self.second_id, *(p.participant_id for p in self.nearby))
+        if any(not isinstance(value, str) or not value.strip() for value in ids) or len(set(ids)) != len(ids):
+            raise ValueError("simulation participant identifiers must be nonempty and unique")
+        pairs = set()
+        distances = {}
+        for first, second, inches in self.distances:
+            if first not in ids or second not in ids or first == second:
+                raise ValueError("distance must refer to two different local participants")
+            if isinstance(inches, bool) or not isinstance(inches, (int, float)) or not math.isfinite(inches) or inches < 0:
+                raise ValueError("distance must be finite non-negative inches")
+            pair = tuple(sorted((first, second)))
+            if pair in pairs:
+                raise ValueError("duplicate or contradictory distance")
+            pairs.add(pair)
+            distances[pair] = inches
+        pairs = set()
+        for first, second in self.contacts or ():
+            pair = tuple(sorted((first, second)))
+            if first not in ids or second not in ids or first == second or pair in pairs:
+                raise ValueError("contact must identify a unique pair of local participants")
+            if pair in distances and distances[pair] != 0:
+                raise ValueError("contact contradicts nonzero edge-to-edge distance")
+            pairs.add(pair)
+        if any(pid not in ids or not isinstance(label, str) or not label.strip() for pid, label in self.terrain):
+            raise ValueError("terrain needs a local participant and a nonempty source label")
+        if self.charging is not None and (len(set(self.charging)) != len(self.charging)
+                or any(pid not in ids[:2] for pid in self.charging)):
+            raise ValueError("charging facts must identify the duel participants once")
+        if self.charging is not None and self.active_participant is None:
+            raise ValueError("explicit charging requires the player-turn owner")
+        if self.active_participant is not None and self.active_participant not in ids[:2]:
+            raise ValueError("player-turn owner must be a duel participant")
 
 
 @dataclass(frozen=True, slots=True)
@@ -114,8 +209,11 @@ class DuelRequest:
     seed: int = 0; batch_size: int = 100_000; maximum_rounds: int = 50
     cancel_event: Event | None = field(default=None, compare=False, repr=False)
     decision_policy: DecisionPolicy = field(default_factory=AlwaysAccept, compare=False, repr=False)
+    context: DuelContext | None = None
     def __post_init__(self):
         if min(self.simulations, self.batch_size, self.maximum_rounds) < 1: raise ValueError("simulation limits must be positive")
+        if self.context is not None and not isinstance(self.context, DuelContext):
+            raise ValueError("context must contain local duel facts")
 
 
 @dataclass(frozen=True, slots=True)

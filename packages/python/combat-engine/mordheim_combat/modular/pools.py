@@ -56,6 +56,8 @@ def allocate_attack_weapons(
     decisions: DecisionPolicy, *, key: str,
 ) -> tuple[EffectSet, ...]:
     """Choose which distinct melee weapon resolves all but one attack."""
+    if phases.has_tag(fighter.main_weapon, "weapon.vomit-attack"):
+        return (fighter.main_weapon,) if count > 0 else ()
     if (count > 2 and fighter.off_hand_attacks and fighter.off_hand is not None
             and fighter.main_weapon != fighter.off_hand
             and not any(phases.has_tag(weapon, tag)
@@ -105,6 +107,7 @@ def _resolve_prepared_defences(
             attacker, defender, attacker_state, defender_state, weapon, dice,
             key=keys[index], first_round=first_round, charging=charging,
             helpless_at_start=helpless, stunned_at_start=False, prepared_hit=_prepared_hit(prepared),
+            natural_hit_six=prepared.natural_hit_six,
             defences_only=True, parry_allowed=False,
         )
         attacker_state, defender_state = outcome.attacker, outcome.defender
@@ -136,6 +139,7 @@ def _resolve_prepared_defences(
             attacker, defender, attacker_state, defender_state, weapon, dice,
             key=keys[index], first_round=first_round, charging=charging,
             helpless_at_start=helpless, stunned_at_start=False, prepared_hit=_prepared_hit(prepared),
+            natural_hit_six=prepared.natural_hit_six,
             defences_only=True,
         )
         attacker_state, defender_state = outcome.attacker, outcome.defender
@@ -155,9 +159,10 @@ def _resolve_attack_pool(
     decisions: DecisionPolicy,
     defender_condition_at_start: Condition | None = None,
     minimum_attacks: int = 1,
+    single_bonus: bool = False,
 ) -> tuple[FighterState, FighterState, tuple[AttackOutcome, ...]]:
     outcomes: list[AttackOutcome] = []
-    if count <= 0 or attacker_state.condition != Condition.STANDING:
+    if count <= 0 or attacker_state.condition != Condition.STANDING or not defender_state.active:
         return attacker_state, defender_state, ()
     initial_condition = defender_state.condition if defender_condition_at_start is None else defender_condition_at_start
     if initial_condition == Condition.STUNNED:
@@ -166,8 +171,9 @@ def _resolve_attack_pool(
         result = _react_to_wound(attacker, defender, result, dice, f"{key}.finish")
         return result.attacker, result.defender, (result,)
     helpless = initial_condition == Condition.KNOCKED_DOWN
+    vomit = phases.has_tag(attacker.main_weapon, "weapon.vomit-attack")
     use_bull_charge = (
-        first_round and charging
+        not single_bonus and not vomit and first_round and charging
         and phases.has_tag(attacker.global_effects, "mechanic.bull-charge")
         and decisions.choose(f"{key}.bull-charge", attacker)
     )
@@ -185,19 +191,22 @@ def _resolve_attack_pool(
         return result.attacker, result.defender, (result,)
 
     use_body_slam = (
-        first_round and charging
+        not single_bonus and not vomit and first_round and charging
         and phases.has_tag(attacker.global_effects, "mechanic.body-slam")
         and decisions.choose(f"{key}.body-slam", attacker)
     )
-    if use_body_slam:
+    if single_bonus:
+        weapons = (attacker.main_weapon,)
+    elif use_body_slam:
         weapons = (EffectSet(tags=("mechanic.body-slam",), strength_bonus=1, hit_modifier=1),)
     else:
-        whip = whipcrack_weapon(attacker) if first_round and charging else None
+        whip = whipcrack_weapon(attacker) if not vomit and first_round and charging else None
         weapons = allocate_attack_weapons(attacker, count - int(whip is not None), first_round, decisions, key=key)
         if whip is not None:
             weapons += (whip,)
-    weapons += tuple(weapon for weapon in attacker.extra_attacks
-                     if charging or not phases.has_tag(weapon, "rule.horned-one"))
+    if not single_bonus and not vomit:
+        weapons += tuple(weapon for weapon in attacker.extra_attacks
+                         if charging or not phases.has_tag(weapon, "rule.horned-one"))
     if attacker_state.attack_penalty:
         # Kusara Kama chooses the affected hand after hitting, before the
         # opponent's reply is resolved. Remove that hand's attack, retaining
@@ -271,6 +280,7 @@ def _resolve_attack_pool(
                     key=attack_keys[index], first_round=first_round,
                     charging=charging, helpless_at_start=helpless, stunned_at_start=False,
                     prepared_hit=_prepared_hit(prepared_tuple[index][1]),
+                    natural_hit_six=prepared_tuple[index][1].natural_hit_six,
                     defences_resolved=True, decisions=decisions,
                 )
                 result = replace(
@@ -292,7 +302,8 @@ def _resolve_attack_pool(
                 attacker, defender, attacker_state, defender_state, weapon, dice,
                 key=attack_keys[index], first_round=first_round,
                 charging=charging, helpless_at_start=helpless, stunned_at_start=False,
-                prepared_hit=_prepared_hit(prepared), defences_resolved=True,
+                prepared_hit=_prepared_hit(prepared),
+                natural_hit_six=prepared.natural_hit_six, defences_resolved=True,
                 decisions=decisions,
             )
             result = replace(
@@ -318,7 +329,8 @@ def _resolve_attack_pool(
             attacker, defender, attacker_state, defender_state, weapon, dice,
             key=f"{key}.attack.{index}", first_round=first_round,
             charging=charging, helpless_at_start=helpless, stunned_at_start=False,
-            prepared_hit=_prepared_hit(prepared), defences_resolved=True,
+            prepared_hit=_prepared_hit(prepared),
+            natural_hit_six=prepared.natural_hit_six, defences_resolved=True,
             decisions=decisions,
         )
         result = replace(
@@ -329,7 +341,7 @@ def _resolve_attack_pool(
         outcomes.append(result)
         # Anvil Head replaces charge attacks only: the D3 wound expansion is
         # inert outside a charge (Khemri, Necromantic Modification / Anvil Head).
-        if (result.hit and not result.parried and first_round and charging
+        if (not single_bonus and not vomit and result.hit and not result.parried and first_round and charging
                 and phases.has_tag(_combined_effect(attacker, weapon), "mechanic.anvil-head")):
             repeats = dice.roll(RollRequest(f"{key}.attack.{index}.anvil-hits", 3)) - 1
             repeated = merge_effects(weapon, EffectSet(automatic_hit=True, cannot_be_parried=True))

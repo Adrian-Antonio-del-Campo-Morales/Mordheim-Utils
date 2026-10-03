@@ -9,7 +9,9 @@ from mordheim_combat.phases import Phase
 from mordheim_combat.phases import has_tag
 from mordheim_core.dice import DiceSource
 from mordheim_core.dice import RollRequest
+from mordheim_core.context import PreparedDuelContext, prepare_duel_context
 from mordheim_core.models import CompiledFighter
+from mordheim_core.models import DuelContext
 from mordheim_core.models import EffectSet
 
 
@@ -52,11 +54,22 @@ class DuelState:
     round_index: int = 0
     first_charged: bool = True
     trace: tuple[Phase, ...] = ()
+    context: PreparedDuelContext | None = None
+    second_charged: bool | None = None
+    initial_first_player_turn: bool | None = None
+
+    @property
+    def initial_charge_flags(self) -> tuple[bool, bool]:
+        return self.first_charged, (
+            not self.first_charged if self.second_charged is None else self.second_charged
+        )
 
     @property
     def first_player_turn(self) -> bool:
         """Each iteration is one combat phase in an alternating player turn."""
-        return self.first_charged == (self.round_index % 2 == 0)
+        initial = (self.first_charged if self.initial_first_player_turn is None
+                   else self.initial_first_player_turn)
+        return initial == (self.round_index % 2 == 0)
 
 
 @dataclass(frozen=True, slots=True)
@@ -75,6 +88,7 @@ class AttackOutcome:
     barrage_available: bool = False
     damage_already_reacted: int = 0
     reactions_resolved: bool = False
+    natural_hit_six: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -167,15 +181,29 @@ def initialize_fighter(fighter: CompiledFighter, dice: DiceSource, key: str) -> 
 
 def initialize_duel(
     first: CompiledFighter, second: CompiledFighter, dice: DiceSource,
+    *, context: DuelContext | None = None,
 ) -> DuelState:
     if any("weapon.lance" in fighter.main_weapon.tags for fighter in (first, second)):
         raise ValueError(
             "weapon.lance is outside the one-against-one runtime: mounted combat is not supported"
         )
-    first_charged = dice.roll(RollRequest("duel.charge")) >= 4
+    prepared = prepare_duel_context(first, second, context)
+    legacy_first_charged = (
+        dice.roll(RollRequest("duel.charge")) >= 4
+        if prepared is None or prepared.facts.charging is None else True
+    )
+    first_charged, second_charged = (
+        prepared.charge_flags(legacy_first_charged)
+        if prepared is not None else (legacy_first_charged, None)
+    )
     return DuelState(
         initialize_fighter(first, dice, "first"),
         initialize_fighter(second, dice, "second"),
         first_charged=first_charged,
         trace=(Phase.DUEL_START,),
+        context=prepared,
+        second_charged=second_charged,
+        initial_first_player_turn=(
+            prepared.first_player_turn(legacy_first_charged) if prepared is not None else None
+        ),
     )

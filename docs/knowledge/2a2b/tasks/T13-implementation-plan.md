@@ -6,6 +6,37 @@ accepted. The [initiative checklist](../README.md) remains the sole source of
 task status and file reservations. T14 independently validates the accepted
 T13 delivery; T15 owns the final phase review and local commit.
 
+Current execution routing after the accepted partial deliveries and eligibility
+extraction is recorded in the [remaining T13–T15 plan](T13-T15-remaining-plan.md).
+Read its 2026-10-02 efficiency revision for current priorities, complete
+functional-family deliveries and user-launched external work. This document
+retains the governing implementation contracts, not the old dispatch sequence.
+
+Execution findings that cannot be resolved inside their originating step belong
+in the [execution follow-up register](T13-execution-follow-ups.md), with evidence,
+an accountable owner, a resume condition and a closure criterion. Consult it
+before dispatching a lot and reconcile its entries before accepting that lot.
+It supplements this plan without repeating its ordinary unimplemented obligations.
+
+## Shared construction baseline — 2026-10-02
+
+The [shared eligibility module](../../../reference/eligibility.md#construction-boundary-for-phased-implementation)
+is implemented and consumed by Warband Manager and Combat Lab. T13 does not
+rebuild T09 construction/validation or create Python eligibility rules. The
+remaining T13.2 work separates three boundaries: reuse accepted F035 current
+decision/adapter dispositions, supply missing source-backed KB/bindings, and
+compile legal choices into actual combat effects. Runtime availability is not
+tabletop legality; engine behavior belongs to T13.3–T13.6.
+
+Old construction findings are not automatically outstanding implementation jobs.
+F035's accepted per-finding dispositions govern any eligibility repair. The
+user reports the separate shared construction-centralization agent is active;
+reuse its actual handoff and preserve its ownership rather than dispatching a
+second constructor. A reproduced shared
+decision defect is repaired once in TypeScript with both consumers tested;
+an effect projection defect is repaired in the Combat Lab compiler. Source
+questions and existing exclusions keep their identities and authority.
+
 ## 1. Agreed objective and product boundary
 
 Implement the included 2A/2B combat obligations in **Combat Lab**, with
@@ -15,12 +46,17 @@ rule requires additional behaviour.
 
 Combat Lab and Warband Manager are independent applications. Their shared
 product input is the canonical KB, not campaign documents, services or state.
+As of the user's 2026-10-01 extraction, they also share a pure
+[equipment/skill eligibility implementation](../../../reference/eligibility.md).
+Combat Lab calls its generated JavaScript through a local Python adapter; this
+does not introduce campaign state or calls to Warband Manager services.
 The Combat Lab path is:
 
 ```text
 sources/knowledge
   -> knowledge loaders
-  -> fighter construction and compilation
+  -> shared eligibility through the local Python adapter
+  -> Python fighter/effect compilation
   -> modular / NumPy / native combat engines
   -> Combat Lab analysis, CLI and UI
 ```
@@ -46,9 +82,10 @@ the mutation's combat modifier or a simulated combatant's change of condition
 may belong to Combat Lab. Separate these clauses without transferring product
 state between the applications.
 
-The user's parallel interface and language changes are outside this work and
-will be settled before the T13 entry revision is fixed. Implementing this plan
-does not authorize pushes, deployment or changes to `main`.
+The user's parallel interface and language changes remain outside each lot's
+ownership. T13.0/T13.1 entry records identify their historical revisions; each
+remaining lot fixes its current inputs and preserves concurrent changes.
+Implementing this plan does not authorize pushes, deployment or changes to `main`.
 
 ## 2. Required consultation material
 
@@ -63,6 +100,7 @@ mechanism; this table is the entry map, not a substitute for that tracing.
 | [T09](T09.md), [T10](T10.md), [T11](T11.md), [T12](T12.md) | Later dispositions and the accepted entry baseline. Audit transfers against the independent-product boundary rather than treating them as integration contracts. |
 | [Implement and verify rules](../../../guides/implement-and-verify-rules.md) | Mandatory mechanism classification, layer ownership, context preparation, injected dice/decisions and regression procedure. |
 | [Architecture](../../../reference/architecture.md) | Package boundaries, compiler responsibility and modular/NumPy/native ownership. |
+| [Shared warrior eligibility](../../../reference/eligibility.md) | Maintained TypeScript decisions, Python fact projection/embedded runtime, bundle generation and direct/embedded validation. |
 | [Verification](../../../reference/verification.md) and [develop/release procedure](../../../guides/develop-and-release.md) | Deterministic evidence, orchestration checks, coverage, mutation, certificates and proportional certification runs. |
 | [Knowledge-base reference](../../../reference/knowledge-base.md), [KB modification guide](../../../guides/modify-knowledge-base.md), [editorial contract](../../../../contracts/knowledge-editorial-v1/README.md) | Canonical identities, explicit equivalence, data ownership, schemas and runtime metadata. |
 | [Runtime classification](../../../../sources/knowledge/registry/runtime-schema.yaml), [runtime scope](../../../../sources/knowledge/registry/runtime-scope.yaml), [binding registry](../../../../sources/knowledge/registry/bindings.yaml) | Scope versus implementation, effect-level bindings, pending vocabulary and exclusions with reasons. |
@@ -145,14 +183,16 @@ for every mechanism:
 
 | Mechanism class | Owning responsibility |
 | --- | --- |
-| Construction | `mordheim_construction`: legal selection, recipients and conversion of canonical data into compiled fighters. |
+| Eligibility and legal selection (existing) | Reuse shared TypeScript decisions for equipment/skill access, variants, recipients and loadouts. Repair only a reproduced current defect; prove direct and embedded consumers. |
+| Combat compilation and activation | `mordheim_construction` projects facts/resolves profiles and turns legal selections and canonical bindings into characteristics, weapons and effects exactly once. Supported-effect diagnostics do not define legality. |
 | Modifier/composition | `mordheim_core.effects`: explicit effect composition; no YAML, UI or campaign dependency. |
 | Local resolution | `mordheim_combat.phases`: real hit, wound, save, injury or other local operator. |
 | Stateful flow | `mordheim_combat.modular`: contexts, state, pools, reactions, rounds and duel sequencing. |
 | Optimized execution | `mordheim_combat.vectorized` and `mordheim_combat.native`: the same agreed mechanism through their actual execution paths. |
 | Product access | Combat Lab application/CLI/UI: catalogue availability, configuration and analysis, without duplicating rule resolution. |
 
-Trace YAML -> loader -> grant/selection -> compiler -> prepared context ->
+Trace YAML -> loader -> shared eligibility (direct or embedded) ->
+grant/selection adapter -> combat compiler -> prepared context ->
 operator/sequence -> state -> observable result. Trace all callers, including
 batch and process-pool paths, before changing a shared responsibility. Reuse
 fitting operators and bindings; equivalence must be explicit and backed by
@@ -199,7 +239,7 @@ where their meaning is unchanged.
 | --- | --- | --- |
 | T13.0 — Inventory and documentation | Reconciled obligations, reused mechanisms, corrected product boundary and source decisions. | Complete disposition matrix and assigned lots. |
 | T13.1 — Shared contracts and proof path | Minimum context/state/compiled contracts and sufficient deterministic observation for all applicable engines. | Contract tests, legacy compatibility and a small real-engine replay proof. |
-| T13.2 — Grants and compilation | Canonical profiles, skills, mutations, preparations and equipment reach the right mechanisms exactly once. | Recipient, legal-selection, absence and end-to-end compilation cases. |
+| T13.2 — Shared-decision reconciliation and combat compilation | Reuse existing construction/validation. Reconcile old findings through F035, supply missing canonical facts/bindings and make legal profiles/choices reach combat mechanisms exactly once. | Per-finding current disposition; current bundle/direct/embedded evidence; recipient, absence and end-to-end compiled-effect cases. |
 | T13.3 — Local combat resolution | Hit, wound, defenses, weapon profiles and local exceptions, including Spectral Touch. | Source-derived deterministic operator and real attack cases. |
 | T13.4 — Stateful sequences | Priority, attack pools, replacements, reactions, consumables and expiry. | Minimal sequences proving timing, choices, consumption and continuation. |
 | T13.5 — Psychology and proximity | Included fear, hatred, stupidity, immunity, leadership and proximity clauses using explicit simulation context. | Correct filters, thresholds, interactions and state changes. |
@@ -211,11 +251,14 @@ for each warband. T13.1 precedes mechanisms that need its contracts; a local
 mechanism with no such dependency need not wait for unrelated contextual
 work. Product access can be checked once each mechanism's inputs are stable.
 
-For each mechanism: review the source and expected outcomes, author cases,
-implement the modular path, stabilize its contract, port optimized consumers,
-verify compositions, then integrate metadata and documentary support. Tests
-may use isolated KB fixtures while pending bindings remain unavailable in
-production; acceptance also requires the canonical production-loading path.
+For each mechanism family: reuse source/rulings, author necessary cases,
+implement the modular path and canonical projection/product connection together,
+then port stable optimized consumers in coherent batches. Isolated fixtures may
+support development while pending bindings remain unavailable in production;
+acceptance still requires the canonical path and every applicable backend.
+Never expose unsupported behavior on an optimized path merely because the
+modular milestone passed. Data, implementation, tests and documentation belong
+in one functional delivery; small follow-ups are bundled with their owner.
 
 Only after the common mechanism is stable may NumPy and native work proceed
 in parallel on disjoint files. Models, compiler, kernel, scope, verification
@@ -278,6 +321,13 @@ this does not introduce an application integration or reopen unrelated UI work.
 
 ## 7. Deterministic proof and backend certification
 
+Apply the [current proportional-validation policy](T13-T15-remaining-plan.md#6-proportional-validation-and-progress),
+revised 2026-10-03. The dimensions below describe mechanism-level proof at the
+appropriate checkpoint, not a requirement to add multiple test layers for every
+new item, skill or binding. Reuse existing evidence, add only uncovered or
+risk-specific cases, and batch broad checks and external reviews over stable
+deliveries. Required certification gates remain at their planned milestones.
+
 Every included mechanism needs source-derived expectations and tests of:
 
 - activation and non-activation, with correct and incorrect recipients;
@@ -329,6 +379,9 @@ required acceptance.
 Use the relevant source review, mechanism and architecture checks during each
 lot. Expand testing only when a changed shared contract invalidates more
 evidence. Discover current arguments through `--help` before certification.
+Use affected cases in the edit loop and accept each stable family with one
+proportional coordinator review. Matching evidence is reused; another review
+requires a real discrepancy, changed inputs or the T14 separation requirement.
 
 Representative commands from the repository root:
 
@@ -346,13 +399,14 @@ python tools/mordheim-utils.py verify --json
 python tools/mordheim-utils.py parity --require-complete
 ```
 
-For engine changes, additionally run the existing coverage gate, applicable
-engine-mutation catalogue and truncation certification described in the
+At stable engine-family/batch checkpoints, additionally run the existing coverage
+gate, applicable engine-mutation catalogue and truncation certification in the
 verification reference. Record exact seeds, selected pairs, budgets and
 backend availability. Deep statistical runs remain targeted certification
 work, not the ordinary mechanism-development loop or a substitute for exact
 evidence. T15 owns the final integral gate; do not rerun unrelated Web suites
-for every Combat Lab mechanism.
+for every Combat Lab mechanism. This changes run scheduling, not required
+coverage, semantic, parity or phase-closure standards.
 
 ## 8. Acceptance and handoff to T14
 

@@ -40,6 +40,7 @@ MODULAR_TAG_CONSUMERS = {
     "skill.monstrous": "duel-start",
     "skill.shield-mastery": "parry",
     "skill.shield-strike": "attacks",
+    "skill.shifty": "attacks-priority",
     "skill.sigmar-s-sign": "attacks",
     "skill.sweep": "attacks-hit",
     "skill.sword-master": "parry",
@@ -68,6 +69,7 @@ MODULAR_TAG_CONSUMERS = {
     "mechanic.spawn-special-attacks": "attacks",
     "mechanic.amazon-isolationists": "hit",
     "mechanic.spider-infested": "hit-parry-reaction",
+    "mechanic.killing-blow": "hit-parry-wound",
     "mechanic.retain-flail-morning-star-strength-bonus": "wound",
 }
 

@@ -147,6 +147,10 @@ rules:
       binding:
         kind: compiler
         id: compiler.lizardmen-scaly-skin
+        parameters:
+          profile_ids:
+          - fimir-warriors
+          value: 5
   name: Scaly Skin
   effect: >-
     Fimir have a 6+ armour save that cannot be modified beyond 6 by Strength; a 'no save' result on
@@ -446,16 +450,15 @@ rules:
     - daemon-fimm
 - id: young-nobles--spiked-tail
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: trait.extra-attack-tail
       scope: LATER
       binding: null
       reason: >-
-        Deferred: tail attack at Strength+1 needs a secondary-natural-attack binding not yet exposed
-        by the engine.
+        Pending L08: allocate one secondary tail attack at owner Strength +1 in each hand-to-hand combat phase.
   name: Spiked Tail
   effect: >-
     Fimir Nobles have a flexible tail with a mace-like bony tip; the Young Noble gains an extra tail
@@ -635,16 +638,15 @@ rules:
     - fimir-warriors
 - id: fimir-warriors--spiked-tail
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: trait.extra-attack-tail
       scope: LATER
       binding: null
       reason: >-
-        Deferred: tail attack at Strength+1 needs a secondary-natural-attack binding not yet exposed
-        by the engine.
+        Pending L08: allocate one secondary tail attack at owner Strength +1 in each hand-to-hand combat phase.
   name: Spiked Tail
   effect: >-
     Fimir warriors have a flexible tail with a mace-like bony tip; the warrior gains an extra tail

@@ -1,3 +1,4 @@
+import { warriorEquipmentRestriction } from "../../domain/eligibility/index";
 /**
  * Campaign application service: application service implementing
  * the frozen `CampaignAppService` interface (P3.4). Orchestrates the file
@@ -76,28 +77,15 @@ function equipmentViolation(document: CampaignDocument, knowledge: CampaignAppDe
   const warrior=document.campaign.warriors.find((row)=>row.id===warriorId); const item=knowledge.queryKnowledge({id:{kind:"item_id",value:itemId}});
   if(!warrior)return "Choose a valid warrior and item.";
   if(!item.ok||!item.record)return null;
-  const category=String(item.record.data["kind"]??""); const identity=[warrior.profile_name,warrior.profile_id,...warrior.skills,...(warrior.special_rules??[])].join(" ").replace(/[-_]/g," ").toLowerCase();
   const profile=warrior.profile_id?knowledge.queryKnowledge({id:{kind:"profile_id",value:warrior.profile_id}}):null;
-  if(["armour","shield-or-defence"].includes(category)&&profile?.ok&&Array.isArray(profile.record.data["equipment_forbids"])&&profile.record.data["equipment_forbids"].includes("armour"))return "This warrior cannot wear armour, shields or bucklers.";
-  if(["close-combat-weapon","ranged-weapon"].includes(category)&&warrior.profile_id&&!warrior.profile_id.startsWith("hireling.")){const access=profile?.ok&&Array.isArray(profile.record.data["equipment_access"])?profile.record.data["equipment_access"] as Readonly<Record<string,unknown>>[]:[];if(access.length&&!access.some((row)=>row["item_id"]===itemId)&&!/weapons? (training|expert)/.test(warrior.skills.join(" ").toLowerCase()))return "This weapon is outside the warrior's equipment access.";}
-  if(itemId==="barbed_whip"&&warrior.kind!=="hero")return "Barbed Whip may only be assigned to a Marauders of Chaos Hero.";
-  if(itemId==="great_axe"&&!(warrior.kind==="hero"&&identity.includes("chosen of chaos")))return "Great Axe requires a Marauders Hero with the Chosen of Chaos skill.";
-  if(itemId==="reptile_venom"&&!(warrior.kind==="henchman"&&identity.includes("skink")))return "Reptile Venom may only be assigned to Skink Henchmen.";
-  if(["familiar","arcane_familiar"].includes(itemId)&&!identity.includes("spellcaster"))return "A Familiar may only be assigned to a spellcaster.";
-  if(itemId==="book_of_the_dead"&&!/(vampire|necromancer)/.test(identity))return "The Book of the Dead may only be assigned to Vampires or Necromancers.";
-  if(itemId==="nightmare"&&!/(vampire|necromancer|grave guard)/.test(identity))return "A Nightmare may only be assigned to Vampires, Necromancers or Grave Guards.";
-  if(itemId==="temple_dog"&&!/(dragon monk|sister|priest)/.test(identity))return "A Temple Dog may only be assigned to Dragon Monks, Sisters of Sigmar or Priests.";
-  if(["barding","bretonnian_barding"].includes(itemId)&&!warrior.equipment.some((row)=>/(warhorse|horse)/i.test(`${row.name} ${row.item_id}`)))return "Barding requires this warrior to have a Warhorse.";
-  if(["dark_elf_blade_weapon_upgrade","poisoned_weapon"].includes(itemId)&&!warrior.equipment.some((row)=>(knowledge as typeof knowledge & {weaponHandsFor?(id:string):number|null}).weaponHandsFor?.(row.base_item_id??row.item_id)!==null))return "This upgrade requires an equipped weapon.";
-  if(itemId==="sword_heroes_only"&&warrior.kind!=="hero")return "This Sword variant may only be assigned to Heroes.";
-  const restricted:Record<string,readonly string[]>={beastlash:["beastmaster"],broadsword:["chapel guard knight"],serpent_staff:["liche priest"],shortsword:["chapel guard knight"],nehekharan_javelin:["tomb lord"],swivel_gun:["gunner"],kite_shield:["chapel guard knight"],asp_arrows:["tomb lord"],conch_shell_horn:["piranha warrior"],elven_runestones:["weaver"],parrot:["captain","mate"]};
-  if(restricted[itemId]&&!restricted[itemId].some((term)=>identity.includes(term)))return `${item.record.names["en"]??itemId} cannot be assigned to this warrior.`;
-  const carried=warrior.equipment.filter((row)=>row.acquisition!=="fixed"), models=warrior.quantity??1;
-  const hands=(knowledge as typeof knowledge & { weaponHandsFor?(id:string):number|null }).weaponHandsFor?.(itemId);
-  const limit=warrior.equipment_limits?.["maximum_one_handed_weapons"];
-  if(hands===1&&limit!==undefined){const carriedHands=carried.filter((row)=>(knowledge as typeof knowledge & { weaponHandsFor?(id:string):number|null }).weaponHandsFor?.(row.base_item_id??row.item_id)===1).reduce((sum,row)=>sum+row.quantity,0);if(carriedHands+amount>limit*models)return `Injury limits this warrior to ${limit} one-handed weapon(s) per model.`;}    if(!["close-combat-weapon","ranged-weapon"].includes(category)&&carried.filter((row)=>row.item_id===itemId).reduce((sum,row)=>sum+row.quantity,0)+amount>models)return `${item.record.names["en"]??itemId} is already carried; a warrior carries one of these.`;
-    return null;
-  }
+  const lookup = knowledge as typeof knowledge & { weaponHandsFor?(id:string):number|null };
+  const ids = [itemId, ...warrior.equipment.map((row) => row.base_item_id ?? row.item_id)];
+  return warriorEquipmentRestriction({
+    warrior, item_id:itemId, item_name:item.record.names["en"]??itemId,
+    category:String(item.record.data["kind"]??""), profile:profile?.ok?profile.record.data:null,
+    amount, weapon_hands:Object.fromEntries(ids.map((id)=>[id,lookup.weaponHandsFor?.(id)])),
+  });
+}
 
   /**
    * T09 construction verdict of an equipment change that already happened in a

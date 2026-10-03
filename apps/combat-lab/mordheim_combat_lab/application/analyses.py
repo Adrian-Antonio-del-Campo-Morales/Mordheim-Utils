@@ -262,6 +262,7 @@ def improve_attributes(candidate: FighterBuild, increases: dict[str, int]) -> Fi
         candidate,
         characteristics=Characteristics(
             values["WS"], values["S"], values["T"], values["W"], values["I"], values["A"],
+            movement=current.movement, leadership=current.leadership,
         ),
     )
 

@@ -39,7 +39,7 @@ from mordheim_knowledge.loader import load_bands, load_collections
 ROOT = Path(__file__).resolve().parents[3]
 KB = ROOT / "sources" / "knowledge"
 SPECS = ROOT / "tests" / "specs" / "semantic" / "grants"
-COMPILER = ROOT / "packages" / "python" / "roster-construction" / "mordheim_construction" / "restrictions.py"
+
 KHEMRI = "khemri-lahmian-brotherhood"
 BLOODLINES = "chaos-streets-undead-bloodlines"
 BACKGROUND_IDS = ("background.foreign", "background.native")
@@ -261,14 +261,22 @@ def test_the_shared_compiler_reads_the_same_four_profiles():
         for variant in package.band["variants"]
         for row in variant.get("roster_members") or ()
     }
-    source = COMPILER.read_text(encoding="utf-8")
-    foreign = re.search(r'profile_id in \{([^}]*)\}\s*and\s*background\s*!=\s*"foreign"', source)
-    native = re.search(r'profile_id in \{([^}]*)\}\s*and\s*background\s*!=\s*"native"', source)
-    assert foreign and native, "the shared compiler no longer states its Foreign/Native sets"
-    from_set = {value.strip().strip('"') for value in foreign.group(1).split(",")}
-    native_set = {value.strip().strip('"') for value in native.group(1).split(",")}
-    assert {profile_id for profile_id, side in opened.items() if side == "foreign"} == from_set
-    assert {profile_id for profile_id, side in opened.items() if side == "native"} == native_set
+    from mordheim_core.models import FighterBuild
+    from mordheim_construction.eligibility import desktop_call
+
+    for profile_id, background in opened.items():
+        profile = next(row for row in package.profiles if row['id'] == profile_id)
+        for selected in ('foreign', 'native'):
+            build = FighterBuild('mordheim', collection='trollheim', band_id=KHEMRI,
+                                 profile_id=profile_id, main_weapon_id='weapon.natural-attacks',
+                                 variant_ids=(f'background.{selected}',))
+            verdict = desktop_call('profileSelections', build, KB, package=package,
+                                   profile=profile,
+                                   compiler_contracts=('compiler.foreign-or-native-background',))
+            if selected != background:
+                assert verdict == f'{profile_id} requires the {background.title()} background'
+            else:
+                assert verdict is None, verdict
 
 
 def test_bloodline_options_follow_the_profile_bloodlines():

@@ -19,6 +19,8 @@ from pathlib import Path
 import re
 import yaml
 
+from mordheim_knowledge import editorial_schemas
+
 ROOT = Path(__file__).resolve().parents[3] / "sources/knowledge"
 CAMPAIGN = ROOT / "catalog" / "campaign"
 ITEMS = ROOT / "catalog" / "items"
@@ -376,15 +378,97 @@ def test_racial_maximum_values_match_band_rules_that_used_to_inline_them():
             assert by_profile[profile][key] == value, f"{profile}.{key}"
 
 
+# --------------------------------------------------------------------------
+# Catalogue contract checks shared with the F042/F043 regression ledger
+#
+# The editorial contract in `contracts/knowledge-editorial-v1` is the authority
+# on the keys a block may carry and on how its localized text is shaped; the
+# helpers below read it instead of copying it, so a contract change cannot leave
+# these checks behind.  `test_catalogue_contract_regressions.py` exercises them
+# with synthetic documents, positive and negative.
+# --------------------------------------------------------------------------
+
+HIRED_SWORDS_SCHEMA = "campaign-hired-swords-and-dramatis.yaml.schema.json"
+RACIAL_MAXIMUM_REFERENCE = re.compile(r"campaign\.limit\.racial-maximum\.[a-z0-9-]+")
+MAXIMUM_PROFILE_MENTION = re.compile(r"maximum (?:characteristic )?profiles?\b", re.IGNORECASE)
+INLINED_STATLINE = re.compile(r"\bM\d+\s*,?\s+WS\d")
+
+
+def racial_maximum_ids() -> set[str]:
+    """Canonical ids of `catalog/rules/racial-maximums.yaml`."""
+    return {limit["id"] for limit in load("catalog/rules/racial-maximums.yaml")["racial_maximums"]}
+
+
+def racial_maximum_reference_problems(effect: str, maximum_ids: set[str], where: str) -> list[str]:
+    """Problems of one rule `effect` against the shared racial-maximum catalogue.
+
+    A mention of a maximum *profile* must link its `campaign.limit.racial-maximum.*`
+    entry and every linked entry must exist.  The numeric statline is declared
+    once, in the shared catalogue: a rule about *characteristic* maximums must not
+    inline it.  A roster rule that mentions the maximum *warband size* is printed
+    source prose, not a racial maximum, and is not checked.
+    """
+    text = effect or ""
+    if "maximum" not in text.lower():
+        return []
+    problems: list[str] = []
+    if re.search("characteristic", text, re.IGNORECASE) and INLINED_STATLINE.search(text):
+        problems.append(f"{where}: inlines a statline")
+    if MAXIMUM_PROFILE_MENTION.search(text):
+        refs = RACIAL_MAXIMUM_REFERENCE.findall(text)
+        if not refs:
+            problems.append(f"{where}: mentions a max profile without ref")
+        problems.extend(
+            f"{where}: unknown racial maximum {ref}" for ref in refs if ref not in maximum_ids
+        )
+    return problems
+
+
+def canonical_band_ids() -> set[str]:
+    """Ids of every committed `bands/*/*/band.yaml`."""
+    return {yaml.safe_load(path.read_text(encoding="utf-8")).get("id")
+            for path in BANDS.glob("*/*/band.yaml")}
+
+
+def warband_group_ids() -> set[str]:
+    """Ids of the shared warband groups in `registry/warband-groups.yaml`."""
+    return {group["id"] for group in load("registry/warband-groups.yaml").get("groups", [])}
+
+
+def eligibility_keys() -> frozenset[str]:
+    """Keys the maintained editorial contract allows in an `eligibility` block."""
+    definition = editorial_schemas.schema_for(HIRED_SWORDS_SCHEMA)["$defs"]["eligibility"]
+    return frozenset(definition["properties"])
+
+
+def eligibility_reference_problems(eligibility: dict, band_ids: set[str], groups: set[str],
+                                   where: str) -> list[str]:
+    """Problems of one `eligibility` block: unknown keys, bands and groups."""
+    problems = [f"{where}: unknown eligibility key {key}"
+                for key in sorted(set(eligibility) - eligibility_keys())]
+    for key in ("allow_groups", "forbid_groups"):
+        problems.extend(f"{where}: unknown group {group}"
+                        for group in eligibility.get(key) or ()
+                        if group not in groups)
+    for key in ("allow_band_ids", "forbid_band_ids"):
+        problems.extend(f"{where}: unknown band {band}"
+                        for band in eligibility.get(key) or ()
+                        if band not in band_ids)
+    return problems
+
+
+def campaign_schema_problems(document: dict) -> list[str]:
+    """Schema problems of the hired-sword catalogue, by the maintained contract."""
+    return editorial_schemas.validate_document(HIRED_SWORDS_SCHEMA, document)
+
+
 def test_band_rules_reference_racial_maximums_without_inlining_statlines():
     # Warband rules do not inline racial-maximum statlines: they reference the
     # canonical entries (campaign.limit.racial-maximum.*) and every mention of
     # "maximum profile" must resolve against the shared catalogue.
-    maximum_ids = {limit["id"]
-                   for limit in load("catalog/rules/racial-maximums.yaml")["racial_maximums"]}
-    profile_mention = re.compile(r"maximum (?:characteristic )?profiles?\b", re.IGNORECASE)
-    statline = re.compile(r"\bM\d+\s*,?\s+WS\d")
+    maximum_ids = racial_maximum_ids()
     referenced: list[str] = []
+    problems: list[str] = []
     rules_with_maximums = 0
     for path in sorted(BANDS.glob("**/special-rules.yaml")):
         rules = yaml.safe_load(path.read_text(encoding="utf-8")).get("rules", [])
@@ -395,16 +479,11 @@ def test_band_rules_reference_racial_maximums_without_inlining_statlines():
             if "maximum" not in text.lower():
                 continue
             rules_with_maximums += 1
-            # The numeric statline is declared once: in the shared catalogue. Only
-            # a rule about *characteristic* maximums is checked: a roster rule that
-            # quotes a profile while mentioning the maximum *warband size* is
-            # printed source prose, not a racial maximum.
-            if re.search(r"characteristic", text, re.IGNORECASE):
-                assert not statline.search(text), f"{path.name}: {rule['id']} inlines a statline"
-            if profile_mention.search(text):
-                refs = re.findall(r"campaign\.limit\.racial-maximum\.[a-z0-9-]+", text)
-                assert refs, f"{path.name}: {rule['id']} mentions a max profile without ref"
-                referenced.extend(refs)
+            where = f"{path.name}: {rule['id']}"
+            problems.extend(racial_maximum_reference_problems(text, maximum_ids, where))
+            if MAXIMUM_PROFILE_MENTION.search(text):
+                referenced.extend(RACIAL_MAXIMUM_REFERENCE.findall(text))
+    assert problems == []
     assert rules_with_maximums >= 20  # 81 files, ~20 rules mention maximums
     assert referenced, "expected racial-maximum references from the warbands"
     assert set(referenced) <= maximum_ids
@@ -792,30 +871,25 @@ def test_hired_swords_availability_and_cost_shapes():
 
 def test_hired_swords_eligibility_resolves_and_grammar_is_valid():
     """Eligibility: simple lists or a boolean expression; warbands and groups
-    resolve against band.yaml and registry/warband-groups.yaml."""
+    resolve against band.yaml and registry/warband-groups.yaml, and every block
+    carries only keys the maintained editorial contract declares."""
     document = campaign("hired-swords-and-dramatis.yaml")
-    band_ids = {yaml.safe_load(path.read_text(encoding="utf-8")).get("id")
-                for path in BANDS.glob("*/*/band.yaml")}
-    groups = {group["id"] for group in load("registry/warband-groups.yaml").get("groups", [])}
+    # `note`/`note_i18n` are declared by that contract; validating the committed
+    # document here with the maintained schema keeps this grammar test and the
+    # contract from drifting apart.
+    assert campaign_schema_problems(document) == []
+    band_ids = canonical_band_ids()
+    groups = warband_group_ids()
     entries = document["hired_swords"] + document["dramatis_personae"]
     leaf_keys = {"band_id", "group_id"}
     for entry in entries:
         eligibility = entry.get("eligibility") or {}
         if not eligibility:
             continue
-        # `note` carries the source wording for what the lists cannot express;
-        # the schema declares it alongside `expression` and is the authority here.
-        assert eligibility.keys() <= {"allow_groups", "forbid_groups",
-                                      "allow_band_ids", "forbid_band_ids",
-                                      "expression", "note"}, entry["id"]
-        for group in eligibility.get("allow_groups") or []:
-            assert group in groups, f"{entry['id']}: unknown group {group}"
-        for group in eligibility.get("forbid_groups") or []:
-            assert group in groups, f"{entry['id']}: unknown group {group}"
-        for band in eligibility.get("allow_band_ids") or []:
-            assert band in band_ids, f"{entry['id']}: unknown band {band}"
-        for band in eligibility.get("forbid_band_ids") or []:
-            assert band in band_ids, f"{entry['id']}: unknown band {band}"
+        # `note` carries the source wording for what the lists cannot express and
+        # `note_i18n` its reviewed translation; the schema stays the authority on
+        # the accepted keys and on the shape of the localized block.
+        assert eligibility_reference_problems(eligibility, band_ids, groups, entry["id"]) == []
         expression = eligibility.get("expression")
         if expression is not None:
             check_expression(expression, leaf_keys, band_ids, groups, entry["id"])

@@ -9,10 +9,10 @@ IDs.
 ## Ownership and read path
 
 ```text
-KB YAML → knowledge loaders → application service → UI
+KB YAML → generate_knowledge_web.py → artefact → KnowledgeReader → domain/application → React
 ```
 
-The UI never reads YAML or decides rules. Application services load and
+The UI never reads YAML or decides rules. Domain/application adapters read and
 validate knowledge, apply it to campaign state and return options or results
 for presentation. Campaign files store state and stable references, not copies
 of catalogue records.
@@ -29,9 +29,15 @@ of catalogue records.
 | Racial maximums | `catalog/rules/racial-maximums.yaml` |
 | Warband/profile exceptions | The band's `special-rules.yaml` |
 
-Use `mordheim_knowledge.campaign` loaders or the relevant application
-`KnowledgePort`; do not reconstruct paths in a UI. Mutable operations follow
+Use the TypeScript `KnowledgeReader` for the active web product. Python
+knowledge consumers use `mordheim_knowledge.campaign`; do not reconstruct paths
+in a UI. Mutable operations follow
 preview → validated transaction → persisted state.
+
+Equipment and skill decisions belong to the [shared eligibility module](../reference/eligibility.md),
+which also serves Combat Lab. Its adapters project facts from canonical YAML or
+generated artefacts. Campaign-specific transactions and duel effect execution
+remain in their respective products.
 
 ## Identity and modelling
 

@@ -1,5 +1,7 @@
 # T06-effects — Matriz de efectos y reparto de obligaciones
 
+> Current ownership — 2026-10-02. The [shared eligibility boundary](../../../reference/eligibility.md#construction-boundary-for-phased-implementation) supersedes historical implementation ownership for equipment/skill decisions and restrictions: both products already use the same pure TypeScript module through their adapters. These completed phases, their recorded results and original revision remain accepted within their documented limits. Future work reuses that module and matching evidence; [F035 in the follow-up register](T13-execution-follow-ups.md) classifies old construction findings before repairs. This note does not reopen T09–T12 or claim that all combat effects are implemented.
+
 Documento auxiliar de [T06](T06.md). Propiedad del agente de T06; solo el coordinador cambia estados/responsables y asigna archivos compartidos. **No marca T06 como completada** ni modifica la checklist principal.
 
 Este documento enumera **cada efecto de 2A/2B exactamente una vez**, con mecanismo responsable, destino y criterio de aceptación. La matriz completa, fila por fila (1692 registros con `id`, familia, `binding`, mecanismo, destino, tarea de fase, clasificación y fuente), vive en el informe regenerable `build/cache/t06-matrix.{csv,json}` —ignorado por Git—; aquí se entrega el resumen suficiente para reconstruirlo y asignarlo.

@@ -269,16 +269,15 @@ rules:
     - sergeants
 - id: private-sleuth--scryer
   runtime:
-    scope: 'YES'
-    implemented: 'YES'
+    scope: LATER
+    implemented: 'NO'
     grant: profile
     effects:
     - id: trait.re-roll-melee
       scope: LATER
       binding: null
       reason: >-
-        Deferred: blanket re-roll of all close combat rolls needs a generic re-roll binding not yet
-        exposed.
+        Pending L09 and T13-Q104: source-specific optional rerolls of close-combat rolls, accepting the second result; exploration remains excluded.
   name: Scryer
   effect: >-
     A Sleuth can re-roll any rolls in close combat (the second result must be accepted). In

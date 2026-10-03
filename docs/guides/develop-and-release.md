@@ -29,6 +29,18 @@ Narrower Python scopes: `tests --scope campaign`, `knowledge`, `construction`,
 `ui`, `cli`, `architecture`. `tests --scope all` runs the complete Python
 suite; anything after the scope is forwarded to pytest.
 
+For shared equipment/skill decisions, edit the [eligibility module](../reference/eligibility.md), then run from the repository root:
+
+```powershell
+npm run build:eligibility
+npm run check:eligibility
+python -m pytest tests/python/construction -q
+npm test --workspace campaign-web-core -- ../../tests/typescript/domain/shared-eligibility.test.ts
+```
+
+Commit the generated `_eligibility.js` with its maintained TypeScript source. The
+Python runtime uses that checked-in bundle; Node is a development dependency.
+
 ## Knowledge artefact
 
 The browser consumes generated JSON, not YAML. Rebuild and check it when
@@ -50,7 +62,8 @@ python tools/mordheim-utils.py run-ci
 ```
 
 Runs the knowledge generator/check, the Python contract/campaign/architecture/
-knowledge/web tests, the TypeScript typecheck/tests and the web
+knowledge/web tests and shared eligibility transport tests, the eligibility
+bundle freshness check, the TypeScript typecheck/tests and the web
 typecheck/lint/tests/build plus the post-build bundle guard — the same steps as
 `.github/workflows/ci.yml`.
 
@@ -118,12 +131,17 @@ tools\windows\build_MordheimCombatLab_INSTALLER.bat
 The scripts build Combat Lab from the current source checkout. They are not CI
 deployment commands.
 
+Before packaging changed eligibility sources, run `npm run build:eligibility`
+and `npm run check:eligibility`. The executable includes the generated JavaScript
+and MiniRacer's native library; installing Node on the target machine is unnecessary.
+
 ## Release checklist
 
 - [ ] Fast relevant tests pass.
 - [ ] `verify --require-complete` passes (structural + semantic).
 - [ ] TypeScript/web checks pass when applicable.
 - [ ] Contract fixtures and generated knowledge artefacts validate when applicable.
+- [ ] Shared eligibility bundle matches its sources and both consumer suites pass when its rules change.
 - [ ] Engine changes have the required parity/coverage/mutation evidence.
 - [ ] No generated reports, `outputs/`, `dist/`, screenshots or temporary campaign files are staged.
 - [ ] Windows packages are smoke-tested when a desktop release is required.

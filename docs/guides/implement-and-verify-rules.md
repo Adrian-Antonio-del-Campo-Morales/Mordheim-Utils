@@ -8,8 +8,10 @@ each layer certifies).
 
 1. Classify the effect as construction, modifier, local resolution or
    stateful flow.
-2. Use `mordheim_construction`, `mordheim_core.effects`,
-   `mordheim_combat.phases` or `mordheim_combat/modular` accordingly.
+2. Put equipment/skill eligibility, variants and loadout prerequisites in
+   [the shared eligibility module](../reference/eligibility.md). Use
+   `mordheim_construction` for duel compilation, `mordheim_core.effects`,
+   `mordheim_combat.phases` or `mordheim_combat/modular` for combat execution.
 3. Share the context preparer between orchestrator and verifier.
 4. Inject `DiceSource` and `DecisionPolicy`; never consult global randomness
    or the UI.
@@ -29,10 +31,20 @@ To consult the global status before editing specifications:
 python tools/mordheim-utils.py report rules
 ```
 
-The command generates `outputs/audit/rules-audit.csv`, encoded to open
-correctly in Excel. Limitable with `--scope YES`, `--status pending` and
-`--output <directory>`. It is read-only with respect to the KB, the
-specifications and the code.
+The command generates two Excel-friendly CSVs under `outputs/audit/`, with
+the same timestamp: `combat-audit-<timestamp>.csv` contains core combat rules
+and mechanics; `rules-audit-<timestamp>.csv` contains editorial effects from
+warbands and skill catalogues. IDs and bindings allow cross-referencing them.
+Combat semantic evidence comes from the modular verifier; it does not certify
+NumPy or native parity. Limitable with `--scope YES`, `--status pending` and
+`--output <directory>` (which writes `combat-audit.csv` and `rules-audit.csv`).
+It is read-only with respect to the KB, the specifications and the code.
+
+Missing scope metadata is reported as `scope = UNCLASSIFIED`,
+`semantic_status = unclassified`, `review_status = needs_classification` and
+`implemented = UNKNOWN`. It is not an exclusion. Explicit `NO` and `LATER`
+classifications retain `out_of_scope`; an included but unbound effect remains
+pending. These report states do not change the canonical YAML scope vocabulary.
 
 ### Review questions and decisions
 
@@ -43,6 +55,7 @@ evidence (`semantic_status`). To see which decisions need an answer, filter
 | review_status | Meaning |
 | --- | --- |
 | `needs_ruling` | There is an explicit question with no documented answer yet. |
+| `needs_classification` | Scope has not been declared; classify the editorial effect before judging coverage. |
 | `blocked_by_dependency` | No unanswered question of its own, but a dependency still needs verification. |
 | `ready` | Implementation, source research or verification remains; no explicit unanswered decision or unverified dependency. Does not mean the rule already works. |
 | `verified` | The required semantic evidence is approved. |
@@ -107,6 +120,24 @@ If a ruling is missing, mark it pending. Done when the obligation,
 dependencies, interactions and mutations are approved.
 
 ### Equipment and selection scenarios
+
+Equipment and skill decisions are maintained in
+`packages/typescript/domain/eligibility/index.ts`. The Python compiler calls
+its generated bundle through `mordheim_construction/eligibility.py`; do not
+reintroduce rule tables in Python, campaign adapters or UI selectors. Regenerate
+the bundle and run its shared Python/TypeScript cases after changing those rules.
+The wrappers in `restrictions.py` remain live verification seams: the mutations
+below disable individual controls through those wrappers without replacing
+the rule implementation.
+
+Start with the [existing construction boundary](../reference/eligibility.md#construction-boundary-for-phased-implementation).
+For a pre-centralization finding, first reproduce it with current KB facts,
+direct shared decisions and the actual consumer. Classify the missing part
+before editing: canonical facts/bindings, adapter transport, a shared decision,
+compiled effects or combat behavior. Do not treat a runtime-support refusal as
+illegal equipment/skill eligibility or reimplement a closed Web construction
+flow in Python. Shared-decision repairs require affected browser and embedded
+consumer regressions; effect-only repairs stay with the compiler/engine.
 
 For equipment restrictions, `equipment_choices` runs the real compiler for
 every `context.choices` construction and returns `result.accepted` and
@@ -191,3 +222,21 @@ number written here.
 
 Done when the reproduction fails before, passes after, and expresses the
 cause of the defect.
+
+## Local context and strict engine replay
+
+The [T13.1 contract](../knowledge/2a2b/tasks/T13-contracts.md) documents optional
+local participant IDs, numeric M/Ld preservation, explicit distances/contact, and
+independent charge/player-turn facts. Use `prepare_duel_context` in both production
+and verification; missing required facts must fail rather than become defaults.
+Combat Lab shares canonical KB data and the pure eligibility module with Warband
+Manager; campaign state/services and combat execution remain independent.
+
+For a small deterministic whole-duel proof, use
+`mordheim_combat_lab.verification.parity.replay_duel`. It exercises the
+actual modular, NumPy or compiled native driver with strict, fully consumed dice
+and decisions, then records terminal state/resources. Author each backend's legacy
+physical draw order explicitly; do not assume equal seeds imply equal streams.
+Native replay requires a rebuilt context-aware extension and never falls back.
+The foundation cases live in `tests/python/verification/test_duel_replay.py`; new
+mechanisms still need source-derived specifications, interactions and mutations.

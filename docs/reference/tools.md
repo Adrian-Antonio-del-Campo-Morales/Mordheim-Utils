@@ -71,6 +71,7 @@ verdicts recorded in `sources/2A/*.md` and `sources/2B/*.md`.
 
 | Tool | Purpose |
 |---|---|
+| `tools/web/build-eligibility.mjs` | Generate the versioned Python bundle from the shared TypeScript eligibility module; `--check` rejects stale output. Exposed as `npm run build:eligibility` / `npm run check:eligibility`. |
 | `tools/web/presentation-audit.mjs` | Detect visible text without validated resolution or provenance. |
 | `tools/web/presentation-flow-audit.mjs` | Trace raw text to presentation sinks. |
 | `tools/web/presentation-type-audit.mjs` | Detect forged resolved-text types. |

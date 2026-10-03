@@ -7,6 +7,7 @@ from mordheim_combat.modular import rounds
 from mordheim_combat.modular.state import initialize_duel
 from mordheim_core.dice import DecisionPolicy
 from mordheim_core.dice import SeededDice
+from mordheim_core.models import DuelContext
 from mordheim_core.models import CompiledFighter
 from mordheim_core.models import DuelResult
 from mordheim_core.models import ObservedDuelResult
@@ -18,6 +19,7 @@ def simulate_duel_reference(
     *, seed: int = 0, maximum_rounds: int = 50,
     decisions: DecisionPolicy | None = None,
     cancel_event: object | None = None,
+    context: DuelContext | None = None,
 ) -> DuelResult:
     """Scalar simulator under test; each simulation has a replayable dice stream."""
     if min(simulations, maximum_rounds) < 1:
@@ -27,7 +29,7 @@ def simulate_duel_reference(
         if cancel_event is not None and getattr(cancel_event, "is_set")():
             raise SimulationCancelled("scalar simulation cancelled")
         dice = SeededDice(seed + simulation)
-        state = initialize_duel(first, second, dice)
+        state = initialize_duel(first, second, dice, context=context)
         for _ in range(maximum_rounds):
             if cancel_event is not None and getattr(cancel_event, "is_set")():
                 raise SimulationCancelled("scalar simulation cancelled")
@@ -48,6 +50,7 @@ def simulate_duel_observed(
     *, seed: int = 0, maximum_rounds: int = 50,
     decisions: DecisionPolicy | None = None,
     cancel_event: object | None = None,
+    context: DuelContext | None = None,
 ) -> ObservedDuelResult:
     """Run one oracle sample and keep the per-duel terminal records.
 
@@ -64,7 +67,7 @@ def simulate_duel_observed(
     if min(simulations, maximum_rounds) < 1:
         raise ValueError("simulation limits must be positive")
     winner = np.zeros(simulations, dtype=np.int8)
-    resolution_rounds = np.zeros(simulations, dtype=np.int16)
+    resolution_rounds = np.zeros(simulations, dtype=np.int64)
     first_wounds = np.zeros(simulations, dtype=np.int16)
     second_wounds = np.zeros(simulations, dtype=np.int16)
     first_condition = np.zeros(simulations, dtype=np.int8)
@@ -73,7 +76,7 @@ def simulate_duel_observed(
         if cancel_event is not None and getattr(cancel_event, "is_set")():
             raise SimulationCancelled("scalar simulation cancelled")
         dice = SeededDice(seed + simulation)
-        state = initialize_duel(first, second, dice)
+        state = initialize_duel(first, second, dice, context=context)
         rounds_executed = 0
         for _ in range(maximum_rounds):
             if cancel_event is not None and getattr(cancel_event, "is_set")():
@@ -105,5 +108,5 @@ def simulate_duel(request) -> DuelResult:
     return simulate_duel_reference(
         request.first, request.second, request.simulations,
         seed=request.seed, maximum_rounds=request.maximum_rounds,
-        decisions=request.decision_policy, cancel_event=request.cancel_event,
+        decisions=request.decision_policy, cancel_event=request.cancel_event, context=request.context,
     )

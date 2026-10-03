@@ -715,18 +715,17 @@ describe("construction contracts: hiring eligibility", () => {
 });
 
 describe("construction contracts: pending bindings and open clauses", () => {
-  it("transports the declared-but-unimplemented binding to the consumer", () => {
+  it("does not report the activated Spectral Touch binding as unimplemented", () => {
     const reader = baseReader();
     const pending = pendingBindingsFor(profileFactsOf(reader, BAND.id, "spirit-hosts")!);
-    expect(pending.map((entry) => entry.binding_id)).toEqual(["trait.spectral-touch"]);
-    expect(pending[0].owner_task).toBe("T13");
+    expect(pending).toEqual([]);
 
     const campaign: Campaign = {
       ...draftOf(reader).campaign,
       warriors: [{ ...warrior("spirit-hosts", 2, "henchman"), skills: ["spirit-hosts--spectral-touch"] }],
     };
     const codes = constructionIssuesOf(reader, campaign).map((issue) => issue.code);
-    expect(codes).toContain("pending_combat_binding");
+    expect(codes).not.toContain("pending_combat_binding");
   });
 
   it("reports no open clause for a band without them", () => {

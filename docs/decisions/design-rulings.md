@@ -59,6 +59,74 @@ a single spec.
   Critical hits ignore armour only through the critical result. (Recorded
   where the consumers read it: `modular/attacks.py`, `vectorized/_attacks.py`.)
 
+
+### Spectral Touch Q019
+
+For Spirit Host Spectral Touch, the user accepted recommendations R1–R4 on
+2026-10-01. A successful final natural hit six establishes one immediate extra
+wound, then the ordinary contribution if both participants remain active.
+Automatic/manufactured hits provide no natural six. Resolve original-hit
+defenses first; the extra is not another hit and repeats neither hit defenses
+nor on-hit effects. It has no wound/critical die and consumes no critical slot.
+
+The extra inherits applicable attack save/injury modifiers and eligible defenses,
+respecting each printed defense's timing, but remains capped at one despite
+generic damage multipliers. Resolve its injury, rescue and immediate reactions
+before the ordinary contribution; stop if either combatant remains removed.
+A rescued participant may continue with current resources. Preserve collective
+pool hit/defense preparation before per-hit extra/ordinary processing.
+
+Barrage requires failure to establish any wound for that attack. An established
+extra wound therefore prevents another Barrage attack even when saved and even
+if the ordinary wound roll fails. With no extra wound, ordinary failure keeps
+its existing optional continuation. Each new hit has its own natural-die provenance.
+
+These are project composition/order rulings justified by the original Night Haint
+and general/Barrage sources, not quotations of an explicit combined rule.
+[Source locators and accepted review scope](../knowledge/2a2b/tasks/T13-spectral-touch-review.md),
+[contract and implementation proof](../knowledge/2a2b/tasks/T13-spectral-touch.md).
+The accepted source interpretation does not itself certify canonical grants,
+every legal equipment composition or optimized execution. Spirit Knife/Q146
+requires separate recipient and source review.
+
+
+### Shifty S1–S4
+
+The user accepted the independently reviewed S1–S4 recommendations on
+2026-10-02. They define the modular composition contract:
+
+- **S1 — count and suppression.** Add the charged warrior's bonus after Frenzy
+  and the two-weapon extra, before whole-warrior reductions. When generic
+  reductions leave one attack, that survivor retains the bonus's Strike First
+  timing, including under the one-attack fist cap. Consume each selected-hand
+  suppression at most once across the warrior's timed events. Source-specific
+  losses, including Halfling Crude Belch's loss of an enemy's first/only attack,
+  require their own targeted mechanism; do not represent them as generic count
+  reductions or erase their explicit zero-attack consequence.
+- **S2 — early melee nomination.** Nominate one usable carried melee hand before
+  resolution and preserve its weapon, poison pair and hand slot. Mixed
+  pistol/melee uses melee for the bonus; fabricate neither an extra shot nor a
+  fist while weapons remain. Pistol-only refusal remains an explicit provisional
+  simulator limitation, not a tabletop prohibition. Its complete allocation
+  contract remains pending in F005/F026.
+- **S3 — coherent ties.** Resolve equal priority/Initiative once per warrior pair
+  and reuse that order for timed Shifty/Whipcrack events; do not redraw per event.
+  Preserve both independently earned bonuses. This does not assert canonical
+  whip access for Halflings.
+- **S4 — replacement composition.** Choosing Serpent Staff power replaces the
+  Shifty bonus together with ordinary attacks; declining retains normal Shifty
+  behavior. A single bonus repeats neither Bull Charge, Body Slam, Anvil Head
+  nor natural/extra attack lists. Synthetic Staff fixtures do not certify legal
+  Halfling loadouts.
+
+These are accepted project composition/order interpretations, not quotations of
+an explicit combined source rule. [Sources and independent recommendations](../knowledge/2a2b/tasks/T13-shifty-independent-review.md#11-decisions-ready-for-human-acceptance)
+and [acceptance record](../knowledge/2a2b/tasks/T13-shifty-review.md#human-acceptance--2026-10-02)
+bind future activation/specifications and optimized ports. F003 closes at this
+modular boundary; canonical Shifty activation, maintained poison witnesses,
+pistol-only allocation, Crude Belch implementation and optimized execution retain
+their separate evidence and ownership.
+
 ## Construction and KB modelling
 
 - **Equivalence is explicit, never inferred.** Two rules that do the same

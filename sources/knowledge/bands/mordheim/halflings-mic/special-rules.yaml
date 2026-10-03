@@ -626,16 +626,17 @@ rules:
     - halfling-thief
     - halfling-youths
 - id: halfling-elder--shifty
+  kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.halflings-mic.special.shifty
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: charge-response bonus attacks are outside the current engine scope.
+    - id: skill.shifty
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.shifty
   name: Shifty
   effect: >-
     The halfling has long-been skirting in the shadows, avoiding unwanted attention. So nimble is he
@@ -654,8 +655,11 @@ rules:
       Es tan ágil que puede sorprender incluso a aquellos que creen tenerlo en un aprieto. El
       mediano gana un ataque adicional cuando es cargado, que golpea primero.
   applies_to:
+    profile_types: [hero]
     profile_ids:
     - halfling-elder
     - halfling-cook
     - halfling-thief
     - halfling-youths
+    - halfling-scouts
+    - halfling-warriors

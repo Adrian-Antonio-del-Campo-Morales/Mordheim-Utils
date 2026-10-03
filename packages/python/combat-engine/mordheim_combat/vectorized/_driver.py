@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import numpy as np
 from dataclasses import replace
+from mordheim_core.context import prepare_duel_context
 from mordheim_core.dice import DecisionPolicy
-from mordheim_core.models import CompiledFighter, DuelRequest, DuelResult, EffectSet, SimulationCancelled
+from mordheim_core.models import CompiledFighter, DuelContext, DuelRequest, DuelResult, EffectSet, SimulationCancelled
 from mordheim_combat.vectorized._types import CombatState, KNOCKED_DOWN, OUT, PARALYZED, STANDING, STUNNED, VectorBatchObservation, _parry_capacity, has
 from mordheim_combat.vectorized._operators import _characteristic_test, attack_count, effective_initiative, priority, round_weapon_attack_count
 from mordheim_combat.vectorized._attacks import _optional_phase_plan, _prepare_weapon_attack, _resolve_weapon, resolve_attacks
@@ -185,12 +186,24 @@ def _resource_observation(state: CombatState) -> tuple[tuple[str, np.ndarray], .
 def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count: int,
                          rng: np.random.Generator, maximum_rounds: int,
                          decisions: DecisionPolicy | None = None,
-                         *, observe: bool = False
+                         *, observe: bool = False, context: DuelContext | None = None
                          ) -> tuple[int, int, int] | VectorBatchObservation:
+    from mordheim_combat.kernel import require_optimized_support
+    require_optimized_support(first, second)
+    prepared = prepare_duel_context(first, second, context)
     state1, state2 = _new_state(first,count,rng), _new_state(second,count,rng)
     original_first, original_second = first, second
-    first_charges = rng.random(count) < .5
-    rounds = np.zeros(count, dtype=np.int16) if observe else None
+    if prepared is None or prepared.facts.charging is None:
+        first_charges = rng.random(count) < .5
+        second_charges = ~first_charges
+    else:
+        charge_first, charge_second = prepared.charge_flags(True)
+        first_charges = np.full(count, charge_first, dtype=bool)
+        second_charges = np.full(count, charge_second, dtype=bool)
+    initial_first_turn = first_charges
+    if prepared is not None and prepared.facts.active_participant is not None:
+        initial_first_turn = np.full(count, prepared.first_player_turn(True), dtype=bool)
+    rounds = np.zeros(count, dtype=np.int64) if observe else None
     optional = _optional_phase_plan(first, second)
     entangle_effect = (
         EffectSet(tags=("effect.chained-squig-entangle",),fixed_strength=3,automatic_hit=True)
@@ -206,7 +219,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             _refresh_random_characteristics(original_second, state2, active_rows, rng)
         first = phase_equipment(original_first, first_round=round_index == 0)
         second = phase_equipment(original_second, first_round=round_index == 0)
-        first_player_turn = first_charges if round_index % 2 == 0 else ~first_charges
+        first_player_turn = initial_first_turn if round_index % 2 == 0 else ~initial_first_turn
         if round_index:
             if optional.first_force_of_will:
                 _sustain_force_of_will(first,state1,rng,active_rows)
@@ -255,7 +268,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
             state2.condition[paralyzed_rows2[recover2]] = STANDING
         first_round = round_index == 0
         charge1 = first_charges if first_round else np.zeros(count,dtype=bool)
-        charge2 = ~first_charges if first_round else np.zeros(count,dtype=bool)
+        charge2 = second_charges if first_round else np.zeros(count,dtype=bool)
         if first_round:
             if optional.first_netter:
                 rows=np.flatnonzero(unresolved&charge1)
@@ -392,7 +405,7 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
         winner[(state1.condition == OUT) & (state2.condition != OUT)] = -1
         return VectorBatchObservation(
             winner=winner,
-            rounds=rounds if rounds is not None else np.zeros(count, dtype=np.int16),
+            rounds=rounds if rounds is not None else np.zeros(count, dtype=np.int64),
             first_wounds=state1.wounds.copy(),
             second_wounds=state2.wounds.copy(),
             first_condition=state1.condition.copy(),
@@ -404,16 +417,18 @@ def _simulate_batch_core(first: CompiledFighter, second: CompiledFighter, count:
 
 def simulate_batch(first: CompiledFighter, second: CompiledFighter, count: int,
                    rng: np.random.Generator, maximum_rounds: int,
-                   decisions: DecisionPolicy | None = None) -> tuple[int, int, int]:
-    result = _simulate_batch_core(first, second, count, rng, maximum_rounds, decisions)
+                   decisions: DecisionPolicy | None = None, *,
+                   context: DuelContext | None = None) -> tuple[int, int, int]:
+    result = _simulate_batch_core(first, second, count, rng, maximum_rounds, decisions, context=context)
     assert isinstance(result, tuple)
     return result
 
 def simulate_batch_observed(first: CompiledFighter, second: CompiledFighter, count: int,
                             rng: np.random.Generator, maximum_rounds: int,
-                            decisions: DecisionPolicy | None = None) -> VectorBatchObservation:
+                            decisions: DecisionPolicy | None = None, *,
+                            context: DuelContext | None = None) -> VectorBatchObservation:
     result = _simulate_batch_core(
-        first, second, count, rng, maximum_rounds, decisions, observe=True,
+        first, second, count, rng, maximum_rounds, decisions, observe=True, context=context,
     )
     assert isinstance(result, VectorBatchObservation)
     return result
@@ -458,11 +473,12 @@ _batch_sizes = batch_plan
 
 def _run_one_batch(first: CompiledFighter, second: CompiledFighter, count: int,
                    seed: int, batch_index: int, maximum_rounds: int,
-                   decisions: DecisionPolicy | None) -> tuple[int, int, int]:
+                   decisions: DecisionPolicy | None,
+                   context: DuelContext | None = None) -> tuple[int, int, int]:
     """Simulate exactly one batch on its own independent stream."""
     rng = np.random.default_rng(
         seed if batch_index == 0 else _batch_seed(seed, batch_index))
-    return simulate_batch(first, second, count, rng, maximum_rounds, decisions)
+    return simulate_batch(first, second, count, rng, maximum_rounds, decisions, context=context)
 
 
 def _simulate_duel_numpy(request: DuelRequest) -> DuelResult:
@@ -473,7 +489,7 @@ def _simulate_duel_numpy(request: DuelRequest) -> DuelResult:
             raise SimulationCancelled("simulation cancelled")
         x, y, z = _run_one_batch(
             request.first, request.second, count, request.seed, batch_index,
-            request.maximum_rounds, request.decision_policy,
+            request.maximum_rounds, request.decision_policy, request.context,
         )
         first_wins += x
         second_wins += y
@@ -484,7 +500,8 @@ def _simulate_duel_numpy(request: DuelRequest) -> DuelResult:
 def batch_segment(first: CompiledFighter, second: CompiledFighter,
                   start: int, stop: int, simulations: int,
                   batch_size: int, seed: int, maximum_rounds: int,
-                  decisions: DecisionPolicy | None) -> tuple[int, int, int]:
+                  decisions: DecisionPolicy | None,
+                   context: DuelContext | None = None) -> tuple[int, int, int]:
     """Run whole batches ``[start, stop)`` of the canonical plan.
 
     Process-pool entry point for parallel execution over the batch plan:
@@ -496,7 +513,7 @@ def batch_segment(first: CompiledFighter, second: CompiledFighter,
     for batch_index in range(start, stop):
         x, y, z = _run_one_batch(
             first, second, sizes[batch_index], seed, batch_index,
-            maximum_rounds, decisions,
+            maximum_rounds, decisions, context,
         )
         first_wins += x
         second_wins += y
@@ -523,6 +540,8 @@ def simulate_duel_parallel(request: DuelRequest, *,
     from concurrent.futures import as_completed
     import os
 
+    from mordheim_combat.kernel import require_optimized_support
+    require_optimized_support(request.first, request.second)
     sizes = _batch_sizes(request.simulations, request.batch_size)
     total = len(sizes)
     available = workers if workers is not None else os.cpu_count() or 1
@@ -541,7 +560,7 @@ def simulate_duel_parallel(request: DuelRequest, *,
                 _run_batch_segment, request.first, request.second,
                 start, stop, request.simulations, request.batch_size,
                 request.seed, request.maximum_rounds,
-                request.decision_policy,
+                request.decision_policy, request.context,
             )
             for start, stop in segments
         ]
@@ -562,6 +581,8 @@ def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
     """Run a duel through the selected backend without changing `DuelRequest`."""
     if backend not in {"auto", "numpy", "native"}:
         raise ValueError(f"unknown combat backend: {backend}")
+    from mordheim_combat.kernel import require_optimized_support
+    require_optimized_support(request.first, request.second)
     selected = available_backends()[0] if backend == "auto" else backend
     if selected == "numpy":
         return _simulate_duel_numpy(request)
@@ -576,8 +597,14 @@ def simulate_duel(request: DuelRequest, *, backend: str = "auto") -> DuelResult:
         raise RuntimeError("native combat effect layout is stale; rebuild with `python -m pip install -e .`")
     from mordheim_combat.kernel import compile_duel_plan
 
-    plan = compile_duel_plan(request.first, request.second)
+    plan = compile_duel_plan(request.first, request.second, context=request.context)
+    if request.context is not None and getattr(_combat_native, "CONTEXT_VERSION", None) != 1:
+        if backend == "native":
+            raise RuntimeError("native combat context layout is stale; rebuild the extension")
+        return _simulate_duel_numpy(request)
     if not plan.optimization_eligible:
+        if backend == "native":
+            raise RuntimeError("native combat backend does not support this duel plan")
         return _simulate_duel_numpy(request)
     supports = getattr(_combat_native, "supports_plan", lambda _plan: False)
     if not supports(plan):

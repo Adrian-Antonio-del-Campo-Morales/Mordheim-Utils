@@ -5,7 +5,7 @@ specifications:
   category: local
   sources:
   - target: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-cloud-of-flies/trait.cloud-of-flies
-    digest: 198b865a5a81aad251697a555678cdc6f3639c00e4557ac72362af573b1ea21c
+    digest: 3e87944e30ce1ccec6f9c535444401ef05c213ff93a871c172b3b7fc377b0b31
   interpretation: 'Blessings of Nurgle / Cloud of Flies: blessing bought only by Tainted Ones. It penalises
     each enemy attack, never one''s own; it requires neither a charge nor the first round. WS3 versus
     WS3 goes from 4+ to 5+.'
@@ -178,7 +178,7 @@ specifications:
   category: local
   sources:
   - target: rule/trollheim/khemri-necromancers/band--necromantic-modification-putrid-stench/special-rule.band--necromantic-modification-putrid-stench
-    digest: 2311dbb687c50202c971ccc21556e89358ae07575a0bbddc2f53e352bc863a09
+    digest: bc16d4d8009463338ffbdd61c04f9718bc7b0f70c0cf0132374036098e274aef
   interpretation: 'Khemri p.56 / Putrid Stench: only living creatures suffer -1 when hitting the Abomination.
     WS3 versus WS3 goes from 4+ to 5+; an undead keeps 4+.'
   cases:
@@ -372,7 +372,7 @@ specifications:
   category: local
   sources:
   - target: rule/trollheim/khemri-necromancers/band--necromantic-modification-multiple-limbs/special-rule.band--necromantic-modification-multiple-limbs
-    digest: 90a1033445bf8fcb6c5e3375444ed72c41dfa5647cac85864a8ebcf448e82642
+    digest: e3f020751200e2de7d311b1e4c2d3de00188b85a69643b346d9698778ddb7d09
   interpretation: 'Khemri p.56 / Multiple Limbs: +1 Attack on top of the profile''s two attacks; it requires
     neither a charge nor the first round. It does not replace an existing attack.'
   cases:
@@ -457,7 +457,7 @@ specifications:
   category: local
   sources:
   - target: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-monstrosity/special-rule.band--strigoi-power-monstrosity
-    digest: 6b9bbefc98694957ea19df0f03b08c0970afa29a19c61d13b4990f43c40a98f7
+    digest: 55ec16c8735d226910e818707d91fe406582f00530b883d8b60d2e0b0272c5b4
   interpretation: 'Chaos in the Streets p.183 / Monstrosity: +1 Wound, without consuming the normal maximum.
     The initialisation must use the compiled wounds: a W2 profile becomes W3; an advanced W10 profile
     becomes W11.'
@@ -544,9 +544,10 @@ specifications:
   category: local
   sources:
   - target: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-bloated-foulness/special-rule.band--blessings-of-nurgle-bloated-foulness
-    digest: fba4116f39f9d66b484aaef0613435f8f5f0262196e16e18405ca37841c7a7c3
-  interpretation: 'Blessings of Nurgle / Bloated Foulness: W1 T3 becomes W2 T4. The Movement reduction
-    does not belong to the duel. Wound initialisation and all the to-wound faces of S3 versus T4 are checked.'
+    digest: 42d50de7342eecb7a04a4739c03840277f7ff4759c5591c713cba309fdef709f
+  interpretation: 'Blessings of Nurgle / Bloated Foulness: M4 T3 W1 compiles as M3 T4 W2. Movement
+    is preserved as a compiled fact but is not consumed by duel resolution. Wound initialisation
+    and all the to-wound faces of S3 versus T4 are checked.'
   cases:
   - id: recipients
     roles:
@@ -720,6 +721,7 @@ specifications:
       - band--blessings-of-nurgle-bloated-foulness
     expect:
       attacker.characteristics.wounds: 2
+      attacker.characteristics.movement: 3
   mutations:
   - id: remove-toughness
     path: defender.characteristics.toughness
@@ -736,7 +738,7 @@ specifications:
   category: local
   sources:
   - target: rule/mordheim/carnival-of-chaos/band--blessings-of-nurgle-mark-of-nurgle/special-rule.band--blessings-of-nurgle-mark-of-nurgle
-    digest: 1db20c9934ab08e7f4f8ed1f94e69771169d5489d7eaaa5f5863bccd377dd077
+    digest: aefcc68bf16464671b8044b9c1f2041b98897afe1c4e60cb1e26934b2f63d288
   interpretation: 'Blessings of Nurgle / Mark of Nurgle: W1 becomes W2 plus immunity to all poisons. The
     consumer''s poison matrix is shared with Tears of Shallaya; here only the grant is checked without
     granting that preparation.'

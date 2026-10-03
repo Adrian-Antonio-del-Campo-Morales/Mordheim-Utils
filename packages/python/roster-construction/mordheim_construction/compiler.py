@@ -9,11 +9,14 @@ from mordheim_construction.contracts import TRAIT_TYPES
 from mordheim_construction.contracts import effect_index
 from mordheim_construction.contracts import mechanic_index
 from mordheim_construction.contracts import validate_execution_contract
+from mordheim_construction.eligibility import (
+    call, construction_call, configuration_context,
+    desktop_call, selected_rules, validate_special_rule, validate_loadout, validate_additional_equipment,
+)
 from mordheim_construction.restrictions import _validate_profile_selections
 from mordheim_construction.selection import _applicable_profile_rules
 from mordheim_construction.selection import _applicable_rules
 from mordheim_construction.selection import _profile
-from mordheim_construction.selection import _profile_allowed_mechanics
 from mordheim_construction.selection import _profile_rule_mechanics
 from mordheim_construction.selection import _profile_rule_traits
 from mordheim_core.effects import apply_execution_effects
@@ -22,11 +25,71 @@ from mordheim_core.models import Characteristics
 from mordheim_core.models import CompiledFighter
 from mordheim_core.models import EffectSet
 from mordheim_core.models import FighterBuild
-from mordheim_knowledge.loader import load_bands
-from mordheim_knowledge.loader import load_collections
 from mordheim_knowledge.loader import load_runtime_scope
 from mordheim_knowledge.loader import runtime_bindings
 from pathlib import Path
+
+
+#: Characteristic fields a construction bonus may target.  The names are the
+#: canonical ``mordheim_core.models.Characteristics`` fields.
+CHARACTERISTIC_BONUS_KEYS = (
+    "weapon_skill", "strength", "toughness", "wounds",
+    "initiative", "attacks", "movement", "leadership",
+)
+
+#: Optional characteristic fields.  ``None`` means the compiled profile has no
+#: known base value, so only a zero bonus can be applied.
+OPTIONAL_CHARACTERISTIC_BONUS_KEYS = ("movement", "leadership")
+
+
+def _characteristic_bonus_block(bonuses, *, source):
+    """Validate one ``profile.characteristics``/``stats`` bonus block as data.
+
+    Only the canonical characteristic keys are accepted, and every value must
+    be an integer (positive, negative or zero).  Booleans, decimals and strings
+    are refused instead of coerced, and an unknown key raises a ``ValueError``
+    naming its contract, so a malformed KB entry cannot silently change a
+    compiled fighter.
+    """
+    validated = {}
+    for key, value in (bonuses or {}).items():
+        if key not in CHARACTERISTIC_BONUS_KEYS:
+            raise ValueError(
+                f"{source} grants an unknown characteristic bonus {key!r}; "
+                f"allowed characteristics are {list(CHARACTERISTIC_BONUS_KEYS)}"
+            )
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise ValueError(
+                f"{source} grants a non-integer {key} bonus {value!r}; "
+                "only positive, negative or zero integers are accepted"
+            )
+        validated[key] = validated.get(key, 0) + value
+    return validated
+
+
+def _apply_characteristic_bonuses(characteristics, stat_bonuses):
+    """Apply accumulated bonuses, preserving unknown optional characteristics.
+
+    A zero bonus to an unknown ``movement``/``leadership`` keeps it unknown; a
+    nonzero bonus to an unknown characteristic is refused rather than inventing
+    a base value.  Known characteristics accumulate every valid bonus.
+    """
+    if not stat_bonuses:
+        return characteristics
+    values = {}
+    for field in fields(Characteristics):
+        current = getattr(characteristics, field.name)
+        bonus = stat_bonuses.get(field.name, 0)
+        if field.name in OPTIONAL_CHARACTERISTIC_BONUS_KEYS and current is None:
+            if bonus:
+                raise ValueError(
+                    f"cannot apply a {bonus:+d} {field.name} bonus: the compiled "
+                    f"profile has no known base {field.name}"
+                )
+            values[field.name] = None
+            continue
+        values[field.name] = current + bonus
+    return Characteristics(**values)
 
 
 def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFighter:
@@ -59,92 +122,23 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     selected_compiler_bindings = []
     stat_bonuses = {}
     if build.special_rule_ids:
-        if package is None:
-            rules = {
-                str(rule.get("id")): rule
-                for collection in load_collections(root)
-                if build.ruleset in collection.get("rulesets", ())
-                for candidate_package in load_bands(str(collection["id"]), root)
-                for rule in candidate_package.special_rules
-                if str(rule.get("id")) in build.special_rule_ids
-            }
-        else:
-            rules = {str(rule.get("id")): rule for rule in package.special_rules}
-        if "compiler.slayer-skill-options" in automatic_compiler_contracts:
-            dwarf_package = next(
-                candidate for candidate in load_bands(build.collection, root)
-                if candidate.band.get("id") == "chaos-streets-dwarf-treasure-hunters"
-            )
-            for candidate in dwarf_package.special_rules:
-                if candidate.get("kind") == "warband_skill" and (candidate.get("runtime") or {}).get("implemented") == "YES":
-                    rules.setdefault(str(candidate["id"]), {**candidate, "eligibility": [], "applies_to": {}})
-        if "band--renowned-virtue" in build.special_rule_ids:
-            bretonnians=next(candidate for candidate in load_bands("mordheim",root) if candidate.band.get("id")=="bretonnian-knights")
-            for candidate in bretonnians.special_rules:
-                candidate_id=str(candidate.get("id"))
-                if candidate_id.startswith("band--virtue-of-"):
-                    rules.setdefault(candidate_id,{**candidate,"eligibility":[]})
-        mutation_count = sum(rule_id.startswith("band--mutations-") for rule_id in build.special_rule_ids)
-        external_mutation_grants = {
-            "beastmen-raiders": "band--beastmen-special-skills-mutant",
-            "marauders-of-chaos": "band--marauder-special-skills-mutant",
-        }
-        mutation_grant = external_mutation_grants.get(build.band_id)
-        if mutation_count and mutation_grant:
-            if build.special_rule_ids.count(mutation_grant) < mutation_count:
-                raise ValueError(f"each purchased mutation requires {mutation_grant}")
-            for candidate_package in load_bands(build.collection, root):
-                for candidate in candidate_package.special_rules:
-                    candidate_id = str(candidate.get("id"))
-                    if candidate_id.startswith("band--mutations-"):
-                        rules.setdefault(candidate_id, {**candidate, "eligibility": []})
+        rules = selected_rules(build, package, profile, root, automatic_compiler_contracts)
         for rule_id in build.special_rule_ids:
             rule = rules.get(rule_id)
             if rule is None:
                 raise ValueError(f"special rule is not available to {build.band_id}: {rule_id}")
-            eligible = set(rule.get("eligibility") or ())
-            if package is not None and eligible and build.profile_id not in eligible:
-                raise ValueError(f"special rule is not available to {build.band_id}/{build.profile_id}: {rule_id}")
-            applicable_profiles = set((rule.get("applies_to") or {}).get("profile_ids") or ())
-            if package is not None and applicable_profiles and build.profile_id not in applicable_profiles:
-                raise ValueError(f"special rule is not available to {build.band_id}/{build.profile_id}: {rule_id}")
-            if rule_id.startswith("band--blessings-of-nurgle-") and build.profile_id != "tainted-ones":
-                raise ValueError(f"special rule is not available to {build.band_id}/{build.profile_id}: {rule_id}")
-            native_virtue = package is not None and any(
-                candidate.get("id") == rule_id for candidate in package.special_rules
-            )
-            if (rule_id.startswith("band--virtue-of-") and not native_virtue
-                    and "band--renowned-virtue" not in build.special_rule_ids):
-                raise ValueError("a foreign Bretonnian Virtue requires Renowned Virtue")
+            validate_special_rule(build, package, profile, rule, traits.get("starting_skills", ()), "recipients")
             runtime = rule.get("runtime") or {}
             if runtime.get("implemented") != "YES":
                 reason = next((str(effect.get("reason")) for effect in runtime.get("effects") or () if effect.get("reason")), "no executable binding")
                 raise ValueError(f"special rule is outside the executable duel runtime: {rule_id}: {reason}")
             if runtime.get("grant") != "selectable":
                 raise ValueError(f"special rule is not selectable: {rule_id}")
-            if (rule_id == "band--clan-pestilens-special-skills-ignore-pain"
-                    and "skill.resilient" not in build.skill_ids
-                    and "skill.resilient" not in traits.get("starting_skills", ())):
-                raise ValueError("Ignore Pain requires Resilient")
+            validate_special_rule(build, package, profile, rule, traits.get("starting_skills", ()), "prerequisites")
             bindings = runtime_bindings(rule)
             if not bindings:
                 raise ValueError(f"special rule has no executable contract: {rule_id}")
-            # Special-skill access also applies when the skill compiles to a
-            # trait (e.g. Shaggy Hide), not just a skill.* mechanic.
-            selects_warband_skill = rule.get("kind") == "warband_skill" or any(
-                binding.get("kind") == "mechanic" and str(binding.get("id", "")).startswith("skill.")
-                for binding in bindings
-            )
-            if (
-                package is not None
-                and selects_warband_skill
-                and rule.get("applies_to", {}).get("band") is True
-                and not eligible
-                and "special" not in set(profile.get("skill_access") or ())
-            ):
-                raise ValueError(
-                    f"special rule is not available to {build.band_id}/{build.profile_id}: {rule_id}"
-                )
+            validate_special_rule(build, package, profile, rule, traits.get("starting_skills", ()), "access")
             selected_special_mechanics.extend(str(binding["id"]) for binding in bindings if binding.get("kind") == "mechanic")
             # Editorial variants sharing Sword Master do not share every condition.
             parry_variant = {
@@ -158,10 +152,15 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
             for binding in (binding for binding in bindings if binding.get("id") == "profile.characteristics"):
                 parameters = binding.get("parameters") or {}
                 profile_ids = set(parameters.get("profile_ids") or ())
+                # A binding addressed to other profiles is not applied and must
+                # not impose any characteristic requirement on this one.
                 if profile_ids and build.profile_id not in profile_ids:
                     continue
-                for stat, bonus in (parameters.get("bonuses") or {}).items():
-                    stat_bonuses[str(stat)] = stat_bonuses.get(str(stat), 0) + int(bonus)
+                for stat, bonus in _characteristic_bonus_block(
+                    parameters.get("bonuses"),
+                    source=f"{rule_id} binding {binding.get('id')}",
+                ).items():
+                    stat_bonuses[stat] = stat_bonuses.get(stat, 0) + bonus
             for binding in (binding for binding in bindings if binding.get("kind") == "trait"):
                 key = str(binding["id"]).removeprefix("trait.").replace("-", "_")
                 traits[key] = (binding.get("parameters") or {}).get("value")
@@ -177,16 +176,16 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
                         raise ValueError(f"special rule has no executable compiler contract: {rule_id}")
                     selected_special_effects = merge_effects(selected_special_effects, EffectSet(**definition.get("effects", {})))
                     traits.update(definition.get("traits", {}))
-                    for stat, bonus in definition.get("stats", {}).items():
+                    for stat, bonus in _characteristic_bonus_block(
+                        definition.get("stats"),
+                        source=f"{rule_id} compiler contract",
+                    ).items():
                         stat_bonuses[stat] = stat_bonuses.get(stat, 0) + bonus
-    if stat_bonuses:
-        characteristics = Characteristics(**{
-            field.name: getattr(characteristics, field.name) + stat_bonuses.get(field.name, 0)
-            for field in fields(Characteristics)
-        })
+    characteristics = _apply_characteristic_bonuses(characteristics, stat_bonuses)
     if traits.get("mark_of_onogal_the_crow") and build.profile_id == "marauder-chieftain":
         characteristics = Characteristics(**{
-            field.name: getattr(characteristics, field.name) + (1 if field.name == "toughness" else 0)
+            field.name: (getattr(characteristics, field.name) + (1 if field.name == "toughness" else 0)
+                         if getattr(characteristics, field.name) is not None else None)
             for field in fields(Characteristics)
         })
     errors = validate_execution_contract(build.ruleset, root)
@@ -205,7 +204,7 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         main_weapon_id = "weapon.fist"
     if (profile is not None and build.main_weapon_id=="weapon.dagger"
             and main_weapon_id=="weapon.dagger"):
-        allowed=_profile_allowed_mechanics(package,profile,mechanics,build.ruleset,root)
+        allowed=set(desktop_call("equipment", build, root, package=package, profile=profile))
         fixed=set(profile.get("fixed_equipment") or ())
         if fixed:
             weapon_ids=sorted(mid for mid in allowed if mid.startswith("weapon."))
@@ -217,59 +216,60 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     selected = [main_weapon_id,build.armour_id,build.main_material_id,*build.defence_ids,*build.skill_ids,*build.preparation_ids]
     selected += [x for x in (build.off_hand_id,build.off_material_id,build.main_poison_id,build.off_poison_id,build.extra_hand_id) if x]
     unknown = [x for x in selected if x not in mechanics and x not in excluded]
+    if package is not None and any(x in build.skill_ids for x in unknown):
+        # Legality and executable support are separate: an unimplemented member
+        # of a published named table is not an unknown catalogue identifier.
+        legal = desktop_call("skillChoices", build, root, package=package, profile=profile)
+        pending = [x for x in unknown if x in build.skill_ids and legal.get(x)]
+        if pending:
+            raise ValueError(f"named skills have no executable duel mechanic: {pending}")
     if unknown: raise KeyError(f"unknown mechanic IDs: {unknown}")
-    main_row = mechanics[main_weapon_id]
-    if not main_row.get("main_hand",False): raise ValueError("illegal main-hand selection")
     compiler_contracts=automatic_compiler_contracts|selected_compiler_contracts
     compiler_bindings=(*automatic_compiler_bindings,*selected_compiler_bindings)
     if "compiler.lizardmen-scaly-skin" in compiler_contracts:
         natural=4 if build.profile_id=="kroxigor" else 5 if str(build.profile_id).startswith("saurus") else 6
+        # The shared contract prints the band default; a clause that names the
+        # saved profiles overrides that default for exactly those profiles
+        # (Fimir Warriors 5+ while the rest of the band keeps 6+).  Only this
+        # binding consumes the value, and a malformed one is refused here
+        # instead of silently compiling a wrong save.
+        for binding in compiler_bindings:
+            parameters=binding.get("parameters") or {}
+            if (binding.get("id")!="compiler.lizardmen-scaly-skin"
+                    or build.profile_id not in (parameters.get("profile_ids") or ())):
+                continue
+            value=parameters.get("value")
+            if isinstance(value,bool) or not isinstance(value,int) or not 2<=value<=7:
+                raise ValueError(
+                    f"compiler.lizardmen-scaly-skin prints an invalid natural armour save "
+                    f"for {build.profile_id}: {value!r}"
+                )
+            natural=value
         traits.update({"natural_armour_save":natural,"natural_armour_stacks":True,"natural_armour_worst_save":6})
-    if "band--clan-pestilens-special-skills-contagious" in build.special_rule_ids:
-        if "band--clan-pestilens-special-skills-rotten-body" not in build.special_rule_ids:
-            raise ValueError("Contagious requires Rotten Body")
-    if "band--renowned-virtue" in build.special_rule_ids:
-        virtues=[rule_id for rule_id in build.special_rule_ids if rule_id.startswith("band--virtue-of-")]
-        if len(virtues)!=1:raise ValueError("Renowned Virtue requires exactly one Bretonnian Virtue")
-    if build.off_hand_id:
-        off_row = mechanics[build.off_hand_id]
-        if build.off_hand_id.startswith("weapon.") and not off_row.get("off_hand",False): raise ValueError("illegal off-hand selection")
-        arms_master=bool({"compiler.ignore-difficult-to-use-restrictions","compiler.master-of-arms"}&compiler_contracts)
-        if (main_row.get("hands") == 2 or main_row.get("paired")) and not arms_master: raise ValueError("main weapon occupies both hands")
-        restricted_off_hands = {
-            "weapon.morning-star": set(),
-            "weapon.natural-attacks": set(),
-            "weapon.fist": set(),
-            "weapon.spear": {"defence.shield", "defence.buckler"},
-            "weapon.broadsword": {"defence.shield", "defence.kite-shield"},
-            "weapon.squig-prodder": {"defence.shield", "weapon.spiked-gauntlet"},
-            "weapon.boar-spear": {"defence.shield", "defence.buckler"},
-        }
-        if main_weapon_id in restricted_off_hands and build.off_hand_id not in restricted_off_hands[main_weapon_id]:
-            raise ValueError(f"{main_weapon_id} cannot be combined with {build.off_hand_id}")
-        if build.armour_id in {"armour.toughened-leathers", "armour.ninja-robes"} and build.off_hand_id in {"defence.shield", "defence.kite-shield"}:
-            raise ValueError("toughened leathers cannot be combined with a shield")
-        if build.armour_id in {"armour.wizard-s-robe", "armour.eshin-assassin-robes"} and build.off_hand_id in {"defence.shield", "defence.buckler", "defence.kite-shield"}:
-            raise ValueError(f"{build.armour_id} cannot be combined with other armour except a helmet")
+    validate_loadout(build, main_weapon_id, mechanics, compiler_contracts, selected_special_mechanics, "hands")
     if build.armour_id == "armour.cathayan-quilted-silk":
         raise ValueError("Cathayan quilted silk is an armour overlay and belongs in defence_ids")
     handed={"defence.shield","defence.buckler","defence.kite-shield"}
     if handed.intersection(build.defence_ids):raise ValueError("hand-held defences belong in off_hand_id")
     if package is not None:_validate_profile_selections(
-        build,package,profile,mechanics,root,main_weapon_id,
+        build,package,profile,root,main_weapon_id,
         (*selected_profile_bindings, *automatic_profile_bindings),compiler_contracts,compiler_bindings)
+    if package is not None and build.owned_item_ids is not None:
+        facts = configuration_context(build, package, profile, root=root, possession=build.owned_item_ids,
+            slots={"main_weapon_id": main_weapon_id, "off_hand_id": build.off_hand_id,
+                   "extra_hand_id": build.extra_hand_id, "armour_id": build.armour_id,
+                   "defence_ids": list(build.defence_ids)})
+        issues = construction_call("validateConstruction", build, facts, root=root)
+        blocked = [issue["message"] for issue in issues if not call("issueIsInformational", issue["code"])]
+        if blocked:
+            raise ValueError("; ".join(blocked))
     requested=set(build.skill_ids)|set(build.preparation_ids)|set(build.defence_ids)
     if build.main_weapon_id:requested.add(build.main_weapon_id)
     if build.off_hand_id:requested.add(build.off_hand_id)
     unavailable=sorted(requested&excluded)
     if unavailable:raise ValueError(f"mechanics are outside the one-against-one runtime: {unavailable}")
-    if "compiler.berserker-incompatible-with-ferocious-charge" in compiler_contracts and "skill.ferocious-charge" in selected_special_mechanics:
-        raise ValueError("Berserker may not be combined with Ferocious Charge")
+    validate_loadout(build, main_weapon_id, mechanics, compiler_contracts, selected_special_mechanics, "skills")
     if "compiler.censer-bearer-loadout" in selected_compiler_contracts:
-        if "mechanic.black-hunger" not in selected_special_mechanics:
-            raise ValueError("Censer Bearer requires Black Hunger")
-        if main_weapon_id!="weapon.censer" or build.off_hand_id:
-            raise ValueError("Censer Bearer may use only a Censer in close combat")
         traits["frenzy"]=True
     unknown_traits=set(traits)-set(TRAIT_TYPES)
     unknown_overrides=set(build.trait_overrides)-set(TRAIT_TYPES)
@@ -302,7 +302,8 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     for skill_id in traits.get("starting_skills") or ():
         if skill_id not in effects: raise ValueError(f"profile references unknown starting skill ID: {skill_id}")
         global_effects = apply_execution_effects(global_effects, (skill_id,), effects, "passive", "fighter")
-    trait_tags=tuple(key for key,value in traits.items() if value is True)
+    trait_tags=tuple("trait.spectral-touch" if key == "spectral_touch" else key
+                     for key,value in traits.items() if value is True)
     if traits.get("magical_attacks"):
         trait_tags=(*trait_tags,"attack.magical")
     if package is not None:
@@ -350,6 +351,9 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
                            if build.main_poison_id else None)
     if build.main_poison_id: main_ids.append(build.main_poison_id)
     main_effect=apply_execution_effects(EffectSet(), main_ids, effects, "attack", "attack")
+    vomit_attack = (apply_execution_effects(
+        EffectSet(), ("weapon.vomit-attack",), effects, "attack", "attack")
+        if "weapon.vomit-attack" in selected_special_mechanics else None)
     off_effect=apply_execution_effects(EffectSet(), (build.off_hand_id,), effects, "attack", "attack") if build.off_hand_id else None
     off_without_poison = None
     if off_effect and build.off_hand_id.startswith("weapon."):
@@ -380,20 +384,15 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     if "band--mutations-great-claw" in build.special_rule_ids:
         extra_attacks.append(EffectSet(tags=("rule.great-claw",), strength_bonus=1))
     if "band--shield-bash" in build.special_rule_ids:
-        if not (build.off_hand_id in {"defence.shield", "defence.kite-shield"}): raise ValueError("Shield Bash requires a shield or kite shield")
         extra_attacks.append(merge_effects(effects["weapon.mace"].effect, EffectSet(strength_bonus=-1)))
+    validate_additional_equipment(build)
     if build.extra_hand_id:
-        if not any(rule_id in build.special_rule_ids for rule_id in ("band--mutations-extra-arm", "band--skaven-special-skills-tail-fighting")):
-            raise ValueError("an extra hand requires Extra Arm or Tail Fighting")
-        if build.extra_hand_id == "defence.kite-shield":
-            raise ValueError("the extra hand may not carry a kite shield")
         extra=effects[build.extra_hand_id].effect
         if build.extra_hand_id.startswith("weapon."):
             extra_attacks.append(extra)
         elif build.extra_hand_id in {"defence.shield", "defence.buckler", "defence.kite-shield"}:
             global_effects=merge_effects(global_effects, extra)
             if "band--mutations-extra-arm" in build.special_rule_ids: extra_attacks.append(effects["weapon.natural-attacks"].effect)
-        else: raise ValueError("the extra hand must hold a one-handed weapon, shield, or buckler")
     if "band--sacred-mark-venom-glands" in build.special_rule_ids:
         main_effect=EffectSet(tags=("weapon.natural-attacks", "rule.venom-glands"), target_armour_bonus=1, injury_modifier=1)
         main_without_poison = None
@@ -401,10 +400,6 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     if off_effect is not None:armour_save-=off_effect.armour_save_bonus
     if build.off_hand_id == "defence.kite-shield" and build.mounted:armour_save+=1
     if "defence.sea-dragon-cloak" in build.defence_ids:
-        if (build.armour_id != "armour.no-armour"
-                or build.off_hand_id in {"defence.shield", "defence.buckler", "defence.kite-shield"}
-                or set(build.defence_ids) & {"defence.helmet", "defence.cooking-pot-helmet"}):
-            raise ValueError("Sea Dragon cloak cannot be combined with other armour")
         armour_save=min(armour_save,5)
     if "armour.cathayan-quilted-silk" in build.defence_ids:armour_save-=1
     natural_armour_save=int(traits.get("natural_armour_save") or 7)
@@ -418,4 +413,4 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     missile_weapon_limit=1 if "compiler.bow-discipline" in compiler_contracts else 5 if "compiler.master-of-throwing-weapons" in compiler_contracts else 2
     construction_tags=tuple(sorted(compiler_contracts))
     ballistic_skill=int((profile.get("characteristics") or {}).get("BS") or 0) if profile is not None else 0
-    return CompiledFighter(f"{build.band_id or 'custom'}:{build.profile_id or 'custom'}",characteristics,main_effect,off_effect,global_effects,max(1,armour_save),4 if "defence.helmet" in build.defence_ids else 5 if "defence.cooking-pot-helmet" in build.defence_ids else 7,natural_armour_save,bool(build.off_hand_id and build.off_hand_id.startswith("weapon.")),bool(traits.get("natural_armour_unmodified",False)),int(traits.get("injury_profile") or 0),random_characteristics,natural_armour_worst_save=int(traits.get("natural_armour_worst_save") or 7),extra_attacks=tuple(extra_attacks),missile_weapon_limit=missile_weapon_limit,ballistic_skill=ballistic_skill,construction_tags=construction_tags,main_weapon_without_poison=main_without_poison,off_hand_without_poison=off_without_poison,mounted=build.mounted,unarmed_weapon=effects["weapon.fist"].effect)
+    return CompiledFighter(f"{build.band_id or 'custom'}:{build.profile_id or 'custom'}",characteristics,main_effect,off_effect,global_effects,max(1,armour_save),4 if "defence.helmet" in build.defence_ids else 5 if "defence.cooking-pot-helmet" in build.defence_ids else 7,natural_armour_save,bool(build.off_hand_id and build.off_hand_id.startswith("weapon.")),bool(traits.get("natural_armour_unmodified",False)),int(traits.get("injury_profile") or 0),random_characteristics,natural_armour_worst_save=int(traits.get("natural_armour_worst_save") or 7),extra_attacks=tuple(extra_attacks),missile_weapon_limit=missile_weapon_limit,ballistic_skill=ballistic_skill,construction_tags=construction_tags,main_weapon_without_poison=main_without_poison,off_hand_without_poison=off_without_poison,mounted=build.mounted,unarmed_weapon=effects["weapon.fist"].effect,vomit_attack=vomit_attack)

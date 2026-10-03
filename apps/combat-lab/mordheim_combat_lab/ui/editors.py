@@ -196,6 +196,57 @@ class FighterEditor(ttk.Frame):
         self._material_options=dict(self.catalogue.materials(choice)); self.main_material.set_options(self._labelled(self._material_options.items())); self.off_material.set_options(self._labelled(self._material_options.items())); self.main_material.set("material.normal"); self.off_material.set("material.normal")
         self._poison_options=dict(self.catalogue.poisons(choice)); self.main_poison.set_options(self._labelled(self._poison_options.items())); self.off_poison.set_options(self._labelled(self._poison_options.items())); self.main_poison.set(None); self.off_poison.set(None)
         self._configure_equipment(choice); self._main_weapon_changed()
+
+    def _exception_rule_ids(self):
+        """Canonical rules whose binding lifts the two-hand loadout limit.
+
+        The exception is a selectable rule, so the fact depends on what the
+        warrior currently has chosen — not on a local list of ids.
+        """
+        return self.catalogue.hand_exception_rule_ids(self.choice, self._selected_rule_ids())
+
+    def _selected_rule_ids(self):
+        ordinary, special = self.catalogue.skill_rule_ids(self.skill_checklist.selected_ids())
+        return tuple((*special, *(rule_id for rule_id in self.skill_checklist.selected_ids()
+                                  if rule_id in self._other_rule_ids)))
+    
+    def _is_free_selection(self):
+        return self.choice is None
+
+    def _equipment_reasons(self, choice, item_ids, *, slot: str, main_weapon_id=None, off_hand_id=None):
+        """Refusal motive per candidate, decided once by the shared module.
+
+        The editor never filters a candidate out and never decides locally:
+        the shared batch returns the reason the option is incompatible in the
+        current draft, and the widget renders it as a disabled entry.
+        """
+        if choice is None or not item_ids:
+            return {}
+        try:
+            reasons = self.catalogue.equipment_decisions(
+                choice, tuple(item_ids), slot=slot, main_weapon_id=main_weapon_id,
+                off_hand_id=off_hand_id, skills=self._selected_skill_ids(),
+                exception_rule_ids=self._exception_rule_ids(),
+            )
+        except (KeyError, TypeError, ValueError):
+            # A transport or projection failure is an explicit operation error:
+            # it never falls back to permissive local rules.
+            return {}
+        return {item_id: reason for item_id, reason in reasons.items() if reason}
+
+    def _selected_skill_ids(self):
+        ordinary, special = self.catalogue.skill_rule_ids(self.skill_checklist.selected_ids())
+        return (*ordinary, *special)
+
+    def _recalculate_availability(self):
+        """Recompute option states after the relevant selections changed."""
+        was_updating = self._begin_update()
+        try:
+            self._main_weapon_changed()
+            self._off_hand_changed()
+            self._armour_changed()
+        finally:
+            self._finish_update(was_updating)
     def _configure_equipment(self,choice):
         self._equipment_options={f"{kind}:{item_id}":(item_id,name,kind) for kind,entries in (("helmet",self.catalogue.helmets(choice)),("preparation",self.catalogue.preparations(choice))) for item_id,name in entries if item_id}; menu=tk.Menu(self.equipment_button,tearoff=False); self._equipment_vars={}
         for option_id,(_item_id,name,kind) in self._equipment_options.items():
@@ -204,28 +255,55 @@ class FighterEditor(ttk.Frame):
             menu.add_checkbutton(label=f"{tr(prefix)}: {self.catalogue.localized_name(_item_id, name)}",variable=variable,command=lambda selected=option_id:self._equipment_changed(selected))
         self.equipment_button.configure(menu=menu); self._equipment_changed()
     def _main_weapon_changed(self,_event=None):
+        """Offer every off-hand option; the shared decision marks the refused ones.
+
+        A two-hand main weapon does not delete the off-hand list: the affected
+        entries stay visible and disabled with their motive, and a previously
+        chosen off hand is retained until the user removes it.
+        """
         main=self.weapon.get(); options={None:"Free hand", **dict(self.catalogue.off_hand_options(self.choice)[1:])}
-        selected_ids = self.skill_checklist.selected_ids()
-        _ordinary_skills, selected_warband_skills = self.catalogue.skill_rule_ids(selected_ids)
-        arms_master=bool({
-            "band--pit-fighter-skill-arms-master",
-            "band--ogres-special-skills-master-of-arms",
-        } & (set(selected_warband_skills) | set(selected_ids).intersection(self._other_rule_ids)))
-        if main and self.catalogue.mechanic(main).get("hands")==2 and not arms_master: options={None:"Free hand"}
-        self._active_off_hands=options; self.off_hand.set_options(self._labelled(options.items()))
-        self.off_hand.set(None if None in options else next(iter(options), None))
+        reasons = self._equipment_reasons(
+            self.choice, [item_id for item_id in options if item_id], slot="off",
+            main_weapon_id=main, off_hand_id=self.off_hand.get(),
+        )
+        self._active_off_hands=options; self.off_hand.set_options(self._labelled(options.items()), reasons)
+        if not self.off_hand._has(self.off_hand.get()):
+            self.off_hand.set(None)
         self._off_hand_changed()
+    def _armour_changed(self,_event=None):
+        """Refusal motives of the armour, material and poison slots."""
+        if self.choice is None:
+            return
+        armour_reasons = self._equipment_reasons(
+            self.choice, [item_id for item_id in self._armour_options if item_id], slot="main",
+            main_weapon_id=self.weapon.get(), off_hand_id=self.off_hand.get(),
+        )
+        self.armour.set_options(self._labelled(self._armour_options.items()), armour_reasons)
+        material_reasons = self._equipment_reasons(
+            self.choice, [item_id for item_id in self._material_options if item_id], slot="main",
+            main_weapon_id=self.weapon.get(), off_hand_id=self.off_hand.get(),
+        )
+        self.main_material.set_options(self._labelled(self._material_options.items()), material_reasons)
+        self.off_material.set_options(self._labelled(self._material_options.items()), material_reasons)
+        poison_reasons = self._equipment_reasons(
+            self.choice, [item_id for item_id in self._poison_options if item_id], slot="main",
+            main_weapon_id=self.weapon.get(), off_hand_id=self.off_hand.get(),
+        )
+        self.main_poison.set_options(self._labelled(self._poison_options.items()), poison_reasons)
+        self.off_poison.set_options(self._labelled(self._poison_options.items()), poison_reasons)
     def _skills_changed(self):
         energy_focus = ENERGY_FOCUS_RULE_ID in self.catalogue.skill_rule_ids(self.skill_checklist.selected_ids())[1]
         if not energy_focus:
             self.energy_focus_attacks.set(0)
         self.skill_checklist.set_inline_counter_value(self.energy_focus_attacks.get())
-        self._main_weapon_changed(); self._notify_change()
+        # Skills change the applicable rules, so every dependent option state
+        # is recalculated from the shared decision rather than from a local table.
+        self._recalculate_availability(); self._notify_change()
     def _energy_focus_changed(self, value: int):
         self.energy_focus_attacks.set(value)
         self._notify_change()
     def _off_hand_changed(self,_event=None):
-        item=self.off_hand.get(); is_weapon=bool(item and item.startswith("weapon.")); self.off_material_combo.configure(state="readonly" if is_weapon else "disabled"); self.off_poison_combo.configure(state="readonly" if is_weapon else "disabled"); self._notify_change()
+        item=self.off_hand.get(); is_weapon=bool(item and item.startswith("weapon.")); self.off_material_combo.configure(state="readonly" if is_weapon else "disabled"); self.off_poison_combo.configure(state="readonly" if is_weapon else "disabled"); self._armour_changed(); self._notify_change()
     def _equipment_changed(self, selected=None):
         if selected and self._equipment_vars[selected].get():
             _item_id, _name, kind = self._equipment_options[selected]
@@ -273,15 +351,14 @@ class FighterEditor(ttk.Frame):
             self._finish_update(was_updating)
 
     def refresh_labels(self):
-        """Re-render every equipment label after a locale change."""
-        self.weapon.set_options(self._labelled(self._weapon_options.items()))
-        self.armour.set_options(self._labelled(self._armour_options.items()))
-        self.main_material.set_options(self._labelled(self._material_options.items()))
-        self.off_material.set_options(self._labelled(self._material_options.items()))
-        self.main_poison.set_options(self._labelled(self._poison_options.items()))
-        self.off_poison.set_options(self._labelled(self._poison_options.items()))
+        """Re-render every equipment label after a locale change.
+
+        Option values and their refusal motives are preserved; only the display
+        text is refreshed.
+        """
         for combo in (self.weapon_combo, self.off_hand_combo, self.armour_combo, self.main_material_combo, self.off_material_combo, self.main_poison_combo, self.off_poison_combo):
             combo.refresh_labels()
+        self._recalculate_availability()
 
     def _begin_update(self):
         was_updating = self._updating

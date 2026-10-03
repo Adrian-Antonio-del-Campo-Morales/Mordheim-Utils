@@ -13,12 +13,22 @@ from tkinter import ttk
 
 
 class ChoiceVar:
-    """Holds a data value and mirrors its localized label into ``variable``."""
+    """Holds a data value and mirrors its localized label into ``variable``.
+
+    An option may carry a *reason*: the shared eligibility module refused it in
+    the current context. Incompatible options stay visible and disabled with
+    that reason instead of disappearing, and the current selection is never
+    changed silently — it stays until the user picks another value or clears it.
+    """
+
+    #: Suffix appended to the disabled label so the motive is visible inline.
+    REASON_SEPARATOR = " — "
 
     def __init__(self, value=None, master=None):
         self.value = value
         self.variable = tk.StringVar(master=master, value="")
-        self._options: dict[str, str] = {}
+        self._options: dict[str | None, str] = {}
+        self._reasons: dict[str | None, str] = {}
         self._boxes: list["ChoiceBox"] = []
 
     def subscribe(self, box: "ChoiceBox"):
@@ -26,17 +36,37 @@ class ChoiceVar:
         self._boxes.append(box)
         box._sync_values()
 
-    def set_options(self, options: dict[str | None, str]):
-        """Replace the choices. ``options`` maps data value → label key."""
+    def set_options(self, options: dict[str | None, str], reasons: dict[str | None, str] | None = None):
+        """Replace the choices. ``options`` maps data value → label key.
+
+        ``reasons`` maps a data value → the shared decision's motive; those
+        entries are disabled in the dropdown. The current value is retained
+        even when it is refused, so an invalid existing selection remains
+        visible and removable.
+        """
         self._options = dict(options)
-        self.variable.set(tr(self._options.get(self.value)) if self._has(self.value) else "")
+        self._reasons = {key: value for key, value in (reasons or {}).items() if value}
+        self.variable.set(self.display_label(self.value) if self._has(self.value) else "")
         for box in self._boxes:
             box._sync_values()
+
+    def display_label(self, value) -> str:
+        """Localized label of one value, with its refusal motive when disabled."""
+        label = tr(self._options.get(value, ""))
+        reason = self._reasons.get(value, "").strip()
+        return f"{label}{self.REASON_SEPARATOR}{reason}" if reason else label
+
+    def option_labels(self) -> tuple[str, ...]:
+        return tuple(self.display_label(value) for value in self._options)
+
+    def reason(self, value=None) -> str:
+        """Refusal motive of one value, or of the current selection."""
+        return self._reasons.get(self.value if value is None else value, "")
 
     def set(self, value):
         self.value = value
         if self._has(value):
-            self.variable.set(tr(self._options[value]))
+            self.variable.set(self.display_label(value))
 
     def get(self):
         return self.value
@@ -45,8 +75,8 @@ class ChoiceVar:
         return self.variable.get()
 
     def set_by_label(self, label):
-        for value, key in self._options.items():
-            if tr(key) == label:
+        for value in self._options:
+            if self.display_label(value) == label or tr(self._options[value]) == label:
                 self.set(value)
                 return
 
@@ -74,10 +104,11 @@ class ChoiceBox(ttk.Combobox):
         """Mirror the ChoiceVar options into the dropdown list.
 
         The combobox only shows what ``values`` contains; a change that
-        updates just the displayed variable leaves an empty dropdown.
+        updates just the displayed variable leaves an empty dropdown. A
+        refused option keeps its place and its motive in the label.
         """
         try:
-            self.configure(values=tuple(tr(key) for key in self._choice._options.values()))
+            self.configure(values=self._choice.option_labels())
         except tk.TclError:
             pass  # widget already destroyed during a UI rebuild
 

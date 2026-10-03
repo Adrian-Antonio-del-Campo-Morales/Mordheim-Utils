@@ -1,0 +1,582 @@
+[
+  {
+    "name": "undeclared access is permissive",
+    "operation": "equipmentIssue",
+    "args": [
+      {
+        "profile": {
+          "band_id": "test-band",
+          "profile_id": "hero",
+          "fixed_equipment": [],
+          "equipment_access": null,
+          "equipment_forbids": [],
+          "skill_access": [
+            "combat"
+          ],
+          "skill_lists": []
+        },
+        "item_id": "pistol",
+        "item": {
+          "kind": "ranged-weapon",
+          "mechanic_id": "weapon.pistol",
+          "tags": [
+            "blackpowder"
+          ]
+        }
+      }
+    ],
+    "codes": []
+  },
+  {
+    "name": "declared empty access rejects",
+    "operation": "equipmentIssue",
+    "args": [
+      {
+        "profile": {
+          "band_id": "test-band",
+          "profile_id": "hero",
+          "fixed_equipment": [],
+          "equipment_access": [],
+          "equipment_forbids": [],
+          "skill_access": [
+            "combat"
+          ],
+          "skill_lists": []
+        },
+        "item_id": "pistol",
+        "item": {
+          "kind": "ranged-weapon",
+          "mechanic_id": "weapon.pistol",
+          "tags": [
+            "blackpowder"
+          ]
+        }
+      }
+    ],
+    "codes": [
+      "equipment_not_permitted"
+    ]
+  },
+  {
+    "name": "offered item permits",
+    "operation": "equipmentIssue",
+    "args": [
+      {
+        "profile": {
+          "band_id": "test-band",
+          "profile_id": "hero",
+          "fixed_equipment": [],
+          "equipment_access": [
+            {
+              "item_id": "pistol"
+            }
+          ],
+          "equipment_forbids": [],
+          "skill_access": [
+            "combat"
+          ],
+          "skill_lists": []
+        },
+        "item_id": "pistol",
+        "item": {
+          "kind": "ranged-weapon",
+          "mechanic_id": "weapon.pistol",
+          "tags": [
+            "blackpowder"
+          ]
+        }
+      }
+    ],
+    "codes": []
+  },
+  {
+    "name": "fixed equipment retains its exemption",
+    "operation": "equipmentIssue",
+    "args": [
+      {
+        "profile": {
+          "band_id": "test-band",
+          "profile_id": "hero",
+          "fixed_equipment": [
+            "pistol"
+          ],
+          "equipment_access": [],
+          "equipment_forbids": [
+            "blackpowder"
+          ],
+          "skill_access": [
+            "combat"
+          ],
+          "skill_lists": []
+        },
+        "item_id": "pistol",
+        "item": {
+          "kind": "ranged-weapon",
+          "mechanic_id": "weapon.pistol",
+          "tags": [
+            "blackpowder"
+          ]
+        }
+      }
+    ],
+    "codes": []
+  },
+  {
+    "name": "tag prohibition rejects",
+    "operation": "equipmentIssue",
+    "args": [
+      {
+        "profile": {
+          "band_id": "test-band",
+          "profile_id": "hero",
+          "fixed_equipment": [],
+          "equipment_access": null,
+          "equipment_forbids": [
+            "blackpowder"
+          ],
+          "skill_access": [
+            "combat"
+          ],
+          "skill_lists": []
+        },
+        "item_id": "pistol",
+        "item": {
+          "kind": "ranged-weapon",
+          "mechanic_id": "weapon.pistol",
+          "tags": [
+            "blackpowder"
+          ]
+        }
+      }
+    ],
+    "codes": [
+      "equipment_forbidden"
+    ]
+  },
+  {
+    "name": "unknown prohibition remains pending",
+    "operation": "equipmentIssue",
+    "args": [
+      {
+        "profile": {
+          "band_id": "test-band",
+          "profile_id": "hero",
+          "fixed_equipment": [],
+          "equipment_access": null,
+          "equipment_forbids": [
+            "prose-only"
+          ],
+          "skill_access": [
+            "combat"
+          ],
+          "skill_lists": []
+        },
+        "item_id": "pistol",
+        "item": {
+          "kind": "ranged-weapon",
+          "mechanic_id": "weapon.pistol",
+          "tags": [
+            "blackpowder"
+          ]
+        }
+      }
+    ],
+    "codes": [
+      "construction_clause_unstructured"
+    ]
+  },
+  {
+    "name": "offered missing record remains pending",
+    "operation": "equipmentIssue",
+    "args": [
+      {
+        "profile": {
+          "band_id": "test-band",
+          "profile_id": "hero",
+          "fixed_equipment": [],
+          "equipment_access": [
+            {
+              "item_id": "pistol"
+            }
+          ],
+          "equipment_forbids": [],
+          "skill_access": [
+            "combat"
+          ],
+          "skill_lists": []
+        },
+        "item_id": "pistol",
+        "item": null
+      }
+    ],
+    "codes": [
+      "equipment_unknown_item"
+    ]
+  },
+  {
+    "name": "inactive variant rejects",
+    "operation": "equipmentIssue",
+    "args": [
+      {
+        "profile": {
+          "band_id": "test-band",
+          "profile_id": "hero",
+          "fixed_equipment": [],
+          "equipment_access": [
+            {
+              "item_id": "pistol",
+              "list_id": "foreign"
+            }
+          ],
+          "equipment_forbids": [],
+          "skill_access": [
+            "combat"
+          ],
+          "skill_lists": []
+        },
+        "item_id": "pistol",
+        "item": {
+          "kind": "ranged-weapon",
+          "mechanic_id": "weapon.pistol",
+          "tags": [
+            "blackpowder"
+          ]
+        },
+        "gated_lists": [
+          "foreign"
+        ]
+      }
+    ],
+    "codes": [
+      "equipment_not_permitted"
+    ]
+  },
+  {
+    "name": "active variant permits",
+    "operation": "equipmentIssue",
+    "args": [
+      {
+        "profile": {
+          "band_id": "test-band",
+          "profile_id": "hero",
+          "fixed_equipment": [],
+          "equipment_access": [
+            {
+              "item_id": "pistol",
+              "list_id": "foreign"
+            }
+          ],
+          "equipment_forbids": [],
+          "skill_access": [
+            "combat"
+          ],
+          "skill_lists": []
+        },
+        "item_id": "pistol",
+        "item": {
+          "kind": "ranged-weapon",
+          "mechanic_id": "weapon.pistol",
+          "tags": [
+            "blackpowder"
+          ]
+        },
+        "gated_lists": [
+          "foreign"
+        ],
+        "active_lists": [
+          "foreign"
+        ]
+      }
+    ],
+    "codes": []
+  },
+  {
+    "name": "general table permits",
+    "operation": "skillIssue",
+    "args": [
+      {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [
+          "combat"
+        ],
+        "skill_lists": []
+      },
+      {
+        "id": "skill.test",
+        "category": "combat",
+        "kind": "skill"
+      },
+      false
+    ],
+    "codes": []
+  },
+  {
+    "name": "wrong table rejects",
+    "operation": "skillIssue",
+    "args": [
+      {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [
+          "combat"
+        ],
+        "skill_lists": []
+      },
+      {
+        "id": "skill.test",
+        "category": "shooting",
+        "kind": "skill"
+      },
+      false
+    ],
+    "codes": [
+      "skill_not_permitted"
+    ]
+  },
+  {
+    "name": "empty free access permits",
+    "operation": "skillIssue",
+    "args": [
+      {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [],
+        "skill_lists": []
+      },
+      {
+        "id": "skill.test",
+        "category": "combat",
+        "kind": "skill"
+      },
+      false
+    ],
+    "codes": []
+  },
+  {
+    "name": "empty profile access rejects in strict mode",
+    "operation": "skillIssue",
+    "args": [
+      {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [],
+        "skill_lists": []
+      },
+      {
+        "id": "skill.test",
+        "category": "combat",
+        "kind": "skill"
+      },
+      true
+    ],
+    "codes": [
+      "skill_not_permitted"
+    ]
+  },
+  {
+    "name": "special list requires published membership",
+    "operation": "skillIssue",
+    "args": [
+      {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [
+          "special"
+        ],
+        "skill_lists": []
+      },
+      {
+        "id": "skill.test",
+        "category": "special",
+        "kind": "skill"
+      },
+      false
+    ],
+    "codes": [
+      "skill_pending_special_list"
+    ]
+  },
+  {
+    "name": "published special member permits",
+    "operation": "skillIssue",
+    "args": [
+      {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [
+          "special"
+        ],
+        "skill_lists": [
+          {
+            "rule_id": "band--skills",
+            "category": "special",
+            "skills": [
+              "skill.test"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "skill.test",
+        "category": "special",
+        "kind": "skill"
+      },
+      false
+    ],
+    "codes": []
+  },
+  {
+    "name": "outside special list rejects",
+    "operation": "skillIssue",
+    "args": [
+      {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [
+          "special"
+        ],
+        "skill_lists": [
+          {
+            "rule_id": "band--skills",
+            "category": "special",
+            "skills": [
+              "skill.other"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "skill.test",
+        "category": "special",
+        "kind": "skill"
+      },
+      false
+    ],
+    "codes": [
+      "skill_not_permitted"
+    ]
+  },
+  {
+    "name": "equipment set checks both obligations",
+    "operation": "equipmentSetIssues",
+    "args": [
+      {
+        "profile": {
+          "band_id": "test-band",
+          "profile_id": "hero",
+          "fixed_equipment": [],
+          "equipment_access": null,
+          "equipment_forbids": [],
+          "skill_access": [
+            "combat"
+          ],
+          "skill_lists": []
+        },
+        "limits": {
+          "rule_id": "band--kit",
+          "max_missile_weapons": 1,
+          "required_tag": "bow",
+          "exempt_profile_ids": []
+        },
+        "items": [
+          {
+            "item_id": "pistol",
+            "item": {
+              "kind": "ranged-weapon",
+              "mechanic_id": "weapon.pistol",
+              "tags": [
+                "blackpowder"
+              ]
+            }
+          },
+          {
+            "item_id": "pistol-2",
+            "item": {
+              "kind": "ranged-weapon",
+              "mechanic_id": "weapon.pistol",
+              "tags": [
+                "blackpowder"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "codes": [
+      "equipment_limit_exceeded",
+      "equipment_required_missing"
+    ]
+  },
+  {
+    "name": "equipment set exemption",
+    "operation": "equipmentSetIssues",
+    "args": [
+      {
+        "profile": {
+          "band_id": "test-band",
+          "profile_id": "hero",
+          "fixed_equipment": [],
+          "equipment_access": null,
+          "equipment_forbids": [],
+          "skill_access": [
+            "combat"
+          ],
+          "skill_lists": []
+        },
+        "limits": {
+          "rule_id": "band--kit",
+          "max_missile_weapons": 1,
+          "required_tag": "bow",
+          "exempt_profile_ids": [
+            "hero"
+          ]
+        },
+        "items": [
+          {
+            "item_id": "pistol",
+            "item": {
+              "kind": "ranged-weapon",
+              "mechanic_id": "weapon.pistol",
+              "tags": [
+                "blackpowder"
+              ]
+            }
+          },
+          {
+            "item_id": "pistol-2",
+            "item": {
+              "kind": "ranged-weapon",
+              "mechanic_id": "weapon.pistol",
+              "tags": [
+                "blackpowder"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "codes": ["equipment_limit_exceeded"]
+  }
+]

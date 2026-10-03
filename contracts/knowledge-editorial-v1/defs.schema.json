@@ -269,6 +269,10 @@
               "description": "Item tag the member's own equipment must include (`bow` for the compulsory bow of the Outlaw discipline).",
               "$ref": "#/$defs/id"
             },
+            "max_active_one_handed_weapons": {
+              "description": "Maximum simultaneous one-handed weapon positions; owned holstered weapons are not counted.",
+              "type": "integer", "minimum": 0
+            },
             "skills": {
               "description": "Skill ids a bounded band skill list grants; the list is the printed membership, so the whole special catalogue is never granted.",
               "type": "array",

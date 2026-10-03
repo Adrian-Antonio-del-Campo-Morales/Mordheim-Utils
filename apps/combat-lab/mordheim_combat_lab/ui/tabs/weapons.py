@@ -144,6 +144,11 @@ class WeaponAnalysisTab(ttk.Frame):
             raw_workers = int(self.workers.get())
             workers = None if raw_workers < 0 else max(0, raw_workers)  # -1 = automatic
             observe = self._usage_factory("weapons", len(selected)) if self._usage_factory else None
+            # Resolved on the main thread: reading the editor's Tk-backed
+            # facts from the worker is not allowed, and the label shown below
+            # must match the build the compiler actually receives.
+            self._active_choice = getattr(self.candidate_editor, "choice", None)
+            self._active_keeps_off_hand = self._keeps_off_hand(self._active_choice, candidate)
         except (KeyError, TypeError, ValueError) as exc:
             self.status.set(tr("Configuration error: {}").format(exc))
             return
@@ -180,27 +185,58 @@ class WeaponAnalysisTab(ttk.Frame):
             return
         outcome, self._outcome, self._outcome_event = self._outcome, None, None
         if outcome[0] == "finished":
-            self._finished(outcome[1], outcome[2])
+            self._finished(outcome[1], outcome[2], outcome[3], outcome[4])
         elif outcome[0] == "failed":
             self._failed(outcome[1])
         else:
             self._cancelled()
 
+    def _incompatible_candidates(self, choice, candidate, weapon_ids) -> dict[str, str]:
+        """Shared verdict for every proposed weapon, in one batch call.
+
+        Incompatible configurations are skipped with their reason; the module
+        never changes the configured off hand to make a candidate pass, and the
+        warrior's selected equipment is left untouched. `choice` arrives
+        resolved: reading the editor's Tk variables belongs to the main thread.
+        """
+        # A free build declares no band profile: its access stays permissive,
+        # exactly as the editor and the compiler already treat it.
+        if choice is None:
+            return {}
+        proposed = ["weapon.fist" if weapon_id is None else weapon_id for weapon_id in weapon_ids]
+        try:
+            reasons = self.catalogue.equipment_decisions(
+                choice, proposed, slot="main", main_weapon_id=None,
+                off_hand_id=candidate.off_hand_id,
+                skills=tuple((*candidate.skill_ids, *candidate.special_rule_ids)),
+                exception_rule_ids=self.catalogue.hand_exception_rule_ids(
+                    choice, tuple(candidate.special_rule_ids)),
+            )
+        except (KeyError, TypeError, ValueError) as error:
+            self._outcome = ("failed", f"{type(error).__name__}: {error}")
+            return {}
+        return {weapon_id: reasons.get(proposed_id, "") or ""
+                for weapon_id, proposed_id in zip(weapon_ids, proposed)
+                if reasons.get(proposed_id)}
+
     def _compare(self, candidate, enemy, options, settings, cancel_event, workers=0, observe=None) -> None:
         try:
-            by_id = {weapon_id: name for weapon_id, name in options}
-            variants = []
+            incompatible = self._incompatible_candidates(
+                getattr(self, "_active_choice", None), candidate,
+                [weapon_id for weapon_id, _name in options])
+            variants, omitted = [], []
             for weapon_id, name in options:
+                if incompatible.get(weapon_id):
+                    omitted.append((weapon_id, name, incompatible[weapon_id]))
+                    continue
                 main_weapon_id = "weapon.fist" if weapon_id is None else weapon_id
-                off_hand = candidate.off_hand_id
-                if self.catalogue.mechanic(main_weapon_id).get("hands") == 2:
-                    off_hand = None
                 variants.append(ComparisonCandidate(weapon_id, name,
-                    replace(candidate, main_weapon_id=main_weapon_id, off_hand_id=off_hand)))
+                    replace(candidate, main_weapon_id=main_weapon_id)))
             batch = compare_builds(candidate, enemy, variants, settings, cancel_event,
                 lambda completed: self._advance(completed), workers=workers, observe=observe)
             rows = [(row.candidate.id, row.candidate.label, row.win_rate, row.improvement) for row in batch.results]
-            self._outcome = ("finished", rows, settings.simulations)
+            self._outcome = ("finished", rows, settings.simulations, omitted,
+                             getattr(self, "_active_keeps_off_hand", False))
         except SimulationCancelled:
             self._outcome = ("cancelled",)
         except Exception as exc:  # surface the real failure text, never "None"
@@ -208,22 +244,25 @@ class WeaponAnalysisTab(ttk.Frame):
         finally:
             self._outcome_event.set()
 
-    def _finished(self, rows, simulations: int) -> None:
+    def _finished(self, rows, simulations: int, omitted=(), keeps_off_hand: bool = False) -> None:
         for item in self.tree.get_children():
             self.tree.delete(item)
         configured_candidate = self.candidate_editor.build()
         off_hand_id = self.candidate_editor.off_hand.get()
         off_hand_label = self.candidate_editor.catalogue.localized_name(off_hand_id, "Free hand") if off_hand_id else tr("Free hand")
         for weapon_id, name, win_rate, impact in sorted(rows, key=lambda row: row[3], reverse=True):
-            if weapon_id and self.catalogue.mechanic(weapon_id).get("hands") == 2:
-                mode = "two_hand"
-                displayed_off_hand = "—"
-            elif off_hand_id is None:
-                mode, displayed_off_hand = "single", "—"
-            elif weapon_id and off_hand_id and off_hand_id.startswith("weapon."):
-                mode, displayed_off_hand = "dual", off_hand_label
+            # The label describes the configuration actually simulated: this
+            # comparison changes the main weapon only, so a two-hand main
+            # weapon reports no off hand while a second-hand equipment kept by
+            # a canonical exception is reported as retained.
+            main_hands = self.catalogue.mechanic("weapon.fist" if weapon_id is None else weapon_id).get("hands")
+            simulated_off_hand = off_hand_id if (main_hands != 2 or keeps_off_hand) else None
+            if simulated_off_hand is None:
+                mode, displayed_off_hand = ("two_hand", "—") if main_hands == 2 else ("single", "—")
+            elif simulated_off_hand.startswith("weapon."):
+                mode, displayed_off_hand = "dual", self.catalogue.localized_name(simulated_off_hand, simulated_off_hand)
             else:
-                mode, displayed_off_hand = "shield", off_hand_label
+                mode, displayed_off_hand = "shield", self.catalogue.localized_name(simulated_off_hand, simulated_off_hand)
             mode_cells = ["", "", "", ""]
             mode_cells[("single", "shield", "dual", "two_hand").index(mode)] = f"{win_rate:.2f}% ({impact:+.2f}%)"
             cost = 0.0 if weapon_id == configured_candidate.main_weapon_id else self.catalogue.cost(weapon_id, self.candidate_editor.choice)
@@ -233,9 +272,24 @@ class WeaponAnalysisTab(ttk.Frame):
                 name, displayed_off_hand, *mode_cells,
                 f"{win_rate:.2f}% ({impact:+.2f}%)", f"{motta:.2f}" if motta is not None else "—", cost_display, "Current configuration",
             ))
-        self.status.set(tr("Compared {} weapons across {} duels.").format(len(rows), f"{len(rows) * simulations:,}"))
+        message = tr("Compared {} weapons across {} duels.").format(len(rows), f"{len(rows) * simulations:,}")
+        if omitted:
+            message = f"{message} " + tr("Skipped {} incompatible weapons: {}").format(
+                len(omitted), "; ".join(f"{name} ({reason})" for _weapon_id, name, reason in omitted))
+        self.status.set(message)
         self.progress.finish(tr("Complete"))
         self._done()
+
+    def _keeps_off_hand(self, choice, candidate) -> bool:
+        """Whether a canonical exception keeps the configured second hand.
+
+        The fact comes from the same shared decision the selector used, so the
+        result label matches the build the compiler actually receives. A build
+        without a catalogue profile keeps its configured equipment untouched.
+        """
+        if choice is None or candidate is None:
+            return False
+        return bool(self.catalogue.hand_exception_rule_ids(choice, tuple(candidate.special_rule_ids)))
 
     def _failed(self, error: str) -> None:
         self.status.set(tr("Weapon analysis error: {}").format(error))

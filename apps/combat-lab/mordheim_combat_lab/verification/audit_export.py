@@ -101,10 +101,13 @@ def build_audit_rows(knowledge: Path | None = None, specs: Path | None = None) -
                source: dict | None, scope: str, reason: str, implemented: bool,
                binding: dict | None = None) -> None:
         if scope != "YES" and not _text(reason).strip():
-            reason = "Exclusion or deferral reason not documented in the KB."
+            reason = ("Runtime scope not classified in the KB." if scope == "UNCLASSIFIED"
+                      else "Exclusion or deferral reason not documented in the KB.")
         obligation = obligations.get(identifier)
         key = binding_key(binding) if binding else (obligation.binding if obligation else "unbound")
-        if scope != "YES":
+        if scope == "UNCLASSIFIED":
+            structural, semantic, semantic_reason = "unclassified", "unclassified", reason
+        elif scope != "YES":
             structural, semantic, semantic_reason = "not_applicable", "out_of_scope", reason
         elif obligation is None:
             structural, semantic = "missing", "pending"
@@ -133,7 +136,8 @@ def build_audit_rows(knowledge: Path | None = None, specs: Path | None = None) -
             risk_level, requirement, statuses, reasons, evidence = "not_applicable", "not_applicable", ["not_applicable"], [], []
         rows.append(AuditRow(
             identifier, kind, name, source_file, section, url, scope, reason,
-            "YES" if implemented else "NO", key, structural, semantic, semantic_reason,
+            "UNKNOWN" if scope == "UNCLASSIFIED" else ("YES" if implemented else "NO"),
+            key, structural, semantic, semantic_reason,
             "; ".join(sorted(set(scenarios.get(identifier, [])))),
             "; ".join(sorted(set(interactions.get(key, [])))),
             " | ".join(dict.fromkeys(rulings.get(identifier, []))),
@@ -184,11 +188,11 @@ def build_audit_rows(knowledge: Path | None = None, specs: Path | None = None) -
             runtime = rule.get("runtime") or {}
             effects = runtime.get("effects") or []
             if not effects:
-                effects = [{"id": "unclassified", "scope": runtime.get("scope", "NO"),
+                effects = [{"id": "unclassified", "scope": runtime.get("scope", "UNCLASSIFIED"),
                             "reason": runtime.get("reason", "No classified runtime effects."), "binding": None}]
             for effect in effects:
                 identifier = f"rule/{collection}/{owner}/{rule['id']}/{effect['id']}"
-                scope = effect.get("scope", runtime.get("scope", "NO"))
+                scope = effect.get("scope", runtime.get("scope", "UNCLASSIFIED"))
                 binding = effect.get("binding")
                 implemented = scope == "YES" and binding is not None and runtime.get("implemented", "YES") == "YES"
                 append(identifier=identifier, kind="editorial_effect", name=rule.get("name", rule["id"]),
@@ -201,6 +205,8 @@ def build_audit_rows(knowledge: Path | None = None, specs: Path | None = None) -
 def classify_review_status(*, scope: str, verified: bool, needs_ruling: bool,
                           missing_dependencies: bool) -> str:
     """Explicit work status, never inferred from free-text reason wording."""
+    if scope == "UNCLASSIFIED":
+        return "needs_classification"
     if scope != "YES":
         return "not_applicable"
     if needs_ruling:
@@ -232,10 +238,12 @@ def write_csv(rows: tuple[AuditRow, ...], path: Path) -> None:
 
 def generate_audit(*, knowledge: Path | None = None, specs: Path | None = None,
                    output: Path | None = None, scope: str | None = None,
-                   status: str | None = None, review_status: str | None = None) -> Path:
+                   status: str | None = None, review_status: str | None = None) -> tuple[Path, Path]:
     rows = filter_audit_rows(build_audit_rows(knowledge, specs), scope, status, review_status)
     output = Path(output) if output else project_root() / "outputs/audit"
     from mordheim_combat_lab.report_naming import timestamped_report_path
-    path = timestamped_report_path(output, "rules-audit", ".csv") if output == project_root() / "outputs/audit" else output / "rules-audit.csv"
-    write_csv(rows, path)
-    return path
+    combat_path = timestamped_report_path(output, "combat-audit", ".csv") if output == project_root() / "outputs/audit" else output / "combat-audit.csv"
+    rules_path = combat_path.with_name(combat_path.name.replace("combat-audit", "rules-audit", 1))
+    write_csv(tuple(row for row in rows if row.kind != "editorial_effect"), combat_path)
+    write_csv(tuple(row for row in rows if row.kind == "editorial_effect"), rules_path)
+    return combat_path, rules_path

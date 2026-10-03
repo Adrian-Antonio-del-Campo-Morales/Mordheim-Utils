@@ -494,6 +494,7 @@ class InjuryContext:
     jump_up: bool = False
     mandrake: bool = False
     key: str = "injury"
+    shock: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -509,6 +510,8 @@ def injury_condition(total: int, context: InjuryContext) -> Condition:
     if context.true_grit:
         result = Condition.OUT if total >= 6 else Condition.STUNNED if total >= 4 else Condition.KNOCKED_DOWN
     if context.concussion and not context.concussion_immune and 2 <= total <= 4:
+        result = Condition.STUNNED
+    if context.shock and 1 <= total <= 4:
         result = Condition.STUNNED
     if context.injury_profile == 1:
         result = Condition.OUT if total >= 4 else Condition.STUNNED if total >= 2 else Condition.KNOCKED_DOWN

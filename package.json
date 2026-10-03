@@ -9,6 +9,8 @@
     "apps/warband-manager-web"
   ],
   "scripts": {
+    "build:eligibility": "node tools/web/build-eligibility.mjs",
+    "check:eligibility": "node tools/web/build-eligibility.mjs --check",
     "test": "npm run test --workspaces",
     "typecheck": "npm run typecheck --workspaces",
     "build": "npm run build --workspace warband-manager-web",

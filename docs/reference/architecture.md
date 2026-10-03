@@ -6,13 +6,14 @@
 sources/knowledge/                         canonical YAML data
 packages/python/core/mordheim_core          pure domain types, dice and effects
 packages/python/knowledge/mordheim_knowledge loaders, validation, paths and i18n
-packages/python/roster-construction         profile/equipment legality and compilation
+packages/python/roster-construction         eligibility adapter and fighter compilation
 packages/python/combat-engine               phases plus modular, NumPy and native engines
 packages/python/adapters/desktop-ui         shared Tkinter theme and widgets
 packages/python/campaign                    campaign domain, application and persistence
 apps/combat-lab/mordheim_combat_lab         Combat Lab UI, CLI and verification
 apps/warband-manager-web                    React/Vite browser shell
 packages/typescript                         shared web domain, application and adapters
+packages/typescript/domain/eligibility     shared warrior eligibility, browser + Python
 contracts/campaign-file-v5                  neutral persistence contract and fixtures
 tests                                      Python, TypeScript and web integration tests
 ```
@@ -21,8 +22,8 @@ tests                                      Python, TypeScript and web integratio
 
 ## Dependency boundaries
 
-Combat Lab and Warband Manager are independent products. Their shared product
-input is the canonical knowledge base; campaign documents, roster state and
+Combat Lab and Warband Manager are independent products. They share the canonical
+knowledge base and the pure [warrior eligibility module](eligibility.md); campaign documents, roster state and
 campaign services are not Combat Lab inputs or outputs. Reusing generic
 widgets or repository utilities does not establish a product integration.
 Combat Lab configures and compiles its own simulation participants from KB
@@ -35,11 +36,20 @@ knowledge YAML → mordheim_knowledge → mordheim_construction → mordheim_com
                               Combat Lab application → Tkinter UI
 
 knowledge-web.json → web KnowledgeReader → TypeScript domain/application → React shell
+
+TypeScript domain/eligibility → browser domain/application adapters
+                            → generated _eligibility.js → MiniRacer → Python adapter
 ```
 
 - `mordheim_core` has no YAML, UI, filesystem or engine dependency.
 - `mordheim_knowledge` owns path resolution, YAML loading, validation and display-name/i18n access.
 - `mordheim_construction` turns canonical IDs and legal choices into `CompiledFighter`.
+- `packages/typescript/domain/eligibility` owns shared equipment and skill decisions, the batch construction contract (`selectionDecisions`, `validateConstruction`) and the single fact projection (`profileFacts`, `bandFacts`, `profileSkillLists`, `profileBindings`, `selectedRuleBindings`). The browser imports it directly; Python executes its generated JavaScript bundle using embedded V8. Python adapters and the campaign construction entry points only project KB/build facts and translate results; they must not re-interpret bindings or keep local rule tables. Duel effect support remains in the combat compiler.
+- The shared eligibility module already exists. Construction work reuses it:
+  legal-choice decisions, Python combat-effect compilation and engine execution
+  are separate acceptance boundaries. An old construction finding must be
+  revalidated at its current owner before scheduling a repair; see the
+  [phased-work boundary](eligibility.md#construction-boundary-for-phased-implementation).
 - `mordheim_combat` consumes compiled fighters and never loads YAML.
 - Combat Lab `application` is Tkinter-free; its `ui` owns windows, widgets and thread coordination.
 - Campaign `application` owns use cases and state transitions; campaign `ui` presents results and forwards actions.
@@ -106,7 +116,8 @@ The web knowledge artefact is generated under ignored `outputs/web-public/knowle
 | Change | Location |
 | --- | --- |
 | Canonical rules/data | `sources/knowledge/` |
-| Profile/equipment legality | `packages/python/roster-construction/` |
+| Equipment/skill eligibility, variants and loadout prerequisites | `packages/typescript/domain/eligibility/` |
+| Python eligibility transport and duel compilation | `packages/python/roster-construction/` |
 | Combat behavior | `packages/python/combat-engine/` |
 | Combat Lab use case/UI | `apps/combat-lab/` |
 | Campaign domain/application/persistence | `packages/python/campaign/` |

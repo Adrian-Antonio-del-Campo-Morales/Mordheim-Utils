@@ -1,0 +1,705 @@
+[
+  {
+    "name": "permitted recipient keeps a second hand free",
+    "context": {
+      "profile": {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": [
+          {
+            "item_id": "sword"
+          },
+          {
+            "item_id": "dagger"
+          }
+        ],
+        "equipment_forbids": [],
+        "skill_access": [
+          "combat"
+        ],
+        "skill_lists": []
+      },
+      "items": {
+        "sword": {
+          "kind": "close-combat-weapon",
+          "mechanic_id": "weapon.sword",
+          "tags": []
+        },
+        "dagger": {
+          "kind": "close-combat-weapon",
+          "mechanic_id": "weapon.dagger",
+          "tags": []
+        }
+      },
+      "skills": {},
+      "selections": [
+        {
+          "id": "sword",
+          "kind": "equipment",
+          "slot": "main",
+          "item": {
+            "kind": "close-combat-weapon",
+            "mechanic_id": "weapon.sword",
+            "tags": []
+          }
+        },
+        {
+          "id": "dagger",
+          "kind": "equipment",
+          "slot": "off",
+          "item": {
+            "kind": "close-combat-weapon",
+            "mechanic_id": "weapon.dagger",
+            "tags": []
+          }
+        }
+      ],
+      "slots": {
+        "main_weapon_id": "sword",
+        "off_hand_id": null
+      },
+      "operation": {
+        "product": "test"
+      }
+    },
+    "proposals": [
+      {
+        "kind": "add",
+        "id": "dagger",
+        "slot": "off",
+        "selection": "equipment"
+      }
+    ],
+    "allowed": [
+      true
+    ],
+    "issue_codes": [
+      []
+    ],
+    "report_codes": [
+      []
+    ],
+    "validation_codes": []
+  },
+  {
+    "name": "spear combined with a dagger is refused",
+    "context": {
+      "profile": {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [
+          "combat"
+        ],
+        "skill_lists": []
+      },
+      "items": {
+        "spear": {
+          "kind": "close-combat-weapon",
+          "mechanic_id": "weapon.spear",
+          "tags": [],
+          "hands": 1
+        },
+        "dagger": {
+          "kind": "close-combat-weapon",
+          "mechanic_id": "weapon.dagger",
+          "tags": []
+        }
+      },
+      "skills": {},
+      "selections": [
+        {
+          "id": "spear",
+          "kind": "equipment",
+          "slot": "main",
+          "hands": 1
+        },
+        {
+          "id": "dagger",
+          "kind": "equipment",
+          "slot": "off",
+          "hands": 1
+        }
+      ],
+      "slots": {
+        "main_weapon_id": "spear",
+        "off_hand_id": "dagger"
+      },
+      "operation": {
+        "product": "test"
+      }
+    },
+    "proposals": [
+      {
+        "kind": "replace",
+        "id": "spear",
+        "slot": "main",
+        "replaces_id": "spear",
+        "selection": "equipment"
+      }
+    ],
+    "allowed": [
+      false
+    ],
+    "issue_codes": [
+      [
+        "equipment_combination_forbidden"
+      ]
+    ],
+    "report_codes": [
+      []
+    ],
+    "validation_codes": []
+  },
+  {
+    "name": "two handed main weapon occupies the off hand",
+    "context": {
+      "profile": {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [
+          "combat"
+        ],
+        "skill_lists": []
+      },
+      "items": {
+        "great_weapon": {
+          "kind": "close-combat-weapon",
+          "mechanic_id": "weapon.great-weapon",
+          "tags": [],
+          "hands": 2
+        },
+        "dagger": {
+          "kind": "close-combat-weapon",
+          "mechanic_id": "weapon.dagger",
+          "tags": []
+        }
+      },
+      "skills": {},
+      "selections": [
+        {
+          "id": "great_weapon",
+          "kind": "equipment",
+          "slot": "main",
+          "hands": 2
+        },
+        {
+          "id": "dagger",
+          "kind": "equipment",
+          "slot": "off",
+          "hands": 1
+        }
+      ],
+      "slots": {
+        "main_weapon_id": "great_weapon",
+        "off_hand_id": null
+      },
+      "operation": {
+        "product": "test"
+      }
+    },
+    "proposals": [
+      {
+        "kind": "add",
+        "id": "dagger",
+        "slot": "off",
+        "selection": "equipment"
+      }
+    ],
+    "allowed": [
+      false
+    ],
+    "issue_codes": [
+      [
+        "equipment_slot_occupied"
+      ]
+    ],
+    "report_codes": [
+      []
+    ],
+    "validation_codes": []
+  },
+  {
+    "name": "declared hand exception permits the occupied second hand",
+    "context": {
+      "profile": {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [
+          "combat"
+        ],
+        "skill_lists": []
+      },
+      "items": {
+        "great_weapon": {
+          "kind": "close-combat-weapon",
+          "mechanic_id": "weapon.great-weapon",
+          "tags": [],
+          "hands": 2
+        },
+        "dagger": {
+          "kind": "close-combat-weapon",
+          "mechanic_id": "weapon.dagger",
+          "tags": []
+        }
+      },
+      "skills": {},
+      "selections": [
+        {
+          "id": "great_weapon",
+          "kind": "equipment",
+          "slot": "main",
+          "hands": 2
+        },
+        {
+          "id": "dagger",
+          "kind": "equipment",
+          "slot": "off",
+          "hands": 1
+        }
+      ],
+      "slots": {
+        "main_weapon_id": "great_weapon",
+        "off_hand_id": null
+      },
+      "operation": {
+        "product": "test",
+        "ignores_hand_restrictions": [
+          "compiler.master-of-arms"
+        ]
+      }
+    },
+    "proposals": [
+      {
+        "kind": "add",
+        "id": "dagger",
+        "slot": "off",
+        "selection": "equipment"
+      }
+    ],
+    "allowed": [
+      true
+    ],
+    "issue_codes": [
+      []
+    ],
+    "report_codes": [
+      []
+    ],
+    "validation_codes": []
+  },
+  {
+    "name": "forbidden recipient token refuses the item",
+    "context": {
+      "profile": {
+        "band_id": "test-band",
+        "profile_id": "runt",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [
+          "armour"
+        ],
+        "skill_access": [
+          "combat"
+        ],
+        "skill_lists": []
+      },
+      "items": {
+        "light_armour": {
+          "kind": "armour",
+          "mechanic_id": "armour.light-armour",
+          "tags": []
+        }
+      },
+      "skills": {},
+      "selections": [
+        {
+          "id": "light_armour",
+          "kind": "equipment",
+          "slot": "main"
+        }
+      ],
+      "operation": {
+        "product": "test"
+      }
+    },
+    "proposals": [
+      {
+        "kind": "add",
+        "id": "light_armour",
+        "slot": "main",
+        "selection": "equipment"
+      }
+    ],
+    "allowed": [
+      false
+    ],
+    "issue_codes": [
+      [
+        "equipment_forbidden"
+      ]
+    ],
+    "report_codes": [
+      []
+    ],
+    "validation_codes": [
+      "equipment_forbidden"
+    ]
+  },
+  {
+    "name": "unknown item stays a report instead of a refusal",
+    "context": {
+      "profile": {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": [
+          {
+            "item_id": "mystery"
+          }
+        ],
+        "equipment_forbids": [],
+        "skill_access": [
+          "combat"
+        ],
+        "skill_lists": []
+      },
+      "items": {},
+      "skills": {},
+      "selections": [
+        {
+          "id": "mystery",
+          "kind": "equipment",
+          "slot": "main"
+        }
+      ],
+      "operation": {
+        "product": "test"
+      }
+    },
+    "proposals": [
+      {
+        "kind": "add",
+        "id": "mystery",
+        "slot": "main",
+        "selection": "equipment"
+      }
+    ],
+    "allowed": [
+      true
+    ],
+    "issue_codes": [
+      []
+    ],
+    "report_codes": [
+      [
+        "equipment_unknown_item"
+      ]
+    ],
+    "validation_codes": [
+      "equipment_unknown_item"
+    ]
+  },
+  {
+    "name": "manual skill change keeps the established access convention",
+    "context": {
+      "profile": {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [
+          "combat"
+        ],
+        "skill_lists": []
+      },
+      "items": {},
+      "skills": {},
+      "selections": [
+        {
+          "id": "skill.dodge",
+          "kind": "skill",
+          "category": "speed",
+          "skill": {
+            "id": "skill.dodge",
+            "category": "speed",
+            "kind": "skill"
+          }
+        }
+      ],
+      "operation": {
+        "product": "test",
+        "manual_skill_change": true
+      }
+    },
+    "proposals": [
+      {
+        "kind": "add",
+        "id": "skill.dodge",
+        "category": "skill",
+        "selection": "skill"
+      },
+      {
+        "kind": "remove",
+        "id": "skill.dodge",
+        "category": "skill",
+        "selection": "skill"
+      }
+    ],
+    "allowed": [
+      false,
+      true
+    ],
+    "issue_codes": [
+      [
+        "skill_not_permitted"
+      ],
+      []
+    ],
+    "report_codes": [
+      [],
+      []
+    ],
+    "validation_codes": []
+  },
+  {
+    "name": "banned skill category refuses even a granted list",
+    "context": {
+      "profile": {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [
+          "strength",
+          "combat"
+        ],
+        "skill_lists": []
+      },
+      "items": {},
+      "skills": {},
+      "selections": [
+        {
+          "id": "skill.mighty-blow",
+          "kind": "skill",
+          "category": "strength",
+          "skill": {
+            "id": "skill.mighty-blow",
+            "category": "strength",
+            "kind": "skill"
+          }
+        }
+      ],
+      "operation": {
+        "product": "test",
+        "banned_skill_categories": [
+          "strength"
+        ]
+      }
+    },
+    "proposals": [
+      {
+        "kind": "add",
+        "id": "skill.mighty-blow",
+        "category": "skill",
+        "selection": "skill"
+      }
+    ],
+    "allowed": [
+      false
+    ],
+    "issue_codes": [
+      [
+        "skill_not_permitted"
+      ]
+    ],
+    "report_codes": [
+      []
+    ],
+    "validation_codes": []
+  },
+  {
+    "name": "whole-set missile limit is decided over the complete kit",
+    "context": {
+      "profile": {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [
+          "combat"
+        ],
+        "skill_lists": []
+      },
+      "items": {
+        "bow": {
+          "kind": "ranged-weapon",
+          "mechanic_id": "weapon.bow",
+          "tags": [
+            "bow"
+          ]
+        },
+        "long_bow": {
+          "kind": "ranged-weapon",
+          "mechanic_id": "weapon.long-bow",
+          "tags": [
+            "bow"
+          ]
+        }
+      },
+      "skills": {},
+      "selections": [
+        {
+          "id": "bow",
+          "kind": "equipment",
+          "slot": "main"
+        },
+        {
+          "id": "long_bow",
+          "kind": "equipment",
+          "slot": "main"
+        }
+      ],
+      "slots": {
+        "main_weapon_id": "bow",
+        "off_hand_id": null
+      },
+      "limits": {
+        "rule_id": "band--bow-restrictions",
+        "max_missile_weapons": 1,
+        "required_tag": "bow"
+      },
+      "operation": {
+        "product": "test"
+      }
+    },
+    "proposals": [
+      {
+        "kind": "add",
+        "id": "long_bow",
+        "slot": "main",
+        "selection": "equipment"
+      }
+    ],
+    "allowed": [
+      false
+    ],
+    "issue_codes": [
+      [
+        "equipment_limit_exceeded"
+      ]
+    ],
+    "report_codes": [
+      []
+    ],
+    "validation_codes": [
+      "equipment_limit_exceeded"
+    ]
+  },
+  {
+    "name": "draft validation keeps an unfinished requirement as a report",
+    "context": {
+      "profile": {
+        "band_id": "test-band",
+        "profile_id": "cleric",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [
+          "combat"
+        ],
+        "skill_lists": []
+      },
+      "items": {},
+      "skills": {},
+      "selections": [
+        {
+          "id": "bow",
+          "kind": "equipment",
+          "slot": "main"
+        }
+      ],
+      "slots": {
+        "main_weapon_id": "bow"
+      },
+      "limits": {
+        "rule_id": "band--bow-restrictions",
+        "required_tag": "bow",
+        "exempt_profile_ids": [
+          "cleric"
+        ]
+      },
+      "operation": {
+        "product": "test"
+      }
+    },
+    "proposals": [],
+    "allowed": [],
+    "issue_codes": [],
+    "report_codes": [],
+    "validation_codes": []
+  },
+  {
+    "name": "free build keeps its permissive access",
+    "context": {
+      "profile": {
+        "band_id": "custom",
+        "profile_id": "custom",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [],
+        "skill_lists": []
+      },
+      "items": {
+        "weapon.anything": {
+          "kind": "close-combat-weapon",
+          "mechanic_id": "weapon.anything",
+          "tags": []
+        }
+      },
+      "skills": {},
+      "selections": [
+        {
+          "id": "weapon.anything",
+          "kind": "equipment",
+          "slot": "main"
+        }
+      ],
+      "operation": {
+        "product": "test",
+        "free_build": true
+      }
+    },
+    "proposals": [
+      {
+        "kind": "add",
+        "id": "weapon.anything",
+        "slot": "main",
+        "selection": "equipment"
+      }
+    ],
+    "allowed": [
+      true
+    ],
+    "issue_codes": [
+      []
+    ],
+    "report_codes": [
+      []
+    ],
+    "validation_codes": []
+  }
+]

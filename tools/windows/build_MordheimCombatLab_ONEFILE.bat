@@ -19,7 +19,7 @@ if errorlevel 1 goto :python_error
 
 echo.
 echo [2/4] Checking dependencies...
-%PYTHON_CMD% -c "import numpy, openpyxl, yaml; print('NumPy:', numpy.__version__, '| openpyxl:', openpyxl.__version__)"
+%PYTHON_CMD% -c "import numpy, openpyxl, yaml; from mordheim_construction.eligibility import call; assert call('skillCategoryAllowed', ['combat'], 'combat'); print('NumPy:', numpy.__version__, '| openpyxl:', openpyxl.__version__, '| shared eligibility: OK')"
 if errorlevel 1 goto :dependency_error
 
 echo.
@@ -44,7 +44,7 @@ if errorlevel 1 (
 
 echo.
 echo [4/4] Building single EXE...
-%PYTHON_CMD% -m PyInstaller --noconfirm --clean --onefile --windowed --name MordheimCombatLab --paths packages\python\combat-engine --paths packages\python\roster-construction --paths packages\python\core --paths packages\python\knowledge --paths packages\python\adapters\desktop-ui --paths packages\python\campaign --paths apps\combat-lab --add-data "sources\knowledge;sources\knowledge" apps\combat-lab\mordheim_combat_lab\__main__.py
+%PYTHON_CMD% -m PyInstaller --noconfirm --clean --onefile --windowed --name MordheimCombatLab --paths packages\python\combat-engine --paths packages\python\roster-construction --paths packages\python\core --paths packages\python\knowledge --paths packages\python\adapters\desktop-ui --paths apps\combat-lab --collect-all mordheim_construction --collect-all py_mini_racer --add-data "sources\knowledge;sources\knowledge" apps\combat-lab\mordheim_combat_lab\__main__.py
 if errorlevel 1 goto :build_error
 
 echo.

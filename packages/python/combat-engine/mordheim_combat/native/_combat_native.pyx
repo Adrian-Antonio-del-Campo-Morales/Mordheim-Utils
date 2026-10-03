@@ -27,6 +27,11 @@ from libc.stdlib cimport malloc
 from libc.string cimport memcpy
 from libc.string cimport memset
 
+import math
+import numbers
+import operator
+import numpy as np
+
 
 
 
@@ -99,6 +104,7 @@ cdef enum Field:
     F_CAUGHT_FIRE_THRESHOLD = 54
 
 N_EFFECT_FIELDS = 55
+CONTEXT_VERSION = 1
 
 # Capacity gates (kept in sync with _combat_compile).  Compile-time
 # constants: they size the C arrays inside FighterC.
@@ -148,6 +154,7 @@ cdef inline uint32_t pcg32_bounded(PCG32* rng, uint32_t bound) noexcept:
 # hold Python objects, so the callback lives at module scope: the batch core
 # runs single-threaded and one duel at a time, which keeps this safe.
 cdef object _rng_callback = None
+cdef bint _batch_running = False
 
 
 cdef struct Rng:
@@ -163,16 +170,26 @@ cdef inline void rng_init(Rng* r, uint64_t seed, object callback) noexcept:
 
 
 cdef int rng_draw_cb(Rng* r, int low, int high) except -1:
-    arr = _rng_callback.integers(low, high, 1)
-    return int(arr[0])
+    arr = _rng_callback.integers(low, high + 1, 1)
+    if len(arr) != 1 or isinstance(arr[0], (bool, np.bool_)):
+        raise ValueError("native RNG callback must return one integer")
+    value = operator.index(arr[0])
+    if value < low or value > high:
+        raise ValueError("native RNG callback integer outside requested bounds")
+    return value
 
 
-cdef inline int rng_draw(Rng* r, int low, int high) noexcept:
+cdef int rng_coin(Rng* r) except -1:
     if not r.use_callback:
-        return <int>pcg32_bounded(&r.pcg, <uint32_t>(high - low + 1)) + low
-    # Callback errors are routed by the calling site (draw helpers are used
-    # from ``except *`` core functions through rng_draw_cb below).
-    return 0
+        return <int>pcg32_bounded(&r.pcg, 2)
+    arr = _rng_callback.random(1)
+    if (len(arr) != 1 or isinstance(arr[0], (bool, np.bool_))
+            or not isinstance(arr[0], numbers.Real)):
+        raise ValueError("native RNG callback must return one real number")
+    value = float(arr[0])
+    if not math.isfinite(value) or value < 0 or value >= 1:
+        raise ValueError("native RNG callback random outside [0, 1)")
+    return 1 if value < .5 else 0
 
 
 cdef inline int rng_draw_safe(Rng* r, int low, int high) except -1:
@@ -244,6 +261,8 @@ cdef struct SourceC:
 
 cdef struct FighterC:
     int ws, s, t, w, ini, a
+    int movement, leadership
+    bint has_movement, has_leadership
     int armour_save
     int natural_armour_save
     int natural_armour_worst_save
@@ -499,6 +518,10 @@ cdef void fill_fighter(object d, FighterC* out, object sources, object reactions
     out.w = _int(d, "w")
     out.ini = _int(d, "ini")
     out.a = _int(d, "a")
+    out.has_movement = d["movement"] is not None
+    out.has_leadership = d["leadership"] is not None
+    out.movement = <int>d["movement"] if out.has_movement else 0
+    out.leadership = <int>d["leadership"] if out.has_leadership else 0
     out.armour_save = _int(d, "armour_save")
     out.natural_armour_save = _int(d, "natural_armour_save")
     out.natural_armour_worst_save = _int(d, "natural_armour_worst_save")
@@ -2821,7 +2844,7 @@ cdef int init_state_c(FighterC* f, StateC* s, int count, Rng* rng) except -1:
 
 cdef void refresh_random_characteristics_c(FighterC* f, StateC* s,
                                            const int* rows, int rows_n,
-                                           Rng* rng) noexcept:
+                                           Rng* rng) except *:
     """Refresh Condemned/Inconsistency WS, S, T and A per later turn."""
     cdef int key, i, d, total, stat, dice, sides, bonus
     cdef bint has_ws = 0
@@ -3132,12 +3155,30 @@ cdef int resolve_entangle_c(DuelC* d, int atk_side, const int* rows, int rows_n,
     return 0
 
 
+cdef object observe_state_c(StateC* state):
+    """Copy terminal state while the native buffers still belong to the batch."""
+    cdef int i
+    return (
+        np.asarray([state.wounds[i] for i in range(state.n)], dtype=np.int16),
+        np.asarray([state.condition[i] for i in range(state.n)], dtype=np.int8),
+        (
+            ("lucky-charm", np.asarray([not state.lucky_charm[i] for i in range(state.n)], dtype=bool)),
+            ("force-of-will", np.asarray([state.force_of_will_used[i] for i in range(state.n)], dtype=bool)),
+            ("mark-of-the-old-ones", np.asarray([state.mark_of_old_ones_used[i] for i in range(state.n)], dtype=bool)),
+            ("luck", np.asarray([state.luck_used[i] for i in range(state.n)], dtype=bool)),
+        ),
+    )
+
+
 cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds,
                           object decisions, object first_py, object second_py,
-                          int* out_a, int* out_b, int* out_u) except -1:
+                          int* out_a, int* out_b, int* out_u,
+                          object callback, object context, object observation) except -1:
     cdef Rng rng
     cdef StateC s1, s2
     cdef int8_t* first_charges = <int8_t*>malloc(count)
+    cdef int8_t* second_charges = <int8_t*>malloc(count)
+    cdef int8_t* initial_first_turn = <int8_t*>malloc(count)
     cdef int8_t* charge1 = <int8_t*>malloc(count)
     cdef int8_t* charge2 = <int8_t*>malloc(count)
     cdef int8_t* player_turn1 = <int8_t*>malloc(count)
@@ -3163,11 +3204,18 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
     cdef int any_left, round_index, n_active, n_paralyze, p
     cdef int wins_a = 0, wins_b = 0
     cdef bint first_round
+    cdef bint explicit_charging = context is not None and context.facts.charging is not None
+    cdef object round_counts = None
+    cdef object charge_flags
+    memset(&s1, 0, sizeof(StateC))
+    memset(&s2, 0, sizeof(StateC))
     try:
         """Run ``count`` duels end to end (port of vectorized._simulate_batch_core)."""
-        rng_init(&rng, seed, None)
+        rng_init(&rng, seed, callback)
         state_alloc(&s1, count)
         state_alloc(&s2, count)
+        if observation is not None:
+            round_counts = np.zeros(count, dtype=np.int64)
         if s1.wounds == NULL or s2.wounds == NULL:
             state_free(&s1)
             state_free(&s2)
@@ -3177,7 +3225,8 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
             state_free(&s1)
             state_free(&s2)
             return -1
-        if (first_charges == NULL or charge1 == NULL or charge2 == NULL
+        if (first_charges == NULL or second_charges == NULL or initial_first_turn == NULL
+                or charge1 == NULL or charge2 == NULL
                 or player_turn1 == NULL or player_turn2 == NULL
                 or stood1 == NULL or stood2 == NULL or attacks1 == NULL
                 or attacks2 == NULL or p1 == NULL or p2 == NULL or ini1 == NULL
@@ -3188,7 +3237,15 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
             rc = -1
             return rc
         for i in range(count):
-            first_charges[i] = <int8_t>pcg32_bounded(&rng.pcg, 2)
+            if explicit_charging:
+                charge_flags = context.charge_flags(True)
+                first_charges[i] = charge_flags[0]
+                second_charges[i] = charge_flags[1]
+            else:
+                first_charges[i] = <int8_t>rng_coin(&rng)
+                second_charges[i] = 1 - first_charges[i]
+            initial_first_turn[i] = (context.first_player_turn(bool(first_charges[i]))
+                                     if context is not None else first_charges[i])
         for round_index in range(maximum_rounds):
             any_left = 0
             for i in range(count):
@@ -3223,7 +3280,7 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
                     m = 0
                     for i in range(n_active):
                         row = active_rows[i]
-                        if (first_charges[row] != 0) == (round_index % 2 == 0):
+                        if (initial_first_turn[row] != 0) == (round_index % 2 == 0):
                             rows[m] = row
                             m += 1
                     if resolve_fire_c(d, 0, &s1, &s2, &rng, rows, m) < 0:
@@ -3233,7 +3290,7 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
                     m = 0
                     for i in range(n_active):
                         row = active_rows[i]
-                        if (first_charges[row] != 0) != (round_index % 2 == 0):
+                        if (initial_first_turn[row] != 0) != (round_index % 2 == 0):
                             rows[m] = row
                             m += 1
                     if resolve_fire_c(d, 1, &s2, &s1, &rng, rows, m) < 0:
@@ -3260,6 +3317,8 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
                 if unresolved[i]:
                     active_rows[n_active] = i
                     n_active += 1
+                    if round_counts is not None:
+                        round_counts[i] += 1
             for i in range(count):
                 s1.parry_used[i] = 0
                 s2.parry_used[i] = 0
@@ -3277,7 +3336,7 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
             # that fighter's own turn; the opponent remains knocked down or
             # stunned until its turn, matching NumPy and modular.rounds.
             for i in range(count):
-                player_turn1[i] = first_charges[i] if (round_index % 2 == 0) else (1 - first_charges[i])
+                player_turn1[i] = initial_first_turn[i] if (round_index % 2 == 0) else (1 - initial_first_turn[i])
                 player_turn2[i] = 1 - player_turn1[i]
                 stood1[i] = 1 if (s1.condition[i] == KNOCKED_DOWN and player_turn1[i]) else 0
                 stood2[i] = 1 if (s2.condition[i] == KNOCKED_DOWN and player_turn2[i]) else 0
@@ -3319,8 +3378,8 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
             first_round = round_index == 0
             for i in range(count):
                 charge1[i] = first_charges[i] if first_round else 0
-                charge2[i] = (1 - first_charges[i]) if first_round else 0
-                player_turn1[i] = first_charges[i] if (round_index % 2 == 0) else (1 - first_charges[i])
+                charge2[i] = second_charges[i] if first_round else 0
+                player_turn1[i] = initial_first_turn[i] if (round_index % 2 == 0) else (1 - initial_first_turn[i])
                 player_turn2[i] = 1 - player_turn1[i]
             if first_round:
                 if d.first.netter:
@@ -3459,7 +3518,7 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
                 ties[i] = 1 if p1[i] == p2[i] and ini1[i] == ini2[i] else 0
             for i in range(count):
                 if ties[i]:
-                    first_acts[i] = <int8_t>pcg32_bounded(&rng.pcg, 2)
+                    first_acts[i] = <int8_t>rng_coin(&rng)
             # First fighter attacks, then surviving targets reply.
             n_rows = 0
             for i in range(count):
@@ -3549,8 +3608,23 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
         out_a[0] += wins_a
         out_b[0] += wins_b
         out_u[0] += count - wins_a - wins_b
+        if observation is not None:
+            from mordheim_combat.vectorized._types import VectorBatchObservation
+            first_state = observe_state_c(&s1)
+            second_state = observe_state_c(&s2)
+            winner = np.zeros(count, dtype=np.int8)
+            for i in range(count):
+                if s2.condition[i] == OUT and s1.condition[i] != OUT:
+                    winner[i] = 1
+                elif s1.condition[i] == OUT and s2.condition[i] != OUT:
+                    winner[i] = -1
+            observation["result"] = VectorBatchObservation(
+                winner, round_counts, first_state[0], second_state[0],
+                first_state[1], second_state[1], first_state[2], second_state[2],
+            )
     finally:
-        free(first_charges); free(charge1); free(charge2)
+        free(first_charges); free(second_charges); free(initial_first_turn)
+        free(charge1); free(charge2)
         free(player_turn1); free(player_turn2)
         free(stood1); free(stood2)
         free(attacks1); free(attacks2)
@@ -3565,25 +3639,36 @@ cdef int simulate_batch_c(DuelC* d, int count, uint64_t seed, int maximum_rounds
 
 cdef int _run_batch(object ctx, int count, uint64_t seed, int maximum_rounds,
                     object decisions, object first_py, object second_py,
-                    int* a, int* b, int* u) except -1:
+                    int* a, int* b, int* u,
+                    object callback, object context, object observation) except -1:
+    global _rng_callback, _batch_running
     cdef DuelC d
+    if _batch_running:
+        raise RuntimeError("nested native combat batches are not supported")
+    if count < 1 or maximum_rounds < 0:
+        raise ValueError("native batch requires count >= 1 and maximum_rounds >= 0")
+    _batch_running = True
     # Conditional fields (has_unpredictable, off_present, source structs for
     # absent weapons/reactions) are only written when the fighter owns them, so
     # the stack struct must start zeroed or garbage leaks into the engine.
-    memset(&d, 0, sizeof(DuelC))
-    fill_fighter(ctx["first"], &d.first, ctx["sources_first"],
-                 ctx["reactions_first"], &d.bull_first, &d.body_first,
-                 &d.spines_first, &d.backlash_first, &d.fire_first,
-                 &d.entangle_first, &d.hug_first, &d.acid_first,
-                 &d.counter_first, &d.infection_first)
-    fill_fighter(ctx["second"], &d.second, ctx["sources_second"],
-                 ctx["reactions_second"], &d.bull_second, &d.body_second,
-                 &d.spines_second, &d.backlash_second, &d.fire_second,
-                 &d.entangle_second, &d.hug_second, &d.acid_second,
-                 &d.counter_second, &d.infection_second)
-    if simulate_batch_c(&d, count, seed, maximum_rounds, decisions, first_py,
-                        second_py, a, b, u) < 0:
-        return -1
+    try:
+        memset(&d, 0, sizeof(DuelC))
+        fill_fighter(ctx["first"], &d.first, ctx["sources_first"],
+                     ctx["reactions_first"], &d.bull_first, &d.body_first,
+                     &d.spines_first, &d.backlash_first, &d.fire_first,
+                     &d.entangle_first, &d.hug_first, &d.acid_first,
+                     &d.counter_first, &d.infection_first)
+        fill_fighter(ctx["second"], &d.second, ctx["sources_second"],
+                     ctx["reactions_second"], &d.bull_second, &d.body_second,
+                     &d.spines_second, &d.backlash_second, &d.fire_second,
+                     &d.entangle_second, &d.hug_second, &d.acid_second,
+                     &d.counter_second, &d.infection_second)
+        if simulate_batch_c(&d, count, seed, maximum_rounds, decisions, first_py,
+                            second_py, a, b, u, callback, context, observation) < 0:
+            return -1
+    finally:
+        _rng_callback = None
+        _batch_running = False
     return 0
 
 
@@ -3608,6 +3693,8 @@ def simulate_duel(request, plan):
     from mordheim_combat._combat_compile import compile_duel
     from mordheim_core.models import DuelResult
     from mordheim_core.models import SimulationCancelled
+    from mordheim_core.context import prepare_duel_context
+    context = prepare_duel_context(request.first, request.second, request.context)
     try:
         ctx = compile_duel(request.first, request.second)
     except NotSupported as error:
@@ -3629,11 +3716,33 @@ def simulate_duel(request, plan):
                 + <uint64_t>batch_index * 0x9E3779B97F4A7C15ULL)
         if _run_batch(ctx, count, seed, request.maximum_rounds,
                       request.decision_policy, request.first, request.second,
-                      &a, &b, &u) < 0:
+                      &a, &b, &u, None, context, None) < 0:
             raise RuntimeError("native combat backend failed")
         remaining -= count
         batch_index += 1
     return DuelResult(a, b, u, request.simulations)
+
+
+def simulate_batch_observed(first, second, count, rng, maximum_rounds,
+                            decisions=None, context=None):
+    """Replay the real native batch core with a NumPy-style scripted source.
+
+    Integer calls use NumPy's exclusive high bound; charge and priority ties
+    consume ``random(1)``. Observations own their buffers after core cleanup.
+    Native batches reject reentry while a callback or decision is executing.
+    """
+    from mordheim_combat._combat_compile import compile_duel
+    from mordheim_core.context import prepare_duel_context
+    if rng is None:
+        raise ValueError("observed native batch requires an explicit RNG source")
+    compiled = compile_duel(first, second)
+    prepared = prepare_duel_context(first, second, context)
+    observation = {}
+    cdef int a = 0, b = 0, u = 0
+    if _run_batch(compiled, count, 0, maximum_rounds, decisions, first, second,
+                  &a, &b, &u, rng, prepared, observation) < 0:
+        raise RuntimeError("native combat backend failed")
+    return observation["result"]
 
 
 # ---------------------------------------------------------------------------

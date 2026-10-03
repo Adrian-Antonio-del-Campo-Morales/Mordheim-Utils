@@ -8,6 +8,15 @@ The [product boundary](../README.md#frontera-de-producto-vigente-2026-09-30)
 applies throughout: Combat Lab and Warband Manager share KB data, not campaign
 state or services.
 
+Current ownership (2026-10-02): both products also consume the implemented
+[pure eligibility module](../../../reference/eligibility.md#construction-boundary-for-phased-implementation).
+This inventory's original support/candidate-file columns capture its examined
+revision; references to Python selection/restriction paths identify retained
+adapters, not permission to implement duplicate decisions. F035 reconciles
+affected findings through current shared decisions and actual transport before
+repairs are dispatched. Question/origin IDs and source dispositions remain;
+an inventory construction clause does not mean the shared module is missing.
+
 ## Entry and ownership
 
 - Entry revision: `eb85e954d36ebc257e32494d31fa6ea719c4253b`, branch `2A2B`.
@@ -83,6 +92,11 @@ by earlier deliveries are different measures; neither adding them nor adding
 the 32/137 transfers produces the current implementation scope.
 
 ## Verification baseline
+
+Historical T13.0 baseline: the copied HEAD below was `eb85e95`, before the
+snapshot commit `1b7f7cf`. The accepted [R0 source/fingerprint review](T13-source-fingerprint-review.md)
+reconciles the current working/committed error sets and supersedes that split
+for current routing. This table remains entry evidence, not present validation.
 
 The existing verification and audit commands were run without refreshing
 digests or editing specifications. A second run used a read-only KB copy
@@ -260,7 +274,9 @@ backend evidence without deleting the origin trace.
 
 ### Assigned questions and dependent work
 
-The register records **185 distinct open questions across 216 origins**:
+The initial T13.0 register recorded **185 distinct questions across 216 origins**;
+current resolutions are recorded in the deliveries/follow-ups rather than by
+erasing these planning identities:
 79 source questions assigned to the coordinator and a designated KB source
 owner, and 106 interpretation/contract questions assigned to the coordinator
 and the dependent mechanism owner. Repeated source questions share a question
@@ -272,7 +288,7 @@ behaviour or necessarily stop unrelated clauses of that record.
 | --- | --- | --- |
 | Q006/Q025 — Black Sheep/Crooked Moon Troll Stupidity; Q041 — High Elf Loremaster | Recover exact source references instead of copied Rat Ogre/Skaven or Necromancer/Liche text. | T13.2/T13.5; spell acquisition source only, casting remains X4 |
 | Q037 — Bloated No Pain/Squishy | Resolve contradictory Injury transformations from the same source page. | T13.3 |
-| Q019 — Spirit Host Spectral Touch; Spirit Knife's related question | Fix parry/save/reaction/critical/removal ordering before the pilot's deterministic expectations. | T13.3/T13.4 |
+| Q019 — Spirit Host Spectral Touch; separate Spirit Knife Q146 | R1–R4 human-accepted; [permanent ruling](../../../decisions/design-rulings.md#spectral-touch-q019), F007 review and F008/L03 canonical activation complete at their modular boundary. [L06 separately reviews Q146](T13-local-weapons.md#spirit-knife-separate-q146-disposition) and activates the knife with its own recipients, weapon-local effect and save modifier; no inherited item certificate. Applicable ports remain L19/L20. | T13.3/T13.4 |
 | Q018 — Ghostly Howl; Siren Song | Establish sampling, repeated-test/expiry and stacking contracts. | T13.4/T13.5 |
 | Q066 — Banshee Wailing | Represent the printed priority and reach without inventing Initiative or suppressing the special attack. | T13.1/T13.4/T13.6 |
 | Q127/Q147 — Field Trebuchet/Mortis Engine; mounted/companion questions | Recover actual component/profile and recipient contracts; retain accepted Gyrocopter/River Boat exclusions. | T13.2/T13.4/T13.6 |
@@ -317,7 +333,7 @@ must not be changed merely to match an incorrect catalogue summary.
 | Lot | Responsible owner | Reserved implementation families when activated | Acceptance before the next lot relies on it |
 | --- | --- | --- | --- |
 | T13.1 — contracts and proof | Coordinator | Core models/dice, compiled layout, context/state contracts, shared preparers and deterministic replay adapters | Existing duel compatibility, explicit local identities/context, no campaign state; a real modular/NumPy/native replay with correct choices and observable state. |
-| T13.2 — independent construction | Coordinator, then assigned mechanism owner | Construction contracts/selection/compiler; canonical grants, item mappings and catalogue access under exclusive KB ownership | Legal and illegal choices, exact recipients, no double grants, canonical loading path and real combat consequence. |
+| T13.2 — shared-decision reconciliation and combat compilation | Coordinator, then assigned mechanism owner | Existing shared eligibility and its adapters; canonical grants, compiler projections, item mappings and catalogue access under exclusive ownership | F035 disposition of historical findings; reuse matching legal/illegal-choice evidence; prove exact recipients, no double grants, canonical loading and actual combat consequences separately. |
 | T13.3 — local resolution | Coordinator; executor assigned at activation | Hit/wound/defense/injury/parry consumers and focused specifications | Activation, absence, threshold/tie, immunity/material filters and defensive composition on the real attack path. |
 | T13.4 — stateful sequences | Coordinator; executor assigned at activation | Attack pools, replacements, rounds and aftermath; consumption/state projection and replay | Exact timing, chosen attack/target, once/expiry, interrupted or removed participants and remaining prepared attacks. |
 | T13.5 — psychology and proximity | Coordinator; executor assigned at activation | Explicit recipient/opponent classification, Leadership tests, immunity and local-neighbour context | Thresholds and range boundaries, correct affected participants, permitted/forbidden actions and interactions with immunity/state. |

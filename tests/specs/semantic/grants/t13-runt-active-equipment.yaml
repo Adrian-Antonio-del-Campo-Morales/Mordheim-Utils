@@ -1,0 +1,77 @@
+schema_version: 1
+specifications:
+- id: t13-runt-active-equipment
+  category: construction
+  scope_digest: ea4090654a79e79bb19b0855371a062c6a9a10c1ab40f7d8abdb42634a425b97
+  sources:
+  - target: rule/mordheim/snotlings-web/runts--teeny-hands/profile.equipment-restrictions
+    digest: 79d71e36034d3b3635852ba748602a1f174ea78b2239ab36b6732fe79dc27f15
+  interpretation: Snotlings / Runts / Teeny Hands limits simultaneous one-handed weapon positions, not owned
+    holstered weapons, and forbids armour. The entire rule ceases to apply to a supplied promoted Hero. promotion.hero
+    supplies that local result; it neither rolls an advance nor proves campaign promotion eligibility. Canonical
+    source profiles and lists remain unchanged.
+  cases:
+  - id: active-and-armour-choices
+    roles:
+    - accepted
+    - rejected
+    operation: equipment_choices
+    attacker: &id001
+      band_id: snotlings-web
+      profile_id: runts
+      main_weapon_id: weapon.mace
+    context:
+      choices:
+        one: {}
+        two:
+          off_hand_id: weapon.dagger
+        same-two:
+          off_hand_id: weapon.mace
+        shield:
+          off_hand_id: defence.shield
+    expect:
+      result.accepted:
+      - one
+      result.rejected:
+        two: snotlings-web/runts may use at most 1 one-handed weapon at a time.
+        same-two: snotlings-web/runts may use at most 1 one-handed weapon at a time.
+        shield: armour is forbidden for snotlings-web/runts
+  - id: base-recipient
+    roles:
+    - grant
+    operation: grant
+    defender: *id001
+    context:
+      rule_id: runts--teeny-hands
+    expect:
+      result.recipients:
+      - runts
+  - id: promoted-two
+    roles:
+    - compiled
+    operation: compile
+    attacker:
+      band_id: snotlings-web
+      profile_id: runts
+      main_weapon_id: weapon.mace
+      variant_ids:
+      - promotion.hero
+      off_hand_id: weapon.dagger
+    expect:
+      attacker.off_hand_attacks: true
+  - id: promoted-shield
+    operation: compile
+    attacker:
+      band_id: snotlings-web
+      profile_id: runts
+      main_weapon_id: weapon.mace
+      variant_ids:
+      - promotion.hero
+      off_hand_id: defence.shield
+    expect:
+      attacker.off_hand.parry: false
+  mutations:
+  - id: remove-active-and-armour-guard
+    runtime_fault: suppress-profile-restrictions
+    cases:
+    - active-and-armour-choices

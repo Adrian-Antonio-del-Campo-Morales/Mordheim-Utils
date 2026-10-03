@@ -67,17 +67,52 @@ def test_review_metadata_validation(tmp_path, metadata, valid):
             load_fixtures(tmp_path)
 
 
-def test_cli_forwards_review_filter(monkeypatch, tmp_path):
+@pytest.mark.parametrize("scope,review_status", [
+    ("YES", "needs_ruling"), ("UNCLASSIFIED", "needs_classification"),
+])
+def test_cli_forwards_review_filter(monkeypatch, tmp_path, capsys, scope, review_status):
     from mordheim_combat_lab.cli.commands import main
     from mordheim_combat_lab.verification import audit_export
     captured = {}
     def generate(**kwargs):
         captured.update(kwargs)
-        return tmp_path / "rules-audit.csv"
+        return tmp_path / "combat-audit.csv", tmp_path / "rules-audit.csv"
     monkeypatch.setattr(audit_export, "generate_audit", generate)
-    assert main(["audit", "--review-status", "needs_ruling", "--scope", "YES"]) == 0
-    assert captured["review_status"] == "needs_ruling"
-    assert captured["scope"] == "YES"
+    assert main(["audit", "--review-status", review_status, "--scope", scope]) == 0
+    assert captured["review_status"] == review_status
+    assert captured["scope"] == scope
+    assert capsys.readouterr().out.splitlines() == [
+        str((tmp_path / name).resolve()) for name in ("combat-audit.csv", "rules-audit.csv")
+    ]
+
+
+@pytest.mark.parametrize("runtime,scope,semantic,review", [
+    ({}, "UNCLASSIFIED", "unclassified", "needs_classification"),
+    ({"effects": [{"id": "effect", "binding": None}]},
+     "UNCLASSIFIED", "unclassified", "needs_classification"),
+    ({"scope": "NO", "reason": "Campaign only."}, "NO", "out_of_scope", "not_applicable"),
+    ({"scope": "LATER", "reason": "Deferred."}, "LATER", "out_of_scope", "not_applicable"),
+    ({"scope": "YES"}, "YES", "pending", "ready"),
+])
+def test_missing_classification_is_not_an_exclusion(tmp_path, monkeypatch, runtime, scope, semantic, review):
+    from mordheim_combat_lab.verification import audit_export, specifications
+    path = tmp_path / "catalog/skills/warband.yaml"
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps({"skills": [{"id": "skill.example", "runtime": runtime}]}))
+    read_yaml = audit_export.read_yaml
+    monkeypatch.setattr(audit_export, "read_yaml", lambda candidate: read_yaml(candidate) if candidate == path else {})
+    monkeypatch.setattr(audit_export, "verify_semantics", lambda *args: SimpleNamespace(
+        obligations=[], verified=[], fixtures=[], verified_interactions=[], pending=[],
+    ))
+    monkeypatch.setattr(specifications, "load_fixtures", lambda *args: [])
+    row, = build_audit_rows(tmp_path)
+    assert (row.scope, row.semantic_status, row.review_status) == (scope, semantic, review)
+    if scope == "UNCLASSIFIED":
+        assert row.structural_status == "unclassified"
+        assert row.implemented == "UNKNOWN"
+        assert "Exclusion" not in row.scope_reason
+    else:
+        assert row.implemented == "NO"
 
 
 @pytest.fixture(scope="module")
@@ -91,9 +126,13 @@ def test_audit_covers_every_scope_class_and_matches_semantic_inventory(audit_row
     semantic_statuses = {row.semantic_status for row in included}
     assert semantic_statuses <= {"verified", "pending"}
     assert "verified" in semantic_statuses
-    assert all(row.semantic_status == "out_of_scope" for row in audit_rows if row.scope != "YES")
+    assert all(row.semantic_status == "out_of_scope" for row in audit_rows if row.scope in {"NO", "LATER"})
     assert all(row.scope_reason for row in audit_rows if row.scope != "YES")
-    assert all(row.review_status == "not_applicable" for row in audit_rows if row.scope != "YES")
+    assert all(row.review_status == "not_applicable" for row in audit_rows if row.scope in {"NO", "LATER"})
+    unclassified = filter_audit_rows(audit_rows, scope="UNCLASSIFIED", status="unclassified",
+                                     review_status="needs_classification")
+    assert unclassified
+    assert any(row.id == "rule/catalog/warband/skill.tough-as-steel/unclassified" for row in unclassified)
     assert len({row.id for row in audit_rows}) == len(audit_rows)
 
 
@@ -128,3 +167,28 @@ def test_audit_writer_creates_excel_friendly_csv(tmp_path):
     assert parsed[0]["ruling"] == row.ruling
     assert parsed[0]["review_status"] == "verified"
     assert len(csv_path.read_text(encoding="utf-8-sig").splitlines()) == 2
+
+
+@pytest.mark.parametrize("custom_output", [False, True])
+def test_separate_reports_preserve_every_filtered_row(tmp_path, monkeypatch, audit_rows, custom_output):
+    from mordheim_combat_lab.verification import audit_export
+    monkeypatch.setattr(audit_export, "build_audit_rows", lambda *args: audit_rows)
+    monkeypatch.setattr(audit_export, "project_root", lambda: tmp_path)
+    output = tmp_path / "custom" if custom_output else None
+    for scope in (None, "UNCLASSIFIED"):
+        combat_path, rules_path = audit_export.generate_audit(output=output, scope=scope)
+        with combat_path.open(encoding="utf-8-sig", newline="") as stream:
+            combat = list(DictReader(stream))
+        with rules_path.open(encoding="utf-8-sig", newline="") as stream:
+            rules = list(DictReader(stream))
+        assert all(row["kind"] != "editorial_effect" for row in combat)
+        assert all(row["kind"] == "editorial_effect" for row in rules)
+        assert {row["id"] for row in combat}.isdisjoint(row["id"] for row in rules)
+        expected = filter_audit_rows(audit_rows, scope=scope)
+        assert len(combat) + len(rules) == len(expected)
+        assert {row["id"] for row in combat + rules} == {row.id for row in expected}
+        assert rules_path.name == combat_path.name.replace("combat-audit", "rules-audit", 1)
+        if custom_output:
+            assert combat_path.name == "combat-audit.csv"
+        else:
+            assert combat_path.name.startswith("combat-audit-")
