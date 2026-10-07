@@ -100,15 +100,22 @@ def _resolve_prepared_defences(
         if prepared.hit
     ]
 
+    if has_tag(defender.global_effects, "mechanic.ethereal-hit-save"):
+        for index in successful:
+            weapon, prepared = prepared_attacks[index]
+            if (not has_tag(_combined_effect(attacker, weapon), "attack.magical")
+                    and dice.roll(RollRequest(f"{keys[index]}.ethereal")) >= 4):
+                resolved[index] = replace(prepared, saved=True)
+    successful = [index for index in successful if index not in resolved]
     if defender_state.lucky_charm and successful:
         index = successful[0]
         weapon, prepared = prepared_attacks[index]
         outcome = resolve_reference_attack(
             attacker, defender, attacker_state, defender_state, weapon, dice,
             key=keys[index], first_round=first_round, charging=charging,
-            helpless_at_start=helpless, stunned_at_start=False, prepared_hit=_prepared_hit(prepared),
+            helpless_at_start=helpless or prepared.knocked_down_target, stunned_at_start=False, prepared_hit=_prepared_hit(prepared),
             natural_hit_six=prepared.natural_hit_six,
-            defences_only=True, parry_allowed=False,
+            defences_only=True, parry_allowed=False, ethereal_resolved=True,
         )
         attacker_state, defender_state = outcome.attacker, outcome.defender
         if outcome.saved:
@@ -138,9 +145,9 @@ def _resolve_prepared_defences(
         outcome = resolve_reference_attack(
             attacker, defender, attacker_state, defender_state, weapon, dice,
             key=keys[index], first_round=first_round, charging=charging,
-            helpless_at_start=helpless, stunned_at_start=False, prepared_hit=_prepared_hit(prepared),
+            helpless_at_start=helpless or prepared.knocked_down_target, stunned_at_start=False, prepared_hit=_prepared_hit(prepared),
             natural_hit_six=prepared.natural_hit_six,
-            defences_only=True,
+            defences_only=True, ethereal_resolved=True,
         )
         attacker_state, defender_state = outcome.attacker, outcome.defender
         if outcome.parried:
@@ -160,24 +167,40 @@ def _resolve_attack_pool(
     defender_condition_at_start: Condition | None = None,
     minimum_attacks: int = 1,
     single_bonus: bool = False,
+    miss_first_attack: bool = False,
 ) -> tuple[FighterState, FighterState, tuple[AttackOutcome, ...]]:
     outcomes: list[AttackOutcome] = []
-    if count <= 0 or attacker_state.condition != Condition.STANDING or not defender_state.active:
+    if (count <= 0 or attacker_state.animosity_failed or attacker_state.charm_attack_blocked or attacker_state.entranced
+            or attacker_state.condition != Condition.STANDING or not defender_state.active):
+        return attacker_state, defender_state, ()
+    if (has_tag(attacker.global_effects, "mechanic.honorable")
+            and defender_state.condition in (Condition.KNOCKED_DOWN, Condition.STUNNED)):
         return attacker_state, defender_state, ()
     initial_condition = defender_state.condition if defender_condition_at_start is None else defender_condition_at_start
     if initial_condition == Condition.STUNNED:
+        if miss_first_attack:
+            outcomes.append(AttackOutcome(attacker_state, defender_state, trace=(Phase.HIT,)))
+            available_extra = not single_bonus and any(
+                not any(has_tag(weapon, tag) for tag in ("rule.strikes-last-bite", "rule.eagle-friend"))
+                and (charging or not phases.has_tag(weapon, "rule.horned-one"))
+                for weapon in attacker.extra_attacks)
+            if count == 1 and not available_extra:
+                return attacker_state, defender_state, tuple(outcomes)
         result = resolve_reference_attack(attacker, defender, attacker_state, defender_state,
             attacker.main_weapon, dice, key=f"{key}.finish", stunned_at_start=True)
         result = _react_to_wound(attacker, defender, result, dice, f"{key}.finish")
-        return result.attacker, result.defender, (result,)
+        return result.attacker, result.defender, (*outcomes, result)
     helpless = initial_condition == Condition.KNOCKED_DOWN
-    vomit = phases.has_tag(attacker.main_weapon, "weapon.vomit-attack")
+    vomit = any(phases.has_tag(attacker.main_weapon, tag) for tag in
+        ("weapon.vomit-attack", "effect.wraith-touch"))
     use_bull_charge = (
         not single_bonus and not vomit and first_round and charging
         and phases.has_tag(attacker.global_effects, "mechanic.bull-charge")
         and decisions.choose(f"{key}.bull-charge", attacker)
     )
     if use_bull_charge:
+        if miss_first_attack:
+            return attacker_state, defender_state, (AttackOutcome(attacker_state, defender_state, trace=(Phase.HIT,)),)
         bull = EffectSet(tags=("mechanic.bull-charge",), hit_modifier=1)
         result = resolve_reference_attack(
             attacker, defender, attacker_state, defender_state, bull, dice,
@@ -206,7 +229,8 @@ def _resolve_attack_pool(
             weapons += (whip,)
     if not single_bonus and not vomit:
         weapons += tuple(weapon for weapon in attacker.extra_attacks
-                         if charging or not phases.has_tag(weapon, "rule.horned-one"))
+                         if not any(has_tag(weapon, tag) for tag in ("rule.strikes-last-bite", "rule.eagle-friend"))
+                         and (charging or not phases.has_tag(weapon, "rule.horned-one")))
     if attacker_state.attack_penalty:
         # Kusara Kama chooses the affected hand after hitting, before the
         # opponent's reply is resolved. Remove that hand's attack, retaining
@@ -227,15 +251,29 @@ def _resolve_attack_pool(
         weapons = (merge_effects(weapons[0], EffectSet(cannot_be_parried=True)), *weapons[1:])
 
     prepared_attacks: list[tuple[EffectSet, AttackOutcome]] = []
-    attack_keys = tuple(f"{key}.attack.{index}" for index in range(len(weapons)))
-    for index, weapon in enumerate(weapons):
-        prepared = resolve_reference_attack(
-            attacker, defender, attacker_state, defender_state, weapon, dice,
-            key=attack_keys[index], first_round=first_round,
-            charging=charging, helpless_at_start=helpless, stunned_at_start=False, hit_only=True,
-        )
-        attacker_state = prepared.attacker
+    attack_keys = []
+    pending_weapons = list(weapons)
+    # Onslaught's new hit rolls join the same collective preparation. Iterating
+    # the growing list permits further natural sixes to generate further attacks.
+    for index, weapon in enumerate(pending_weapons):
+        attack_keys.append(f"{key}.attack.{index}")
+        if miss_first_attack and index == 0:
+            # Preserve weapon allocation: the first attack misses without a die.
+            # Reducing count earlier would incorrectly substitute the other hand.
+            prepared = AttackOutcome(attacker_state, defender_state, trace=(Phase.HIT,))
+        else:
+            prepared = resolve_reference_attack(
+                attacker, defender, attacker_state, defender_state, weapon, dice,
+                key=attack_keys[index], first_round=first_round,
+                charging=charging, helpless_at_start=helpless, stunned_at_start=False, hit_only=True,
+                decisions=decisions,
+            )
+        attacker_state, defender_state = prepared.attacker, prepared.defender
         prepared_attacks.append((weapon, prepared))
+        if prepared.natural_hit_six and has_tag(attacker.global_effects, "mechanic.ravening-onslaught"):
+            pending_weapons.append(weapon)
+    weapons = tuple(pending_weapons)
+    attack_keys = tuple(attack_keys)
     prepared_tuple = tuple(prepared_attacks)
     attacker_state, defender_state, defended = _resolve_prepared_defences(
         attacker, defender, attacker_state, defender_state, prepared_tuple, dice,
@@ -301,7 +339,7 @@ def _resolve_attack_pool(
             result = resolve_reference_attack(
                 attacker, defender, attacker_state, defender_state, weapon, dice,
                 key=attack_keys[index], first_round=first_round,
-                charging=charging, helpless_at_start=helpless, stunned_at_start=False,
+                charging=charging, helpless_at_start=helpless or prepared.knocked_down_target, stunned_at_start=False,
                 prepared_hit=_prepared_hit(prepared),
                 natural_hit_six=prepared.natural_hit_six, defences_resolved=True,
                 decisions=decisions,
@@ -328,7 +366,7 @@ def _resolve_attack_pool(
         result = resolve_reference_attack(
             attacker, defender, attacker_state, defender_state, weapon, dice,
             key=f"{key}.attack.{index}", first_round=first_round,
-            charging=charging, helpless_at_start=helpless, stunned_at_start=False,
+            charging=charging, helpless_at_start=helpless or prepared.knocked_down_target, stunned_at_start=False,
             prepared_hit=_prepared_hit(prepared),
             natural_hit_six=prepared.natural_hit_six, defences_resolved=True,
             decisions=decisions,

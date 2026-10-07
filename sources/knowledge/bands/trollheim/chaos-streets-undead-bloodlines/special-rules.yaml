@@ -19,15 +19,15 @@ rules:
     profile_ids:
     - von-carstein-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.von-carstein-vampire.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: von-carstein-vampire--fear
   name: Fear
   source:
@@ -136,15 +136,15 @@ rules:
     profile_ids:
     - lahmia-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.lahmia-vampire.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: lahmia-vampire--fear
   name: Fear
   source:
@@ -281,15 +281,15 @@ rules:
     profile_ids:
     - blood-dragon-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.blood-dragon-vampire.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: blood-dragon-vampire--fear
   name: Fear
   source:
@@ -482,15 +482,15 @@ rules:
     profile_ids:
     - necrarch-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.necrarch-vampire.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: necrarch-vampire--fear
   name: Fear
   source:
@@ -653,15 +653,15 @@ rules:
     profile_ids:
     - strigoi-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.strigoi-vampire.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: strigoi-vampire--fear
   name: Fear
   source:
@@ -755,12 +755,12 @@ rules:
 - id: strigoi-vampire--hatred-everyone
   kind: profile_ability
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'YES'
     grant: selectable
     effects:
     - id: skill.hatred
-      scope: LATER
+      scope: 'YES'
       binding:
         kind: mechanic
         id: skill.hatred
@@ -2023,3 +2023,59 @@ rules:
         parameters:
           categories:
           - strength
+
+- id: lahmia-vampire--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - armour.heavy-armour
+          - two-handed-weapons
+  name: Equipment Restrictions
+  effect: "May not use heavy armour, polearms or great weapons."
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 175
+    section: "1 Lahmia Vampire"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - lahmia-vampire
+- id: necrarch-vampire--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - two-handed-weapons
+  name: Equipment Restrictions
+  effect: "May use only one-handed weapons. May never use polearms. May never acquire Strength skills."
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 177
+    section: "1 Necrarch Vampire"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - necrarch-vampire

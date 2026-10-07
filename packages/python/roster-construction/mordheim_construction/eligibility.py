@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 from threading import RLock
 
+from mordheim_construction.combat_packages import combat_packages
 from mordheim_knowledge.loader import (
     knowledge_root, load_bands, load_collections, load_items, load_mechanics, load_simulation_mappings,
     load_skills, runtime_bindings,
@@ -60,7 +61,7 @@ def _invoke(function, *args):
 
 def package_facts(package):
     profile_keys = ("id", "type", "skill_access", "equipment_lists", "fixed_equipment",
-                    "equipment_restrictions", "rule_ids")
+                    "equipment_restrictions", "rule_ids", "hireling_equipment")
     return {
         "band": {key: package.band[key] for key in ("id", "canonical_family") if key in package.band},
         "profiles": [{key: row[key] for key in profile_keys if key in row} for row in package.profiles],
@@ -89,9 +90,9 @@ def _catalogue(collection, ruleset, root):
         mechanic_id = row.get("mechanic_id") or by_option.get(str(row.get("engine_option")))
         if row.get("status") == "implemented" and mechanic_id in mechanics:
             mappings[str(row["item_id"])] = mechanic_id
-    packages = {str(pack.band["id"]): package_facts(pack) for pack in load_bands(collection, root)}
+    packages = {str(pack.band["id"]): package_facts(pack) for pack in combat_packages(collection, root)}
     foreign = packages if collection == "mordheim" else {
-        str(pack.band["id"]): package_facts(pack) for pack in load_bands("mordheim", root)
+        str(pack.band["id"]): package_facts(pack) for pack in combat_packages("mordheim", root)
     }
     return {
         "packages": packages, "foreign_packages": foreign,
@@ -103,7 +104,7 @@ def _catalogue(collection, ruleset, root):
                   for row in load_items(ruleset, root)},
         "free_rules": {str(rule["id"]): rule for collection_row in load_collections(root)
                        if ruleset in collection_row.get("rulesets", ())
-                       for pack in load_bands(str(collection_row["id"]), root)
+                       for pack in combat_packages(str(collection_row["id"]), root)
                        for rule in package_facts(pack)["special_rules"]},
     }
 
@@ -112,8 +113,18 @@ def build_facts(build, main_weapon_id=None):
     keys = ("band_id", "profile_id", "main_weapon_id", "armour_id", "off_hand_id",
             "extra_hand_id", "main_material_id", "off_material_id", "main_poison_id",
             "off_poison_id", "defence_ids", "skill_ids", "preparation_ids",
-            "special_rule_ids", "variant_ids", "mounted")
+            "special_rule_ids", "mounted", "owned_item_ids")
     result = {key: getattr(build, key) for key in keys}
+    # The House chosen for a House Guard warband is a selection fact, like a
+    # declared variant; the shared `configuredProfile` turns it into the
+    # conjunctive gate printed equipment lines carry. Other selected facts travel
+    # in `variant_ids` already (a chosen Modus Operandi, a background, a tribe).
+    variants = list(build.variant_ids)
+    house = build.trait_overrides.get("house_guard_house")
+    if house is not None:
+        variants.append(f"house.{house}")
+    result["variant_ids"] = tuple(variants)
+    result["open_flame"] = build.trait_overrides.get("lit_item", False)
     if main_weapon_id is not None:
         result["main_weapon_id"] = main_weapon_id
     return result

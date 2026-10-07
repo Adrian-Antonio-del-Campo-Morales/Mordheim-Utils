@@ -3,16 +3,26 @@ band_id: slayer-pirates-sar
 rules:
 - id: band--slayer-rules
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.slayer-pirates-sar.band.slayer-rules
+    - id: skill.hard-to-kill
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
+    - id: trait.concussion-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.concussion-immune
+        parameters:
+          value: true
+    - id: campaign.slayer-pirates.grudgebearers
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: Elven hireling prohibition is a campaign hiring clause, outside duel resolution.
   name: Slayer Special Rules
   effect: >-
     All Slayers are subject to the following special rules. Hard to Kill: Dwarfs are tough,
@@ -41,6 +51,7 @@ rules:
       élfica ni Dramatis Personae.
   applies_to:
     band: true
+    profile_ids: [slayer-captain, master-gunner, mates, sea-trollslayers, gunners, landlubbers]
 - id: band--see-you-in-davie-jones
   runtime:
     scope: 'NO'

@@ -46,7 +46,8 @@ profiles:
   - nosferatu--immune-to-psychology
   - nosferatu--immune-to-poisons
   - nosferatu--no-pain
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
   equipment_restrictions_i18n:
     es: Nunca llevará armadura.
 - id: abomination
@@ -87,7 +88,8 @@ profiles:
   - abomination--immune-to-poisons
   - abomination--no-pain
   - abomination--unnatural-life
-  combat_traits: {}
+  combat_traits:
+    creature_kind: living
   equipment_restrictions_i18n:
     es: Las Abominaciones no pueden llevar armas. Son una mezcla de colmillos, garras o cuchillas, que no conllevan penalización en combate.
 - id: defiled
@@ -128,7 +130,8 @@ profiles:
   - defiled--may-not-run
   - defiled--immune-to-poisons
   - defiled--no-pain
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
 - id: banshee
   name: Banshee
   type: henchman
@@ -165,7 +168,8 @@ profiles:
   - banshee--immune-to-poisons
   - banshee--cold-steel
   - banshee--wailing
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
   equipment_restrictions_i18n:
     es: Las Aulladoras nunca llevan equipo alguno, pues no pueden sostenerlo.
 - id: skeleton
@@ -206,7 +210,8 @@ profiles:
   - skeleton--immune-to-poisons
   - skeleton--no-pain
   - skeleton--no-brain
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
   equipment_restrictions_i18n:
     es: Manejar varias armas es una proeza demasiado avanzada para un esqueleto, que solo puede usar una a la vez.
 - id: wight
@@ -245,4 +250,5 @@ profiles:
   - wight--may-not-run
   - wight--immune-to-psychology
   - wight--immune-to-poisons
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead

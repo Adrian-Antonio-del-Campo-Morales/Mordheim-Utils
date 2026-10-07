@@ -43,8 +43,8 @@ rules:
       binding: null
       reason: >-
         Out of scope: the jezzail is a ranged weapon with crew, reload and targeting rules; all of
-        its text is preserved in the provisional item sources/2B/catalog/items/
-        savage-orc-and-skryre-gear.yaml (item id jezzail).
+        its text is preserved in the provisional item catalog/items/weapons-ranged.yaml (item id
+        jezzail).
   name: Jezzail (Skaven Clan Skryre Special Equipment)
   effect: >-
     The warplock jezzail is a fiendish invention of the Skaven Clan Skryre. It is a huge and long
@@ -71,15 +71,15 @@ rules:
     band: true
 - id: master-engineer--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-skryre-kaz.master-engineer.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: broheim.net

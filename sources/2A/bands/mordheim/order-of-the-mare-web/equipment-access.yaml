@@ -32,6 +32,10 @@ equipment_lists:
   - item_id: morning_star
     cost: 15
   - item_id: lance
+    applies_to:
+      profile_ids:
+      - gallant
+      - redeemed-knights
     cost: 20
     notes: Knights only
     notes_i18n:
@@ -48,6 +52,11 @@ equipment_lists:
   - item_id: light_armour
     cost: 20
   - item_id: heavy_armour
+    applies_to:
+      profile_ids:
+      - paragon
+      - gallant
+      - redeemed-knights
     cost: 50
     notes: Knights only
     notes_i18n:

@@ -57,15 +57,15 @@ rules:
     band: true
 - id: band--quarterstaff
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.woodsmen-de-artois-mou.band.quarterstaff
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: compiler.woodsmen-quarterstaff
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.woodsmen-quarterstaff
   name: Quarterstaff
   effect: >-
     Cost 15 gc, Common. Some Woodsmen favour the quarterstaff. It is a hefty length of wood about

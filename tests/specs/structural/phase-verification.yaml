@@ -107,6 +107,9 @@ semantic_evidence:
     profile.equipment-restrictions:
       observable: accepted-and-rejected-build
       scenario: profile-equipment-restrictions-legal-and-illegal
+    profile.active-weapon-restrictions:
+      observable: accepted-and-rejected-active-weapon-with-legal-ownership
+      scenario: tests/python/construction/test_t13_canonical_choices.py::test_loremaster_tower_of_hoeth_whitelist_bounds_use_not_possession
     profile.skill-access:
       observable: rejected-and-granted-skill
       scenario: profile-skill-access-rejected-and-granted

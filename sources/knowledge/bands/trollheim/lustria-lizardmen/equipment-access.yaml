@@ -14,6 +14,9 @@ equipment_lists:
   - item_id: axe
     cost: 5
   - item_id: sword
+    applies_to:
+      profile_types:
+      - hero
     cost: 10
     notes: Heroes only.
     notes_i18n:
@@ -33,6 +36,9 @@ equipment_lists:
   - item_id: buckler
     cost: 5
   - item_id: helmet
+    applies_to:
+      profile_ids:
+      - skink-priest
     cost: 10
     notes: Skink Priest only.
     notes_i18n:

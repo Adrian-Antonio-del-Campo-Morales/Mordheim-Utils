@@ -91,15 +91,15 @@ rules:
     band: true
 - id: boss--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.savage-orcs-kaz.boss.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any member of the Savage Orc warband within 6\" can use Da Boss's Leadership characteristic when
@@ -250,6 +250,8 @@ rules:
       binding:
         kind: trait
         id: trait.frenzy
+        parameters:
+          value: true
   name: Frenzy
   effect: >-
     Savage Orc Nuttaz are subject to the rules for frenzy. Note, when frenzied, they ignore the
@@ -442,3 +444,60 @@ rules:
       Lobo Gigante y de la Araña Gigante para reflejar que no pueden montarse.
   applies_to:
     band: true
+
+- id: gobbo-boyz--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - bow
+  name: Equipment Restrictions
+  effect: "Bow (not Gobbo Boyz): Savage Gobbos may not take the Bow."
+  source:
+    manual: broheim.net
+    printed_page: 59
+    section: "Gobbo Boyz"
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - gobbo-boyz
+- id: nuttaz--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - ranged-weapons
+  name: Equipment Restrictions
+  effect: "Savage Orc Nuttaz can use any equipment except missile weapons from the Savage Orc Equipment list."
+  source:
+    manual: broheim.net
+    printed_page: 58
+    section: "0-3 Nuttaz"
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - nuttaz

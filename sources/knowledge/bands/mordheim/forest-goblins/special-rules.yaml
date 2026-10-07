@@ -3,15 +3,15 @@ band_id: forest-goblins
 rules:
 - id: chieftain--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.forest-goblins.chieftain.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6" of the Chieftain may use his Leadership characteristic when taking
@@ -61,15 +61,14 @@ rules:
     - chieftain
 - id: braves--animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.forest-goblins.braves.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   name: Animosity
   effect: Braves are subject to the rules for Animosity .
   source:
@@ -143,15 +142,14 @@ rules:
     - shaman
 - id: forest-goblins--animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.forest-goblins.forest-goblins.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   name: Animosity
   effect: Forest Goblins are subject to the rules for Animosity .
   source:
@@ -168,15 +166,14 @@ rules:
     - forest-goblins
 - id: red-toof-goblins--animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.forest-goblins.red-toof-goblins.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   name: Animosity
   effect: Red Toof Boyz are subject to the rules for Animosity .
   source:
@@ -193,17 +190,21 @@ rules:
     - red-toof-goblins
 - id: red-toof-goblins--berserkers
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'YES'
     grant: profile
     effects:
     - id: trait.frenzy
-      scope: LATER
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.frenzy
         parameters:
           value: true
+    - id: excluded.pre-contact-animosity-exemption
+      scope: 'NO'
+      binding: null
+      reason: The source Animosity test only applies before engagement. Its charge-range exemption is outside the already engaged 1v1 duel.
   name: Berserkers
   effect: >-
     Forest Goblins of the Red Toof tribe allow themselves to be bitten by all sorts of poisonous
@@ -230,15 +231,14 @@ rules:
     - red-toof-goblins
 - id: sluggas--animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.forest-goblins.sluggas.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   name: Animosity
   effect: Sluggas are subject to the rules for Animosity .
   source:
@@ -284,15 +284,15 @@ rules:
     - sluggas
 - id: gigantic-spider--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.forest-goblins.gigantic-spider.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Gigantic Spiders cause fear as described in the Mordheim Rulebook.
   source:
@@ -394,15 +394,22 @@ rules:
     - gigantic-spider
 - id: gigantic-spider--non-sentient
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.forest-goblins.gigantic-spider.non-sentient
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.forest-goblins.gigantic-spider.non-sentient.outside-duel
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: psychology.
+        Board movement, campaign progression/participation and independently
+        simulated helper/rider/group producers are outside the 1v1 duel.
+        Admissible individual exemptions and bonuses are supplied active facts.
   name: Non-Sentient
   effect: >-
     Spiders are affected by the stupidity rules in the Mordheim rulebook. In addition, they never
@@ -516,15 +523,14 @@ rules:
     band: true
 - id: band--animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.forest-goblins.band.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   name: Animosity
   effect: >-
     At the start of the Orc player's turn, roll a D6 for each Orc or Goblin Henchman not engaged in

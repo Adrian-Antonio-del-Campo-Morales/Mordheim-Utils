@@ -28,11 +28,17 @@ equipment_lists:
   - item_id: bow
     cost: 10
   - item_id: asp_arrows
+    applies_to:
+      profile_ids:
+      - tomb-lord
     cost: 10
     notes: Tomb Lord only.
     notes_i18n:
       es: Solo el Señor de la Tumba.
   - item_id: nehekharan_javelin
+    applies_to:
+      profile_ids:
+      - tomb-lord
     cost: 10
     notes: Tomb Lord only.
     notes_i18n:
@@ -67,6 +73,9 @@ equipment_lists:
   - item_id: morning_star
     cost: 15
   - item_id: serpent_staff
+    applies_to:
+      profile_ids:
+      - liche-priest
     cost: 30
     notes: Liche Priest only.
     notes_i18n:

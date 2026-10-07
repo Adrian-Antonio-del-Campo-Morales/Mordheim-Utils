@@ -56,6 +56,7 @@ FAMILY_RULES: dict[str, tuple[str, str, str]] = {
     "test_post_battle_engine.py": ("M", "domain-sequence", "333333"),
     "test_post_battle_resolution.py": ("M", "domain-sequence", "333333"),
     "test_rules_catalogue.py": ("S", "shared-kb", "shared-parity"),
+    "test_shared_equipment_restrictions.py": ("M", "domain-rule", "333333"),
     "test_undo.py": ("M", "domain-sequence", "333333"),
     "test_variable_prices_and_restrictions.py": ("M", "domain-rule", "333333"),
     "test_warband_pdf.py": ("X", "desktop-pdf", "nobody"),
@@ -166,6 +167,7 @@ UI_EXCLUSIONS: dict[str, tuple[str, str, str]] = {
         "test_checklist_popover.py", # mordheim_combat_lab Tkinter widget
         "test_choice_widgets.py",   # mordheim_combat_lab Tkinter ChoiceBox
         "test_editors_catalogue_sweep.py", # Combat Lab fighter editor selectors
+        "test_equipment_tab.py",    # Combat Lab equipment analysis tab
         "test_weapons_tab.py",      # Combat Lab weapon analysis UI
         "test_preferences.py",      # Tkinter preferences persistence
         "test_app_preferences.py",  # Tkinter app preferences
@@ -196,6 +198,7 @@ INDIVIDUAL_EXCLUSIONS: dict[tuple[str, str], str] = {
 # Consolidated/renamed targets that cannot be derived from the desktop filename.
 TARGET_OVERRIDES = {
     "test_campaign_sequence_matrix.py": "tests/typescript/domain/campaign/campaign_sequence.test.ts",
+    "test_shared_equipment_restrictions.py": "tests/typescript/domain/warrior-equipment-parity.test.ts",
     "test_gui_interaction_regressions.py": "tests/web/architecture/product-app-session.test.tsx",
     "test_injury_sequence_matrix.py": "tests/typescript/domain/campaign/injury_sequence.test.ts",
     "test_persistence.py": "tests/typescript/application/campaign/persistence_parity.test.ts",

@@ -19,23 +19,23 @@ rules:
     profile_ids:
     - jarl
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lustria-norse.jarl.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: berserkers--frenzy
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'YES'
     grant: profile
     effects:
     - id: trait.frenzy
-      scope: LATER
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.frenzy
@@ -375,3 +375,31 @@ rules:
   - bondsmen
   applies_to:
     band: true
+
+- id: marauders--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - scourge
+  name: Equipment Restrictions
+  effect: "May not select the Scourge; it is Heroes only."
+  source:
+    manual: lustria
+    printed_page: 110
+    section: "Marauders"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - marauders

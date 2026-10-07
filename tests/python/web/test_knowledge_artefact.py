@@ -85,6 +85,71 @@ def test_profiles_materialize_equipment_forbids_from_special_rules() -> None:
     assert profile["equipment_forbids"] == ["armour"]
 
 
+def test_profiles_project_declared_loadouts_and_never_invent_lists() -> None:
+    artefact = _artefact()
+    profiles = {(str(row["collection"]), str(row["band_id"]), str(row["id"])): row
+                for row in artefact["profiles"]}
+    pit_king = profiles[("mordheim", "pit-fighters", "pit-king")]
+    empire = [row for row in pit_king["equipment_access"] if row.get("loadout_id") == "empire-style"]
+    assert {row["item_id"] for row in empire} >= {"great_weapon", "helmet", "light_armour"}
+    # The loadout price belongs to the whole kit: membership and provenance
+    # only, never an invented per-item cost.
+    assert all("cost" not in row for row in empire)
+    # A profile with no declared list buys nothing, even when the band publishes
+    # a common list: the generator never widens access by list-id suffix. The
+    # only offer a listless profile carries is the equipment its own rules
+    # grant (the black-orcs Troll's Vomit Attack concession).
+    assert profiles[("mordheim", "black-orcs", "troll")]["equipment_access"] == [{"item_id": "weapon.vomit-attack"}]
+    assert profiles[("mordheim", "restless-dead", "zombies")]["equipment_access"] == []
+
+
+def test_profiles_materialize_band_wide_skill_grants_and_prose_lists() -> None:
+    """F017 recipients reach every member; a prose-only list travels empty."""
+    artefact = _artefact()
+    profiles = {(str(row["collection"]), str(row["band_id"]), str(row["id"])): row
+                for row in artefact["profiles"]}
+    amazon = profiles[("mordheim", "amazons-lustria", "amazon-warriors")]
+    assert amazon["skill_access"] == ["special"]
+    assert amazon["skill_lists"] == [{"rule_id": "band--amazon-special-skills",
+                                     "category": "special", "skills": []}]
+
+
+def test_profiles_flatten_list_valued_forbids() -> None:
+    artefact = _artefact()
+    profiles = {(str(row["collection"]), str(row["band_id"]), str(row["id"])): row
+                for row in artefact["profiles"]}
+    assert profiles[("mordheim", "black-orcs", "orc-nuttaz")]["equipment_forbids"] == ["armour", "ranged-weapons"]
+    assert profiles[("mordheim", "ghost-pirates-sar", "gibbets")]["equipment_forbids"] == ["armour-suit"]
+
+
+def test_profiles_publish_effective_access_not_only_the_printed_list() -> None:
+    """Concessions enter the offers; conditional printed exceptions leave them."""
+    artefact = _artefact()
+    profiles = {(str(row["collection"]), str(row["band_id"]), str(row["id"])): row
+                for row in artefact["profiles"]}
+    plague_rat = profiles[("mordheim", "skaven-of-clan-pestilens-mou", "plague-rat")]
+    assert {row["item_id"] for row in plague_rat["equipment_access"]} == {"poison.black-lotus"}
+    troll = profiles[("mordheim", "black-orcs", "troll")]
+    assert {row["item_id"] for row in troll["equipment_access"]} == {"weapon.vomit-attack"}
+    # Printed exceptions the shared projection removes.
+    deck_hands = profiles[("mordheim", "pirates-of-the-cathayan-sea-sar", "deck-hands")]
+    assert "katana" not in {row["item_id"] for row in deck_hands["equipment_access"]}
+    novices = profiles[("mordheim", "silent-brotherhood-sc", "brotherhood-novices")]
+    assert "long_daggers" not in {row["item_id"] for row in novices["equipment_access"]}
+    gobbo = profiles[("mordheim", "savage-orcs-kaz", "gobbo-boyz")]
+    assert "skull_busta" not in {row["item_id"] for row in gobbo["equipment_access"]}
+    revenants = profiles[("mordheim", "call-of-the-night-haint-mim", "revenants")]
+    assert "spirit_knife" not in {row["item_id"] for row in revenants["equipment_access"]}
+
+
+def test_profiles_publish_the_promotion_grant_separately() -> None:
+    artefact = _artefact()
+    ogre = next(row for row in artefact["profiles"]
+                if row["id"] == "ogre" and row["band_id"] == "ostlanders")
+    assert ogre["promotion_skill_access"] == ["combat", "strength"]
+    assert ogre["skill_access"] == []
+
+
 def test_warband_reference_preserves_equipment_lists_and_notes() -> None:
     rows = {row["band_id"]: row for row in generator._build_warband_reference("mordheim")["rows"]}
     sisters = rows["sisters-of-sigmar"]["equipment_lists"][0]

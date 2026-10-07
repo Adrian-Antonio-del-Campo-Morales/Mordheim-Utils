@@ -3,15 +3,15 @@ band_id: amazons-mordheim
 rules:
 - id: priestess--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.amazons-mordheim.priestess.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -55,12 +55,12 @@ rules:
     - priestess
 - id: totem-warriors--frenzy
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'YES'
     grant: profile
     effects:
     - id: trait.frenzy
-      scope: LATER
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.frenzy

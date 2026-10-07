@@ -42,7 +42,7 @@ def profile(pair, **options):
 
 def fighter(strength: int = 3, attacks: int = 1, **options):
     return compile_fighter(FighterBuild(
-        "mordheim", Characteristics(3, strength, 3, 3, 3, attacks), **options
+        "mordheim", Characteristics(3, strength, 3, 3, 3, attacks, leadership=7), **options
     ))
 
 
@@ -259,6 +259,8 @@ def test_real_duel_fimir_armour_save_five_keeps_the_wound():
     result = replay_duel(
         profile(FIMIR), mace(), backend="modular", context=duel_context(),
         rolls=[
+            roll("round.0.second.fear.charged.0", 3),
+            roll("round.0.second.fear.charged.1", 4),
             # The Fimir's own three attacks miss.
             roll("round.0.first.attack.0.hit", 1),
             roll("round.0.first.attack.1.hit", 1),

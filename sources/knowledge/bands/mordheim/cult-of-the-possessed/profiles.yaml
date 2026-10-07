@@ -74,7 +74,9 @@ profiles:
   rule_ids:
   - the-possessed--fear
   - the-possessed--mutations
-  combat_traits: {}
+  combat_traits:
+    undead_or_possessed: true
+    creature_kind: possessed
   equipment_restrictions_i18n:
     es: Los Poseídos nunca usan armas ni armaduras.
 - id: mutants
@@ -176,7 +178,8 @@ profiles:
   name_i18n:
     es: Hombres Bestia
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    species: beastman
 - id: brethren
   name: Brethren
   type: henchman

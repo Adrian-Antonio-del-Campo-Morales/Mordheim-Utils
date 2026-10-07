@@ -1,5 +1,18 @@
 # T13.0 — Source reconciliation and entry baseline
 
+> Governing scope correction — 2026-10-04: Voluntary escape, withdrawal and contact-breaking effects that end the duel without resolving it are outside Combat Lab scope. No board movement, re-engagement or escape subsystem is required. Earlier individual-escape references below are superseded. See [permanent ruling](../../../decisions/design-rulings.md#voluntary-escape-does-not-belong-to-combat-lab--2026-10-04).
+
+**Current scope correction, 2026-10-04:** the user reaffirmed 1v1 duels.
+Historical candidate/admission counts below are not the current implementation
+target. Group Rout/psychology, All Alone counting, multi-target combat and third
+independent participants are excluded. Only individual duel clauses and supplied
+active external effects remain candidates. The [permanent decision](../../../decisions/design-rulings.md#combat-lab-remains-a-1v1-duel-simulator--2026-10-04)
+governs per-clause origin/runtime reconciliation in L21; do not implement a group
+subsystem to satisfy a historical inventory row.
+Map/weather/terrain mechanics are also excluded: fog/Mystic Mist, water combat
+and similar environmental conditions are not configurable duel facts. Their
+absence does not block implementation or certification of the admitted clauses.
+
 This is the source review and work register for
 [T13](T13.md), under the [implementation plan](T13-implementation-plan.md).
 It records planning dispositions, not implementation certificates. The
@@ -286,8 +299,9 @@ behaviour or necessarily stop unrelated clauses of that record.
 
 | Question/dependency examples | Work required | Dependent lot |
 | --- | --- | --- |
-| Q006/Q025 — Black Sheep/Crooked Moon Troll Stupidity; Q041 — High Elf Loremaster | Recover exact source references instead of copied Rat Ogre/Skaven or Necromancer/Liche text. | T13.2/T13.5; spell acquisition source only, casting remains X4 |
-| Q037 — Bloated No Pain/Squishy | Resolve contradictory Injury transformations from the same source page. | T13.3 |
+| Q006/Q025 — Black Sheep/Crooked Moon Troll Stupidity | Resolved from original sources in the [Stupidity closure](T13-local-modifiers-defences.md#l11-closure--stupidity-in-the-supported-duel); L21 reconciles the historical snapshot/pins. | Individual modular effect complete; ports remain L19/L20 |
+| Q041 — High Elf Loremaster | Recover exact acquisition source instead of copied Necromancer/Liche text. | T13.2/T13.5; spell acquisition source only, casting remains X4 |
+| Q037 — Bloated No Pain/Squishy | Resolved by user ruling 2026-10-04: Squishy overrides No Pain; stunned remains stunned. | T13.3 |
 | Q019 — Spirit Host Spectral Touch; separate Spirit Knife Q146 | R1–R4 human-accepted; [permanent ruling](../../../decisions/design-rulings.md#spectral-touch-q019), F007 review and F008/L03 canonical activation complete at their modular boundary. [L06 separately reviews Q146](T13-local-weapons.md#spirit-knife-separate-q146-disposition) and activates the knife with its own recipients, weapon-local effect and save modifier; no inherited item certificate. Applicable ports remain L19/L20. | T13.3/T13.4 |
 | Q018 — Ghostly Howl; Siren Song | Establish sampling, repeated-test/expiry and stacking contracts. | T13.4/T13.5 |
 | Q066 — Banshee Wailing | Represent the printed priority and reach without inventing Initiative or suppressing the special attack. | T13.1/T13.4/T13.6 |
@@ -317,8 +331,8 @@ the erroneous summaries or silently refresh their semantic digests.
 
 | Dependency | Source review required before the affected mechanism | Accountable owner |
 | --- | --- | --- |
-| `condition.fear`, `condition.hatred` | Restore complete charge-direction, failure and duration semantics from the primary rulebook; trace any affected references/specifications. | Coordinator; reserved KB source owner before T13.5 |
-| `condition.cold-blooded` | The summary says two dice/discard highest; the canonical [Lizardmen source](../../../../sources/knowledge/bands/mordheim/lizardmen-lus/special-rules.yaml) explicitly says three dice/keep lowest two, with test/provider restrictions. Preserve the source variant. | Coordinator; reserved KB source owner before T13.5 |
+| `condition.fear`, `condition.hatred` | Source summaries restored in EN/ES from the Living Rulebook p. 23 during the 2026-10-04 [Fear block](T13-local-modifiers-defences.md#subsequent-l11l14-block--fear-tests-hits-and-cancelled-charges). Initial Fear charge/received consequences execute; Hatred target variants remain L11. Reconcile changed reference/spec source pins with L21 rather than refreshing them here. | Coordinator; source text repaired, remaining activation/variants L11 and pins L21 |
+| `condition.cold-blooded` | Corrected 2026-10-04: lowest two of three dice, with separate Lizardmen Psychology and Fimir Leadership variants. The canonical individual tests are connected; warband Rout/provider restrictions are outside 1v1 scope. | Delivered individual behavior: [L10 Cold-Blooded](T13-local-modifiers-defences.md#l10-continuation--individual-cold-blooded-tests). Future individual callers must explicitly classify Psychology tests. |
 | `condition.animosity` | Resolve the appropriate band's table and recipients; do not replace it with the catalogue's generic Leadership test. | Coordinator; reserved KB source owner before the Animosity lot |
 | `condition.terror`, `condition.stubborn`, `condition.immune-to-psychology` | Recover specific authoritative variants and their exceptions; page-zero generic references do not establish a universal Mordheim rule or blanket immunity. | Coordinator; reserved KB source owner if an included clause needs them |
 
@@ -433,3 +447,14 @@ its files are reserved. It must use the preserved existing duel behaviour and
 settled production entry; the Spectral Touch expectation cannot be finalized
 until Q019 has a sourced, reviewed interpretation. T13.0 completion does not
 close T13 or the open questions, and does not satisfy T14's semantic gates.
+
+
+### User decisions superseding historical source gates — 2026-10-04
+
+Q128: cloak is an ordinary armour choice, not an additive bonus to another suit.
+Q013: printed 5+ recovery, at most one wound at the start of the warrior's own
+turn; fire does not prevent recovery; Great Thirster remains required.
+F005: pistol special extra attack and Shifty extra attack may coexist, superseding
+the provisional pistol-only refusal. These semantic gates are satisfied; F024,
+F013 and F005/F026 retain their actual implementation work, not requests to repeat
+the same user decisions. See [permanent rulings](../../../decisions/design-rulings.md).

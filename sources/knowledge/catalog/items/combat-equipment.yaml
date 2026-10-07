@@ -319,7 +319,8 @@ items:
     printed_page: 0
     section: Special Equipment / Chainsaw Sword
     url: https://mordheimer.net/docs/warbands/grade-2a-warbands/masters-of-horror
-  combat_status: out_of_scope
+  combat_status: implemented
+  mechanic_id: weapon.chainsaw-sword
 - id: electric_trident
   kind: combat-equipment
   name: Electric Trident
@@ -365,6 +366,8 @@ items:
     es: >-
       Una miniatura que lleve una capa de oso gana +1 a sus salvaciones por armadura contra todos
       los ataques de disparo.
+  tags:
+  - constant-save-cloak
 - id: staff_of_damnation
   kind: combat-equipment
   name: Staff of Damnation
@@ -732,7 +735,8 @@ items:
     printed_page: 4
     section: Specialists / Sister of Sigmar / Candle Tree
     url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
-  combat_status: out_of_scope
+  combat_status: implemented
+  mechanic_id: weapon.arcane-candelabrum
 - id: wolf_cloak
   kind: combat-equipment
   name: Wolf Cloak
@@ -1290,7 +1294,10 @@ items:
     printed_page: 9
     section: Wolf-Priest of Ulric / Strictures
     url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
-  combat_status: out_of_scope
+  combat_status: implemented
+  mechanic_id: defence.wolf-pelt-cloak
+  tags:
+  - constant-save-cloak
 - id: warpaint
   kind: combat-equipment
   name: Warpaint

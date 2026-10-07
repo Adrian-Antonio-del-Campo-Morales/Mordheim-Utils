@@ -62,6 +62,7 @@ def _build_from_payload(payload: dict) -> FighterBuild:
             variant_ids=tuple(payload.get("variant_ids") or ()),
             main_poison_id=payload.get("main_poison_id"), off_poison_id=payload.get("off_poison_id"),
             trait_overrides=dict(payload.get("trait_overrides") or {}), collection=str(payload.get("collection") or "mordheim"),
+            condition_ids=tuple(payload.get("condition_ids") or ()),
         )
     except (KeyError, TypeError, ValueError) as exc:
         raise CombatLabWorkbookError(f"Invalid fighter build payload: {exc}") from exc

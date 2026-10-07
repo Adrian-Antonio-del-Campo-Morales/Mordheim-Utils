@@ -177,3 +177,122 @@ their separate evidence and ownership.
   the casualties count and scopes the injury step; legacy records (no list)
   fall back to every warrior. Henchman groups tick as a whole group, matching
   how the injury engine decrements group quantity.
+
+## Knight's Helm source erratum — 2026-10-04
+
+The user has classified `knights_helm` as an error in the original data and
+confirmed that it will be removed from the KB. The named Skull Busta/Basha
+4+ counterpart is therefore not an admitted implementation obligation.
+Do not invent a replacement item, access route or ordinary-helmet alias.
+Ordinary-helmet Basha remains implemented and unchanged.
+F063 no longer blocks L07 or modular completion. The pending KB removal and
+dependent reference/generated-data cleanup remain tracked in
+[F063](../knowledge/2a2b/tasks/T13-execution-follow-ups.md#t13-f063--skull-busta-knights-helm-counterpart-is-absent-from-the-kb).
+
+## Combat Lab remains a 1v1 duel simulator — 2026-10-04
+
+The user reaffirmed that Combat Lab simulates one combatant against one
+combatant. T13 must not expand it into group combat or a warband battle engine.
+Warband Rout tests, group casualties/psychology, All Alone enemy counting,
+multi-target resolution and independently simulated third participants are
+outside this product scope. Their absence does not block modular completion.
+
+Individual tests, charges, attack sequences, escape and conditions affecting
+the two duelists remain candidates. An external aura, leader or temporary
+effect may be supplied as an explicit current condition/bonus of a duelist;
+the simulator does not generate or evolve the surrounding group. Existing
+nearby-provider inputs represent snapshots, not additional mutable combatants.
+Hirelings may be canonical duelists; mounts/companions require a source-backed
+single combatant projection and do not authorize extra independent fighters.
+Commands are considered only for their supplied effects on the duel, not a
+group emission/hearing/recipient subsystem. Preserve complete KB rule text and
+split individual consequences from excluded group clauses.
+
+This decision supersedes broader group/routing requirements in historical
+T13 inventories, deliveries and follow-ups. L21 reconciles those records and
+scope data using this boundary; T14 certifies the admitted 1v1 clauses only.
+
+The user additionally excluded map/terrain rules on 2026-10-04: fog, Mystic
+Mist protection, water/aquatic combat, swamps and similar environmental
+conditions are outside scope, including caller-supplied map-condition switches.
+Do not add terrain/weather inputs, movement through terrain or environmental
+combat modifiers. Preserve original KB prose and exclude those clauses during
+scope reconciliation. A normal-duel individual clause may still be implemented
+without its excluded environmental exception (for example Craven's Fear
+consequence without Mystic Mist). This is an explicit supported-context limit,
+not a claim that the entire source rule is implemented for all environments.
+Personal attack effects such as poison or catching fire are not map rules.
+
+
+## Bloated Squishy overrides No Pain — Q037 — 2026-10-04
+
+User ruling: apply Squishy as the specific exception to No Pain for Ghost Pirates'
+The Bloated. A stunned injury result remains stunned, including when No Pain is
+inherited from another contribution. Preserve both contradictory source clauses
+verbatim; do not rewrite the printed source. Q037 is resolved by this ruling.
+
+
+## Sea Dragon Cloak is armour — Q128 — 2026-10-04
+
+The user chose ordinary armour semantics for the Sea Dragon Cloak, like light
+or heavy armour. It is an armour choice, not an independent ward or an additive
++2 bonus on another suit of armour. Use the normal armour-slot and shield
+composition rules, not a blanket prohibition on shields/helmets. Preserve the
+printed alternative interpretations as source prose; this ruling selects the
+project contract. Q128's semantic decision is resolved; F024 remains an
+implementation/integration task until selection and compilation follow it.
+
+## Curse of the Revenant recovery — Q013 — 2026-10-04
+
+The user fixed recovery at the start of the warrior's own turn. The printed
+5+ roll, one recovered wound per turn, and Great Thirster prerequisite remain.
+The user explicitly confirmed that fire does not prevent this recovery, including
+wounds caused by fire. Do not reuse ordinary regeneration's fire prohibition or
+wound-time timing for this separate ability. Q013's semantic decision is resolved;
+F013 remains implementation work for its prerequisite, recovery clock and cap.
+
+## Shifty and pistol special attacks coexist — F005 — 2026-10-04
+
+The user permits both the pistol's special additional attack and Shifty's
+additional attack to be used together. This supersedes the provisional pistol-only
+refusal in S2 above. Preserve both separately earned attacks and Shifty's timing;
+do not cancel either merely because the other is present. F005 is semantically
+unblocked but its allocation/resource implementation remains pending, coordinated
+with F026's maintained melee-pistol contract. Existing code still rejects the
+pistol-only nomination; this ruling is not a claim of delivered behavior.
+
+
+## Voluntary escape does not belong to Combat Lab — 2026-10-04
+
+The user excludes mechanics whose purpose is escaping or terminating the duel
+prematurely without resolving it. A two-model implementation alone does not
+justify admission. Voluntary escape, withdrawal and contact-breaking effects that end the duel without resolving it are outside Combat Lab scope. No board movement, re-engagement or escape subsystem is required.
+Combat effects that alter attacks, defences, wounds, recovery, states or ability
+to fight remain admitted; normal Fear/Stupidity charge consequences are not
+voluntary escape mechanics. Composite rules retain applicable combat clauses
+and exclude escape/map/group/campaign clauses explicitly.
+
+
+## Shallya healing does not permit self-healing — 2026-10-05
+
+The user confirms that Mercy and Healing Hands heal another model in contact,
+not the Priestess herself. No self-healing operator or exception is authorized.
+The user also rejects healing the adversary. Both abilities are excluded from
+Combat Lab as support to other warriors; post-battle Surgery is likewise excluded.
+No healing operator, tactical opponent-healing option or source-text change is required.
+
+## F074 equipment bearer rulings — 2026-10-06
+
+For Order of the Mare, the user prioritizes the
+[Mordheimer web version](https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare)
+over the conflicting PDF equipment table. Heavy armour in the Footman list is
+therefore restricted to Knights: Paragon, Gallant and Redeemed Knights.
+The decision does not introduce mounted-combat support.
+
+For Wood Elves of Athel Loren, the user restricts the local Ithilmar weapon and
+armour entries to Heroes, including promoted Henchmen. Express the restriction
+as the configured `hero` profile type, not a fixed list of starting Hero IDs.
+The discount and rarity/initial-purchase clauses are separate acquisition
+conditions; they neither grant nor remove eligibility to use the items.
+Preserve the printed prices and notes in the
+[equipment lists](../../sources/knowledge/bands/mordheim/wood-elves-of-athel-loren-web/equipment-access.yaml).

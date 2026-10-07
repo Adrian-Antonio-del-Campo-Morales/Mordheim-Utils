@@ -52,6 +52,7 @@ export function desktopCall(operation: string, key: string, input: Omit<BuildCon
   const profile = input.profile.type ? eligibility.configuredProfile(input.profile, input.build.variant_ids) : input.profile;
   const context = { ...input, profile, catalogue };
   input = { ...input, profile };
+  if (operation === "hirelingKit") return eligibility.resolveHirelingKit(input.profile.hireling_equipment ?? {}, input.build, catalogue, input.package.special_rules);
   if (operation === "equipment") return eligibility.profileEquipment(input.package, input.profile, catalogue);
   if (operation === "specialRules") return eligibility.specialRuleOptions(input.package, input.profile, catalogue);
   if (operation === "configuredRules") return eligibility.selectableRuleOptions(input.package, input.profile);

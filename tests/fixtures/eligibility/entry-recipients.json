@@ -1,0 +1,84 @@
+[
+  {
+    "name": "a heroes-only entry reaches every hero that declares the list",
+    "package": {
+      "band": { "id": "test-band" },
+      "profiles": [],
+      "equipment_lists": [
+        {
+          "id": "pirate-list",
+          "items": [
+            { "item_id": "cat", "applies_to": { "profile_types": ["hero"] } },
+            { "item_id": "rope" },
+            { "item_id": "blade", "applies_to": { "profile_ids": ["captain"] } },
+            { "item_id": "bow", "applies_to": { "profile_types": ["hero"], "profile_ids": ["marksmen"] } }
+          ]
+        }
+      ],
+      "special_rules": []
+    },
+    "profile": { "id": "captain", "type": "hero", "equipment_lists": ["pirate-list"] },
+    "offers": ["blade", "bow", "cat", "rope"]
+  },
+  {
+    "name": "a heroes-only entry does not reach a henchman that declares the same list",
+    "package": {
+      "band": { "id": "test-band" },
+      "profiles": [],
+      "equipment_lists": [
+        {
+          "id": "pirate-list",
+          "items": [
+            { "item_id": "cat", "applies_to": { "profile_types": ["hero"] } },
+            { "item_id": "rope" },
+            { "item_id": "blade", "applies_to": { "profile_ids": ["captain"] } },
+            { "item_id": "bow", "applies_to": { "profile_types": ["hero"], "profile_ids": ["marksmen"] } }
+          ]
+        }
+      ],
+      "special_rules": []
+    },
+    "profile": { "id": "crew", "type": "henchman", "equipment_lists": ["pirate-list"] },
+    "offers": ["rope"]
+  },
+  {
+    "name": "an explicit profile set reaches the named henchman and not its peers",
+    "package": {
+      "band": { "id": "test-band" },
+      "profiles": [],
+      "equipment_lists": [
+        {
+          "id": "pirate-list",
+          "items": [
+            { "item_id": "cat", "applies_to": { "profile_types": ["hero"] } },
+            { "item_id": "rope" },
+            { "item_id": "blade", "applies_to": { "profile_ids": ["captain"] } },
+            { "item_id": "bow", "applies_to": { "profile_types": ["hero"], "profile_ids": ["marksmen"] } }
+          ]
+        }
+      ],
+      "special_rules": []
+    },
+    "profile": { "id": "marksmen", "type": "henchman", "equipment_lists": ["pirate-list"] },
+    "offers": ["bow", "rope"]
+  },
+  {
+    "name": "an entry with no recipients reaches the whole list",
+    "package": {
+      "band": { "id": "test-band" },
+      "profiles": [],
+      "equipment_lists": [
+        {
+          "id": "pirate-list",
+          "items": [
+            { "item_id": "cat", "applies_to": { "profile_types": ["hero"] } },
+            { "item_id": "rope" }
+          ]
+        }
+      ],
+      "special_rules": []
+    },
+    "profile": { "id": "crew", "type": "henchman", "equipment_lists": ["pirate-list"] },
+    "offers": ["rope"]
+  }
+]

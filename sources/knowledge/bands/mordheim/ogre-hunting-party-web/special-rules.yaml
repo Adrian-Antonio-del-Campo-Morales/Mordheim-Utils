@@ -34,16 +34,14 @@ rules:
     band: true
 - id: band--bicker
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.ogre-hunting-party-web.band.bicker
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: turn-start random inaction is a psychology mechanic outside the duel
-        scope.
+      reason: 'Outside the established 1v1 melee scope: actions outside an already engaged two-participant duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Bicker
   effect: >-
     At the start of your turn, at the end of the Recovery phase, roll 1D6 for each Gnoblar henchmen
@@ -166,16 +164,26 @@ rules:
     band: true
 - id: band--huuuuge
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ogre-hunting-party-web.band.huuuuge
-      scope: LATER
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: heavy-armour
+    - id: unimplemented.ogre-hunting-party-web.band.huuuuge-excluded
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: Fear, Large Target, all-alone exemption and warband-rating changes are
-        psychology/campaign mechanics outside the duel scope.
+      reason: Large-target shooting, group All Alone and campaign rating do not execute in the 1v1 melee duel.
   name: Huuuuge
   effect: >-
     Ogres are big, massive and frightening creatures. All ogre models cause fear. All ogres are
@@ -232,16 +240,15 @@ rules:
     - ogre-hunter
 - id: ogre-hunter--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ogre-hunting-party-web.ogre-hunter.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
-        psychology/rout mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -256,16 +263,14 @@ rules:
   rule_ref: shared-rule.leader
 - id: ogre-hunter--dont-fight-with-eating-knives
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunter.dont-fight-with-eating-knives
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Deferred subsystem: unarmed-combat modifier exceptions are weapon mechanics outside the duel
-        scope.
+      reason: 'Included individual duel effect, not implemented: Source-qualified unarmed profile and prohibition on combining it with another weapon; canonical projection remains pending.'
   name: Don't Fight with Eating Knives
   effect: >-
     Ogres don't use daggers for fighting, just for eating. They don't carry them on the battlefield.
@@ -331,15 +336,14 @@ rules:
     - ogre-hunter
 - id: ogre-hunter--central-figure
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunter.central-figure
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: rout-level triggers are rout mechanics outside the duel scope.
+      reason: 'Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple opponents. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Central Figure
   effect: >-
     The gnoblars flock around the Ogre Hunter, and take strength from his presence. If he is taken
@@ -362,16 +366,14 @@ rules:
     - ogre-hunter
 - id: ogre-hunter--sabre-trainer
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.ogre-hunting-party-web.ogre-hunter.sabre-trainer
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: random-movement redirection is a movement mechanic outside the duel
-        scope.
+      reason: 'Outside the established 1v1 melee scope: actions outside an already engaged two-participant duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Sabre Trainer
   effect: >-
     Whenever a Sabretusk cub rolls a 1 for Untamed, if it started the turn within 6" of this hero,
@@ -426,16 +428,14 @@ rules:
     - trappers
 - id: sabre-baiter--bait
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.ogre-hunting-party-web.sabre-baiter.bait
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: reactive dodge movement on charge declaration is a movement mechanic
-        outside the duel scope.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Bait
   effect: >-
     Whenever a model declares a charge against a Sabre-baiter, he may immediately move 1D6" in the
@@ -465,16 +465,14 @@ rules:
     - sabre-baiter
 - id: flingers--scrap-slinger
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.ogre-hunting-party-web.flingers.scrap-slinger
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: multiple-shot shooting exceptions are shooting mechanics outside the
-        duel scope.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Scrap Slinger
   effect: >-
     A Flinger may throw 3 pieces of Sharp Stuff every turn, instead of the normal 1. (This does not
@@ -495,15 +493,15 @@ rules:
     - flingers
 - id: sabretusks--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ogre-hunting-party-web.sabretusks.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Fear is a psychology mechanic outside the duel scope.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Sabretusks are huge feline predators and thus cause fear.
   source:
@@ -546,16 +544,14 @@ rules:
     - sabretusks
 - id: sabretusks--untamed
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.ogre-hunting-party-web.sabretusks.untamed
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: turn-start random charge movement is a movement mechanic outside the
-        duel scope.
+      reason: 'Outside the established 1v1 melee scope: actions outside an already engaged two-participant duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Untamed
   effect: >-
     Sabretusks don't bicker. However, at the start of each turn, roll 1D6 for each Sabretusk not in
@@ -580,15 +576,15 @@ rules:
     - sabretusks
 - id: sabretusks--charge
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ogre-hunting-party-web.sabretusks.charge
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: charge-conditional attack bonuses are outside the current engine scope.
+    - id: mechanic.sabretusk-charge
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.sabretusk-charge
   name: Charge
   effect: >-
     Sabretusks are slavering creatures that overpower their opponents when they charge. Sabretusks
@@ -609,15 +605,17 @@ rules:
     - sabretusks
 - id: sabretusks--tough-hide
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ogre-hunting-party-web.sabretusks.tough-hide
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: natural armour saves are outside the current engine scope.
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 5
   name: Tough Hide
   effect: Sabretusks have a natural 5+ armour save.
   source:
@@ -706,3 +704,32 @@ rules:
       de nuevo con 3 redes, sin penalización ni coste.
   applies_to:
     band: true
+
+- id: ogre-hunter--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapon.dagger
+  name: Equipment Restrictions
+  effect: "Unlike other models Ogres don't have free daggers, even though they might carry one reserved for eating, the most sacred activity in their life. Ogres never fight with daggers in close combat."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "1 Ogre Hunter"
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - ogre-hunter

@@ -3,15 +3,15 @@ band_id: kislevites
 rules:
 - id: druzhina-captain--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.kislevites.druzhina-captain.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6" of the Druzhina Captain may use his Leadership characteristic when taking
@@ -111,15 +111,15 @@ rules:
     - bear-tamer
 - id: cossacks--hate-chaos
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.kislevites.cossacks.hate-chaos
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.hatred-chaotic-warband
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-chaotic-warband
   name: Hate Chaos
   effect: >-
     Years of bitter struggle against the forces of Chaos have left their mark on the Cossack people.
@@ -204,15 +204,27 @@ rules:
     - trained-bear
 - id: trained-bear--trained
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.kislevites.trained-bear.trained
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: mechanic.handler-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.handler-leadership
+    - id: unimplemented.kislevites.trained-bear.trained.outside-duel
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: psychology or mounts.
+        Board movement, campaign progression/participation and independently
+        simulated helper/rider/group producers are outside the 1v1 duel.
+        Admissible individual exemptions and bonuses are supplied active facts.
   name: Trained
   effect: >-
     A bear doesn’t care about the warband's mission or enmity for other warbands – it’s just
@@ -251,15 +263,15 @@ rules:
     - trained-bear
 - id: trained-bear--fearsome
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.kislevites.trained-bear.fearsome
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fearsome
   effect: A charging bear is a very scary sight indeed! A Trained Bear causes fear.
   source:

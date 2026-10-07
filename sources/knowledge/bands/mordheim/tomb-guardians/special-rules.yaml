@@ -17,15 +17,15 @@ rules:
     profile_ids:
     - tomb-lord
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.tomb-guardians.tomb-lord.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: tomb-lord--undead
   name: Undead
   effect: The Tomb Lord is undead and follows all rules for the Undead.
@@ -43,15 +43,15 @@ rules:
     profile_ids:
     - tomb-lord
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.tomb-guardians.tomb-lord.undead
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.undead
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.undead
 - id: tomb-lord--flammable
   runtime:
     scope: 'YES'
@@ -126,15 +126,15 @@ rules:
     profile_ids:
     - liche-priest
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.tomb-guardians.liche-priest.undead
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.undead
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.undead
 - id: acolytes--undead
   name: Undead
   effect: Acolytes are undead and follow all rules for the Undead.
@@ -173,15 +173,15 @@ rules:
     profile_ids:
     - skeleton-warriors
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.tomb-guardians.skeleton-warriors.undead
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.undead
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.undead
   rule_ref: shared-rule.undead
 - id: tomb-guardians--undead
   name: Undead
@@ -201,15 +201,15 @@ rules:
     profile_ids:
     - tomb-guardians
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.tomb-guardians.tomb-guardians.undead
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.undead
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.undead
 - id: tomb-guardians--experience
   name: Experience
   effect: >-
@@ -328,16 +328,22 @@ rules:
     es: Causan Miedo
   applies_to:
     band: true
+    profile_ids:
+    - tomb-lord
+    - liche-priest
+    - acolytes
+    - skeleton-warriors
+    - tomb-guardians
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.tomb-guardians.band.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.cause-fear-2
 - id: band--immune-to-psychology
   name: Immune to Psychology
@@ -350,16 +356,17 @@ rules:
     es: Inmune a la Psicología
   applies_to:
     band: true
+    profile_ids: [tomb-lord, liche-priest, acolytes, skeleton-warriors, tomb-guardians]
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.tomb-guardians.band.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   rule_ref: shared-rule.immune-to-psychology-4
 - id: band--no-pain
   eligibility:
@@ -676,3 +683,33 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
+
+- id: tomb-scorpions--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Tomb Scorpions do not use weapons or armour."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 3 Tomb Scorpions"
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/tomb-guardians
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - tomb-scorpions

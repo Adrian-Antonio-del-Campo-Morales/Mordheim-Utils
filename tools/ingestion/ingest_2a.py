@@ -664,14 +664,14 @@ def validate_band_references(band_id: str, documents: Path, problems: list[str])
                 problems.append(
                     f"{band_id}: rule {rule_id!r} applies to unknown profile {profile_id!r}"
                 )
-        # KB pairing: profile_ids never pairs with grant band, and band: true
-        # never pairs with grant profile (0 cases in the active KB).
+        # Grant ownership and recipient filtering are separate: an explicit
+        # band grant may restrict its recipients to known profile_ids.
         runtime_grant = (rule.get("runtime") or {}).get("grant") if isinstance(
             rule.get("runtime"), dict) else None
-        if "profile_ids" in applies_to and runtime_grant == "band":
+        if "profile_ids" in applies_to and runtime_grant == "band" and not applies_to.get("band"):
             problems.append(
                 f"{band_id}: rule {rule_id!r} applies_to.profile_ids with grant 'band'; "
-                f"the KB uses 'profile'"
+                f"a band grant requires applies_to.band: true"
             )
         elif applies_to.get("band") and runtime_grant == "profile":
             problems.append(
@@ -720,7 +720,10 @@ def validate_band_references(band_id: str, documents: Path, problems: list[str])
                     f"{band_id}: equipment list {list_id!r} references unknown item {item_id!r}"
                 )
             stray_item_keys = sorted(
-                set(entry) - {"item_id", "cost", "notes", "notes_i18n", "price_override"}
+                # `applies_to` is the printed recipient fact of one line, the same
+                # member `equipment-access.yaml.schema.json` declares for an entry
+                # and the shared eligibility projection filters the offer with.
+                set(entry) - {"item_id", "cost", "notes", "notes_i18n", "price_override", "applies_to"}
             )
             if stray_item_keys:
                 problems.append(

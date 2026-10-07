@@ -3,15 +3,15 @@ band_id: mercenaries
 rules:
 - id: mercenary-captain--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.mercenaries.mercenary-captain.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6" of the Mercenary Captain may use his Leadership characteristic when taking

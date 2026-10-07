@@ -166,16 +166,26 @@ rules:
     band: true
 - id: band--huuuuge
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ogre-hunting-party-web.band.huuuuge
-      scope: LATER
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: heavy-armour
+    - id: unimplemented.ogre-hunting-party-web.band.huuuuge-excluded
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: Fear, Large Target, all-alone exemption and warband-rating changes are
-        psychology/campaign mechanics outside the duel scope.
+      reason: Large-target shooting, group All Alone and campaign rating do not execute in the 1v1 melee duel.
   name: Huuuuge
   effect: >-
     Ogres are big, massive and frightening creatures. All ogre models cause fear. All ogres are
@@ -232,16 +242,15 @@ rules:
     - ogre-hunter
 - id: ogre-hunter--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ogre-hunting-party-web.ogre-hunter.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
-        psychology/rout mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -495,15 +504,15 @@ rules:
     - flingers
 - id: sabretusks--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ogre-hunting-party-web.sabretusks.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Fear is a psychology mechanic outside the duel scope.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Sabretusks are huge feline predators and thus cause fear.
   source:
@@ -580,15 +589,15 @@ rules:
     - sabretusks
 - id: sabretusks--charge
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ogre-hunting-party-web.sabretusks.charge
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: charge-conditional attack bonuses are outside the current engine scope.
+    - id: mechanic.sabretusk-charge
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.sabretusk-charge
   name: Charge
   effect: >-
     Sabretusks are slavering creatures that overpower their opponents when they charge. Sabretusks
@@ -609,15 +618,17 @@ rules:
     - sabretusks
 - id: sabretusks--tough-hide
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ogre-hunting-party-web.sabretusks.tough-hide
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: natural armour saves are outside the current engine scope.
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 5
   name: Tough Hide
   effect: Sabretusks have a natural 5+ armour save.
   source:
@@ -706,3 +717,32 @@ rules:
       de nuevo con 3 redes, sin penalización ni coste.
   applies_to:
     band: true
+
+- id: ogre-hunter--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapon.dagger
+  name: Equipment Restrictions
+  effect: "Unlike other models Ogres don't have free daggers, even though they might carry one reserved for eating, the most sacred activity in their life. Ogres never fight with daggers in close combat."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "1 Ogre Hunter"
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - ogre-hunter

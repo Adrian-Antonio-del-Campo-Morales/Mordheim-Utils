@@ -17,15 +17,15 @@ rules:
     profile_ids:
     - khann
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.khemri-hobgoblin-raiders.khann.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: hobgoblin-shaman--wizard
   name: Wizard
   effect: >-

@@ -185,15 +185,15 @@ rules:
     - nosferatu
 - id: nosferatu--fear
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.nosferatu.fear
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Nosferatu are terrifying undead creatures, and cause Fear.
   source:
@@ -210,15 +210,15 @@ rules:
     - nosferatu
 - id: nosferatu--immune-to-psychology
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.nosferatu.immune-to-psychology
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: A Nosferatu is immune to all forms of psychology and never voluntarily leaves combat.
   source:
@@ -262,15 +262,15 @@ rules:
     - nosferatu
 - id: nosferatu--no-pain
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.nosferatu.no-pain
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain
   effect: Nosferatu treat stunned results as on the Injury table as knocked down.
   source:
@@ -287,15 +287,15 @@ rules:
     - nosferatu
 - id: abomination--fear
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.abomination.fear
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear (Abomination)
   effect: Abominations are twisted and repulsive looking creatures, which cause Fear.
   source:
@@ -337,15 +337,15 @@ rules:
     - abomination
 - id: abomination--no-pain
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.abomination.no-pain
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain (Abomination)
   effect: An Abomination treats a stunned result as on the Injury table as knocked down.
   source:
@@ -416,15 +416,15 @@ rules:
     - defiled
 - id: defiled--fear
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.defiled.fear
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear (Defiled)
   effect: Defilers are terrifying undead creatures, which cause Fear.
   source:
@@ -493,15 +493,15 @@ rules:
     - defiled
 - id: defiled--no-pain
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.defiled.no-pain
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain (Defiled)
   effect: Defiled treat stunned results as on the Injury table as knocked down.
   source:
@@ -518,15 +518,15 @@ rules:
     - defiled
 - id: banshee--fear
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.banshee.fear
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear (Banshee)
   effect: Banshees are twisted and repulsive creatures, which cause Fear.
   source:
@@ -672,15 +672,15 @@ rules:
     - banshee
 - id: skeleton--fear
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.skeleton.fear
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear (Skeletons)
   effect: Skeletons are terrifying undead creatures, which cause Fear.
   source:
@@ -724,15 +724,15 @@ rules:
     - skeleton
 - id: skeleton--immune-to-psychology
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.skeleton.immune-to-psychology
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology (Skeletons)
   effect: Skeletons are not affected by psychology and never leave combat.
   source:
@@ -774,15 +774,15 @@ rules:
     - skeleton
 - id: skeleton--no-pain
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.skeleton.no-pain
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain (Skeletons)
   effect: Skeletons treat stunned results as on the Injury table as knocked down.
   source:
@@ -824,15 +824,15 @@ rules:
     - skeleton
 - id: wight--fear
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.wight.fear
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear (Wights)
   effect: Wights are terrifying undead creatures, which cause Fear.
   source:
@@ -908,15 +908,15 @@ rules:
     - wight
 - id: wight--immune-to-psychology
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-mou.wight.immune-to-psychology
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology (Wights)
   effect: Wights are not affected by psychology and never leave combat.
   source:
@@ -956,3 +956,87 @@ rules:
   applies_to:
     profile_ids:
     - wight
+
+- id: abomination--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+  name: Equipment Restrictions
+  effect: "Abominations may not carry any weapons. They are a mix of fangs, talons or blades, which carry no penalty in combat."
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: "Heroes / 0-1 Abominations"
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - abomination
+- id: banshee--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - equipment
+  name: Equipment Restrictions
+  effect: "Banshees never carry any equipment, as they cannot hold them."
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: "Henchmen / 0-2 Banshees"
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - banshee
+- id: skeleton--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          max_active_one_handed_weapons: 1
+  name: Equipment Restrictions
+  effect: "Handling multiple weapons is a feat too advanced for a skeleton, which may only ever use one at a time."
+  source:
+    manual: broheim.net
+    printed_page: 6
+    section: "Henchmen / Skeleton Warriors"
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Necrarchs%20(2).pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - skeleton

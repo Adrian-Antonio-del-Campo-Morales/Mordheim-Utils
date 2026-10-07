@@ -89,15 +89,15 @@ rules:
     - wizard
 - id: elf--hatred
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.adventurers-kaz.elf.hatred
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.hatred-dark-elves
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-dark-elves
   name: Hatred
   effect: The Elf hates Dark Elfs.
   source:
@@ -145,15 +145,21 @@ rules:
     - elf
 - id: barbarian--frenzy
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.adventurers-kaz.barbarian.frenzy
-      scope: LATER
+    - id: trait.frenzy
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
+    - id: excluded.adventurers-kaz.barbarian--frenzy.board-charge
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology (frenzy).
+      reason: Compulsory charge range, movement and target selection on a board are outside the 1v1 duel. In-contact attack doubling, psychology exemption and loss after knockdown/stun use the existing Frenzy operator.
   name: Frenzy
   effect: The Barbarian is subject to Frenzy.
   source:
@@ -199,15 +205,15 @@ rules:
     - barbarian
 - id: imperial-noble--honorable
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.adventurers-kaz.imperial-noble.honorable
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: attack targeting restrictions against knocked down or stunned opponents.
+    - id: mechanic.honorable
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.honorable
   name: Honorable
   effect: The Imperial Noble will never attack an opponent that is Knocked Down or Stunned.
   source:
@@ -291,6 +297,8 @@ rules:
       binding:
         kind: trait
         id: trait.concussion-immune
+        parameters:
+          value: true
   name: Hard Head
   effect: See Mordheim rulebook page 151.
   source:
@@ -379,6 +387,10 @@ rules:
     printed_page: 22
     section: Barbarian Special Skills
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  applies_to:
+    band: true
+    profile_ids:
+    - barbarian
   name_i18n:
     es: Habilidades Especiales de Bárbaros
   effect_i18n:
@@ -390,10 +402,6 @@ rules:
       turno en el que carga; sufrirá un -1 por impactar ese turno. Guerrero Instintivo: el Bárbaro
       está tan acostumbrado a su Arma a Dos Manos que es capaz de parar con ella; usa las reglas de
       Parada normalmente, como con una espada, tal y como se describen en tu Libro de Reglas.
-  applies_to:
-    band: true
-    profile_ids:
-    - barbarian
 - id: band--noble-special-skills
   runtime:
     scope: 'YES'

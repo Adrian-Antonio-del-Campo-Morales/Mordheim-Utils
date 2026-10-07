@@ -23,6 +23,54 @@ context and the special-save phase.
 Done when the binding reaches an observable result and activation, absence,
 limits and architecture tests pass.
 
+## Use the development queue
+
+For routine planning, generate the current inventory without running the semantic corpus:
+
+```powershell
+python tools/mordheim-utils.py report rules --inventory-only --t13 --output outputs/audit/development
+```
+
+Use `combat-audit.csv` as the operational list. Filter `--work-status implementation_required`
+for admitted effects needing implementation; `--family <mechanism>` groups related T13 effects.
+`development_family` uses the existing origin register's mechanism names. All filters apply
+to both CSVs. Remove `--t13` to inspect effects not recorded in that historical plan.
+
+| combat_work_status | Next step |
+| --- | --- |
+| `implementation_required` | Implement the complete included effect. |
+| `implemented_pending_verification` | Review retained evidence and repair missing/stale verification metadata; do not assume the effect needs reimplementation. |
+| `deferred_scope_review` | Review scope/prerequisites before implementation. `LATER` is not an exclusion. |
+| `needs_classification` | Classify against the current 1v1 duel scope. |
+| `needs_ruling` | Resolve an explicit unanswered specification question. |
+| `needs_question_review` | Reconcile a historical question before implementing an admitted unimplemented effect; it may already be answered or superseded. |
+| `needs_target_reconciliation` | Locate the current clause for an unmatched historical origin. |
+| `excluded` | No duel implementation work. |
+| `verified_modular` | Modular semantic evidence passed; optimized ports remain separate. |
+
+`canonical_id` reconciles historical bindings with current source identities; mixed clauses
+remain separate runtime rows. `effect_text` resolves shared rule references. `question_status`
+and `decision_reference` expose accepted Q/F decisions from `docs/decisions/design-rulings.md`.
+Historical questions without a recorded answer are `needs_review`, not automatically new
+requests to the user. `next_action` gives the work appropriate to each row.
+
+`audit_mode=inventory` explicitly means no semantic execution. Dependencies listed in
+`semantic_dependencies` are verification dependencies, not proof of a functional blocker.
+A binding is a contract reference, not an implementation certificate. Planned
+bindings require explicit `implemented: NO` and are returned only with
+`include_pending=True`. Active bindings require both `implemented: YES` and
+effect `scope: YES`; contradictory declarations are rejected by the loader.
+The structural audit checks active contracts against the maintained mechanic,
+trait, profile and compiler contracts for band rules, catalogued skills and
+hireling rules. Consumer/observable checks remain separate from semantic proof.
+
+The KB's `implemented=YES` is a declaration, not independent behavioural proof. Items and
+other sources absent from the semantic inventory retain that limitation in `semantic_reason`.
+Quick-mode risk is `not_assessed`; no successful verification is inferred. CSVs are generated
+snapshots: regenerate after source changes; edit canonical data/specifications, never the CSV.
+Use the full command below only when semantic verification is needed, preferably at a batch
+boundary. A successful export exit code means the files were written, not that all rules passed.
+
 ## Verify rules
 
 To consult the global status before editing specifications:
@@ -33,17 +81,67 @@ python tools/mordheim-utils.py report rules
 
 The command generates two Excel-friendly CSVs under `outputs/audit/`, with
 the same timestamp: `combat-audit-<timestamp>.csv` contains core combat rules
-and mechanics; `rules-audit-<timestamp>.csv` contains editorial effects from
-warbands and skill catalogues. IDs and bindings allow cross-referencing them.
+and mechanics, editorial effects (including unimplemented, excluded and
+unclassified effects), item effects and printed effects in other catalogue/band files,
+plus historical T13 combat candidates requiring reconciliation.
+The inventory scans every KB YAML file recursively, including nested entries in
+files already represented by their main catalogue. Anonymous effects use a
+file/local-path identity; `rule_ref` text is resolved when available. Equipment
+notes, descriptions and restriction prose remain explicit `UNCLASSIFIED`
+candidates until reviewed, rather than being guessed into or out of duel scope.
+Profile traits, recorded unresolved concepts and dangling rule-list references
+also remain visible; resolved rule-list references reuse their definitions.
+Historical T13 dispositions cannot remove current KB candidates. This covers
+the supported source fields, not a semantic guarantee about arbitrary prose.
+The [source scope review](../knowledge/2a2b/tasks/T13-audit-scope-review.csv)
+classifies previously unclassified candidates and records the printed text,
+reason and category. The audit applies it only to still-unclassified records
+whose source file and text hash match; explicit KB scope takes precedence and
+changed text returns to classification. `scope_basis=reviewed_source` distinguishes
+this review from canonical runtime metadata. `scope_category=construction`
+means legal kit/access/projection, not a new combat operator. Inclusion neither
+activates a binding nor asserts implementation: unknown execution remains
+`needs_target_reconciliation`, to locate/reuse existing behavior first.
+On 2026-10-05 the 3,394 candidates partition into 1,365 included (1,015
+construction, 243 combat, 91 participant facts, 13 supplied consequences and
+3 definition references), 1,966 excluded and 63 requiring full source/interpretation
+review. Mixed records include only their individual consequence; acquisition,
+casting, areas/groups, terrain, flight and post-duel procedures remain excluded.
+`rules-audit-<timestamp>.csv` contains the source records from warbands,
+skills, items and other catalogues. The reports intentionally overlap: a rule's editorial
+classification and its combat implementation are separate concerns. IDs and
+bindings allow cross-referencing them.
 Combat semantic evidence comes from the modular verifier; it does not certify
 NumPy or native parity. Limitable with `--scope YES`, `--status pending` and
 `--output <directory>` (which writes `combat-audit.csv` and `rules-audit.csv`).
 It is read-only with respect to the KB, the specifications and the code.
 
+`combat_work_status` distinguishes implementation work from semantic evidence
+and historical scope/target reconciliation. The `t13_origin`, `t13_disposition`,
+`t13_lots` and `t13_question_id` columns trace candidates to the existing T13
+origin register. Planning dispositions are historical, not execution evidence
+or current admission: the governing 1v1 scope decision can supersede them.
+Their canonical `scope` and semantic status remain unchanged. If a historical
+target no longer exists in the audit, a `planning_effect` row keeps the origin
+visible as `needs_target_reconciliation`, with implementation `UNKNOWN`.
+Reconcile against current source clauses and T13 decisions before implementing.
+Custom KBs are not joined to the repository's T13 plan.
+
+The combat report conservatively retains unclassified printed effects: absence
+of an executable binding cannot establish that a rule is irrelevant to combat.
+Pure campaign/data-only origins explicitly classified in T13 are omitted unless
+they currently have an included effect or binding. Mixed origins stay visible.
+Items use their canonical `combat_status`, `mechanic_id` and explicit simulation
+mappings; a mapping is not independent evidence that every item clause works.
+Other catalogue effects without runtime metadata remain `UNCLASSIFIED`, never
+automatically implemented. `effect_text` preserves the printed effect for review.
+Pending semantic reasons include the applicable specification errors, including
+stale scope/source fingerprints; implementation declarations do not override them.
+
 Missing scope metadata is reported as `scope = UNCLASSIFIED`,
 `semantic_status = unclassified`, `review_status = needs_classification` and
 `implemented = UNKNOWN`. It is not an exclusion. Explicit `NO` and `LATER`
-classifications retain `out_of_scope`; an included but unbound effect remains
+classifications are distinct: `NO` is `out_of_scope`, while `LATER` is `deferred`; an included but unbound effect remains
 pending. These report states do not change the canonical YAML scope vocabulary.
 
 ### Review questions and decisions

@@ -145,15 +145,15 @@ rules:
     band: true
 - id: band--hate-undead
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.band.hate-undead
-      scope: LATER
-      binding: null
-      reason: >-
-        Psychology subsystem (hatred): not covered by the current engine scope.
+    - id: mechanic.hatred-undead
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-undead
   name: Hate Undead
   effect: >-
     Vampires, necromancers, are Morr's ultimate enemies: they steal from his kingdom, violate his
@@ -206,15 +206,15 @@ rules:
     band: true
 - id: dreamer--leader
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.dreamer.leader
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Standard Leader ability, engine-wide; to be bound via the shared rule at promotion.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheim-facebook-group
@@ -254,39 +254,36 @@ rules:
     - dreamer
 - id: dreamer--guiding-dream
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.dreamer.guiding-dream
-      scope: LATER
+    - id: mechanic.guiding-dream
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.guiding-dream
+    - id: dreamer--guiding-dream.non-duel
+      scope: 'NO'
       binding: null
-      reason: >-
-        Pre-battle D6 table with per-battle modifiers: deferred to the scenario/pre-battle engine
-        milestone.
+      reason: Movement penalties and narrative assignments are outside the resolved melee duel.
   name: Guiding Dream
-  effect: >-
-    At the beginning of each battle, the Dreamer must roll D6 and consult the Guiding Dream table to
-    discover what kind of vision Morr is sending him. 1 - Disturbing Vision: The vision of the
-    previous night is clear, but incomplete. That worries the dreamer too much and he feels very
-    tired the next day. The dreamer suffers a -1" Movement penalty. 2-3 - Vision of Truth: Morr
-    shows the dreamer the combat tactics of his enemy and images of himself defeating his enemy with
-    accurate blows to their weak points, which makes it easier for the dreamer to land his blows
-    against them. Designate one of your opponent's heroes as a target. The dreamer gets a +1 to hit
-    this model. 4-5 - Empowering Vision: Morr sends a vision to the dreamer in which he sees himself
-    in the heat of battle fighting against his enemies without ever failing and emerging victorious
-    despite his wounds, which imbues the dreamer with great strength. Designate one of your
-    opponent's heroes as a target. The dreamer has +1 Strength when fighting this model. 6 -
-    Infuriating Vision: Morr shows the dreamer the face of his enemy, this gives the dreamer a clear
-    vision of his goal and an inexhaustible determination to finish him off. Designate one of your
-    opponent's heroes as a target. The dreamer will have Frenzy against this model. The hero has a
-    dream related to a specific action that Morr wants you to perform. These dreams are always
-    perfectly clear, but never complete. It will never be explained in them why Morr wants you to
-    act that way. In visions you usually appear performing a specific action in a specific place and
-    at a specific time, and in some way you will know what the place is called and where it is, as
-    well as the exact date you must be there (even if it is not obvious). You have no control over
-    the content of the dream, and there are no guarantees that you will survive to fulfill Morr's
-    assignment.
+  effect: 'At the beginning of each battle, the Dreamer must roll D6 and consult the Guiding Dream table to discover what
+    kind of vision Morr is sending him. 1 - Disturbing Vision: The vision of the previous night is clear, but incomplete.
+    That worries the dreamer too much and he feels very tired the next day. The dreamer suffers a -1" Movement penalty. 2-3
+    - Vision of Truth: Morr shows the dreamer the combat tactics of his enemy and images of himself defeating his enemy with
+    accurate blows to their weak points, which makes it easier for the dreamer to land his blows against them. Designate one
+    of your opponent''s heroes as a target. The dreamer gets a +1 to hit this model. 4-5 - Empowering Vision: Morr sends a
+    vision to the dreamer in which he sees himself in the heat of battle fighting against his enemies without ever failing
+    and emerging victorious despite his wounds, which imbues the dreamer with great strength. Designate one of your opponent''s
+    heroes as a target. The dreamer has +1 Strength when fighting this model. 6 - Infuriating Vision: Morr shows the dreamer
+    the face of his enemy, this gives the dreamer a clear vision of his goal and an inexhaustible determination to finish
+    him off. Designate one of your opponent''s heroes as a target. The dreamer will have Frenzy against this model. The hero
+    has a dream related to a specific action that Morr wants you to perform. These dreams are always perfectly clear, but
+    never complete. It will never be explained in them why Morr wants you to act that way. In visions you usually appear performing
+    a specific action in a specific place and at a specific time, and in some way you will know what the place is called and
+    where it is, as well as the exact date you must be there (even if it is not obvious). You have no control over the content
+    of the dream, and there are no guarantees that you will survive to fulfill Morr''s assignment.'
   source:
     manual: mordheim-facebook-group
     printed_page: 0
@@ -295,27 +292,22 @@ rules:
   name_i18n:
     es: Sueño Guía
   effect_i18n:
-    es: >-
-      Al comienzo de cada batalla, el Soñador debe lanzar un D6 y consultar la tabla de Sueño Guía
-      para descubrir qué tipo de visión le envía Morr. 1 - Visión Inquietante: la visión de la noche
-      anterior es clara, pero incompleta. Eso preocupa demasiado al soñador y al día siguiente se
-      siente muy cansado; sufre una penalización de -1" de Movimiento. 2-3 - Visión de Verdad: Morr
-      muestra al soñador las tácticas de combate de su enemigo e imágenes de sí mismo derrotándolo
-      con golpes certeros a sus puntos débiles, lo que le facilita alcanzarlo. Designa a uno de los
-      héroes de tu oponente como objetivo; el soñador obtiene +1 por impactar a esa miniatura. 4-5 -
-      Visión de Fortalecimiento: Morr envía al soñador una visión en la que se ve en pleno combate
-      luchando contra sus enemigos sin fallar jamás y saliendo victorioso pese a sus heridas, lo que
-      le infunde gran fuerza. Designa a uno de los héroes de tu oponente como objetivo; el soñador
-      tiene +1 de Fuerza al luchar contra esa miniatura. 6 - Visión Enfurecedora: Morr muestra al
-      soñador el rostro de su enemigo, lo que le da una visión clara de su objetivo y una
-      determinación inagotable de acabar con él. Designa a uno de los héroes de tu oponente como
-      objetivo; el soñador tendrá Frenesí contra esa miniatura. El héroe tiene un sueño relacionado
-      con una acción específica que Morr quiere que realices. Estos sueños son siempre perfectamente
-      claros, pero nunca completos. Nunca se explicará en ellos por qué Morr quiere que actúes así.
-      En las visiones normalmente apareces realizando una acción concreta en un lugar concreto y en
-      un momento concreto, y de alguna manera sabrás cómo se llama el lugar y dónde está, así como
-      la fecha exacta a la que debes estar allí (aunque no sea obvio). No tienes control sobre el
-      contenido del sueño y no hay garantías de que sobrevivas para cumplir el encargo de Morr.
+    es: 'Al comienzo de cada batalla, el Soñador debe lanzar un D6 y consultar la tabla de Sueño Guía para descubrir qué tipo
+      de visión le envía Morr. 1 - Visión Inquietante: la visión de la noche anterior es clara, pero incompleta. Eso preocupa
+      demasiado al soñador y al día siguiente se siente muy cansado; sufre una penalización de -1" de Movimiento. 2-3 - Visión
+      de Verdad: Morr muestra al soñador las tácticas de combate de su enemigo e imágenes de sí mismo derrotándolo con golpes
+      certeros a sus puntos débiles, lo que le facilita alcanzarlo. Designa a uno de los héroes de tu oponente como objetivo;
+      el soñador obtiene +1 por impactar a esa miniatura. 4-5 - Visión de Fortalecimiento: Morr envía al soñador una visión
+      en la que se ve en pleno combate luchando contra sus enemigos sin fallar jamás y saliendo victorioso pese a sus heridas,
+      lo que le infunde gran fuerza. Designa a uno de los héroes de tu oponente como objetivo; el soñador tiene +1 de Fuerza
+      al luchar contra esa miniatura. 6 - Visión Enfurecedora: Morr muestra al soñador el rostro de su enemigo, lo que le
+      da una visión clara de su objetivo y una determinación inagotable de acabar con él. Designa a uno de los héroes de tu
+      oponente como objetivo; el soñador tendrá Frenesí contra esa miniatura. El héroe tiene un sueño relacionado con una
+      acción específica que Morr quiere que realices. Estos sueños son siempre perfectamente claros, pero nunca completos.
+      Nunca se explicará en ellos por qué Morr quiere que actúes así. En las visiones normalmente apareces realizando una
+      acción concreta en un lugar concreto y en un momento concreto, y de alguna manera sabrás cómo se llama el lugar y dónde
+      está, así como la fecha exacta a la que debes estar allí (aunque no sea obvio). No tienes control sobre el contenido
+      del sueño y no hay garantías de que sobrevivas para cumplir el encargo de Morr.'
   applies_to:
     profile_ids:
     - dreamer
@@ -477,15 +469,15 @@ rules:
     - andanti
 - id: andanti--andanti-knowledge
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.andanti.andanti-knowledge
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: conditional to-hit bonus pending scope refinement.
+    - id: mechanic.andanti-knowledge
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.andanti-knowledge
   name: Andanti Knowledge
   effect: >-
     Their secret knowledge passed from member to member makes them skilled fighters against

@@ -1,5 +1,32 @@
 # Remaining 2A/2B integration into Combat Lab — T13–T15
 
+Current status (2026-10-05): **T13 modular implementation is partial**. The latest autonomous continuation completes optional Eagle Friend as separate repeatable Strike First/S3 weapon contributions, using the directing Priestess's WS/Initiative without hand-weapon or poison duplication; no third fighter is created. Snerik now compiles and runs with his complete printed kit: his inline Camouflage Cloak remains owned but inactive, justified by its uniquely resolved excluded rule. The editor preserves supplied ownership for the same profile and round-trips the number of eagles. Prior House Guard/Tranquil Fauna deliveries remain implemented. Native admission remains 23 base hired swords plus Aldred, Armen, conditional Snorri and Snerik. Other optional Marks and source-blocked modular clauses remain.
+
+**Implementation granularity:** finish each admitted effect end to end in one
+lot, including canonical grants, compilation, modular behavior and necessary
+product inputs. Group effects with similar semantics. Split only for a source
+blocker, dependency or concrete implementation benefit. Add a small number of
+meaningful cases to the existing family suite and run only affected checks;
+collective certification remains a separate task.
+
+**Execution boundary, 2026-10-05:** continue remaining modular families,
+retaining deferred problems in the follow-up register. Do not start L19/L20
+without changing the current modular-first instruction. The interleaved
+optimized-port recommendation below does not govern this execution; unresolved
+source gates are not silently excluded.
+
+**Scope correction, 2026-10-04:** the user reaffirmed **1v1 duels** as the
+product purpose. Group Rout/psychology, All Alone counting, multi-target combat
+and independent third fighters are excluded. External bonuses/conditions may
+be supplied for a duelist without simulating their producers or a surrounding
+group. This supersedes historical broader admissions, including related
+follow-up close criteria. See the [permanent decision](../../../decisions/design-rulings.md#combat-lab-remains-a-1v1-duel-simulator--2026-10-04).
+L21 reconciles historical origin/scope records; excluded group clauses are not
+new implementation or certification blockers. Lot identifiers are retained.
+The user's further clarification excludes map/terrain/weather rules, including
+fog/Mystic Mist and fighting in water, even as supplied condition switches.
+Their environmental exceptions are excluded rather than deferred blockers.
+
 Execution priorities revised on **2026-10-02**, at the user's request to reduce
 fragmentation and prioritize usable functionality. This replaces the earlier
 dispatch sequence, including its completed evidence-only waves. The
@@ -11,6 +38,134 @@ The [initiative README](../README.md) owns reservations and acceptance;
 [inventory/questions](T13-inventory.md) and [origins](T13-obligations.csv) retain
 scope/source identities. Scheduling changes neither scope nor interpretations,
 acceptance or implementation status. This revision launches no agent.
+
+## Current progress and remaining work — 2026-10-05
+
+### Progress at a glance
+
+| Workstream | Status | Remaining work |
+| --- | --- | --- |
+| Shared construction baseline | Implemented | Reuse it for residual item/profile projections; no repeat centralization. |
+| T13 — Modular engine / L02–L17 | In progress | Remaining individual effects, target filters, keeper/mount contributions and source-blocked clauses. |
+| T13 — Canonical hirelings / L16 | Partial | 23 usable base hired swords plus Aldred/Armen; Snorri requires a supplied drinking result. Strigani missing stats and optional Marks remain. |
+| T13 — Product workflows / L18 | Partial | Complete affected editor, configuration, analyses and CLI workflows. |
+| T13 — NumPy port / L19 | Not started for new families | Port applicable completed modular families and verify actual execution. |
+| T13 — Native port / L20 | Not started for new families | Port applicable completed families and verify the built native engine. |
+| T13 — Final reconciliation / L01/L21 | Pending closure | Current origin/scope/source-pin/reference reconciliation and remaining gate repairs. |
+| T14 — Independent certification / L22 | Final certification pending | Semantic, parity and coverage checks against the completed applicable engines. |
+| T15 — Integral review and closure / L23 | Final closure pending | Final product/integral checks, review and phase closure after T14. |
+
+Statuses describe workstreams, not percentages or a count of dispatches.
+Previously accepted deliveries remain valid within their recorded boundaries.
+
+This is the governing progress summary. The 23 lot ids below remain work
+owners, not 23 tasks still to launch. Delivered operators are reused; open
+compound clauses do not require rebuilding their completed parts. This update
+uses the current bindings/compiler and retained delivery results, not a new
+full semantic/parity certification or an exhaustive origin audit.
+
+| Area | Delivered | Still required |
+| --- | --- | --- |
+| Shared construction / L05 | Existing shared legality, named choices, recipients, grants and supplied owned/active kit facts; canonical hireling kits now use the same module. | Remaining source-specific item/choice projections under F028/F065 and their functional owners. No second constructor or repeated centralization. |
+| Modular attacks, defences and sequences / L02–L11 | Canonical Vomit Attack, Spectral Touch and Shifty; grouped weapons, saves/injury/recovery, psychology, target modifiers, charm/reactions, Ghost Pirate Ethereal and user rulings Q037/Q128/Q013/F005. | Domnu Bear Hug allocation decision (F067); remaining hired-profile/optional-skill clauses below. F026/Q151 retains final pistol-contract reconciliation, rather than repeating delivered Shifty/pistol allocation. |
+| Target facts / L06/L11/L21 | Explicit nature, species, normal-animal, Vampire, sex and open-flame facts; dependent Hellblade, Hatred and other local operators. | Complete source-backed classifications where still unnamed/unknown; audit compound remainders before claiming all canonical target coverage (F064/F070). Never infer nature from immunity or band names. |
+| Local context and composite combatants / L12–L17 | Supplied leader/handler facts, individual one-die Animosity, two individual Command consequences, Sea Singer, Wheelo impacts/fittings and supplied mounted Righteous Charge. | Keeper-qualified Ferret contribution (F068); source-qualified contact provenance only where relevant to the existing duel (F069); admitted mount/component clauses (Q084/Q108/Q127/Q147). `weapon.lance` is still explicitly refused by modular initialization; supplied mounted facts are not complete mounted-combat support. |
+| Canonical hirelings / L16 | Native 2B ids, starting skills, complete fixed/choice/optional kits, owned excluded unique items and source-qualified equipment; **23 usable base hired-sword profiles**, Aldred/Armen/Snerik and Snorri with a supplied result. Norse Bearman, Crimashin and Holy Man round-tripped through the real Tk editor. | Strigani missing stats, and optional Marks below. F036 stays open for these effects and complete product closure; F037's identities and Aldred's combat/runtime gates are resolved; he is also usable as a native Dramatis Personae. |
+| Product / L18 | Optional individual facts and native participant choices are exposed in the editor; selected native kits preserve their identity. | Finish affected editor/configuration/analysis/CLI workflows and explanations for the remaining admitted effects. The tested editor round trips do not close every workflow. |
+| NumPy/native / L19–L20 | Existing support and explicit guards are retained. | Port all new applicable stable families after modular completion/authorization, with actual backend execution. **These ports have not started.** |
+| Final integration / L01/L21 | Earlier accepted pin lots and structural/publication checks remain reusable at their recorded revisions. | Reconcile exact new source pins, staging, origins/scope, compound clauses, item/reference integrity and current gate debt (including F057). This is consolidated integration work, not a separate review for each effect. |
+| T14 / L22; T15 / L23 | Earlier bounded reviews are retained. | Final independent semantic/parity/coverage certification of the applicable engines, then integral/product review and phase closure. **Neither phase is complete.** |
+
+H7's shared-access repair and the four residual mechanic-concession verdict
+differences are delivered. Canonical alias facts now resolve the Black Lotus
+and Mace offers without purchasable alias records. Six mechanic-only Vomit
+Attack offers still need truthful L21 disposition. Bounded tests passed; the
+full sweep was not repeated and global item parity is not asserted.
+See [H7 review](T13-shared-access-parity-audit.md#8-coordinator-current-state-review--2026-10-05).
+
+Grouped individual-modifier continuation (2026-10-05): Guiding Dream now rolls
+once at battle start and applies its hit/Strength/Frenzy result only against an
+explicitly nominated opposing Hero. Movement and narrative assignments remain
+excluded. Iron Sinews is a selectable +1 Strength skill, never an innate grant.
+Strigoi Kindred Hatred uses canonical/supplied Vampire bloodlines, including its
+express grant despite innate psychology immunity, first-round timing and Frenzy
+suppression. The Slayer Cult's three named non-Slayer recipients now receive
+the existing Orc/Goblin Hatred operator, lost with psychology immunity.
+The editor carries nomination and bloodline facts. L21 retains source-pin and
+origin reconciliation; L19/L20 retain ports. Focused family cases and schema,
+editor and publication checks cover this group, not whole-engine certification.
+
+### KB reconciliation — 2026-10-05
+
+Twelve already-executing Frenzy/Hatred grants now declare `scope: YES`; their
+compiled outputs are unchanged. Two compound records retain explicit excluded
+post-battle/Animosity clauses. Another 105 pure map, movement, shooting/casting,
+group, campaign or post-duel rules now declare `NO`, following the accepted 1v1
+boundary. Source prose and recipients are unchanged, including existing 2B mirrors.
+The band-family manifest now derives from current included bindings (258 families,
+990 memberships; not distinct completed rules). Eighteen delivered tag consumers
+are registered; the structural probe supplies Snorri's existing required input
+instead of treating its absence as an unimplemented mechanic. Structural verification
+is green (1,050 profiles); this does not refresh semantic pins or certify ports.
+
+Use `report rules --inventory-only --t13` for the current development queue.
+The external `T13-modular-residuals.csv` is a historical investigation snapshot,
+not a current task list: its old pending observations do not override canonical
+runtime metadata. Genuine unbound duel effects and compound remainders remain
+pending in the KB. Eighteen clear individual clauses now declare `YES` /
+`implemented: NO` rather than obsolete subsystem deferral; four retain historical
+questions to reconcile before implementation. F001/L21 still own source pins; L19/L20 and final certification
+remain separate. This reconciliation implements no new combat behavior.
+
+### Exact native-profile blockers
+
+No normalized base hired-sword profile remains blocked by an intrinsic rule.
+Mercy and Healing Hands are excluded support: the user rejects self-healing
+and healing the opponent. Source prose remains intact. Strictures and the
+separate optional Tranquil Aura are implemented.
+
+Optional Marks remain pending for Morr, Myrmidia (Oracle), Ranald and Solkan.
+Eagle Friend is independently selectable and repeatable; the composite Marks
+of Myrmidia entry remains pending for Oracle, never a combined grant.
+Manann's water/Aquatic Marks and Taal's contact-breaking Enlivened Flora are
+excluded; Taal's separately selectable Tranquil Fauna is implemented. Sigmar's Enlightened and Symbol of Unity, and Ulric's Son of Ulric are
+separate delivered choices; their compound parents never grant both together.
+Ulric's Wolf Friend and Verena's Librarian/Owl Friend are excluded companion,
+lifecycle, casting or shooting clauses. The 23 usable base profiles do not
+mean every acquired skill is implemented.
+Snerik's canonical stats and full inline unique-equipment kit are now delivered.
+Only uniquely resolved `scope: NO` / `implemented: NO` item rules without
+executable bindings qualify for owned-only projection; active or unresolved
+unique items remain refused. Strigani Seer Necromancer still lacks canonical
+stats; recover source data without anonymous substitutes.
+
+### Resume and stop criteria
+
+Resume the remaining related individual effects in their L06–L17 owners,
+starting from L16's current canonical route. Group compatible effects and
+finish their bindings, compilation, behavior and necessary inputs together.
+Source-blocked F067, Strigani missing stats can be deferred while
+other families proceed; record the blocker in the existing register.
+Then finish L18 and perform consolidated modular origin/scope reconciliation.
+Stop before the NumPy/native implementation boundary. A percentage or a fixed
+number of implementation dispatches is not claimed: the remaining compound
+origin reconciliation is still required, and a lot may contain many effects.
+
+Group Rout, All Alone, independent third combatants, map/terrain/weather,
+shooting/casting and voluntary escape/unresolved endings are **excluded**, not
+future implementation tasks. Q158's group emission/range ambiguity does not
+block the two supplied individual Command effects already implemented.
+`knights_helm` is a user-declared source erratum: retain F063's data/reference
+cleanup, not a new helmet mechanic. User rulings Q037/Q128/Q013/F005 are
+implemented and are not questions awaiting another answer.
+
+Evidence boundary: this continuation adds four cases to the existing modular
+family, one shared TypeScript kit case and one real editor round-trip. Family,
+source schemas/mirror, trait contract, shared bundle/typecheck, documentation
+and publication checks cover the affected delivery. Independent whole-engine
+certification and ports remain separate. Oracle/Augur and Ranald's Luck require
+ownership-safe arbitrary-roll handling; the existing narrower `skill.luck`
+operator is not an equivalent implementation.
 
 ## 1. Accepted work and active dependency
 
@@ -87,7 +242,7 @@ context rather than an autonomous board.
 | Attacks, saves and weapon properties — R2/R3/R4 | Reuse the delivered Vomit Attack milestone; continue with Talismanic Tattoos and remaining local families. | F022/F023; reconcile F002/F014 with their family and decide F015 alongside F014. F024/Q128 and F025/Q146 retain source gates. Reserve actual compiler/engine paths; shared construction is already delivered. |
 | Next: ordered sequences — R4/R2/R3/R6 | Correct allocation, reactions, suppression, resources and expiry across ordinary/bonus pools. | F005/F026/Q151 pistol contract together; F013/Q013 recovery and remaining sequence origins. Resolve the actual source question before dependent implementation; reuse accepted sequencing operators. |
 | Next: psychology, proximity and commands — R5/R4/R6 | Leadership, neighbors, immunity and conditions produce the admitted consequences. | Existing T13.5 origin families; F061 Halfling Crude Belch; F039/Q158 command activation/range. Add only necessary context. Preserve Crude Belch's first/only-attack loss and generic minimum-one semantics separately. No general battle-magic engine. |
-| Then: movement/charges and local participants — R6/R2 | Supplied terrain/distance/action facts resolve admitted clauses; hirelings become canonical local simulation participants. | Remaining T13.6 families; F036/F037/F038 in one hireling integration; F028 item routes not completed by centralization. Reuse loaders and shared legality, without campaign lifecycle. Disjoint hireling data work may start earlier. |
+| Then: charges/individual actions and canonical duelists — R6/R2 | Source-qualified charge/contact/action consequences within 1v1; hirelings become canonical duelists. Map, terrain and weather rules are excluded. | Remaining admitted T13.6 clauses; F036/F037/F038 hireling integration; F028 relevant item routes. Reuse loaders/shared legality without campaign lifecycle. |
 | Interleaved after each stable family: optimized execution — R3–R7 | Equivalent real modular/NumPy/native behavior for every applicable flow. | F006/F009 plus local/threshold/sequence/contextual ports. Batch by shared execution seam, after modular acceptance; serialize kernel/model/layout/generation writes. Record actual native binary execution. |
 | Finish: R7, T14, T15 | Coherent origin coverage, exact-revision certification, integral gate and local phase commit. | F001's historical pins with source owners; already-reserved F057 count repair; product/generated/manifest integration below. No new exclusions, weaker gates, push or deployment. |
 
@@ -112,7 +267,8 @@ adds its canonical access, strike-first/two-hand profile and local 1–4 stun
 replacement using the existing injury/reaction pipeline.
 [Skull Busta](T13-local-weapons.md#subsequent-l06-milestone-skull-busta) now adds
 its first-turn Strength, Concussion, ordinary-helmet Basha and shared active-loadout
-restrictions; L07 owns the absent Knight's Helm counterpart under F063. Continue the
+restrictions; Knight's Helm is a user-confirmed source erratum (2026-10-04).
+F063 tracks pending KB removal/reference cleanup, not L07 behavior. Continue the
 remaining L06 hit/wound/critical/poison/parry families; L06 is not closed.
 The [paired-weapon milestone](T13-local-weapons.md#subsequent-l06-milestone-long-daggers-and-knuckledusters)
 now connects Long Daggers (Hero recipients, Pair and Parry) and Knuckledusters
@@ -120,6 +276,43 @@ now connects Long Daggers (Hero recipients, Pair and Parry) and Knuckledusters
 L11, then returns the weapon to L06; F065 retains Concealable's shared carry
 and scenario clauses for L05 residual/L18 work before L21. These are dependencies
 inside the existing lots, not additional review or test-only dispatches.
+The [local modifier and special-save milestone](T13-local-modifiers-defences.md)
+connects eight more canonical rules, corrects High Elf skill-table facts,
+separates Bitter Moors' wound Valour from the existing hit variant, and resolves
+F022's modular save-kind defect. F063 no longer blocks modular implementation
+after the user's erratum decision; continue other admitted families.
+The [subsequent natural/injury and conditional/recursive blocks](T13-local-modifiers-defences.md#subsequent-l06l07-block--natural-attacks-and-injury-grants)
+deliver 34 more canonical rules: Wolf Rat armour exception, intrinsic Lotus,
+poison/No Pain grants, Poltergeist removal, Dwarf/Snotling injury and save
+clauses, Domnu's magical-only ward and recursive Mourngul attacks. Reuse the
+same operators and family cases; these milestones do not close L06–L08.
+The subsequent [unarmed/hide/Leadership block](T13-local-modifiers-defences.md#subsequent-l07l08l10-block--unarmed-training-natural-hide-and-leadership)
+delivers Domnu Prize-Fighter, Sabretusk armour and the duel portion of
+[Crude Belch](T13-crude-belch.md). F061 retains product access; multi-enemy resolution is excluded.
+F067 retains the Domnu Bear Hug allocation ruling. In total this autonomous
+continuation added 45 canonical rule milestones, without closing T13 or starting
+the optimized ports. The local Leadership operator is a real caller's minimal
+2D6 path; L10 still owns its variants and L12 its providers/group effects.
+The [subsequent L08/L09 block](T13-local-modifiers-defences.md#subsequent-l08l09-block--ordered-natural-attacks-and-one-chosen-reroll)
+adds the Priest's independently timed final bite, Sabretusk's exact charge
+replacement and Seaguard's first-round spear/one-chosen-reroll contract: 48
+canonical rules across this continuation. Neutral empty-hand projection for
+unequippable creatures was corrected in the same functional lot. F005/F026/Q151
+remain source-gated; continue other admitted allocation/resource families.
+The [subsequent L10/L12 block](T13-local-modifiers-defences.md#subsequent-l10l12-block--actual-local-leadership-providers)
+adds three source-qualified local leaders and Darksoul automatic Leadership,
+consumed by Crude Belch: 52 cumulative canonical milestones. Proximity uses
+explicit side/band/distance/standing facts, with optional provider choice.
+L10/L12 remain partial for individual rerolls and supplied external conditions;
+group tests/routing and mixed-alliance group modeling are excluded. Continue exact psychology/classification
+and dependent functional families; L18 owns visible context configuration.
+The [L11/L14 Fear block](T13-local-modifiers-defences.md#subsequent-l11l14-block--fear-tests-hits-and-cancelled-charges)
+adds three canonical Fear clauses (55 cumulative milestones). Actual initial
+charge direction determines cancelled contact or one-round sixes-to-hit;
+personal Leadership/provider/Frenzy cases use existing consumers. Both modular
+drivers preserve an unengaged pair as unresolved. Generic Fear/Hatred source
+summaries were repaired. Remaining involuntary movement/interception and later
+engagement facts are F069, consumed with L13/L14/L18; this is partial L11/L14.
 The coordinator's remaining implementation
 continues with local attack/save families after checking their source gates and
 exclusive files. No new constructor or repeated centralization is required.
@@ -163,13 +356,13 @@ the lot fixes missing clauses rather than rewriting the whole named family.
 | **L09 — Reactions, resources and special actions** / T13.4 | Complete resource rerolls/one-shots, interruption, persistent cumulative effects, contact/kill reactions, challenges/control/charm, target/attack denial and admitted special-action state. | Shared state/pools/aftermath seams; consult each clause's recipient, expiry and action timing. Extend only required state. | Minimal real sequences prove triggers, decisions, once/expiry, removed/disabled participants and continuation without duplicate consumption. |
 | **L10 — Leadership test contract and modifiers** / T13.5 | Implement the shared deterministic test path, dice selection, automatic pass/reroll and individual threshold modifiers required by the origins. Recover source-correct Cold-blooded variants. | Existing characteristics/context/dice contracts; authoritative sources; phases/context and transient resources. | Actual callers use correct dice and threshold/variant, no test for exempt participants, exact reroll consumption and unchanged irrelevant contexts. This is the executable operator for L11–L15, not a contract-only project. |
 | **L11 — Fear, Hatred, Frenzy, Stupidity and immunities** / T13.5 | Complete admitted individual psychology/behavior variants and their opponent/charge-direction/timing filters, including F061 Halfling Crude Belch's failed-Leadership first/only-attack loss. Correct conflicting Fear/Hatred/Cold-blooded summaries in the same source-owned implementation. | L10, relevant L08/L09 timing and the inventory psychology source gate; conditions/bindings plus modular contexts/state/rounds. | Source-derived charge/failure/first-combat-turn/mandatory-action consequences and precise immunity exceptions execute correctly. Crude Belch uses its own timed loss, preserving generic minimum-one reductions; no rule invented from a generic summary. |
-| **L12 — Proximity, groups, leaders and routing** / T13.5 | Complete leadership providers/ranges, group psychology counts, local auras, All Alone/routing filters/thresholds, summoned-provider loss and proximity activation/powered-down state. | L10/L11; explicit local participant/distance/provider facts and necessary group state. No campaign roster service. | Boundary/recipient/provider-loss cases alter the actual test or permitted action exactly as sourced; no autonomous whole-warband battle. |
+| **L12 — Supplied external conditions and leaders** / T13.5 | Support source-qualified external conditions/Leadership bonuses affecting either duelist. Reuse existing provider snapshots; do not simulate group Rout, All Alone counts, group auras or provider lifecycle. | L10/L11; caller-supplied active conditions and individual test facts. No extra mutable combatants or group state. | Supplied effects alter the duelist's actual test/action with correct limits; unsupported or missing conditions are explained. Group clauses are explicitly outside scope. |
 | **L13 — Animosity, goading and random preparation** / T13.4–T13.5 | Implement band-specific animosity/goading tables, construct orders, bickering/action inhibition, random pre-combat outcomes and required behavior controls. | L10/L11 where a clause uses them; original band tables and existing decision/state seams. | Exact table/recipient/action results, no inappropriate generic Leadership replacement; movement consequences are consumed by L14, preserving the same state/provenance. |
-| **L14 — Movement, charges, terrain and escape** / T13.4–T13.6 | Complete admitted movement/armour-movement, random movement/target, charge/follow-up, evade/leave-combat, terrain/contact and nonmissile action clauses from supplied facts. | L09–L13 inputs actually needed; Movement/context/action operators and application transport. Study each source variant before its dependent action. | Correct test/distance/terrain/failure/action consequences and defaults on real flows; no board engine, pathfinding, deployment, hiding or shooting. |
-| **L15 — Mazzalupo Commands** / T13.2/T13.4–T13.6 | Resolve Q158 and implement the five admitted commands, their emission/activation, hearing/ranges/recipients, duration and command-specific melee/psychology/movement consequences, F039. | L10/L12/L14 as applicable; original command sources; command context/state, canonical bindings and local configuration. | Correct activation, per-participant limit, recipient/range boundaries and expiry execute through the admitted command route; retain the excluded missile-only command and no general spell engine. |
-| **L16 — Canonical hired swords and Dramatis Personae** / T13.2/T13.6 | Create the local canonical participant route, source-backed starting skills and origin-owner identity mapping, F036/F037/F038. Connect their admitted combat clauses to completed operators. | Centralization handoff and relevant behavior lots; canonical loaders/catalogue/adapters/compiler/product participant choices. | Real hireling profiles compile/select/run without custom-build equivalence, unresolved aliases or campaign hiring/purchases/persistence; source gates remain explicit. |
-| **L17 — Composite combatants, companions and mounts** / T13.2/T13.4/T13.6 | Implement admitted composite/companion/rider/steed and component-specific profiles, attacks, control/action contracts; source-gated Q084/Q108/Q127/Q147 and applicable local vehicle clauses. | Source component/profile contracts and relevant L08/L09/L12/L14 operators; local participants, state and canonical projection. | Correct profile/recipient/attack/action ownership and component transitions on actual simulation inputs. Preserve accepted Gyrocopter/River Boat exclusions; do not invent missing Initiative/component profiles or a vehicle/board subsystem. |
-| **L18 — Complete battle-context product workflows** / T13.6 | Integrate stable participants/context/actions into Combat Lab catalogue/editor/configuration/analyses, including contextual families not finished by earlier product connections. | L02–L17 modular inputs stable; existing application/CLI/Tk workflows and centralization handoff. No repeated eligibility migration. | Actual visible configuration, explanation of unsupported inputs, execution and correctly labeled results work; legacy context-free cases remain usable. A backend test alone does not close this lot. |
+| **L14 — Charges and combat contact** / T13.4–T13.6 | Complete source-qualified charge direction/priority, individual combat action consequences within the duel. Voluntary escape/withdrawal/contact-breaking effects are excluded. Map/weather/terrain modifiers, movement through terrain and target selection outside the pair are excluded. | L09–L13 individual inputs actually needed; existing charge/contact/action seams. No terrain/weather condition switches or board movement. | Correct individual test/failure/action consequences with explicit supported-context limits. No map, deployment, hiding, shooting or autonomous movement/target system. |
+| **L15 — Supplied Mazzalupo command effects** / T13.2/T13.4–T13.6 | Reconcile command clauses against 1v1 scope and implement relevant supplied effects on either duelist, with individual limits/duration. Group emission/hearing/recipient determination and missile-only effects are excluded. | L10/L14 where needed; source-backed active command facts and local configuration. Q158 blocks only a relevant individual clause, not an excluded group producer. | Actual duel consequences and expiry match supplied facts/source; no command-network, group movement or spell subsystem. |
+| **L16 — Canonical hired swords and Dramatis Personae** / T13.2/T13.6 | **Partially delivered 2026-10-05:** canonical participant/printed-kit route and twenty-three usable base hired-sword profiles, Aldred/Armen and conditional Snorri. Complete remaining optional Marks and Snerik/Strigani gaps listed in the current summary; Aldred's F037 identities and combat gates are resolved. Reuse the existing route. | Centralization handoff and relevant behavior lots; canonical loaders/catalogue/adapters/compiler/product participant choices. | Real hireling profiles compile/select/run without custom-build equivalence, unresolved aliases or campaign hiring/purchases/persistence; source gates remain explicit. |
+| **L17 — Composite duelist profiles** / T13.2/T13.4/T13.6 | Implement source-backed companion/mount contributions only where they form one duel combatant's profile/attacks. Reconcile Q084/Q108/Q127/Q147 per clause; independently acting third fighters and group/vehicle systems are excluded. | Source component contracts and relevant L08/L09/L14 operators; a single compiled combatant per duel side. | Correct component attack ownership and applicable transitions within the two-combatant duel. Preserve Gyrocopter/River Boat exclusions; do not invent missing profiles or extra combatants. |
+| **L18 — Complete duel-context product workflows** / T13.6 | Integrate the two duelists, supplied conditions and relevant individual actions into Combat Lab catalogue/editor/configuration/analyses. No group editor, battle roster or multi-target combat workflow. | L02–L17 admitted 1v1 inputs stable; existing application/CLI/Tk workflows and centralization handoff. No repeated eligibility migration. | Actual visible duel configuration, unsupported-condition explanations, execution and correctly labeled results work; legacy context-free cases remain usable. A backend test alone does not close this lot. |
 | **L19 — NumPy family batch** / T13.3–T13.7 | Port all remaining applicable stable families, including F006/F009, accepted threshold changes and new contextual/sequence inputs, through real vectorized execution. | Modular families/input layout accepted; kernel/preparation/vectorized driver seams reserved. Can begin from a stable subset but this lot closes only when its applicable set is complete. | Equivalent logical dice/decisions/observable state for applicable cases, correct transport/capacity and no modular fallback or silent omission. |
 | **L20 — Native family batch** / T13.3–T13.7 | Port the same applicable families through the actual native engine and maintained deterministic replay interface; complete required model/kernel/native layout and build integration. | Accepted modular contracts, stable shared layout from L19 or a coordinated common contract; native adapter/PYX generation/build owner. | Identified rebuilt binary executes the compared cases with matching logical traces/state; no old binary, callback into modular computation, unnoticed fallback or skipped required proof. |
 | **L21 — Final integration and canonical coverage** / T13.7 | Reconcile every admitted origin/clause with canonical consumer, cases, supported product path and applicable engines. Repair F001's historical source pairs with semantic review; finalize runtime/scope/pins/generators and current-data/reference integrity. Absorb F041/F045/F046/F048/F054/F055 and required residual integration. | L02–L20 delivered; one data/scope/generator owner. Reuse completed pin lots and source rulings, preserve staging mirrors. | No lost compound clause, false implementation marker or mandatory gate/data defect; reviewed exact pin/scope transitions, current generated artefacts and complete T14 handoff. F053 conditional and F058/F059 optional are not invented prerequisites. |
@@ -315,3 +508,191 @@ canonical/original sources, execution bindings and maintained specifications.
 
 This revision implements no rule, accepts no new interpretation, closes no
 unresolved finding and starts neither an agent nor certification.
+
+Latest continuation, 2026-10-04: [individual Cold-Blooded](T13-local-modifiers-defences.md#l10-continuation--individual-cold-blooded-tests)
+connects the two canonical Lizardmen Psychology grants and Fimir's individual
+Leadership variant (152 cumulative clauses). Fear and Crude Belch distinguish
+the variants; group Rout is excluded. Six focused cases and affected contracts
+pass. Continue individual L10/L11 clauses; neither lot is closed.
+
+The [common Fear continuation](T13-local-modifiers-defences.md#l11-continuation--common-fear-grants-and-supplied-current-conditions) connects 97 canonical band rules, Fearsome, Hideous and weapon/current-condition inputs (149 cumulative canonical clause milestones). Seven compound records retain explicit pending non-Fear clauses; conditioned producers remain F070 within their existing implementation lots. Supplied active conditions are local snapshots, not a spell or campaign engine. L11 and T13 remain in progress; ports still start only at L19/L20.
+
+The subsequent [individual Cold-Blooded block](T13-local-modifiers-defences.md#l10-continuation--individual-cold-blooded-tests)
+adds two canonical Lizardmen Psychology grants and Fimir's individual Leadership
+grant (152 cumulative clauses). Fear and Crude Belch distinguish the variants;
+group Rout is excluded. Continue individual L10/L11 clauses; neither lot is closed.
+
+
+### Newly resolved semantic gates — 2026-10-04
+
+The user resolved Q128 (cloak as ordinary armour), Q013 (5+ recovery of at most
+one wound at own-turn start, unaffected by fire), and F005 (pistol extra attack
+and Shifty extra attack coexist). Resume existing L07/L08 implementation with
+these contracts; retain Great Thirster and printed skill limits. Source prose
+and historical inventory questions are provenance, not still-pending user gates.
+See [permanent rulings](../../../decisions/design-rulings.md). Delivery and
+modular implementation is delivered in the [accepted-contract block](T13-local-modifiers-defences.md#q128q013f005--accepted-contracts-implemented); T14 certification remains pending.
+
+
+2026-10-05: [grouped modular continuation](T13-local-modifiers-defences.md#grouped-modular-continuation--2026-10-05)
+delivers target facts/modifiers, charm/control, replacement/reaction attacks,
+Ethereal/Drunken/fire exceptions, source-equivalent grants, individual Animosity,
+leader variants and supplied individual Command consequences. Continue the
+concrete remaining dependencies recorded in the existing follow-ups; do not
+re-dispatch delivered shared operators or treat the external residual CSV as
+current status. Neither modular closure nor optimized ports are declared.
+
+
+L16 continuation (2026-10-05): the canonical 2B participant and complete
+printed-kit route is delivered, reusing shared eligibility and keeping campaign
+lifecycle separate. Twelve hired-sword profiles have no intrinsic runtime
+blocker. Finish the eight blocked normalized profiles, optional priest Marks
+and the two source-missing Dramatis profiles under their existing source gates;
+do not rebuild the participant route. See the existing
+[grouped continuation](T13-local-modifiers-defences.md#grouped-modular-continuation--2026-10-05).
+L16/F036 and modular closure remain open. No optimized port has started.
+
+Grouped target-qualified hireling effects (2026-10-05): Marine Hunter and
+Flesh-Peddler are delivered through canonical grants, compilation and modular
+attacks. Whaler doubles inflicted damage only against a supplied aquatic
+opponent; Halfling Pimp gains +1 to hit an already nominated female opponent.
+The editor exposes both supplied facts; invalid nomination recipients or
+nonfemale targets are refused. Map movement/capture/rewards remain excluded.
+Six focused cases plus the existing modifier suite passed (243 total); changed
+catalogue documents validate and the trait/schema registry agrees. Optimized
+execution is explicitly guarded until L19/L20; neither modular closure nor
+full product certification is claimed. The remaining base-profile blockers are
+the twelve rows above, plus optional Marks and source-only Dramatis.
+
+Grouped priest continuation (2026-10-05): Ranald's no-armour restriction and
+Taal's no-heavy-armour/no-blackpowder restrictions use shared profile bindings;
+the existing printed-kit decision enforces the source-qualified armament.
+Both base profiles compile and reject foreign equipment. Haggle/Streetwise
+remain campaign-only. Morr's Servant now applies the charge/charged Leadership
+exception against Undead despite their usual Psychology exemptions. Its four
+isolated behavior cases do not claim canonical access: Morr's Strictures keeps
+`implemented: NO` until the ceremonial scythe's S+1/Difficult-to-use variant
+is reconciled against generic `weapon.scythe` (which instead adds armour
+penetration). Retain that gate and the source note in `catalog/items/trollheim.yaml`;
+do not change the generic weapon or use an anonymous profile as acceptance.
+Seven focused regressions were added; the existing modifier suite passes all
+250 cases. Changed catalogue schemas and documentation validate; publication
+was regenerated. Ports remain deferred; no battle-magic, map or campaign behavior was added.
+
+Ulric grouped continuation (2026-10-05): White Wolf Pelt Cloak is a distinct
+canonical item/defence, granting the printed 6+ armour save; it does not replace
+or activate the shooting-only Middenheim hunting cloak. Its once-only passive
+contribution works with the printed mandatory kit and explicit selection.
+Shared Strictures forbid armour/blackpowder. Crossbows and helmets being
+unfavoured is not converted into a new ban; the printed-kit boundary remains.
+Intense Rivals uses existing first-combat-turn Hatred. Primary canonical Witch
+Hunter/Warrior-Priest profiles, Sisters of Sigmar and the named 2B Sigmarite
+hirelings carry the rival identity; zealots/animals do not acquire it merely
+from their warband. Other explicit named-rival identities can be supplied in
+the editor via `ulric_rival`, without a broad human/cult-warband fallback.
+Eight existing-suite regressions cover armour/Strength, no double contribution,
+legal kit and source-qualified Hatred timing/identity; the complete existing
+modifier suite passes all 258 cases. Changed schemas, trait registry and
+publication checks pass. Optimized execution of
+Intense Rivals is refused until L19/L20. Optional Ulric Marks remain pending.
+
+Leadership continuation (2026-10-05): War-Honed grants Fear immunity plus one
+optional reroll on the first failed Leadership test, shared across all test
+causes in the duel. Declining forfeits that first-failure opportunity. Runtime
+callers now retain the returned fighter state; generic boolean-only callers
+remain supported for stateless rules and refuse this resource-bearing rule.
+User ruling (2026-10-05): use the maintained `warband-group.chaotic`
+classification for Enlightened; no separate compiler warband membership list.
+Enlightened is a separate canonical special-skill choice, not the compound
+Marks of Sigmar entry. It automatically passes Leadership against Orc/Goblin,
+canonical chaotic-group, Daemon/Possessed or explicitly supplied Chaos-follower
+identity; unrelated opponents retain ordinary tests. No Symbol of Unity effect
+or campaign acquisition was activated. The editor/catalogue carries the choice
+and optional follower fact. Validation: 289 modifier/Crude Belch cases passed,
+including ten new regressions; changed catalogue
+schemas, trait registry and documentation pass. L21 must include the new
+`.skill.enlightened` origin while preserving the compound source parent's
+remaining Symbol of Unity obligation. Optimized guards remain until L19/L20.
+
+L16 priest equipment continuation (2026-10-05): Morr now uses the distinct
+`ceremonial_scythe` / `weapon.ceremonial-scythe`: S+1, two hands and no extra
+armour penetration. Difficult to use adds no further restriction beyond its
+two-handed use. The generic trading-post scythe is unchanged. Verena's printed
+ceremonial dagger remains owned, but `profile.active-weapon-restrictions`
+forbids using it in any weapon position; the sword-only kit is enforced by the
+shared module. Both base profiles are admitted; optional Marks remain pending.
+L21 owns the new item/mechanic origin and stale source-pin reconciliation.
+Validation for this equipment group: 292 existing-family/shared-adapter/docs
+cases pass, with two new regressions; maintained catalogue schemas and
+TypeScript typechecks pass. Publication is regenerated with the existing tool.
+
+L16 Sigmar combat continuation (2026-10-05): shared `skill.righteous-fury`
+uses the named target identities and maintained evil/chaotic classifications,
+with the non-Chaos human-warband exception. It is selectable through Sisters'
+canonical special skill and innate to Aldred; his separate source extension
+adds Orc/Goblin Hatred. Existing Hatred timing and psychology-immunity rules
+apply. Fellblade grants parry only to his printed two-handed sword, including
+its poison-free projection, never an empty hand. Combat Master is explicitly
+out of 1v1 scope, matching the existing runtime exclusion; it remains listed
+as a starting skill without a multi-opponent attack bonus. Aldred is now usable
+in addition to the 20 base hired swords. L21 retains source-pin/origin
+reconciliation; target-classification completeness remains F064/F070-owned.
+Validation: 296 affected-family/loader/documentation cases passed, including
+11 new cases in the existing suite; changed catalogue schemas pass. No
+optimized engine port or new standalone report was added.
+
+L16 participation/drinking continuation (2026-10-05): Snorri inherits the
+maintained Slayer psychology/kit contracts. Supply his pre-battle D6 result
+2-6 in the editor/configuration: 2 gives WS/S -1, 3 is neutral, 4 penalizes all
+combatants in contact by -1 to hit (including Snorri), 5 gives S+1, and 6 grants
+Frenzy as the source's explicit Slayer exception. These persist across player
+turns; ordinary Frenzy still ends on knock-down/stun. Result 1 means he never
+participates and is excluded, without rolling again or claiming an unconditional
+battle distribution. Missing/invalid results and use by another profile are
+refused. His Lucky 5+ save remains intact.
+
+Fire-Eater's breath and Inhaling Fire occur in the shooting phase even when
+engaged, so neither enters melee; his printed kit is retained and he can fight
+unarmed. Armen's Leap/Acrobat/Dodge, Rout-triggered On the Wings of Angels,
+Physician serious-injury reroll and glider clauses are excluded; he can duel
+with his printed sword. Source text and equipment are preserved. L21 owns
+source-pin/origin/scope reconciliation; Snerik's newly available stats do not
+close its unique-kit projection gap, and Strigani still has no canonical stats.
+Validation: 289 affected-family/documentation cases and one real Tk editor
+round-trip passed; nine added cases across the existing family/editor suites.
+Maintained schemas and both 2B mirrors pass. Publication is regenerated; no
+optimized engine implementation or separate report was added.
+
+T13 reconciliation consolidation (2026-10-05): the six reconciliation lot
+deliverables in `tasks/T13-reconciliation-dispatch/` were consolidated into
+`consolidated-results.csv` (3394 rows = every audited ID; corrected 36,
+reclassified 2, retained 1239, out_of_scope 2117). Two confirmed behaviour
+defects and one confirmed construction defect were fixed.
+Behaviour: `clan-angrund-kep` selectable True Grit now binds
+`skill.tough-as-steel` (true_grit: 1-3 knocked down, 4-5 stunned, 6 out of
+action) and Thick Skull now binds `skill.thick-skull` (3+/2+ Stun save),
+replacing the Hard to Kill and Hard Head operators they wrongly reused.
+Construction: the printed "May not wear armour." clause on 34 profiles across
+seven Sartosan/Nippon bands now has a structured
+`profile.equipment-restrictions` `forbids: armour-suit` binding, refusing armour
+suits while keeping the shield/helmet those same lists sell. Validation: the two
+behaviour fixes and the seven-band restriction matrix pass in the existing
+construction/modular/knowledge suites; two structural snapshot counts moved by
+the seven added profile rules and were re-derived, not broadly refreshed. Scope
+classification is unchanged (all corrected rows were already scope=YES).
+Remaining groups are recorded as F073 (51 selectable-skill `runtime` rows) and
+F074 (equipment-access bearer notes); no engine was certified and T13 is not
+declared finished.
+
+F074 equipment-access bearer notes (2026-10-06): the printed per-entry recipient
+clauses are canonical `applies_to` facts (172 entries across 69 bands, Mordheim
+and Trollheim) plus one structured Slayer vow rule, and `entryReachesProfile` is
+the single predicate behind the Combat Lab picker, the direct-selection compiler
+and the Warband Manager artefact. `tasks/T13-reconciliation-dispatch/`
+`F074-results.csv` carries one explicit disposition per audited candidate (378
+rows): 172 applied, 6 structured rule, 4 existing binding, 117 already realised
+by their list, 44 out of scope, and 35 awaiting a source decision (origin/House/
+Knights/Sniper markers, special-equipment and Sacred Marking grants, and the five
+halfling equivalence/cost clauses). F074 closes for its admitted cases; the 35
+open rows keep their printed prose and record the exact missing decision. F073
+remains open, and T13 is not declared finished.

@@ -40,7 +40,8 @@ profiles:
   - bullied-goblin--not-a-snotling
   - bullied-goblin--mob-rule
   - bullied-goblin--the-rigors-of-leadership
-  combat_traits: {}
+  combat_traits:
+    species: goblin
 - id: bigsnotz
   name: Snotling BigSnotz
   type: hero
@@ -286,7 +287,10 @@ profiles:
   - small_pebble
   equipment_restrictions:
   - The Crew of the Wheelo are armed with a Dagger and 1 Pebble. Movement 0 (1D6" walking / 2D6" run or charge, rolled each turn). Uses a 40mm base.
-  skill_access: []
+  skill_access:
+  - combat
+  - strength
+  - speed
   source:
     manual: mordheimer.net
     printed_page: 0

@@ -259,3 +259,39 @@ def test_ingest_tool_validate_passes() -> None:
         capture_output=True, text=True, cwd=ROOT, timeout=120,
     )
     assert result.returncode == 0, f"ingest_2a validate failed:\n{result.stdout}\n{result.stderr}"
+
+
+def test_band_grants_may_filter_known_profile_recipients(tmp_path: Path) -> None:
+    """Band ownership and a profile recipient filter are independent facts."""
+    import importlib.util
+    import shutil
+
+    spec = importlib.util.spec_from_file_location("ingest_2a_recipients", INGEST)
+    assert spec is not None and spec.loader is not None
+    ingest = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(ingest)
+    band_id = "druchii-mic"
+    documents = tmp_path / band_id
+    documents.mkdir()
+    for name in BAND_DOCUMENTS:
+        shutil.copyfile(STAGING / "bands" / "mordheim" / band_id / name, documents / name)
+
+    problems: list[str] = []
+    ingest.validate_band_references(band_id, documents, problems)
+    assert not problems, problems
+
+    path = documents / "special-rules.yaml"
+    rules = yaml.safe_load(path.read_text(encoding="utf-8"))
+    rule = next(row for row in rules["rules"] if row["id"] == "band--kindred-hatred")
+    rule["applies_to"]["profile_ids"].append("unknown-recipient")
+    path.write_text(yaml.safe_dump(rules, allow_unicode=True), encoding="utf-8")
+    problems = []
+    ingest.validate_band_references(band_id, documents, problems)
+    assert any("unknown profile 'unknown-recipient'" in problem for problem in problems), problems
+
+    rule["applies_to"]["profile_ids"].pop()
+    del rule["applies_to"]["band"]
+    path.write_text(yaml.safe_dump(rules, allow_unicode=True), encoding="utf-8")
+    problems = []
+    ingest.validate_band_references(band_id, documents, problems)
+    assert any("grant 'band'" in problem for problem in problems), problems

@@ -372,3 +372,32 @@ rules:
   applies_to:
     profile_ids:
     - ivy-ferret
+
+- id: ivy-ferret--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - equipment
+  name: Equipment Restrictions
+  effect: "Being a woodland Spirit, Ivy Ferrets may not use equipment, weapons or armour."
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: "Henchmen / 0-1 Ivy Ferret"
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Wood%20Elves%20of%20Arden.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - ivy-ferret

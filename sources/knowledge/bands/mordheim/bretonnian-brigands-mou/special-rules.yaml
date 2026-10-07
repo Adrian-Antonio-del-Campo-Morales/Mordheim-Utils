@@ -178,16 +178,15 @@ rules:
     - scarface
 - id: scarface--horribly-scarred
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.bretonnian-brigands-mou.scarface.horribly-scarred
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Horribly Scarred
   effect: >-
     Due to many fights the character is scarred deeply, either on the outside, or the inside. In

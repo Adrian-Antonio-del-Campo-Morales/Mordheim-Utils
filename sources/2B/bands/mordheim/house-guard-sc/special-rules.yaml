@@ -35,16 +35,14 @@ rules:
     band: true
 - id: band--personal-guard
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.house-guard-sc.band.personal-guard
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Personal Guard
   effect: >-
     Every hero and henchman in a House Guard has a range of 3 inches instead of the normal 2 inches
@@ -97,15 +95,15 @@ rules:
     band: true
 - id: band--dueling-pride
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: trait.re-roll-hits-vs-heroes
-      scope: LATER
-      binding: null
-      reason: >-
-        Pending L06: first-combat-round failed-hit rerolls require the enemy Hero recipient filter.
+    - id: mechanic.dueling-pride
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.dueling-pride
   name: Dueling Pride (House Fierezza)
   effect: >-
     Fierezza Heroes may re-roll failed hits during the first round of combat when fighting enemy
@@ -202,16 +200,14 @@ rules:
     band: true
 - id: band--baluardo-armour
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.house-guard-sc.band.baluardo-armour
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Armour (House Baluardo)
   effect: Baluardo Heroes do not suffer movement penalties for wearing armour.
   source:
@@ -252,16 +248,15 @@ rules:
     band: true
 - id: commander--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.house-guard-sc.commander.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: Any warrior within 6 inches of the Commander may use his Leadership instead of his own.
   source:
@@ -310,15 +305,15 @@ rules:
     - adjutant
 - id: pikemen--pikewall
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: trait.re-roll-hits-when-charged
-      scope: LATER
-      binding: null
-      reason: >-
-        Pending L06/L08: failed-hit rerolls require being charged while wielding a first-strike weapon.
+    - id: mechanic.pikewall
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.pikewall
   name: Pikewall
   effect: >-
     Charging a skilled Pikeman is always dangerous, as they may re-roll any failed hits when getting

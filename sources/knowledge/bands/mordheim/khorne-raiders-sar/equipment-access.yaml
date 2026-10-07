@@ -17,11 +17,17 @@ equipment_lists:
   - item_id: axe
     cost: 5
   - item_id: cat_o_nine_tails
+    applies_to:
+      profile_types:
+      - hero
     cost: 8
     notes: Heroes only
     notes_i18n:
       es: Solo héroes
   - item_id: steel_whip
+    applies_to:
+      profile_types:
+      - hero
     cost: 15
     notes: Heroes only
     notes_i18n:
@@ -37,6 +43,9 @@ equipment_lists:
     notes_i18n:
       es: Arma a dos manos
   - item_id: hellblade
+    applies_to:
+      profile_ids:
+      - dread-captain
     cost: 35
     notes: Captain only
     notes_i18n:
@@ -64,6 +73,9 @@ equipment_lists:
   - item_id: light_armour
     cost: 20
   - item_id: rope_hook
+    applies_to:
+      profile_types:
+      - hero
     cost: 5
     notes: Miscellaneous Equipment; Heroes Only
     notes_i18n:
@@ -100,16 +112,28 @@ equipment_lists:
   - item_id: hellblade
     cost: 35
   - item_id: toughened_leathers
+    applies_to:
+      profile_ids:
+      - quartermasters
+      - flayerkin
     cost: 5
     notes: Armour (Quartermasters & Flayerkin Only)
     notes_i18n:
       es: Armadura (solo intendentes y despelladores)
   - item_id: helmet
+    applies_to:
+      profile_ids:
+      - quartermasters
+      - flayerkin
     cost: 10
     notes: Armour (Quartermasters & Flayerkin Only)
     notes_i18n:
       es: Armadura (solo intendentes y despelladores)
   - item_id: light_armour
+    applies_to:
+      profile_ids:
+      - quartermasters
+      - flayerkin
     cost: 20
     notes: Armour (Quartermasters & Flayerkin Only)
     notes_i18n:

@@ -622,7 +622,10 @@ def validate_band_references(band_id: str, documents: Path, problems: list[str])
                     f"{band_id}: equipment list {list_id!r} references unknown item {item_id!r}"
                 )
             stray_keys = sorted(
-                set(entry) - {"item_id", "cost", "notes", "notes_i18n", "price_override"}
+                # `applies_to` is the printed recipient fact of one line, the same
+                # member `equipment-access.yaml.schema.json` declares for an entry
+                # and the shared eligibility projection filters the offer with.
+                set(entry) - {"item_id", "cost", "notes", "notes_i18n", "price_override", "applies_to"}
             )
             if stray_keys:
                 problems.append(

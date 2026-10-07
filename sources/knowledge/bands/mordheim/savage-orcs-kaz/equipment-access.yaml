@@ -28,6 +28,14 @@ equipment_lists:
   - item_id: short_bow
     cost: 5
   - item_id: bow
+    applies_to:
+      profile_ids:
+      - boss
+      - weirdo
+      - spottaz
+      - brutes
+      - nuttaz
+      - boyz
     cost: 10
     notes: Not Gobbo Boyz.
     notes_i18n:
@@ -35,6 +43,9 @@ equipment_lists:
   - item_id: sling
     cost: 2
   - item_id: light_armour
+    applies_to:
+      profile_types:
+      - hero
     cost: 20
     notes: Heroes only.
     notes_i18n:
@@ -54,6 +65,14 @@ equipment_lists:
     notes_i18n:
       es: Raro 6, un solo uso; también pueden usarlo los Chicos Goblins Salvajes.
   - item_id: kumfy_gear
+    applies_to:
+      profile_ids:
+      - boss
+      - weirdo
+      - spottaz
+      - brutes
+      - nuttaz
+      - boyz
     cost: 75
     notes: Any Orc warband (not Goblins); not with Warpaint or light armour.
     notes_i18n:

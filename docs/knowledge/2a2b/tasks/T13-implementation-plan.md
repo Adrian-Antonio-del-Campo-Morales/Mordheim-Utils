@@ -1,5 +1,7 @@
 # T13 — Combat Lab implementation plan
 
+> Governing scope correction — 2026-10-04: Voluntary escape, withdrawal and contact-breaking effects that end the duel without resolving it are outside Combat Lab scope. No board movement, re-engagement or escape subsystem is required. Earlier individual-escape references below are superseded. See [permanent ruling](../../../decisions/design-rulings.md#voluntary-escape-does-not-belong-to-combat-lab--2026-10-04).
+
 This document expands [T13](T13.md). It is an implementation plan, not a
 completion report or authorization to start work before its dependencies are
 accepted. The [initiative checklist](../README.md) remains the sole source of
@@ -39,6 +41,16 @@ questions and existing exclusions keep their identities and authority.
 
 ## 1. Agreed objective and product boundary
 
+**Governing user clarification, 2026-10-04:** Combat Lab remains a 1v1 duel
+simulator. Read the [permanent scope decision](../../../decisions/design-rulings.md#combat-lab-remains-a-1v1-duel-simulator--2026-10-04).
+Group Rout/psychology, All Alone counting, multi-target resolution and
+independently simulated third combatants are excluded, not deferred engine
+work. Split mixed source rules into relevant individual clauses and excluded
+group clauses; historical admission does not override this decision.
+The same day's further clarification excludes map/terrain/weather rules,
+including fog/Mystic Mist, water combat and environmental modifiers. Supplying
+a terrain fact manually does not bring it into scope.
+
 Implement the included 2A/2B combat obligations in **Combat Lab**, with
 deterministic evidence and equivalent behaviour in every applicable backend.
 Use existing mechanics first; extend the responsible layer when the written
@@ -68,11 +80,11 @@ to the simulation. T13 must not introduce roster-row IDs, `member_ids`,
 `battle_number`, campaign-file imports, campaign-service calls or a bridge to
 Warband Manager.
 
-The agreed extension is **the minimum explicit context needed for complete
-coverage of the included T13 obligations**. Distances, terrain, charge facts,
-contacts, nearby allies and opponent counts may be supplied where relevant.
-The engine resolves the rule from those facts; it does not build an autonomous
-tabletop, placement system or movement strategy.
+The agreed extension is **the minimum explicit context needed for the 1v1
+duel**. Charge direction and contact between the two duelists may be
+supplied where relevant. External effects are caller-supplied current
+conditions/bonuses; do not construct or resolve allied/enemy groups to derive
+them. The engine does not simulate a tabletop, group combat or movement strategy.
 
 The initiative's exclusions remain: deployment, hiding, shooting and battle
 spell resolution. Preserve their rule text and concrete limitations. The
@@ -206,8 +218,9 @@ the source, not guessed from names.
   supply required facts rather than receive guessed statistics.
 - Extend existing request/context boundaries only for facts demonstrated by
   the reconciled obligations. Context represents simulation facts, not
-  campaign history or persisted rosters. Group or proximity effects can use
-  explicit local participants/facts without autonomous group movement.
+  campaign history or persisted rosters. External/proximity effects may use
+  supplied snapshots affecting a duelist; they do not create additional mutable
+  participants, group tests or group lifecycle machinery.
 - Use the same context preparer in orchestration and verification. A required
   missing or contradictory fact produces an explicit validation failure; an
   irrelevant fact must not activate a rule.
@@ -243,7 +256,7 @@ where their meaning is unchanged.
 | T13.3 — Local combat resolution | Hit, wound, defenses, weapon profiles and local exceptions, including Spectral Touch. | Source-derived deterministic operator and real attack cases. |
 | T13.4 — Stateful sequences | Priority, attack pools, replacements, reactions, consumables and expiry. | Minimal sequences proving timing, choices, consumption and continuation. |
 | T13.5 — Psychology and proximity | Included fear, hatred, stupidity, immunity, leadership and proximity clauses using explicit simulation context. | Correct filters, thresholds, interactions and state changes. |
-| T13.6 — Movement/charge and product access | Included movement, charge, terrain and action clauses; usable catalogue/configuration/analysis paths in Combat Lab. | Context boundaries, unchanged legacy runs and real product-flow checks. |
+| T13.6 — Charge/individual action and product access | Source-qualified charge/contact/individual-action consequences within the duel; usable catalogue/configuration/analysis paths. Map, terrain and weather mechanics are excluded. | Context boundaries, unchanged legacy runs and real product-flow checks. |
 | T13.7 — Integration and delivery | Required cross-lot compositions, coherent data/documentation and exact T14 handoff. | Final obligation/case/backend reconciliation and reviewed diff. |
 
 Group work by mechanism rather than implementing the same rule independently

@@ -31,15 +31,15 @@ rules:
     band: true
 - id: vampire-hunter--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.vampire-hunter.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: leadership-radios checks are a morale mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -125,7 +125,7 @@ rules:
       reason: >-
         Out of scope: magic subsystem (divine rites). This page prints its own variant of the
         Funerary Rites with different difficulties than the active KB's lore.funerary-rites; the
-        variant is preserved in sources/2A/catalog/magic-2a.yaml without merging.
+        variant is preserved in catalog/campaign/magic.yaml without merging.
   name: Funerary Rites
   effect: >-
     Priests of Morr are not wizards, however they do have numerous Funerary Rites which they may
@@ -269,15 +269,15 @@ rules:
 - id: band--special-skill-iron-will
   kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.band.iron-will
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: immunity to Fear is a psychology mechanic.
+    - id: mechanic.fear-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-immunity
   name: Iron Will
   effect: >-
     Such is the work of Slayers that there is little room for hesitation. When the opportunity
@@ -296,19 +296,21 @@ rules:
       al Miedo.
   applies_to:
     band: true
+  eligibility:
+  - vampire-hunter
+  - slayer
 - id: band--special-skill-righteous-aura
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.band.righteous-aura
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: attack-count manipulation against specific opponent types has no engine
-        subsystem (no aura/attack-denial mechanics modeled).
+    - id: skill.sigmar-s-sign
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.sigmar-s-sign
   name: Righteous Aura
   effect: >-
     Carrying many talismans from various gods, the warrior heads into battle assured of victory.
@@ -331,16 +333,15 @@ rules:
 - id: band--special-skill-thirst-for-vengeance
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.band.thirst-for-vengeance
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: hatred plus a charge-triggered attack bonus interacts with psychology and
-        movement-phase state outside the duel scope.
+    - id: mechanic.thirst-for-vengeance
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.thirst-for-vengeance
   name: Thirst for Vengeance
   effect: >-
     The warrior Hates all undead. In his quest for revenge, he gains +1 attack in a turn where he
@@ -361,16 +362,15 @@ rules:
 - id: band--special-skill-blessing-of-morr
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.vampire-hunters-of-sylvania-lotd5.band.blessing-of-morr
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: injury-roll modification is a post-hit resolution mechanic outside the duel
-        scope.
+    - id: mechanic.blessing-of-morr
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.blessing-of-morr
   name: Blessing of Morr
   effect: >-
     The warrior has the Death god's blessing in his work. Add +1 to all injury rolls against the

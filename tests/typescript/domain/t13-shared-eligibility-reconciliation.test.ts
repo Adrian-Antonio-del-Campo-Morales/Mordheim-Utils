@@ -44,9 +44,11 @@ function item(overrides: Partial<ItemFacts> = {}): ItemFacts {
 
 describe("equipment prohibition vocabulary on projected item facts", () => {
   it("refuses an item whose tags carry the projected token", () => {
+    // Synthetic facts: the id names the family, the tags decide (the real
+    // `crossbow_pistol` carries `crossbow` since the H5 source check).
     const issue = equipmentIssue({
       profile: profile({ equipment_forbids: ["blackpowder"] }),
-      item_id: "crossbow_pistol",
+      item_id: "pistol",
       item: item({ tags: ["blackpowder"] }),
     });
     expect(issue?.code).toBe("equipment_forbidden");

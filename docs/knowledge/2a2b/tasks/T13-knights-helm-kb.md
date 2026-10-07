@@ -1,13 +1,21 @@
 # T13-F063 — Knight's Helm data part (Karak Azgal p. 59)
 
-Status: **KB data delivered 2026-10-03; F063 itself remains open.** This report
+Status: **Superseded by the user's source-erratum decision, 2026-10-04.**
+`knights_helm` will be removed from the KB. No item mechanics, access route or
+Skull Busta 4+ counterpart should be implemented. [F063](T13-execution-follow-ups.md#t13-f063--skull-busta-knights-helm-counterpart-is-absent-from-the-kb)
+tracks pending data/reference cleanup; the [permanent decision](../../../decisions/design-rulings.md#knights-helm-source-erratum--2026-10-04)
+supersedes the proposals and close criteria below. This report is retained as
+historical investigation, not current implementation instructions.
+
+Historical status: **KB data delivered 2026-10-03; F063 remained open.** This report
 covers the data/source half only: what "Knight's Helm (Crusading Knights
 warbands)" is, what can be represented from sources, what is still missing, and
 the exact facts L07 needs. Construction, selection/compilation and the real
 3-vs-4 Skull Busta attack are L07/L22 work and are not delivered here.
 
-Entry revision: branch `2A2B`, HEAD `1b7f7cf`, working tree with concurrent L06
-edits preserved. Evidence: `build/cache/t13-parallel/knights-helm-kb/`
+Entry revision: branch `2A2B`; work started at HEAD `1b7f7cf` and was swept into
+the checkpoint commit `820d149` (*chore: checkpoint ongoing 2A2B integration*),
+with concurrent L06 edits preserved and not touched. Evidence: `build/cache/t13-parallel/knights-helm-kb/`
 (`sources/` includes the downloaded documents, `search-log.md`,
 `sources/candidates/candidates.md`, `record-added.diff`, `published-row.json`,
 `validation.txt`).
@@ -61,7 +69,7 @@ entry; a `helm` search over the catalogue finds only `helmet`,
 **Decision: one new, reference-only item record**, not a mechanic, not an
 equipment-list entry, not a band:
 
-- [`sources/knowledge/catalog/items/shields-and-defences.yaml`](../../../sources/knowledge/catalog/items/shields-and-defences.yaml) —
+- [`sources/knowledge/catalog/items/shields-and-defences.yaml`](../../../../sources/knowledge/catalog/items/shields-and-defences.yaml) —
   new `knights_helm` (`kind: shield-or-defence`), alphabetically between
   `kite_shield` and `sea_dragon_cloak`:
   - `name: Knight's Helm`, `name_i18n.es: Yelmo de Caballero`;

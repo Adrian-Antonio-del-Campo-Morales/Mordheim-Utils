@@ -3,15 +3,15 @@ band_id: maneaters
 rules:
 - id: captain--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.maneaters.captain.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: Any warrior within 6" of the Captain may use his Leadership when taking Ld tests.
   source:
@@ -216,15 +216,15 @@ rules:
     - sabretusks
 - id: sabretusks--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.maneaters.sabretusks.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Sabretusks are huge feline predators and thus cause fear.
   source:
@@ -266,15 +266,15 @@ rules:
     - sabretusks
 - id: band--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.maneaters.band.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: All Ogre warriors in the warband cause Fear except Youngbloods.
   source:
@@ -288,6 +288,11 @@ rules:
     es: Todos los guerreros ogro de la banda causan Miedo, excepto los Jóvenes Promesas.
   applies_to:
     band: true
+    profile_ids:
+    - captain
+    - mountain-guide
+    - bulls
+    - half-growns
 - id: band--large
   runtime:
     scope: 'NO'
@@ -662,3 +667,173 @@ rules:
       tomarla el líder de la banda, y le permite repetir el primer chequeo de huida fallido.
   applies_to:
     band: true
+
+- id: bulls--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapon.dagger
+  name: Equipment Restrictions
+  effect: "Ogres do not receive free daggers and never fight with daggers in close combat."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 2 Bulls"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - bulls
+- id: captain--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapon.dagger
+  name: Equipment Restrictions
+  effect: "Ogres do not receive free daggers and never fight with daggers in close combat."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "1 Captain"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - captain
+- id: half-growns--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapon.dagger
+  name: Equipment Restrictions
+  effect: "Ogres do not receive free daggers and never fight with daggers in close combat."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "Half-growns"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - half-growns
+- id: mountain-guide--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapon.dagger
+  name: Equipment Restrictions
+  effect: "Ogres do not receive free daggers and never fight with daggers in close combat."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 1 Mountain Guide"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - mountain-guide
+- id: sabretusks--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Sabretusks fight with their tusks and primal ferocity and do not select weapons or armour."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 2 Sabretusks"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - sabretusks
+- id: youngbloods--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapon.dagger
+  name: Equipment Restrictions
+  effect: "Ogres do not receive free daggers and never fight with daggers in close combat."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 3 Youngbloods"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/maneaters
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - youngbloods

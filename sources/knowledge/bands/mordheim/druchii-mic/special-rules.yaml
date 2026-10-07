@@ -3,16 +3,15 @@ band_id: druchii-mic
 rules:
 - id: band--kindred-hatred
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.druchii-mic.band.kindred-hatred
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Hatred (reroll misses against hated foes) is a combat psychology
-        mechanic not covered by the current engine scope.
+    - id: mechanic.hatred-high-elves
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-high-elves
   name: Kindred Hatred
   effect: Dark Elves Hate any High Elf warriors including High Elf Hired Swords.
   source:
@@ -28,6 +27,14 @@ rules:
       Altos Elfos.
   applies_to:
     band: true
+    profile_ids:
+    - noble
+    - lordlings
+    - sorceress
+    - beastmaster
+    - corsairs
+    - shades
+    - witch-elves
 - id: band--fey-acuity
   runtime:
     scope: LATER
@@ -180,16 +187,15 @@ rules:
     band: true
 - id: noble--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.druchii-mic.noble.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
-        psychology/rout mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheim-index-catalog
@@ -259,16 +265,14 @@ rules:
     - beastmaster
 - id: shades--natural-stealth
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.druchii-mic.shades.natural-stealth
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: hidden-movement detection (Initiative-based Spotting) is outside the
-        current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Natural Stealth
   effect: >-
     If a Shade is Hidden, enemy models halve their Initiative value for determining if they can
@@ -358,15 +362,14 @@ rules:
     - witch-elves
 - id: slavehounds--animals
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.druchii-mic.slavehounds.animals
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: experience gain rules are post-duel/campaign progression mechanics.
+      reason: 'Outside the established 1v1 melee scope: campaign, recruitment, progression or post-duel aftermath. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Animals
   effect: Slavehounds are animals, and all animal rules apply to them. They never gain experience.
   source:
@@ -385,16 +388,15 @@ rules:
     - slavehounds
 - id: slavehounds--beastmaster
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.druchii-mic.slavehounds.beastmaster
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leadership substitution and availability gating on the Beastmaster are
-        psychology/rout mechanics outside the duel scope.
+    - id: mechanic.handler-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.handler-leadership
   name: Beastmaster
   effect: >-
     Slavehounds are vicious creatures that are barely kept under control by their Beastmaster. As
@@ -428,16 +430,14 @@ rules:
     - slavehounds
 - id: slavehounds--pack-work
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.druchii-mic.slavehounds.pack-work
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: hidden-movement detection and charge declarations are outside the
-        current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Pack Work
   effect: >-
     Slavehounds are trained to detect hiding slaves and show them to their masters. If a Slavehound
@@ -462,15 +462,14 @@ rules:
     - slavehounds
 - id: noble--frenzied-charge
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.druchii-mic.special.frenzied-charge
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: multi-combat follow-up moves are outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Frenzied Charge
   effect: >-
     The Dark Elf is infused with an intense raging thirst for blood and is a whirlwind in
@@ -499,16 +498,17 @@ rules:
     - sorceress
     - beastmaster
 - id: noble--fey-quickness
+  kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.druchii-mic.special.fey-quickness
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: dodge-style avoidance rolls are not covered by the current engine scope.
+    - id: skill.elven-agility
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.elven-agility
   name: Fey Quickness
   effect: >-
     Few can ever hope to match an Elf's inhuman quickness and agility. An Elf with Fey Quickness can
@@ -537,15 +537,14 @@ rules:
     - beastmaster
 - id: noble--infiltration
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.druchii-mic.special.infiltration
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: pre-battle deployment (Infiltrate) is outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Infiltration
   effect: The Dark Elf can Infiltrate. This skill is identical to the Skaven skill.
   source:
@@ -602,16 +601,14 @@ rules:
     - beastmaster
 - id: noble--marksman-of-naggaroth
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.druchii-mic.special.marksman-of-naggaroth
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: shooting-penalty modifications and multi-shot firing are outside the
-        current engine scope.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Marksman of Naggaroth
   effect: >-
     Eyes of this hero are so keen and hands so steady that he can completely omit the penalty for
@@ -676,15 +673,14 @@ rules:
     - beastmaster
 - id: noble--keen-sight
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.druchii-mic.special.keen-sight
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: hidden-movement detection ranges are outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Keen Sight
   effect: >-
     There are numerous legends detailing the excellent eyesight of the Elves, both Druchii and Asur
@@ -742,3 +738,32 @@ rules:
       eligiendo su equipo de la tabla de secuaces; no acceden al “equipo de héroes”.
   applies_to:
     band: true
+
+- id: slavehounds--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+  name: Equipment Restrictions
+  effect: "Slavehounds are animals and do not need any weapons, save their claws and massive jaws."
+  source:
+    manual: mordheim-index-catalog
+    printed_page: 0
+    section: "0-3 Slavehounds"
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/druchii
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - slavehounds

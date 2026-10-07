@@ -98,15 +98,15 @@ rules:
     band: true
 - id: warrior-priest--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.protectorate-of-sigmar-lotd3.warrior-priest.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: leadership-radios checks are a morale mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -152,15 +152,15 @@ rules:
     - warrior-priest
 - id: templar--zealous
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.protectorate-of-sigmar-lotd3.templar.zealous
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: hatred of chaotic warbands is a psychology mechanic (hate tests).
+    - id: mechanic.hatred-chaotic-warband
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-chaotic-warband
   name: Zealous
   effect: >-
     Strong is the devotion of the Templar. The model hates any model belonging to a chaotic warband.
@@ -238,15 +238,14 @@ rules:
   rule_ref: shared-rule.animal
 - id: hound--devoted
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.protectorate-of-sigmar-lotd3.hound.devoted
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Deferred subsystem: leadership re-rolls are a morale mechanic.
+      reason: 'Included individual duel effect, not implemented: Supplied qualified Warrior Priest grants a personal Leadership reroll within 12 inches; canonical provider projection remains pending.'
   name: Devoted
   effect: >-
     Trained since pups, these Hounds are devoted beyond what a typical master could expect. A Hound
@@ -299,15 +298,14 @@ rules:
 - id: band--special-skill-unshakeable-faith
   kind: warband_skill
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.protectorate-of-sigmar-lotd3.band.unshakeable-faith
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Deferred subsystem: immunity to Fear is a psychology mechanic.
+      reason: 'Included individual duel effect, not implemented: Individual immunity to Fear; this canonical selectable grant remains unimplemented.'
   name: Unshakeable Faith
   effect: >-
     Such is the faith of the warrior that there is little room for doubt or hesitation in his
@@ -360,16 +358,15 @@ rules:
 - id: band--special-skill-rousing-sermon
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.protectorate-of-sigmar-lotd3.band.rousing-sermon
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: a declared +1 attack aura over a 6-inch radius has no engine subsystem (no
-        aura/buff mechanics modeled).
+    - id: mechanic.rousing-sermon
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.rousing-sermon
   name: Rousing Sermon
   effect: >-
     Only the Warrior Priest may have this skill. The Warrior Priest bellows his prayers to Sigmar,
@@ -426,3 +423,33 @@ rules:
       distancia.
   applies_to:
     band: true
+
+- id: hound--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Jaws and Brutality. A Hound never uses nor needs weapons or armour, and suffers no penalty for doing so."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "Henchmen / 0-5 Hounds"
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/protectorate-of-sigmar
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - hound

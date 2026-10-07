@@ -37,16 +37,15 @@ rules:
     band: true
 - id: rais--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.araby-smugglers-sar.rais.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: Any warrior within 6 inches of the Rais may use his Leadership for Leadership tests.
   source:

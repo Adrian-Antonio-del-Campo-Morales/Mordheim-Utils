@@ -1249,8 +1249,8 @@ STAGING_NOTE_REWRITES: dict[str, str] = {
 #: its grant, its effects, their bindings, their scopes and their reasons — is
 #: copied verbatim, and the staged tree keeps the staged mark.
 BAND_SCOPE_REPAIRS: dict[tuple[str, str], str] = {
-    ("dwarf-slayer-cult-web", "band--hard-to-kill"): "LATER",
-    ("dwarf-slayer-cult-web", "band--hard-head"): "LATER",
+    # Dwarf Slayer Hard to Kill/Hard Head now have synchronized YES bindings;
+    # their former LATER repairs must not downgrade the current staged source.
     ("house-guard-sc", "band--dueling-pride"): "LATER",
     ("house-guard-sc", "pikemen--pikewall"): "LATER",
     ("lords-of-the-marsh-mim", "young-nobles--spiked-tail"): "LATER",

@@ -36,6 +36,9 @@ equipment_lists:
   - item_id: cathayan_silk_cloak
     cost: 40
   - item_id: warhorse
+    applies_to:
+      profile_ids:
+      - knights-vanguard
     cost: 40
     notes: Knights Vanguard only.
     notes_i18n:
@@ -67,11 +70,17 @@ equipment_lists:
   - item_id: sword
     cost: 10
   - item_id: pike
+    applies_to:
+      profile_ids:
+      - sell-swords
     cost: 10
     notes: Sell-swords only.
     notes_i18n:
       es: Solo espadas a sueldo.
   - item_id: halberd
+    applies_to:
+      profile_ids:
+      - sell-swords
     cost: 10
     notes: Sell-swords only.
     notes_i18n:

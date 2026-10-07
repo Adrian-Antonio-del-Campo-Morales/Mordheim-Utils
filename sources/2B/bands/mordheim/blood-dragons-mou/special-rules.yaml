@@ -113,16 +113,15 @@ rules:
     - vampire
 - id: vampire--fear
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.vampire.fear
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear (Vampire)
   effect: A Vampire causes Fear in his opponents.
   source:
@@ -139,16 +138,15 @@ rules:
     - vampire
 - id: vampire--immune-to-psychology
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.vampire.immune-to-psychology
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology (Vampire)
   effect: A vampire is immune to all forms of psychology and needs not to roll all-alone tests.
   source:
@@ -167,16 +165,17 @@ rules:
     - vampire
 - id: vampire--immune-to-poisons
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.vampire.immune-to-poisons
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
   name: Immune to Poisons (Vampire)
   effect: A vampire is immune to all forms of poison.
   source:
@@ -193,16 +192,15 @@ rules:
     - vampire
 - id: vampire--no-pain
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.vampire.no-pain
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain (Vampire)
   effect: In combat treat 'Stunned' results as 'Knocked Down'.
   source:
@@ -280,16 +278,15 @@ rules:
     - vampire
 - id: wights--fear
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.wights.fear
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear (Wights)
   effect: A Wight causes Fear in his opponents.
   source:
@@ -306,16 +303,15 @@ rules:
     - wights
 - id: wights--immune-to-psychology
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.wights.immune-to-psychology
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology (Wights)
   effect: A Wight is immune to all forms of psychology and needs not to roll all-alone tests.
   source:
@@ -334,16 +330,17 @@ rules:
     - wights
 - id: wights--immune-to-poisons
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.wights.immune-to-poisons
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
   name: Immune to Poisons (Wights)
   effect: A Wight is immune to all forms of poison.
   source:
@@ -360,16 +357,15 @@ rules:
     - wights
 - id: wights--no-pain
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.wights.no-pain
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain (Wights)
   effect: In combat treat 'Stunned' results as 'Knocked Down'.
   source:
@@ -415,16 +411,15 @@ rules:
     - wights
 - id: skeleton-warriors--fear
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.skeletons.fear
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear (Skeleton Warriors)
   effect: A skeleton causes Fear in his opponents.
   source:
@@ -441,16 +436,15 @@ rules:
     - skeleton-warriors
 - id: skeleton-warriors--immune-to-psychology
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.skeletons.immune-to-psychology
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology (Skeleton Warriors)
   effect: A skeleton is immune to all forms of psychology and needs not to roll all-alone tests.
   source:
@@ -469,16 +463,17 @@ rules:
     - skeleton-warriors
 - id: skeleton-warriors--immune-to-poisons
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.skeletons.immune-to-poisons
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
   name: Immune to Poisons (Skeleton Warriors)
   effect: A skeleton is immune to all forms of poison.
   source:
@@ -495,16 +490,15 @@ rules:
     - skeleton-warriors
 - id: skeleton-warriors--no-pain
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.skeletons.no-pain
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain (Skeleton Warriors)
   effect: In combat treat 'Stunned' results as 'Knocked Down'.
   source:
@@ -577,16 +571,15 @@ rules:
     - skeleton-warriors
 - id: grave-guards--immune-to-psychology
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.grave-guards.immune-to-psychology
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology (Grave Guards)
   effect: A grave guard is immune to all forms of psychology and needs not to roll all-alone tests.
   source:
@@ -605,16 +598,17 @@ rules:
     - grave-guards
 - id: grave-guards--immune-to-poisons
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.grave-guards.immune-to-poisons
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
   name: Immune to Poisons (Grave Guards)
   effect: A grave guard is immune to all forms of poison.
   source:
@@ -631,16 +625,15 @@ rules:
     - grave-guards
 - id: grave-guards--no-pain
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.grave-guards.no-pain
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain (Grave Guards)
   effect: In combat treat 'Stunned' results as 'Knocked Down'.
   source:
@@ -716,16 +709,15 @@ rules:
     - grave-guards
 - id: hell-hounds--fear
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.hell-hounds.fear
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear (Hell Hounds)
   effect: A Hell Hound causes Fear in his opponents.
   source:
@@ -742,16 +734,15 @@ rules:
     - hell-hounds
 - id: hell-hounds--immune-to-psychology
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.hell-hounds.immune-to-psychology
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology (Hell Hounds)
   effect: A Hell Hound is immune to all forms of psychology and needs not to roll all-alone tests.
   source:
@@ -770,16 +761,17 @@ rules:
     - hell-hounds
 - id: hell-hounds--immune-to-poisons
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.hell-hounds.immune-to-poisons
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
   name: Immune to Poisons (Hell Hounds)
   effect: A Hell Hound is immune to all forms of poison.
   source:
@@ -796,16 +788,15 @@ rules:
     - hell-hounds
 - id: hell-hounds--no-pain
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.blood-dragons-mou.hell-hounds.no-pain
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain (Hell Hounds)
   effect: In combat treat 'Stunned' results as 'Knocked Down'.
   source:

@@ -1,5 +1,15 @@
 # 2A/2B — checklist de integración y coordinación
 
+Governing scope update — 2026-10-04: voluntary escape, withdrawal and contact breaking that ends the duel without resolving it are excluded, even if possible with two models. See [permanent ruling](../../decisions/design-rulings.md#voluntary-escape-does-not-belong-to-combat-lab--2026-10-04).
+
+Current integration status — 2026-10-05: T13 modular implementation is partial.
+The canonical 2B hireling route now supports twelve base hired-sword profiles;
+fourteen normalized profiles retain intrinsic blockers and two Dramatis lack
+stats. Optional Marks and other listed individual/product clauses remain open.
+See the [governing progress and exact remaining work](tasks/T13-T15-remaining-plan.md#current-progress-and-remaining-work--2026-10-05).
+NumPy/native ports have not started; final T14/T15 certification/closure remains
+outstanding. Earlier delivery summaries are historical evidence.
+
 ## Punto de inicio y alcance
 
 - Rama de trabajo: `2A2B`; remoto: `origin/2A2B`.
@@ -39,16 +49,21 @@ implementation. See [F035's governing dispositions](tasks/T13-shared-eligibility
 | Legal equipment/skill choices, recipients, variants and loadout restrictions | Existing shared TypeScript eligibility module, used directly by Warband Manager and locally through the embedded Python adapter by Combat Lab; no duplicate validator. |
 | Canonical bindings and characteristics/weapon/effect projection for simulation | Canonical KB and Combat Lab Python compiler. Legal selection does not imply implemented combat support; supported-effect refusal is separate from illegality. |
 | Identificadores de plantilla, `member_ids`, `battle_number`, adquisición de mutaciones y retirada definitiva | Warband Manager. Los hechos de la mesa son entradas de sus propios flujos; Combat Lab no los produce ni llama a sus servicios. |
-| Hechos de Rout de participantes registrados | Warband Manager; la prueba de la partida se resuelve en la mesa. Una regla de psicología simulable se evalúa separadamente en Combat Lab cuando pertenece al alcance reconciliado de T13. |
+| Rout de banda, psicología de grupo y combate con varios destinatarios | Fuera del alcance de Combat Lab, que sigue simulando duelos 1v1. Los hechos de partida de Warband Manager pertenecen a sus propios flujos. |
 | Modificadores de combate de una mutación | Combat Lab, desde selección y compilación propias basadas en la KB; no consume `campaign.special_rules`. |
-| Movimiento, psicología y proximidad incluidos en T13 | Contexto explícito mínimo de simulación, con participantes locales; sin tablero autónomo ni estado de campaña. |
-| «Transferencia a T13» en los inventarios históricos | Candidatura de una cláusula de fuente para reconciliación, no contrato de comunicación ni garantía de inclusión. Se mantienen las exclusiones acordadas. |
+| Acciones y psicología individuales incluidos en T13 | Contexto mínimo del duelo entre dos combatientes. Sin grupos, terceros independientes ni reglas de mapa/terreno/clima: niebla, agua y condiciones similares quedan excluidas incluso como opciones manuales. |
+| «Transferencia a T13» en los inventarios históricos | Candidatura para reconciliación, no garantía de inclusión. La [decisión 1v1 del usuario, 2026-10-04](../../decisions/design-rulings.md#combat-lab-remains-a-1v1-duel-simulator--2026-10-04) prevalece sobre admisiones históricas más amplias. |
 
 La operación `withdrawLeftTableMembers` y su adaptador Web existen y tienen pruebas con entradas explícitas. El adaptador no tiene llamador de producción Web: sus llamadores actuales son pruebas. La detección y captura de quién abandonó la mesa no quedan acreditadas por esas pruebas y no se trasladan a T13. Cualquier trabajo para ofrecer esa captura pertenece al Warband Manager y requiere su propio alcance.
 
 Los totales y dictámenes de T09–T12 se conservan como evidencia histórica. T13.0 debe reconciliar las cláusulas con esta frontera y las exclusiones, sin sumar transferencias como si fueran obligaciones nuevas ni declarar completa una funcionalidad ausente. Véase el [plan de implementación](tasks/T13-implementation-plan.md).
 
 ## Estado y protocolo de trabajo
+
+The maintained [clarification register](tasks/T13-clarifications.yaml) keeps
+source interpretations and user rulings linked to original audit IDs and text
+fingerprints. It is an input, never a generated report; clarification resolution
+does not certify implementation. Audit/consolidation consumption remains pending.
 
 The [remaining T13–T15 integration plan](tasks/T13-T15-remaining-plan.md) records
 current routing after the accepted T13 partial deliveries, shared eligibility
@@ -75,7 +90,8 @@ The [Shock Rod milestone](tasks/T13-local-weapons.md#subsequent-l06-milestone-sh
 also connects canonical access, First Strike, two hands and the 1–4 stun clause.
 The [Skull Busta milestone](tasks/T13-local-weapons.md#subsequent-l06-milestone-skull-busta)
 adds first-turn Strength, Concussion, ordinary-helmet Basha and shared restrictions;
-its absent Knight's Helm counterpart remains L07/F063.
+the user has classified Knight's Helm as a source erratum (2026-10-04).
+F063 now tracks pending KB cleanup, not an L07 implementation blocker.
 Then complete local families, sequences, psychology and movement, with stable
 backend batches. Cases, bindings, product connection and documentation accompany
 their owning implementation. F056 belongs in F008, rather than a new standalone
@@ -119,8 +135,17 @@ Each executor captures actual dirty-tree hashes before starting and writes only
 the paths reserved below. Read-only reviews and reconciliation lots preserve
 all existing production inputs; implementation lots retain their explicit scope.
 
+Latest modular continuation (2026-10-04): [individual Cold-Blooded](tasks/T13-local-modifiers-defences.md#l10-continuation--individual-cold-blooded-tests)
+adds three canonical clauses (152 cumulative). Six focused cases and affected
+contracts pass; group Rout is excluded under the user's 1v1 boundary.
+
 | Review lot | Reserved executor | Exclusive writable outputs | Status and acceptance boundary |
 |---|---|---|---|
+| Semantic study A — analysis and modular implementation of offensive families | External agent A; user launches; implementation explicitly requested 2026-10-07 | Isolated checkout reproducing the current dirty inputs only: tasks/T13-semantic-analysis-dispatch/A-results.csv; A-family canonical KB and exact staging mirrors, execution/mapping contracts, necessary construction/transport/modular consumers, directly affected cases and maintained generator outputs. No writes to the shared checkout; patch and optional scratch in ignored build/audit/semantic-analysis/A/** of the isolated checkout | Reserved, pending user launch. 558 closed input IDs under the [manifest](tasks/T13-semantic-analysis-dispatch/manifest.json) and [guide](tasks/T13-semantic-analysis-guide.md). This user-authorized A dispatch extends the guide's analysis-only restriction inside the isolated checkout; B/C/D retain their read-only reservations. Complete source-resolved admitted effects by semantic family, preserve scope decisions and input fingerprints, and report genuinely blocked clauses without inventing rules. Coordinator integrates the isolated delivery; no vectorized/native ports, shared-register edits, phase certification, commit/push or nested agents |
+| Semantic study B — defences, injury and recovery | External agent B; user launches | Only tasks/T13-semantic-analysis-dispatch/B-results.csv; optional ignored scratch build/audit/semantic-analysis/B/** | Reserved 2026-10-07, pending user launch. 565 current input IDs under the same manifest/guide; own all assigned clauses, including references. Analysis and implementation/evidence states remain separate; the same read-only boundaries apply |
+| Semantic study C — psychology, Leadership and temporary states | External agent C; user launches | Only tasks/T13-semantic-analysis-dispatch/C-results.csv; optional ignored scratch build/audit/semantic-analysis/C/** | Reserved 2026-10-07, pending user launch. 881 current input IDs under the same manifest/guide; mixed LATER clauses require individual scope review, not admission of excluded producers. The same read-only boundaries apply |
+| Semantic study D — construction, recipients, characteristics and mixed clauses | External agent D; user launches | Only tasks/T13-semantic-analysis-dispatch/D-results.csv; optional ignored scratch build/audit/semantic-analysis/D/** | Reserved 2026-10-07, pending user launch. 1,587 current input IDs under the same manifest/guide; respect the shared eligibility decision and distinguish legality, acquisition and duel effects. The same read-only boundaries apply |
+| Autonomous modular continuation — L06–L18 | Coordinator; user requested autonomous execution, 2026-10-04 | Source-backed local family KB/mirrors, compiler/core/modular context/state/resolvers, shared eligibility only for reproduced access gaps, affected canonical product seams, focused family cases and coordination; preserve independently reserved files | In progress. [249-clause local attack/save/injury/resource/Leadership/Fear milestones](tasks/T13-local-modifiers-defences.md) implemented, including conditional ward, recursive Onslaught, Crude Belch, the Priest's final bite, Sabretusk charge count, one chosen Seaguard reroll, local Leader providers, Darksoul auto-pass and both Fear charge outcomes; High Elf skill tables corrected and F022 resolved locally. F061/F067 retain their explicit remaining boundaries. Common Fear now has 97 canonical connections, acquired/current-condition and item routes; F070 retains conditional producers. Stupidity static grants, acquisition and prior-history UI are complete; F071 is resolved. Four additional innate Frenzy grants and selectable Unlimited Hatred reuse the existing operators. Six opposed Elven Hatred clauses now use explicit individual identities, animal exclusions and editor overrides. Source-specific Stubborn/Barbarian Courage rerolls and Fearless/Iron Will immunity are implemented. Document deferred issues and continue remaining modular work; stop before L19/L20, no vectorized/native ports or automatic agent launches |
 | L06 — local weapons and attack modifiers | Coordinator, user requested continuation 2026-10-03 | Canonical item/mechanic/mapping blocks; shared eligibility recipients and generated bundle for reproduced item-access gaps; modular/kernel support seams as required; focused canonical cases and existing coordination. External L02–L05 review uses its captured read-only revision | In progress; [eight-item weapon block](tasks/T13-local-weapons.md) implemented/verified: F023 and separate F025/Q146, five profiles, real catalogue/attacks, 15 focal cases plus reused affected checks. Continue other L06 families. Preserve F057 and user UI/i18n work; no optimized certification, agent launch, commit or push |
 | L05 — canonical choices and grants | Coordinator; user requested execution, 2026-10-03 | Shared eligibility/bridge and maintained generated bundle; actual construction/core/catalogue adapters; source-backed recipient/binding/marker corrections in affected canonical bands and exact staging mirrors; pertinent editorial schema/loader contract; focused direct/embedded/canonical specs and tests; T13 coordination/eligibility reference and new canonical-choices delivery; own evidence canonical-choices/** and sanctioned publication | Implemented/verified; reservation released 2026-10-03. [Delivery](tasks/T13-canonical-choices.md): named tables, configured promoted Shifty/Runts, active versus owned kit and truthful markers. Remaining F018/F028 source/effect gates have named owners; visible new facts remain L18. F057, accepted engine and concurrent WB UI/i18n preserved; no new constructor, agent launch, commit or push |
 | L04 / F004 — canonical Shifty | Coordinator; user explicitly requested execution, 2026-10-03 | Halflings special-rules.yaml (Shifty metadata only) and exact 2A mirror; close-combat/execution mechanic entries; kernel optimized support guard and verification tag-consumer declaration; new modular/test_shifty_activation.py and source-linked grants/t13-halfling-shifty.yaml; existing Shifty canonical assertions; concrete catalogue/selectable/structural inventory assertions and trace notes (supplemental entry bytes captured); existing Shifty delivery and pertinent README/T13/follow-up/remaining-plan coordination; own shifty-activation/** evidence and sanctioned publication | Four-hero canonical modular milestone implemented/verified; reservation released 2026-10-03. [Delivery](tasks/T13-shifty.md#l04-canonical-activation--2026-10-03): 35 canonical/84 focal/926 affected cases; 11 source-linked cases/3 mutations; 720 obligations, 569 verified/151 pending, same 30 historical errors. Accepted S1–S4/F060/shared construction unchanged. F004 promoted local access remains L05, pistols L08, ports L19/L20 and GUI routing L18; no phase certificate, agent launch, commit/push |

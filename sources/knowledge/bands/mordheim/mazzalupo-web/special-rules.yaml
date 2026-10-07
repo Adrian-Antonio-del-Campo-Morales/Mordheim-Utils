@@ -32,16 +32,15 @@ rules:
     band: true
 - id: wandering-knight--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.mazzalupo-web.wandering-knight.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
-        psychology/rout mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -537,16 +536,22 @@ rules:
     - squire
 - id: black-sheep--stupidity
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.mazzalupo-web.black-sheep.stupidity
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.mazzalupo-web.black-sheep.stupidity.outside-duel
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: stupidity is a psychology mechanic not covered by the current engine
-        scope.
+        Board movement, campaign progression/participation and independently
+        simulated helper/rider/group producers are outside the 1v1 duel.
+        Admissible individual exemptions and bonuses are supplied active facts.
   name: Stupidity
   source:
     manual: mordheimer.net
@@ -558,7 +563,9 @@ rules:
   applies_to:
     profile_ids:
     - black-sheep
-  rule_ref: shared-rule.stupidity
+  effect: Black Sheep are subject to Stupidity unless a Sheepherder is within 6 inches.
+  effect_i18n:
+    es: Las Ovejas Negras están sujetas a Estupidez salvo que haya un Pastor a 6 pulgadas.
 - id: black-sheep--animals
   runtime:
     scope: 'NO'
@@ -641,6 +648,36 @@ rules:
     es: >-
       Las ovejas negras pueden trepar y descender siguiendo las reglas normales a pesar de ser
       animales.
+  applies_to:
+    profile_ids:
+    - black-sheep
+
+- id: black-sheep--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Weapons/Armour: none."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0-5 Black Sheep"
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/mazzalupo
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
   applies_to:
     profile_ids:
     - black-sheep

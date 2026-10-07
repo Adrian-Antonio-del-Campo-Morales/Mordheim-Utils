@@ -56,16 +56,15 @@ rules:
     band: true
 - id: strigoi-vampire--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.survivors-of-strigos-sylv.strigoi-vampire.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
-        psychology/rout mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: sylvania-supplement
@@ -80,16 +79,15 @@ rules:
   rule_ref: shared-rule.leader
 - id: strigoi-vampire--kindred-hatred
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.survivors-of-strigos-sylv.strigoi-vampire.kindred-hatred
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Hatred (reroll misses against hated foes) is a combat psychology
-        mechanic not covered by the current engine scope.
+    - id: mechanic.kindred-hatred
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.kindred-hatred
   name: Kindred Hatred
   effect: A Strigoi Vampire Hates vampires of other blood-lines.
   source:
@@ -106,16 +104,15 @@ rules:
     - strigoi-vampire
 - id: strigoi-vampire--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.survivors-of-strigos-sylv.strigoi-vampire.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   effect: Vampires are terrifying Undead creatures and therefore cause Fear.
   source:
@@ -132,16 +129,15 @@ rules:
     - strigoi-vampire
 - id: strigoi-vampire--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.survivors-of-strigos-sylv.strigoi-vampire.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (Fear, never leaving combat) is not covered by the current
-        engine scope.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: Vampires are not affected by psychology (such as fear) and never leave combat.
   source:
@@ -187,16 +183,15 @@ rules:
     - strigoi-vampire
 - id: strigoi-vampire--no-pain
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.survivors-of-strigos-sylv.strigoi-vampire.no-pain
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: injury-table result conversion is a post-duel/campaign resolution
-        mechanic.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain
   effect: Vampires treat a Stunned result on the Injury chart as Knocked Down.
   source:
@@ -252,7 +247,7 @@ rules:
       binding: null
       reason: >-
         Out of scope: magic subsystem (Charms & Hexes; the spell list is preserved in
-        sources/2A/catalog/magic-2a.yaml).
+        catalog/campaign/magic.yaml).
   name: Wizard
   effect: Seers have one spell randomly generated from the Charms & Hexes spell list.
   source:
@@ -301,15 +296,15 @@ rules:
     - domnu
 - id: domnu--gypsy-ward
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.survivors-of-strigos-sylv.domnu.gypsy-ward
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: magic-subsystem ward saves are outside the current engine scope.
+    - id: mechanic.gypsy-ward
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.gypsy-ward
   name: Gypsy Ward
   effect: >-
     Possessing an innate resistance to magic, the Domnu has a special save of 5+ versus magical
@@ -330,16 +325,15 @@ rules:
     - domnu
 - id: ghouls--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.survivors-of-strigos-sylv.ghouls.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   effect: Ghouls are twisted and repulsive creatures and therefore cause Fear.
   source:
@@ -463,20 +457,21 @@ rules:
     - giant-bats
 - id: strigoi-vampire--iron-sinews
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    grant: selectable
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.survivors-of-strigos-sylv.special.iron-sinews
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: skill-granted characteristic bonuses are advancement-time mechanics
-        outside the duel scope.
+    - id: profile.characteristics
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.characteristics
+        parameters:
+          bonuses:
+            strength: 1
   name: Iron Sinews
-  effect: >-
-    After death the Vampire's muscles grow far greater than they ever could have in his mortal life.
-    The Strigoi becomes a beast of pure muscular power. Add +1S to the Vampire's profile.
+  effect: After death the Vampire's muscles grow far greater than they ever could have in his mortal life. The Strigoi becomes
+    a beast of pure muscular power. Add +1S to the Vampire's profile.
   source:
     manual: sylvania-supplement
     printed_page: 0
@@ -485,25 +480,27 @@ rules:
   name_i18n:
     es: Tirones de Hierro
   effect_i18n:
-    es: >-
-      Tras la muerte, los músculos del Vampiro crecen mucho más de lo que jamás pudieron en su vida
-      mortal. El Strigoi se convierte en una bestia de pura potencia muscular. Añade +1 a la F del
-      Vampiro.
+    es: Tras la muerte, los músculos del Vampiro crecen mucho más de lo que jamás pudieron en su vida mortal. El Strigoi se
+      convierte en una bestia de pura potencia muscular. Añade +1 a la F del Vampiro.
   applies_to:
     profile_ids:
     - strigoi-vampire
+  kind: warband_skill
+  eligibility:
+  - strigoi-vampire
 - id: strigoi-vampire--great-thirster
+  kind: warband_skill
+  eligibility: [strigoi-vampire]
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.survivors-of-strigos-sylv.special.great-thirster
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: conditional Frenzy tied to out-of-action results is not covered by the
-        current engine scope.
+    - id: mechanic.great-thirster
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.great-thirster
   name: Great Thirster
   effect: >-
     Such is the appetite of this beast that he must feed almost constantly. Once the taste of blood
@@ -527,16 +524,18 @@ rules:
     profile_ids:
     - strigoi-vampire
 - id: strigoi-vampire--curse-of-the-revenant
+  kind: warband_skill
+  eligibility: [strigoi-vampire]
   runtime:
     scope: 'YES'
     implemented: 'YES'
-    grant: profile
+    grant: selectable
     effects:
-    - id: skill.regeneration
+    - id: mechanic.curse-of-the-revenant
       scope: 'YES'
       binding:
         kind: mechanic
-        id: skill.regeneration
+        id: mechanic.curse-of-the-revenant
   name: Curse of the Revenant
   effect: >-
     So strong is the desire for some to continue living that they defy death. Once a Vampire has
@@ -570,7 +569,7 @@ rules:
       binding: null
       reason: >-
         Out of scope: magic subsystem (Dark Arts; the spell list is preserved in
-        sources/2A/catalog/magic-2a.yaml).
+        catalog/campaign/magic.yaml).
   name: Dark Arts
   effect: >-
     The Strigoi has retained some of its former magical aptitude. He may choose Arcane Lore as an

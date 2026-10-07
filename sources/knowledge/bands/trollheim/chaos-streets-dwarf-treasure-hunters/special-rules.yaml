@@ -195,15 +195,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.chaos-streets-dwarf-treasure-hunters.band.hate-orcs-and-goblins
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.hatred-orcs-goblins
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-orcs-goblins
   rule_ref: shared-rule.hate-orcs-and-goblins
 - id: band--grudgebearers
   name: Grudgebearers

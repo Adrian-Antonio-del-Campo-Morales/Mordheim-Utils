@@ -25,11 +25,21 @@ equipment_lists:
     notes_i18n:
       es: Machete (espada); solo cocineros medianos
   - item_id: great_weapon
+    applies_to:
+      profile_types:
+      - hero
+      profile_ids:
+      - halfling-warriors
     cost: 15
     notes: Heroes & Halfling Warriors only
     notes_i18n:
       es: Solo héroes y guerreros medianos
   - item_id: spear
+    applies_to:
+      profile_types:
+      - hero
+      profile_ids:
+      - halfling-warriors
     cost: 10
     notes: Heroes & Halfling Warriors only
     notes_i18n:
@@ -37,6 +47,12 @@ equipment_lists:
   - item_id: short_bow
     cost: 5
   - item_id: bow
+    applies_to:
+      profile_ids:
+      - halfling-elder
+      - halfling-cook
+      - halfling-youths
+      - halfling-scouts
     cost: 10
     notes: May not be used by Halfling Warriors
     notes_i18n:
@@ -51,6 +67,10 @@ equipment_lists:
     notes_i18n:
       es: Olla (yelmo); solo cocineros medianos
   - item_id: hunting_arrows
+    applies_to:
+      profile_ids:
+      - halfling-elder
+      - halfling-scouts
     cost: 35
     notes: Halfling Elder and Halfling Scouts only
     notes_i18n:

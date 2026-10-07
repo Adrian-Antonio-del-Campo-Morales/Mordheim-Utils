@@ -18,7 +18,7 @@ from mordheim_core.models import Characteristics, EffectSet, FighterBuild
 
 def fighter(spectral=False, wounds=4, strength=3, **options):
     result = compile_fighter(FighterBuild('mordheim',
-        Characteristics(3, strength, 3, wounds, 3, 1),
+        Characteristics(3, strength, 3, wounds, 3, 1, leadership=7),
         main_weapon_id=options.pop('main_weapon_id', 'weapon.axe'), **options))
     if spectral:
         result = replace(result, global_effects=replace(result.global_effects,
@@ -414,6 +414,8 @@ def test_pending_spirit_host_tag_reaches_actual_modular_duel_driver():
         tags=(*a.global_effects.tags, 'trait.spectral-touch')))
     result = replay_duel(a, fighter(wounds=1), backend='modular',
         context=DuelContext(charging=('first',), active_participant='first'), rolls=[
+            roll('round.0.second.fear.charged.0', 3),
+            roll('round.0.second.fear.charged.1', 4),
             roll('round.0.first.attack.0.hit', 6),
             roll('round.0.first.attack.1.hit', 1), roll('round.0.first.attack.2.hit', 1),
             roll('round.0.first.attack.0.spectral-touch.injury.0', 6)])

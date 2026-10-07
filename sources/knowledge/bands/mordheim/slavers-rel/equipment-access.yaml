@@ -52,11 +52,17 @@ equipment_lists:
   - item_id: helmet
     cost: 10
   - item_id: manacles
+    applies_to:
+      profile_types:
+      - hero
     cost: 20
     notes: Heroes only; 20+D6 dinars; Rare 8; Slavers only
     notes_i18n:
       es: Solo héroes; 20+D6 dinares; Raro 8; solo esclavistas
   - item_id: slave
+    applies_to:
+      profile_types:
+      - hero
     cost: 8
     notes: Heroes only
     notes_i18n:

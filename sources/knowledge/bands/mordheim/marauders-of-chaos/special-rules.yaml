@@ -3,15 +3,15 @@ band_id: marauders-of-chaos
 rules:
 - id: marauder-chieftain--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.marauders-of-chaos.marauder-chieftain.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any Warrior within 6" of the Marauder Chieftain may use his Leadership instead of his own when
@@ -172,15 +172,15 @@ rules:
     - condemned
 - id: condemned--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.marauders-of-chaos.condemned.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: The Condemned causes Fear.
   source:
@@ -293,15 +293,15 @@ rules:
     - spawn-of-chaos
 - id: spawn-of-chaos--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.marauders-of-chaos.spawn-of-chaos.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: A Spawn of Chaos causes Fear.
   source:
@@ -349,15 +349,15 @@ rules:
     - spawn-of-chaos
 - id: spawn-of-chaos--psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.marauders-of-chaos.spawn-of-chaos.psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.automatic-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.automatic-leadership
   name: Psychology
   effect: The Spawn automatically passes all Leadership-based tests it is required to take.
   source:
@@ -715,15 +715,15 @@ rules:
     band: true
 - id: band--mark-of-chaos-undivided
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.marauders-of-chaos.band.mark-of-chaos-undivided
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.undivided-leader
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.undivided-leader
   name: Mark of Chaos Undivided
   effect: >-
     A marked leader allows all warband members within the Leader radius to re-roll failed Leadership
@@ -744,7 +744,9 @@ rules:
       Gores que cuentan contra el máximo normal de la banda; los resultados de The Lad's Got Talent
       para esos Gores se repiten. Los detalles de hechizos no están modelados aquí.
   applies_to:
-    band: true
+    profile_ids:
+    - marauder-chieftain
+  kind: mark
 - id: band--mark-of-tchar
   runtime:
     scope: 'NO'
@@ -775,15 +777,15 @@ rules:
     band: true
 - id: band--mark-of-arkhar
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.marauders-of-chaos.band.mark-of-arkhar
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.mark-of-arkhar
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.mark-of-arkhar
   name: Mark of Arkhar the Dog
   effect: >-
     A marked leader is subject to Frenzy and spells targeting him fail on 4+. A Seer with this mark
@@ -806,7 +808,9 @@ rules:
       Liderazgo para ganar +1 HA, F, R o I hasta el final de la batalla, con cada característica
       aumentada como máximo una vez. Un Padre de Sangre también puede tomar habilidades de Fuerza.
   applies_to:
-    band: true
+    profile_ids:
+    - marauder-chieftain
+  kind: mark
 - id: band--mark-of-onogal
   kind: mark
   runtime:
@@ -845,15 +849,15 @@ rules:
   - seer
 - id: band--mark-of-shornaal
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.marauders-of-chaos.band.mark-of-shornaal
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.mark-of-shornaal
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.mark-of-shornaal
   name: Mark of Shornaal the Serpent
   effect: >-
     Enemy models that are not Immune to Psychology cannot attack a marked leader in close combat
@@ -877,7 +881,9 @@ rules:
       Hombres Lagarto no puede usarse para este chequeo. Los efectos de ritual y creación de objetos
       del Vidente no están modelados intencionadamente aquí.
   applies_to:
-    band: true
+    profile_ids:
+    - marauder-chieftain
+  kind: mark
 - id: band--marauder-special-skills-chosen-of-chaos
   kind: warband_skill
   runtime:
@@ -1039,3 +1045,33 @@ rules:
       fallido y es inmune al miedo y a los chequeos de Luchando solo.
   applies_to:
     band: true
+
+- id: warhounds-of-chaos--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Warhounds do not use weapons or armour and fight without the normal unarmed penalties."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 5 Warhounds of Chaos"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/marauders-of-chaos
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - warhounds-of-chaos

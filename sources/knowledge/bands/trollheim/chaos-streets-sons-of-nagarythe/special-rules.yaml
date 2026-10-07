@@ -20,15 +20,15 @@ rules:
     profile_ids:
     - shadow-master
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.chaos-streets-sons-of-nagarythe.shadow-master.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: shadow-weaver--wizard
   name: Wizard
   effect: >-

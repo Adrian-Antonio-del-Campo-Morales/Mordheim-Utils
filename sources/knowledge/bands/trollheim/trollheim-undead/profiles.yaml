@@ -43,6 +43,8 @@ profiles:
   combat_traits:
     starting_skills:
     - skill.ignore-pain
+    creature_kind: undead
+    vampire: true
 - id: necromancer
   name: Necromancer
   type: hero
@@ -149,6 +151,7 @@ profiles:
   combat_traits:
     starting_skills:
     - skill.ignore-pain
+    creature_kind: undead
   equipment_restrictions_i18n:
     es: Los Zombis nunca pueden usar armas ni armaduras y no sufren penalización por luchar sin ellas.
 - id: ghouls
@@ -225,5 +228,6 @@ profiles:
   combat_traits:
     starting_skills:
     - skill.ignore-pain
+    creature_kind: undead
   equipment_restrictions_i18n:
     es: Los Lobos Terribles no usan armas ni armaduras; sus ataques son naturales.

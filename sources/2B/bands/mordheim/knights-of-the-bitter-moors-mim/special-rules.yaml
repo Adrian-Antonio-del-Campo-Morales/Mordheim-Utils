@@ -64,16 +64,14 @@ rules:
     band: true
 - id: band--ladys-blessing
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.knights-of-the-bitter-moors-mim.band.ladys-blessing
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Lady's Blessing
   effect: >-
     Before the game, make a Leadership test against the warband leader's Leadership. If successful,
@@ -98,16 +96,15 @@ rules:
     band: true
 - id: questing-knight--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.knights-of-the-bitter-moors-mim.questing-knight.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6 inches of the Questing Knight may use his Leadership when taking Leadership
@@ -128,16 +125,14 @@ rules:
     - questing-knight
 - id: questing-knight--knights-virtue
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.knights-of-the-bitter-moors-mim.questing-knight.knights-virtue
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple opponents. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Knights Virtue
   effect: >-
     A Questing Knight is a chivalrous warrior superior to ordinary warriors. He will never panic and
@@ -185,16 +180,15 @@ rules:
     - questing-knight
 - id: questing-knight--righteous-charge
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.knights-of-the-bitter-moors-mim.questing-knight.righteous-charge
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.righteous-charge
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.righteous-charge
   name: Righteous Charge
   effect: >-
     When the mounted Knight charges, if he has at least 1 other model within 2 inches, all friendly
@@ -245,16 +239,14 @@ rules:
     - knights-errant
 - id: knights-errant--knights-virtue
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.knights-of-the-bitter-moors-mim.knights-errant.knights-virtue
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple opponents. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Knights Virtue
   effect: >-
     A Knight Errant is a chivalrous warrior superior to ordinary warriors. He will never panic and
@@ -275,16 +267,14 @@ rules:
     - knights-errant
 - id: squires--knighted
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.knights-of-the-bitter-moors-mim.squires.knighted
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: campaign, recruitment, progression or post-duel aftermath. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Knighted
   effect: >-
     Once a squire has reached 20 experience points he is considered to have finished his
@@ -536,15 +526,15 @@ rules:
 - id: band--virtue-of-valour
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.knights-of-the-bitter-moors-mim.band.virtue-of-valour
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: re-rolling missed wound rolls is a combat-resolution mechanic.
+    - id: skill.wound-valour
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.wound-valour
   name: Virtue of Valour
   effect: >-
     The Knight has vowed to confront the biggest and strongest foes. The more awesome his enemy the
@@ -574,8 +564,7 @@ rules:
     - id: unimplemented.knights-of-the-bitter-moors-mim.band.virtue-of-discipline
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: re-rolling a Rout test is a post-battle morale mechanic.
+      reason: 'Outside the 1v1 duel: a warband Rout-test reroll.'
   name: Virtue of Discipline
   effect: >-
     The Knight has total faith in his Chivalric code: he maintains self-control in the face of
@@ -597,17 +586,17 @@ rules:
   applies_to:
     band: true
 - id: band--virtue-of-noble-disdain
-  kind: warband_skill
+  kind: virtue
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.knights-of-the-bitter-moors-mim.band.virtue-of-noble-disdain
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: psychology (Hatred) is a psychology-subsystem interaction.
+    - id: mechanic.noble-disdain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.noble-disdain
   name: Virtue of Noble Disdain
   effect: >-
     The Knight has nothing but contempt for enemies who hide behind the weapons of dishonour. The

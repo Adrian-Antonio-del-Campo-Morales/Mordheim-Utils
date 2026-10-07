@@ -37,7 +37,8 @@ profiles:
     es: Jefe Hombre Bestia
   rule_ids:
   - beastmen-chieftain--leader
-  combat_traits: {}
+  combat_traits:
+    species: beastman
 - id: beastmen-shaman
   name: Beastmen Shaman
   type: hero
@@ -74,7 +75,8 @@ profiles:
   rule_ids:
   - beastmen-shaman--wizard
   - beastmen-shaman--no-armour
-  combat_traits: {}
+  combat_traits:
+    species: beastman
 - id: bestigors
   name: Bestigors
   type: hero
@@ -150,8 +152,7 @@ profiles:
   - centigors--drunken
   - centigors--woodland-dwelling
   - centigors--trample
-  combat_traits:
-    extra_natural_attacks: 1
+  combat_traits: {}
 - id: ungor
   name: Ungor
   type: henchman

@@ -100,15 +100,15 @@ rules:
     band: true
 - id: vampire--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.strigoi-kaz.vampire.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any model in the warband within 6\" of the Strigoi may use his Leadership instead of their own.
@@ -126,15 +126,15 @@ rules:
     - vampire
 - id: vampire--bestial
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.strigoi-kaz.vampire.bestial
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: ward saves are outside the current close-combat damage pipeline.
+    - id: mechanic.bestial
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.bestial
   name: Bestial
   effect: >-
     The vampire has an innate way of avoiding being hurt. He has a 6+ ward save against all attacks.
@@ -245,15 +245,15 @@ rules:
   kind: profile_ability
 - id: charnel-guard--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.strigoi-kaz.charnel-guard.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (cause fear).
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   effect: Charnel Guard are twisted and repulsive creatures and therefore cause fear.
   source:
@@ -326,15 +326,15 @@ rules:
     - strigany
 - id: ghouls--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.strigoi-kaz.ghouls.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (cause fear).
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   effect: Ghouls are twisted and repulsive creatures and therefore cause fear.
   source:
@@ -351,15 +351,15 @@ rules:
     - ghouls
 - id: skeletons--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.strigoi-kaz.skeletons.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (cause fear).
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   effect: Skeletons are terrifying Undead creatures and therefore cause fear.
   source:
@@ -403,15 +403,15 @@ rules:
     - skeletons
 - id: skeletons--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.strigoi-kaz.skeletons.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: Skeletons are not affected by psychology and never leave combat.
   source:
@@ -578,15 +578,15 @@ rules:
     - bats
 - id: bats--squishy
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.strigoi-kaz.bats.squishy
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: alternate injury chart is an out-of-duel/campaign mechanic.
+    - id: mechanic.bat-injury-chart
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.bat-injury-chart
   name: Squishy
   effect: >-
     Bats are not very tough and use the following Injury chart: 1-2 Knocked Down, 3 Stunned, 4-6 Out
@@ -661,15 +661,15 @@ rules:
     - fell-bats
 - id: fell-bats--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.strigoi-kaz.fell-bats.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (cause fear).
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   source:
     manual: broheim.net
@@ -707,15 +707,15 @@ rules:
   rule_ref: shared-rule.may-not-run
 - id: fell-bats--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.strigoi-kaz.fell-bats.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   source:
     manual: broheim.net
@@ -807,3 +807,172 @@ rules:
       los mencione específicamente: Adivino Nigromante Strigani (solo si no tienen ningún vampiro).
   applies_to:
     band: true
+
+- id: bats--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - equipment
+  name: Equipment Restrictions
+  effect: "Equipment: None."
+  source:
+    manual: broheim.net
+    printed_page: 53
+    section: "0-5 Bats"
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - bats
+- id: charnel-guard--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - equipment
+  name: Equipment Restrictions
+  effect: "Charnel Guard never carry any equipment, apart from a few bones which they use as primitive weapons."
+  source:
+    manual: broheim.net
+    printed_page: 52
+    section: "0-2 Charnel Guard"
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - charnel-guard
+- id: fell-bats--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - equipment
+  name: Equipment Restrictions
+  effect: "Equipment: None."
+  source:
+    manual: broheim.net
+    printed_page: 54
+    section: "0-2 Fell Bats"
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - fell-bats
+- id: ghouls--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - equipment
+  name: Equipment Restrictions
+  effect: "Ghouls never carry any equipment, apart from a few bones, which they use as primitive weapons."
+  source:
+    manual: broheim.net
+    printed_page: 52
+    section: "Ghouls"
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - ghouls
+- id: skeletons--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - ranged-weapons
+  name: Equipment Restrictions
+  effect: "Skeletons may not use missile weapons."
+  source:
+    manual: broheim.net
+    printed_page: 53
+    section: "Skeletons"
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - skeletons
+- id: vampire--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - equipment
+  name: Equipment Restrictions
+  effect: "A Strigoi Vampire does not use any weapons or equipment."
+  source:
+    manual: broheim.net
+    printed_page: 51
+    section: "1 Vampire"
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - vampire

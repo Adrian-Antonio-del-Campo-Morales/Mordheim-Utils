@@ -95,15 +95,15 @@ rules:
     band: true
 - id: plague-priest--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-pestilens-mou.plague-priest.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: broheim.net
@@ -118,15 +118,21 @@ rules:
   rule_ref: shared-rule.leader
 - id: plague-priest--frenzy
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-pestilens-mou.plague-priest.frenzy
+    - id: trait.frenzy
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
+    - id: excluded.skaven-of-clan-pestilens-mou.plague-priest--frenzy.board-charge
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: Compulsory charge range, movement and target selection on a board are outside the 1v1 duel. In-contact attack doubling, psychology exemption and loss after knockdown/stun use the existing Frenzy operator.
   name: Frenzy (Plague Priest)
   effect: >-
     The Skaven has contracted a disease that gives him feverish nightmares that turn him into a
@@ -147,15 +153,15 @@ rules:
     - plague-priest
 - id: plague-priest--resilient
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-pestilens-mou.plague-priest.resilient
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: skill.resilient
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.resilient
   name: Resilient (Plague Priest)
   effect: >-
     The Plague Priest is a disease-ridden Skaven and starts with the Resilience Strength skill.
@@ -175,15 +181,21 @@ rules:
     - plague-priest
 - id: plague-champion--frenzy
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-pestilens-mou.plague-champion.frenzy
+    - id: trait.frenzy
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
+    - id: excluded.skaven-of-clan-pestilens-mou.plague-champion--frenzy.board-charge
       scope: 'NO'
       binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+      reason: Compulsory charge range, movement and target selection on a board are outside the 1v1 duel. In-contact attack doubling, psychology exemption and loss after knockdown/stun use the existing Frenzy operator.
   name: Frenzy (Plague Champion)
   effect: >-
     The Skaven has contracted a disease that gives him feverish nightmares that turn him into a
@@ -204,15 +216,15 @@ rules:
     - plague-champion
 - id: plague-champion--resilient
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-pestilens-mou.plague-champion.resilient
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: skill.resilient
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.resilient
   name: Resilient (Plague Champion)
   effect: >-
     The Plague Champion is a disease-ridden Skaven and starts with the Resilience Strength skill.
@@ -232,15 +244,15 @@ rules:
     - plague-champion
 - id: plague-rat--plague-infested
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-pestilens-mou.plague-rat.plague-infested
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: poison.black-lotus
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: poison.black-lotus
   name: Plague Infested
   effect: >-
     The rats are infected with various diseases and plagues. All their attacks counts as if their
@@ -313,3 +325,40 @@ rules:
   applies_to:
     profile_ids:
     - skaven-slave
+- applies_to:
+    profile_ids:
+    - plague-priest
+    - plague-champion
+  effect: >-
+    The robes offer protection equal to soft leather and count as light armour when combined with
+    the scattered pieces of chain mail or plate some plague monks wear underneath.
+  effect_i18n:
+    es: >-
+      Las túnicas ofrecen una protección igual al cuero blando y cuentan como armadura ligera cuando
+      se combinan con los trozos dispersos de cota de malla o placas que algunos monjes de plaga
+      llevan debajo.
+  id: plague-priest--plague-monk-robes
+  name: Plague Monk Robes
+  name_i18n:
+    es: Tunicas de Monje de Plaga
+  runtime:
+    effects:
+    - binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 6
+      id: trait.natural-armour-save
+      scope: 'YES'
+    grant: profile
+    implemented: 'YES'
+    scope: 'YES'
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: Heroes / 1 Plague Priest
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Skaven%20of%20Clan%20Pestilens.pdf
+  applies_to:
+    profile_ids:
+    - plague-priest
+    - plague-champion

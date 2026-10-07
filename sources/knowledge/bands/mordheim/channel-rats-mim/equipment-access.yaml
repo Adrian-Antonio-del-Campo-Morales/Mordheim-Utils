@@ -45,11 +45,17 @@ equipment_lists:
   - item_id: crossbow
     cost: 25
   - item_id: blunderbuss
+    applies_to:
+      profile_ids:
+      - tinker
     cost: 30
     notes: Tinker only.
     notes_i18n:
       es: Solo el Calderero.
   - item_id: handgun
+    applies_to:
+      profile_ids:
+      - tinker
     cost: 35
     notes: Tinker only.
     notes_i18n:
@@ -66,16 +72,25 @@ equipment_lists:
     notes_i18n:
       es: Objeto provisional, ver catálogo.
   - item_id: rabbits_foot
+    applies_to:
+      profile_types:
+      - hero
     cost: 5
     notes: Heroes only.
     notes_i18n:
       es: Solo héroes.
   - item_id: compass
+    applies_to:
+      profile_ids:
+      - tinker
     cost: 45
     notes: Tinker only. Rare 9.
     notes_i18n:
       es: Solo el Calderero. Raro 9.
   - item_id: telescope
+    applies_to:
+      profile_ids:
+      - tinker
     cost: 75
     notes: Tinker only.
     notes_i18n:

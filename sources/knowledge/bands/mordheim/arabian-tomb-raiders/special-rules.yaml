@@ -3,15 +3,15 @@ band_id: arabian-tomb-raiders
 rules:
 - id: sheikh--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.arabian-tomb-raiders.sheikh.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     The Sheikh is the leader of the Warband and any Tomb Raiders within 6" may use his Leadership
@@ -119,15 +119,15 @@ rules:
     - slaves
 - id: band--hate-undead
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.arabian-tomb-raiders.band.hate-undead
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.hatred-undead
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-undead
   name: Hate Undead
   effect: >-
     The men of Araby have suffered heavily at the hands (or should that be claws!) of the Tomb

@@ -19,15 +19,15 @@ rules:
     profile_ids:
     - pit-king
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.chaos-streets-pit-fighters.pit-king.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: pit-king--pit-fighter
   name: Pit Fighter
   effect: This warrior has the warband's Pit Fighter rule.

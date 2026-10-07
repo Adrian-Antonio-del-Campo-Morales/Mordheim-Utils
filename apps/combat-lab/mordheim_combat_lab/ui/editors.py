@@ -21,6 +21,36 @@ FREE_SELECTION = "Special · Free selection"
 ENERGY_FOCUS_RULE_ID = "band--battle-monks-special-skills-energy-focus"
 
 
+
+# Optional facts describe an already qualified individual, never a provider or cast.
+_SUPPLIED_CHOICES = {
+    "fauna_animal_kind": ("Animal qualification for Tranquil Fauna", {"ordinary": "Ordinary animal", "handled": "Animal Handler controlled", "large-predator": "Large predatory beast"}),
+    "animal_handler_leadership": ("Qualified Animal Handler Leadership", {value: str(value) for value in range(11)}),
+    "house_guard_house": ("House Guard house", {"fierezza": "Fierezza", "halcon": "Halcon", "baluardo": "Baluardo"}),
+    "vampire_bloodline": ("Vampire bloodline", {"strigoi": "Strigoi", "blood-dragon": "Blood Dragon", "necrarch": "Necrarch", "lahmian": "Lahmian", "von-carstein": "Von Carstein"}),
+    "fighter_kind": ("Fighter role", {"hero": "Hero", "henchman": "Henchman", "animal": "Animal", "summoned": "Summoned"}),
+    "snorri_drunk_result": ("Snorri: pre-battle drinking result (2-6; 1 = absent)", {
+        2: "2: WS and S -1", 3: "3: No effect", 4: "4: All combatants -1 to hit",
+        5: "5: Strength +1", 6: "6: Frenzy"}),
+    "mercenary_origin": ("Mercenary origin", {"reikland": "Reikland", "marienburg": "Marienburg", "middenheim": "Middenheim", "other": "Other mercenary origin"}),
+    "creature_kind": ("Creature nature", {"living": "Living", "undead": "Undead", "daemon": "Daemon", "possessed": "Possessed"}),
+    "species": ("Species", {value: value.title() for value in ("human", "dwarf", "skaven", "orc", "goblin", "halfling", "ogre", "beastman")}),
+    "active_command": ("Active Command", {"follow-me-mine-pugnacious-ones": "Follow Me", "art-thou-ready-to-die-fighting": "Ready to Die"}),
+    "wheelo_fitting": ("Legal Wheelo fitting", {"axe": "Axe", "club": "Club", "spear": "Spear", "morning-star": "Morning Star"}),
+    # Cold-Blooded is printed differently for Lizardmen (Psychology) and Fimir
+    # (Leadership); the caller declares which printed version the warrior has.
+    "cold_blooded_origin": ("Cold-Blooded origin", {"lizardmen": "Lizardmen (Psychology)", "fimir": "Fimir (Leadership)"}),
+}
+_SUPPLIED_FLAGS = {
+    "lit_item": "Carrying an open flame", "normal_animal": "Ordinary animal",
+    "chaos_follower": "Follower of Chaos", "onogal_follower": "Follower of Onogal",
+    "ulric_rival": "Named rival of Ulric (Witch Hunter or listed Sigmarite)",
+    "aquatic": "Aquatic model", "flesh_peddler_mark": "Opponent is the nominated Flesh-Peddler mark",
+    "guiding_dream_target": "Opponent is the nominated Guiding Dream Hero",
+    "lizardman": "Lizardman", "vampire": "Vampire",
+    "righteous_charge_active": "Righteous Charge already qualified",
+}
+
 class FighterEditor(ttk.Frame):
     """Legacy workbook layout; produces current typed ``FighterBuild`` values."""
     def __init__(self, parent, title: str, catalogue: CombatCatalogue, on_change=None):
@@ -37,6 +67,30 @@ class FighterEditor(ttk.Frame):
         self.main_poison = ChoiceVar(None, master=self)
         self.off_poison = ChoiceVar(None, master=self)
         self.energy_focus_attacks = tk.IntVar(value=0)
+        self.eagle_friends = tk.StringVar(value="")
+        self.elf_kind = ChoiceVar(None, master=self)
+        self.elf_kind.set_options({None: "Use profile identity", "high": "High Elf", "dark": "Dark Elf", "other": "Neither High nor Dark Elf"})
+        self.sex = ChoiceVar(None, master=self)
+        self.sex.set_options({None: "Use profile identity", "male": "Male", "female": "Female"})
+        self.causes_fear = tk.BooleanVar(value=False)
+        self.stupidity = tk.BooleanVar(value=False)
+        self.stupidity_exempt = tk.BooleanVar(value=False)
+        self.stupidity_initial_failed = tk.BooleanVar(value=False)
+        self.stupidity_leadership = tk.StringVar(value="")
+        self.stupidity_leadership_bonus = tk.StringVar(value="")
+        self.leadership = tk.StringVar(value="")
+        self.supplied_choices = {}
+        for key, (_label, options) in _SUPPLIED_CHOICES.items():
+            variable = ChoiceVar(None, master=self)
+            variable.set_options({None: "Use profile identity", **options})
+            self.supplied_choices[key] = variable
+        self.supplied_flags = {key: tk.BooleanVar(value=False) for key in _SUPPLIED_FLAGS}
+        self.condition_labels = {choice.id: choice.name for choice in catalogue.conditions()}
+        self.condition_vars = {condition_id: tk.BooleanVar(value=False) for condition_id in self.condition_labels}
+        self.mounted = tk.BooleanVar(value=False)
+        self._supplied_traits = {}
+        self._owned_item_ids = None
+        self._owned_for_choice = None
         self.equipment_summary = tk.StringVar(value="None")
         self.manual_characteristics = {key: tk.IntVar(value=value) for key, value in (("WS",3),("S",3),("T",3),("W",1),("I",3),("A",1))}
         self._stat_limits = {key: 20 for key in self.manual_characteristics}
@@ -63,6 +117,54 @@ class FighterEditor(ttk.Frame):
         ttk.Label(lower,text=tr("Armour")).grid(row=0,column=0,sticky="w",padx=(0,7)); self.armour_combo=ChoiceBox(lower,self.armour,self._notify_change); self.armour_combo.grid(row=0,column=1,sticky="ew",padx=(0,18))
         ttk.Label(lower,text=tr("Equipment")).grid(row=0,column=2,sticky="w",padx=(0,7)); self.equipment_button=ttk.Menubutton(lower,textvariable=self.equipment_summary); self.equipment_button.grid(row=0,column=3,sticky="ew")
         ttk.Label(self,text=tr("SKILLS"),style="Section.TLabel").pack(anchor="w",pady=(14,4)); self.skill_checklist=SkillChecklist(self,self._skills_changed); self.skill_checklist.configure_inline_counter(ENERGY_FOCUS_RULE_ID, value=0, command=self._energy_focus_changed); self.skill_checklist.pack(fill="x")
+        facts = ttk.Frame(self, padding=(0, 8, 0, 0)); facts.pack(fill="x")
+        ttk.Checkbutton(facts, text=tr("Causes Fear (already active)"), variable=self.causes_fear,
+                        command=self._notify_change).pack(side="left")
+        ttk.Label(facts, text=tr("Leadership (blank = unknown)")).pack(side="left", padx=(12, 4))
+        ttk.Entry(facts, textvariable=self.leadership, width=4).pack(side="left")
+        identity = ttk.Frame(self); identity.pack(fill="x", pady=(4, 0))
+        ttk.Label(identity, text=tr("Elf identity")).pack(side="left", padx=(0, 4))
+        ChoiceBox(identity, self.elf_kind, self._notify_change, width=28).pack(side="left")
+        ttk.Label(identity, text=tr("Sex (for source conditions)")).pack(side="left", padx=(12, 4))
+        ChoiceBox(identity, self.sex, self._notify_change, width=22).pack(side="left")
+        supplied = ttk.LabelFrame(self, text=tr("Supplied individual facts"), padding=(8, 5))
+        supplied.pack(fill="x", pady=(6, 0))
+        for row, (key, (label, _options)) in enumerate(_SUPPLIED_CHOICES.items()):
+            ttk.Label(supplied, text=tr(label)).grid(row=row, column=0, sticky="w", padx=(0, 8))
+            ChoiceBox(supplied, self.supplied_choices[key], self._notify_change, width=24).grid(row=row, column=1, sticky="ew")
+        for row, (key, label) in enumerate(_SUPPLIED_FLAGS.items()):
+            ttk.Checkbutton(supplied, text=tr(label), variable=self.supplied_flags[key],
+                            command=self._notify_change).grid(row=row, column=2, sticky="w", padx=(12, 0))
+        ttk.Label(supplied, text=tr("Eagle companions (blank = one with Eagle Friend)")).grid(
+            row=len(_SUPPLIED_CHOICES), column=0, sticky="w")
+        ttk.Entry(supplied, textvariable=self.eagle_friends, width=6).grid(
+            row=len(_SUPPLIED_CHOICES), column=1, sticky="w")
+        self.eagle_friends.trace_add("write", lambda *_: self._notify_change())
+        ttk.Checkbutton(supplied, text=tr("Mounted"), variable=self.mounted,
+                        command=self._notify_change).grid(row=len(_SUPPLIED_CHOICES) + 1, column=0, columnspan=2, sticky="w")
+        self.leadership.trace_add("write", lambda *_: self._notify_change())
+        psychology = ttk.LabelFrame(self, text=tr("Stupidity — supplied individual conditions"), padding=(8, 5))
+        psychology.pack(fill="x", pady=(6, 0))
+        for row, (label, variable) in enumerate((
+            ("Acquired Stupidity", self.stupidity),
+            ("Stupidity exemption already active", self.stupidity_exempt),
+            ("Previous Stupidity test failed", self.stupidity_initial_failed),
+        )):
+            ttk.Checkbutton(psychology, text=tr(label), variable=variable,
+                            command=self._notify_change).grid(row=row, column=0, sticky="w")
+        for row, (label, variable) in enumerate((
+            ("Eligible handler's own Leadership within 6\"", self.stupidity_leadership),
+            ("Brood Mentality bonus already active", self.stupidity_leadership_bonus),
+        )):
+            ttk.Label(psychology, text=tr(label)).grid(row=row, column=1, sticky="w", padx=(10, 4))
+            ttk.Entry(psychology, textvariable=variable, width=4).grid(row=row, column=2)
+            variable.trace_add("write", lambda *_: self._notify_change())
+        conditions = ttk.LabelFrame(self, text=tr("Supplied conditions (already acquired)"), padding=(8, 5))
+        conditions.pack(fill="x", pady=(6, 0))
+        for row, (condition_id, variable) in enumerate(self.condition_vars.items()):
+            ttk.Checkbutton(conditions, text=self.condition_labels[condition_id],
+                            variable=variable, command=self._notify_change).grid(
+                row=row // 2, column=row % 2, sticky="w", padx=(0, 12))
 
     def _hand(self,parent,title,column,main):
         panel=ttk.LabelFrame(parent,text=title,padding=(9,7)); panel.grid(row=0,column=column,sticky="ew",padx=(0,5) if column==0 else (5,0)); panel.columnconfigure(1,weight=1); panel.columnconfigure(3,weight=1)
@@ -117,6 +219,8 @@ class FighterEditor(ttk.Frame):
             if self.is_free_selection:
                 return
             profile=self.catalogue.profile(self.choice)
+            self.leadership.set(str(profile["characteristics"].get("Ld"))
+                                if isinstance(profile["characteristics"].get("Ld"), int) else "")
             for key in self.manual_characteristics:
                 self.manual_characteristics[key].set(self._initial_stat(profile["characteristics"][key]))
             self._stat_limits = self._profile_stat_limits(profile)
@@ -320,11 +424,64 @@ class FighterEditor(ttk.Frame):
         main_weapon_id = "weapon.fist" if self.weapon.get() in (None, "weapon.fist") else self.weapon.get()
         values=dict(main_weapon_id=main_weapon_id,off_hand_id=self.off_hand.get(),armour_id=self.armour.get() or "armour.no-armour",defence_ids=self._selected("helmet"),main_material_id=self.main_material.get() or "material.normal",off_material_id=self.off_material.get() or "material.normal",preparation_ids=self._selected("preparation"),main_poison_id=self.main_poison.get(),off_poison_id=self.off_poison.get(),skill_ids=skill_ids,special_rule_ids=special_rule_ids,energy_focus_attacks=self.energy_focus_attacks.get())
         for key in self.manual_characteristics:self._normalise_stat(key)
-        characteristics=Characteristics(*(self.manual_characteristics[key].get() for key in ("WS","S","T","W","I","A")))
+        traits = dict(self._supplied_traits)
+        if self.elf_kind.get() is not None: traits["elf_kind"] = self.elf_kind.get()
+        else: traits.pop("elf_kind", None)
+        if self.sex.get() is not None: traits["sex"] = self.sex.get()
+        else: traits.pop("sex", None)
+        if self.causes_fear.get(): traits["causes_fear"] = True
+        else: traits.pop("causes_fear", None)
+        for key in ("stupidity", "stupidity_exempt", "stupidity_initial_failed"):
+            if getattr(self, key).get(): traits[key] = True
+            else: traits.pop(key, None)
+        for key in ("stupidity_leadership", "stupidity_leadership_bonus"):
+            value = getattr(self, key).get().strip()
+            if value: traits[key] = int(value)
+            else: traits.pop(key, None)
+        count = self.eagle_friends.get().strip()
+        if count: traits['eagle_friends'] = int(count)
+        else: traits.pop('eagle_friends', None)
+        for key, variable in self.supplied_choices.items():
+            if variable.get() is None: traits.pop(key, None)
+            else: traits[key] = variable.get()
+        for key, variable in self.supplied_flags.items():
+            if variable.get(): traits[key] = True
+            else: traits.pop(key, None)
+        values["condition_ids"] = tuple(
+            condition_id for condition_id, variable in self.condition_vars.items() if variable.get())
+        values["mounted"] = self.mounted.get()
+        values["owned_item_ids"] = self._owned_item_ids if self.choice == self._owned_for_choice else None
+        values["trait_overrides"] = traits
+        leadership = self.leadership.get().strip()
+        characteristics=Characteristics(*(self.manual_characteristics[key].get() for key in ("WS","S","T","W","I","A")),
+                                        leadership=int(leadership) if leadership else None)
         if self.choice is None:return FighterBuild(self.catalogue.ruleset,characteristics,**values)
         choice=self.choice; return FighterBuild(self.catalogue.ruleset,characteristics,collection=choice.collection,band_id=choice.band_id,profile_id=choice.profile_id,**values)
     def main_weapon_options(self): return tuple((item_id,name) for item_id,name in self._weapon_options.items())
     def load_build(self,build):
+        if "sex" in build.trait_overrides and build.trait_overrides["sex"] not in ("male", "female"):
+            raise ValueError("sex must be male or female")
+        if "elf_kind" in build.trait_overrides and build.trait_overrides["elf_kind"] not in ("high", "dark", "other"):
+            raise ValueError("elf_kind must be high, dark or other")
+        for key, (_label, options) in _SUPPLIED_CHOICES.items():
+            if key in build.trait_overrides and build.trait_overrides[key] not in options:
+                raise ValueError(f"invalid supplied {key}")
+        for key in _SUPPLIED_FLAGS:
+            if not isinstance(build.trait_overrides.get(key, False), bool):
+                raise ValueError(f"{key} must be a boolean")
+        count = build.trait_overrides.get("eagle_friends")
+        if count is not None and (type(count) is not int or count < 1):
+            raise ValueError("eagle_friends must be a positive integer")
+        fear = build.trait_overrides.get("causes_fear", False)
+        if not isinstance(fear, bool):
+            raise ValueError("causes_fear must be a boolean")
+        for key in ("stupidity", "stupidity_exempt", "stupidity_initial_failed"):
+            if not isinstance(build.trait_overrides.get(key, False), bool):
+                raise ValueError(f"{key} must be a boolean")
+        for key in ("stupidity_leadership", "stupidity_leadership_bonus"):
+            value = build.trait_overrides.get(key)
+            if value is not None and (type(value) is not int or value < 0):
+                raise ValueError(f"{key} must be a non-negative integer")
         was_updating = self._begin_update()
         try:
             if build.characteristics and not build.band_id:
@@ -345,6 +502,28 @@ class FighterEditor(ttk.Frame):
                 var.set(item_id in selected)
             self._equipment_changed()
             ui_skill_ids = self.catalogue.skill_ui_ids(self.choice, build.skill_ids, build.special_rule_ids)
+            self._supplied_traits = dict(build.trait_overrides)
+            self._owned_item_ids = build.owned_item_ids
+            self._owned_for_choice = self.choice
+            self.eagle_friends.set(str(build.trait_overrides.get("eagle_friends", "")))
+            self.elf_kind.set(build.trait_overrides.get("elf_kind"))
+            self.sex.set(build.trait_overrides.get("sex"))
+            for key, variable in self.supplied_choices.items():
+                variable.set(build.trait_overrides.get(key))
+            for key, variable in self.supplied_flags.items():
+                variable.set(build.trait_overrides.get(key, False))
+            for condition_id, variable in self.condition_vars.items():
+                variable.set(condition_id in build.condition_ids)
+            self.mounted.set(build.mounted)
+            self.causes_fear.set(fear)
+            for key in ("stupidity", "stupidity_exempt", "stupidity_initial_failed"):
+                getattr(self, key).set(build.trait_overrides.get(key, False))
+            for key in ("stupidity_leadership", "stupidity_leadership_bonus"):
+                value = build.trait_overrides.get(key)
+                getattr(self, key).set("" if value is None else str(value))
+            if build.characteristics is not None:
+                self.leadership.set(str(build.characteristics.leadership)
+                                    if build.characteristics.leadership is not None else "")
             self.skill_checklist.set_selected_ids((*ui_skill_ids, *(rule_id for rule_id in build.special_rule_ids if rule_id in self._other_rule_ids)))
             self.energy_focus_attacks.set(build.energy_focus_attacks); self._skills_changed()
         finally:

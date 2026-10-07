@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/catalog-rules-conditions.yaml.schema.json",
   "title": "Mordheim KB catalogue — catalog/rules/conditions.yaml",
-  "description": "Conditions shared by rules (fear, frenzy, stupidity …). A condition is editorial text with a stable id that rules reference instead of restating the effect.",
+  "description": "Conditions shared by rules (fear, frenzy, stupidity …). A condition is editorial text with a stable id that rules reference instead of restating the effect. A condition that the current duel runtime can supply declares a `runtime` block with the same shape as a rule's, so one canonical id resolves to the operator the engine already consumes. `condition.fear` is the printed general Fear rule, not a per-warrior condition, and records that disposition with an unbound NO effect.",
   "type": "object",
   "required": ["schema_version", "ruleset", "conditions"],
   "additionalProperties": false,
@@ -31,8 +31,76 @@
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
         "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
-        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" },
+        "runtime": { "$ref": "#/$defs/condition_runtime" }
       }
+    },
+    "condition_runtime": {
+      "description": "Executable link of a condition. A condition without this block is unclassified, not implemented; a condition that the caller may supply as a current warrior fact declares its operator here so no adapter needs a second interpretation table.",
+      "type": "object",
+      "required": ["scope", "implemented", "grant", "effects"],
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "description": "Widest scope over the condition's effects.",
+          "enum": ["YES", "NO"]
+        },
+        "implemented": {
+          "description": "`YES` only when every `YES` effect has an executable binding.",
+          "enum": ["YES", "NO"]
+        },
+        "grant": {
+          "description": "A supplied condition grants nothing by itself, so only `none` applies.",
+          "enum": ["none"]
+        },
+        "variant_fact": {
+          "description": "Supplied warrior fact that selects between the printed variants of a condition whose source prints more than one version; the caller must provide it and the compiler refuses an unknown or missing value.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "effects": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/condition_runtime_effect" }
+        }
+      }
+    },
+    "condition_runtime_effect": {
+      "description": "One classified effect of a condition. It declares its scope and either an executable binding or the reason it has none.",
+      "type": "object",
+      "required": ["id", "scope", "binding"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "defs.schema.json#/$defs/id" },
+        "scope": {
+          "description": "`YES` belongs to the current duel runtime; `NO` is out of scope.",
+          "enum": ["YES", "NO"]
+        },
+        "variant": {
+          "description": "Printed variant of `variant_fact` this effect belongs to; a variant-less effect applies to every supplied value.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
+        "binding": {
+          "description": "The executable link, or null when the effect has none.",
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "defs.schema.json#/$defs/runtime_binding" }
+          ]
+        },
+        "reason": {
+          "description": "Required whenever there is no binding.",
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "binding": { "type": "null" } },
+            "required": ["binding"]
+          },
+          "then": { "required": ["reason"] }
+        }
+      ]
     }
   }
 }

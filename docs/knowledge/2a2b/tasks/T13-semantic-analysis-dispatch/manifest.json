@@ -1,0 +1,248 @@
+{
+  "schema": "t13-semantic-analysis-dispatch/v1",
+  "created": "2026-10-07",
+  "input_revision": {
+    "branch": "2A2B",
+    "head": "820d1499a0c9ff04fd42975d3de9d97bd62d585d",
+    "local_changes_base": "uncommitted working tree preserved; no file outside the dispatch preparation was modified",
+    "extraction_command": "python tools/mordheim-utils.py report rules --inventory-only --output docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/inventory",
+    "inventory_only": true,
+    "filters": {
+      "t13": false,
+      "family": null,
+      "work_status": null,
+      "scope": null,
+      "status": null,
+      "review_status": null
+    }
+  },
+  "extraction_inputs": {
+    "knowledge_base_root": "sources/knowledge",
+    "knowledge_base_yaml_files": 701,
+    "knowledge_base_tree_sha256": "aa101fa5ce0d4ed477d9d9da6b25f49bfeead968362e206fe6441d89e2b9070d",
+    "consumed_shared_registers": {
+      "docs/knowledge/2a2b/tasks/T13-obligations.csv": "2a3b962e59bf65eba61191dffbf20f3fcdb44a68c7bc56863594913b20d9a6d6",
+      "docs/knowledge/2a2b/tasks/T13-audit-scope-review.csv": "90e353c3901f10a7b818633762140543c171994c85bea4e4b4b5d22d8753192c",
+      "docs/decisions/design-rulings.md": "0bb70ec2e3b5a5b38be128c495fc7eadb002826cd7a047f93254ebf78114153d"
+    }
+  },
+  "inventory": {
+    "combat_audit": {
+      "path": "docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/inventory/combat-audit.csv",
+      "sha256": "e4be9b3bcd01ccb61b18a79896e9dd058c43bc06847f69f45c1e3d404a54fb00",
+      "rows": 7454
+    },
+    "rules_audit": {
+      "path": "docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/inventory/rules-audit.csv",
+      "sha256": "33b837cba11793d41a8517bddc55a4c60a3e30e68e24695c48374de448531c56",
+      "rows": 7139
+    },
+    "working_set": "union of both files by id",
+    "working_set_rows": 7454,
+    "repeated_rows_compatible": true,
+    "scheme": "tool-generated UTF-8 with BOM and CRLF line endings; kept exactly as the exporter wrote it"
+  },
+  "assignments": {
+    "A": {
+      "path": "docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/A-input.csv",
+      "sha256": "16688873770c358645d2489fa173e36b18a749398040159c78b2b61b938d5317",
+      "rows": 558
+    },
+    "B": {
+      "path": "docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/B-input.csv",
+      "sha256": "d4b8aa4190dcdcc8d775076c7a369a8940162070600c2739b74c4d4a4b3c5af8",
+      "rows": 565
+    },
+    "C": {
+      "path": "docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/C-input.csv",
+      "sha256": "45400cb941457da34e6725c88787a02a54efad716e0d9c99972ea0ad680f5686",
+      "rows": 881
+    },
+    "D": {
+      "path": "docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/D-input.csv",
+      "sha256": "1125997867162d0f3141c1bffbcc55aa74e04100ebaf92da3bc60fccc3d395d8",
+      "rows": 1587
+    }
+  },
+  "not_assigned": {
+    "path": "docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/not-assigned.csv",
+    "sha256": "93f430fd0123d9dffceec5d76b2562eb2dbe4866d3fcf07ffd5c1a6a24710f27",
+    "rows": 3863
+  },
+  "owners": {
+    "A": "Attacks, weapons, hit/wound resolution and offensive effects",
+    "B": "Armour, saves, damage resistance, injury consequences and recovery",
+    "C": "Psychology, Leadership and temporary states, including Fear, Hatred, Frenzy, Stupidity and immunities",
+    "D": "Construction, restrictions, recipients, characteristics, grants and mixed clauses without a clear primary family"
+  },
+  "input_schema": {
+    "original_fields": [
+      "id",
+      "kind",
+      "name",
+      "source_file",
+      "section",
+      "source_url",
+      "scope",
+      "scope_reason",
+      "implemented",
+      "binding",
+      "structural_status",
+      "semantic_status",
+      "semantic_reason",
+      "scenarios",
+      "interactions",
+      "ruling",
+      "review_status",
+      "question",
+      "interpretation",
+      "risk_level",
+      "verification_requirement",
+      "interaction_status",
+      "risk_reasons",
+      "coverage_evidence",
+      "combat_work_status",
+      "t13_origin",
+      "t13_disposition",
+      "t13_lots",
+      "t13_question_id",
+      "effect_text",
+      "canonical_id",
+      "development_family",
+      "semantic_dependencies",
+      "question_status",
+      "decision_reference",
+      "next_action",
+      "audit_mode",
+      "scope_basis",
+      "scope_category"
+    ],
+    "added_fields": [
+      "origin_id",
+      "owner",
+      "candidate_effect",
+      "assignment_reason",
+      "effect_sha256",
+      "source_fingerprint",
+      "source_files"
+    ],
+    "added_field_meaning": {
+      "origin_id": "known historical retained identity; equals the current id when no succession is declared",
+      "owner": "A, B, C or D for every assigned row (exactly one owner per assigned id); all YES including reference-only rows, LATER and UNCLASSIFIED rows are assigned for individual clause review; unresolved scope is preserved, not automatically admitted; empty only for explicit NO exclusions in not-assigned.csv",
+      "candidate_effect": "candidate operator id or empty when none is identified",
+      "assignment_reason": "short reason for the split, including preserved classification and clarification matches",
+      "effect_sha256": "sha256 of the exported raw effect_text (UTF-8)",
+      "source_fingerprint": "reproducible fingerprint of the row and its context",
+      "source_files": "JSON list of the repo-relative source/context files hashed into source_fingerprint"
+    }
+  },
+  "source_fingerprint": {
+    "formula": "sha256(json.dumps({id, canonical_id, source_file, effect_text, binding, scope, scope_reason, files}, sort_keys=True, ensure_ascii=False, separators=(',', ':')).encode('utf-8')).hexdigest(), where files is the object mapping every declared source/context file path (repo-relative, as listed in source_files) to the sha256 hex digest of that file's bytes. The field values are the exported CSV cell strings verbatim (binding is the serialized binding cell, e.g. {\"kind\": ..., \"id\": ..., \"parameters\": {...}}); files is the object whose keys are exactly the source_files list.",
+    "serialization": "sorted keys, UTF-8, compact separators (',', ':'), no BOM",
+    "fields_hashed": [
+      "id",
+      "canonical_id",
+      "source_file",
+      "effect_text",
+      "binding",
+      "scope",
+      "scope_reason"
+    ],
+    "files_hashed": "the row's source_file plus the band context documents (band.yaml, profiles.yaml, equipment-access.yaml) when present plus catalog/rules/special-rules.yaml for band and catalog/skills special-rule sources that resolve shared rule_ref text",
+    "path_basis": "repo-relative paths, i.e. sources/knowledge/<source_file>",
+    "distinct_files_hashed": 691
+  },
+  "results_contract": {
+    "guide": "docs/knowledge/2a2b/tasks/T13-semantic-analysis-guide.md",
+    "exact_header": "origin_id,current_id,clause_id,source_file,source_fingerprint,clause_text,clause_scope,semantic_contract,effect_id,relation,parameters,conditions,consumer,implementation_work,dependencies,implementation_batch,analysis_status,evidence,evidence_refs,notes",
+    "encoding": "UTF-8 without BOM, LF, one physical line per record, standard CSV quoting, final newline",
+    "authorized_outputs": {
+      "A": "docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/A-results.csv",
+      "B": "docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/B-results.csv",
+      "C": "docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/C-results.csv",
+      "D": "docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/D-results.csv"
+    },
+    "read_only_for_agents": [
+      "docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/manifest.json",
+      "docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/inventory/**",
+      "docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/*-input.csv",
+      "docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/not-assigned.csv",
+      "the definitive T13-semantic-analysis.csv",
+      "docs/knowledge/2a2b/tasks/T13-semantic-analysis-guide.md",
+      "shared registers (routing, clarifications, obligations, scope review, design rulings) and all KB/engine/contract files"
+    ]
+  },
+  "counts": {
+    "inventory_rows": 7454,
+    "assigned_rows": 3591,
+    "not_assigned_rows": 3863,
+    "by_owner": {
+      "A": 558,
+      "B": 565,
+      "C": 881,
+      "D": 1587
+    },
+    "by_scope": {
+      "YES_assigned": 3047,
+      "LATER_assigned_for_review": 481,
+      "UNCLASSIFIED_assigned_for_review": 63,
+      "NO_not_assigned": 3863,
+      "LATER_not_assigned": 0
+    },
+    "clarifications_applied": 35,
+    "clarifications_reconciliation_required": 0,
+    "historical_successions_detected": 60
+  },
+  "structural_checks": {
+    "owner_sets_disjoint": true,
+    "union_plus_not_assigned_equals_inventory": true,
+    "no_duplicate_ids_across_lists": true,
+    "every_yes_assigned_including_references": true,
+    "uncertain_assigned_for_individual_review": true,
+    "no_row_dropped_without_t13_origin": true,
+    "json_cells_valid": true,
+    "source_and_context_files_exist": true,
+    "origin_ids_not_confused": true,
+    "historical_successors_distinct": true
+  },
+  "extraction_tool_sha256": {
+    "tools/mordheim-utils.py": "2ed7f4c5692bcdc99a90eda3d4c7dc6e7fb1cf67ef649a94f532b3fa2e11ac41",
+    "apps/combat-lab/mordheim_combat_lab/cli/commands.py": "7e22e3e7507ab60802fa33969ef7451628318a3904127dd899661bec231a9bb6",
+    "apps/combat-lab/mordheim_combat_lab/verification/audit_export.py": "a7a58dd9ad2f21e1f53d1c713b6abe21112adc8ea8677a88db166f1429b0a367",
+    "apps/combat-lab/mordheim_combat_lab/verification/inventory.py": "e2460dc45da41d2dc05ec48bbac43538021d9b9c6d1d1bd2714fa9b862b563e7"
+  },
+  "drift_check": {
+    "method": "re-run the frozen extraction into a temporary directory and compare both CSVs byte-for-byte with the frozen inventory; re-hash every declared source/context file and every produced artifact against the recorded digests",
+    "command": "python tools/mordheim-utils.py report rules --inventory-only --output docs/knowledge/2a2b/tasks/T13-semantic-analysis-dispatch/inventory (rerun with a temporary --output)",
+    "frozen_sha256": {
+      "combat-audit": "e4be9b3bcd01ccb61b18a79896e9dd058c43bc06847f69f45c1e3d404a54fb00",
+      "rules-audit": "33b837cba11793d41a8517bddc55a4c60a3e30e68e24695c48374de448531c56"
+    },
+    "recheck_sha256": {
+      "combat-audit": "e4be9b3bcd01ccb61b18a79896e9dd058c43bc06847f69f45c1e3d404a54fb00",
+      "rules-audit": "33b837cba11793d41a8517bddc55a4c60a3e30e68e24695c48374de448531c56"
+    },
+    "result": "no_drift",
+    "cause": "re-extraction reproduces both frozen CSVs byte-for-byte"
+  },
+  "dispatch_status": "ready",
+  "dispatch_status_reason": "all structural checks pass; unions are exact, ownership is unique and fingerprints reproduce",
+  "coordinator_actions_pending": [
+    "the human user launches the external agents using this corrected manifest; no agent was launched"
+  ],
+  "coordinator_review": {
+    "date": "2026-10-07",
+    "result": "ready for user launch; analysis not performed",
+    "coverage_correction": "Removed keyword-based LATER deferrals: all 481 LATER and 63 UNCLASSIFIED rows now have an owner for individual clause review. Also assigned all 8 YES reference-only origins to review their connection and recipients. No canonical scope was changed.",
+    "sample_findings": [
+      "River Strigany special skills mix excluded acquisition/deployment with Bull Rush and Prize-fighter.",
+      "Clockwork Constructs mix excluded advancement/movement with psychology/poison immunity and No Pain.",
+      "Lustria Cold-Blooded mixes excluded Rout with individual Psychology tests.",
+      "Ranald marks mix a companion with individual luck and hit avoidance."
+    ],
+    "family_assignment_basis": "Operator/prose family suggestions are advisory; the closed manifest fixes ownership, not equivalence or scope admission.",
+    "reservations": "Four result-only reservations registered in docs/knowledge/2a2b/README.md; no agents launched.",
+    "checks": "Independent dispatch checker, refreshed inventory-only extraction with byte-identical inventory, full uncertain-row assignment, referenced-origin inclusion, and focused documentation links."
+  },
+  "agents_launched": false
+}

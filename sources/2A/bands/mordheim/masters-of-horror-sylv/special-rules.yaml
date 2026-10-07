@@ -83,16 +83,15 @@ rules:
     band: true
 - id: mad-scientist--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.masters-of-horror-sylv.mad-scientist.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
-        psychology/rout mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: sylvania-supplement
@@ -107,15 +106,15 @@ rules:
   rule_ref: shared-rule.leader
 - id: mad-scientist--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.masters-of-horror-sylv.mad-scientist.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (Fear, etc.) is not covered by the current engine scope.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: >-
     Mad Scientists are not affected by psychology (such as fear) due to the shattered state of their
@@ -136,16 +135,15 @@ rules:
     - mad-scientist
 - id: thrall--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.masters-of-horror-sylv.thrall.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   effect: Vampires are terrifying Undead creatures and therefore cause Fear.
   source:
@@ -162,16 +160,15 @@ rules:
     - thrall
 - id: thrall--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.masters-of-horror-sylv.thrall.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (Fear, never leaving combat) is not covered by the current
-        engine scope.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: Vampires are not affected by psychology (such as fear) and never leave combat.
   source:
@@ -217,16 +214,15 @@ rules:
     - thrall
 - id: thrall--no-pain
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.masters-of-horror-sylv.thrall.no-pain
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: injury-table result conversion is a post-duel/campaign resolution
-        mechanic.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain
   effect: Vampires treat a Stunned result on the Injury chart as Knocked Down.
   source:
@@ -243,16 +239,15 @@ rules:
     - thrall
 - id: zombies--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.masters-of-horror-sylv.zombies.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   effect: Zombies are terrifying Undead creatures and therefore cause Fear.
   source:
@@ -296,15 +291,15 @@ rules:
     - zombies
 - id: zombies--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.masters-of-horror-sylv.zombies.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology is not covered by the current engine scope.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: Zombies are not affected by psychology.
   source:
@@ -348,16 +343,15 @@ rules:
     - zombies
 - id: zombies--no-pain
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.masters-of-horror-sylv.zombies.no-pain
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: injury-table result conversion is a post-duel/campaign resolution
-        mechanic.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain
   effect: Zombies treat Stunned results on the Injury table as Knocked Down.
   source:
@@ -399,16 +393,15 @@ rules:
     - zombies
 - id: flesh-construct--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.masters-of-horror-sylv.flesh-construct.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   effect: Flesh Constructs are terrifying Undead creatures and therefore cause Fear.
   source:
@@ -425,15 +418,15 @@ rules:
     - flesh-construct
 - id: flesh-construct--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.masters-of-horror-sylv.flesh-construct.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology is not covered by the current engine scope.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: Flesh Constructs are not affected by psychology.
   source:
@@ -477,16 +470,15 @@ rules:
     - flesh-construct
 - id: flesh-construct--no-pain
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.masters-of-horror-sylv.flesh-construct.no-pain
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: injury-table result conversion is a post-duel/campaign resolution
-        mechanic.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain
   effect: Flesh Constructs treat Stunned results as Knocked Down.
   source:
@@ -743,16 +735,20 @@ rules:
     - mad-scientist
 - id: mad-scientist--lunatic
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.masters-of-horror-sylv.special.lunatic
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (Fear) and Leadership-test rerolls are not covered by the
-        current engine scope.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
+    - id: mechanic.leadership-reroll
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leadership-reroll
   name: Lunatic
   effect: >-
     Giving in to ones insanity is quite rewarding. The model causes Fear and may reroll any

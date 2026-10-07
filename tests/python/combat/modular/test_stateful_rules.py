@@ -53,7 +53,7 @@ class RecordingTurnDice:
 
 def fighter(*, ws=3, strength=3, toughness=3, wounds=1, initiative=3, attacks=1, **options):
     return compile_fighter(FighterBuild(
-        "mordheim", Characteristics(ws, strength, toughness, wounds, initiative, attacks),
+        "mordheim", Characteristics(ws, strength, toughness, wounds, initiative, attacks, leadership=7),
         **options,
     ))
 

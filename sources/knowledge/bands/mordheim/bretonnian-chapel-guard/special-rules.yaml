@@ -3,15 +3,15 @@ band_id: bretonnian-chapel-guard
 rules:
 - id: questing-knight--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.bretonnian-chapel-guard.questing-knight.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -314,12 +314,12 @@ rules:
     - battle-pilgrims
 - id: battle-pilgrims--hatred
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'YES'
     grant: profile
     effects:
     - id: skill.hatred
-      scope: LATER
+      scope: 'YES'
       binding:
         kind: mechanic
         id: skill.hatred
@@ -343,15 +343,15 @@ rules:
     - battle-pilgrims
 - id: battle-pilgrims--stubborn
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.bretonnian-chapel-guard.battle-pilgrims.stubborn
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.mandatory-leadership-reroll
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.mandatory-leadership-reroll
   name: Stubborn
   effect: Battle Pilgrims reroll all failed Leadership rolls once, accepting the second result.
   source:
@@ -557,16 +557,17 @@ rules:
   applies_to:
     band: true
 - id: band--questing-vow
+  kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.bretonnian-chapel-guard.band.questing-vow
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.questing-vow
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.questing-vow
   name: Questing Vow
   effect: >-
     Questing Knight only. If charging, charged by, or in combat with a fear-causing enemy, the
@@ -584,7 +585,9 @@ rules:
       Solo Caballero Andante. Si carga, es cargado o está en combate con un enemigo que cause miedo,
       el Caballero puede repetir una vez cualquier chequeo de Liderazgo, aceptando el segundo
       resultado. Esto incluye los chequeos de huida.
+  eligibility: [questing-knight]
   applies_to:
+    profile_ids: [questing-knight]
     band: true
 - id: band--shield-bash
   kind: warband_skill
@@ -680,3 +683,32 @@ rules:
   - knights-errant
   applies_to:
     band: true
+
+- id: squires--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - defence.holy-relic
+  name: Equipment Restrictions
+  effect: "May use weapons and armour from the Pilgrims and Bowmen Equipment Lists. May not take the Holy Relic entry, which is Pilgrim only. May not ride a horse unless the Questing Knight and every Knight Errant in the warband are riding warhorses."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 5 Squires"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - squires

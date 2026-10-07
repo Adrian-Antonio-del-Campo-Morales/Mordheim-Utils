@@ -3,15 +3,15 @@ band_id: dwarf-treasure-hunters
 rules:
 - id: dwarf-noble--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.dwarf-treasure-hunters.dwarf-noble.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any models in the warband within 6" of the Dwarf Noble may use his Leadership instead of their
@@ -72,15 +72,15 @@ rules:
     - dwarf-engineer
 - id: dwarf-troll-slayers--deathwish
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.dwarf-treasure-hunters.dwarf-troll-slayers.deathwish
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Deathwish
   source:
     manual: mordheimer.net
@@ -195,15 +195,15 @@ rules:
   rule_ref: shared-rule.armour-2
 - id: band--hate-orcs-and-goblins
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.dwarf-treasure-hunters.band.hate-orcs-and-goblins
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.hatred-orcs-goblins
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-orcs-goblins
   name: Hate Orcs and Goblins
   source:
     manual: mordheimer.net

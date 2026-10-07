@@ -62,16 +62,21 @@ rules:
     band: true
 - id: band--cold-blooded
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.lizardmen-lus.band.cold-blooded
-      scope: LATER
+    - id: mechanic.cold-blooded-psychology
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.cold-blooded-psychology
+    - id: unimplemented.lizardmen-lus.band.cold-blooded.rout
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+        Outside Combat Lab's 1v1 scope: warband Rout tests and their
+        Saurus/Kroxigor Leadership-provider restriction.
   name: Cold Blooded
   effect: >-
     Lizardmen roll 3D6 and select the lowest two dice when taking a psychology or Rout test. A
@@ -121,16 +126,15 @@ rules:
     band: true
 - id: skink-priest--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lizardmen-lus.skink-priest.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     The Skink Priest is the leader of the warband; any Lizardmen within 6 inches may use his
@@ -233,16 +237,15 @@ rules:
     - kroxigor
 - id: kroxigor--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lizardmen-lus.kroxigor.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   effect: Kroxigor are large and frightening monsters and cause Fear.
   source:
@@ -598,3 +601,110 @@ rules:
   - saurus-totem-warriors
   applies_to:
     band: true
+- id: band--skink-poison-application
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          poisons:
+          - poison.black-venom
+          - poison.black-lotus
+          weapon_kinds:
+          - ranged-weapon
+  name: Skink Poison Application
+  effect: >-
+    Skink Heroes may apply Dark Venom and Black Lotus to missile weapons only; a Skink never coats
+    a close combat weapon with them. The clause qualifies the application, not the acquisition route.
+  source:
+    manual: broheim.net
+    printed_page: 2
+    section: Poisoned Weapons / Skinks
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+  name_i18n:
+    es: Aplicación de Venenos Skink
+  effect_i18n:
+    es: >-
+      Los Héroes Skink solo pueden aplicar Veneno Oscuro y Loto Negro a armas de proyectil; un
+      Skink nunca impregna un arma de cuerpo a cuerpo con ellos. La cláusula califica la
+      aplicación, no la vía de adquisición.
+  applies_to:
+    profile_ids:
+    - skink-priest
+    - skink-great-crests
+- id: band--skink-henchman-poison-application
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          poisons:
+          - poison.reptile-venom
+          weapon_kinds:
+          - ranged-weapon
+  name: Skink Henchman Poison Application
+  effect: >-
+    Skink henchmen may coat their missile weapons with Reptile Venom for one battle; it is never
+    applied to a close combat weapon.
+  source:
+    manual: broheim.net
+    printed_page: 2
+    section: Poisoned Weapons / Skinks
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+  name_i18n:
+    es: Aplicación de Veneno de los Secuaces Skink
+  effect_i18n:
+    es: >-
+      Los secuaces Skink pueden impregnar sus armas de proyectil con Veneno de Reptil durante una
+      batalla; nunca se aplica a un arma de cuerpo a cuerpo.
+  applies_to:
+    profile_ids:
+    - skink-braves
+- id: band--saurus-poison-application
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          poisons:
+          - poison.black-venom
+          - poison.black-lotus
+          weapon_kinds:
+          - close-combat-weapon
+  name: Saurus Poison Application
+  effect: >-
+    Saurus may apply Dark Venom and Black Lotus to close combat weapons; the Trading procedure
+    does not change which weapons the poison may coat.
+  source:
+    manual: broheim.net
+    printed_page: 2
+    section: Poisoned Weapons / Saurus
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+  name_i18n:
+    es: Aplicación de Venenos Saurus
+  effect_i18n:
+    es: >-
+      Los Saurus pueden aplicar Veneno Oscuro y Loto Negro a armas de cuerpo a cuerpo; el
+      procedimiento de Comercio no cambia qué armas puede impregnar el veneno.
+  applies_to:
+    profile_ids:
+    - saurus-totem-warriors
+    - saurus-braves

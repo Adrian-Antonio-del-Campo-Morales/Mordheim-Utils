@@ -3,15 +3,15 @@ band_id: beastmen-raiders
 rules:
 - id: beastmen-chieftain--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.beastmen-raiders.beastmen-chieftain.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any Warrior within 6" of the Beastman Chieftain may use his Leadership characteristic when
@@ -57,15 +57,15 @@ rules:
     - beastmen-shaman
 - id: centigors--drunken
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.beastmen-raiders.centigors.drunken
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.centigor-drunken
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.centigor-drunken
   name: Drunken
   effect: >-
     Centigor are inclined to drink vast quantities of noxious beer and looted wine and spirits
@@ -232,15 +232,15 @@ rules:
     - warhounds-of-chaos
 - id: minotaur--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.beastmen-raiders.minotaur.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Minotaurs are huge, bellowing monsters and cause fear .
   source:
@@ -257,15 +257,14 @@ rules:
     - minotaur
 - id: minotaur--bloodgreed
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.beastmen-raiders.minotaur.bloodgreed
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Outside the resolved duel: future Frenzy after every opponent is Out of Action.'
   name: Bloodgreed
   effect: >-
     If a Minotaur puts all of its enemies out of action in hand-to-hand combat, it becomes frenzied
@@ -437,15 +436,19 @@ rules:
 - id: band--beastmen-special-skills-fearless
   kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.beastmen-raiders.band.beastmen-special-skills-fearless
-      scope: LATER
+    - id: mechanic.fear-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-immunity
+    - id: excluded.beastmen-raiders.all-alone
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: All Alone tests require multiple fighters and are outside Combat Lab 1v1 duels. The printed individual Fear clause is implemented separately.
   name: Fearless
   effect: Immune to fear and All Alone tests.
   source:
@@ -519,15 +522,15 @@ rules:
 - id: band--beastmen-special-skills-manhater
   kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.beastmen-raiders.band.beastmen-special-skills-manhater
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.hatred-human-warband
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-human-warband
   name: Manhater
   effect: Will be affected by the rules of hatred when fighting any Human warbands.
   source:

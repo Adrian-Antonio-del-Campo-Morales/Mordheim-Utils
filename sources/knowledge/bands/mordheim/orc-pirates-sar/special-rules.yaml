@@ -530,16 +530,15 @@ rules:
     - sea-troll
 - id: sea-troll--slimy
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.orc-pirates-sar.sea-troll.slimy
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.sea-troll-slime
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.sea-troll-slime
   name: Slimy
   effect: >-
     All models attempting to hit the Sea Troll in hand-to-hand combat are at -1 to hit. A natural

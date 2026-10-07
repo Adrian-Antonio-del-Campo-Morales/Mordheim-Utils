@@ -29,7 +29,7 @@ SELECTABLE_RULE_KINDS = frozenset({
 
 
 PROFILE_BINDING_IDS = frozenset({
-    "profile.skill-access", "profile.equipment-restrictions",
+    "profile.skill-access", "profile.equipment-restrictions", "profile.active-weapon-restrictions",
     "profile.natural-attacks", "profile.fist", "profile.random-characteristics",
     "profile.characteristics",
 })
@@ -96,6 +96,9 @@ def validate_rule_runtime(rule: dict, *, context: str = "special rule") -> None:
                 raise ValueError(f"{context} {rule.get('id')}/{effect_id}: unknown profile binding {binding.get('id')!r}")
             if "parameters" in binding and not isinstance(binding["parameters"], dict):
                 raise ValueError(f"{context} {rule.get('id')}/{effect_id}: binding parameters must be a mapping")
+        if implemented == "YES" and binding is not None and effect_scope != "YES":
+            raise ValueError(f"{context} {rule.get('id')}/{effect_id}: active binding requires scope YES; "
+                             "planned bindings require implemented NO")
         if binding is None and not str(effect.get("reason") or ""):
             raise ValueError(f"{context} {rule.get('id')}/{effect_id}: unbound effect needs a reason")
         if implemented == "YES" and effect_scope == "YES" and binding is None:
@@ -104,7 +107,7 @@ def validate_rule_runtime(rule: dict, *, context: str = "special rule") -> None:
         effect_scopes.append(effect_scope)
     if len(effect_ids) != len(set(effect_ids)):
         raise ValueError(f"{context} {rule.get('id')}: duplicate runtime effect ids")
-    if implemented == "YES" and not any(isinstance(effect.get("binding"), dict) for effect in effects):
+    if implemented == "YES" and not any(effect.get("scope") == "YES" and isinstance(effect.get("binding"), dict) for effect in effects):
         raise ValueError(f"{context} {rule.get('id')}: implemented YES rule has no executable binding")
     expected_scope = "YES" if "YES" in effect_scopes else "LATER" if "LATER" in effect_scopes else "NO"
     if scope != expected_scope:
@@ -118,12 +121,23 @@ def runtime_bindings(rule: dict, kind: str | None = None, *, include_pending: bo
     remain invisible to compiler/engine consumers until ``implemented`` is YES.
     """
     runtime = rule.get("runtime") or {}
+    if runtime.get("implemented") == "YES":
+        for effect in runtime.get("effects") or ():
+            if effect.get("binding") is not None and effect.get("scope") != "YES":
+                raise ValueError(f"{rule.get('id')}: active binding requires scope YES; planned bindings require implemented NO")
+            if effect.get("scope") == "YES" and effect.get("binding") is None:
+                raise ValueError(f"{rule.get('id')}: implemented YES effect has no binding")
+        if runtime.get("scope") != "YES" or not any(
+            isinstance(effect.get("binding"), dict) for effect in runtime.get("effects") or ()
+        ):
+            raise ValueError(f"{rule.get('id')}: implemented YES rule has no executable binding")
     if not include_pending and runtime.get("implemented") != "YES":
         return ()
     result = []
     for effect in runtime.get("effects") or ():
         binding = effect.get("binding")
-        if isinstance(binding, dict) and (kind is None or binding.get("kind") == kind):
+        if (isinstance(binding, dict) and (include_pending or effect.get("scope") == "YES")
+                and (kind is None or binding.get("kind") == kind)):
             result.append(binding)
     return tuple(result)
 
@@ -172,6 +186,28 @@ def load_execution_contract(ruleset: str, root: Path | None = None):
     document = read_yaml((root or knowledge_root()) / "catalog/mechanics/execution.yaml")
     if document.get("ruleset") != ruleset: raise ValueError(f"execution contract does not describe {ruleset}")
     return document
+
+
+@lru_cache(maxsize=None)
+def load_conditions(ruleset: str = "mordheim", root: Path | None = None):
+    """Load ``catalog/rules/conditions.yaml`` and validate its runtime blocks.
+
+    A condition may declare a ``runtime`` block with the same shape a rule
+    uses, so a canonical condition id resolves to the operator the duel
+    consumes. A condition without a runtime block is unclassified, not
+    implemented, and a caller may not supply it as a current warrior fact.
+    The catalogue is read from the caller's root; no global default leaks in.
+    """
+    document = read_yaml((root or knowledge_root()) / "catalog/rules/conditions.yaml")
+    if document.get("ruleset") != ruleset:
+        raise ValueError(f"conditions catalogue does not describe {ruleset}")
+    rows = tuple(document.get("conditions") or ())
+    ids = [str(row.get("id") or "") for row in rows]
+    if any(not condition_id for condition_id in ids) or len(ids) != len(set(ids)):
+        raise ValueError("conditions catalogue has missing or duplicate IDs")
+    for row in rows:
+        validate_rule_runtime(row, context="condition")
+    return rows
 
 
 

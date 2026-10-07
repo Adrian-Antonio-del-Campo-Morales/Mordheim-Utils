@@ -39,16 +39,14 @@ rules:
     band: true
 - id: band--mighty-doom
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.dwarf-slayers-kaz.band.mighty-doom
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: rout tests are a campaign/post-battle mechanic, though the 50%
-        threshold interacts with combat results.
+      reason: 'Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple opponents. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Mighty Doom
   effect: >-
     All every slayer seeks is an honourable death. A Slayer warband does not have to take Rout
@@ -70,16 +68,14 @@ rules:
     band: true
 - id: band--shame
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.dwarf-slayers-kaz.band.shame
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: campaign progression and psychology (Immune to Psychology, Slayer
-        conversion of heroes).
+      reason: 'Outside the resolved duel: post-Out-of-Action campaign conversion into a Slayer.'
   name: Shame
   effect: >-
     If a Dwarf hero (who isn't already a slayer) is taken OOA in any of the following
@@ -147,15 +143,15 @@ rules:
     band: true
 - id: giant-slayer--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.dwarf-slayers-kaz.giant-slayer.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any model in the warband within 6\" of the Giant Slayer may use his Leadership instead of
@@ -207,16 +203,14 @@ rules:
     - rememberer
 - id: rememberer--rememberer
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.dwarf-slayers-kaz.rememberer.rememberer
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Deferred: conditional to-hit re-roll (large creature, once per game) needs a dedicated
-        mechanic that does not exist in the engine yet; no binding is invented.
+      reason: 'Included individual duel effect, not implemented: Supplied qualified Rememberer grants one battle reroll against a Large duel opponent; source-specific resource and canonical projection remain pending.'
   name: Rememberer
   effect: >-
     The Rememberer's task is to record the doom of each of the slayers. When he is close by, the
@@ -240,3 +234,131 @@ rules:
   applies_to:
     profile_ids:
     - rememberer
+- id: slayers--no-armour-or-missile-weapons
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - armour
+          - ranged-weapons
+  name: No Armour or Missile Weapons
+  effect: >-
+    Slayers may never take armour or missile weapons. The Dwarf Warrior Equipment
+    List prints the clause on its armour, shield, helmet and pistol rows, and each
+    Slayer profile carries the same restriction.
+  source:
+    manual: broheim.net
+    printed_page: 32
+    section: Dwarf Equipment Lists (Town Crier 6 inheritance)
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Sin Armadura ni Armas de Proyectil
+  effect_i18n:
+    es: >-
+      Los Matatrolles nunca pueden llevar armadura ni armas de proyectil. La Lista de
+      Equipo de los Guerreros Enanos imprime la cláusula en sus filas de armadura, escudo,
+      yelmo y pistola, y cada perfil Matatrolles lleva la misma restricción.
+  applies_to:
+    profile_ids:
+    - giant-slayer
+    - troll-slayers
+    - slayers
+
+- id: giant-slayer--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - armour
+          - constant-save-cloak
+          - non-thrown-ranged
+  name: Equipment Restrictions
+  effect: "May not use any missile weapons or armour."
+  source:
+    manual: broheim.net
+    printed_page: 33
+    section: "1 Giant Slayer"
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - giant-slayer
+- id: slayers--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - armour
+          - constant-save-cloak
+          - non-thrown-ranged
+  name: Equipment Restrictions
+  effect: "May not use any missile weapons or armour."
+  source:
+    manual: broheim.net
+    printed_page: 34
+    section: "Slayers"
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - slayers
+- id: troll-slayers--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - armour
+          - constant-save-cloak
+          - non-thrown-ranged
+  name: Equipment Restrictions
+  effect: "May not use any missile weapons or armour."
+  source:
+    manual: broheim.net
+    printed_page: 33
+    section: "0-3 Troll Slayer"
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - troll-slayers

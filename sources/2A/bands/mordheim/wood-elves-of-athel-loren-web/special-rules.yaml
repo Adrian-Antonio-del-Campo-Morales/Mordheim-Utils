@@ -3,15 +3,15 @@ band_id: wood-elves-of-athel-loren-web
 rules:
 - id: band--hate-dark-elves
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.wood-elves-of-athel-loren-web.band.hate-dark-elves
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Hatred is a psychology mechanic not covered by the current engine scope.
+    - id: mechanic.hatred-dark-elves
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-dark-elves
   name: Hate Dark Elves
   effect: >-
     All warriors in a Wood Elves Warband (excluding any Hired Swords) have an unyielding Hatred for
@@ -279,16 +279,15 @@ rules:
   kind: warband_skill
 - id: hunt-master--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.wood-elves-of-athel-loren-web.hunt-master.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
-        psychology/rout mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -378,7 +377,7 @@ rules:
       binding: null
       reason: >-
         Out of scope: magic subsystem (Woodland Incantations; the spell list is preserved in
-        sources/2A/catalog/magic-2a.yaml as lore.woodland-incantations).
+        catalog/campaign/magic.yaml as lore.woodland-incantations).
   name: Wizard
   effect: The Forest Mage is a Wizard and may use the Woodland Incantations spell list.
   source:

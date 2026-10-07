@@ -40,6 +40,7 @@ profiles:
   - tomb-lord--flammable
   combat_traits:
     undead_or_possessed: true
+    creature_kind: undead
 - id: liche-priest
   name: Liche Priest
   type: hero
@@ -77,6 +78,7 @@ profiles:
   - liche-priest--no-armour
   combat_traits:
     undead_or_possessed: true
+    creature_kind: undead
 - id: acolytes
   name: Acolytes
   type: hero
@@ -113,6 +115,7 @@ profiles:
   - acolytes--undead
   combat_traits:
     undead_or_possessed: true
+    creature_kind: undead
 - id: skeleton-warriors
   name: Skeleton Warriors
   type: henchman
@@ -147,6 +150,7 @@ profiles:
   - skeleton-warriors--undead
   combat_traits:
     undead_or_possessed: true
+    creature_kind: undead
 - id: tomb-guardians
   name: Tomb Guardians
   type: henchman
@@ -182,6 +186,7 @@ profiles:
   - tomb-guardians--experience
   combat_traits:
     undead_or_possessed: true
+    creature_kind: undead
 - id: tomb-scorpions
   name: Tomb Scorpions
   type: henchman
@@ -216,6 +221,7 @@ profiles:
   - tomb-scorpions--living
   - tomb-scorpions--animal
   - tomb-scorpions--scorpion-sting
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
   equipment_restrictions_i18n:
     es: Los Escorpiones de Tumba no usan armas ni armaduras.

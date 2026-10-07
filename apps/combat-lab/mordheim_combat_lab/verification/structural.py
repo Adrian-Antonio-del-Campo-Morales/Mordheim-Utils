@@ -6,13 +6,13 @@ from dataclasses import fields
 from functools import lru_cache
 from mordheim_combat.phases import Phase
 from mordheim_construction.compiler import compile_fighter
-from mordheim_construction.contracts import COMPILER_CONTRACTS
+from mordheim_construction.contracts import COMPILER_CONTRACTS, SPECIAL_RULE_EFFECTS, PROFILE_RULE_EFFECTS
 from mordheim_construction.contracts import TRAIT_TYPES
 from mordheim_construction.contracts import effect_index
 from mordheim_core.models import Characteristics
 from mordheim_core.models import EffectSet
 from mordheim_core.models import FighterBuild
-from mordheim_knowledge.loader import load_bands
+from mordheim_knowledge.loader import load_bands, knowledge_root, read_yaml, PROFILE_BINDING_IDS
 from mordheim_knowledge.loader import load_execution_contract
 from mordheim_knowledge.loader import load_mechanics
 from mordheim_combat_lab.verification.specifications import load_phase_verification
@@ -53,6 +53,53 @@ class VerificationReport:
     def complete(self) -> bool:
         """Compatibility alias: structural completeness, NOT semantic proof."""
         return self.structural_complete
+
+
+def _binding_contract_error(binding: dict, execution_ids: set[str]) -> str | None:
+    """Use the maintained contracts, never a second registry of binding states."""
+    kind, identifier = binding.get("kind"), str(binding.get("id"))
+    if kind == "mechanic":
+        known = identifier in execution_ids
+    elif kind == "trait":
+        known = identifier.removeprefix("trait.").replace("-", "_") in TRAIT_TYPES
+    elif kind == "profile":
+        known = identifier in PROFILE_BINDING_IDS
+    elif kind == "compiler":
+        known = (
+            identifier in COMPILER_CONTRACTS
+            or identifier.startswith("special-rule.") and identifier.removeprefix("special-rule.") in SPECIAL_RULE_EFFECTS
+            or identifier.startswith("profile-rule.") and identifier.removeprefix("profile-rule.") in PROFILE_RULE_EFFECTS
+        )
+    else:
+        known = False
+    return None if known else f"unknown {kind} binding {identifier}"
+
+
+def _catalogue_binding_errors(root: Path | None, execution_ids: set[str]) -> list[str]:
+    """Check catalogued skills/hireling rules without changing band evidence counts."""
+    errors = []
+    root = root or knowledge_root()
+
+    def walk(node, path):
+        if isinstance(node, dict):
+            if "runtime" in node and "id" in node:
+                try:
+                    for binding in runtime_bindings(node):
+                        error = _binding_contract_error(binding, execution_ids)
+                        if error:
+                            errors.append(f"{path.relative_to(root)}/{node['id']}: {error}")
+                except ValueError as exc:
+                    errors.append(f"{path.relative_to(root)}: {exc}")
+            for child in node.values():
+                walk(child, path)
+        elif isinstance(node, list):
+            for child in node:
+                walk(child, path)
+
+    for directory in (root / "catalog/skills", root / "catalog/hirelings"):
+        for path in sorted(directory.rglob("*.yaml")):
+            walk(read_yaml(path), path)
+    return errors
 
 
 def _projection_errors(ruleset: str, root: Path | None) -> tuple[int, list[str]]:
@@ -102,6 +149,12 @@ def _projection_errors(ruleset: str, root: Path | None) -> tuple[int, list[str]]
                 kwargs = {"main_poison_id": mechanic_id}
             else:
                 kwargs = {"skill_ids": (mechanic_id,)}
+
+            # This existing mechanic requires an explicit caller-supplied result.
+            # Result 3 is the source's neutral participating result, not a default
+            # added to production construction or a bypass of its refusal.
+            if mechanic_id == "mechanic.snorri-drunk":
+                kwargs["trait_overrides"] = {"snorri_drunk_result": 3}
 
             try:
                 fighter = compile_fighter(FighterBuild(ruleset, characteristics, **kwargs), root)
@@ -304,18 +357,10 @@ def audit_phase_verification(
                 bindings.add((kind, binding_id))
                 binding_parameters.setdefault((kind, binding_id), dict(binding.get("parameters") or {}))
                 binding_grants.setdefault((kind, binding_id), set()).add(str(runtime.get("grant")))
-                if kind == "mechanic" and binding_id not in execution_ids:
-                    errors.append(f"{rule['id']}: unknown mechanic binding {binding_id}")
-                elif kind == "trait" and binding_id.removeprefix("trait.").replace("-", "_") not in TRAIT_TYPES:
-                    errors.append(f"{rule['id']}: unknown trait binding {binding_id}")
-                elif (
-                    kind == "compiler"
-                    and binding_id not in COMPILER_CONTRACTS
-                    and not binding_id.startswith(("special-rule.", "profile-rule."))
-                ):
-                    errors.append(f"{rule['id']}: unknown compiler binding {binding_id}")
-                elif kind not in {"mechanic", "trait", "profile", "compiler"}:
-                    errors.append(f"{rule['id']}: unknown binding kind {kind}")
+                error = _binding_contract_error(binding, execution_ids)
+                if error:
+                    errors.append(f"{rule['id']}: {error}")
+    errors.extend(_catalogue_binding_errors(root, execution_ids))
 
     complex_rules = specification.get("complex_rules") or {}
     for rule_id, contract in complex_rules.items():

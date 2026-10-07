@@ -89,15 +89,15 @@ rules:
     - wizard
 - id: elf--hatred
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.adventurers-kaz.elf.hatred
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.hatred-dark-elves
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-dark-elves
   name: Hatred
   effect: The Elf hates Dark Elfs.
   source:
@@ -145,15 +145,21 @@ rules:
     - elf
 - id: barbarian--frenzy
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.adventurers-kaz.barbarian.frenzy
-      scope: LATER
+    - id: trait.frenzy
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
+    - id: excluded.adventurers-kaz.barbarian--frenzy.board-charge
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology (frenzy).
+      reason: Compulsory charge range, movement and target selection on a board are outside the 1v1 duel. In-contact attack doubling, psychology exemption and loss after knockdown/stun use the existing Frenzy operator.
   name: Frenzy
   effect: The Barbarian is subject to Frenzy.
   source:
@@ -199,15 +205,15 @@ rules:
     - barbarian
 - id: imperial-noble--honorable
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.adventurers-kaz.imperial-noble.honorable
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: attack targeting restrictions against knocked down or stunned opponents.
+    - id: mechanic.honorable
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.honorable
   name: Honorable
   effect: The Imperial Noble will never attack an opponent that is Knocked Down or Stunned.
   source:

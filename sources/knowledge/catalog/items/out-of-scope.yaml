@@ -525,7 +525,7 @@ items:
   - *id007
   combat_status: out_of_scope
 - id: holy_relic
-  kind: out-of-scope
+  kind: combat-equipment
   name: Holy Relic
   name_i18n:
     es: Reliquia Santa
@@ -544,9 +544,10 @@ items:
       no te permitirá ignorar la segunda prueba y las siguientes.
   source_refs:
   - *id008
-  combat_status: out_of_scope
+  combat_status: implemented
+  mechanic_id: defence.holy-relic
 - id: holy_relic_pilgrim_only
-  kind: out-of-scope
+  kind: combat-equipment
   name: Holy Relic Pilgrim Only
   name_i18n:
     es: Reliquia Santa (Solo Peregrino)
@@ -568,7 +569,8 @@ items:
     printed_page: 0
     section: Pilgrims’ equipment list
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/bretonnian-chapel-guard
-  combat_status: out_of_scope
+  combat_status: implemented
+  mechanic_id: defence.holy-relic
 - id: holy_tome
   kind: out-of-scope
   name: Holy Tome
@@ -846,6 +848,8 @@ items:
   combat_status: out_of_scope
 - id: superior_blackpowder
   kind: out-of-scope
+  tags:
+  - blackpowder
   name: Superior Blackpowder
   name_i18n:
     es: Pólvora Negra Superior
@@ -1064,6 +1068,8 @@ items:
     section: Mercenary equipment lists
     url: https://mordheimer.net/docs/warbands/grade-1a-warbands/mercenaries
   combat_status: out_of_scope
+  tags:
+  - constant-save-cloak
 - id: wolf_rat_mount
   kind: out-of-scope
   name: Wolf Rat Mount

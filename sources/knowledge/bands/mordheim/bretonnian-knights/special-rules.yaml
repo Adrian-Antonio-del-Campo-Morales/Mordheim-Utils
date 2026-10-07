@@ -3,15 +3,15 @@ band_id: bretonnian-knights
 rules:
 - id: questing-knight--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.bretonnian-knights.questing-knight.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -218,15 +218,14 @@ rules:
 - id: band--virtue-of-discipline
   kind: virtue
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.bretonnian-knights.band.virtue-of-discipline
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Outside the 1v1 duel: a warband Rout-test reroll.'
   name: Virtue of Discipline
   effect: >-
     Once per game, if the warrior is not out of action, stunned or knocked down, the warband may
@@ -247,15 +246,15 @@ rules:
 - id: band--virtue-of-noble-disdain
   kind: virtue
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.bretonnian-knights.band.virtue-of-noble-disdain
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.noble-disdain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.noble-disdain
   name: Virtue of Noble Disdain
   effect: The warrior is subject to Hatred of all enemies armed with shooting weapons.
   source:

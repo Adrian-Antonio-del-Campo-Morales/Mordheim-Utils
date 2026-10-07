@@ -57,16 +57,14 @@ rules:
     band: true
 - id: band--whistling
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.watchmen-mim.band.whistling
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: actions outside an already engaged two-participant duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Whistling
   effect: >-
     Watch patrols can summon assistance in the recovery phase by blowing their whistles: D3+1 Watch
@@ -215,15 +213,15 @@ rules:
     band: true
 - id: watch-captain--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.watchmen-mim.watch-captain.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: broheim.net
@@ -300,16 +298,15 @@ rules:
     - private-sleuth
 - id: private-sleuth--hypnotist
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.watchmen-mim.private-sleuth.hypnotist
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.hypnotist
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hypnotist
   name: Hypnotist
   effect: >-
     At the beginning of the combat phase the Sleuth may hypnotise any living warrior in base contact
@@ -390,16 +387,14 @@ rules:
     - sewer-jacks
 - id: sewer-jacks--tunnel-rat
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.watchmen-mim.sewer-jacks.tunnel-rat
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Tunnel Rat
   effect: >-
     Any characteristic-based tests taken for scenarios set in sewers or elsewhere underground can be

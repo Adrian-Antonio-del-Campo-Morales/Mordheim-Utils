@@ -3,15 +3,15 @@ band_id: dwarf-slayer-cult-web
 rules:
 - id: band--hard-to-kill
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.dwarf-slayer-cult-web.band.hard-to-kill
-      scope: LATER
-      binding: null
-      reason: >-
-        Pending L07: bind and verify the source-specific combat Injury conversion (only 6 is out of action); this is admitted combat behavior, not a campaign exclusion.
+    - id: skill.hard-to-kill
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
   name: Hard to Kill
   source:
     manual: mordheimer.net
@@ -25,15 +25,17 @@ rules:
   rule_ref: shared-rule.hard-to-kill
 - id: band--hard-head
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.dwarf-slayer-cult-web.band.hard-head
-      scope: LATER
-      binding: null
-      reason: >-
-        Pending L07: bind and verify the printed mace/club special-rule exemption; related profile traits do not implement this origin by themselves.
+    - id: trait.concussion-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.concussion-immune
+        parameters:
+          value: true
   name: Hard Head
   source:
     manual: mordheimer.net
@@ -70,20 +72,18 @@ rules:
   rule_ref: shared-rule.grudgebearers
 - id: band--hatred-orcs-and-goblins
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.dwarf-slayer-cult-web.band.hatred-orcs-and-goblins
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Hatred (reroll failed to-hit in first round against hated foes) is a
-        psychology mechanic outside the duel scope.
+    - id: mechanic.hatred-orcs-goblins
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-orcs-goblins
   name: Hatred
-  effect: >-
-    The Rememberer, Stubbles, and Axe Hurlers all Hate Orcs and Goblins. This is ignored if the
-    warrior later becomes Immune to Psychology.
+  effect: The Rememberer, Stubbles, and Axe Hurlers all Hate Orcs and Goblins. This is ignored if the warrior later becomes
+    Immune to Psychology.
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -92,9 +92,8 @@ rules:
   name_i18n:
     es: Odio
   effect_i18n:
-    es: >-
-      El Memoralista, los Barbas Nacientes y los Lanzahachas odian a los Orcos y a los Goblins. Esto
-      se ignora si el guerrero se vuelve posteriormente Inmune a la Psicología.
+    es: El Memoralista, los Barbas Nacientes y los Lanzahachas odian a los Orcos y a los Goblins. Esto se ignora si el guerrero
+      se vuelve posteriormente Inmune a la Psicología.
   applies_to:
     profile_ids:
     - rememberer
@@ -102,17 +101,34 @@ rules:
     - axe-hurlers
 - id: band--slayer-rules
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
     effects:
-    - id: unimplemented.dwarf-slayer-cult-web.band.slayer-rules
-      scope: LATER
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
+        parameters:
+          profile_ids:
+          - giant-slayer
+          - doomseeker
+          - troll-slayers
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - armour
+          - constant-save-cloak
+          - non-thrown-ranged
+    - id: unimplemented.dwarf-slayer-cult-web.band.slayer-campaign
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: Deathwish psychology immunity, armour/missile/magic restrictions and
-        exploration-dice conditions are psychology and campaign-resolution mechanics outside the
-        duel scope.
+      reason: Postgame injury rerolls, exploration, advancement and learning magic are outside the duel; Rememberer is expressly not a Slayer.
   name: Slayer
   effect: >-
     Deathwish: Slayers seek an honorable death in combat. Unless stated otherwise, all members of
@@ -147,10 +163,13 @@ rules:
       derrotados o huyeron; solo los obtienen si ganan el escenario, estaban aliados con el vencedor
       o empataron. (No incluye al Memoralista.)
   applies_to:
+    band: true
     profile_ids:
     - giant-slayer
     - doomseeker
     - troll-slayers
+    - stubbles
+    - axe-hurlers
 - id: rememberer--record-of-valor
   runtime:
     scope: LATER
@@ -202,15 +221,14 @@ rules:
     - rememberer
 - id: rememberer--rememberer
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.dwarf-slayer-cult-web.rememberer.rememberer
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Deferred subsystem: combat reroll aura is a psychology/buff mechanic outside the duel scope.
+      reason: 'Included individual duel effect, not implemented: Supplied qualified Rememberer grants one battle reroll against a Large/T5+ duel opponent; source-specific resource and canonical projection remain pending.'
   name: Rememberer
   effect: >-
     The Rememberer's task is to record the doom of each of the slayers. When he is close by, the
@@ -297,16 +315,15 @@ rules:
     - rememberer
 - id: giant-slayer--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.dwarf-slayer-cult-web.giant-slayer.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
-        psychology/rout mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -354,15 +371,14 @@ rules:
     - stubbles
 - id: axe-hurlers--strong-arm
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.dwarf-slayer-cult-web.axe-hurlers.strong-arm
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: range bonuses from characteristics are outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Strong Arm
   effect: >-
     The Axe Hurler can use his strength to hurl thrown weapons farther still. When throwing weapons,

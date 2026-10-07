@@ -20,6 +20,7 @@
  */
 import { describe, expect, it, vi } from "vitest";
 import { createHash } from "node:crypto";
+import { itemFactsOf } from "@domain/campaign/construction";
 
 import {
   ArtefactKnowledgeReader,
@@ -113,6 +114,7 @@ describe("T12 fase D — deferred campaign catalogue", () => {
 
     // Reading before loading is an error: never an empty list, never "not_found"
     // for an id that the catalogue does publish.
+    expect(() => itemFactsOf(reader, "weapon.mace")).toThrow(KnowledgeReaderError);
     expect(() => reader.list("item")).toThrow(KnowledgeReaderError);
     expect(() => reader.list("item")).toThrow(/ensureCatalogue\("items"\)/);
     expect(() => reader.list("scenario")).toThrow(/ensureCatalogue\("campaign"\)/);
@@ -137,6 +139,8 @@ describe("T12 fase D — deferred campaign catalogue", () => {
     expect(reader.isCatalogueLoaded("campaign")).toBe(true);
 
     // The synchronous read contract, rebuilt from the same ids and row shapes.
+    expect(itemFactsOf(reader, "sword")?.kind).toBe("close-combat-weapon");
+    expect(itemFactsOf(reader, "weapon.unknown")).toBeNull();
     expect(reader.list("item")).toHaveLength(1);
     const item = reader.list("item")[0];
     expect(reader.recordText(item, "name", "es")).toBe("Espada");

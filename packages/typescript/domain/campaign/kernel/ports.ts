@@ -11,7 +11,7 @@
  * - No React, DOM, browser globals or filesystem inside these modules.
  */
 
-import type { Campaign } from "./state";
+import type { Campaign, OpenPayload } from "./state";
 
 /** Discriminator for the canonical KB record kinds (P4.1 inventory). */
 export type KnowledgeKind =
@@ -100,6 +100,8 @@ export type KnowledgeResult =
  */
 export interface KnowledgeReader {
   queryKnowledge(query: KnowledgeQuery): KnowledgeResult;
+  /** Existing catalogue enumeration, when available; does not create alias records. */
+  list?(kind: KnowledgeKind): readonly OpenPayload[];
   /** Resolve many ids in one call (roster rendering, export checks). */
   queryMany(queries: readonly KnowledgeQuery[]): readonly KnowledgeResult[];
 }

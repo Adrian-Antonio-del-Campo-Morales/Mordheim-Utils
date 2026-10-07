@@ -1,8 +1,9 @@
 # L06 — canonical local weapon profiles
 
 **Status: weapon block, Killing Blow and Shock Rod implemented and verified, 2026-10-03.**
-Skull Busta's reachable canonical clauses are also delivered; its missing
-Knight's Helm counterpart is recorded as [F063](T13-execution-follow-ups.md#t13-f063--skull-busta-knights-helm-counterpart-is-absent-from-the-kb).
+Skull Busta's reachable canonical clauses are also delivered. Knight's Helm
+was classified as a source erratum by the user on 2026-10-04; pending KB cleanup,
+not counterpart implementation, is recorded as [F063](T13-execution-follow-ups.md#t13-f063--skull-busta-knights-helm-counterpart-is-absent-from-the-kb).
 Eight registered item origins now have source-backed mappings, shared recipient
 decisions, Combat Lab catalogue access and actual modular attack consumption.
 L06 remains in progress for the other admitted hit/wound/critical/poison/parry
@@ -152,13 +153,12 @@ its use restrictions. No campaign mount service or ownership limit is invented.
 
 Basha modifies only this attack's available helmet reaction to 6+. No Pain
 converts the injury before the helmet step, and Thick Skull keeps its existing
-replacement reaction and helmet improvement. The source's Knight's Helm 4+
-clause has no canonical item, mechanic or access route in the current KB;
-it is **not implemented/certified** through a fabricated ordinary-helmet fixture.
+replacement reaction and helmet improvement. The user classified the source's
+Knight's Helm reference as an erratum on 2026-10-04. Its 4+ counterpart is no
+longer an admitted implementation obligation; no replacement item is invented.
 [F063](T13-execution-follow-ups.md#t13-f063--skull-busta-knights-helm-counterpart-is-absent-from-the-kb)
-assigns that admitted counterpart to L07, with source acquisition and a real
-recipient required before activation. Item metadata enables the supported
-canonical profile; it does not certify this absent counterpart or optimized engines.
+tracks the pending KB removal and dependent reference cleanup. Item metadata
+enables the supported canonical profile; optimized engines remain separate.
 
 Six cases extend the existing item suite, covering first/later wound thresholds,
 helmets, ordinary-mace controls, No Pain/Thick Skull, actual catalogue access,
@@ -289,7 +289,7 @@ This is a completed weapon block, not completion of L06. Continue in L06 with
 the admitted source-specific weapons, hit/wound/critical modifiers and rerolls,
 natural-six auto-wounds, material/target filters, poison/immunity and parry
 variants from the original origin register. This includes remaining Hellblade,
-other local item profiles (with Skull Busta's absent Knight's Helm counterpart owned by L07/F063),
+other admitted local item profiles,
 conditional parries and the L05 dispositions for `corpse_liquor` and
 `runic_sword_of_snorri_elfbane`. Resolve each existing source gate in that family.
 Related sequence/resource clauses remain L08/L09, defenses L07, psychology L11,
@@ -303,3 +303,30 @@ remains L18–L22, with the original source identities retained for L21.
 Evidence is retained under `build/cache/t13-parallel/local-weapons/`: frozen
 entry bytes/hashes, command logs, focused schema/mapping/origin checks and
 closing hashes. Entry HEAD remains `1b7f7cf`; no commit, push or agent launch.
+## L06 / F072 — Woodsmen Quarterstaff variant (2026-10-04)
+
+The canonical Woodsmen `quarter_staff` selection now compiles its printed
+Strength +1, Two-handed and Parry, without the generic Balanced staff's
+Initiative +1. The automatic `compiler.woodsmen-quarterstaff` binding qualifies
+the existing weapon selection by its band source; it does not grant the bonus
+to swords, fists or other weapons. The generic and Cathayan staff remain
+unchanged. The Woodsmen variant does not inherit the Cathayan Freestyle bonus
+bare-hand attack. Material and poison contributions are retained, including
+the poison-free weapon projection used by the modular pipeline.
+
+Sources: [Woodsmen rule and printed text](../../../../sources/knowledge/bands/mordheim/woodsmen-de-artois-mou/special-rules.yaml),
+[canonical equipment list](../../../../sources/knowledge/bands/mordheim/woodsmen-de-artois-mou/equipment-access.yaml),
+[Cathayan comparison source](../../../../sources/knowledge/bands/mordheim/pirates-of-the-cathayan-sea-sar/special-rules.yaml).
+The existing 2B mirror is aligned; printed prose, translations, item identity
+and equipment access are preserved. The shooting-only shield clause is outside
+the duel scope, rather than an omitted melee permission.
+
+Validation: two focused cases in the maintained
+`test_local_modifier_variants.py` module pass through canonical compilation and
+real modular attacks: the S4/T3 wound boundary versus the Cathayan S3 control,
+an unaffected Woodsmen sword, a successful parry and refusals for a second
+weapon, shield and buckler. The structural catalogue snapshot passes:
+751 implemented rule records, 212 canonical bindings, 37 automatic compiler
+bindings; execution mechanics remain 239. The family register now has
+97 families / 316 members (43 compiler families). No new resolver or engine
+state, optimized port, full-suite run or source-pin refresh is part of this lot.

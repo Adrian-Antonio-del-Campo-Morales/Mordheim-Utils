@@ -8,6 +8,12 @@ Combat Lab projects canonical YAML and build selections in `mordheim_constructio
 
 Eligibility and duel support are separate: a legal choice may still lack an implemented combat effect. Combat Lab keeps effect folding, characteristic compilation and supported-effect diagnostics in its compiler. Warband Manager keeps campaign transitions and UI presentation. Custom/free builds retain their existing access behavior.
 
+The native 2B Sister's Blessing of Sigmar uses `compiler.sister-special-skills`
+in the shared `requiredInitial` stage to require two distinct starting choices.
+The participant projection borrows the existing Sisters table, preserving
+Matriarch-only eligibility. Protection of Sigmar is a valid starting choice with
+an explicitly excluded magic effect; it grants no spell behavior in Combat Lab.
+
 L06 Skull Busta uses one shared active-loadout predicate in specialist and batch
 queries: mounted use and other weapons are refused; shields are allowed.
 `BuildFacts.mounted` and `ConstructionOperationContext.mounted` are supplied facts
@@ -28,6 +34,87 @@ eligibility, advance roll, ordinary skill-list choice or persistence is computed
 Runt active weapon limits count occupied one-handed positions, including equal
 weapon IDs in two positions, separately from owned holstered weapons.
 
+An equipment entry may also name its printed recipients in `equipment-access.yaml`:
+`applies_to` carries the profile kinds (`profile_types`) and profile ids the note
+limits that line to, while `notes`/`notes_i18n` keep the printed prose for
+presentation. Unlike a rule's `applies_to`, whose selectors are conjunctive,
+these selectors are the **union** of the printed clause, because the source
+enumerates a set of members ("Heroes and Marksmen only" is the `hero` kind
+together with the named henchman). An entry without the member reaches every
+profile that declares its list, so absence of a restriction stays distinct from
+an explicit one, and the declared granularity is one entry of one list of one
+band: a clause never narrows the list itself nor the same item on another band's
+list. `entryReachesProfile` is the single predicate behind both projection paths
+(`profileEquipmentItems` and `buildAccess().addLists`), so a direct selection
+that never passes through the picker meets the same verdict as the offer. The
+same predicate reads a named denial, `applies_to.excluded_profile_ids`: the
+declared profile never receives the line, even when the recipient selectors and
+the variant gate reach it ('Sniper only ... not available to the Silent
+Master').
+
+The contracts below are decided by the same owner, never item by item:
+
+- `EquipmentLimits.item_copy_limit` (`EquipmentItemCopyLimit`) bounds how many
+  copies of one named item or mechanic id a member may **possess** at once, with
+  the profiles the source exempts and the bound they may carry instead ('only
+  the Matriarch and Sister Superiors may carry two Sigmarite warhammers'). It
+  bounds the owned kit, not the active slots, and `validateConstruction` counts
+  an occurrence that is both selected and owned once.
+- `ProfileFacts.required_equipment` (`RequiredEquipment`) is an obligation to
+  **acquire** one item of a family: `kinds` are item kinds, or an item/mechanic
+  id when the clause names one canonical object ('must include a Chaos Dwarf
+  Blunderbuss'), and `excludes` names the printed items that never satisfy it
+  ('a simple dagger is not acceptable'). The source obliges the purchase, never
+  attacking with that weapon, so the contract is a whole-set requirement and not
+  an active-slot one.
+- `ProfileFacts.poison_application` with `poisonApplicationIssue` decides which
+  weapon kinds a governed poison may coat for a bearer ('Skink Heroes on missile
+  weapons; Saurus on close combat weapons'). A bearer the clause does not
+  qualify is never refused there, and the poison's recipient set stays the
+  canonical one. The missile reading is shared (`ranged-weapon` includes the
+  catalogue's ranged tags) so a flattened weapon record is not misread as a
+  close combat weapon.
+- `ProfileFacts.active_weapon_permits` is the printed **permitted** active-weapon
+  set ('may only use a sword, dagger or Mage Staff in battle'). `tokenPermits`
+  reads it so an active main/off/extra weapon outside the set is refused with
+  the admitted tokens named, while owning an item the clause does not admit
+  remains legal. A permission clause never emits an empty forbids row.
+- `ProfileFacts.missile_weapon_limit` (`MissileWeaponLimit`) bounds how many
+  missile weapons a member may **possess**, with the printed items or mechanic
+  ids it exempts ('only ONE non-pebble or non-slingshot missile weapon'). It
+  counts units, so two copies of one weapon are two, and it stays separate from
+  the active slots and from any shooting resolution.
+
+`profileFactsProjection` materialises these families onto the canonical profile.
+The generated knowledge artefact of the web consumer mirrors the same predicate
+and publishes the same facts: `profile.required_equipment`,
+`profile.poison_application`, `profile.missile_weapon_limit` and the band
+`equipment_limits` (including the nested `item_copy_limit`). A rule the artefact
+cannot express for a build selection stays a recorded construction gap, not a
+silent allow.
+
+An intrinsic armour clause is not a legality rule: a published
+`trait.natural-armour-save` (with `natural-armour-unmodified` and
+`natural-armour-negated-by-magic`) is folded onto the fighter by the Combat Lab
+compiler and the modular engine keeps the better of the worn armour and the
+natural save, so the printed constant is never added twice. The declared kit
+item travels in the profile's `fixed_equipment`.
+
+The campaign domain carries no `poison_application` and no build selection for
+the House Guard 'House' or the Silent Brotherhood 'Modus Operandi' lines:
+neither band publishes a warband variant and `identity.mercenary_variant` names
+a published one, so Warband Manager cannot configure that selection and the
+condition line is offered to no profile instead of to the wrong bearer. The
+predicate is implemented and Combat Lab transports the real selection; the
+visible product input remains to be built.
+
+A printed `compiler.promoted-hero-skill-access` grant is projected as
+`promotion_skill_access` on the profile facts: the canonical Henchman carries
+the tables there and never in `skill_access`, while the configured Hero (or a
+build declaring `promotion.hero`) receives them in both. The advance flow
+consults the field only for a warrior whose kind is hero, so the tables are
+never offered before the promotion happens.
+
 `FighterBuild.owned_item_ids=None` leaves the complete carried kit unspecified;
 an explicit tuple, including `()`, invokes shared final validation during
 compilation. Legal unmapped items can be owned without becoming executable duel
@@ -37,6 +124,18 @@ ownership and active slots to the same batch operation used by
 blocking/informational policy; the catalogue exposes all reports. Unspecified
 kit compilation is not proof of mandatory owned equipment. Visible editing of
 these supplied facts belongs to the remaining L18 product integration.
+
+Combat Lab's 2B hired-sword/Dramatis participant projection uses canonical
+hireling ids and the same shared eligibility engine, without campaign hiring.
+`resolveHirelingKit` / `hirelingKit` resolve one complete printed kit: fixed
+quantities, whole alternative groups and optional items. Unspecified ownership
+selects a compatible kit; explicit ownership must match its complete multiset.
+`boundEquipment` exposes the same refusal to configuration callers. Printed
+item qualifications are local projection facts: Crimashin's dagger is gromril;
+the Holy Man's staff uses the double-handed weapon mechanic. They do not
+change the generic dagger/staff catalogue. Native profiles with pending
+intrinsic duel clauses are refused before compilation; name-only entries stay
+in the source catalogue but are not offered as editable stat profiles.
 
 See [L05 delivery](../knowledge/2a2b/tasks/T13-canonical-choices.md) for the
 source-backed recipients, marker contract and still-gated behaviors.
@@ -81,10 +180,19 @@ The single fact projection lives here too: `profileBindings`,
 `profileSkillLists` and `selectedRuleBindings`, exposed to desktop consumers
 as `profileFacts`, `bandFacts`, `profileSkillLists`, `profileBindings` and
 `selectedRuleBindings` in `bridge.ts`.
-`profileFactsProjection` materialises the profile's declared equipment lists
-through the catalogue mappings — the same resolution the offering layer uses —
-so offered options and decisions cannot drift apart; a profile that declares
-no list keeps the legacy unfiltered `null`. `constructionCall` resolves
+`profileFactsProjection` materialises the profile's equipment access —
+declared lists and their loadouts, the fixed kit and the equipment concessions
+of its applicable rules — through the catalogue mappings, the same resolution
+the offering layer uses, so offered options and decisions cannot drift apart.
+A canonical projection always carries a filterable list, empty included: a
+profile that declares no list buys no listed equipment, not anything. `null`
+stays reserved for a caller that cannot supply the canonical catalogue
+(custom and free-build contexts). Only equipment families are concessions:
+skill and mechanic bindings never reach the access. A family-prefixed
+concession without an item record (`weapon.vomit-attack`) stays offered —
+canonical builds select it as their main weapon — and the missing record is
+reported informationally (`equipment_unknown_item`), never refused.
+`constructionCall` resolves
 canonical item facts for the candidates (indexed by item id and by mechanic id
 through `catalogueItemFacts`) in a single batch, and a transport or projection
 failure raises instead of falling back to a permissive local rule.
@@ -206,3 +314,30 @@ resource and MiniRacer's native runtime. Rebuild changed eligibility sources
 before creating an executable; the target machine needs neither Node nor a server.
 
 The extraction changes no campaign file format and moves no campaign state into Combat Lab. To roll back it must be reverted together with its consumer adapters; there is deliberately no second rule implementation to maintain.
+
+The neutral item vocabulary also carries source-declared `thrown` and
+`constant-save-cloak` tags. Slayer `non-thrown-ranged` restrictions exempt only
+items carrying the former tag; constant-save cloaks use the latter. A supplied
+`open_flame` fact covers lit carried items independently of the active weapon.
+Loadout combination decisions receive both selected and innate mechanics;
+restrictions such as Ethereal/Dodge exclusivity apply to either origin.
+
+Construction item facts may use canonical mechanic aliases via shared
+`carriedItemFacts`. The web reader supplies its existing item enumeration only
+when an exact record is absent; Combat Lab uses the same merge. Direct records
+retain priority, tags are merged, and unknown mechanics remain unknown. This
+fact resolution creates no item record, purchase or inventory ownership and
+preserves the reader's deferred-catalogue error contract.
+
+`profile.active-weapon-restrictions` bindings carry `forbids` tokens for active
+main/off/extra weapon positions only, and may carry instead (or additionally) a
+permitted set in `parameters.allowed_kinds`, projected as
+`active_weapon_permits` and read by `tokenPermits`. The shared projection
+publishes `active_weapon_forbids` only when the clause really forbids tokens;
+both selection and complete validation apply the refusal and name the admitted
+set. These restrictions do not forbid possessing an inactive item (for example,
+Verena's printed ceremonial dagger, or a weapon a permitted set does not
+admit), because the clause bounds use and not ownership. Ordinary equipment
+restrictions retain their whole-kit semantics, and a profile-scoped missile
+bound (`missile_weapon_limit`) decides possession separately from the active
+slots.

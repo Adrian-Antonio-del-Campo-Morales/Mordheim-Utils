@@ -40,7 +40,10 @@ profiles:
   - vampire--bestial
   - vampire--wizard
   - vampire--bloodline
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
+    vampire: true
+    vampire_bloodline: strigoi
   equipment_restrictions_i18n:
     es: Un Vampiro Estigio no usa armas ni equipo.
 - id: charnel-guard
@@ -190,7 +193,8 @@ profiles:
   - skeletons--immune-to-poison
   - skeletons--no-pain
   - skeletons--no-brain
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
   equipment_restrictions_i18n:
     es: Los Esqueletos no pueden usar armas de proyectil.
 - id: bats
@@ -228,7 +232,8 @@ profiles:
   - bats--animals
   - bats--flyers
   - bats--squishy
-  combat_traits: {}
+  combat_traits:
+    normal_animal: true
   equipment_restrictions_i18n:
     es: 'Equipo: ninguno.'
 - id: fell-bats

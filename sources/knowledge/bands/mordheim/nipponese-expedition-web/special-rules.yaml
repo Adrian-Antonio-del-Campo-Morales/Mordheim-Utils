@@ -31,16 +31,14 @@ rules:
     band: true
 - id: band--strategic-minded
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.nipponese-expedition-web.band.strategic-minded
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: rout-test threshold modification is a rout mechanic outside the duel
-        scope.
+      reason: 'Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple opponents. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Strategic Minded
   effect: >-
     A Nipponese warband must rely on its battlefield experience so far from home. They may choose to
@@ -60,16 +58,15 @@ rules:
     band: true
 - id: hatamoto--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.nipponese-expedition-web.hatamoto.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
-        psychology/rout mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -172,15 +169,14 @@ rules:
     - vim-to-mage
 - id: shinobi--infiltration
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.nipponese-expedition-web.shinobi.infiltration
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: pre-battle deployment (Infiltrate) is outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Infiltration
   effect: >-
     A Shinobi with this skill is always placed on the battlefield after the opposing warband and can
@@ -260,16 +256,14 @@ rules:
     - retainer
 - id: ashigaru--wall-of-steel
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.nipponese-expedition-web.ashigaru.wall-of-steel
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Deferred subsystem: weapon-grip mode selection (two-handed with parry) is a weapon-mechanics
-        option outside the duel scope.
+      reason: 'Included individual duel effect, not implemented: Optional two-handed spear Parry contribution; source-specific loadout projection remains pending.'
   name: Wall of Steel
   effect: >-
     Even the most lowly of Ashigaru is a veteran of hours of drill, and because of this if wielding
@@ -292,16 +286,14 @@ rules:
     - ashigaru
 - id: onnabushi--wardens-of-the-castle
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.nipponese-expedition-web.onnabushi.wardens-of-the-castle
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: terrain-conditional Fear is a psychology mechanic outside the duel
-        scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Wardens of the Castle
   effect: >-
     Traditionally responsible for the defense of the homeland while the men are at war, the
@@ -394,3 +386,32 @@ rules:
       resultado de esta segunda tirada debe aceptarse, aunque sea peor.
   applies_to:
     band: true
+- id: warrior-monks--no-armour
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: armour-suit
+  name: No Armour
+  effect: >-
+    These profiles may not wear armour.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: profile entries / No Armour
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/nipponese-expedition
+  name_i18n:
+    es: Sin Armadura
+  effect_i18n:
+    es: >-
+      Estos perfiles no pueden llevar armadura.
+  applies_to:
+    profile_ids:
+    - warrior-monks

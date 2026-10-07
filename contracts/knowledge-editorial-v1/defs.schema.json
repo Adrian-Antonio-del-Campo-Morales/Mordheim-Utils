@@ -244,6 +244,16 @@
               "type": "array",
               "items": { "$ref": "#/$defs/characteristic_name" }
             },
+            "allowed_kinds": {
+              "description": "Item/mechanic ids or kinds a printed use clause admits, when the source states an allowed set ('he may only use a sword, dagger, or Mage Staff in battle') instead of a prohibition. It bounds the active weapon a warrior uses, never what the warrior may possess.",
+              "type": "array",
+              "items": { "$ref": "#/$defs/id" }
+            },
+            "exempt_item_ids": {
+              "description": "Item or mechanic ids a printed whole-set bound does not count ('one non-pebble or non-slingshot missile weapon'), leaving them out of the count instead of refusing them.",
+              "type": "array",
+              "items": { "$ref": "#/$defs/id" }
+            },
             "exempt_profile_ids": {
               "description": "Profiles a compulsory-equipment requirement does not apply to (the printed exception).",
               "type": "array",
@@ -264,6 +274,40 @@
               "description": "How many missile weapons one member may carry at once; the printed bound the construction contract counts over the whole equipment set.",
               "type": "integer",
               "minimum": 0
+            },
+            "max_item_id": {
+              "description": "Item whose copies `max_item_copies` bounds, by its item id or by the canonical mechanic id that resolves it ('only the Matriarch and Sister Superiors may carry two Sigmarite warhammers at the same time'). It is a possession bound, not an active-slot one.",
+              "$ref": "#/$defs/id"
+            },
+            "max_item_copies": {
+              "description": "Copies of `max_item_id` one member may carry at the same time.",
+              "type": "integer",
+              "minimum": 0
+            },
+            "exempt_max_item_copies": {
+              "description": "Copies of `max_item_id` the profiles of `exempt_profile_ids` may carry instead.",
+              "type": "integer",
+              "minimum": 0
+            },
+            "required_kinds": {
+              "description": "Item kinds, or an item/mechanic id when the clause names one canonical object ('must include a Chaos Dwarf Blunderbuss'), any one of which satisfies a compulsory-acquisition clause ('must buy a weapon from the hand-to-hand combat list'); this is a purchase obligation, never an obligation to attack with the item.",
+              "type": "array",
+              "items": { "$ref": "#/$defs/id" }
+            },
+            "required_excludes": {
+              "description": "Item or mechanic ids that do not satisfy `required_kinds` even when their kind matches ('a simple dagger is not acceptable').",
+              "type": "array",
+              "items": { "$ref": "#/$defs/id" }
+            },
+            "poisons": {
+              "description": "Poison mechanic ids a bearer-and-weapon-kind application condition governs.",
+              "type": "array",
+              "items": { "$ref": "#/$defs/id" }
+            },
+            "weapon_kinds": {
+              "description": "Weapon kinds the governed poisons may coat for this bearer ('Skink Heroes on missile weapons; Saurus on close combat weapons'). `ranged-weapon` and `close-combat-weapon` are the printed reach families, decided by the shared missile reading of the item record.",
+              "type": "array",
+              "items": { "$ref": "#/$defs/id" }
             },
             "required_tag": {
               "description": "Item tag the member's own equipment must include (`bow` for the compulsory bow of the Outlaw discipline).",

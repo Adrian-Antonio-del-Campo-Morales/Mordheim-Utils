@@ -18,6 +18,7 @@ profiles:
     Ld: 7
   equipment_lists:
   - skinks-equipment-list
+  - special-lizardmen-equipment
   fixed_equipment: []
   equipment_restrictions: []
   skill_access:
@@ -37,7 +38,8 @@ profiles:
   rule_ids:
   - skink-priest--leader
   - skink-priest--wizard
-  combat_traits: {}
+  combat_traits:
+    lizardman: true
 - id: saurus-totem-warriors
   name: Saurus Totem Warriors
   type: hero
@@ -55,6 +57,7 @@ profiles:
     Ld: 8
   equipment_lists:
   - saurus-equipment-list
+  - special-lizardmen-equipment
   fixed_equipment: []
   equipment_restrictions:
   - Saurus can never receive Academic skills and can never use missile weapons.
@@ -73,7 +76,8 @@ profiles:
   name_i18n:
     es: Guerreros Tótem Saurus
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    lizardman: true
   equipment_restrictions_i18n:
     es: Los Saurus nunca pueden recibir habilidades Académicas ni usar armas de proyectil.
 - id: skink-great-crests
@@ -93,6 +97,7 @@ profiles:
     Ld: 7
   equipment_lists:
   - skinks-equipment-list
+  - special-lizardmen-equipment
   fixed_equipment: []
   equipment_restrictions: []
   skill_access:
@@ -110,7 +115,8 @@ profiles:
   name_i18n:
     es: Skinks Gran Cresta
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    lizardman: true
 - id: skink-braves
   name: Skink Braves
   type: henchman
@@ -142,7 +148,8 @@ profiles:
   name_i18n:
     es: Skinks Guerreros
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    lizardman: true
 - id: saurus-braves
   name: Saurus Braves
   type: henchman
@@ -174,7 +181,8 @@ profiles:
   name_i18n:
     es: Saurus Guerreros
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    lizardman: true
 - id: kroxigor
   name: Kroxigor
   type: henchman
@@ -211,4 +219,5 @@ profiles:
   - kroxigor--cause-fear
   - kroxigor--large
   - kroxigor--animal
-  combat_traits: {}
+  combat_traits:
+    lizardman: true

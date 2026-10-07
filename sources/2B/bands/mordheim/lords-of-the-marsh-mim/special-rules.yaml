@@ -61,16 +61,15 @@ rules:
     band: true
 - id: band--cold-blooded
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.lords-of-the-marsh-mim.band.cold-blooded
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.cold-blooded-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.cold-blooded-leadership
   name: Cold-Blooded
   effect: Fimir roll 3D6 for Leadership tests, discarding the highest result.
   source:
@@ -229,16 +228,15 @@ rules:
     band: true
 - id: draich--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lords-of-the-marsh-mim.draich.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6 inches of the Draich may use his Leadership value instead of his own when
@@ -318,16 +316,15 @@ rules:
     - draich
 - id: draich--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lords-of-the-marsh-mim.draich.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: The Draich is so revolting that it causes fear.
   source:
@@ -369,16 +366,21 @@ rules:
     - draich
 - id: draich--craven
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lords-of-the-marsh-mim.draich.craven
-      scope: LATER
+    - id: mechanic.craven
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.craven
+    - id: unimplemented.lords-of-the-marsh-mim.draich.craven.mystic-mist
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+        Outside Combat Lab's supported normal-duel scope: Mystic Mist
+        protection is an excluded map/environmental rule.
   name: Craven
   effect: A Draich is subject to the effects of fear unless they are protected by Mystic Mist.
   source:
@@ -395,16 +397,15 @@ rules:
     - draich
 - id: daemon-fimm--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lords-of-the-marsh-mim.daemon-fimm.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: The horrifying embodiment of a swamp daemon means that the Daemon-Fimm causes fear.
   source:
@@ -450,15 +451,14 @@ rules:
     - daemon-fimm
 - id: young-nobles--spiked-tail
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: profile
     effects:
     - id: trait.extra-attack-tail
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Pending L08: allocate one secondary tail attack at owner Strength +1 in each hand-to-hand combat phase.
+      reason: 'Included individual duel effect, not implemented: Separate repeated natural melee attack at bearer Strength +1; canonical contribution remains pending.'
   name: Spiked Tail
   effect: >-
     Fimir Nobles have a flexible tail with a mace-like bony tip; the Young Noble gains an extra tail
@@ -479,16 +479,21 @@ rules:
     - young-nobles
 - id: young-nobles--craven
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lords-of-the-marsh-mim.young-nobles.craven
-      scope: LATER
+    - id: mechanic.craven
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.craven
+    - id: unimplemented.lords-of-the-marsh-mim.young-nobles.craven.mystic-mist
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+        Outside Combat Lab's supported normal-duel scope: Mystic Mist
+        protection is an excluded map/environmental rule.
   name: Craven
   effect: Young Nobles are subject to the effects of fear unless they are protected by Mystic Mist.
   source:
@@ -507,16 +512,23 @@ rules:
     - young-nobles
 - id: young-nobles--stupidity
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lords-of-the-marsh-mim.young-nobles.stupidity
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.lords-of-the-marsh-mim.young-nobles.stupidity.movement
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: Random board movement after failure is outside the 1v1 duel scope.
+    - id: unimplemented.lords-of-the-marsh-mim.young-nobles.stupidity.mystic-mist
+      scope: 'NO'
+      binding: null
+      reason: Mystic Mist protection is an excluded map/environmental rule.
   name: Stupidity
   effect: Young Nobles are subject to stupidity unless they are protected by Mystic Mist.
   source:
@@ -533,16 +545,21 @@ rules:
     - young-nobles
 - id: shearls--craven
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lords-of-the-marsh-mim.shearls.craven
-      scope: LATER
+    - id: mechanic.craven
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.craven
+    - id: unimplemented.lords-of-the-marsh-mim.shearls.craven.mystic-mist
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+        Outside Combat Lab's supported normal-duel scope: Mystic Mist
+        protection is an excluded map/environmental rule.
   name: Craven
   effect: Shearls are subject to the effects of fear unless they are protected by Mystic Mist.
   source:
@@ -561,16 +578,23 @@ rules:
     - shearls
 - id: shearls--stupidity
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lords-of-the-marsh-mim.shearls.stupidity
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.lords-of-the-marsh-mim.shearls.stupidity.movement
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: Random board movement after failure is outside the 1v1 duel scope.
+    - id: unimplemented.lords-of-the-marsh-mim.shearls.stupidity.mystic-mist
+      scope: 'NO'
+      binding: null
+      reason: Mystic Mist protection is an excluded map/environmental rule.
   name: Stupidity
   effect: Shearls are subject to stupidity unless they are protected by Mystic Mist.
   source:
@@ -587,16 +611,15 @@ rules:
     - shearls
 - id: fimir-warriors--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lords-of-the-marsh-mim.fimir-warriors.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: A Fimir Warrior is so terrifying it causes fear.
   source:
@@ -638,15 +661,14 @@ rules:
     - fimir-warriors
 - id: fimir-warriors--spiked-tail
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: profile
     effects:
     - id: trait.extra-attack-tail
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Pending L08: allocate one secondary tail attack at owner Strength +1 in each hand-to-hand combat phase.
+      reason: 'Included individual duel effect, not implemented: Separate repeated natural melee attack at bearer Strength +1; canonical contribution remains pending.'
   name: Spiked Tail
   effect: >-
     Fimir warriors have a flexible tail with a mace-like bony tip; the warrior gains an extra tail
@@ -667,16 +689,19 @@ rules:
     - fimir-warriors
 - id: fimir-warriors--stupidity
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lords-of-the-marsh-mim.fimir-warriors.stupidity
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.lords-of-the-marsh-mim.fimir-warriors.stupidity.movement
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: Random board movement after failure is outside the 1v1 duel scope.
   name: Stupidity
   effect: Fimir Warriors are subject to stupidity.
   source:
@@ -751,3 +776,32 @@ rules:
       máximos: M 6, HA 6, HP 3, F 5, R 6, H 5, I 6, A 5, L 9.
   applies_to:
     band: true
+
+- id: daemon-fimm--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+  name: Equipment Restrictions
+  effect: "Daemon-Fimm cannot be equipped with weapons; they may wear armour from the Heroes list."
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: "0-2 Daemon-fimm"
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords Of The Marsh.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - daemon-fimm

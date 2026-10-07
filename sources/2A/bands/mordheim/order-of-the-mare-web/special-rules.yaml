@@ -90,16 +90,15 @@ rules:
     band: true
 - id: paragon--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.order-of-the-mare-web.paragon.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
-        psychology/rout mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -148,16 +147,18 @@ rules:
     - redeemed-knights
 - id: paragon--vow-of-poverty
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.order-of-the-mare-web.paragon.vow-of-poverty
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: equipment restrictions are roster-construction mechanics outside the
-        duel scope.
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapon.lance
   name: Vow of Poverty
   effect: The Paragon may not use a Lance.
   source:
@@ -183,7 +184,7 @@ rules:
       binding: null
       reason: >-
         Out of scope: magic subsystem (Blessings of the Mare; the prayer list is preserved in
-        sources/2A/catalog/magic-2a.yaml).
+        catalog/campaign/magic.yaml).
   name: Prayers
   effect: >-
     The Dame of the Mare may use prayers from the Blessings of the Mare list. She starts with one
@@ -204,16 +205,15 @@ rules:
     - dame-of-the-mare
 - id: pilgrims--hatred
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.order-of-the-mare-web.pilgrims.hatred
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Hatred (reroll failed to-hit in first round against hated foes) is a
-        psychology mechanic outside the duel scope.
+    - id: skill.hatred
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hatred
   name: Hatred
   effect: >-
     Pilgrims are so devout to the Dame of the Mare that they hate all and any enemies that defy her.
@@ -353,3 +353,50 @@ rules:
       limitación normal de dos monturas en zonas de terreno denso.
   applies_to:
     band: true
+- applies_to:
+    profile_ids:
+    - dame-of-the-mare
+  effect: >-
+    Comes equipped with an ancient armour that may never be removed, traded or stolen. It does not
+    prevent spell casting, and provides a 5+ save that cannot be modified, but doesn't work against
+    magical attacks.
+  effect_i18n:
+    es: >-
+      Viene equipado con una armadura antigua que nunca puede quitarse, intercambiarse ni robarse. No
+      impide lanzar conjuros y proporciona una salvación de 5+ que no puede modificarse, pero no
+      funciona contra ataques mágicos.
+  id: dame-of-the-mare--ancient-armour
+  name: Ancient Armour
+  name_i18n:
+    es: Armadura Antigua
+  runtime:
+    effects:
+    - binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 5
+      id: trait.natural-armour-save
+      scope: 'YES'
+    - binding:
+        kind: trait
+        id: trait.natural-armour-unmodified
+        parameters:
+          value: true
+      id: trait.natural-armour-unmodified
+      scope: 'YES'
+    - binding:
+        kind: trait
+        id: trait.natural-armour-negated-by-magic
+        parameters:
+          value: true
+      id: trait.natural-armour-negated-by-magic
+      scope: 'YES'
+    grant: profile
+    implemented: 'YES'
+    scope: 'YES'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Dame of the Mare
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare

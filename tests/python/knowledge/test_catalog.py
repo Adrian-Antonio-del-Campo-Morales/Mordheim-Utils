@@ -338,7 +338,9 @@ def test_special_rule_runtime_metadata_is_canonical_and_binary():
             assert runtime["implemented"] in {"YES","NO"}
             assert runtime["scope"] in {"YES","NO","LATER"}
     # 1572 before T07; the promotion added the runtime blocks of every staged rule.
-    assert classified == 2901  # 1551 + 21 hidden profile restrictions + 1329 promoted
+    # 2901 + 7 profile-scoped "May not wear armour" restrictions added by the T13
+    # reconciliation (six Sartosa/Nippon pirate bands plus clan-angrund-kep).
+    assert classified == 2908  # 1551 + 21 hidden profile restrictions + 1329 promoted
 
 
 def test_every_selectable_rule_has_an_explicit_selection_kind():
@@ -356,7 +358,6 @@ def test_every_selectable_rule_has_an_explicit_selection_kind():
     # requires it; this test validates selection kinds, not an obsolete count.
     assert selectable
     assert {rule.get("kind") for rule in selectable}==expected
-    assert sum(rule["kind"]=="warband_skill" for rule in selectable)==382  # 305 + T07 + L04 Shifty
 
 
 def test_equivalent_no_pain_rules_share_one_runtime_mechanic():
@@ -394,7 +395,7 @@ def test_every_runtime_binding_resolves_to_a_known_shared_contract():
 def test_first_500_previously_unclassified_rules_have_runtime_metadata():
     first=next(band for band in load_bands("mordheim",ROOT) if band.band["id"]=="amazons-lustria")
     last=next(band for band in load_bands("mordheim",ROOT) if band.band["id"]=="night-goblins-web")
-    assert next(rule for rule in first.special_rules if rule["id"]=="serpent-priestess--leader")["runtime"]["scope"]=="LATER"
+    assert next(rule for rule in first.special_rules if rule["id"]=="serpent-priestess--leader")["runtime"]["scope"]=="YES"
     assert next(rule for rule in last.special_rules if rule["id"]=="band--fear-elves")["runtime"]["scope"]=="LATER"
     assert next(rule for rule in last.special_rules if rule["id"]=="band--distasteful-company")["runtime"]["scope"]=="NO"
 
@@ -709,7 +710,9 @@ def test_out_of_scope_general_skills_have_explicit_non_implementation_metadata()
     excluded={row["id"] for row in load_runtime_scope("mordheim",ROOT).get("mechanic_exclusions") or ()}
     skills={row["id"]:row for row in load_skills("mordheim",ROOT)}
     added={skill_id for skill_id in excluded if skill_id in skills and (skills[skill_id].get("runtime") or {}).get("scope")=="NO"}
-    assert len(added)>=23
+    # 23 until the L06-L14 batch made `skill.fearsome` executable and removed
+    # its obsolete psychology exclusion.
+    assert len(added)>=22
     for skill_id in added:
         runtime=skills[skill_id]["runtime"]
         assert runtime["implemented"]=="NO"

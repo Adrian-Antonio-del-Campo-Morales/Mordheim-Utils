@@ -31,12 +31,9 @@ profiles:
       quantity:
         kind: fixed
         value: 1
-      notes: Gromril dagger — counts as a dagger with the gromril weapon upgrade (KB materials-and-upgrades
-        `gromril_weapon`).
+      notes: Gromril dagger — counts as a dagger with the gromril weapon upgrade (KB materials-and-upgrades `gromril_weapon`).
       notes_i18n:
-        es: >-
-          Daga de gromril: cuenta como una daga con la mejora de arma de gromril (materiales y
-          mejoras del KB, `gromril_weapon`).
+        es: 'Daga de gromril: cuenta como una daga con la mejora de arma de gromril (materiales y mejoras del KB, `gromril_weapon`).'
     - item_id: sword
       quantity:
         kind: fixed
@@ -48,28 +45,36 @@ profiles:
   rules:
   - id: hireling.hired-sword.crimashin.rule.infiltrate
     name: Infiltrate
-    effect: >-
-      A Crimashin starts with the Infiltrate skill and may choose from the Combat and Speed lists
-      when he gains a new skill.
+    effect: A Crimashin starts with the Infiltrate skill and may choose from the Combat and Speed lists when he gains a new skill.
     effect_i18n:
-      es: >-
-        Un Crimashin empieza con la habilidad Infiltrarse y puede elegir de las listas de Combate y
-        Velocidad cuando gana una habilidad nueva.
+      es: Un Crimashin empieza con la habilidad Infiltrarse y puede elegir de las listas de Combate y Velocidad cuando gana una habilidad nueva.
     name_i18n:
       es: Infiltración
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.crimashin.rule.infiltrate.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Skill access is carried by the canonical profile; acquisition and Infiltrate deployment are outside the duel.
   - id: hireling.hired-sword.crimashin.rule.a-worthy-foe
     name: A Worthy Foe
-    effect: >-
-      The Grand Master will only lend one of his operatives if he can gain something from the
-      transaction, such as the assassination of powerful enemy. A Crimashin will only be a part of a
-      warband if its opponents have a rating of over 250.
+    effect: The Grand Master will only lend one of his operatives if he can gain something from the transaction, such as the assassination of powerful enemy. A Crimashin will only be a part of a warband if its opponents have a rating of over 250.
     effect_i18n:
-      es: >-
-        El Gran Maestro solo prestará a uno de sus operativos si puede ganar algo con la
-        transacción, como el asesinato de un poderoso enemigo. Un Crimashin solo formará parte de
-        una banda si sus oponentes tienen una valoración superior a 250.
+      es: El Gran Maestro solo prestará a uno de sus operativos si puede ganar algo con la transacción, como el asesinato de un poderoso enemigo. Un Crimashin solo formará parte de una banda si sus oponentes tienen una valoración superior a 250.
     name_i18n:
       es: Un Adversario Digno
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.crimashin.rule.a-worthy-foe.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
   source_refs:
   - manual: broheim.net
     printed_page: 16
@@ -119,35 +124,52 @@ profiles:
   rules:
   - id: hireling.hired-sword.holy-man.rule.true-believer
     name: True Believer
-    effect: >-
-      A Holy Man starts with two spells from the Divine Intervention spell list (these are the same
-      as the Prayers of Sigmar as detailed in the core rules).
+    effect: A Holy Man starts with two spells from the Divine Intervention spell list (these are the same as the Prayers of Sigmar as detailed in the core rules).
     effect_i18n:
-      es: >-
-        Un Hombre Santo empieza con dos hechizos de la lista de hechizos Intervención Divina (son
-        los mismos que las Plegarias de Sigmar según se detallan en las reglas básicas).
+      es: Un Hombre Santo empieza con dos hechizos de la lista de hechizos Intervención Divina (son los mismos que las Plegarias de Sigmar según se detallan en las reglas básicas).
     name_i18n:
       es: Creyente Verdadero
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.holy-man.rule.true-believer.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
   - id: hireling.hired-sword.holy-man.rule.holy
     name: Holy
-    effect: >-
-      If a warband that follows the Path of Sigmar or The One hires a Holy Man, his hire fee will be
-      reduced to 20 dinars.
+    effect: If a warband that follows the Path of Sigmar or The One hires a Holy Man, his hire fee will be reduced to 20 dinars.
     effect_i18n:
-      es: >-
-        Si una banda que sigue el Sendero de Sigmar o El Uno contrata a un Hombre Santo, su coste de
-        contratación se reduce a 20 dinares.
+      es: Si una banda que sigue el Sendero de Sigmar o El Uno contrata a un Hombre Santo, su coste de contratación se reduce a 20 dinares.
     name_i18n:
       es: Santo
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.holy-man.rule.holy.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
   - id: hireling.hired-sword.holy-man.rule.skills
     name: Skills
     effect: A Holy Man may choose from the Strength and Holy lists when he gains a new skill.
     effect_i18n:
-      es: >-
-        Un Hombre Santo puede elegir de las listas de Fuerza y Santa cuando gana una habilidad
-        nueva.
+      es: Un Hombre Santo puede elegir de las listas de Fuerza y Santa cuando gana una habilidad nueva.
     name_i18n:
       es: Habilidades
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.holy-man.rule.skills.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Skill access is carried by the canonical profile; acquisition and Infiltrate deployment are outside the duel.
   source_refs:
   - manual: broheim.net
     printed_page: 16

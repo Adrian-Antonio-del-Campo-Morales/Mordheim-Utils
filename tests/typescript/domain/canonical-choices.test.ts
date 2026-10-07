@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { configuredProfile, profileFactsProjection, selectableRuleOptions, specialRuleOptions,
-  equipmentSetIssues, selectionDecisions, validateConstruction, type BandPackage, type Catalogue, type ConstructionContext } from "@domain/eligibility/index";
+import { catalogueSkillChoices, configuredProfile, equipmentIssue, profileEquipment, profileFactsProjection,
+  selectableRuleOptions, specialRuleOptions,
+  equipmentSetIssues, selectionDecisions, validateConstruction, type BandPackage, type BuildContext, type Catalogue, type ConstructionContext } from "@domain/eligibility/index";
 
 const pack: BandPackage = {
   band: { id: "local" }, profiles: [], equipment_lists: [], special_rules: [{
@@ -86,5 +87,87 @@ describe("L05 shared configured recipient and active-position contract", () => {
     const malformed = { ...pack, special_rules: [{ ...pack.special_rules[0]!, bindings: [{
       id: "profile.equipment-restrictions", parameters: { max_active_one_handed_weapons: true } }] }] };
     expect(() => profileFactsProjection({ pack: malformed, profile })).toThrow("invalid active");
+  });
+});
+
+/**
+ * External-audit regressions over one canonical-shaped package: a profile with
+ * no declared list buys nothing, equipment concessions stay equipment, and a
+ * promotion grant reaches only the configured Hero.
+ */
+describe("canonical projection: empty access, equipment concessions and promotion", () => {
+  const catalogue: Catalogue = {
+    packages: {}, foreign_packages: {},
+    mechanics: { "weapon.vomit-attack": {}, "skill.ignore-pain": {}, "weapon.mace": {}, "poison.black-lotus": {} },
+    mappings: { mace: "weapon.mace" }, skills: {},
+  };
+  const pack: BandPackage = {
+    band: { id: "audit-band" }, profiles: [], equipment_lists: [],
+    special_rules: [
+      { id: "troll--natural", applies_to: { profile_ids: ["troll"] }, runtime: { grant: "profile", implemented: "YES" },
+        bindings: [{ id: "weapon.vomit-attack" }, { id: "skill.ignore-pain" }] },
+      { id: "skaven--concession", applies_to: { profile_ids: ["plague-rat"] }, runtime: { grant: "profile", implemented: "YES" },
+        bindings: [{ id: "poison.black-lotus" }] },
+      { id: "ogre--skills", applies_to: { profile_ids: ["ogre"] }, runtime: { grant: "profile", implemented: "YES" },
+        bindings: [{ id: "compiler.promoted-hero-skill-access", parameters: { allowed_skill_lists: ["combat", "strength"] } }] },
+    ],
+  };
+
+  it("materializes an empty access for a canonical profile without lists", () => {
+    const facts = profileFactsProjection({ pack, profile: { id: "troll", type: "henchman" }, catalogue });
+    // The printed natural-attack concession is part of the access; the skill
+    // binding is not. The attack has no item record, so its offer is an
+    // informational KB report — never a refusal of the canonical build.
+    expect(facts.equipment_access).toEqual([{ item_id: "weapon.vomit-attack" }]);
+    expect(equipmentIssue({ profile: facts, item_id: "weapon.vomit-attack", item: null })?.code)
+      .toBe("equipment_unknown_item");
+    expect(equipmentIssue({ profile: facts, item_id: "weapon.sword",
+      item: { kind: "close-combat-weapon", mechanic_id: "weapon.sword", tags: [] } })?.code)
+      .toBe("equipment_not_permitted");
+    expect(equipmentIssue({ profile: facts, item_id: "armour.no-armour", item: null })).toBeNull();
+    const armoured = profileFactsProjection({ pack,
+      profile: { id: "troll", type: "henchman", fixed_equipment: ["mace"] }, catalogue });
+    expect(armoured.equipment_access).toContainEqual({ item_id: "mace" });
+    expect(armoured.equipment_access).toContainEqual({ item_id: "weapon.mace" });
+    expect(equipmentIssue({ profile: armoured, item_id: "mace",
+      item: { kind: "close-combat-weapon", mechanic_id: "weapon.mace", tags: [] } })).toBeNull();
+  });
+
+  it("keeps only equipment families among the binding concessions", () => {
+    expect(profileEquipment(pack, { id: "troll", type: "henchman" }, catalogue)).toEqual(["weapon.vomit-attack"]);
+    expect(profileEquipment(pack, { id: "troll", type: "henchman", fixed_equipment: ["mace"] }, catalogue))
+      .toEqual(["weapon.mace", "weapon.vomit-attack"]);
+    // A printed concession of another equipment family is preserved the same way.
+    expect(profileEquipment(pack, { id: "plague-rat", type: "henchman" }, catalogue))
+      .toEqual(["poison.black-lotus"]);
+  });
+
+  it("carries the promotion grant separately and grants it only to the Hero", () => {
+    const henchman = profileFactsProjection({ pack, profile: { id: "ogre", type: "henchman" }, catalogue });
+    expect(henchman.skill_access).toEqual([]);
+    expect(henchman.promotion_skill_access).toEqual(["combat", "strength"]);
+    const hero = profileFactsProjection({ pack,
+      profile: configuredProfile({ id: "ogre", type: "henchman" }, ["promotion.hero"]), catalogue });
+    expect(hero.skill_access).toEqual(["combat", "strength"]);
+    expect(hero.promotion_skill_access).toEqual(["combat", "strength"]);
+  });
+
+  it("offers the promoted tables only when the promotion variant is declared", () => {
+    const context: BuildContext = {
+      build: { band_id: "audit-band", profile_id: "ogre", main_weapon_id: "weapon.fist", armour_id: "armour.no-armour",
+        main_material_id: "material.normal", off_material_id: "material.normal",
+        defence_ids: [], skill_ids: [], preparation_ids: [], special_rule_ids: [], variant_ids: [] },
+      profile: { id: "ogre", type: "henchman" }, package: pack,
+      catalogue: { ...catalogue, skills: {
+        "skill.mighty-blow": { id: "skill.mighty-blow", category: "strength", kind: "general" },
+        "skill.arcane-lore": { id: "skill.arcane-lore", category: "academic", kind: "general" },
+      } },
+      profile_bindings: [], compiler_bindings: [], contracts: [],
+    };
+    expect(catalogueSkillChoices(context)["skill.mighty-blow"]).toBe(false);
+    expect(catalogueSkillChoices(context)["skill.arcane-lore"]).toBe(false);
+    const promoted = { ...context, build: { ...context.build, variant_ids: ["promotion.hero"] } };
+    expect(catalogueSkillChoices(promoted)["skill.mighty-blow"]).toBe(true);
+    expect(catalogueSkillChoices(promoted)["skill.arcane-lore"]).toBe(false);
   });
 });

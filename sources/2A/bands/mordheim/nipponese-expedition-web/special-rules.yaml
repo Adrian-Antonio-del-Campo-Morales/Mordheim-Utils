@@ -60,16 +60,15 @@ rules:
     band: true
 - id: hatamoto--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.nipponese-expedition-web.hatamoto.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
-        psychology/rout mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -151,7 +150,7 @@ rules:
       binding: null
       reason: >-
         Out of scope: magic subsystem (Vim-Toist Magic = Arabian Elemental Magic; the Elemental
-        lores are preserved in sources/2A/catalog/magic-2a.yaml).
+        lores are preserved in catalog/campaign/magic.yaml).
   name: Arcane Vim-Toist
   effect: >-
     This model is the spiritual and magical leader of the Nippon Warband, they can cast Vim-Toist

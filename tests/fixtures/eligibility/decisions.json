@@ -413,6 +413,38 @@
     ]
   },
   {
+    "name": "special list without transcribed members is pending",
+    "operation": "skillIssue",
+    "args": [
+      {
+        "band_id": "test-band",
+        "profile_id": "hero",
+        "fixed_equipment": [],
+        "equipment_access": null,
+        "equipment_forbids": [],
+        "skill_access": [
+          "special"
+        ],
+        "skill_lists": [
+          {
+            "rule_id": "band--skills",
+            "category": "special",
+            "skills": []
+          }
+        ]
+      },
+      {
+        "id": "skill.test",
+        "category": "special",
+        "kind": "skill"
+      },
+      false
+    ],
+    "codes": [
+      "skill_pending_special_list"
+    ]
+  },
+  {
     "name": "published special member permits",
     "operation": "skillIssue",
     "args": [

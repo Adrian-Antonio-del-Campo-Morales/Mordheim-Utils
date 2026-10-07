@@ -107,16 +107,14 @@ rules:
     band: true
 - id: band--factional-jealousy
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.underworld-alliance-mim.band.factional-jealousy
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Factional Jealousy
   effect: >-
     A warrior of one type may never intercept the charge meant for a warrior of the other type.
@@ -134,16 +132,14 @@ rules:
     band: true
 - id: band--glory-hogz
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.underworld-alliance-mim.band.glory-hogz
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple opponents. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Glory Hogz
   effect: >-
     If one of the factions has routed, at the start of your turn you may roll 2D6; on a double, the
@@ -227,15 +223,15 @@ rules:
     band: true
 - id: goblin-bully--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.underworld-alliance-mim.goblin-bully.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: broheim.net
@@ -250,15 +246,14 @@ rules:
   rule_ref: shared-rule.leader
 - id: goblin-bully--one-upmanship
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: trait.re-roll-melee
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Pending L06/L12: to-hit rerolls require fighting in the same combat as the Skaven Slave King.
+      reason: 'Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple opponents. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: One Upmanship
   effect: >-
     The Goblin Bully may re-roll all to hit rolls when fighting in the same combat as the Skaven
@@ -279,15 +274,15 @@ rules:
     - goblin-bully
 - id: skaven-slum-lord--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.underworld-alliance-mim.skaven-slum-lord.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: broheim.net
@@ -334,16 +329,14 @@ rules:
     - skaven-slum-lord
 - id: skaven-slave-champions--tunnel-rat
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.underworld-alliance-mim.skaven-slave-champions.tunnel-rat
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Tunnel Rat
   effect: >-
     Any characteristic-based tests being taken for scenarios set in sewers or elsewhere underground
@@ -428,16 +421,14 @@ rules:
     - boglars
 - id: boglars--bicker
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.underworld-alliance-mim.boglars.bicker
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee: requires another friendly creature and a model not engaged in close combat.'
   name: Bicker
   effect: >-
     Roll a D6 at the beginning of the turn for each Boglar within 2 inches of another Boglar and not
@@ -573,15 +564,15 @@ rules:
     - giant-rats
 - id: warpstone-troll--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.underworld-alliance-mim.warpstone-troll.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   source:
     manual: broheim.net
@@ -596,15 +587,19 @@ rules:
   rule_ref: shared-rule.fear
 - id: warpstone-troll--stupidity
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.underworld-alliance-mim.warpstone-troll.stupidity
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.underworld-alliance-mim.warpstone-troll.stupidity.movement
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: Random board movement after failure is outside the 1v1 duel scope.
   name: Stupidity
   source:
     manual: broheim.net

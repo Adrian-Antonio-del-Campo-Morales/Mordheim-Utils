@@ -17,10 +17,22 @@ EFFECT_FIELDS = {field.name for field in fields(EffectSet)}
 
 
 TRAIT_TYPES = {
+    "snorri_drunk_result": int,
+    "chaos_follower": bool, "onogal_follower": bool, "ulric_rival": bool, "aquatic": bool, "flesh_peddler_mark": bool, "guiding_dream_target": bool,
+    "eagle_friends": int,
+    "fauna_animal_kind": str, "animal_handler_leadership": int,
+    "house_guard_house": str, "fighter_kind": str, "vampire_bloodline": str,
+    "mercenary_origin": str, "elf_kind": str, "creature_kind": str, "active_command": str, "righteous_charge_active": bool, "wheelo_fitting": str, "sex": str, "species": str, "lit_item": bool, "vampire": bool, "normal_animal": bool, "lizardman": bool,
+    "stupidity": bool, "stupidity_exempt": bool, "stupidity_initial_failed": bool,
+    "stupidity_leadership": int, "stupidity_leadership_bonus": int,
     "starting_skills": (list,tuple), "natural_armour_save": int, "injury_profile": int,
     "ward_save": int, "regeneration_save": int,
     "extra_natural_attacks": int, "poison_immune": bool, "undead_or_possessed": bool,
-    "frenzy": bool, "cloud_of_flies": bool, "natural_armour_stacks": bool,
+    "frenzy": bool, "causes_fear": bool, "cloud_of_flies": bool, "natural_armour_stacks": bool,
+    # Printed Cold-Blooded variant of a supplied condition: the two sources
+    # disagree (Lizardmen apply it to Psychology and Rout, Fimir to
+    # Leadership), so the caller declares which one the warrior has.
+    "cold_blooded_origin": str,
     "charge_attack_bonus": bool, "first_round_charge_attack_bonus": bool, "maddened_with_pain": bool,
     "natural_armour_unmodified": bool, "poisonous_injury": bool, "survivor": bool,
     "natural_armour_worst_save": int,
@@ -51,6 +63,8 @@ TRAIT_TYPES = {
 
 
 COMPILER_CONTRACTS = {
+    "compiler.woodsmen-quarterstaff",
+    "compiler.aldred-fellblade",
     "compiler.no-blackpowder-weapons",
     "compiler.ignore-difficult-to-use-restrictions",
     "compiler.censer-bearer-loadout",
@@ -77,6 +91,7 @@ COMPILER_CONTRACTS = {
     "compiler.master-of-throwing-weapons",
     "compiler.mutation-purchase-at-recruitment",
     "compiler.bite-attack",
+    "compiler.strikes-last-bite",
     "compiler.berserker-incompatible-with-ferocious-charge",
     "compiler.possessed-optional-mutations-at-recruitment",
     "compiler.possessed-optional-zero-to-two-mutations-at-recruitment",
@@ -91,6 +106,7 @@ COMPILER_CONTRACTS = {
     "compiler.sacred-marks",
     "compiler.saurus-skill-prohibitions",
     "compiler.slayer-skill-options",
+    "compiler.sister-special-skills",
     "compiler.strictures",
     "compiler.tracker-gear",
     "compiler.vampiric-powers",

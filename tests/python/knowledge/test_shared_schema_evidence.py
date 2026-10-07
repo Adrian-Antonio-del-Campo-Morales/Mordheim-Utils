@@ -509,4 +509,8 @@ def test_the_equipment_access_mappings_of_f044_are_preserved():
             "str:henchman",
             "str:summoned",
         ),
+        ("unused_enum_value", "#/$defs/equipment_entry.applies_to.profile_types[]"): (
+            "str:animal",
+            "str:summoned",
+        ),
     }, equipment

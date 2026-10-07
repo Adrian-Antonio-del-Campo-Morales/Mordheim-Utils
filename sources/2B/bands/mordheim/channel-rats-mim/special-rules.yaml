@@ -165,16 +165,14 @@ rules:
     - petru
 - id: band--charms-and-hexes
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.channel-rats-mim.band.charms-and-hexes
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Magic subsystem out of the current engine scope; spells preserved verbatim for the future
-        magic module.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Charms & Hexes
   effect: >-
     Charms and Hexes are the magic of witchcraft. They involve copious amounts of spell ingredients
@@ -293,16 +291,15 @@ rules:
     - petru
 - id: domnu--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.channel-rats-mim.domnu.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Leader re-roll aura is a psychology/rout mechanic; the active engine currently binds
-        leadership through roster leader selection instead of an aura rule.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6" of the Domnu may use his Leadership value instead of his own when taking
@@ -323,16 +320,15 @@ rules:
     - domnu
 - id: domnu--prize-fighter
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.channel-rats-mim.domnu.prize-fighter
-      scope: LATER
-      binding: null
-      reason: >-
-        Unarmed-fight modifier has no matching engine mechanic; verified against the active
-        mechanics catalog (no unarmed-combat binding exists).
+    - id: skill.unarmed-fighting
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.unarmed-fighting
   name: Prize-Fighter
   effect: >-
     The Caravan Master suffers no penalties whatsoever for fighting unarmed and receives +1 Attack
@@ -422,15 +418,14 @@ rules:
     - tinker
 - id: tinker--rigger
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.channel-rats-mim.tinker.rigger
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Vehicle repair is part of the Water Caravan vehicle subsystem, out of scope.
+      reason: 'Outside the established 1v1 melee scope: campaign, recruitment, progression or post-duel aftermath. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Rigger
   effect: >-
     The Tinker is skilled in fixing minor damage to watercraft. If the boat or barge is stationary
@@ -457,16 +452,14 @@ rules:
     - tinker
 - id: truants--spry
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.channel-rats-mim.truant.spry
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Climbing-while-running interaction is a movement-phase rules exception; no matching engine
-        mechanic exists (verified against the active mechanics catalog).
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Spry
   effect: >-
     A Truant is used to climbing in and out of portholes, as well as running along rooftops with
@@ -487,16 +480,14 @@ rules:
     - truants
 - id: truants--taunt
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.channel-rats-mim.truant.taunt
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Replaces a shooting-phase action and forces an enemy movement decision; no matching engine
-        mechanic exists.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Taunt
   effect: >-
     During the Shooting phase, the Truant may choose to taunt one enemy instead of shooting with a
@@ -523,16 +514,14 @@ rules:
     - truants
 - id: dead-eyes--dead-eye-shot
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.channel-rats-mim.dead-eye.dead-eye-shot
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Shooting modifier exception with no matching engine mechanic; verify against the active
-        mechanics catalog during the promotion equivalence review.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Dead Eye Shot
   effect: >-
     The Dead-Eye has the eyes of an eagle and can hit the smallest target. He ignores to hit
@@ -553,16 +542,14 @@ rules:
     - dead-eyes
 - id: dead-eyes--target-practice
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.channel-rats-mim.dead-eye.target-practice
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Stand-and-shoot on charge is a charge-response mechanic; the active engine has no matching
-        binding.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Target Practice
   effect: >-
     The warrior can fire a single missile attack when being charged. Models that stand and shoot
@@ -609,16 +596,14 @@ rules:
     - dead-eyes
 - id: fugitives--charismatic
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.channel-rats-mim.fugitive.charismatic
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Charge restriction via Leadership test is a psychology mechanic outside the current engine
-        scope.
+      reason: 'Included individual duel effect, not implemented: Sex-qualified Leadership gate on the duel opponent charge; this canonical source has no executable binding.'
   name: Charismatic
   effect: >-
     Heartless seducers oozing machismo. A romantic rogue to the last, any model from the opposite

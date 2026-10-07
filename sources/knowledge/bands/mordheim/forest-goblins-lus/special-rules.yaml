@@ -60,16 +60,14 @@ rules:
     band: true
 - id: band--animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.forest-goblins-lus.band.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   name: Animosity
   effect: >-
     At the start of the Goblin player's turn, roll a D6 for each hero or henchman who suffers from
@@ -106,16 +104,15 @@ rules:
     band: true
 - id: chieftain--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.forest-goblins-lus.chieftain.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any models in the warband within 6 inches may use the Chieftain's Leadership instead of their
@@ -136,16 +133,14 @@ rules:
     - chieftain
 - id: bosses--animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.forest-goblins-lus.bosses.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   name: Animosity
   effect: >-
     Bosses are subject to the rules for Animosity. A Forest Goblin Boss may choose to remove his
@@ -194,16 +189,14 @@ rules:
     - shaman
 - id: forest-goblins--animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.forest-goblins-lus.forest-goblins.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   name: Animosity
   effect: Forest Goblins are subject to the rules for Animosity.
   source:
@@ -220,16 +213,14 @@ rules:
     - forest-goblins
 - id: red-toof-clan-goblins--animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.forest-goblins-lus.red-toof-clan-goblins.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   name: Animosity
   effect: Red Toof Clan Goblins are subject to the rules for Animosity.
   source:
@@ -280,16 +271,14 @@ rules:
     - red-toof-clan-goblins
 - id: sluggas--animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.forest-goblins-lus.sluggas.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   name: Animosity
   effect: Forest Goblin Sluggas are subject to the rules for Animosity.
   source:
@@ -335,16 +324,15 @@ rules:
     - sluggas
 - id: gigantic-spider--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.forest-goblins-lus.gigantic-spider.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Gigantic Spiders cause fear as described in the Mordheim Rulebook.
   source:
@@ -481,16 +469,22 @@ rules:
     - gigantic-spider
 - id: gigantic-spider--nonsentient
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.forest-goblins-lus.gigantic-spider.nonsentient
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.forest-goblins-lus.gigantic-spider.nonsentient.outside-duel
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+        Board movement, campaign progression/participation and independently
+        simulated helper/rider/group producers are outside the 1v1 duel.
+        Admissible individual exemptions and bonuses are supplied active facts.
   name: Nonsentient
   effect: >-
     Spiders are affected by the Stupidity rules. They never gain experience, as they are animals,
@@ -543,3 +537,33 @@ rules:
       los secuaces solo pueden añadir +1 a cualquier característica.
   applies_to:
     band: true
+
+- id: gigantic-spider--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "A Gigantic Spider never uses weapons or armour."
+  source:
+    manual: broheim.net
+    printed_page: 5
+    section: "0-1 Gigantic Spider"
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Forest Goblins.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - gigantic-spider

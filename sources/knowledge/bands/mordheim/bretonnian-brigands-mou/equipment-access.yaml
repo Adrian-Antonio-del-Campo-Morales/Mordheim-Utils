@@ -28,26 +28,41 @@ equipment_lists:
   - item_id: light_armour
     cost: 20
   - item_id: heavy_armour
+    applies_to:
+      profile_types:
+      - hero
     cost: 50
     notes: Heroes Only Heroes only.
     notes_i18n:
       es: Solo héroes. Solo héroes.
   - item_id: barding
+    applies_to:
+      profile_types:
+      - hero
     cost: 60
     notes: Heroes Only; starting price only Heroes only.
     notes_i18n:
       es: Solo héroes; solo precio inicial. Solo héroes.
   - item_id: rapier
+    applies_to:
+      profile_ids:
+      - fallen-noble
     cost: 15
     notes: Fallen Noble Extra Equipment (TC 7)
     notes_i18n:
       es: Equipo adicional del Noble Caído (TC 7)
   - item_id: halberd
+    applies_to:
+      profile_ids:
+      - fallen-noble
     cost: 10
     notes: Fallen Noble Extra Equipment
     notes_i18n:
       es: Equipo adicional del Noble Caído
   - item_id: lance
+    applies_to:
+      profile_ids:
+      - fallen-noble
     cost: 40
     notes: Fallen Noble Extra Equipment
     notes_i18n:
@@ -57,16 +72,25 @@ equipment_lists:
   - item_id: bow
     cost: 10
   - item_id: crossbow
+    applies_to:
+      profile_types:
+      - hero
     cost: 25
     notes: Heroes Only Heroes only.
     notes_i18n:
       es: Solo héroes. Solo héroes.
   - item_id: horse
+    applies_to:
+      profile_types:
+      - hero
     cost: 30
     notes: Heroes Only; starting price only Heroes only; starting price only.
     notes_i18n:
       es: Solo héroes; solo precio inicial. Solo héroes; solo precio inicial.
   - item_id: warhorse
+    applies_to:
+      profile_types:
+      - hero
     cost: 60
     notes: Heroes Only; starting price only Heroes only; starting price only.
     notes_i18n:

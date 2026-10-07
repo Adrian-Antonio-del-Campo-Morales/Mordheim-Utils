@@ -68,16 +68,14 @@ rules:
     band: true
 - id: band--ethereal
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.band.ethereal
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: Individual save is implemented through each explicit Ethereal profile grant; terrain, missiles and campaign prices are outside 1v1 scope.
   name: Ethereal
   effect: >-
     Spirits have a 4+ unmodifiable save against all attacks, taken after the To Hit roll. It may not
@@ -111,16 +109,15 @@ rules:
     band: true
 - id: cairn-wraith--ethereal
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.ethereal
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.ethereal-hit-save
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.ethereal-hit-save
   name: Ethereal
   effect: See the band Ethereal rule.
   source:
@@ -137,16 +134,15 @@ rules:
     - cairn-wraith
 - id: cairn-wraith--causes-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.causes-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Causes Fear
   effect: The Cairn Wraith causes fear.
   source:
@@ -163,16 +159,14 @@ rules:
     - cairn-wraith
 - id: cairn-wraith--may-not-run
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.may-not-run
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: May Not Run
   effect: The Cairn Wraith may not run.
   source:
@@ -189,16 +183,15 @@ rules:
     - cairn-wraith
 - id: cairn-wraith--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: The Cairn Wraith is immune to psychology.
   source:
@@ -242,16 +235,15 @@ rules:
     - cairn-wraith
 - id: cairn-wraith--no-pain
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.cairn-wraith.no-pain
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain
   effect: The Cairn Wraith treats stunned results as knocked down.
   source:
@@ -357,15 +349,15 @@ rules:
     - cairn-wraith
 - id: corpse-master--magical-void
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.corpse-master.magical-void
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: no effect applies to the current engine scope.
+    - id: mechanic.magical-void
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.magical-void
   name: Magical Void
   effect: >-
     The Corpse Master is a space void of magic and thus gains a 4+ save against enemy spells and
@@ -416,16 +408,14 @@ rules:
     - corpse-master
 - id: corpse-master--guardian-of-the-requilary
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.corpse-master.guardian-of-the-requilary
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Guardian of the Requilary
   effect: >-
     The Corpse Master takes his roll very seriously and will never voluntarily move more than 6
@@ -446,16 +436,14 @@ rules:
     - corpse-master
 - id: tomb-banshee--ghostly-howl
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.ghostly-howl
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Included individual duel effect, not implemented: Leadership penalty to the duel opponent Fear test; source-specific D6 timing and application remain pending.'
   name: Ghostly Howl
   effect: >-
     Enemies within 6 inches of the Tomb Banshee suffer -D6 to their Leadership when taking fear
@@ -569,16 +557,17 @@ rules:
     - spirit-hosts
 - id: poltergeists--incorporeal
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.poltergeists.incorporeal
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: trait.injury-profile
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.injury-profile
+        parameters:
+          value: 2
   name: Incorporeal
   effect: >-
     When a Poltergeist is wounded do not roll for injury; it is immediately taken out of action.
@@ -598,16 +587,14 @@ rules:
     - poltergeists
 - id: poltergeists--silent-move
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.poltergeists.silent-move
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Silent Move
   effect: Poltergeists always remain hidden unless they charge an enemy warrior.
   source:
@@ -682,16 +669,15 @@ rules:
     - mourngul
 - id: mourngul--ravening-onslaught
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.mourngul.ravening-onslaught
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.ravening-onslaught
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.ravening-onslaught
   name: Ravening Onslaught
   effect: >-
     Every to hit roll of 6 grants the Mourngul another attack, and further to hit rolls of 6 will
@@ -712,16 +698,14 @@ rules:
     - mourngul
 - id: mourngul--haunter-of-the-dark
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.mourngul.haunter-of-the-dark
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Included individual duel effect, not implemented: Personal 3+ Ethereal save; the source-specific save projection is not implemented.'
   name: Haunter of the Dark
   effect: The Mourngul's Ethereal save is increased to 3+.
   source:
@@ -738,16 +722,15 @@ rules:
     - mourngul
 - id: tomb-banshee--ethereal
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.ethereal
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.ethereal-hit-save
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.ethereal-hit-save
   name: Ethereal
   effect: See the band Ethereal rule.
   source:
@@ -764,16 +747,15 @@ rules:
     - tomb-banshee
 - id: tomb-banshee--causes-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.causes-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Causes Fear
   effect: The Tomb Banshee causes fear.
   source:
@@ -790,16 +772,14 @@ rules:
     - tomb-banshee
 - id: tomb-banshee--may-not-run
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.may-not-run
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: May Not Run
   effect: The Tomb Banshee may not run.
   source:
@@ -816,16 +796,15 @@ rules:
     - tomb-banshee
 - id: tomb-banshee--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: The Tomb Banshee is immune to psychology.
   source:
@@ -867,16 +846,15 @@ rules:
   rule_ref: shared-rule.immune-to-poison
 - id: tomb-banshee--no-pain
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.no-pain
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain
   effect: The Tomb Banshee treats stunned results as knocked down.
   source:
@@ -893,16 +871,15 @@ rules:
     - tomb-banshee
 - id: malignant-spirits--ethereal
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.malignant-spirits.ethereal
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.ethereal-hit-save
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.ethereal-hit-save
   name: Ethereal
   effect: See the band Ethereal rule.
   source:
@@ -919,16 +896,15 @@ rules:
     - malignant-spirits
 - id: malignant-spirits--causes-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.malignant-spirits.causes-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Causes Fear
   effect: Malignant Spirits cause fear.
   source:
@@ -945,16 +921,14 @@ rules:
     - malignant-spirits
 - id: malignant-spirits--may-not-run
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.malignant-spirits.may-not-run
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: May Not Run
   effect: Malignant Spirits may not run.
   source:
@@ -971,16 +945,15 @@ rules:
     - malignant-spirits
 - id: malignant-spirits--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.malignant-spirits.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: Malignant Spirits are immune to psychology.
   source:
@@ -1022,16 +995,15 @@ rules:
   rule_ref: shared-rule.immune-to-poison
 - id: malignant-spirits--no-pain
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.malignant-spirits.no-pain
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain
   effect: Malignant Spirits treat stunned results as knocked down.
   source:
@@ -1048,16 +1020,15 @@ rules:
     - malignant-spirits
 - id: revenants--causes-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.revenants.causes-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Causes Fear
   effect: Revenants cause fear.
   source:
@@ -1074,16 +1045,14 @@ rules:
     - revenants
 - id: revenants--may-not-run
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.revenants.may-not-run
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: May Not Run
   effect: Revenants may not run.
   source:
@@ -1100,16 +1069,15 @@ rules:
     - revenants
 - id: revenants--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.revenants.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: Revenants are immune to psychology.
   source:
@@ -1151,16 +1119,15 @@ rules:
   rule_ref: shared-rule.immune-to-poison
 - id: revenants--no-pain
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.revenants.no-pain
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain
   effect: Revenants treat stunned results as knocked down.
   source:
@@ -1177,16 +1144,15 @@ rules:
     - revenants
 - id: spirit-hosts--ethereal
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.ethereal
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.ethereal-hit-save
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.ethereal-hit-save
   name: Ethereal
   effect: See the band Ethereal rule.
   source:
@@ -1228,16 +1194,15 @@ rules:
     - spirit-hosts
 - id: spirit-hosts--causes-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.causes-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Causes Fear
   effect: Spirit Hosts cause fear.
   source:
@@ -1254,16 +1219,14 @@ rules:
     - spirit-hosts
 - id: spirit-hosts--may-not-run
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.may-not-run
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: May Not Run
   effect: Spirit Hosts may not run.
   source:
@@ -1280,16 +1243,15 @@ rules:
     - spirit-hosts
 - id: spirit-hosts--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: Spirit Hosts are immune to psychology.
   source:
@@ -1331,16 +1293,15 @@ rules:
   rule_ref: shared-rule.immune-to-poison
 - id: spirit-hosts--no-pain
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.spirit-hosts.no-pain
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain
   effect: Spirit Hosts treat stunned results as knocked down.
   source:
@@ -1382,16 +1343,15 @@ rules:
     - spirit-hosts
 - id: poltergeists--ethereal
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.poltergeists.ethereal
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.ethereal-hit-save
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.ethereal-hit-save
   name: Ethereal
   effect: See the band Ethereal rule.
   source:
@@ -1408,16 +1368,15 @@ rules:
     - poltergeists
 - id: poltergeists--causes-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.poltergeists.causes-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Causes Fear
   effect: Poltergeists cause fear.
   source:
@@ -1434,16 +1393,14 @@ rules:
     - poltergeists
 - id: poltergeists--may-not-run
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.poltergeists.may-not-run
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: May Not Run
   effect: Poltergeists may not run.
   source:
@@ -1460,16 +1417,15 @@ rules:
     - poltergeists
 - id: poltergeists--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.poltergeists.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: Poltergeists are immune to psychology.
   source:
@@ -1511,16 +1467,15 @@ rules:
   rule_ref: shared-rule.immune-to-poison
 - id: poltergeists--no-pain
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.poltergeists.no-pain
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain
   effect: Poltergeists treat stunned results as knocked down.
   source:
@@ -1562,16 +1517,15 @@ rules:
     - poltergeists
 - id: mourngul--ethereal
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.mourngul.ethereal
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.ethereal-hit-save
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.ethereal-hit-save
   name: Ethereal
   effect: See the band Ethereal rule.
   source:
@@ -1613,16 +1567,15 @@ rules:
     - mourngul
 - id: mourngul--causes-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.mourngul.causes-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Causes Fear
   effect: The Mourngul causes fear.
   source:
@@ -1639,16 +1592,14 @@ rules:
     - mourngul
 - id: mourngul--may-not-run
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.call-of-the-night-haint-mim.mourngul.may-not-run
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: May Not Run
   effect: The Mourngul may not run.
   source:
@@ -1665,16 +1616,15 @@ rules:
     - mourngul
 - id: mourngul--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.mourngul.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: The Mourngul is immune to psychology.
   source:
@@ -1716,16 +1666,15 @@ rules:
   rule_ref: shared-rule.immune-to-poison
 - id: mourngul--no-pain
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.mourngul.no-pain
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain
   effect: The Mourngul treats stunned results as knocked down.
   source:

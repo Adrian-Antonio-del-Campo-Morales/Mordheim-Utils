@@ -21,15 +21,15 @@ rules:
     profile_ids:
     - elder
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ostlanders.elder.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: priest-of-taal--prayers
   name: Prayers
   source:
@@ -146,15 +146,15 @@ rules:
     profile_ids:
     - ogre
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ostlanders.ogre.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: ogre--large
   name: Large
   effect: >-
@@ -338,15 +338,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.ostlanders.band.ostlander-special-skills-foul-odour
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.foul-odour
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.foul-odour
 - id: band--ostlander-special-skills-taunt
   kind: warband_skill
   name: Taunt
@@ -413,15 +413,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.ostlanders.band.ostlander-special-skills-animal-friendship
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.animal-friendship
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.animal-friendship
 - id: band--ostlander-special-skills-blood-oath
   kind: warband_skill
   name: Blood Oath

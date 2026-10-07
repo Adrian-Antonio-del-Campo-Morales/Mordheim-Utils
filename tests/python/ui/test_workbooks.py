@@ -16,8 +16,9 @@ def test_workbook_round_trip_preserves_stable_build_ids_and_result(tmp_path):
         "mordheim", collection="mordheim", band_id="mercenaries", profile_id="mercenary-captain",
         main_weapon_id="weapon.sword", off_hand_id="defence.shield", defence_ids=("defence.helmet",),
         skill_ids=("skill.mighty-blow",),
+        trait_overrides={"causes_fear": True},
     )
-    enemy = FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1), main_weapon_id="weapon.mace")
+    enemy = FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1, leadership=7), main_weapon_id="weapon.mace")
     settings = DuelExecutionSettings(5_000, 123, 500, 30)
     result = DuelResult(2_500, 2_400, 100, 5_000)
     path = tmp_path / "duel.xlsx"

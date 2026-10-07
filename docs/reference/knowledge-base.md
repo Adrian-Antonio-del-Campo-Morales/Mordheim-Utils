@@ -75,6 +75,10 @@ validated against this schema — see `packages/python/knowledge/mordheim_knowle
 | `effects[].binding` | The executable link (`kind` + `id` + optional `parameters`). | binding or `null` |
 | `effects[].reason` | Required explanation when there is no binding. | string |
 
+A rule with `grant: band` and `applies_to.band: true` may also restrict its
+recipients with `applies_to.profile_ids`. The grant identifies its band ownership;
+the profile filter identifies which warriors receive it, and its IDs must resolve.
+
 `selectable` rules (warband skills, mutations, blessings…) additionally declare
 `kind` (`warband_skill`, `mutation`, `blessing`, `virtue`, `mark`,
 `modification`, `profile_ability`, `warband_variant`).

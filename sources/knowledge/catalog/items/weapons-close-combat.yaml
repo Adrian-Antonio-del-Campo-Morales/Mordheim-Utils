@@ -2500,7 +2500,8 @@ items:
     printed_page: 2
     section: Khorne Raiders special equipment / Hellblade
     url: https://broheim.net/downloads/warbands/supplement/sartosa/Khorne%20Raiders.pdf
-  combat_status: out_of_scope
+  combat_status: implemented
+  mechanic_id: weapon.hellblade
 - id: stone_dagger
   kind: close-combat-weapon
   name: Stone Dagger
@@ -2543,8 +2544,8 @@ items:
     mounted, they may not be used by goblins and cannot be used in conjunction with any other
     weapons (but shields are allowed). Feelin' wobbly: when using a Skull Busta a roll of 2-4 is
     treated as stunned when rolling to see the extent of the model's injuries. Basha: warriors
-    wearing a helmet only save vs stunning on a roll of a 6 when hit by a Skull Busta; Knight's
-    helms (Crusading Knights warbands) only save on a 4+. 15 gc, Rare 6.
+    wearing a helmet only save vs stunning on a roll of a 6 when hit by a Skull Busta. 15 gc,
+    Rare 6.
   effect_i18n:
     es: >-
       Enormes martillos capaces de causar heridas horribles. En el primer turno de cualquier combate,
@@ -2554,8 +2555,7 @@ items:
       ninguna otra arma (aunque se permiten escudos). Sentirse flojo: al usar un Reventacraneos, un
       resultado de 2-4 se trata como aturdido al tirar para ver el alcance de las heridas del modelo.
       Basha: los guerreros que lleven yelmo solo salvan contra el aturdimiento con un 6 cuando les
-      golpea un Reventacraneos; los yelmos de caballero (bandas de Caballeros Cruzados) solo salvan
-      con un 4+. 15 gc, Rara 6.
+      golpea un Reventacraneos. 15 gc, Rara 6.
   source_refs:
   - manual: broheim.net
     printed_page: 59
@@ -2683,3 +2683,18 @@ items:
     section: Special equipment / Thinglash
     url: https://broheim.net/downloads/warbands/supplement/sealedcity/Clan%20Pristekk.pdf
   combat_status: out_of_scope
+
+- id: ceremonial_scythe
+  kind: close-combat-weapon
+  name: Ceremonial Scythe
+  name_i18n:
+    es: Guadaña Ceremonial
+  effect: 'Range: Close combat. Strength: As user +1. Difficult to use, Two-handed: cannot use a second weapon, shield or buckler while wielding it.'
+  effect_i18n:
+    es: 'Alcance: Combate cuerpo a cuerpo. Fuerza: como el usuario +1. Difícil de usar, A dos manos: no puede usar una segunda arma, escudo o rodela mientras la empuña.'
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 5
+    section: Priests for Every Occasion / Priest of Morr / Ceremonial Scythe
+  combat_status: implemented
+  mechanic_id: weapon.ceremonial-scythe

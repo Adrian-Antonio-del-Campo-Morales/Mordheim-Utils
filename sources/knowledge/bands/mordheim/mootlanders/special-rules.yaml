@@ -3,15 +3,15 @@ band_id: mootlanders
 rules:
 - id: moot-elder--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.mootlanders.moot-elder.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6" of the Moot Elder may use his Leadership characteristic when taking
@@ -146,3 +146,31 @@ rules:
       lugar de Derribado.
   applies_to:
     band: true
+- applies_to:
+    profile_ids:
+    - moot-elder
+  effect: >-
+    May buy equipment from the Halfling Equipment List and may additionally buy a pistol for 15 gc.
+  effect_i18n:
+    es: >-
+      Puede comprar equipo de la Lista de equipo de los medianos y además puede comprar una pistola
+      por 15 gc.
+  id: moot-elder--halfling-list
+  name: Halfling Equipment List
+  name_i18n:
+    es: Lista de Equipo de los Medianos
+  runtime:
+    effects:
+    - binding:
+        id: weapon.pistol
+        kind: mechanic
+      id: weapon.pistol
+      scope: 'YES'
+    grant: profile
+    implemented: 'YES'
+    scope: 'YES'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 1 Moot Elder
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/mootlanders

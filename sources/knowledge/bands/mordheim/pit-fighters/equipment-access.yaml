@@ -33,7 +33,7 @@ equipment_lists:
     items:
     - helmet
     - dagger
-    - double_handed_weapon
+    - great_weapon
     - light_armour
   - id: chaos-style
     name: Chaos Style
@@ -106,6 +106,9 @@ equipment_lists:
   - item_id: axe
     cost: 5
   - item_id: dwarf_axe
+    applies_to:
+      profile_ids:
+      - dwarf-troll-slayer
     cost: 15
     notes: Dwarf Troll Slayer only.
     notes_i18n:
@@ -117,16 +120,25 @@ equipment_lists:
   - item_id: spiked_gauntlet
     cost: 15
   - item_id: gromril_weapon
+    applies_to:
+      profile_ids:
+      - dwarf-troll-slayer
     cost: 3
     notes: Dwarf Troll Slayer only.
     notes_i18n:
       es: Solo Matatrolles Enanos.
   - item_id: light_armour
+    applies_to:
+      profile_ids:
+      - ogre-pit-fighter
     cost: 20
     notes: Ogre Pit Fighter only.
     notes_i18n:
       es: Solo el Luchador de Foso Ogro.
   - item_id: helmet
+    applies_to:
+      profile_ids:
+      - ogre-pit-fighter
     cost: 10
     notes: Ogre Pit Fighter only.
     notes_i18n:

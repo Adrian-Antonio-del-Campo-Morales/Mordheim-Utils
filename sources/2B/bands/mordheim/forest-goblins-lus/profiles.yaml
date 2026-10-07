@@ -18,6 +18,7 @@ profiles:
     Ld: 7
   equipment_lists:
   - hero-equipment-list
+  - special-forest-goblin-equipment
   fixed_equipment: []
   equipment_restrictions: []
   skill_access:
@@ -56,6 +57,7 @@ profiles:
     Ld: 6
   equipment_lists:
   - hero-equipment-list
+  - special-forest-goblin-equipment
   fixed_equipment: []
   equipment_restrictions: []
   skill_access:
@@ -144,7 +146,8 @@ profiles:
     es: Goblins del Bosque
   rule_ids:
   - forest-goblins--animosity
-  combat_traits: {}
+  combat_traits:
+    species: goblin
 - id: red-toof-clan-goblins
   name: Red Toof Clan Goblins
   type: henchman
@@ -178,7 +181,8 @@ profiles:
   rule_ids:
   - red-toof-clan-goblins--animosity
   - red-toof-clan-goblins--berserkers
-  combat_traits: {}
+  combat_traits:
+    species: goblin
 - id: sluggas
   name: Forest Goblin Sluggas
   type: henchman
@@ -212,7 +216,8 @@ profiles:
   rule_ids:
   - sluggas--animosity
   - sluggas--sluggas
-  combat_traits: {}
+  combat_traits:
+    species: goblin
 - id: gigantic-spider
   name: Gigantic Spider
   type: henchman

@@ -33,16 +33,19 @@ rules:
     band: true
 - id: band--ethereal
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.ghost-pirates-sar.band.ethereal
+    - id: mechanic.ghost-pirate-ethereal
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.ghost-pirate-ethereal
+    - id: ghost-pirate-ethereal-map-campaign
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: Terrain, water, purchase costs and campaign item eligibility are outside a resolved 1v1 duel.
   name: Ethereal
   effect: >-
     Ghost Pirates and Screaming Ghosts have the ability 'Ethereal', which gives a 4+ unmodifiable
@@ -77,6 +80,9 @@ rules:
       modelos no Etéreos (márcalo en tu lista).
   applies_to:
     band: true
+    profile_ids:
+    - ghost-captain
+    - screaming-ghosts
 - id: band--cursed-pistol
   runtime:
     scope: 'NO'
@@ -160,16 +166,19 @@ rules:
     - ghost-captain
 - id: ghost-captain--undead
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
     - id: unimplemented.ghost-pirates-sar.ghost-captain.undead
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: Remaining clauses beyond Causes Fear require their own L11/L12/L14 or campaign consumers; only the Fear clause is executed here.
   name: Undead (Ghost Captain)
   effect: A Ghost Captain is Immune to Poison, Immune to Psychology, and causes Fear.
   source:
@@ -186,16 +195,19 @@ rules:
     - ghost-captain
 - id: screaming-ghosts--undead
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
     - id: unimplemented.ghost-pirates-sar.screaming-ghosts.undead
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: Remaining clauses beyond Causes Fear require their own L11/L12/L14 or campaign consumers; only the Fear clause is executed here.
   name: Undead (Screaming Ghosts)
   effect: Screaming Ghosts are Immune to Poison, Immune to Psychology, and cause Fear.
   source:
@@ -212,16 +224,19 @@ rules:
     - screaming-ghosts
 - id: skeleton-mates--undead
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
     - id: unimplemented.ghost-pirates-sar.skeleton-mates.undead
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: Remaining clauses beyond Causes Fear require their own L11/L12/L14 or campaign consumers; only the Fear clause is executed here.
   name: Undead (Skeleton Mates)
   effect: Skeleton Mates are Immune to Poison, Immune to Psychology, and cause Fear.
   source:
@@ -238,16 +253,15 @@ rules:
     - skeleton-mates
 - id: skeleton-mates--no-pain
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ghost-pirates-sar.skeleton-mates.no-pain
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain (Skeleton Mates)
   effect: Skeleton Mates treat a 'stunned' result on the injury chart as 'knocked down'.
   source:
@@ -328,16 +342,15 @@ rules:
     - sea-singer
 - id: sea-singer--beauty-of-the-sea
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ghost-pirates-sar.sea-singer.beauty-of-the-sea
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.beauty-of-the-sea
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.beauty-of-the-sea
   name: Beauty of the Sea
   effect: >-
     In order for a male, non-animal enemy to charge a Sea Singer, he must pass a Leadership test, or
@@ -365,16 +378,19 @@ rules:
     - sea-singer
 - id: gibbets--undead
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
     - id: unimplemented.ghost-pirates-sar.gibbets.undead
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: Remaining clauses beyond Causes Fear require their own L11/L12/L14 or campaign consumers; only the Fear clause is executed here.
   name: Undead (Gibbets)
   effect: >-
     Gibbets count as skeletons, and are Immune to Poison, Immune to Psychology, and cause Fear.
@@ -394,16 +410,15 @@ rules:
     - gibbets
 - id: gibbets--no-pain
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ghost-pirates-sar.gibbets.no-pain
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
   name: No Pain (Gibbets)
   effect: Gibbets treat a 'stunned' result on the injury chart as 'knocked down'.
   source:
@@ -474,16 +489,22 @@ rules:
     - gibbets
 - id: gibbets--iron-cage
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ghost-pirates-sar.gibbets.iron-cage
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.iron-cage
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.iron-cage
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: [armour-suit]
   name: Iron Cage
   effect: >-
     The gibbet cage fastened around the skeleton forms a makeshift protection. Gibbets receive a 5+
@@ -543,16 +564,19 @@ rules:
     - gibbets
 - id: the-bloated--undead
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
     - id: unimplemented.ghost-pirates-sar.the-bloated.undead
-      scope: 'NO'
+      scope: LATER
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: Remaining clauses beyond Causes Fear require their own L11/L12/L14 or campaign consumers; only the Fear clause is executed here.
   name: Undead (the Bloated)
   effect: As Zombies, the Bloated are Immune to Poison, Immune to Psychology, and cause Fear.
   source:
@@ -576,9 +600,7 @@ rules:
     - id: unimplemented.ghost-pirates-sar.the-bloated.no-pain
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: Q037 user ruling 2026-10-04; Squishy overrides this No Pain clause, so stunned remains stunned.
   name: No Pain (the Bloated)
   effect: >-
     The Bloated treat a 'stunned' result on the injury chart as 'knocked down'. (Note: the PDF also
@@ -651,16 +673,15 @@ rules:
     - the-bloated
 - id: the-bloated--squishy
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ghost-pirates-sar.the-bloated.squishy
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: rule.squishy
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: rule.squishy
   name: Squishy
   effect: >-
     While the Bloated are far beyond feeling pain, they are slightly easier to break than normal

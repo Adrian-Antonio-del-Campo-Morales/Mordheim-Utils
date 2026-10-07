@@ -18,6 +18,33 @@ from mordheim_knowledge.loader import runtime_bindings
 _KNOWLEDGE_ROOT = Path(__file__).resolve().parents[3] / "sources" / "knowledge"
 
 
+def test_catalogue_audit_rejects_unknown_active_contracts_but_allows_plans(tmp_path):
+    import json
+    from mordheim_combat_lab.verification.structural import _catalogue_binding_errors
+
+    path = tmp_path / "catalog/skills/test.yaml"
+    path.parent.mkdir(parents=True)
+    rule = {"id": "skill.test", "runtime": {
+        "scope": "YES", "implemented": "YES", "grant": "none",
+        "effects": [{"id": "test", "scope": "YES",
+                     "binding": {"kind": "mechanic", "id": "skill.known"}}],
+    }}
+
+    def errors():
+        path.write_text(json.dumps({"skills": [rule]}), encoding="utf-8")
+        return _catalogue_binding_errors(tmp_path, {"skill.known"})
+
+    assert errors() == []
+    rule["runtime"]["effects"][0]["binding"]["id"] = "skill.missing"
+    assert "unknown mechanic binding skill.missing" in errors()[0]
+    rule["runtime"]["implemented"] = "NO"
+    assert errors() == []
+    rule["runtime"]["scope"] = "LATER"
+    rule["runtime"]["effects"][0]["scope"] = "LATER"
+    rule["runtime"]["implemented"] = "YES"
+    assert "active binding requires scope YES" in errors()[0]
+
+
 def _implemented_rule_records() -> int:
     """Count implemented band rules straight from the knowledge base.
 
@@ -52,29 +79,34 @@ def test_structural_audit_covers_the_current_implemented_catalogue_snapshot():
     assert report.errors == ()
     assert report.structural_complete
     # Catalogue snapshot only, never an assertion of semantic completeness.
-    assert report.execution_mechanics == 194  # 193 entry + L04 Shifty
-    assert report.projected_mechanics == 191  # 190 entry + L04 Shifty
+    # Current modular deliveries reconciled on 2026-10-05, including 12 already
+    # executing Frenzy/Hatred records whose stale LATER scope is now YES.
+    # Counts describe structural projection only, not semantic certification.
+    assert report.execution_mechanics == 310
+    assert report.projected_mechanics == 307  # three declared exclusions
     assert report.projected_trait_bindings == 38  # L03 Spectral: 37 -> 38
-    assert report.evidenced_profile_bindings == 6
-    assert report.projected_automatic_compiler_bindings == 35
+    assert report.evidenced_profile_bindings == 7  # active use whitelist, separate from ownership
+    assert report.projected_automatic_compiler_bindings == 37
     assert report.evidenced_selectable_compiler_bindings == 8
     assert report.evidenced_special_compiler_bindings == 18
-    assert report.observable_canonical_bindings == 175  # 173 + L03 Spectral + L04 Shifty
+    assert report.observable_canonical_bindings == 264
     assert report.evidenced_complex_sequences == 13
-    assert report.modular_tag_consumers == 75  # L04: Shifty's existing round consumer
+    assert report.modular_tag_consumers == 167
     # Field-consumer registry stays in lockstep with the EffectSet contract;
     # derived here from the same static registry the audit reads.
     from mordheim_combat_lab.verification.structural import MODULAR_FIELD_CONSUMERS
     assert report.modular_operator_fields == len(MODULAR_FIELD_CONSUMERS)
     assert len(MODULAR_FIELD_CONSUMERS) == len(set(MODULAR_FIELD_CONSUMERS))
-    assert report.modular_execution_mechanics == 194
+    assert report.modular_execution_mechanics == 310
     # 420 base records + 2 forbid-skill-categories profile rules + the
     # implemented records of the promoted bands, including L03/L04 activation.
     # Derived from the knowledge base instead of pinning a number: it moves with
     # legitimately promoted rules and fails on any silent drift.
     assert report.implemented_rule_records == _implemented_rule_records()
-    assert report.implemented_rule_records == 493  # 491 + L03 Spectral + L04 Shifty
-    assert report.canonical_bindings == 175
+    # 1009 + 7 profile-scoped "May not wear armour" restrictions added by the T13
+    # reconciliation (six Sartosa/Nippon pirate bands plus clan-angrund-kep).
+    assert report.implemented_rule_records == 1016  # includes individual Leadership rerolls and Fear skills
+    assert report.canonical_bindings == 264
 
 
 def test_every_effect_field_has_an_owned_phase_operator():

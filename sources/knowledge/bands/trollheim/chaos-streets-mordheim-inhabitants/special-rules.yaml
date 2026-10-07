@@ -19,15 +19,15 @@ rules:
     profile_ids:
     - prophet
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.chaos-streets-mordheim-inhabitants.prophet.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: prophet--fanatic
   name: Fanatic
   effect: The Prophet automatically passes every test based on Leadership.
@@ -163,12 +163,12 @@ rules:
         Deferred subsystem: psychology or mounts.
 - id: lunatics--frenzy
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'YES'
     grant: profile
     effects:
     - id: trait.frenzy
-      scope: LATER
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.frenzy

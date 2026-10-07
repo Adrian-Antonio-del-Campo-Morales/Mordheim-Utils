@@ -33,11 +33,21 @@ class FighterState:
     force_of_will_penalty: int = 0
     weapon_skill: int = 0
     strength: int = 0
+    torture_strength_loss: int = 0
     toughness: int = 0
     initiative: int = 0
     attacks: int = 0
     broken_hands: frozenset[str] = frozenset()
     hampered_hands: tuple[str, ...] = ()
+    fear_hit_sixes: bool = False
+    stupidity_failed: bool = False
+    charm_attack_blocked: bool = False
+    charm_auto_hit: bool = False
+    entranced: bool = False
+    guiding_dream_result: int = 0
+    drunken_result: int = 0
+    animosity_failed: bool = False
+    last_shadow_dance: str | None = None
 
     @property
     def active(self) -> bool:
@@ -57,6 +67,8 @@ class DuelState:
     context: PreparedDuelContext | None = None
     second_charged: bool | None = None
     initial_first_player_turn: bool | None = None
+    engaged: bool = True
+    failed_charges: frozenset[str] = frozenset()
 
     @property
     def initial_charge_flags(self) -> tuple[bool, bool]:
@@ -89,6 +101,8 @@ class AttackOutcome:
     damage_already_reacted: int = 0
     reactions_resolved: bool = False
     natural_hit_six: bool = False
+    melee_attack: bool = True
+    knocked_down_target: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -139,7 +153,8 @@ def _refresh_random_characteristics(
     return replace(
         state,
         weapon_skill=values.get("WS", state.weapon_skill),
-        strength=values.get("S", state.strength),
+        strength=(max(1, values["S"] - state.torture_strength_loss)
+                  if "S" in values else state.strength),
         toughness=values.get("T", state.toughness - fighter.global_effects.toughness_bonus)
             + fighter.global_effects.toughness_bonus,
         initiative=values.get("I", state.initiative),
@@ -167,10 +182,22 @@ def initialize_fighter(fighter: CompiledFighter, dice: DiceSource, key: str) -> 
         affected = {1: "I", 2: "WS", 4: "T", 5: "S"}.get(disability)
         if affected:
             values[affected] = max(1, values[affected] - 1)
+    guiding_dream = (dice.roll(RollRequest(f"{key}.guiding-dream"))
+                     if phases.has_tag(fighter.global_effects, "mechanic.guiding-dream") else 0)
+    nominated = phases.has_tag(fighter.global_effects, "condition.guiding-dream-target")
+    if nominated and guiding_dream in (4, 5):
+        values["S"] += 1
     wounds = fighter.characteristics.wounds + int(phases.has_tag(fighter.global_effects, "skill.monstrous"))
     return FighterState(
         wounds=wounds,
-        frenzy=fighter.global_effects.frenzy,
+        guiding_dream_result=guiding_dream,
+        frenzy=((fighter.global_effects.frenzy or (nominated and guiding_dream == 6))
+                and (not phases.has_tag(fighter.global_effects, "mechanic.psychology-immunity")
+                     or phases.has_tag(fighter.global_effects, "condition.snorri-frenzy"))),
+        stupidity_failed=(phases.has_tag(fighter.global_effects, "condition.stupidity-failed")
+                          and not phases.has_tag(fighter.global_effects, "condition.stupidity-exempt")
+                          and not fighter.global_effects.frenzy
+                          and not phases.has_tag(fighter.global_effects, "mechanic.psychology-immunity")),
         lucky_charm=phases.has_tag(fighter.global_effects, "defence.lucky-charm"),
         parries_remaining=_parry_capacity(fighter),
         weapon_skill=values["WS"], strength=values["S"], toughness=values["T"],
@@ -187,15 +214,30 @@ def initialize_duel(
         raise ValueError(
             "weapon.lance is outside the one-against-one runtime: mounted combat is not supported"
         )
+    for fighter, opponent in ((first, second), (second, first)):
+        if (phases.has_tag(fighter.global_effects, "condition.guiding-dream-target")
+                and not phases.has_tag(opponent.global_effects, "fighter-kind.hero")):
+            raise ValueError("Guiding Dream requires the nominated opposing model to be a Hero")
     prepared = prepare_duel_context(first, second, context)
-    legacy_first_charged = (
-        dice.roll(RollRequest("duel.charge")) >= 4
-        if prepared is None or prepared.facts.charging is None else True
-    )
-    first_charged, second_charged = (
-        prepared.charge_flags(legacy_first_charged)
-        if prepared is not None else (legacy_first_charged, None)
-    )
+    allowed = tuple(
+        not phases.has_tag(fighter.global_effects, "mechanic.shallya-strictures")
+        or any(phases.has_tag(opponent.global_effects, tag)
+               for tag in ("band.carnival-of-chaos", "identity.onogal-follower"))
+        for fighter, opponent in ((first, second), (second, first)))
+    explicit_charges = prepared is not None and prepared.facts.charging is not None
+    if explicit_charges:
+        legacy_first_charged = True
+        first_charged, second_charged = prepared.charge_flags(True)
+        if any(charging and not permitted for charging, permitted in zip((first_charged, second_charged), allowed)):
+            raise ValueError("Shallyan Strictures permit charges only against Carnival of Chaos or followers of Onogal")
+    else:
+        # Sample only legal initial chargers; when neither may charge, resolve
+        # established contact and sample the active player, not a forbidden charge.
+        legacy_first_charged = allowed[0] if allowed[0] != allowed[1] else dice.roll(RollRequest("duel.charge")) >= 4
+        first_charged = legacy_first_charged and allowed[0]
+        second_charged = not legacy_first_charged and allowed[1]
+        if allowed == (True, True) and prepared is None:
+            second_charged = None
     return DuelState(
         initialize_fighter(first, dice, "first"),
         initialize_fighter(second, dice, "second"),

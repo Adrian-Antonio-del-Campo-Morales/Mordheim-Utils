@@ -34,16 +34,14 @@ rules:
     band: true
 - id: band--ghutani-flagellants
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.ghutani-rel.band.ghutani-flagellants
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: campaign, recruitment, progression or post-duel aftermath. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Flagellants
   effect: >-
     A Ghutani that has seen too much dishonour heaped upon his people may become slightly unhinged.
@@ -123,16 +121,15 @@ rules:
     band: true
 - id: emir--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ghutani-rel.emir.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6" of the Emir may use his Leadership characteristic when taking Leadership

@@ -45,7 +45,7 @@ def test_every_legal_profile_can_execute_a_complete_scalar_round():
         for row in load_runtime_scope("mordheim").get("profile_exclusions") or ()
     }
     opponent = compile_fighter(FighterBuild(
-        "mordheim", Characteristics(3, 3, 3, 1, 3, 1),
+        "mordheim", Characteristics(3, 3, 3, 1, 3, 1, leadership=7),
     ))
     executed = 0
     for collection in ("mordheim", "trollheim"):
@@ -63,11 +63,11 @@ def test_every_legal_profile_can_execute_a_complete_scalar_round():
                 executed += 1
     # Every profile of both collections but the three declared exclusions
     # (534 before T07 promoted the 2A/2B bands).
-    assert executed == 1053
+    assert executed == 1063
 
 
 def test_every_execution_mechanism_can_enter_the_scalar_round_pipeline():
-    characteristics = Characteristics(3, 3, 3, 2, 3, 1)
+    characteristics = Characteristics(3, 3, 3, 2, 3, 1, leadership=7)
     opponent = compile_fighter(FighterBuild("mordheim", characteristics))
     excluded = {
         row["id"] for row in load_runtime_scope("mordheim").get("mechanic_exclusions") or ()
@@ -102,5 +102,6 @@ def test_every_execution_mechanism_can_enter_the_scalar_round_pipeline():
             state = initialize_duel(fighter, opponent, dice)
             assert resolve_round(fighter, opponent, state, dice).state.round_index == 1
             executed += 1
-    # L04 adds Shifty; L06 adds nine weapon profiles and Killing Blow.
-    assert executed == 201
+    # L04 adds Shifty; L06/L07 add local profiles and source-specific variants.
+    # Crude Belch needs known enemy Leadership; the generic opponent supplies it.
+    assert executed == 246

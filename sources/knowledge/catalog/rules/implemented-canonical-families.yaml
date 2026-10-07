@@ -1,23 +1,86 @@
 schema_version: 1
 status: executable
-note: Shared canonical families with executable compiler, trait, or combat-engine contracts.
+note: Current included compiler, trait and mechanic binding memberships of implemented band rules in Mordheim
+  and Trollheim. Counts.rules counts memberships, not distinct rules or complete-clause semantic certification.
+  Compound excluded or deferred clauses remain in their canonical runtime records.
 counts:
-  families: 66
-  rules: 101
+  families: 258
+  rules: 990
   kinds:
-    compiler: 41
-    mechanic: 20
-    trait: 5
+    compiler: 63
+    mechanic: 157
+    trait: 38
 families:
+- id: mechanic.handler-leadership
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - dark-elves/cold-one-beasthounds--stupidity
+  - druchii-mic/slavehounds--beastmaster
+  - kislevites/trained-bear--trained
+- id: mechanic.brood-mentality
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - brood-of-ghurash-the-sc/band--brood-mentality
+- id: mechanic.stupidity
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - black-orcs/troll--stupidity
+  - brood-of-ghurash-the-sc/band--brood-mentality
+  - crooked-moon-kep/troll--stupidity
+  - dark-elves/cold-one-beasthounds--stupidity
+  - forest-goblins-lus/gigantic-spider--nonsentient
+  - forest-goblins/gigantic-spider--non-sentient
+  - kislevites/trained-bear--trained
+  - lords-of-the-marsh-mim/fimir-warriors--stupidity
+  - lords-of-the-marsh-mim/shearls--stupidity
+  - lords-of-the-marsh-mim/young-nobles--stupidity
+  - mazzalupo-web/black-sheep--stupidity
+  - night-goblins-kaz/troll--stupidity
+  - night-goblins-mic/troll--stupidity
+  - night-goblins-web/troll--stupidity
+  - orc-mob/troll--stupidity
+  - skaven-clan-eshin/rat-ogre--stupidity
+  - skaven-clan-pestilens/rat-ogre--stupidity
+  - skaven-of-clan-mors-kaz/rat-ogre--stupidity
+  - skaven-of-clan-moulder-web/rat-ogres--stupidity
+  - skaven-of-clan-pristekk-sc/rat-ogres--stupidity
+  - underworld-alliance-mim/warpstone-troll--stupidity
+- id: mechanic.craven
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - lords-of-the-marsh-mim/draich--craven
+  - lords-of-the-marsh-mim/shearls--craven
+  - lords-of-the-marsh-mim/young-nobles--craven
+- id: mechanic.cold-blooded-psychology
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - lizardmen-lus/band--cold-blooded
+  - lizardmen/band--cold-blooded
+- id: mechanic.cold-blooded-leadership
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lords-of-the-marsh-mim/band--cold-blooded
 - id: compiler.no-blackpowder-weapons
   kind: compiler
   implemented: 'YES'
   basis: equivalent-effects
   members:
+  - chaos-streets-deathbringers/band--no-noise
+  - dark-elves/band--black-powder-weapons
   - lustria-dark-elves/band--ancestral-customs
   - lustria-high-elves/band--ancestral-customs
-  - dark-elves/band--black-powder-weapons
-  - chaos-streets-deathbringers/band--no-noise
 - id: compiler.ignore-difficult-to-use-restrictions
   kind: compiler
   implemented: 'YES'
@@ -62,9 +125,9 @@ families:
   basis: equivalent-effects
   members:
   - battle-monks-of-cathay/band--distaste-for-poison
-  - shadow-warriors/band--distaste-for-poison
   - chaos-streets-sons-of-nagarythe/band--honourable
   - lustria-high-elves/band--honourable
+  - shadow-warriors/band--distaste-for-poison
 - id: mechanic.force-of-will
   kind: mechanic
   implemented: 'YES'
@@ -103,8 +166,8 @@ families:
   basis: equivalent-effects
   members:
   - chaos-streets-pit-fighters/ogre-pit-fighter--skills
-  - pit-fighters/ogre-pit-fighter--skills
   - ostlanders/ogre--skills
+  - pit-fighters/ogre-pit-fighter--skills
 - id: mechanic.unpredictable-attack
   kind: mechanic
   implemented: 'YES'
@@ -130,15 +193,27 @@ families:
   implemented: 'YES'
   basis: equivalent-effects
   members:
-  - lustria-dark-elves/darkblades--close-combat-specialists
+  - black-dwarfs/bull-centaur--no-missile-weapons
+  - chaos-streets-dwarf-treasure-hunters/dwarf-troll-slayers--no-missile-weapons
+  - chaos-streets-pit-fighters/dwarf-troll-slayer--no-missile-weapons
   - dark-elves/fellblades--melee-specialists
+  - dwarf-rangers/dwarf-troll-slayers--no-missile-weapons
+  - dwarf-treasure-hunters/dwarf-troll-slayers--no-missile-weapons
+  - khemri-cursed-of-karak-zorn/troll-slayer--no-missile-weapons
+  - lustria-dark-elves/darkblades--close-combat-specialists
+  - lustria-lizardmen/saurus-braves--no-missile-weapons
+  - lustria-lizardmen/saurus-totem-warrior--no-missile-weapons
+  - ostlanders/ruffians--no-missile-weapons
+  - pit-fighters/dwarf-troll-slayer--no-missile-weapons
+  - trollheim-witch-hunters/flagellants--no-missile-weapons
+  - witch-hunters/flagellants--no-missile-weapons
 - id: compiler.promoted-hero-no-strength-access
   kind: compiler
   implemented: 'YES'
   basis: equivalent-effects
   members:
-  - night-goblins-web/band--promoted-henchmen-no-strength
   - averlanders/halflings-scouts--promotion
+  - night-goblins-web/band--promoted-henchmen-no-strength
 - id: trait.animal-friendship
   kind: trait
   implemented: 'YES'
@@ -162,6 +237,7 @@ families:
   implemented: 'YES'
   basis: unique-effect
   members:
+  - outlaws-of-stirwood-forest-redux-fbg/band--bow-restrictions
   - outlaws-of-stirwood-forest/band--bow-discipline
 - id: compiler.chaos-engineer
   kind: compiler
@@ -264,8 +340,8 @@ families:
   implemented: 'YES'
   basis: equivalent-effects
   members:
-  - trollheim-cult-of-the-possessed/band--mutation-purchase
   - cult-of-the-possessed/band--mutations
+  - trollheim-cult-of-the-possessed/band--mutation-purchase
 - id: compiler.possessed-optional-mutations-at-recruitment
   kind: compiler
   implemented: 'YES'
@@ -337,22 +413,26 @@ families:
   implemented: 'YES'
   basis: unique-effect
   members:
+  - lizardmen-lus/band--saurus-skill-prohibitions
   - lizardmen/band--saurus-skill-prohibitions
 - id: compiler.lizardmen-scaly-skin
   kind: compiler
   implemented: 'YES'
   basis: shared-effect
   members:
+  - lizardmen-lus/band--scaly-skin
   - lizardmen/band--scaly-skin
+  - lords-of-the-marsh-mim/band--scaly-skin
   - lustria-lizardmen/band--scaly-skin
 - id: compiler.bite-attack
   kind: compiler
   implemented: 'YES'
   basis: equivalent-effects
   members:
+  - lizardmen-lus/band--bite-attack
   - lizardmen/band--bite-attack
-  - lustria-lizardmen/saurus-totem-warrior--bite-attack
   - lustria-lizardmen/saurus-braves--bite-attack
+  - lustria-lizardmen/saurus-totem-warrior--bite-attack
 - id: compiler.slayer-skill-options
   kind: compiler
   implemented: 'YES'
@@ -426,6 +506,7 @@ families:
   members:
   - battle-monks-of-cathay/dragon-monks--unarmed-fighting
   - battle-monks-of-cathay/warrior-monks--unarmed-fighting
+  - channel-rats-mim/domnu--prize-fighter
 - id: skill.unarmed-critical-strikes
   kind: mechanic
   implemented: 'YES'
@@ -437,6 +518,1776 @@ families:
   implemented: 'YES'
   basis: equivalent-effects
   members:
+  - chaos-streets-deathbringers/band--deathbringer-special-skills-art-of-unarmed-combat
   - skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death
   - trollheim-skaven-clan-eshin/band--skaven-special-skills-art-of-silent-death
-  - chaos-streets-deathbringers/band--deathbringer-special-skills-art-of-unarmed-combat
+- id: compiler.strikes-last-bite
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - shallows-beasts-mim/mutant-priest--bite-attack
+- id: mechanic.leader-six
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - amazons-lustria/serpent-priestess--leader
+  - amazons-mordheim/priestess--leader
+  - arabian-tomb-raiders/sheikh--leader
+  - araby-smugglers-sar/rais--leader
+  - averlanders/captain--leader
+  - battle-monks-of-cathay/emissary--leader
+  - beastmen-raiders/beastmen-chieftain--leader
+  - black-dwarfs/sorcerer--leader
+  - black-orcs/black-orc-boss--leader
+  - bretonnian-buccaneers-sar/captain--leader
+  - bretonnian-chapel-guard/questing-knight--leader
+  - bretonnian-knights/questing-knight--leader
+  - brood-of-ghurash-the-sc/broodmother--leader
+  - carnival-of-chaos/carnival-master--leader
+  - channel-rats-mim/domnu--leader
+  - chaos-streets-arcane-society/grand-wizard--leader
+  - chaos-streets-bretonnian-knights/questing-knight--leader
+  - chaos-streets-deathbringers/shadow-blade--leader
+  - chaos-streets-greenskins/orc-boss--leader
+  - chaos-streets-mordheim-inhabitants/prophet--leader
+  - chaos-streets-pit-fighters/pit-king--leader
+  - chaos-streets-sigmar-protectorate/warrior-priest--leader
+  - chaos-streets-sons-of-nagarythe/shadow-master--leader
+  - chaos-streets-undead-bloodlines/blood-dragon-vampire--leader
+  - chaos-streets-undead-bloodlines/lahmia-vampire--leader
+  - chaos-streets-undead-bloodlines/necrarch-vampire--leader
+  - chaos-streets-undead-bloodlines/strigoi-vampire--leader
+  - chaos-streets-undead-bloodlines/von-carstein-vampire--leader
+  - clan-angrund-kep/dwarf-noble--leader
+  - clockworkers-sc/master-of-clocks--leader
+  - crooked-moon-kep/big-boss--leader
+  - cult-of-the-possessed/magister--leader
+  - cursed-cavalcade/aristocrat--leader
+  - dark-elves/high-born--leader
+  - dreamwalkers-cult-of-morr-fbg/dreamer--leader
+  - druchii-mic/noble--leader
+  - dwarf-guildsmen-kaz/master-craftsman--leader
+  - dwarf-rangers/runesmith--leader
+  - dwarf-slayer-cult-web/giant-slayer--leader
+  - dwarf-slayers-kaz/giant-slayer--leader
+  - dwarf-treasure-hunters/dwarf-noble--leader
+  - fallen-the-rel/revenant--leader
+  - fen-guard-mim/branchwych--leader
+  - forest-goblins-lus/chieftain--leader
+  - forest-goblins/chieftain--leader
+  - ghutani-rel/emir--leader
+  - guild-of-disgraced-engineers-mim/expelled-engineer--leader
+  - halflings-mic/halfling-elder--leader
+  - high-elves-lus/loremaster--leader
+  - hochland-bandits/bandit-prince--leader
+  - horned-hunters/horned-hunter--leader
+  - house-guard-sc/commander--leader
+  - imperial-outriders/knight--leader
+  - khemri-cursed-of-karak-zorn/karak-zorn-noble--leader
+  - khemri-hobgoblin-raiders/khann--leader
+  - khemri-lahmian-brotherhood/lahmian-vampire--leader
+  - khemri-mages/archmage--leader
+  - khemri-necromancers/necromancer--leader
+  - khemri-nomads-of-araby/sheikh--leader
+  - khemri-thieves-guild/guild-chief--leader
+  - khemri-tomb-guardians/tomb-lord--leader
+  - kislevites/druzhina-captain--leader
+  - knights-of-the-bitter-moors-mim/questing-knight--leader
+  - lizardmen-lus/skink-priest--leader
+  - lizardmen/skink-priest--leader
+  - lords-of-the-marsh-mim/draich--leader
+  - low-kings-mim/racketeer--leader
+  - lustria-amazons/amazon-priestess--leader
+  - lustria-clan-pestilens/plague-priest--leader
+  - lustria-dark-elves/dark-prince--leader
+  - lustria-high-elves/loremaster--leader
+  - lustria-lizardmen/skink-priest--leader
+  - lustria-norse/jarl--leader
+  - lustria-pirates/pirate-captain--leader
+  - lustria-pygmies/great-headhunter--leader
+  - lustria-savage-goblins/witch-doctor--leader
+  - lustria-tileans/mercenary-captain--leader
+  - maneaters/captain--leader
+  - marauders-of-chaos/marauder-chieftain--leader
+  - masters-of-horror-sylv/mad-scientist--leader
+  - mazzalupo-web/wandering-knight--leader
+  - mercenaries/mercenary-captain--leader
+  - metal-mongers-mim/engineer-adept--leader
+  - militiant-mootlanders-mim/burgermeister--leader
+  - mootlanders/moot-elder--leader
+  - muzil-rel/emir--leader
+  - necrarchs-the-soul-stealers-lotd1/necrarch-vampire--leader
+  - night-goblins-kaz/big-boss--leader
+  - night-goblins-mic/big-boss--leader
+  - night-goblins-web/boss--leader
+  - nipponese-expedition-web/hatamoto--leader
+  - norse-explorers-btb/jarl--leader
+  - norse-explorers-lustria/jarl--leader
+  - ogre-hunting-party-web/ogre-hunter--leader
+  - orc-mob/orc-boss--leader
+  - order-of-the-mare-web/paragon--leader
+  - ostlanders/elder--leader
+  - outlaws-of-stirwood-forest-redux-fbg/bandit-leader--leader
+  - outlaws-of-stirwood-forest/bandit-leader--leader
+  - pirates/pirate-captain--leader
+  - pit-fighters/pit-king--leader
+  - protectorate-of-sigmar-lotd3/warrior-priest--leader
+  - sartosan-pirates-sar/captain--leader
+  - savage-orcs-kaz/boss--leader
+  - sea-ghosts-mim/wayfinder--leader
+  - shadow-warriors/shadow-master--leader
+  - shallows-beasts-mim/buccaneer--leader
+  - silent-brotherhood-sc/silent-master--leader
+  - sisters-of-sigmar/sigmarite-matriarch--leader
+  - skaven-clan-eshin/assassin-adept--leader
+  - skaven-clan-pestilens/plague-priest--leader
+  - skaven-of-clan-mors-kaz/claw-leader--leader
+  - skaven-of-clan-moulder-web/packmaster--leader
+  - skaven-of-clan-pestilens-lus/plague-priest--leader
+  - skaven-of-clan-pestilens-mou/plague-priest--leader
+  - skaven-of-clan-pristekk-sc/chieftain--leader
+  - skaven-of-clan-skryre-kaz/master-engineer--leader
+  - skaven-of-clan-skryre-rel/warlock-engineer--leader
+  - slave-uprising-kep/demagogue--leader
+  - slavers-rel/slave-merchant--leader
+  - snotlings-web/bullied-goblin--leader
+  - sons-of-hashut/apprentice-sorcerer--leader
+  - sorcerous-society-lotd4/magus--leader
+  - strigoi-kaz/vampire--leader
+  - survivors-of-strigos-sylv/strigoi-vampire--leader
+  - tileans/captain--leader
+  - tomb-guardians/tomb-lord--leader
+  - trollheim-cult-of-the-possessed/magister--leader
+  - trollheim-mercenaries/mercenary-captain--leader
+  - trollheim-skaven-clan-eshin/assassin-adept--leader
+  - trollheim-undead/vampire--leader
+  - trollheim-witch-hunters/witch-hunter-captain--leader
+  - turjuk-rel/emir--leader
+  - undead/vampire--leader
+  - underworld-alliance-mim/goblin-bully--leader
+  - underworld-alliance-mim/skaven-slum-lord--leader
+  - vampire-hunters-of-sylvania-lotd5/vampire-hunter--leader
+  - wasteland-privateers-sar/captain--leader
+  - watchmen-mim/watch-captain--leader
+  - witch-hunters/witch-hunter-captain--leader
+  - wood-elves-of-athel-loren-web/hunt-master--leader
+- id: mechanic.automatic-leadership
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - black-orcs/orc-nuttaz--crazy
+  - carnival-of-chaos/nurglings--immune-to-psychology
+  - carnival-of-chaos/plague-bearers--immune-to-psychology
+  - carnival-of-chaos/plague-cart--immune-to-psychology
+  - cult-of-the-possessed/darksouls--crazed
+  - khorne-raiders-sar/madbrains--immune-to-psychology
+  - marauders-of-chaos/spawn-of-chaos--psychology
+  - witch-hunters/flagellants--fanatical
+- id: mechanic.causes-fear
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - beastmen-raiders/minotaur--fear
+  - black-orcs/troll--fear
+  - blood-dragons-mou/hell-hounds--fear
+  - blood-dragons-mou/skeleton-warriors--fear
+  - blood-dragons-mou/vampire--fear
+  - blood-dragons-mou/wights--fear
+  - bretonnian-brigands-mou/scarface--horribly-scarred
+  - brood-of-ghurash-the-sc/band--fear
+  - call-of-the-night-haint-mim/cairn-wraith--causes-fear
+  - call-of-the-night-haint-mim/malignant-spirits--causes-fear
+  - call-of-the-night-haint-mim/mourngul--causes-fear
+  - call-of-the-night-haint-mim/poltergeists--causes-fear
+  - call-of-the-night-haint-mim/revenants--causes-fear
+  - call-of-the-night-haint-mim/spirit-hosts--causes-fear
+  - call-of-the-night-haint-mim/tomb-banshee--causes-fear
+  - carnival-of-chaos/band--blessings-of-nurgle-hideous
+  - carnival-of-chaos/plague-bearers--cause-fear
+  - clockworkers-sc/clockwork-fiend--cause-fear
+  - crooked-moon-kep/troll--fear
+  - cult-of-the-possessed/band--mutations-hideous
+  - cult-of-the-possessed/the-possessed--fear
+  - dark-elves/cold-one-beasthounds--fear
+  - fallen-the-rel/butcher--cause-fear
+  - fallen-the-rel/ghouls--cause-fear
+  - fallen-the-rel/revenant--cause-fear
+  - fallen-the-rel/sgulls--fear
+  - fen-guard-mim/branchnymph--instinctual
+  - fen-guard-mim/dryads--fear
+  - fen-guard-mim/treekin--fear
+  - forest-goblins-lus/gigantic-spider--fear
+  - forest-goblins/gigantic-spider--fear
+  - ghost-pirates-sar/ghost-captain--undead
+  - ghost-pirates-sar/gibbets--undead
+  - ghost-pirates-sar/screaming-ghosts--undead
+  - ghost-pirates-sar/skeleton-mates--undead
+  - ghost-pirates-sar/the-bloated--undead
+  - halflings-mic/village-ogre--fear
+  - kislevites/trained-bear--fearsome
+  - lizardmen-lus/kroxigor--cause-fear
+  - lizardmen/kroxigor--cause-fear
+  - lords-of-the-marsh-mim/daemon-fimm--fear
+  - lords-of-the-marsh-mim/draich--fear
+  - lords-of-the-marsh-mim/fimir-warriors--fear
+  - maneaters/band--fear
+  - maneaters/sabretusks--fear
+  - marauders-of-chaos/condemned--fear
+  - marauders-of-chaos/spawn-of-chaos--fear
+  - masters-of-horror-sylv/flesh-construct--cause-fear
+  - masters-of-horror-sylv/mad-scientist--lunatic
+  - masters-of-horror-sylv/thrall--cause-fear
+  - masters-of-horror-sylv/zombies--cause-fear
+  - metal-mongers-mim/machine-ogre--fear
+  - necrarchs-mou/abomination--fear
+  - necrarchs-mou/banshee--fear
+  - necrarchs-mou/defiled--fear
+  - necrarchs-mou/nosferatu--fear
+  - necrarchs-mou/skeleton--fear
+  - necrarchs-mou/wight--fear
+  - necrarchs-the-soul-stealers-lotd1/abomination--cause-fear
+  - necrarchs-the-soul-stealers-lotd1/necrarch-vampire--cause-fear
+  - necrarchs-the-soul-stealers-lotd1/skeletal-warrior--cause-fear
+  - necrarchs-the-soul-stealers-lotd1/thrall--cause-fear
+  - necrarchs-the-soul-stealers-lotd1/zombie--cause-fear
+  - night-goblins-kaz/troll--fear
+  - night-goblins-mic/troll--fear
+  - night-goblins-web/great-squig--cause-fear
+  - night-goblins-web/troll--fear
+  - norse-explorers-btb/wulfen--fear
+  - norse-explorers-lustria/wulfen--fear
+  - ogre-hunting-party-web/band--huuuuge
+  - ogre-hunting-party-web/sabretusks--fear
+  - orc-mob/troll--fear
+  - ostlanders/ogre--fear
+  - pit-fighters/ogre-pit-fighter--fear
+  - restless-dead/grave-guards--cause-fear
+  - restless-dead/liche--cause-fear
+  - restless-dead/scarecrows--cause-fear
+  - restless-dead/skeletons--cause-fear
+  - restless-dead/wights--cause-fear
+  - restless-dead/zombies--cause-fear
+  - skaven-clan-eshin/rat-ogre--fear
+  - skaven-clan-pestilens/rat-ogre--fear
+  - skaven-of-clan-mors-kaz/rat-ogre--fear
+  - skaven-of-clan-moulder-web/rat-ogres--fear
+  - skaven-of-clan-pristekk-sc/rat-ogres--fear
+  - slavers-rel/ogre-bodyguard--fear
+  - strigoi-kaz/charnel-guard--cause-fear
+  - strigoi-kaz/fell-bats--cause-fear
+  - strigoi-kaz/ghouls--cause-fear
+  - strigoi-kaz/skeletons--cause-fear
+  - survivors-of-strigos-sylv/ghouls--cause-fear
+  - survivors-of-strigos-sylv/strigoi-vampire--cause-fear
+  - tomb-guardians/band--cause-fear
+  - undead/dire-wolves--cause-fear
+  - undead/ghouls--cause-fear
+  - undead/vampire--cause-fear
+  - undead/zombies--cause-fear
+  - underworld-alliance-mim/warpstone-troll--fear
+- id: trait.frenzy
+  kind: trait
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - adventurers-kaz/barbarian--frenzy
+  - amazons-mordheim/totem-warriors--frenzy
+  - chaos-streets-mordheim-inhabitants/lunatics--frenzy
+  - druchii-mic/witch-elves--frenzy
+  - forest-goblins/red-toof-goblins--berserkers
+  - khorne-raiders-sar/cannibal-boys--frenzy
+  - lustria-amazons/amazon-totem-warriors--frenzy
+  - lustria-norse/berserkers--frenzy
+  - lustria-savage-goblins/red-teeth--frenzy
+  - night-goblins-mic/fanatics--looney
+  - norse-explorers-btb/beserkers--berserkers
+  - norse-explorers-lustria/beserkers--berserkers
+  - savage-orcs-kaz/nuttaz--frenzy
+  - skaven-of-clan-pestilens-mou/plague-champion--frenzy
+  - skaven-of-clan-pestilens-mou/plague-priest--frenzy
+- id: skill.hatred
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - bretonnian-chapel-guard/battle-pilgrims--hatred
+  - chaos-streets-undead-bloodlines/strigoi-vampire--hatred-everyone
+  - khemri-tomb-guardians/necrotect--hatred
+  - order-of-the-mare-web/pilgrims--hatred
+  - sons-of-hashut/band--chaos-dwarfs-special-skills-unlimited-hatred
+- id: mechanic.hatred-dark-elves
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - adventurers-kaz/elf--hatred
+  - lothern-sea-patrol-sar/sea-rangers--hate-dark-elves
+  - sea-ghosts-mim/band--sundering
+  - shadow-warriors/band--hate-dark-elves
+  - wood-elves-of-athel-loren-web/band--hate-dark-elves
+- id: mechanic.hatred-high-elves
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - dark-elves/band--kindred-hatred
+  - druchii-mic/band--kindred-hatred
+- id: mechanic.fear-immunity
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - beastmen-raiders/band--beastmen-special-skills-fearless
+  - vampire-hunters-of-sylvania-lotd5/band--special-skill-iron-will
+- id: mechanic.fear-reroll
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - norse-explorers-btb/band--norse-special-skills-barbarian-courage
+  - norse-explorers-lustria/band--norse-special-skills-barbarian-courage
+  - sisters-of-sigmar/band--special-skills-absolute-faith
+- id: mechanic.leadership-reroll
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - dwarf-rangers/dwarf-longbeards--stubborn
+  - masters-of-horror-sylv/mad-scientist--lunatic
+- id: mechanic.mandatory-leadership-reroll
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - bretonnian-chapel-guard/battle-pilgrims--stubborn
+- id: mechanic.psychology-immunity
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - blood-dragons-mou/grave-guards--immune-to-psychology
+  - blood-dragons-mou/hell-hounds--immune-to-psychology
+  - blood-dragons-mou/skeleton-warriors--immune-to-psychology
+  - blood-dragons-mou/vampire--immune-to-psychology
+  - blood-dragons-mou/wights--immune-to-psychology
+  - call-of-the-night-haint-mim/cairn-wraith--immune-to-psychology
+  - call-of-the-night-haint-mim/malignant-spirits--immune-to-psychology
+  - call-of-the-night-haint-mim/mourngul--immune-to-psychology
+  - call-of-the-night-haint-mim/poltergeists--immune-to-psychology
+  - call-of-the-night-haint-mim/revenants--immune-to-psychology
+  - call-of-the-night-haint-mim/spirit-hosts--immune-to-psychology
+  - call-of-the-night-haint-mim/tomb-banshee--immune-to-psychology
+  - clan-angrund-kep/dwarf-troll-slayers--deathwish
+  - dwarf-rangers/dwarf-troll-slayers--deathwish
+  - dwarf-slayer-cult-web/band--slayer-rules
+  - dwarf-treasure-hunters/dwarf-troll-slayers--deathwish
+  - fen-guard-mim/branchnymph--instinctual
+  - fen-guard-mim/branchwych--immune-to-psychology
+  - fen-guard-mim/treekin--immune-to-psychology
+  - masters-of-horror-sylv/flesh-construct--immune-to-psychology
+  - masters-of-horror-sylv/mad-scientist--immune-to-psychology
+  - masters-of-horror-sylv/thrall--immune-to-psychology
+  - masters-of-horror-sylv/zombies--immune-to-psychology
+  - necrarchs-mou/nosferatu--immune-to-psychology
+  - necrarchs-mou/skeleton--immune-to-psychology
+  - necrarchs-mou/wight--immune-to-psychology
+  - necrarchs-the-soul-stealers-lotd1/abomination--immune-to-psychology
+  - necrarchs-the-soul-stealers-lotd1/necrarch-vampire--immune-to-psychology
+  - necrarchs-the-soul-stealers-lotd1/skeletal-warrior--immune-to-psychology
+  - necrarchs-the-soul-stealers-lotd1/thrall--immune-to-psychology
+  - necrarchs-the-soul-stealers-lotd1/zombie--immune-to-psychology
+  - norse-explorers-btb/wulfen--bestial
+  - norse-explorers-lustria/wulfen--bestial
+  - pit-fighters/dwarf-troll-slayer--death-wish
+  - restless-dead/grave-guards--immune-to-psychology
+  - restless-dead/liche--immune-to-psychology
+  - restless-dead/scarecrows--immune-to-psychology
+  - restless-dead/skeletons--immune-to-psychology
+  - restless-dead/wights--immune-to-psychology
+  - restless-dead/zombies--immune-to-psychology
+  - sea-ghosts-mim/feast-master--bestial
+  - strigoi-kaz/fell-bats--immune-to-psychology
+  - strigoi-kaz/skeletons--immune-to-psychology
+  - survivors-of-strigos-sylv/strigoi-vampire--immune-to-psychology
+  - tomb-guardians/band--immune-to-psychology
+  - undead/dire-wolves--immune-to-psychology
+  - undead/vampire--immune-to-psychology
+  - undead/zombies--immune-to-psychology
+- id: skill.ignore-pain
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - blood-dragons-mou/grave-guards--no-pain
+  - blood-dragons-mou/hell-hounds--no-pain
+  - blood-dragons-mou/skeleton-warriors--no-pain
+  - blood-dragons-mou/vampire--no-pain
+  - blood-dragons-mou/wights--no-pain
+  - call-of-the-night-haint-mim/cairn-wraith--no-pain
+  - call-of-the-night-haint-mim/malignant-spirits--no-pain
+  - call-of-the-night-haint-mim/mourngul--no-pain
+  - call-of-the-night-haint-mim/poltergeists--no-pain
+  - call-of-the-night-haint-mim/revenants--no-pain
+  - call-of-the-night-haint-mim/spirit-hosts--no-pain
+  - call-of-the-night-haint-mim/tomb-banshee--no-pain
+  - chaos-streets-undead-bloodlines/blood-dragon-vampire--no-pain
+  - chaos-streets-undead-bloodlines/dire-wolf--no-pain
+  - chaos-streets-undead-bloodlines/lahmia-vampire--no-pain
+  - chaos-streets-undead-bloodlines/necrarch-vampire--no-pain
+  - chaos-streets-undead-bloodlines/strigoi-vampire--no-pain
+  - chaos-streets-undead-bloodlines/vampire-bat--no-pain
+  - chaos-streets-undead-bloodlines/von-carstein-vampire--no-pain
+  - chaos-streets-undead-bloodlines/zombie--no-pain
+  - fallen-the-rel/revenant--no-pain
+  - ghost-pirates-sar/gibbets--no-pain
+  - ghost-pirates-sar/skeleton-mates--no-pain
+  - khemri-cursed-of-karak-zorn/shadowed--no-pain
+  - khemri-lahmian-brotherhood/band--no-pain
+  - khemri-necromancers/band--no-pain
+  - khemri-tomb-guardians/band--no-pain
+  - lustria-clan-pestilens/band--clan-pestilens-special-skills-ignore-pain
+  - lustria-savage-goblins/zomblins--no-pain
+  - lustria-savage-goblins/zomblintua--no-pain
+  - masters-of-horror-sylv/flesh-construct--no-pain
+  - masters-of-horror-sylv/thrall--no-pain
+  - masters-of-horror-sylv/zombies--no-pain
+  - metal-mongers-mim/machine-ogre--no-pain
+  - necrarchs-mou/abomination--no-pain
+  - necrarchs-mou/defiled--no-pain
+  - necrarchs-mou/nosferatu--no-pain
+  - necrarchs-mou/skeleton--no-pain
+  - necrarchs-the-soul-stealers-lotd1/abomination--no-pain
+  - necrarchs-the-soul-stealers-lotd1/necrarch-vampire--no-pain
+  - necrarchs-the-soul-stealers-lotd1/skeletal-warrior--no-pain
+  - necrarchs-the-soul-stealers-lotd1/thrall--no-pain
+  - necrarchs-the-soul-stealers-lotd1/zombie--no-pain
+  - restless-dead/grave-guards--no-pain
+  - restless-dead/liche--no-pain
+  - restless-dead/scarecrows--no-pain
+  - restless-dead/skeletons--no-pain
+  - restless-dead/wights--no-pain
+  - restless-dead/zombies--no-pain
+  - skaven-clan-pestilens/band--clan-pestilens-special-skills-ignore-pain
+  - strigoi-kaz/fell-bats--no-pain
+  - strigoi-kaz/skeletons--no-pain
+  - survivors-of-strigos-sylv/strigoi-vampire--no-pain
+  - tomb-guardians/band--no-pain
+  - trollheim-undead/dire-wolves--no-pain
+  - trollheim-undead/vampire--no-pain
+  - trollheim-undead/zombies--no-pain
+  - undead/dire-wolves--no-pain
+  - undead/vampire--no-pain
+  - undead/zombies--no-pain
+- id: trait.concussion-immune
+  kind: trait
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - adventurers-kaz/dwarf--hard-head
+  - black-dwarfs/band--hard-head
+  - chaos-streets-dwarf-treasure-hunters/band--hard-head
+  - chaos-streets-pit-fighters/dwarf-troll-slayer--hard-head
+  - clan-angrund-kep/band--dwarf-special-skills-thick-skull
+  - clan-angrund-kep/band--hard-head
+  - clockworkers-sc/dwarf-engineer--hard-head
+  - dwarf-rangers/band--hard-head
+  - dwarf-slayer-cult-web/band--hard-head
+  - dwarf-treasure-hunters/band--hard-head
+  - guild-of-disgraced-engineers-mim/band--hard-head
+  - khemri-cursed-of-karak-zorn/band--hard-head
+  - pit-fighters/dwarf-troll-slayer--hard-head
+  - slayer-pirates-sar/band--slayer-rules
+  - sons-of-hashut/band--hard-head
+- id: skill.hard-to-kill
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - adventurers-kaz/dwarf--hard-to-kill
+  - black-dwarfs/band--hard-to-kill
+  - chaos-streets-dwarf-treasure-hunters/band--hard-to-kill
+  - chaos-streets-pit-fighters/dwarf-troll-slayer--hard-to-kill
+  - clan-angrund-kep/band--dwarf-special-skills-true-grit
+  - clan-angrund-kep/band--hard-to-kill
+  - clockworkers-sc/dwarf-engineer--hard-to-kill
+  - dwarf-rangers/band--hard-to-kill
+  - dwarf-slayer-cult-web/band--hard-to-kill
+  - dwarf-treasure-hunters/band--hard-to-kill
+  - guild-of-disgraced-engineers-mim/band--hard-to-kill
+  - khemri-cursed-of-karak-zorn/band--hard-to-kill
+  - lustria-lizardmen/band--lizardmen-special-skills-hardened-skin
+  - pit-fighters/dwarf-troll-slayer--hard-to-kill
+  - slayer-pirates-sar/band--slayer-rules
+  - sons-of-hashut/band--hard-to-kill
+- id: rule.squishy
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - ghost-pirates-sar/the-bloated--squishy
+- id: mechanic.great-thirster
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - survivors-of-strigos-sylv/strigoi-vampire--great-thirster
+- id: mechanic.curse-of-the-revenant
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - survivors-of-strigos-sylv/strigoi-vampire--curse-of-the-revenant
+- id: mechanic.rousing-sermon
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - protectorate-of-sigmar-lotd3/band--special-skill-rousing-sermon
+- id: mechanic.frantic
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - crooked-moon-kep/fanatics--frantic
+- id: mechanic.questing-vow
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - bretonnian-chapel-guard/band--questing-vow
+- id: mechanic.iron-cage
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - ghost-pirates-sar/gibbets--iron-cage
+- id: mechanic.frustratingly-tiny
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - snotlings-web/bullied-goblin--frustratingly-tiny
+- id: compiler.woodsmen-quarterstaff
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - woodsmen-de-artois-mou/band--quarterstaff
+- id: skill.elven-agility
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - chaos-streets-sons-of-nagarythe/band--shadow-warrior-special-skills-elven-agility
+  - dark-elves/band--dark-elf-special-skills-fey-quickness
+  - druchii-mic/noble--fey-quickness
+  - high-elves-lus/band--skill-fey-quickness
+  - lustria-dark-elves/band--dark-elf-special-skills-elven-agility
+  - lustria-high-elves/band--high-elf-special-skills-elven-agility
+  - snotlings-web/band--dodgy
+- id: mechanic.bestial
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - strigoi-kaz/vampire--bestial
+- id: mechanic.magical-void
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - call-of-the-night-haint-mim/corpse-master--magical-void
+- id: mechanic.hard-to-rattle
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - fen-guard-mim/band--hard-to-rattle
+- id: mechanic.fen-hard-to-kill
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - fen-guard-mim/band--hard-to-kill
+- id: mechanic.bat-injury-chart
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - strigoi-kaz/bats--squishy
+- id: skill.resilient
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - skaven-of-clan-pestilens-mou/plague-champion--resilient
+  - skaven-of-clan-pestilens-mou/plague-priest--resilient
+- id: dance.whirling-death
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - sea-ghosts-mim/band--dance-whirling-death
+- id: dance.storm-of-blades
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - sea-ghosts-mim/band--dance-storm-of-blades
+- id: dance.the-shadows-coil
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - sea-ghosts-mim/band--dance-the-shadows-coil
+- id: dance.woven-mist
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - sea-ghosts-mim/band--dance-woven-mist
+- id: mechanic.honorable
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - adventurers-kaz/imperial-noble--honorable
+- id: skill.sigmar-s-sign
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - sisters-of-sigmar/band--special-skills-sign-of-sigmar
+  - vampire-hunters-of-sylvania-lotd5/band--special-skill-righteous-aura
+- id: mechanic.animal-friendship
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - ostlanders/band--ostlander-special-skills-animal-friendship
+- id: mechanic.thirst-for-vengeance
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - vampire-hunters-of-sylvania-lotd5/band--special-skill-thirst-for-vengeance
+- id: mechanic.blessing-of-morr
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - vampire-hunters-of-sylvania-lotd5/band--special-skill-blessing-of-morr
+- id: mechanic.torturer
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - cursed-cavalcade/band--cursed-cavalcade-special-skills-torturer
+- id: mechanic.mesmerising-dance
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - amazons-lustria/band--amazon-special-skills-mesmerising-dance
+- id: mechanic.savage-fury
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - amazons-lustria/band--amazon-special-skills-savage-fury
+- id: mechanic.mark-of-shornaal
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - marauders-of-chaos/band--mark-of-shornaal
+- id: mechanic.hypnotist
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - watchmen-mim/private-sleuth--hypnotist
+- id: mechanic.wraith-touch
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - restless-dead/band--restless-dead-special-skills-wraith-touch
+- id: mechanic.titanic-strength
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - brood-of-ghurash-the-sc/band--skill-titanic-strength
+- id: mechanic.foul-odour
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - horned-hunters/band--horned-hunter-special-skills-foul-odour
+  - ostlanders/band--ostlander-special-skills-foul-odour
+- id: mechanic.centigor-drunken
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - beastmen-raiders/centigors--drunken
+- id: mechanic.undead
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - khemri-lahmian-brotherhood/lahmian-vampire--undead
+  - khemri-lahmian-brotherhood/spirits--undead
+  - khemri-necromancers/necromantic-abomination--undead
+  - khemri-necromancers/nehekharan-vultures--undead
+  - khemri-tomb-guardians/mortuary-acolytes--undead
+  - khemri-tomb-guardians/mortuary-priest--undead
+  - khemri-tomb-guardians/necrotect--undead
+  - khemri-tomb-guardians/skeleton-warriors--undead
+  - khemri-tomb-guardians/tomb-guardians--undead
+  - khemri-tomb-guardians/tomb-lord--undead
+  - tomb-guardians/liche-priest--undead
+  - tomb-guardians/skeleton-warriors--undead
+  - tomb-guardians/tomb-guardians--undead
+  - tomb-guardians/tomb-lord--undead
+- id: mechanic.ethereal-hit-save
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - call-of-the-night-haint-mim/cairn-wraith--ethereal
+  - call-of-the-night-haint-mim/malignant-spirits--ethereal
+  - call-of-the-night-haint-mim/mourngul--ethereal
+  - call-of-the-night-haint-mim/poltergeists--ethereal
+  - call-of-the-night-haint-mim/spirit-hosts--ethereal
+  - call-of-the-night-haint-mim/tomb-banshee--ethereal
+- id: mechanic.hatred-undead
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - arabian-tomb-raiders/band--hate-undead
+  - dreamwalkers-cult-of-morr-fbg/band--hate-undead
+  - grave-robbers-sylv/band--undead-foes
+- id: mechanic.andanti-knowledge
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - dreamwalkers-cult-of-morr-fbg/andanti--andanti-knowledge
+- id: mechanic.fears-fire
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - fen-guard-mim/band--fear-of-fire
+- id: mechanic.hatred-human-warband
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - beastmen-raiders/band--beastmen-special-skills-manhater
+- id: mechanic.hatred-chaotic-warband
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - kislevites/cossacks--hate-chaos
+  - protectorate-of-sigmar-lotd3/templar--zealous
+- id: mechanic.hatred-skaven
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - slave-uprising-kep/band--hate-skaven
+  - tileans/band--miraglean-hatred-skaven
+- id: mechanic.hatred-skaven-orcs-goblins
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - clan-angrund-kep/band--hate-skavens-orcs-and-goblins
+- id: mechanic.hatred-dwarfs-skaven
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - crooked-moon-kep/band--hate-stunties-and-skaven
+- id: mechanic.hatred-dwarfs
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - slave-uprising-kep/goblin-leader--hate-dwarfs
+  - slave-uprising-kep/goblin-slaves--hate-dwarfs
+- id: mechanic.hatred-orcs-goblins
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - chaos-streets-dwarf-treasure-hunters/band--hate-orcs-and-goblins
+  - dwarf-rangers/band--hate-orcs-and-goblins
+  - dwarf-slayer-cult-web/band--hatred-orcs-and-goblins
+  - dwarf-treasure-hunters/band--hate-orcs-and-goblins
+- id: mechanic.noble-disdain
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - bretonnian-knights/band--virtue-of-noble-disdain
+  - chaos-streets-bretonnian-knights/band--virtue-of-noble-disdain
+  - knights-of-the-bitter-moors-mim/band--virtue-of-noble-disdain
+- id: mechanic.mark-of-arkhar
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - marauders-of-chaos/band--mark-of-arkhar
+- id: mechanic.wheelo-impact
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - snotlings-web/wheelo--combat
+  - snotlings-web/wheelo--impact-hits
+- id: mechanic.beauty-of-the-sea
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - ghost-pirates-sar/sea-singer--beauty-of-the-sea
+- id: mechanic.goblin-squabble
+  kind: mechanic
+  implemented: 'YES'
+  basis: equivalent-effects
+  members:
+  - crooked-moon-kep/band--animosity
+  - night-goblins-mic/band--animosity
+- id: mechanic.fear-human
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - black-dwarfs/gaolers--nasty-reputation
+- id: mechanic.undivided-leader
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - marauders-of-chaos/band--mark-of-chaos-undivided
+- id: mechanic.wizened-halfling
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - halflings-mic/halfling-elder--wizened-halfling
+- id: mechanic.righteous-charge
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - knights-of-the-bitter-moors-mim/questing-knight--righteous-charge
+- id: mechanic.ghost-pirate-ethereal
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - ghost-pirates-sar/band--ethereal
+- id: mechanic.wheelo-skill-modifications
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - snotlings-web/wheelo--special-skill-modifications
+- id: compiler.berserker-incompatible-with-ferocious-charge
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - pit-fighters/band--troll-slayer-special-skills-berserker
+- id: compiler.forbid-skill-categories
+  kind: compiler
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - chaos-streets-undead-bloodlines/necrarch-vampire--no-strength-skills
+  - lustria-lizardmen/saurus-totem-warrior--no-academic-skills
+- id: mechanic.armour-save-bonus
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - chaos-streets-greenskins/band--orc-special-skills-well-ard
+  - orc-mob/band--orc-special-skills-well-ard
+- id: mechanic.dueling-pride
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - house-guard-sc/band--dueling-pride
+- id: mechanic.guiding-dream
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - dreamwalkers-cult-of-morr-fbg/dreamer--guiding-dream
+- id: mechanic.gypsy-ward
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - survivors-of-strigos-sylv/domnu--gypsy-ward
+- id: mechanic.killing-blow
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - blood-dragons-mou/grave-guards--killing-blow
+  - blood-dragons-mou/wights--killing-blow
+- id: mechanic.kindred-hatred
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - survivors-of-strigos-sylv/strigoi-vampire--kindred-hatred
+- id: mechanic.pikewall
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - house-guard-sc/pikemen--pikewall
+- id: mechanic.ravening-onslaught
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - call-of-the-night-haint-mim/mourngul--ravening-onslaught
+- id: mechanic.retain-flail-morning-star-strength-bonus
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - bretonnian-chapel-guard/band--bulging-muscles
+- id: mechanic.sabretusk-charge
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - ogre-hunting-party-web/sabretusks--charge
+- id: mechanic.sea-troll-slime
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - orc-pirates-sar/sea-troll--slimy
+- id: mechanic.seaguard-spear-master
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lothern-sea-patrol-sar/seaguards--spear-master
+- id: mechanic.wolf-rat-bite
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - skaven-of-clan-moulder-web/wolf-rats--poisoned-attack
+- id: poison.black-lotus
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - khemri-tomb-guardians/tomb-scorpions--scorpion-sting
+  - skaven-of-clan-pestilens-mou/plague-rat--plague-infested
+  - tomb-guardians/tomb-scorpions--scorpion-sting
+- id: profile-rule.centigors--trample
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - beastmen-raiders/centigors--trample
+- id: profile-rule.fanatics--frantic
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - night-goblins-mic/fanatics--frantic
+- id: skill.always-strikes-first
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - chaos-streets-undead-bloodlines/band--lahmia-power-lost-innocence
+  - khemri-lahmian-brotherhood/band--lahmian-special-skills-lost-innocence
+  - night-goblins-kaz/fanatics--frantic
+- id: skill.bellowing-battle-roar
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - lizardmen-lus/band--lizardmen-special-skills-saurus-only-bellowing-battle-roar
+  - lizardmen/band--lizardmen-special-skills-saurus-only-bellowing-battle-roar
+  - lustria-lizardmen/band--lizardmen-special-skills-battle-roar
+- id: skill.berserker
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - chaos-streets-dwarf-treasure-hunters/band--slayer-special-skills-berserker
+  - chaos-streets-pit-fighters/band--troll-slayer-special-skills-berserker
+  - clan-angrund-kep/band--slayer-special-skills-berserker
+  - dwarf-rangers/band--slayer-special-skills-berserker
+  - dwarf-treasure-hunters/band--slayer-special-skills-berserker
+  - khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-berserker
+  - pit-fighters/band--troll-slayer-special-skills-berserker
+- id: skill.blessed-sight
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - sisters-of-sigmar/augur--blessed-sight
+- id: skill.crack-shot
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - gunnery-school-of-nuln/pistoliers--crack-shot
+- id: skill.crude-belch-halfling
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - halflings-mic/halfling-elder--crude-belch
+- id: skill.crushing-blow
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - lustria-norse/band--norse-special-skills-crushing-blow
+  - norse-explorers-btb/band--norse-special-skills-crushing-blow
+  - norse-explorers-lustria/band--norse-special-skills-crushing-blow
+- id: skill.cutthroat
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - silent-brotherhood-sc/band--skill-cutthroat
+- id: skill.defensive-stance
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - chaos-streets-deathbringers/band--deathbringer-special-skills-defensive-stance
+- id: skill.duellist
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustrian-reavers/saurus-slayer--duellist
+- id: skill.expert-swordsman
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - cursed-cavalcade/companions--expert-swordsman
+  - mercenaries/swordsmen--expert-swordsmen
+  - trollheim-mercenaries/swordsmen--expert-swordsmen
+- id: skill.extra-attack
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - black-orcs/orc-nuttaz--savage
+- id: skill.ferocious-charge
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - chaos-streets-dwarf-treasure-hunters/band--slayer-special-skills-ferocious-charge
+  - chaos-streets-pit-fighters/band--troll-slayer-special-skills-ferocious-charge
+  - clan-angrund-kep/band--slayer-special-skills-ferocious-charge
+  - dwarf-rangers/band--slayer-special-skills-ferocious-charge
+  - dwarf-treasure-hunters/band--slayer-special-skills-ferocious-charge
+  - khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-ferocious-charge
+  - pit-fighters/band--troll-slayer-special-skills-ferocious-charge
+- id: skill.hardy-constitution
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - lustria-pirates/band--pirate-special-skills-hardy-constitution
+  - pirates/band--pirate-special-skills-hardy-constitution
+- id: skill.head-crusher
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - black-orcs/band--black-orc-special-skills-eadbasher
+  - chaos-streets-greenskins/band--orc-special-skills-eadbasher
+  - orc-mob/band--orc-special-skills-eadbasher
+- id: skill.infallible
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - chaos-streets-undead-bloodlines/band--blood-dragon-power-infallible
+- id: skill.infinite-hatred
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - chaos-streets-undead-bloodlines/band--strigoi-power-infinite-hatred
+- id: skill.inspiring-sermon
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - chaos-streets-sigmar-protectorate/band--protectorate-special-skills-rousing-sermon
+- id: skill.iron-sinews
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - chaos-streets-undead-bloodlines/band--strigoi-power-iron-sinews
+  - khemri-necromancers/band--necromantic-modification-tremendous-strength
+- id: skill.knife-fighting
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - khemri-thieves-guild/band--guild-special-skills-knife-fighting
+- id: skill.lightning-reflexes
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - merchant-caravans/knights-vanguard--lightning-reflexes
+- id: skill.luck
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-high-elves/band--high-elf-special-skills-luck
+- id: skill.mighty-biceps
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - chaos-streets-pit-fighters/band--pit-fighter-skill-bulging-biceps
+  - pit-fighters/band--pit-fighter-skill-bulging-biceps
+- id: skill.miniath
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - high-elves-lus/band--skill-miniath
+  - lustria-high-elves/band--high-elf-special-skills-miniath
+- id: skill.monster-slayer
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - chaos-streets-dwarf-treasure-hunters/band--slayer-special-skills-monster-slayer
+  - chaos-streets-pit-fighters/band--troll-slayer-special-skills-monster-slayer
+  - clan-angrund-kep/band--slayer-special-skills-monster-slayer
+  - dwarf-rangers/band--slayer-special-skills-monster-slayer
+  - dwarf-treasure-hunters/band--slayer-special-skills-monster-slayer
+  - khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-monster-slayer
+  - pit-fighters/band--troll-slayer-special-skills-monster-slayer
+- id: skill.monster-slayer-effective-strength-armour
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-monster-slayer
+- id: skill.monstrous
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - khemri-necromancers/band--necromantic-modification-ogre-flesh
+- id: skill.red-fury
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - chaos-streets-undead-bloodlines/band--blood-dragon-power-red-fury
+- id: skill.regeneration
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - black-orcs/troll--regeneration
+  - chaos-streets-greenskins/troll--regeneration
+  - chaos-streets-undead-bloodlines/band--strigoi-power-curse-of-the-reborn
+  - crooked-moon-kep/troll--regeneration
+  - night-goblins-kaz/troll--regeneration
+  - night-goblins-mic/troll--regeneration
+  - night-goblins-web/troll--regeneration
+  - orc-mob/troll--regeneration
+  - underworld-alliance-mim/warpstone-troll--regeneration
+- id: skill.regeneration-5-plus
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - lustria-savage-goblins/zomblintua--regeneration
+  - underworld-alliance-mim/boglars--regeneration
+- id: skill.regeneration-blocked-by-blessed
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - chaos-streets-undead-bloodlines/band--strigoi-power-curse-of-the-reborn
+- id: skill.righteous-fury
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - sisters-of-sigmar/band--special-skills-righteous-fury
+- id: skill.shield-mastery
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - lustria-norse/band--norse-special-skills-shield-mastery
+  - norse-explorers-btb/band--norse-special-skills-shield-master
+  - norse-explorers-lustria/band--norse-special-skills-shield-master
+- id: skill.shifty
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - halflings-mic/halfling-elder--shifty
+- id: skill.strength-of-steel
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - chaos-streets-undead-bloodlines/band--blood-dragon-power-strength-of-steel
+- id: skill.strongman
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - carnival-of-chaos/brutes--unnatural-strength
+  - merchant-caravans/blackguards--strongman
+- id: skill.sure-strike
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - high-elves-lus/band--skill-unerring-strike
+  - lustria-high-elves/band--high-elf-special-skills-infallible-strike
+- id: skill.sword-master
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades
+  - chaos-streets-undead-bloodlines/band--blood-dragon-power-sword-master
+  - clan-angrund-kep/band--dwarf-special-skills-master-of-blades
+  - dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades
+- id: skill.swordmaster
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - hochland-bandits/duelist--swordmaster
+- id: skill.thick-skull
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - black-dwarfs/band--chaos-dwarf-special-skills-thick-skull
+  - black-orcs/band--black-orc-special-skills-ard-ead
+  - chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull
+  - chaos-streets-greenskins/band--orc-special-skills-ard-ead
+  - dwarf-rangers/band--dwarf-special-skills-thick-skull
+  - dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull
+  - orc-mob/band--orc-special-skills-ard-ead
+  - sons-of-hashut/band--chaos-dwarfs-special-skills-thick-skull
+- id: skill.tough-as-steel
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - black-dwarfs/band--chaos-dwarf-special-skills-true-grit
+  - chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-true-grit
+  - dwarf-rangers/band--dwarf-special-skills-true-grit
+  - dwarf-treasure-hunters/band--dwarf-special-skills-true-grit
+  - khemri-cursed-of-karak-zorn/band--karak-zorn-special-skills-hard-as-steel
+  - sons-of-hashut/band--chaos-dwarfs-special-skills-true-grit
+- id: skill.unbeatable-warrior
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades
+  - clan-angrund-kep/band--dwarf-special-skills-master-of-blades
+  - dwarf-rangers/band--dwarf-special-skills-combat-master
+  - dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades
+- id: skill.vampire-reflexes
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - khemri-lahmian-brotherhood/band--lahmian-special-skills-vampire-reflexes
+- id: skill.virtue-of-valour
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - bretonnian-knights/band--virtue-of-valour
+  - chaos-streets-bretonnian-knights/band--virtue-of-valour
+- id: skill.weapons-of-the-north
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-norse/band--norse-special-skills-northern-weapons
+- id: skill.wound-valour
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - knights-of-the-bitter-moors-mim/band--virtue-of-valour
+- id: special-rule.band--beastmen-special-skills-horned-one
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - beastmen-raiders/band--beastmen-special-skills-horned-one
+- id: special-rule.band--beastmen-special-skills-mutant
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - beastmen-raiders/band--beastmen-special-skills-mutant
+- id: special-rule.band--blessings-of-nurgle-bloated-foulness
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - carnival-of-chaos/band--blessings-of-nurgle-bloated-foulness
+- id: special-rule.band--blessings-of-nurgle-mark-of-nurgle
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - carnival-of-chaos/band--blessings-of-nurgle-mark-of-nurgle
+- id: special-rule.band--marauder-special-skills-mutant
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - marauders-of-chaos/band--marauder-special-skills-mutant
+- id: special-rule.band--mutations-extra-arm
+  kind: compiler
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - cult-of-the-possessed/band--mutations-extra-arm
+  - trollheim-cult-of-the-possessed/band--mutations-extra-arm
+- id: special-rule.band--mutations-great-claw
+  kind: compiler
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - cult-of-the-possessed/band--mutations-great-claw
+  - trollheim-cult-of-the-possessed/band--mutations-great-claw
+- id: special-rule.band--mutations-tentacle
+  kind: compiler
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - cult-of-the-possessed/band--mutations-tentacle
+  - trollheim-cult-of-the-possessed/band--mutations-tentacle
+- id: special-rule.band--necromantic-modification-multiple-limbs
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - khemri-necromancers/band--necromantic-modification-multiple-limbs
+- id: special-rule.band--necromantic-modification-putrid-stench
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - khemri-necromancers/band--necromantic-modification-putrid-stench
+- id: special-rule.band--norse-special-skills-berserk-charge
+  kind: compiler
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - norse-explorers-btb/band--norse-special-skills-berserk-charge
+  - norse-explorers-lustria/band--norse-special-skills-berserk-charge
+- id: special-rule.band--sacred-mark-venom-glands
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-lizardmen/band--sacred-mark-venom-glands
+- id: special-rule.band--shield-bash
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - bretonnian-chapel-guard/band--shield-bash
+- id: special-rule.band--skaven-special-skills-tail-fighting
+  kind: compiler
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - skaven-clan-eshin/band--skaven-special-skills-tail-fighting
+  - trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting
+- id: special-rule.band--strigoi-power-monstrosity
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - chaos-streets-undead-bloodlines/band--strigoi-power-monstrosity
+- id: special-rule.trained-bear--bear-hug
+  kind: compiler
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - kislevites/trained-bear--bear-hug
+- id: trait.acid-blood
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - cult-of-the-possessed/band--mutations-blackblood
+  - trollheim-cult-of-the-possessed/band--mutations-acid-blood
+- id: trait.caught-fire-threshold
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - restless-dead/scarecrows--flammable
+- id: trait.charge-attack-bonus
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - chaos-streets-undead-bloodlines/dire-wolf--charge
+  - trollheim-undead/dire-wolves--charge
+  - undead/dire-wolves--charge
+- id: trait.cloud-of-flies
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - carnival-of-chaos/band--blessings-of-nurgle-cloud-of-flies
+  - carnival-of-chaos/nurglings--cloud-of-flies
+  - carnival-of-chaos/plague-bearers--cloud-of-flies
+  - night-goblins-web/snotlings--dodgy
+- id: trait.counts-as-buckler
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - tileans/duelists--cloak-dagger
+- id: trait.counts-as-shield
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-tileans/duelists--cloak-and-dagger
+- id: trait.dagger-master
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - chaos-streets-deathbringers/knives--dagger-master
+- id: trait.first-round-charge-attack-bonus
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - cursed-cavalcade/wild-beasts--charge
+- id: trait.flammable
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - khemri-tomb-guardians/tomb-lord--flammable
+  - restless-dead/scarecrows--flammable
+  - tomb-guardians/tomb-lord--flammable
+- id: trait.fragile-halflings
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - mootlanders/band--fragile-halflings
+- id: trait.huge-jaws
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-lizardmen/band--sacred-mark-huge-jaws
+- id: trait.injury-profile
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - battle-monks-of-cathay/raging-peasants--downtrodden
+  - call-of-the-night-haint-mim/poltergeists--incorporeal
+  - chaos-streets-undead-bloodlines/vampire-bat--summoned-creature
+  - crooked-moon-kep/snotling-mob--weedy
+  - khemri-necromancers/nehekharan-vultures--fragile
+  - night-goblins-kaz/snotling-mob--weedy
+  - night-goblins-mic/snotling-mob-consists-of-5-snotlings--weedy
+  - night-goblins-web/snotlings--weedy
+  - snotlings-web/band--not-so-tough-gits
+  - snotlings-web/bullied-goblin--not-a-snotling
+  - snotlings-web/snotling-mobs--not-so-small-surprisingly-tough
+  - snotlings-web/wheelo--tough-machine
+- id: trait.injury-reroll-out
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - restless-dead/scarecrows--construct
+- id: trait.maddened-with-pain
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - cursed-cavalcade/great-bear--maddened-with-pain
+- id: trait.magical-attacks
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - carnival-of-chaos/nurglings--daemonic-aura
+  - carnival-of-chaos/plague-bearers--daemonic-aura
+- id: trait.natural-armour-negated-by-magic
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - carnival-of-chaos/nurglings--daemonic-aura
+  - carnival-of-chaos/plague-bearers--daemonic-aura
+- id: trait.natural-armour-save
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - beastmen-raiders/band--beastmen-special-skills-shaggy-hide
+  - black-orcs/black-orc-boss--black-orc
+  - black-orcs/black-orcs--black-orc
+  - carnival-of-chaos/nurglings--daemonic-aura
+  - carnival-of-chaos/plague-bearers--daemonic-aura
+  - dark-elves/cold-one-beasthounds--scaly-skin
+  - fen-guard-mim/band--bark-skin
+  - fen-guard-mim/treekin--redwood
+  - forest-goblins/gigantic-spider--chitin-armour
+  - halflings-mic/halfling-elder--layers-of-fat
+  - khemri-mages/mechanical-beast--mechanical-armour
+  - khemri-tomb-guardians/stone-golem--stone-body
+  - lizardmen-lus/kroxigor--scaly-skin
+  - lizardmen/kroxigor--scaly-skin
+  - lustria-dark-elves/cold-ones--scaly-skin
+  - lustria-lizardmen/kroxigor--scaly-skin-4plus
+  - lustria-lizardmen/saurus-braves--scaly-skin-5plus
+  - lustria-lizardmen/saurus-totem-warrior--scaly-skin-5plus
+  - lustria-lizardmen/skink-braves--scaly-skin-6plus
+  - lustria-lizardmen/skink-great-crests--scaly-skin-6plus
+  - lustria-lizardmen/skink-priest--scaly-skin-6plus
+  - lustria-norse/wulfen--hardened-hide
+  - lustrian-reavers/estalian-warhound--armoured
+  - ogre-hunting-party-web/sabretusks--tough-hide
+- id: trait.natural-armour-stacks
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - beastmen-raiders/band--beastmen-special-skills-shaggy-hide
+  - black-orcs/black-orc-boss--black-orc
+  - black-orcs/black-orcs--black-orc
+  - lustria-lizardmen/kroxigor--scaly-skin-4plus
+  - lustria-lizardmen/saurus-braves--scaly-skin-5plus
+  - lustria-lizardmen/saurus-totem-warrior--scaly-skin-5plus
+  - lustria-lizardmen/skink-braves--scaly-skin-6plus
+  - lustria-lizardmen/skink-great-crests--scaly-skin-6plus
+  - lustria-lizardmen/skink-priest--scaly-skin-6plus
+- id: trait.natural-armour-unmodified
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - dark-elves/cold-one-beasthounds--scaly-skin
+- id: trait.natural-armour-worst-save
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - lustria-lizardmen/kroxigor--scaly-skin-4plus
+  - lustria-lizardmen/saurus-braves--scaly-skin-5plus
+  - lustria-lizardmen/saurus-totem-warrior--scaly-skin-5plus
+  - lustria-lizardmen/skink-braves--scaly-skin-6plus
+  - lustria-lizardmen/skink-great-crests--scaly-skin-6plus
+  - lustria-lizardmen/skink-priest--scaly-skin-6plus
+- id: trait.perfect-killer
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - chaos-streets-deathbringers/shadow-blade--consummate-fighter
+  - khemri-thieves-guild/guild-hashashiyyin--consummate-fighter
+  - silent-brotherhood-sc/silent-master--perfect-killer
+  - skaven-clan-eshin/assassin-adept--perfect-killer
+  - trollheim-skaven-clan-eshin/assassin-adept--consummate-fighter
+- id: trait.poison-immune
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - blood-dragons-mou/grave-guards--immune-to-poisons
+  - blood-dragons-mou/hell-hounds--immune-to-poisons
+  - blood-dragons-mou/skeleton-warriors--immune-to-poisons
+  - blood-dragons-mou/vampire--immune-to-poisons
+  - blood-dragons-mou/wights--immune-to-poisons
+  - call-of-the-night-haint-mim/cairn-wraith--immune-to-poison
+  - call-of-the-night-haint-mim/malignant-spirits--immune-to-poison
+  - call-of-the-night-haint-mim/mourngul--immune-to-poison
+  - call-of-the-night-haint-mim/poltergeists--immune-to-poison
+  - call-of-the-night-haint-mim/revenants--immune-to-poison
+  - call-of-the-night-haint-mim/spirit-hosts--immune-to-poison
+  - call-of-the-night-haint-mim/tomb-banshee--immune-to-poison
+  - carnival-of-chaos/band--blessings-of-nurgle-nurgles-rot
+  - carnival-of-chaos/nurglings--immune-to-poison
+  - carnival-of-chaos/plague-bearers--immune-to-poison
+  - chaos-streets-undead-bloodlines/blood-dragon-vampire--immune-to-poison
+  - chaos-streets-undead-bloodlines/dire-wolf--immune-to-poison
+  - chaos-streets-undead-bloodlines/lahmia-vampire--immune-to-poison
+  - chaos-streets-undead-bloodlines/necrarch-vampire--immune-to-poison
+  - chaos-streets-undead-bloodlines/strigoi-vampire--immune-to-poison
+  - chaos-streets-undead-bloodlines/vampire-bat--immune-to-poison
+  - chaos-streets-undead-bloodlines/von-carstein-vampire--immune-to-poison
+  - chaos-streets-undead-bloodlines/zombie--immune-to-poison
+  - fallen-the-rel/revenant--immune-to-poison
+  - fen-guard-mim/band--immune-to-drugs-and-poison
+  - grave-robbers-sylv/band--special-skill-hardy-constitution
+  - khemri-cursed-of-karak-zorn/shadowed--immune-to-poison
+  - khemri-lahmian-brotherhood/band--immune-to-poison
+  - khemri-mages/mechanical-beast--immune-to-poison
+  - khemri-necromancers/band--immune-to-poison
+  - khemri-tomb-guardians/band--immune-to-poison
+  - khemri-tomb-guardians/stone-golem--immune-to-poison
+  - lustria-clan-pestilens/band--clan-pestilens-special-skills-rotten-body
+  - lustria-pygmies/cannibals--immune-to-poison
+  - lustria-savage-goblins/zomblins--immune-to-poison
+  - lustria-savage-goblins/zomblintua--immune-to-poison
+  - masters-of-horror-sylv/flesh-construct--immune-to-poison
+  - masters-of-horror-sylv/thrall--immune-to-poison
+  - masters-of-horror-sylv/zombies--immune-to-poison
+  - necrarchs-the-soul-stealers-lotd1/abomination--immune-to-poison
+  - necrarchs-the-soul-stealers-lotd1/necrarch-vampire--immune-to-poison
+  - necrarchs-the-soul-stealers-lotd1/skeletal-warrior--immune-to-poison
+  - necrarchs-the-soul-stealers-lotd1/thrall--immune-to-poison
+  - necrarchs-the-soul-stealers-lotd1/zombie--immune-to-poison
+  - restless-dead/grave-guards--immune-to-poison
+  - restless-dead/liche--immune-to-poison
+  - restless-dead/scarecrows--immune-to-poison
+  - restless-dead/skeletons--immune-to-poison
+  - restless-dead/wights--immune-to-poison
+  - restless-dead/zombies--immune-to-poison
+  - skaven-clan-pestilens/band--clan-pestilens-special-skills-rotten-body
+  - strigoi-kaz/fell-bats--immune-to-poison
+  - strigoi-kaz/skeletons--immune-to-poison
+  - survivors-of-strigos-sylv/strigoi-vampire--immune-to-poison
+  - tomb-guardians/band--immune-to-poison
+  - trollheim-undead/dire-wolves--immune-to-poison
+  - trollheim-undead/vampire--immune-to-poison
+  - trollheim-undead/zombies--immune-to-poison
+  - undead/dire-wolves--immune-to-poison
+  - undead/vampire--immune-to-poison
+  - undead/zombies--immune-to-poison
+  - underworld-alliance-mim/goblin-stinky-gits--disgusting
+  - watchmen-mim/turnkeys--immune-to-poison
+- id: trait.poisonous-injury
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - forest-goblins-lus/gigantic-spider--poisonous
+  - forest-goblins/gigantic-spider--poisonous
+- id: trait.scorpion-tail
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - cult-of-the-possessed/band--mutations-scorpion-tail
+  - trollheim-cult-of-the-possessed/band--mutations-scorpion-tail
+- id: trait.spectral-touch
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - call-of-the-night-haint-mim/spirit-hosts--spectral-touch
+- id: trait.spines
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - cult-of-the-possessed/band--mutations-spines
+  - trollheim-cult-of-the-possessed/band--mutations-spines
+- id: trait.spiritual-weapons
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - khemri-lahmian-brotherhood/spirits--spiritual-weapons
+- id: trait.survivor
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustrian-reavers/conqueror--survivor
+- id: trait.ward-save
+  kind: trait
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - lustria-pygmies/silent-walker--ethereal
+  - lustrian-reavers/barbary-monkey--nimble
+  - sea-ghosts-mim/feast-master--talismanic-tattoos
+- id: trait.ward-save-mundane-only
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-pygmies/silent-walker--ethereal
+- id: trait.wight-blades
+  kind: trait
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - restless-dead/grave-guards--wight-blades
+- id: weapon.mace
+  kind: mechanic
+  implemented: 'YES'
+  basis: unique-effect
+  members:
+  - lustria-savage-goblins/zomblintua--blunt-attacks
+- id: weapon.vomit-attack
+  kind: mechanic
+  implemented: 'YES'
+  basis: shared-effect
+  members:
+  - black-orcs/troll--vomit-attack
+  - chaos-streets-greenskins/troll--troll-vomit
+  - crooked-moon-kep/troll--vomit-attack
+  - night-goblins-kaz/troll--vomit-attack
+  - night-goblins-mic/troll--vomit-attack
+  - night-goblins-web/troll--vomit-attack
+  - orc-mob/troll--vomit-attack
+  - underworld-alliance-mim/warpstone-troll--vomit-attack

@@ -31,6 +31,9 @@ equipment_lists:
   - item_id: morning_star
     cost: 10
   - item_id: spiked_gauntlet
+    applies_to:
+      profile_ids:
+      - enforcer
     cost: 15
     notes: Enforcer only; Rare 7
     notes_i18n:
@@ -69,11 +72,17 @@ equipment_lists:
     notes_i18n:
       es: Raro 9
   - item_id: lock_picks
+    applies_to:
+      profile_ids:
+      - fence
     cost: 15
     notes: Fence only
     notes_i18n:
       es: Solo el Receptor
   - item_id: fences_iron_strongbox
+    applies_to:
+      profile_ids:
+      - fence
     cost: null
     notes: Fence only; 30 gc; Rare 10
     notes_i18n:

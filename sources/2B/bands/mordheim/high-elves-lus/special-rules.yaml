@@ -117,16 +117,14 @@ rules:
     band: true
 - id: band--resolve
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.high-elves-lus.band.resolve
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple opponents. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Resolve
   effect: >-
     When fighting the Dark Elves, High Elves have Leadership 10 for Rout Tests and can never choose
@@ -146,16 +144,15 @@ rules:
     band: true
 - id: loremaster--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.high-elves-lus.loremaster.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any models in the warband within 6 inches may use the Loremaster's Leadership instead of their
@@ -362,15 +359,15 @@ rules:
 - id: band--skill-miniath
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.high-elves-lus.band.miniath
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: additional parry attempts are a combat-resolution mechanic.
+    - id: skill.miniath
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.miniath
   name: Miniath
   effect: >-
     The Elf has been trained in the martial art of the White Tower known as Miniath, allowing him to
@@ -393,15 +390,15 @@ rules:
 - id: band--skill-unerring-strike
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.high-elves-lus.band.unerring-strike
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: re-rolling failed wound rolls is a combat-resolution mechanic.
+    - id: skill.sure-strike
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.sure-strike
   name: Unerring Strike
   effect: >-
     The Elf is an expert at delivering deadly accurate blows. He may re-roll any failed to wound
@@ -422,16 +419,15 @@ rules:
 - id: band--skill-fey-quickness
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.high-elves-lus.band.fey-quickness
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: the dodge-style save against melee or missile attacks is a combat-resolution
-        mechanic.
+    - id: skill.elven-agility
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.elven-agility
   name: Fey Quickness
   effect: >-
     Few can ever hope to match an Elf's inhuman quickness and agility. An Elf with Fey Quickness can
@@ -454,3 +450,69 @@ rules:
       6.
   applies_to:
     band: true
+
+- id: sword-wardens--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - ranged-weapons
+  name: Equipment Restrictions
+  effect: "Honorable warriors; they may never use missile weapons of any sort."
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: "0-2 Sword Wardens"
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - sword-wardens
+- applies_to:
+    profile_ids:
+    - loremaster
+  effect: >-
+    Bound by the traditions of the Tower of Hoeth, he may only use a sword, dagger, or Mage Staff in
+    battle.
+  effect_i18n:
+    es: >-
+      Atado a las tradiciones de la Torre de Hoeth, solo puede usar una espada, una daga o un Bastón
+      de Mago en batalla.
+  id: loremaster--tower-of-hoeth
+  name: Tower of Hoeth
+  name_i18n:
+    es: Torre de Hoeth
+  runtime:
+    effects:
+    - binding:
+        id: profile.active-weapon-restrictions
+        kind: profile
+        parameters:
+          allowed_kinds:
+          - weapon.sword
+          - weapon.dagger
+          - mage_staff_of_hoeth
+      id: profile.active-weapon-restrictions
+      scope: 'YES'
+    grant: profile
+    implemented: 'YES'
+    scope: 'YES'
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: 1 Loremaster
+    url: https://broheim.net/downloads/warbands/supplement/lustria/High Elves.pdf
+  applies_to:
+    profile_ids:
+    - loremaster

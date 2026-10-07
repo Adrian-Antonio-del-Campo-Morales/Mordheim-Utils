@@ -20,15 +20,15 @@ rules:
     profile_ids:
     - witch-hunter-captain
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.trollheim-witch-hunters.witch-hunter-captain.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: witch-hunter-captain--burn-the-witch
   name: Burn the Witch!
   effect: The Witch Hunter Captain is subject to Hatred against all models that can cast spells.

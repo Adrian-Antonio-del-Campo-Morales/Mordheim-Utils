@@ -145,16 +145,15 @@ rules:
     band: true
 - id: silent-master--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.silent-brotherhood-sc.silent-master.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6 inches of the Silent Master may use his Leadership instead of his own.
@@ -174,16 +173,17 @@ rules:
     - silent-master
 - id: silent-master--perfect-killer
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.silent-brotherhood-sc.silent-master.perfect-killer
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: trait.perfect-killer
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.perfect-killer
+        parameters:
+          value: true
   name: Perfect Killer
   effect: >-
     A Silent Master always has an extra -1 modifier to any armour save the enemy has to take against
@@ -297,16 +297,15 @@ rules:
 - id: band--skill-cutthroat
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.silent-brotherhood-sc.band.cutthroat
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: armour-save modifiers applied to the hero's own attacks are combat-resolution
-        mechanics.
+    - id: skill.cutthroat
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.cutthroat
   name: Cutthroat
   effect: >-
     The hero is especially practiced in fighting with two daggers and skilfully sets stabs and cuts
@@ -340,7 +339,9 @@ rules:
       scope: 'NO'
       binding: null
       reason: >-
-        Out of scope: disengaging from close combat is a combat-phase mechanic.
+        Out of scope: voluntary escape/withdrawal ends the duel without resolving it.
+        Associated movement, interception, re-engagement and campaign injury clauses
+        are also outside the 1v1 combat scope (user ruling 2026-10-04).
   name: Hit and Run
   effect: >-
     The hero may make a Leadership Test at the end of any Hand-to-Hand phase, if he is still in base

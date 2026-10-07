@@ -103,7 +103,9 @@ describe("canonical limit citations", () => {
     const sisters = (document.rules_prose ?? {})["profile-special-rules"]
       ?.find((row) => row.band_id === "sisters-of-sigmar" && row.id === "band--human-maximum-characteristics");
     expect(sisters?.effect).toContain("(campaign.limit.racial-maximum.human)");
-  });
+    // The real catalogue sweep is seconds of work; a per-test budget keeps it
+    // from tripping the global timeout when the suite runs in parallel.
+  }, 20_000);
 
   it.each(["es", "en"] as const)("resolves known, unknown and repeated synthetic citations in %s", (locale) => {
     const catalogue = new RulesCatalogue(synthetic([

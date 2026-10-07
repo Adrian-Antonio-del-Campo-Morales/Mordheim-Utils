@@ -24,6 +24,11 @@ equipment_lists:
   - item_id: bow
     cost: 10
   - item_id: long_bow
+    applies_to:
+      profile_types:
+      - hero
+      profile_ids:
+      - marksmen
     cost: 15
     notes: Heroes and Marksmen only.
     notes_i18n:
@@ -33,16 +38,29 @@ equipment_lists:
   - item_id: helmet
     cost: 10
   - item_id: light_armour
+    applies_to:
+      profile_types:
+      - hero
+      profile_ids:
+      - marksmen
     cost: 20
     notes: Heroes and Marksmen only.
     notes_i18n:
       es: Solo héroes y tiradores.
   - item_id: hunting_arrows
+    applies_to:
+      profile_types:
+      - hero
+      profile_ids:
+      - marksmen
     cost: 30
     notes: Heroes and Marksmen only.
     notes_i18n:
       es: Solo héroes y tiradores.
   - item_id: forest_cloak
+    applies_to:
+      profile_types:
+      - hero
     cost: 50
     notes: Heroes only.
     notes_i18n:

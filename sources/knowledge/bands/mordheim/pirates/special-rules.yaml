@@ -21,15 +21,15 @@ rules:
     profile_ids:
     - pirate-captain
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.pirates.pirate-captain.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: gunners--swivel-gun-is-dangerous-matey
   name: Swivel Guns Is Dangerous, Matey!
   effect: >-
@@ -641,12 +641,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.pirates.band.pirate-special-skills-swashbuckler
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: psychology or mounts.
+        Out of scope: voluntary escape/withdrawal ends the duel without resolving it.
+        Associated movement, interception, re-engagement and campaign injury clauses
+        are also outside the 1v1 combat scope (user ruling 2026-10-04).

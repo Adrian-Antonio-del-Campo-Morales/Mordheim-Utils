@@ -37,6 +37,14 @@ from mordheim_core.models import EffectSet
 
 def resolve_reference_attack(attacker, defender, attacker_state, defender_state, weapon, dice, **options):
     """Resolve an attack; Rapier Barrage requires no established wound, even saved."""
+    trance_target = defender_state.entranced
+    if attacker_state.entranced and options.get('prepared_hit') is None:
+        return AttackOutcome(attacker_state, defender_state)
+    # The first declaration benefits from the trance; subsequent attacks do not.
+    if (attacker_state.entranced or defender_state.entranced) and options.get('prepared_hit') is None:
+        options = {**options, 'helpless_at_start': options.get('helpless_at_start', False) or trance_target}
+        attacker_state = replace(attacker_state, entranced=False)
+        defender_state = replace(defender_state, entranced=False)
     base_key = options['key']
     initial_stun = defender_state.condition == Condition.STUNNED
     penalty = 0
@@ -59,7 +67,9 @@ def resolve_reference_attack(attacker, defender, attacker_state, defender_state,
         policy = options.get('decisions')
         if (not result.barrage_available or result.wounded or not result.attacker.active or not result.defender.active
                 or policy is not None and not policy.choose(f"{options['key']}.barrage", result)):
-            return replace(result, hit=any_hit, barrage_available=False)
+            return replace(result, hit=any_hit, barrage_available=False,
+                melee_attack=options.get("melee_attack", True),
+                knocked_down_target=bool(options.get("helpless_at_start", False)))
         penalty += 1
         attacker_state, defender_state = result.attacker, result.defender
         options = {**options, 'key': f'{base_key}.barrage.{penalty}',
@@ -79,6 +89,7 @@ def _resolve_reference_attack_once(
     prepared_hit: object | None = None,
     natural_hit_six: bool | None = None,
     defences_resolved: bool = False,
+    ethereal_resolved: bool = False,
     defences_only: bool = False,
     parry_allowed: bool = True,
     decisions: DecisionPolicy | None = None,
@@ -88,9 +99,16 @@ def _resolve_reference_attack_once(
     """Resolve one attack and return new immutable fighter states."""
     if not attacker_state.active or not defender_state.active:
         return AttackOutcome(attacker_state, defender_state)
+    if (melee_attack and prepared_hit is None
+            and phases.has_tag(attacker.global_effects, "mechanic.honorable")
+            and defender_state.condition in (Condition.KNOCKED_DOWN, Condition.STUNNED)):
+        return AttackOutcome(attacker_state, defender_state)
     if melee_attack and (stunned_at_start if stunned_at_start is not None else
                          defender_state.condition == Condition.STUNNED and prepared_hit is None):
         return AttackOutcome(attacker_state, replace(defender_state, condition=Condition.OUT))
+    if (phases.has_tag(weapon, "effect.wraith-touch")
+            and any(phases.has_tag(defender.global_effects, tag) for tag in ("nature.undead", "nature.possessed"))):
+        return AttackOutcome(attacker_state, defender_state)
     weapon = weapon_against_opponent(attacker, defender, weapon)
     effect = _combined_effect(attacker, weapon)
     if phases.has_tag(effect, "mechanic.death-blow") and attacker.characteristics.attacks < 2:
@@ -106,15 +124,15 @@ def _resolve_reference_attack_once(
     hit_context = prepare_hit_context(
         attacker, defender, attacker_state, defender_state, weapon, effect,
         first_round=first_round, charging=charging,
-        helpless_at_start=helpless_at_start, key=f"{key}.hit",
+        helpless_at_start=helpless_at_start, key=f"{key}.hit", melee_attack=melee_attack,
     )
     hit_context = replace(hit_context, modifier=hit_context.modifier - barrage_penalty)
-    reroll = _hit_reroll(attacker, defender, weapon, effect, first_round, charging)
+    reroll = _hit_reroll(attacker, defender, weapon, effect, first_round, charging, frenzy=attacker_state.frenzy)
     luck_available = phases.has_tag(effect, "skill.luck") and "luck" not in attacker_state.resources_spent
     luck_for_hit = luck_available and not reroll
     if prepared_hit is not None:
         hit = prepared_hit
-    elif phases.has_tag(effect, "skill.sweep") and weapon.two_handed:
+    elif phases.has_tag(effect, "skill.sweep") and weapon.two_handed and not hit_context.needs_sixes:
         passed = phases._characteristic_test(
             defender_state.initiative, dice, f"{key}.sweep",
             reroll=phases.has_tag(defender.global_effects, "skill.blessed-sight"),
@@ -123,10 +141,20 @@ def _resolve_reference_attack_once(
         hit = HitResult(0, 1 if passed else 6, not passed)
     else:
         hit = phases.resolve_hit(hit_context, dice)
+    if (prepared_hit is None and not hit.success and not hit.rerolled
+            and first_round and phases.has_tag(weapon, "weapon.spear")
+            and phases.has_tag(effect, "mechanic.seaguard-spear-master")
+            and "seaguard-spear-master" not in attacker_state.resources_spent
+            and (decisions is None or decisions.choose(f"{key}.spear-master", hit))):
+        # One chosen failed hit, not one reroll per attack. Declining a miss
+        # keeps the resource for a later miss in this same first-round pool.
+        hit = replace(phases.resolve_hit(replace(hit_context,
+            reroll=False, key=f"{key}.hit.reroll"), dice), rerolled=True)
+        attacker_state = attacker_state.spend("seaguard-spear-master")
     # Keep physical die provenance before a replacement success changes its face.
     if natural_hit_six is None:
         natural_hit_six = hit.roll == 6 and not (
-            phases.has_tag(effect, "skill.sweep") and weapon.two_handed
+            phases.has_tag(effect, "skill.sweep") and weapon.two_handed and not hit_context.needs_sixes
         )
     trace = (Phase.HIT,)
     if luck_for_hit and hit.rerolled:
@@ -150,6 +178,12 @@ def _resolve_reference_attack_once(
             attacker_state, defender_state, hit=True, hit_roll=hit.roll,
             hit_target=hit.target, trace=trace, natural_hit_six=natural_hit_six,
         )
+    if (not defences_resolved and not ethereal_resolved
+            and phases.has_tag(defender.global_effects, "mechanic.ethereal-hit-save")
+            and not phases.has_tag(effect, "attack.magical")
+            and dice.roll(RollRequest(f"{key}.ethereal")) >= 4):
+        return AttackOutcome(attacker_state, defender_state, hit=True, hit_roll=hit.roll,
+            hit_target=hit.target, saved=True, trace=trace)
     killing_blow = natural_hit_six and phases.has_tag(effect, "mechanic.killing-blow")
     if killing_blow:
         effect = replace(effect, cannot_be_parried=True)
@@ -292,10 +326,19 @@ def _resolve_reference_attack_once(
         attacker_state = attacker_state.spend("mark-of-the-old-ones")
         wound = replace(wound, success=True, roll=wound.target, critical=False)
     if not wound.success:
+        if (melee_attack and phases.has_tag(attacker.global_effects, "mechanic.titanic-strength")
+                and defender_state.condition == Condition.STANDING
+                and not phases._characteristic_test(defender_state.strength, dice,
+                    f"{key}.titanic-strength", reroll=phases.has_tag(defender.global_effects, "skill.blessed-sight"))):
+            defender_state = replace(defender_state, condition=Condition.KNOCKED_DOWN)
         return AttackOutcome(attacker_state, defender_state, hit=True, trace=trace,
             barrage_available=phases.has_tag(weapon, "weapon.rapier"))
     if phases.has_tag(effect, "poison.manbane") and not poison_blocked and wound.roll == 1:
         return AttackOutcome(attacker_state, defender_state, hit=True, trace=trace)
+    if (phases.has_tag(weapon, "effect.wraith-touch") and attacker.fighter_id == "restless-dead:liche"
+            and attacker_state.wounds < attacker.characteristics.wounds
+            and decisions is not None and decisions.choose(f"{key}.wraith-heal", attacker)):
+        attacker_state = replace(attacker_state, wounds=attacker_state.wounds + 1)
     if wound.critical:
         if phases.has_tag(defender.global_effects, "skill.hardy-constitution") and dice.roll(
             RollRequest(f"{key}.hardy-constitution")
@@ -366,6 +409,9 @@ def _resolve_wound_damage(
         weapon_damage = (dice.roll(RollRequest(f"{key}.damage", effect.damage_die_sides))
                          if effect.damage_die_sides else effect.damage)
         damage = max(1, weapon_damage, critical.damage) * (2 if phases.has_tag(defender.global_effects, "flammable") and phases.has_tag(effect, "attack.fire") else 1)
+    if (phases.has_tag(attacker.global_effects, "mechanic.marine-hunter")
+            and phases.has_tag(defender.global_effects, "species.aquatic")):
+        damage *= 2
     remaining = defender_state.wounds - damage
     if phases.has_tag(effect, "poison.nightshade") and not poison_blocked:
         defender_state = replace(
@@ -407,6 +453,9 @@ def _resolve_wound_damage(
     trace += (Phase.INJURY,)
     condition = max(injury.condition for injury in injuries)
     helmet_save = defender.helmet_save
+    if (phases.has_tag(defender.global_effects, "mechanic.hard-to-rattle")
+            and not phases.has_tag(effect, "attack.fire")):
+        helmet_save = min(helmet_save, 4)
     # Basha worsens a helmet reaction, not Thick Skull's replacement reaction.
     if (phases.has_tag(effect, "weapon.skull-busta") and helmet_save <= 6
             and not defender.global_effects.thick_skull):
@@ -419,5 +468,3 @@ def _resolve_wound_damage(
         frenzy=defender_state.frenzy and condition == Condition.STANDING,
     )
     return AttackOutcome(attacker_state, defender_state, True, wounded=True, damage=damage, critical=wound.critical, trace=trace)
-
-

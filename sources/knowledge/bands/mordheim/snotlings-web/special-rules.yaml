@@ -3,15 +3,21 @@ band_id: snotlings-web
 rules:
 - id: band--dodgy
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
+    - id: skill.elven-agility
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.elven-agility
     - id: unimplemented.snotlings-web.band.dodgy
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: dodge/step-aside saves are not covered by the current engine scope.
+        Non-melee clauses retain the existing campaign/missile boundary; only the admitted
+        combat save, injury chart or exemption is implemented above.
   name: Dodgy
   effect: >-
     Due to their small and dodgy nature, All Snotlings have a 6+ dodge/step aside save in the same
@@ -32,18 +38,23 @@ rules:
       salvación de 4+ respectivamente.
   applies_to:
     band: true
+    profile_ids:
+    - bigsnotz
+    - scouts
+    - shaman
+    - shoota-teams
+    - snotling-mobs
+    - runts
 - id: band--small-target
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.snotlings-web.band.small-target
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: to-hit modifiers for ranged attacks are outside the current engine
-        scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Small Target
   effect: >-
     All Snotlings are at minus one (-1) to be hit from ranged attacks because they are so diminutive
@@ -96,16 +107,23 @@ rules:
     band: true
 - id: band--not-so-tough-gits
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
+    - id: trait.injury-profile
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.injury-profile
+        parameters:
+          value: 1
     - id: unimplemented.snotlings-web.band.not-so-tough-gits
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: injury-table result conversion is a post-duel/campaign resolution
-        mechanic.
+        Non-melee clauses retain the existing campaign/missile boundary; only the admitted
+        combat save, injury chart or exemption is implemented above.
   name: Not-So-Tough Gits
   effect: >-
     When you roll on the injury table for Snotlings, a roll of a 1 is knocked down 2-3 means stunned
@@ -127,6 +145,12 @@ rules:
       tirar dos veces en la tabla de heridas graves de héroes.
   applies_to:
     band: true
+    profile_ids:
+    - bigsnotz
+    - scouts
+    - shaman
+    - shoota-teams
+    - runts
 - id: band--weakness-in-numbers
   runtime:
     scope: LATER
@@ -299,16 +323,15 @@ rules:
     band: true
 - id: bullied-goblin--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.snotlings-web.bullied-goblin.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
-        psychology/rout mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -323,16 +346,23 @@ rules:
   rule_ref: shared-rule.leader
 - id: bullied-goblin--not-a-snotling
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: trait.injury-profile
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.injury-profile
+        parameters:
+          value: 0
     - id: unimplemented.snotlings-web.bullied-goblin.not-a-snotling
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: rule-interaction exemptions (Dodgy, Small, Not-So-Tough, rating halving)
-        are campaign/psychology mechanics outside the duel scope.
+        Non-melee clauses retain the existing campaign/missile boundary; only the admitted
+        combat save, injury chart or exemption is implemented above.
   name: Not a Snotling
   effect: >-
     The Bullied Goblin is NOT a Snotling, and does not use the rules for "Dodgy", "Small", and "Not
@@ -433,15 +463,14 @@ rules:
     - shaman
 - id: scouts--scout
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.scouts.scout
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: pre-battle deployment (Infiltrate) is outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Scout
   effect: >-
     Each Snotling Scout has this modified Infiltration skill representing their diminutive size and
@@ -471,15 +500,14 @@ rules:
     - scouts
 - id: scouts--hes-no-threat
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.scouts.hes-no-threat
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: movement/restrictions on running are outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: He's No Threat!
   effect: >-
     Single Snotlings, especially small ones like Scouts, are not given much respect for their threat
@@ -529,15 +557,14 @@ rules:
     - shaman
 - id: shaman--eadache
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.shaman.eadache
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: magic-casting backlash hits are outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: '''Eadache!'
   effect: >-
     After each time that a Shaman attempts to cast a spell, successful or not, roll 1D6: on a roll
@@ -593,15 +620,14 @@ rules:
     - shoota-teams
 - id: shoota-teams--cumbersome
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.shoota-teams.cumbersome
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: movement/restrictions on running are outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Cumbersome
   effect: >-
     Any Shoota Team possessing a Missile weapon (other than Pebble or a Slingshot) can never run
@@ -622,16 +648,14 @@ rules:
     - shoota-teams
 - id: shoota-teams--recoil
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.shoota-teams.recoil
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: knockback movement from shooting and collision hits are outside the
-        current engine scope.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Recoil
   effect: >-
     When they fire a missile weapon other than a Pebble or Slingshot, Shoota Teams are immediately
@@ -692,16 +716,23 @@ rules:
     - snotling-mobs
 - id: snotling-mobs--not-so-small-surprisingly-tough
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: trait.injury-profile
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.injury-profile
+        parameters:
+          value: 0
     - id: unimplemented.snotlings-web.snotling-mobs.not-so-small-surprisingly-tough
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: to-hit modifiers and injury-table exemptions are outside the current
-        engine scope.
+        Non-melee clauses retain the existing campaign/missile boundary; only the admitted
+        combat save, injury chart or exemption is implemented above.
   name: Not So Small, Surprisingly Tough
   effect: >-
     A Snotling Mob does NOT get the normal Snotling rule of "Small" -therefore, any missile shots at
@@ -982,15 +1013,15 @@ rules:
     - wheelo
 - id: wheelo--impact-hits
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.snotlings-web.wheelo.impact-hits
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: pre-combat automatic impact hits are outside the current engine scope.
+    - id: mechanic.wheelo-impact
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.wheelo-impact
   name: Impact Hits
   effect: >-
     Whenever a Wheelo moves into a model, that model automatically suffers 1D3 Strength 4 hits,
@@ -1024,15 +1055,14 @@ rules:
     - wheelo
 - id: wheelo--impact-hits-and-multiple-charges
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.wheelo.impact-hits-and-multiple-charges
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: pre-combat automatic impact hits are outside the current engine scope.
+      reason: 'Outside the 1v1 duel: simultaneously charging two or more independent opponents.'
   name: Impact Hits and Multiple Charges
   effect: >-
     If the Wheelo charged two models simultaneously, they each suffer 1D3-1 Impact Hits, to a
@@ -1056,16 +1086,15 @@ rules:
     - wheelo
 - id: wheelo--combat
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.snotlings-web.wheelo.combat
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: fear-based to-hit restrictions are not covered by the current engine
-        scope.
+    - id: mechanic.wheelo-impact
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.wheelo-impact
   name: Combat
   effect: >-
     The statline above represents the stats of the Wheelo's Crew members, who pull out built-in
@@ -1099,16 +1128,23 @@ rules:
     - wheelo
 - id: wheelo--tough-machine
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
+    - id: trait.injury-profile
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.injury-profile
+        parameters:
+          value: 0
     - id: unimplemented.snotlings-web.wheelo.tough-machine
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: injury-table exemption and post-battle repair charts are
-        post-duel/campaign resolution mechanics.
+        Non-melee clauses retain the existing campaign/missile boundary; only the admitted
+        combat save, injury chart or exemption is implemented above.
   name: Tough Machine
   effect: >-
     The Snotling Special Rules of "Not So Tough Gits", "Small", and "Dodgy" do not apply to Wheelos.
@@ -1268,15 +1304,14 @@ rules:
     - shaman
 - id: scouts--worm
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.snotlings-web.special.worm
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: wall/burrow movement is outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Worm
   effect: >-
     (Scout and Promoted Runts Only) The Snotling is a master of fitting through small spaces and
@@ -1339,17 +1374,17 @@ rules:
     profile_ids:
     - bigsnotz
 - id: bullied-goblin--frustratingly-tiny
+  kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.snotlings-web.special.frustratingly-tiny
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: to-hit modifiers and hidden-detection changes are outside the current
-        engine scope.
+    - id: mechanic.frustratingly-tiny
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.frustratingly-tiny
   name: Frustratingly Tiny
   effect: >-
     (Snotlings Only) Your Snotling is a master of using his tiny size to his advantage. In
@@ -1415,16 +1450,19 @@ rules:
     - shaman
 - id: wheelo--special-skill-modifications
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.snotlings-web.wheelo.special-skill-modifications
-      scope: LATER
+    - id: mechanic.wheelo-skill-modifications
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.wheelo-skill-modifications
+    - id: wheelo-sprint-movement
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: fitted-weapon modifications to Impact Hits and skill-granted movement
-        are advancement/campaign mechanics outside the duel scope.
+      reason: Sprint movement is outside an established 1v1 melee duel; Weapons Training acquisition is supplied as an already legal fitting.
   name: Special Skill Modifications
   effect: >-
     Weapons Training: as Wheelos do not carry weapons as such (any blades etc. on the Wheelo itself
@@ -1493,3 +1531,37 @@ rules:
       tiene ninguna.
   applies_to:
     band: true
+- applies_to:
+    profile_ids:
+    - shoota-teams
+  effect: >-
+    May only purchase ONE non-pebble or non-slingshot missile weapon (they cannot buy a crossbow AND
+    a blunderbuss).
+  effect_i18n:
+    es: >-
+      Solo puede comprar UN arma de proyectil que no sea una piedrecita ni una tirachinas (no pueden
+      comprar una ballesta Y un trabuco).
+  id: shoota-teams--one-missile-weapon
+  name: One Missile Weapon
+  name_i18n:
+    es: Un Arma de Proyectil
+  runtime:
+    effects:
+    - binding:
+        id: profile.equipment-restrictions
+        kind: profile
+        parameters:
+          max_missile_weapons: 1
+          exempt_item_ids:
+          - small_pebble
+          - slingshot
+      id: profile.equipment-restrictions
+      scope: 'YES'
+    grant: profile
+    implemented: 'YES'
+    scope: 'YES'
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: 0-5 Snotling Shoota Team
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/snotlings

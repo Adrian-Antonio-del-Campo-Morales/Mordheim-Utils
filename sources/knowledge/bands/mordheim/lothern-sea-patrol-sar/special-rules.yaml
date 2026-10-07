@@ -392,16 +392,15 @@ rules:
     - bossuns
 - id: seaguards--spear-master
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lothern-sea-patrol-sar.seaguards.spear-master
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.seaguard-spear-master
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.seaguard-spear-master
   name: Spear Master (Seaguards)
   effect: >-
     In the first round of combat, when using a spear, a Seaguard adds +1 to his Strength and may
@@ -450,16 +449,15 @@ rules:
     - sea-rangers
 - id: sea-rangers--hate-dark-elves
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lothern-sea-patrol-sar.sea-rangers.hate-dark-elves
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: mechanic.hatred-dark-elves
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-dark-elves
   name: Hate Dark Elves (Sea Rangers)
   effect: Sea Rangers hate Dark Elves.
   source:

@@ -2,21 +2,6 @@ schema_version: 1
 ruleset: mordheim
 catalog: hirelings-hired-swords
 grade: 2b
-# Hired Swords and Dramatis Personae introduced by the Broheim Grade-2b sources.
-#
-# Full-profile entries (characteristics transcribed from the source stat blocks):
-#   - black-orc-bodyguard, snorri-nosebiter, aldred-fellblade  (Karak Azgal anthology)
-#
-# Name-only entries moved to the staged Dramatis catalogue
-# (catalog/hirelings/dramatis-personae/grade-2b.yaml) as `out_of_scope`, with the
-# reason the profile cannot be modelled yet:
-#   - bog-hunter, whaler            (referenced by lords-of-the-marsh-mim)
-#   - strigani-seer-necromancer     (referenced by strigoi-kaz)
-#   - snerik-night-goblin-scout     (referenced by night-goblins-kaz / savage-orcs-kaz)
-#
-# # Band availability, hiring fees and eligibility live in the staged campaign
-# catalogue (catalog/hired-swords-and-dramatis-2b.yaml), which mirrors the KB
-# document catalog/campaign/hired-swords-and-dramatis.yaml.
 profiles:
 - id: hireling.hired-sword.black-orc-bodyguard
   kind: hired-sword
@@ -71,34 +56,36 @@ profiles:
   rules:
   - id: hireling.hired-sword.black-orc-bodyguard.rule.i-said-shut-it
     name: I Said 'Shut It'
-    effect: >-
-      Whilst the Boss has this ferocious warrior in the warband the greenskins are reluctant to make
-      trouble. Any orcs or goblins within 6" of the Black Orc do not suffer from the effects of
-      Animosity. The rest of the warband tests as normal.
+    effect: Whilst the Boss has this ferocious warrior in the warband the greenskins are reluctant to make trouble. Any orcs or goblins within 6" of the Black Orc do not suffer from the effects of Animosity. The rest of the warband tests as normal.
     effect_i18n:
-      es: >-
-        Mientras el Jefe tenga a este feroz guerrero en la banda, los pieles verdes se muestran
-        reacios a causar problemas. Cualquier orco o goblin dentro de 6" del Orco Negro no sufre los
-        efectos de Animosidad. El resto de la banda hace las tiradas con normalidad.
+      es: Mientras el Jefe tenga a este feroz guerrero en la banda, los pieles verdes se muestran reacios a causar problemas. Cualquier orco o goblin dentro de 6" del Orco Negro no sufre los efectos de Animosidad. El resto de la banda hace las tiradas con normalidad.
     name_i18n:
       es: He Dicho 'Cállate'
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.black-orc-bodyguard.rule.i-said-shut-it.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
   - id: hireling.hired-sword.black-orc-bodyguard.rule.whose-da-man
     name: Whose Da Man!
-    effect: >-
-      If the night goblin leader is taken OOA during the battle, the Black Orc HS steps up to
-      replace him. For the duration of the battle he gains the "Leader" ability. If the night goblin
-      leader gets the "Killed" result after the battle, then the Black Orc decides to fill the new
-      vacant position permanently. The Black Orc becomes the new warband leader, but he keeps his
-      upkeep cost. The Black Orc does not count towards the warband size when selling treasure.
+    effect: If the night goblin leader is taken OOA during the battle, the Black Orc HS steps up to replace him. For the duration of the battle he gains the "Leader" ability. If the night goblin leader gets the "Killed" result after the battle, then the Black Orc decides to fill the new vacant position permanently. The Black Orc becomes the new warband leader, but he keeps his upkeep cost. The Black Orc does not count towards the warband size when selling treasure.
     effect_i18n:
-      es: >-
-        Si el líder goblin queda Fuera de combate durante la batalla, el Orco Negro lo sustituye:
-        durante esa batalla gana la capacidad de "Líder". Si el líder goblin recibe el resultado
-        "Muerto" tras la batalla, el Orco Negro ocupa la vacante de forma permanente y se convierte
-        en el nuevo líder de la banda, conservando su coste de manutención. El Orco Negro no cuenta
-        para el tamaño de la banda al vender el tesoro.
+      es: 'Si el líder goblin queda Fuera de combate durante la batalla, el Orco Negro lo sustituye: durante esa batalla gana la capacidad de "Líder". Si el líder goblin recibe el resultado "Muerto" tras la batalla, el Orco Negro ocupa la vacante de forma permanente y se convierte en el nuevo líder de la banda, conservando su coste de manutención. El Orco Negro no cuenta para el tamaño de la banda al vender el tesoro.'
     name_i18n:
       es: ¡Quién Manda Aquí!
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.black-orc-bodyguard.rule.whose-da-man.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
   source_refs:
   - manual: broheim.net
     printed_page: 62
@@ -132,15 +119,9 @@ profiles:
       quantity:
         kind: fixed
         value: 1
-      notes: Resolves to the active-KB item `beastlash` (catalog/items/weapons-close-combat.yaml, "Látigo
-        de Señor de las Bestias"). The MiM Specialists source prints no price/rarity for it; the KB entry's
-        Beastbane effect (Fear in animals) applies.
+      notes: Resolves to the active-KB item `beastlash` (catalog/items/weapons-close-combat.yaml, "Látigo de Señor de las Bestias"). The MiM Specialists source prints no price/rarity for it; the KB entry's Beastbane effect (Fear in animals) applies.
       notes_i18n:
-        es: >-
-          Se resuelve como el objeto `beastlash` del KB activo
-          (catalog/items/weapons-close-combat.yaml, "Látigo de Señor de las Bestias"). La fuente
-          de Especialistas de MiM no imprime precio ni rareza para él; se aplica el efecto
-          Bestiazoa del registro del KB (Miedo a los animales).
+        es: Se resuelve como el objeto `beastlash` del KB activo (catalog/items/weapons-close-combat.yaml, "Látigo de Señor de las Bestias"). La fuente de Especialistas de MiM no imprime precio ni rareza para él; se aplica el efecto Bestiazoa del registro del KB (Miedo a los animales).
     - item_id: net
       quantity:
         kind: fixed
@@ -158,42 +139,53 @@ profiles:
   rules:
   - id: hireling.hired-sword.bog-hunter.rule.unholy-stink
     name: Unholy Stink
-    effect: >-
-      The Bog hunter is covered in a thick layer of dung, the smell is so distracting that all
-      enemies are at -1 to hit the Bog hunter in close combat.
+    effect: The Bog hunter is covered in a thick layer of dung, the smell is so distracting that all enemies are at -1 to hit the Bog hunter in close combat.
     effect_i18n:
-      es: >-
-        El Cazador de Ciénagas está cubierto por una gruesa capa de estiércol; el olor es tan
-        distractor que todos los enemigos obtienen -1 por impactar al Cazador de Ciénagas en combate
-        cuerpo a cuerpo.
+      es: El Cazador de Ciénagas está cubierto por una gruesa capa de estiércol; el olor es tan distractor que todos los enemigos obtienen -1 por impactar al Cazador de Ciénagas en combate cuerpo a cuerpo.
     name_i18n:
       es: Hedor Impío
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.unholy-stink
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.unholy-stink
   - id: hireling.hired-sword.bog-hunter.rule.gopher
     name: Gopher
-    effect: >-
-      The Bog hunter may venture into town for his masters, ferrying back his goods to the waiting
-      warband. In place of a hero doing a roll on either the Daemon swamp or Trading, the Bog hunter
-      may visit any 1 place in the Craftsmarket, Infamous Haunts or Marketplace as the Hero waits
-      outside of town for the bog hunters return.
+    effect: The Bog hunter may venture into town for his masters, ferrying back his goods to the waiting warband. In place of a hero doing a roll on either the Daemon swamp or Trading, the Bog hunter may visit any 1 place in the Craftsmarket, Infamous Haunts or Marketplace as the Hero waits outside of town for the bog hunters return.
     effect_i18n:
-      es: >-
-        El Cazador de Ciénagas puede aventurarse en la ciudad por sus amos y traer de vuelta los
-        bienes a la banda. En lugar de que un héroe haga una tirada en el Pantano del Daemon o en
-        Comercio, el Cazador de Ciénagas puede visitar cualquier lugar del Mercado de Artesanía,
-        Refugios Infames o Mercado mientras el héroe espera fuera de la ciudad su regreso.
+      es: El Cazador de Ciénagas puede aventurarse en la ciudad por sus amos y traer de vuelta los bienes a la banda. En lugar de que un héroe haga una tirada en el Pantano del Daemon o en Comercio, el Cazador de Ciénagas puede visitar cualquier lugar del Mercado de Artesanía, Refugios Infames o Mercado mientras el héroe espera fuera de la ciudad su regreso.
     name_i18n:
       es: Recadero
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.bog-hunter.rule.gopher.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
   - id: hireling.hired-sword.bog-hunter.rule.fenland-strider
     name: Fenland Strider
-    effect: >-
-      The Bog Hunter may re-roll any failed Initiative tests when fighting on causeways, jetties and
-      gangplanks or crossing a marsh.
+    effect: The Bog Hunter may re-roll any failed Initiative tests when fighting on causeways, jetties and gangplanks or crossing a marsh.
     effect_i18n:
-      es: >-
-        El Cazador de Ciénagas puede repetir cualquier tirada de Iniciativa fallida cuando luche en
-        calzadas, embarcaderos y pasarelas o cruce un marisma.
+      es: El Cazador de Ciénagas puede repetir cualquier tirada de Iniciativa fallida cuando luche en calzadas, embarcaderos y pasarelas o cruce un marisma.
     name_i18n:
       es: Zancada de las Ciénagas
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.bog-hunter.rule.fenland-strider.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
   source_refs:
   - manual: broheim.net
     printed_page: 1
@@ -256,51 +248,70 @@ profiles:
   rules:
   - id: hireling.hired-sword.whaler.rule.marine-hunter
     name: Marine Hunter
-    effect: >-
-      Whalers grow accustomed to hunting marine beasts. Double any wounds inflicted to aquatic
-      models.
+    effect: Whalers grow accustomed to hunting marine beasts. Double any wounds inflicted to aquatic models.
     effect_i18n:
-      es: >-
-        Los Balleneros se acostumbran a cazar bestias marinas. Duplica cualquier herida infligida a
-        miniaturas acuáticas.
+      es: Los Balleneros se acostumbran a cazar bestias marinas. Duplica cualquier herida infligida a miniaturas acuáticas.
     name_i18n:
       es: Cazador Marino
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.marine-hunter
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.marine-hunter
   - id: hireling.hired-sword.whaler.rule.hardened
     name: Hardened
-    effect: >-
-      Having come face to face with some of the largest most terrifying beasts the seas have to
-      offer and survived, the Whaler is immune to fear.
+    effect: Having come face to face with some of the largest most terrifying beasts the seas have to offer and survived, the Whaler is immune to fear.
     effect_i18n:
-      es: >-
-        Tras enfrentarse a algunas de las bestias más grandes y terroríficas de los mares y
-        sobrevivir, el Ballenero es inmune al miedo.
+      es: Tras enfrentarse a algunas de las bestias más grandes y terroríficas de los mares y sobrevivir, el Ballenero es inmune al miedo.
     name_i18n:
       es: Endurecido
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.fear-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.fear-immunity
   - id: hireling.hired-sword.whaler.rule.harpooner
     name: Harpooner
-    effect: >-
-      When the Whaler hits a model in the shooting phase, if he wounds the target, he may attempt to
-      reel in the catch. If the Whaler passes a Strength test, the target model is pulled 8" towards
-      the Whaler. Neither model counts as charging if a model is reeled into close combat.
+    effect: When the Whaler hits a model in the shooting phase, if he wounds the target, he may attempt to reel in the catch. If the Whaler passes a Strength test, the target model is pulled 8" towards the Whaler. Neither model counts as charging if a model is reeled into close combat.
     effect_i18n:
-      es: >-
-        Cuando el Ballenero impacta a una miniatura en la fase de disparo, si la hiere, puede
-        intentar recoger la presa. Si el Ballenero supera una tirada de Fuerza, la miniatura
-        objetivo es arrastrada 8" hacia el Ballenero. Ninguna de las dos miniaturas cuenta como
-        carga si una es arrastrada hasta el combate cuerpo a cuerpo.
+      es: Cuando el Ballenero impacta a una miniatura en la fase de disparo, si la hiere, puede intentar recoger la presa. Si el Ballenero supera una tirada de Fuerza, la miniatura objetivo es arrastrada 8" hacia el Ballenero. Ninguna de las dos miniaturas cuenta como carga si una es arrastrada hasta el combate cuerpo a cuerpo.
     name_i18n:
       es: Arponero
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.whaler.rule.harpooner.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
   - id: hireling.hired-sword.whaler.rule.whalebone-carver
     name: Whalebone Carver
-    effect: >-
-      Heroes get +2 on search rolls when looking for Scrimshaw Baubles when a Whaler joins the
-      warband.
+    effect: Heroes get +2 on search rolls when looking for Scrimshaw Baubles when a Whaler joins the warband.
     effect_i18n:
-      es: >-
-        Los héroes obtienen +2 en las tiradas de búsqueda de Adornos de Escrimshaw cuando un
-        Ballenero se une a la banda.
+      es: Los héroes obtienen +2 en las tiradas de búsqueda de Adornos de Escrimshaw cuando un Ballenero se une a la banda.
     name_i18n:
       es: Tallador de Hueso de Ballena
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.whaler.rule.whalebone-carver.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
   source_refs:
   - manual: broheim.net
     printed_page: 1
@@ -310,3 +321,2246 @@ profiles:
     printed_page: 3
     section: Mutiny In Marienburg Specialists / Whaler
     url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/MiM%20Specialists.pdf
+- id: hireling.hired-sword.ogre-treasure-hunter
+  kind: hired-sword
+  grade: 2b
+  publication: Mutiny in Marienburg Specialists (Broheim)
+  name: Ogre Treasure-Hunter
+  name_i18n:
+    es: Cazatesoros Ogro
+  normalization_status: normalized
+  characteristics:
+    M: 6
+    WS: 3
+    BS: 2
+    S: 4
+    T: 4
+    W: 3
+    I: 3
+    A: 2
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 35
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: pistol
+      quantity:
+        kind: fixed
+        value: 2
+      notes: Brace of pistols.
+      notes_i18n:
+        es: Pareja de pistolas.
+    - item_id: axe
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Anchor counts as an axe.
+      notes_i18n:
+        es: El ancla cuenta como hacha.
+    - item_id: man_catcher
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Fishing rod & tackle counts as a man-catcher.
+      notes_i18n:
+        es: La caña y los aparejos de pesca cuentan como atrapahombres.
+    - item_id: diving_bell_helmet
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Rusted diving equipment including a diving bell for a helmet (flavour gear); REL/MiM-specific, no KB item — deliberate dangling ref, define at promotion if ever needed mechanically.
+      notes_i18n:
+        es: Equipo de buceo oxidado, incluida una campana de buceo como yelmo (equipo de ambientación); específico de REL/MiM, sin objeto en el KB; referencia pendiente deliberada, definir en la promoción si alguna vez se necesita mecánicamente.
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.ogre-treasure-hunter.rule.diver
+    name: Diver
+    effect: Ogre Treasure Hunters wear rusty diving gear allowing them to move (and breathe!) in water without penalties. They count as being aquatic.
+    effect_i18n:
+      es: Los Cazatesoros Ogro llevan equipo de buceo oxidado que les permite moverse (¡y respirar!) en el agua sin penalizaciones. Cuentan como Acuáticos.
+    name_i18n:
+      es: Buceador
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.ogre-treasure-hunter.rule.diver.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.ogre-treasure-hunter.rule.fear
+    name: Fear
+    effect: Ogres are large, threatening creatures that cause fear. See the Psychology section for details.
+    effect_i18n:
+      es: Los Ogros son criaturas grandes y amenazantes que causan Miedo. Ver la sección de Psicología para más detalles.
+    name_i18n:
+      es: Miedo
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.causes-fear
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.causes-fear
+  - id: hireling.hired-sword.ogre-treasure-hunter.rule.large-target
+    name: Large Target
+    effect: Ogres are Large Targets as defined in the shooting rules.
+    effect_i18n:
+      es: Los Ogros son Objetivos Grandes según se define en las reglas de disparo.
+    name_i18n:
+      es: Objetivo Grande
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.ogre-treasure-hunter.rule.large-target.pending-duel
+        scope: 'NO'
+        binding: null
+        reason: Shooting target size, third-model salvage, trade, exploration, recruitment or post-battle effects are outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.ogre-treasure-hunter.rule.parrot-gnoblar
+    name: Parrot Gnoblar
+    effect: The ogre is accompanied by a gnoblar dressed as a parrot. The feathery costume is a compulsory disguise in a city like Marienburg! An Ogre Treasure Hunter with a Parrot Gnoblar can swipe salvage for the warband after each battle. Roll on the Cargo Chart if the Ogre Treasure-Hunter was not taken out of action. A Parrot Gnoblar is a 'claimed' gnoblar meaning it is represented on the ogre model.
+    effect_i18n:
+      es: El ogro va acompañado de un gnoblar vestido de loro. El disfraz emplumado es un disfraz obligatorio en una ciudad como Marienburg. Un Cazatesoros Ogro con un Gnoblar Loro puede apropiarse de salvamentos para la banda después de cada batalla. Tira en la Tabla de Carga si el Cazatesoros Ogro no quedó Fuera de combate. Un Gnoblar Loro es un gnoblar 'reclamado', lo que significa que se representa en la propia miniatura del ogro.
+    name_i18n:
+      es: Gnoblar Loro
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.ogre-treasure-hunter.rule.parrot-gnoblar.pending-duel
+        scope: 'NO'
+        binding: null
+        reason: Shooting target size, third-model salvage, trade, exploration, recruitment or post-battle effects are outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.ogre-treasure-hunter.rule.scrap-dealer
+    name: Scrap-Dealer
+    effect: A warband with an Ogre Treasure Hunter can arrange trade deals with other warbands without requirement of a wagon or other vehicle. If the player wants to benefit from having a reputation in trade deals then a vehicle will be required.
+    effect_i18n:
+      es: Una banda con un Cazatesoros Ogro puede acordar tratos comerciales con otras bandas sin necesidad de un carro u otro vehículo. Si el jugador quiere beneficiarse de tener reputación en los tratos comerciales, entonces sí se requerirá un vehículo.
+    name_i18n:
+      es: Chatarrero
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.ogre-treasure-hunter.rule.scrap-dealer.pending-duel
+        scope: 'NO'
+        binding: null
+        reason: Shooting target size, third-model salvage, trade, exploration, recruitment or post-battle effects are outside a resolved 1v1 duel.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 1
+    section: Specialists / Ogre Treasure-Hunter
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+- id: hireling.hired-sword.grave-warden
+  kind: hired-sword
+  grade: 2b
+  publication: Mutiny in Marienburg Specialists (Broheim)
+  name: Grave Warden
+  name_i18n:
+    es: Guardián de los Jardines
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  warband_rating:
+    kind: base_plus_experience
+    base: 10
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: shovel
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Counts as an axe; MiM-specific item, no KB equivalent — deliberate dangling ref, define at promotion if ever needed mechanically.
+      notes_i18n:
+        es: Cuenta como hacha; objeto específico de MiM, sin equivalente en el KB; referencia pendiente deliberada, definir en la promoción si alguna vez se necesita mecánicamente.
+    - item_id: toughened_leathers
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: wheelbarrow
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.grave-warden.rule.immune-to-disease
+    name: Immune to Disease
+    effect: Grave Wardens guard against those who would disturb the dead from their rest, be they rats, bone pickers, grave robbers or worse. Hardy constitution further fortified by drinking bowls of graveroot soup means a Grave Warden is not affected by any disease.
+    effect_i18n:
+      es: Los Guardianes de los Jardines custodian contra aquellos que perturbarían el descanso de los muertos, sean ratas, deshuesadores, ladrones de tumbas o peores. Una constitución recia, fortalecida además por cuencos de sopa de raíz de tumba, hace que un Guardián de los Jardines no se vea afectado por ninguna enfermedad.
+    name_i18n:
+      es: Inmune a las Enfermedades
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.grave-warden.rule.immune-to-disease.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.grave-warden.rule.hardened
+    name: Hardened
+    effect: Tending the Gardens comes with heavy responsibilities. Grave Wardens are immune to fear.
+    effect_i18n:
+      es: Mantener los Jardines conlleva grandes responsabilidades. Los Guardianes de los Jardines son inmunes al Miedo.
+    name_i18n:
+      es: Endurecido
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.fear-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.fear-immunity
+  - id: hireling.hired-sword.grave-warden.rule.gardener
+    name: Gardener
+    effect: Stout-hearted are Morr's Gardeners, offering a grim welcome to anyone who dares trespass into his domain. A Grave Warden must move towards the nearest model that attacked a grave marker (or trespassing in a tomb) if he has line of sight. The Grave Warden hates all models defiling graves and charges any trespassers.
+    effect_i18n:
+      es: Firmes son los Jardineros de Morr, que ofrecen una sombría bienvenida a cualquiera que se atreva a invadir su dominio. Un Guardián de los Jardines debe moverse hacia la miniatura más cercana que haya atacado un marcador de tumba (o que esté invadiendo una tumba) si tiene línea de visión. El Guardián de los Jardines odia a todas las miniaturas que profanen tumbas y carga contra cualquier intruso.
+    name_i18n:
+      es: Jardinero
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.grave-warden.rule.gardener.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Specialists / Grave Warden
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+- id: hireling.hired-sword.halfling-fence
+  kind: hired-sword
+  grade: 2b
+  publication: Mutiny in Marienburg Specialists (Broheim)
+  name: Halfling Fence
+  name_i18n:
+    es: Receptor Mediano
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 4
+    S: 2
+    T: 2
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 15
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: pistol
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - speed
+  - shooting
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.halfling-fence.rule.sham
+    name: Sham
+    effect: A Fence has an eclectic range of items procured from sources best left unspoken. Offered at incredible prices, traders should be wary for their word is not their bond and such items are often flawed… All of the items purchased through the Fence are at their base price (ie, do not add the random gold modifier for items). All items bought from the Fence are also at half price but once the item is first used roll a D6. On a roll of 1 the item breaks and is useless – an elaborate fake! At the end of each battle (whether or not the Halfling Fence actually took part), roll a D6 and consult the following chart. D6 Result 1 Halfling cookbook 2 Ithilmar weapon 3 Gromril weapon 4 Tome of magic or Holy tome 5 Hunting rifle or Elven bow 6 Brace of duelling pistols.
+    effect_i18n:
+      es: 'Un Receptor tiene una ecléctica gama de artículos conseguidos en fuentes mejor no mencionar. Ofrecidos a precios increíbles, los comerciantes deberían andarse con cuidado, pues su palabra no es de fiar y tales artículos a menudo son defectuosos… Todos los artículos comprados a través del Receptor están a su precio base (es decir, no se añade el modificador aleatorio de oro de los artículos). Todos los artículos comprados al Receptor están además a mitad de precio, pero la primera vez que se use el artículo tira un D6. Con un resultado de 1 el artículo se rompe y queda inservible: ¡una falsificación elaborada! Al final de cada batalla (tanto si el Receptor Mediano participó como si no), tira un D6 y consulta la siguiente tabla. Resultado D6 1 Libro de cocina mediano 2 Arma de ithilmar 3 Arma de gromril 4 Tomo de magia o Tomo sagrado 5 Rifle de caza o Arco élfico 6 Par de pistolas de duelo.'
+    name_i18n:
+      es: Engaño
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.halfling-fence.rule.sham.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 2
+    section: Specialists / Halfling Fence
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+- id: hireling.hired-sword.halfling-pimp
+  kind: hired-sword
+  grade: 2b
+  publication: Mutiny in Marienburg Specialists (Broheim)
+  name: Halfling Pimp
+  name_i18n:
+    es: Rufián Mediano
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 4
+    S: 2
+    T: 2
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 10
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: torch
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Box of cigars counts as a torch.
+      notes_i18n:
+        es: La caja de puros cuenta como antorcha.
+  skill_access:
+  - speed
+  - shooting
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.halfling-pimp.rule.underworld-contacts
+    name: Underworld Contacts
+    effect: A Hero visiting a bordello, casino, dream parlour etc (see Infamous Haunts) can re-roll any dice rolls made when accompanied by a Pimp hired by the warband. The second result must always be accepted.
+    effect_i18n:
+      es: Un Héroe que visite un burdel, casino, salón de ensueño, etc. (ver Antros Infames) puede repetir cualquier tirada de dado que realice cuando le acompañe un Rufián contratado por la banda. Siempre debe aceptarse el segundo resultado.
+    name_i18n:
+      es: Contactos del Bajo Mundo
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.halfling-pimp.rule.underworld-contacts.pending-duel
+        scope: 'NO'
+        binding: null
+        reason: Shooting target size, third-model salvage, trade, exploration, recruitment or post-battle effects are outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.halfling-pimp.rule.flesh-peddler
+    name: Flesh-Peddler
+    effect: At the start of each battle nominate one of your opponent's Female warriors as the Pimp's mark. Treat this like a Bounty Hunter's mark, except that instead of earning a reward after the battle has ended, the mark is captured by the Pimp. The Pimp gets +1 to hit his mark and must always move towards them. He gains +D3 Experience for each mark he puts out of action if he survives and the battle was won. After the battle do not roll on the Serious Injuries chart, marks count as captured. Any weapons can be kept by the warband or sold.
+    effect_i18n:
+      es: 'Al comienzo de cada batalla designa a una de las guerreras Femeninas de tu oponente como objetivo del Rufián. Trátalo como el objetivo de un Cazarrecompensas, salvo que en lugar de ganar una recompensa cuando termine la batalla, el objetivo es capturado por el Rufián. El Rufián obtiene +1 por impactar a su objetivo y siempre debe moverse hacia él. Gana +D3 de Experiencia por cada objetivo que deje Fuera de combate si sobrevive y se ganó la batalla. Tras la batalla no tires en la tabla de Heridas Graves: los objetivos cuentan como capturados. Cualquier arma puede quedarse en la banda o venderse.'
+    name_i18n:
+      es: Mercader de Carne
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.flesh-peddler
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.flesh-peddler
+      - id: hireling.hired-sword.halfling-pimp.rule.flesh-peddler.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map movement, experience, capture, serious injuries and equipment rewards remain outside the resolved 1v1 duel.
+  - id: hireling.hired-sword.halfling-pimp.rule.playboy
+    name: Playboy
+    effect: 'A mark works for the Pimp''s warband as a Courtesan and must always remain within 8" of him, due to the syndrome of Courtesans becoming dependent on luxuries supplied by the Pimp. Courtesans: If the Pimp is taken out of action and none of the Pimp''s warband members are within 8" then his marks will automatically run for the nearest table edge, in the hope of returning to its original warband. If a mark ever comes within 8" of its original warband, then it is instantly controlled by the original owner of the mark. If the Pimp is taken out of action in a battle and a mark is within 8" of another warrior from the Pimp''s warband, the mark will charge the closest model from that warband in range. Treat the mark as having hatred.'
+    effect_i18n:
+      es: 'Un objetivo trabaja para la banda del Rufián como Cortesana y siempre debe permanecer a 8" o menos de él, debido al síndrome de las Cortesanas de volverse dependientes de los lujos suministrados por el Rufián. Cortesanas: si el Rufián queda Fuera de combate y ninguna miniatura de su banda está a 8" o menos, sus objetivos correrán automáticamente hacia el borde de mesa más cercano, con la esperanza de volver a su banda original. Si un objetivo llega alguna vez a 8" o menos de su banda original, pasa a estar controlada al instante por el propietario original del objetivo. Si el Rufián queda Fuera de combate en una batalla y un objetivo está a 8" o menos de otro guerrero de la banda del Rufián, el objetivo cargará contra la miniatura más cercana de esa banda dentro del alcance. Trata al objetivo como con Odio.'
+    name_i18n:
+      es: Donjuán
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.halfling-pimp.rule.playboy.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Specialists / Halfling Pimp
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+- id: hireling.hired-sword.albino-stormvermin
+  kind: hired-sword
+  grade: 2b
+  publication: Mutiny in Marienburg Specialists (Broheim)
+  name: Albino Stormvermin
+  name_i18n:
+    es: Guardia Albino
+  normalization_status: normalized
+  characteristics:
+    M: 6
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 5
+    A: 2
+    Ld: 6
+  warband_rating:
+    kind: base_plus_experience
+    base: 30
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: halberd
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: heavy_armour
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - strength
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.albino-stormvermin.rule.hardened
+    name: Hardened
+    effect: The Council's bodyguard are chosen for their strength and relative fearlessness. They are immune to fear.
+    effect_i18n:
+      es: La guardia del Consejo es elegida por su fuerza y su relativa intrepidez. Son inmunes al Miedo.
+    name_i18n:
+      es: Endurecido
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.fear-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.fear-immunity
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Specialists / Albino Stormvermin
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+- id: hireling.hired-sword.norse-bearman-bodyguard
+  kind: hired-sword
+  grade: 2b
+  publication: Mutiny in Marienburg Specialists (Broheim)
+  name: Norse Bearman Bodyguard
+  name_i18n:
+    es: Guardaespaldas Hombre Oso Nórdico
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 3
+    W: 1
+    I: 3
+    A: 2
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 30
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: axe
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: shield
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: wolfcloak
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Wolf cloak — resolved to the KB `wolfcloak` item (Middenheim hunt cloak, +1 armour saves vs shooting) as the closest existing cloak item; the MiM source grants no effect for it. Review the equivalence at promotion (distinct from the MW White Wolf Pelt Cloak, which is a different 6+-save item).
+      notes_i18n:
+        es: 'Capa de lobo: se resuelve como el objeto `wolfcloak` del KB (capa de caza de Middenheim, +1 a las salvaciones de armadura contra disparos) como el objeto de capa existente más cercano; la fuente de MiM no le concede ningún efecto. Revisar la equivalencia en la promoción (distinta de la Capa de Piel de Lobo Blanco de MW, que es otro objeto con salvación de 6+).'
+  skill_access:
+  - combat
+  - strength
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.norse-bearman-bodyguard.rule.shieldmaster
+    name: Shieldmaster
+    effect: A Norse mercenary has trained with a shield since childhood becoming so skilled as to repel any blow. A Bearman Bodyguard may parry with it in addition to getting a save throw.
+    effect_i18n:
+      es: Un mercenario nórdico ha entrenado con un escudo desde la infancia, llegando a ser tan diestro que repele cualquier golpe. Un Guardaespaldas Hombre Oso puede parar con él además de obtener su tirada de salvación.
+    name_i18n:
+      es: Maestro del Escudo
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.norse-shieldmaster
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.norse-shieldmaster
+  - id: hireling.hired-sword.norse-bearman-bodyguard.rule.bulwark
+    name: Bulwark
+    effect: Bearmen fight expertly with a shield in one hand and an axe in the other. The Bearman Bodyguard gets an additional +1 bonus on his armour saving roll in close combat.
+    effect_i18n:
+      es: Los Hombres Oso luchan con maestría con un escudo en una mano y un hacha en la otra. El Guardaespaldas Hombre Oso obtiene un bonus adicional de +1 en su tirada de salvación por armadura en combate cuerpo a cuerpo.
+    name_i18n:
+      es: Baluarte
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.norse-bulwark
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.norse-bulwark
+  - id: hireling.hired-sword.norse-bearman-bodyguard.rule.drunken
+    name: Drunken
+    effect: Bearmen are notorious for their uncontrollable consumption of alcohol. Roll a D6 at the start of each turn. On a roll of 1, they must test for stupidity that turn. On a roll of 2-5 nothing happens and on a roll of 6 they become subject to frenzy for that turn. While subject to both stupidity and frenzy they are immune to all other forms of psychology.
+    effect_i18n:
+      es: Los Hombres Oso son notorios por su consumo incontrolable de alcohol. Tira un D6 al comienzo de cada turno. Con un resultado de 1 deben superar una tirada de Estupidez ese turno. Con un resultado de 2-5 no ocurre nada, y con un 6 sufren frenesí ese turno. Mientras sufran tanto estupidez como frenesí son inmunes a todas las demás formas de psicología.
+    name_i18n:
+      es: Ebrios
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.centigor-drunken
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.centigor-drunken
+  source_refs:
+  - manual: broheim.net
+    printed_page: 3
+    section: Specialists / Norse Bearman Bodyguard
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+- id: hireling.hired-sword.fire-eater
+  kind: hired-sword
+  grade: 2b
+  publication: Mutiny in Marienburg Specialists (Broheim)
+  name: Fire-Eater
+  name_i18n:
+    es: Traga Fuego
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 4
+    W: 2
+    I: 2
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 30
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: fire_stick
+      quantity:
+        kind: fixed
+        value: 1
+      notes: MiM-specific item (see the Fire-Stick rule); no KB or 2B catalog equivalent — deliberate dangling ref, define at promotion.
+      notes_i18n:
+        es: Objeto específico de MiM (véase la regla Palo de Fuego); sin equivalente en el KB ni en el catálogo 2B; referencia pendiente deliberada, definir en la promoción.
+  skill_access: []
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.fire-eater.rule.fire-stick
+    name: Fire-Stick
+    effect: Being almost perfectly trained in mystical arts, the Fire-Eater spits fire upon his enemies in the shooting phase. Use the teardrop shaped flame template to determine which models suffer an automatic Strength 4 hit. In addition, any models hit are set on fire on a roll of 4+ (see Fire Rules). Fire-Eaters can use this breath attack even when engaged in close combat.
+    effect_i18n:
+      es: Al estar entrenado casi a la perfección en las artes místicas, el Traga Fuego escupe fuego sobre sus enemigos en la fase de disparo. Usa la plantilla de llamas con forma de lágrima para determinar qué miniaturas sufren un impacto automático de Fuerza 4. Además, cualquier miniatura alcanzada se incendia con un resultado de 4+ (ver Reglas de Fuego). Los Traga Fuego pueden usar este ataque de aliento incluso cuando estén trabados en combate cuerpo a cuerpo.
+    name_i18n:
+      es: Palo de Fuego
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.fire-eater.rule.fire-stick.non-duel
+        scope: 'NO'
+        binding: null
+        reason: The breath attack and its self-hit are shooting-phase effects, even when engaged; shooting and templates are outside the resolved melee duel.
+  - id: hireling.hired-sword.fire-eater.rule.inhaling-fire
+    name: Inhaling Fire
+    effect: After belching the first flume of heat, roll a D6 each time a Fire-Eater makes an additional breath attack. On a roll of 1 the Fire-Eater has inhaled the fire he should have been spewing! The warrior suffers a Strength 4 hit instead of using the flame template.
+    effect_i18n:
+      es: Después de escupir la primera lengua de fuego, tira un D6 cada vez que el Traga Fuego realice un ataque de aliento adicional. Con un resultado de 1, el Traga Fuego ha inhalado el fuego que debía escupir. El guerrero sufre un impacto de Fuerza 4 en lugar de usar la plantilla de llamas.
+    name_i18n:
+      es: Inhalando Fuego
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.fire-eater.rule.inhaling-fire.non-duel
+        scope: 'NO'
+        binding: null
+        reason: The breath attack and its self-hit are shooting-phase effects, even when engaged; shooting and templates are outside the resolved melee duel.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 4
+    section: Specialists / Fire-Eater
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+- id: hireling.hired-sword.sister-of-sigmar
+  kind: hired-sword
+  grade: 2b
+  publication: Mutiny in Marienburg Specialists (Broheim)
+  name: Sister of Sigmar
+  name_i18n:
+    es: Hermana de Sigmar
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 15
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: sigmarite_hammer
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Sigmarite Warhammer — resolved to the KB `sigmarite_hammer` item.
+      notes_i18n:
+        es: 'Martillo de Guerra Sigmarita: resuelto como el objeto `sigmarite_hammer` del KB.'
+    - item_id: light_armour
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: blessed_water
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Vial of blessed water — resolves to the KB out-of-scope `blessed_water` item.
+      notes_i18n:
+        es: 'Vial de agua bendita: se resuelve como el objeto `blessed_water` del KB, fuera de alcance.'
+    - item_id: arcane_candelabrum
+      quantity:
+        kind: fixed
+        value: 1
+      notes: MiM-specific item (see the Candle Tree rule); no KB or 2B catalog equivalent — deliberate dangling ref, define at promotion.
+      notes_i18n:
+        es: Objeto específico de MiM (véase la regla Árbol de Velas); sin equivalente en el KB ni en el catálogo 2B; referencia pendiente deliberada, definir en la promoción.
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.sister-of-sigmar.rule.blessing-of-sigmar
+    name: Blessing of Sigmar
+    effect: The Sister has two of the special skills from page 83 of Mordheim Rulebook.
+    effect_i18n:
+      es: La Hermana tiene dos de las habilidades especiales de la página 83 del libro de Mordheim.
+    name_i18n:
+      es: Bendición de Sigmar
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: hireling.hired-sword.sister-of-sigmar.rule.blessing-of-sigmar.choice
+        scope: 'YES'
+        binding:
+          kind: compiler
+          id: compiler.sister-special-skills
+  - id: hireling.hired-sword.sister-of-sigmar.rule.candle-tree
+    name: Candle Tree
+    effect: Sisters were orphaned children. In holy light they are recognised as saviours of orphans including mutants with minor afflictions. Arcane Candelabrum counts as a holy relic, brazier iron and lantern that is used one-handed. Any mutant taken out of action by the Sister of Sigmar is captured.
+    effect_i18n:
+      es: Las Hermanas fueron niños huérfanos. A la luz sagrada se las reconoce como salvadoras de huérfanos, incluidos los mutantes con aflicciones menores. El Candelabro Arcano cuenta como reliquia sagrada, brasero de hierro y farol que se usa a una mano. Cualquier mutante dejado Fuera de combate por la Hermana de Sigmar es capturado.
+    name_i18n:
+      es: Árbol de Candelas
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: hireling.hired-sword.sister-of-sigmar.rule.candle-tree.relic
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: defence.holy-relic
+      - id: hireling.hired-sword.sister-of-sigmar.rule.candle-tree.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Lantern visibility and mutant capture are outside a resolved 1v1 duel; the canonical item supplies the optional one-handed brazier attack.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 4
+    section: Specialists / Sister of Sigmar
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+- id: hireling.hired-sword.midshipman
+  kind: hired-sword
+  grade: 2b
+  publication: Mutiny in Marienburg Specialists (Broheim)
+  name: Midshipman
+  name_i18n:
+    es: Guardiamarina
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 8
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: long_boathook
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Resolved to the KB `long_boathook` item (trollheim catalog).
+      notes_i18n:
+        es: Resuelto como el objeto `long_boathook` del KB (catálogo de trollheim).
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Cutlass counts as a sword.
+      notes_i18n:
+        es: El sable cuenta como espada.
+    - item_id: pistol
+      quantity:
+        kind: fixed
+        value: 1
+    - item_id: toughened_leathers
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.midshipman.rule.pilot
+    name: Pilot
+    effect: A boat piloted by the Hero may re-roll results on the Propulsion Damage Chart once. The second result must be accepted even if it is worse.
+    effect_i18n:
+      es: Una embarcación pilotada por el Héroe puede repetir una vez los resultados de la Tabla de Daños de Propulsión. Siempre debe aceptarse el segundo resultado, aunque sea peor.
+    name_i18n:
+      es: Piloto
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.midshipman.rule.pilot.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.midshipman.rule.rigger
+    name: Rigger
+    effect: The Hero is skilled in fixing minor damage to watercraft. If the boat or barge is stationary and has not moved during the last turn then if the Hero is in contact with it, he may repair one location previously damaged or set on fire. ie, a paddle or mast. The Hero may do nothing else that turn and the boat may not be moved. A boat cannot be repaired if an enemy model is in contact with the Hero or the watercraft.
+    effect_i18n:
+      es: El Héroe es diestro reparando daños menores en embarcaciones. Si el bote o la barcaza está detenido y no se ha movido durante el último turno, y el Héroe está en contacto con él, puede reparar una localización dañada o incendiada previamente, es decir, un remo o un mástil. El Héroe no puede hacer nada más ese turno y la embarcación no puede moverse. No se puede reparar una embarcación si hay una miniatura enemiga en contacto con el Héroe o con la embarcación.
+    name_i18n:
+      es: Trincador
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.midshipman.rule.rigger.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.midshipman.rule.a-crew-fer-me
+    name: A Crew Fer Me!
+    effect: A midshipman craves the comradery and adventure of the sea and a worthy crew. As such, any seafaring warbands gain a +1 to blood pact rolls with the Midshipman.
+    effect_i18n:
+      es: Un guardiamarina ansía la camaradería y la aventura del mar, así como una tripulación digna. Por ello, las bandas navales obtienen un +1 en las tiradas de pacto de sangre con el Guardiamarina.
+    name_i18n:
+      es: ¡Una Tripulación para Mí!
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.midshipman.rule.a-crew-fer-me.pending-duel
+        scope: 'NO'
+        binding: null
+        reason: Shooting target size, third-model salvage, trade, exploration, recruitment or post-battle effects are outside a resolved 1v1 duel.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 5
+    section: Specialists / Midshipman
+    url: https://broheim.net/downloads/hiredswords/mutinyinmarienburg/Specialists.pdf
+- id: hireling.hired-sword.mariner-priest-of-manann
+  kind: hired-sword
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Mariner-Priest of Manann
+  name_i18n:
+    es: Sacerdote Marinero de Manann
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: 'Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.'
+    choices:
+    - choose: 1
+      options:
+      - items:
+        - item_id: trident
+          quantity:
+            kind: fixed
+            value: 1
+          notes: Priest of Manann only; 15 gc in the chapter's priest equipment list; Strike first, Parry; Rarity 7 per Unknowable Cargo.
+          notes_i18n:
+            es: Solo Sacerdote de Manann; 15 co en la lista de equipo de sacerdotes del capítulo; Golpe primero, Parada; Rareza 7 según Carga Inescrutable.
+  skill_access:
+  - combat
+  - academic
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.mariner-priest-of-manann.rule.prayers
+    name: Prayers
+    effect: A Priest of Manann is a servant of Manann and may use the Prayers of Manann as detailed elsewhere in the Miracle Workers chapter (ingested as lore.prayers-of-manann in catalog/campaign/magic.yaml). In addition, Manannan Priests can receive a Mark of Manann instead of choosing a new skill if a double was rolled on the advance roll.
+    effect_i18n:
+      es: Un Sacerdote de Manann es un sirviente de Manann y puede usar las Plegarias de Manann como se detalla en el capítulo Trabajadores de Milagros (ingerido como lore.prayers-of-manann en catalog/campaign/magic.yaml). Además, los Sacerdotes de Manann pueden recibir una Marca de Manann en lugar de elegir una nueva habilidad si se saca un doble en la tirada de avance.
+    name_i18n:
+      es: Plegarias
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.mariner-priest-of-manann.rule.prayers.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.mariner-priest-of-manann.rule.seafaring
+    name: Seafaring
+    effect: Priests of Manann are seafaring people and spend much of their time rowing boats. To represent this, all Priests of Manann get +2 to Strength when they row a boat.
+    effect_i18n:
+      es: Los Sacerdotes de Manann son gente de mar y pasan gran parte de su tiempo remando. Para representarlo, todos los Sacerdotes de Manann obtienen +2 a su Fuerza cuando reman en una embarcación.
+    name_i18n:
+      es: Navegante
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.mariner-priest-of-manann.rule.seafaring.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.mariner-priest-of-manann.rule.navigator
+    name: Navigator
+    effect: His maritime intuition means the Priest can influence the exploration outcome of a battle fought at sea. When rolling on the Nautical Exploration chart, the Priest allows you to modify one dice roll by -1/+1.
+    effect_i18n:
+      es: Su intuición marítima permite al Sacerdote influir en el resultado de la exploración de una batalla librada en el mar. Al tirar en la tabla de Exploración Náutica, el Sacerdote permite modificar una tirada de dado en -1/+1.
+    name_i18n:
+      es: Navegante
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.mariner-priest-of-manann.rule.navigator.pending-duel
+        scope: 'NO'
+        binding: null
+        reason: Shooting target size, third-model salvage, trade, exploration, recruitment or post-battle effects are outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.mariner-priest-of-manann.rule.priest-hero-slot
+    name: Priest Hero Slot (Chapter Errata)
+    effect: 'The Priest counts as a Hero and starts with 12 experience. Chapter errata (author ruling, TBMF t8634): the Priest must replace one of the warband''s starting Heroes; the original PDF wording allowed exceeding the Hero limit, which was never corrected in the published file.'
+    effect_i18n:
+      es: 'El Sacerdote cuenta como Héroe y comienza con 12 puntos de experiencia. Errata del capítulo (decisión del autor, TBMF t8634): el Sacerdote debe sustituir a uno de los Héroes iniciales de la banda; la redacción original del PDF permitía superar el límite de Héroes, y nunca se corrigió en el archivo publicado.'
+    name_i18n:
+      es: Plaza de Héroe Sacerdotal (Errata del Capítulo)
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.mariner-priest-of-manann.rule.priest-hero-slot.pending-duel
+        scope: 'NO'
+        binding: null
+        reason: Shooting target size, third-model salvage, trade, exploration, recruitment or post-battle effects are outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.mariner-priest-of-manann.rule.marks-of-manann
+    name: Marks of Manann
+    effect: 'One with the Sea: if the Priest falls into water then regardless of the injury roll the Priest cannot be drowned. Webbed: the fingers and toes of the Priest develop webbed skin and he becomes Aquatic.'
+    effect_i18n:
+      es: 'Uno con el Mar: si el Sacerdote cae al agua, independientemente de la tirada de herida, el Sacerdote no puede ahogarse. Palmeado: los dedos de las manos y los pies del Sacerdote desarrollan membranas y se convierte en Acuático.'
+    name_i18n:
+      es: Marcas de Manann
+    runtime:
+      grant: selectable
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.mariner-priest-of-manann.rule.marks-of-manann.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Drowning, water and Aquatic movement are excluded map/terrain mechanics in the resolved 1v1 duel.
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 3
+    section: Priests for Every Occasion / Mariner-Priest of Manann
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  - manual: broheim.net
+    printed_page: 3
+    section: Heroes / 0-1 Mutant-Priest / Special Rules / Prayers
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Shallows%20Beasts.pdf
+  experience: 12
+- id: hireling.hired-sword.priest-of-morr-miracle-workers
+  kind: hired-sword
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Priest of Morr
+  name_i18n:
+    es: Sacerdote de Morr
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: 'Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.'
+    - item_id: ceremonial_scythe
+      quantity:
+        kind: fixed
+        value: 1
+      notes: 'Source-qualified ceremonial scythe: Strength +1, Difficult to use and Two-handed.'
+      notes_i18n:
+        es: 'Guadaña ceremonial propia de la fuente: Fuerza +1, Difícil de usar y A dos manos.'
+  skill_access:
+  - academic
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.prayers
+    name: Prayers
+    effect: A Priest of Morr is a servant of the Death God and may use the Prayers of Morr as detailed elsewhere in the Miracle Workers chapter. In addition, Morrian Priests can receive a Mark of Morr instead of choosing a new skill if a double was rolled on the advance roll. Only one Mark of Morr can be chosen by Priests of Morr.
+    effect_i18n:
+      es: Un Sacerdote de Morr es un sirviente del Dios de la Muerte y puede usar las Plegarias de Morr como se detalla en el capítulo Trabajadores de Milagros. Además, los Sacerdotes de Morr pueden recibir una Marca de Morr en lugar de elegir una nueva habilidad si se saca un doble en la tirada de avance. Los Sacerdotes de Morr solo pueden elegir una Marca de Morr.
+    name_i18n:
+      es: Plegarias
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.prayers.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.strictures
+    name: Strictures
+    effect: Priests of the Death God seldom engage in martial activities. Priests of Morr always begin equipped with a scythe and a dagger. They may only be armed with a scythe and dagger. Priests of Morr may never wear armour.
+    effect_i18n:
+      es: Los sacerdotes del Dios de la Muerte rara vez se dedican a actividades marciales. Los Sacerdotes de Morr siempre comienzan equipados con una hoz y una daga. Solo pueden ir armados con hoz y daga. Los Sacerdotes de Morr nunca pueden llevar armadura.
+    name_i18n:
+      es: Preceptos
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: profile.equipment-restrictions
+        scope: 'YES'
+        binding:
+          kind: profile
+          id: profile.equipment-restrictions
+          parameters:
+            forbids:
+            - armour
+  - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.loner
+    name: Loner
+    effect: Few people care to spend any length of time in the company of a Priest of Morr, even when it is their duty to do so. As such, a Priest of Morr is used to being alone and probably prefers it that way. Priests of Morr do not suffer from the All Alone rules.
+    effect_i18n:
+      es: Poca gente desea pasar tiempo en compañía de un Sacerdote de Morr, aunque sea su deber. Por eso, un Sacerdote de Morr está acostumbrado a estar solo y probablemente lo prefiere así. Los Sacerdotes de Morr no sufren las reglas de Estar Solo.
+    name_i18n:
+      es: Solitario
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.loner.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.morrs-servant
+    name: Morr's Servant
+    effect: Undead creatures shy away from the Priest's presence. Any Undead creature declaring a charge against the Priest or being charged by the Priest must pass a Leadership test or be treated as suffering the effects of fear. This ignores all the exemptions for Psychology which are normally applied to Undead models.
+    effect_i18n:
+      es: Las criaturas no muertas rehúyen la presencia del Sacerdote. Cualquier criatura no muerta que declare una carga contra el Sacerdote o sea cargada por él debe superar una tirada de Liderazgo o se trata como si sufriera los efectos del miedo. Esto ignora todas las exenciones de Psicología que normalmente se aplican a las miniaturas de No Muertos.
+    name_i18n:
+      es: Siervo de Morr
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.morrs-servant
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.morrs-servant
+  - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.protected-by-morr
+    name: Protected by Morr
+    effect: Morr has a special purpose in mind for His Priests, or so it seems. He, or some other mysterious benefactor, is protecting them from serious harm. As such, when rolling for serious injuries, ignore rolls of 'Dead' and 'Sold to the Pits'. Simply apply the next injury after the relevant entry (ie, for 'Dead' use 'Multiple Injuries' and for 'Sold to the Pits' use 'Survives Against the Odds').
+    effect_i18n:
+      es: Morr tiene un propósito especial reservado a sus Sacerdotes, o eso parece. Él, o algún otro benefactor misterioso, los protege de daños graves. Por tanto, al tirar en la tabla de heridas graves, ignora los resultados 'Muerto' y 'Vendido a losfosos'; aplica simplemente la herida siguiente ('Heridas Múltiples' en lugar de 'Muerto' y 'Sobrevive contra todo pronóstico' en lugar de 'Vendido a los fosos').
+    name_i18n:
+      es: Protegido por Morr
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.protected-by-morr.pending-duel
+        scope: 'NO'
+        binding: null
+        reason: Shooting target size, third-model salvage, trade, exploration, recruitment or post-battle effects are outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.marks-of-morr
+    name: Marks of Morr
+    effect: 'Augur: inured to fear by long exposure to death, the Priest becomes Immune to Psychology and may re-roll any one dice roll he makes during a battle, but suffers -1 Strength permanently. Haunted Mien: the Priest enters into the martial career of the Black Guard; strictures are ignored by a Black Guardsman, who may choose skills from the Combat and Strength skills lists but may not determine a new prayer from the Prayers of Morr list.'
+    effect_i18n:
+      es: 'Augur: curtido en el miedo por la larga exposición a la muerte, el Sacerdote se vuelve Inmune a la Psicología y puede repetir una tirada de dado que realice durante una batalla, pero sufre -1 de Fuerza permanentemente. Rostro Embrujado: el Sacerdote inicia la carrera marcial de la Guardia Negra; los preceptos son ignorados por un Guardia Negro, que puede elegir habilidades de las listas de Combate y Fuerza, pero no puede determinar una plegaria nueva de la lista de Plegarias de Morr.'
+    name_i18n:
+      es: Marcas de Morr
+    runtime:
+      grant: selectable
+      scope: LATER
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.marks-of-morr.pending-duel
+        scope: LATER
+        binding: null
+        reason: The remaining individual source clause or its canonical item/starting-skill dependency is not yet implemented; retain the existing T13 source question and owning lot.
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 5
+    section: Priests for Every Occasion / Priest of Morr
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  experience: 12
+- id: hireling.hired-sword.war-priestess-of-myrmidia
+  kind: hired-sword
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: War-Priestess of Myrmidia
+  name_i18n:
+    es: Sacerdotisa de Guerra de Myrmidia
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: 'Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.'
+  skill_access:
+  - combat
+  - academic
+  - strength
+  starting_skill_ids: []
+  special_skill_rule_ids:
+  - hireling.hired-sword.war-priestess-of-myrmidia.skill.eagle-friend
+  rules:
+  - id: hireling.hired-sword.war-priestess-of-myrmidia.rule.prayers
+    name: Prayers
+    effect: A War-Priestess of Myrmidia is a servant of Myrmidia and may use the Prayers of Myrmidia as detailed elsewhere in the Miracle Workers chapter. In addition, Myrmidian Priestesses can receive a Mark of Myrmidia instead of choosing a new skill if a double was rolled on the advance roll.
+    effect_i18n:
+      es: Una Sacerdotisa de Guerra de Myrmidia es una sirviente de Myrmidia y puede usar las Plegarias de Myrmidia como se detalla en el capítulo Trabajadores de Milagros. Además, las Sacerdotisas de Myrmidia pueden recibir una Marca de Myrmidia en lugar de elegir una nueva habilidad si se saca un doble en la tirada de avance.
+    name_i18n:
+      es: Plegarias
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.war-priestess-of-myrmidia.rule.prayers.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.war-priestess-of-myrmidia.rule.war-honed
+    name: War-Honed
+    effect: The Priestess is a warrior of stout heart and ignores the effects of fear. In addition, the War-Priestess may re-roll her first failed Leadership test of every battle.
+    effect_i18n:
+      es: La Sacerdotisa es una guerrera de corazón templado e ignora los efectos del miedo. Además, la Sacerdotisa de Guerra puede repetir su primera tirada de Liderazgo fallida de cada batalla.
+    name_i18n:
+      es: Templada en la Guerra
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.fear-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.fear-immunity
+      - id: mechanic.first-failed-leadership-reroll
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.first-failed-leadership-reroll
+  - id: hireling.hired-sword.war-priestess-of-myrmidia.rule.marks-of-myrmidia
+    name: Marks of Myrmidia
+    effect: 'Oracle: the Priestess may re-roll any one dice roll she makes during a battle. Eagle Friend: the Priestess attracts an eagle companion; the mark can be gained multiple times. The eagle has a range of 24"; when shooting, roll to hit using the Priestess''s Ballistic Skill; in close combat eagles strike first and use her Weapon Skill, each successful eagle attack inflicts a Strength 3 hit. If the Priestess is taken out of action the eagle flies away, returning after the battle; eagles cannot be attacked or slain, but if the Priestess is slain the eagles are lost like any other equipment.'
+    effect_i18n:
+      es: 'Oráculo: la Sacerdotisa puede repetir una tirada de dado que realice durante una batalla. Amiga de las Águilas: la Sacerdotisa atrae a un compañero águila; la marca puede obtenerse varias veces. El águila tiene un alcance de 24"; al disparar, tira por impactar usando la Habilidad de Combate a Distancia de la Sacerdotisa; en cuerpo a cuerpo las águilas golpean primero y usan su Habilidad de Combate, cada impacto exitoso del águila inflige un golpe de Fuerza 3. Si la Sacerdotisa queda Fuera de combate, el águila vuela y regresa tras la batalla; las águilas no pueden ser atacadas ni abatidas, pero si la Sacerdotisa muere, las águilas se pierden como cualquier otro equipo.'
+    name_i18n:
+      es: Marcas de Myrmidia
+    runtime:
+      grant: selectable
+      scope: LATER
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.war-priestess-of-myrmidia.rule.marks-of-myrmidia.pending-duel
+        scope: LATER
+        binding: null
+        reason: Oracle remains pending for ownership-safe once-per-battle arbitrary-roll rerolls; Eagle Friend is a separately selectable implemented skill.
+  - id: hireling.hired-sword.war-priestess-of-myrmidia.skill.eagle-friend
+    kind: special-skill-option
+    name: Eagle Friend
+    name_i18n:
+      es: Amiga de las Águilas
+    effect: 'The Priestess gains an eagle companion each time she acquires this mark. Eagles are weapons she directs:
+      in close combat they strike first, use her Weapon Skill, and each successful attack inflicts a Strength 3 hit.
+      Eagles cannot be attacked or slain and fly away when the Priestess is taken out of action. Their 24-inch shooting
+      attack and post-battle return/loss are outside the resolved melee duel.'
+    effect_i18n:
+      es: 'La Sacerdotisa obtiene un águila compañera cada vez que adquiere esta marca. Las águilas son armas que
+        dirige: en cuerpo a cuerpo golpean primero, usan su Habilidad de Armas y cada ataque exitoso inflige un impacto
+        de Fuerza 3. No pueden ser atacadas ni abatidas y vuelan lejos cuando la Sacerdotisa queda Fuera de combate.
+        Su disparo a 24 pulgadas y el retorno o pérdida tras la batalla quedan fuera del duelo cuerpo a cuerpo.'
+    runtime:
+      grant: selectable
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.myrmidia-eagle-friend
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.myrmidia-eagle-friend
+      - id: hireling.hired-sword.war-priestess-of-myrmidia.skill.eagle-friend.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Shooting, map range and post-battle return/loss are excluded; the eagle is a separate weapon contribution,
+          never an independently targetable third fighter.
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 6
+    section: Priests for Every Occasion / War-Priestess of Myrmidia
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  experience: 12
+- id: hireling.hired-sword.trickster-priest-of-ranald
+  kind: hired-sword
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Trickster-Priest of Ranald
+  name_i18n:
+    es: Sacerdote Tramposo de Ranald
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: 'Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.'
+    - item_id: throwing_knives
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Stricture armament — see rules. Resolves to KB item throwing_knives (catalog/items/weapons-ranged.yaml).
+      notes_i18n:
+        es: Armamento de estricta observancia; véanse las reglas. Se resuelve como el objeto throwing_knives del KB (catalog/items/weapons-ranged.yaml).
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Stiletto (counts as a sword per the chapter); stricture armament. The KB has no stiletto item (only mechanic weapon.stiletto), so the chapter's own equivalence is used.
+      notes_i18n:
+        es: Estilete (cuenta como espada según el capítulo); armamento de estricta observancia. El KB no tiene objeto estilete (solo la mecánica weapon.stiletto), así que se usa la equivalencia del propio capítulo.
+  skill_access:
+  - academic
+  - speed
+  starting_skill_ids:
+  - skill.haggle
+  - skill.streetwise
+  rules:
+  - id: hireling.hired-sword.trickster-priest-of-ranald.rule.prayers
+    name: Prayers
+    effect: A Priest of Ranald is a servant of Ranald and may use the Prayers of Ranald as detailed elsewhere in the Miracle Workers chapter. Priests of Handrich use the same prayers. In addition, Ranaldan Priests can receive a Mark of Ranald instead of choosing a new skill if a double was rolled on the advance roll.
+    effect_i18n:
+      es: Un Sacerdote de Ranald es un sirviente de Ranald y puede usar las Plegarias de Ranald como se detalla en el capítulo Trabajadores de Milagros. Los Sacerdotes de Handrich usan las mismas plegarias. Además, los Sacerdotes de Ranald pueden recibir una Marca de Ranald en lugar de elegir una nueva habilidad si se saca un doble en la tirada de avance.
+    name_i18n:
+      es: Plegarias
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.trickster-priest-of-ranald.rule.prayers.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.trickster-priest-of-ranald.rule.strictures
+    name: Strictures
+    effect: Trickster-Priests habitually avoid engaging in martial activity. They may only be armed with a dagger, throwing knives and a stiletto (counts as a sword). Priests of Ranald may never wear armour. The Priest has both the skills Haggle and Streetwise.
+    effect_i18n:
+      es: Los Sacerdotes Tramposos evitan habitualmente dedicarse a actividades marciales. Solo pueden ir armados con daga, cuchillos arrojadizos y un estilete (cuenta como espada). Los Sacerdotes de Ranald nunca pueden llevar armadura. El Sacerdote tiene las habilidades Regateo y Callejeo.
+    name_i18n:
+      es: Preceptos
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: profile.equipment-restrictions
+        scope: 'YES'
+        binding:
+          kind: profile
+          id: profile.equipment-restrictions
+          parameters:
+            forbids:
+            - armour
+      - id: hireling.hired-sword.trickster-priest-of-ranald.rule.strictures.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Haggle and Streetwise concern campaign trade and exploration outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.trickster-priest-of-ranald.rule.grifter
+    name: Grifter
+    effect: Priests of Ranald are practiced swindlers! Like a merchant, a Trickster-Priest allows (dodgy!) trading deals to be arranged with other warbands.
+    effect_i18n:
+      es: ¡Los Sacerdotes de Ranald son timadores consumados! Como un mercader, un Sacerdote Tramposo permite concertar tratos comerciales (¡poco fiables!) con otras bandas.
+    name_i18n:
+      es: Trapacero
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.trickster-priest-of-ranald.rule.grifter.pending-duel
+        scope: 'NO'
+        binding: null
+        reason: Shooting target size, third-model salvage, trade, exploration, recruitment or post-battle effects are outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.trickster-priest-of-ranald.rule.marks-of-ranald
+    name: Marks of Ranald
+    effect: 'Ranald''s Luck: once during each battle the Priest may influence the result of any dice roll he makes by +1 or -1; in addition, he ducks past any hits on a 6+ regardless of strength or source (including magical attacks) — an unmodifiable roll made before critical hit effects are determined. Cat Friend: the Priest attracts a cat companion (the mark can be gained multiple times); cats cannot attack or be attacked but can intercept a charge made against the Priest; if the Priest is taken out of action the cat runs away, returning after the battle; if the Priest is slain the cats are lost like any other equipment.'
+    effect_i18n:
+      es: 'Suerte de Ranald: una vez por batalla, el Sacerdote puede influir en el resultado de cualquier tirada de dado que realice en +1 o -1; además, esquiva cualquier impacto con un 6+ sin importar fuerza u origen (incluidos ataques mágicos): tirada no modificable que se hace antes de determinar los efectos de golpe crítico. Amigo de los Gatos: el Sacerdote atrae a un compañero gato (la marca puede obtenerse varias veces); los gatos no pueden atacar ni ser atacados, pero pueden interceptar una carga contra el Sacerdote; si el Sacerdote queda Fuera de combate, el gato huye y regresa tras la batalla; si el Sacerdote muere, los gatos se pierden como cualquier otro equipo.'
+    name_i18n:
+      es: Marcas de Ranald
+    runtime:
+      grant: selectable
+      scope: LATER
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.trickster-priest-of-ranald.rule.marks-of-ranald.pending-duel
+        scope: LATER
+        binding: null
+        reason: The remaining individual source clause or its canonical item/starting-skill dependency is not yet implemented; retain the existing T13 source question and owning lot.
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 8
+    section: Priests for Every Occasion / Trickster-Priest of Ranald
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  experience: 12
+- id: hireling.hired-sword.priestess-of-shallya
+  kind: hired-sword
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Priestess of Shallya
+  name_i18n:
+    es: Sacerdotisa de Shallya
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 2
+    S: 2
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: 'Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.'
+    - item_id: staff
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Walking staff (counts as a staff); stricture armament.
+      notes_i18n:
+        es: Bastón de caminar (cuenta como bastón); armamento de estricta observancia.
+  skill_access:
+  - academic
+  starting_skill_ids: []
+  special_skill_rule_ids:
+  - hireling.hired-sword.priestess-of-shallya.skill.tranquil-aura
+  rules:
+  - id: hireling.hired-sword.priestess-of-shallya.rule.prayers
+    name: Prayers
+    effect: A Priestess of Shallya is a servant of Shallya and may use the Prayers of Shallya as detailed elsewhere in the Miracle Workers chapter. In addition, Shallyan Priestesses can receive a Mark of Shallya instead of choosing a new skill if a double was rolled on the advance roll.
+    effect_i18n:
+      es: Una Sacerdotisa de Shallya es una sirviente de Shallya y puede usar las Plegarias de Shallya como se detalla en el capítulo Trabajadores de Milagros. Además, las Sacerdotisas de Shallya pueden recibir una Marca de Shallya en lugar de elegir una nueva habilidad si se saca un doble en la tirada de avance.
+    name_i18n:
+      es: Plegarias
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.priestess-of-shallya.rule.prayers.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.priestess-of-shallya.rule.strictures
+    name: Strictures
+    effect: Priestesses of Shallya avoid engaging in martial activities. Followers of Shallya may only charge in hand-to-hand combat against warriors from a Carnival of Chaos warband or other servants of Onogal the Fly Lord. Priestesses of Shallya always begin equipped with a walking staff (counts as a staff). They may only be armed with a walking staff. Priestesses of Shallya may never wear armour.
+    effect_i18n:
+      es: Las Sacerdotisas de Shallya evitan dedicarse a actividades marciales. Los seguidores de Shallya solo pueden cargar en combate cuerpo a cuerpo contra guerreros de una banda de Carnaval del Caos u otros sirvientes de Onogal el Señor de las Moscas. Las Sacerdotisas de Shallya siempre comienzan equipadas con un bastón de paseo (cuenta como bastón). Solo pueden ir armadas con un bastón de paseo. Las Sacerdotisas de Shallya nunca pueden llevar armadura.
+    name_i18n:
+      es: Preceptos
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.shallya-strictures
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.shallya-strictures
+      - id: profile.active-weapon-restrictions
+        scope: 'YES'
+        binding:
+          kind: profile
+          id: profile.active-weapon-restrictions
+          parameters:
+            forbids:
+            - weapon.dagger
+      - id: profile.equipment-restrictions
+        scope: 'YES'
+        binding:
+          kind: profile
+          id: profile.equipment-restrictions
+          parameters:
+            forbids:
+            - armour
+  - id: hireling.hired-sword.priestess-of-shallya.rule.mercy
+    name: Mercy
+    effect: The Priestess may heal a wounded warrior once during battle. Any model in contact with the Priestess immediately recovers 1 Wound. In addition, she may accompany another Hero visiting an Apothecary which allows a +1 modifier when rolling on the Surgery charts.
+    effect_i18n:
+      es: La Sacerdotisa puede curar a un guerrero herido una vez durante la batalla. Cualquier miniatura en contacto con la Sacerdotisa recupera inmediatamente 1 Herida. Además, puede acompañar a otro Héroe que visite un Botica lo que permite un modificador de +1 al tirar en las tablas de Cirugía.
+    name_i18n:
+      es: Misericordia
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.priestess-of-shallya.rule.mercy.support
+        scope: 'NO'
+        binding: null
+        reason: 'User ruling: no self-healing or opponent healing in Combat Lab. Healing
+          another model and post-battle Surgery are excluded support/campaign effects.'
+  - id: hireling.hired-sword.priestess-of-shallya.rule.cure-poison
+    name: Cure Poison
+    effect: At the beginning of the post battle sequence the Priestess and any other model in the warband is healed from the effects of a poison. The disease is removed from the subject model and all ill-effects are nullified.
+    effect_i18n:
+      es: Al comienzo de la secuencia posterior a la batalla, la Sacerdotisa y cualquier otra miniatura de la banda quedan curadas de los efectos de un veneno. La enfermedad se elimina del modelo afectado y todos sus efectos negativos quedan anulados.
+    name_i18n:
+      es: Curar Veneno
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.priestess-of-shallya.rule.cure-poison.pending-duel
+        scope: 'NO'
+        binding: null
+        reason: Shooting target size, third-model salvage, trade, exploration, recruitment or post-battle effects are outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.priestess-of-shallya.rule.marks-of-shallya
+    name: Marks of Shallya
+    effect: 'Healing Hands: the Priestess may heal a grievously wounded warrior once during battle; any model in contact immediately recovers 2 Wounds, and she grants a +2 modifier on Surgery charts. Tranquil Aura: all models within 2" of the Priestess suffer -1 Weapon Skill and -1 Ballistic Skill; the aura has no effect on Daemons or Undead.'
+    effect_i18n:
+      es: 'Manos Sanadoras: la Sacerdotisa puede curar una vez durante la batalla a un guerrero gravemente herido; cualquier miniatura en contacto recupera inmediatamente 2 Heridas, y otorga un modificador de +2 en las tablas de Cirugía. Aura de Serenidad: todas las miniaturas dentro de 2" de la Sacerdotisa sufren -1 Habilidad de Combate y -1 Habilidad de Combate a Distancia; el aura no afecta a Demonios ni No Muertos.'
+    name_i18n:
+      es: Marcas de Shallya
+    runtime:
+      grant: selectable
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.priestess-of-shallya.rule.marks-of-shallya.support
+        scope: 'NO'
+        binding: null
+        reason: Healing Hands is excluded support without self/opponent healing. Tranquil
+          Aura is its separate implemented optional skill; selecting the composite never
+          grants both marks.
+  - id: hireling.hired-sword.priestess-of-shallya.skill.tranquil-aura
+    kind: special-skill-option
+    name: Tranquil Aura
+    name_i18n:
+      es: Aura de Serenidad
+    effect: 'All models within 2" of the Priestess suffer -1 Weapon Skill and -1 Ballistic Skill; the aura has no effect on Daemons or Undead.'
+    effect_i18n:
+      es: 'Todas las miniaturas dentro de 2" de la Sacerdotisa sufren -1 Habilidad de Combate y -1 Habilidad de Combate a Distancia; el aura no afecta a Demonios ni No Muertos.'
+    runtime:
+      grant: selectable
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.shallya-tranquil-aura
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.shallya-tranquil-aura
+      - id: hireling.hired-sword.priestess-of-shallya.skill.tranquil-aura.shooting
+        scope: 'NO'
+        binding: null
+        reason: Ballistic Skill and shooting are outside a resolved melee duel.
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 10
+    section: Priests for Every Occasion / Priestess of Shallya
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  experience: 12
+- id: hireling.hired-sword.warrior-priest-of-sigmar-miracle-workers
+  kind: hired-sword
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Warrior-Priest of Sigmar
+  name_i18n:
+    es: Sacerdote Guerrero de Sigmar
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: 'Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.'
+  skill_access:
+  - combat
+  - academic
+  - strength
+  starting_skill_ids: []
+  special_skill_rule_ids:
+  - hireling.hired-sword.warrior-priest-of-sigmar-miracle-workers.skill.enlightened
+  - hireling.hired-sword.warrior-priest-of-sigmar-miracle-workers.skill.symbol-of-unity
+  rules:
+  - id: hireling.hired-sword.warrior-priest-of-sigmar-miracle-workers.rule.prayers
+    name: Prayers
+    effect: A Warrior-Priest of Sigmar is a servant of Sigmar and may use the Prayers of Sigmar as detailed in the Magic section of the Mordheim rulebook. In addition, Sigmarite Priests can receive a Mark of Sigmar instead of choosing a new skill if a double was rolled on the advance roll.
+    effect_i18n:
+      es: Un Sacerdote Guerrero de Sigmar es un sirviente de Sigmar y puede usar las Plegarias de Sigmar como se detalla en la sección de Magia del libro de Mordheim. Además, los Sacerdotes de Sigmar pueden recibir una Marca de Sigmar en lugar de elegir una nueva habilidad si se saca un doble en la tirada de avance.
+    name_i18n:
+      es: Plegarias
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.warrior-priest-of-sigmar-miracle-workers.rule.prayers.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.warrior-priest-of-sigmar-miracle-workers.rule.marks-of-sigmar
+    name: Marks of Sigmar
+    effect: 'Enlightened: divine purpose washes over the Priest; he automatically passes all Leadership based tests taken while fighting against Orcs & Goblins or the followers of Chaos. Symbol of Unity: the Priest inspires citizens of the Empire with nationalistic pride; his symbolic presence affects encounters with Witch Hunters, Sisters of Sigmar or any mercenary warband except Marienburg and Middenheim mercenaries; if an enemy warrior within 3" of the Priest strikes or shoots at a warrior within 3" of the Priest they suffer -1 on all rolls to hit.'
+    effect_i18n:
+      es: 'Iluminado: el propósito divino envuelve al Sacerdote; supera automáticamente todas las tiradas basadas en Liderazgo mientras lucha contra Orcos y Goblins o los seguidores del Caos. Símbolo de Unidad: el Sacerdote inspira a los ciudadanos del Imperio con orgullo nacionalista; su presencia simbólica afecta los encuentros con Cazadores de Brujas, Hermanas de Sigmar o cualquier banda mercenaria salvo mercenarios de Mariemburgo y Middenheim; si un guerrero enemigo dentro de 3" del Sacerdote golpea o dispara a un guerrero dentro de 3" del Sacerdote, sufre -1 en todas las tiradas por impactar.'
+    name_i18n:
+      es: Marcas de Sigmar
+    runtime:
+      grant: selectable
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.warrior-priest-of-sigmar-miracle-workers.rule.marks-of-sigmar.separate-options
+        scope: 'NO'
+        binding: null
+        reason: Enlightened and Symbol of Unity are separate implemented optional skills;
+          the composite is not a selectable grant of both marks.
+  - id: hireling.hired-sword.warrior-priest-of-sigmar-miracle-workers.skill.enlightened
+    kind: special-skill-option
+    name: Enlightened
+    name_i18n:
+      es: Iluminado
+    effect: Divine purpose washes over the Priest; he automatically passes all Leadership based tests taken while fighting against Orcs & Goblins or the followers of Chaos.
+    effect_i18n:
+      es: El Sacerdote supera automáticamente todas las pruebas de Liderazgo mientras lucha contra Orcos, Goblins o seguidores del Caos.
+    runtime:
+      grant: selectable
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.sigmar-enlightened
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.sigmar-enlightened
+  - id: hireling.hired-sword.warrior-priest-of-sigmar-miracle-workers.skill.symbol-of-unity
+    kind: special-skill-option
+    name: Symbol of Unity
+    name_i18n:
+      es: Símbolo de Unidad
+    effect: Enemy warriors from Witch Hunters, Sisters of Sigmar or mercenary warbands
+      except Marienburg/Middenheim, within 3 inches of the Priest, suffer -1 on all
+      rolls to hit when attacking a warrior within 3 inches of him.
+    effect_i18n:
+      es: Los enemigos de Cazadores de Brujas, Hermanas de Sigmar o bandas mercenarias
+        salvo Marienburgo/Middenheim, a 3 pulgadas del Sacerdote, sufren -1 por impactar
+        al atacar a un guerrero a 3 pulgadas de él.
+    runtime:
+      grant: selectable
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.sigmar-symbol-of-unity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.sigmar-symbol-of-unity
+      - id: hireling.hired-sword.warrior-priest-of-sigmar-miracle-workers.skill.symbol-of-unity.shooting
+        scope: 'NO'
+        binding: null
+        reason: Shooting and independent third combatants are outside a resolved melee
+          duel.
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 12
+    section: Priests for Every Occasion / Warrior-Priest of Sigmar
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  experience: 12
+- id: hireling.hired-sword.druid-priest-of-taal
+  kind: hired-sword
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Druid-Priest of Taal
+  name_i18n:
+    es: Sacerdote Druida de Taal
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 2
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: 'Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.'
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  starting_skill_ids: []
+  special_skill_rule_ids:
+  - hireling.hired-sword.druid-priest-of-taal.skill.tranquil-fauna
+  rules:
+  - id: hireling.hired-sword.druid-priest-of-taal.rule.prayers
+    name: Prayers
+    effect: A Priest of Taal is a servant of Taal and may use the Prayers of Taal as detailed elsewhere in the Miracle Workers chapter. In addition, Taalite Priests can receive a Mark of Taal instead of choosing a new skill if a double was rolled on the advance roll.
+    effect_i18n:
+      es: Un Sacerdote de Taal es un sirviente de Taal y puede usar las Plegarias de Taal como se detalla en el capítulo Trabajadores de Milagros. Además, los Sacerdotes de Taal pueden recibir una Marca de Taal en lugar de elegir una nueva habilidad si se saca un doble en la tirada de avance.
+    name_i18n:
+      es: Plegarias
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.druid-priest-of-taal.rule.prayers.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.druid-priest-of-taal.rule.strictures
+    name: Strictures
+    effect: Priests of Taal may never wear heavy armour. Druid-Priests may never be equipped with blackpowder weapons.
+    effect_i18n:
+      es: Los Sacerdotes de Taal nunca pueden llevar armadura pesada. Los Sacerdotes Druidas nunca pueden equiparse con armas de pólvora.
+    name_i18n:
+      es: Preceptos
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: profile.equipment-restrictions
+        scope: 'YES'
+        binding:
+          kind: profile
+          id: profile.equipment-restrictions
+          parameters:
+            forbids:
+            - heavy-armour
+            - blackpowder
+  - id: hireling.hired-sword.druid-priest-of-taal.rule.marks-of-taal
+    name: Marks of Taal
+    effect: 'Tranquil Fauna: animals are calmed by the presence of the Priest and will never attack him; animals controlled by a warrior with an Animal Handler skill or large predatory beasts must pass a Leadership test (taken using the handler''s Leadership) or they may not attack the Priest; a failed test does not result in a failed charge. Enlivened Flora: once during each battle, models (friend as well as foe) except friendly Taalites within 3" of the Priest are pushed directly away from him by a wall of blooms, standing no closer than 3" away; the living barrier wilts during the recovery phase after D3 turns have elapsed.'
+    effect_i18n:
+      es: 'Fauna Tranquila: los animales se calman ante la presencia del Sacerdote y nunca lo atacarán; los animales controlados por un guerrero con la habilidad de Adiestrador de Animales o las grandes bestias depredadoras deben superar una tirada de Liderazgo (con el Liderazgo del adiestrador) o no podrán atacar al Sacerdote; una tirada fallida no provoca una carga fallida. Flora Vivificada: una vez por batalla, las miniaturas (amigas y enemigas) salvo los Taalitas amigos dentro de 3" del Sacerdote son empujadas directamente lejos de él por una muralla de flores, quedando a no menos de 3"; la barrera viva se marchita en la fase de recuperación después de que transcurran D3 turnos.'
+    name_i18n:
+      es: Marcas de Taal
+    runtime:
+      grant: selectable
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.druid-priest-of-taal.rule.marks-of-taal.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Tranquil Fauna is a separate optional skill; Enlivened Flora separates models and interrupts contact, outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.druid-priest-of-taal.skill.tranquil-fauna
+    kind: special-skill-option
+    name: Tranquil Fauna
+    name_i18n:
+      es: Fauna Tranquila
+    effect: Animals never attack the Priest. Animals controlled by a warrior with Animal Handler or large predatory
+      beasts must pass a Leadership test using the handler's Leadership to attack him; failure does not result in
+      a failed charge.
+    effect_i18n:
+      es: Los animales nunca atacan al Sacerdote. Los animales controlados por un guerrero con Adiestrador de Animales
+        o las grandes bestias depredadoras deben superar un chequeo con el Liderazgo del adiestrador para atacarlo;
+        fallar no provoca una carga fallida.
+    runtime:
+      grant: selectable
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.taal-tranquil-fauna
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.taal-tranquil-fauna
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 13
+    section: Priests for Every Occasion / Warrior-Priest of Sigmar and Taal
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  experience: 12
+- id: hireling.hired-sword.wolf-priest-of-ulric-miracle-workers
+  kind: hired-sword
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Wolf-Priest of Ulric
+  name_i18n:
+    es: Sacerdote Lobo de Ulric
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: 'Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.'
+    - item_id: wolf_pelt_cloak
+      quantity:
+        kind: fixed
+        value: 1
+      notes: White wolf pelt cloak — 6+ saving throw. Item defined in the Grade-2b staging catalog (miracle-workers-gear.yaml) from this chapter's strictures; not equivalent to the KB `wolfcloak` (Middenheim hunt cloak, shooting-only save) — keep both items and review any merge at promotion.
+      notes_i18n:
+        es: 'Capa de piel de lobo blanco: salvación de 6+. Objeto definido en el catálogo de staging de Grade-2b (miracle-workers-gear.yaml) a partir de las estrictas observancias de este capítulo; no es equivalente al `wolfcloak` del KB (capa de caza de Middenheim, salvación solo contra disparos); conservar ambos objetos y revisar cualquier fusión en la promoción.'
+  skill_access:
+  - combat
+  - academic
+  - strength
+  - speed
+  starting_skill_ids: []
+  special_skill_rule_ids:
+  - hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.skill.son-of-ulric
+  rules:
+  - id: hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.rule.prayers
+    name: Prayers
+    effect: A Wolf-Priest of Ulric is a servant of Ulric and may use the Prayers of Ulric as detailed elsewhere in the Miracle Workers chapter. In addition, Ulrican Priests can receive a Mark of Ulric instead of choosing a new skill if a double was rolled on the advance roll.
+    effect_i18n:
+      es: Un Sacerdote Lobo de Ulric es un sirviente de Ulric y puede usar las Plegarias de Ulric como se detalla en el capítulo Trabajadores de Milagros. Además, los Sacerdotes de Ulric pueden recibir una Marca de Ulric en lugar de elegir una nueva habilidad si se saca un doble en la tirada de avance.
+    name_i18n:
+      es: Plegarias
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.rule.prayers.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.rule.strictures
+    name: Strictures
+    effect: Wolf-Priests of Ulric may never wear armour, trusting in Ulric's protection. The only exception is that every Wolf-Priest is garbed in a cloak made from the pelt of a white wolf; the pelt allows a 6+ saving throw. Black powder weapons, crossbows and helmets are not favoured by Ulric; use of them shows a lack of courage. Wolf-Priests of Ulric may never be equipped with blackpowder weapons.
+    effect_i18n:
+      es: Los Sacerdotes Lobo de Ulric nunca pueden llevar armadura, confiando en la protección de Ulric. La única excepción es que todo Sacerdote Lobo viste una capa hecha con la piel de un lobo blanco; la piel otorga una tirada de salvación de 6+. Las armas de pólvora, las ballestas y los yelmos no son del agrado de Ulric; usarlos demuestra falta de valor. Los Sacerdotes Lobo de Ulric nunca pueden equiparse con armas de pólvora.
+    name_i18n:
+      es: Preceptos
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: profile.equipment-restrictions
+        scope: 'YES'
+        binding:
+          kind: profile
+          id: profile.equipment-restrictions
+          parameters:
+            forbids:
+            - armour
+            - blackpowder
+      - id: defence.wolf-pelt-cloak
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: defence.wolf-pelt-cloak
+  - id: hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.rule.intense-rivals
+    name: Intense Rivals
+    effect: A Wolf-Priest hates all Witch Hunters, Warrior-Priests of Sigmar, Sigmarite Matriarchs and Sisters of Sigmar as they are the agents of an opposing cult.
+    effect_i18n:
+      es: Un Sacerdote Lobo odia a todos los Cazadores de Brujas, Sacerdotes Guerreros de Sigmar, Matriarcas de Sigmar y Hermanas de Sigmar por ser los agentes de un culto rival.
+    name_i18n:
+      es: Rivalidad Intensa
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.ulric-intense-rivals
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.ulric-intense-rivals
+  - id: hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.rule.marks-of-ulric
+    name: Marks of Ulric
+    effect: 'Son of Ulric: the Priest is a direct descendent of Ulric''s bloodline; his teeth sharpen and become elongated and wicked claws manifest, suffering -1 Ballistic Skill; he can fight unarmed without the usual penalties so he cannot be disarmed, and becomes immune to the harmful effects of cold except when triggered by magic. Wolf Friend: the Priest attracts a wolf companion (the mark can be gained multiple times); if the Priest is taken out of action the wolf runs away, returning after the battle; if a wolf companion is taken out of action use the serious injury chart for Henchmen to determine what happens to it. Wolf Friend profile: M9 WS3 BS0 S3 T3 W1 I3 A1 Ld5.'
+    effect_i18n:
+      es: 'Hijo de Ulric: el Sacerdote es descendiente directo de la estirpe de Ulric; sus dientes se afilan y alargan y aparecen garras crueles, sufriendo -1 Habilidad de Combate a Distancia; puede luchar desarmado sin las penalizaciones habituales, por lo que no puede ser desarmado, y se vuelve inmune a los efectos nocivos del frío salvo cuando los provoca la magia. Amigo de los Lobos: el Sacerdote atrae a un compañero lobo (la marca puede obtenerse varias veces); si el Sacerdote queda Fuera de combate, el lobo huye y regresa tras la batalla; si un compañero lobo queda Fuera de combate, usa la tabla de heridas graves de Peones para determinar qué le ocurre. Perfil del Amigo de los Lobos: M9 HA3 HD0 F3 R3 H1 I3 A1 L5.'
+    name_i18n:
+      es: Marcas de Ulric
+    runtime:
+      grant: selectable
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.rule.marks-of-ulric.separate-options
+        scope: 'NO'
+        binding: null
+        reason: Son of Ulric is its separate implemented optional skill. Wolf Friend is
+          a separate companion and lifecycle outside a 1v1 duel.
+  - id: hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.skill.son-of-ulric
+    kind: special-skill-option
+    name: Son of Ulric
+    name_i18n:
+      es: Hijo de Ulric
+    effect: The Priest suffers -1 Ballistic Skill, can fight unarmed without the usual
+      penalties and cannot be disarmed, and is immune to harmful cold except when triggered
+      by magic.
+    effect_i18n:
+      es: El Sacerdote sufre -1 Habilidad de Combate a Distancia, puede luchar desarmado
+        sin las penalizaciones habituales y no puede ser desarmado; es inmune al frío
+        nocivo salvo cuando lo provoca la magia.
+    runtime:
+      grant: selectable
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: profile.fist
+        scope: 'YES'
+        binding:
+          kind: profile
+          id: profile.fist
+          parameters:
+            ignore_penalties: true
+      - id: hireling.hired-sword.wolf-priest-of-ulric-miracle-workers.skill.son-of-ulric.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Ballistic Skill/shooting, weather and spell-triggered cold are outside
+          a resolved melee duel; fists are not disarmable equipped weapons.
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 14
+    section: Priests for Every Occasion / Wolf-Priest of Ulric
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  experience: 12
+- id: hireling.hired-sword.priest-of-verena
+  kind: hired-sword
+  grade: 2b
+  publication: Miracle Workers (Liber Malefic / Mutiny in Marienburg)
+  name: Priest of Verena
+  name_i18n:
+    es: Sacerdote de Verena
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 3
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 0
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Ceremonial dagger — all priests of the chapter start with one.
+      notes_i18n:
+        es: 'Daga ceremonial: todos los sacerdotes del capítulo empiezan con una.'
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Stricture — Priests of Verena may only be armed with a sword.
+      notes_i18n:
+        es: 'Estricta observancia: los Sacerdotes de Verena solo pueden ir armados con una espada.'
+  skill_access:
+  - academic
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.priest-of-verena.rule.prayers
+    name: Prayers
+    effect: A Priest of Verena is a servant of Verena and may use the Prayers of Verena as detailed elsewhere in the Miracle Workers chapter. War-Priests of Solkan can invoke the divine power of Law using the same prayers. In addition, Verenan Priests can receive a Mark of Verena instead of choosing a new skill if a double was rolled on the advance roll.
+    effect_i18n:
+      es: Un Sacerdote de Verena es un sirviente de Verena y puede usar las Plegarias de Verena como se detalla en el capítulo Trabajadores de Milagros. Los Sacerdotes de Guerra de Solkan pueden invocar el poder divino de la Ley usando las mismas plegarias. Además, los Sacerdotes de Verena pueden recibir una Marca de Verena en lugar de elegir una nueva habilidad si se saca un doble en la tirada de avance.
+    name_i18n:
+      es: Plegarias
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.priest-of-verena.rule.prayers.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.priest-of-verena.rule.strictures
+    name: Strictures
+    effect: Priests of Verena may only be armed with a sword.
+    effect_i18n:
+      es: Los Sacerdotes de Verena solo pueden ir armados con una espada.
+    name_i18n:
+      es: Preceptos
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: profile.active-weapon-restrictions
+        scope: 'YES'
+        binding:
+          kind: profile
+          id: profile.active-weapon-restrictions
+          parameters:
+            forbids:
+            - weapon.dagger
+  - id: hireling.hired-sword.priest-of-verena.rule.marks-of-verena
+    name: Marks of Verena
+    effect: 'Librarian: the Priest has studied forbidden tomes of the Unseen Library; whenever a prayer is successfully cast on an individual model, select another target within 3" of the original target to share in the Priest''s wisdom — roll again for the casting of the same prayer, applying +1 to the Difficulty (a further +1 each repeat, never exceeding 12). Owl Friend: the Priest attracts an owl companion; the controlling player may declare a warrior at the start of the shooting phase who may then re-roll any failed dice rolls to hit with missiles; the owl never settles on the same warrior twice in succession; if the Priest is taken out of action the owl flies away, returning after the battle; owls cannot be attacked or slain, but if the Priest is slain the owl is lost like any other equipment.'
+    effect_i18n:
+      es: 'Bibliotecario: el Sacerdote ha estudiado tomos prohibidos de la Biblioteca Invisible; cada vez que una plegaria se lance con éxito sobre una miniatura individual, selecciona otro objetivo dentro de 3" del objetivo original para que comparta la sabiduría del Sacerdote: tira de nuevo el lanzamiento de la misma plegaria aplicando +1 a la Dificultad (un +1 adicional en cada repetición, sin superar nunca 12). Amigo del Búho: el Sacerdote atrae a un compañero búho; el jugador controlador puede declarar a un guerrero al comienzo de la fase de disparo, que podrá repetir las tiradas fallidas por impactar con armas de misiles; el búho nunca se posa dos veces seguidas en el mismo guerrero; si el Sacerdote queda Fuera de combate, el búho vuela y regresa tras la batalla; los búhos no pueden ser atacados ni abatidos, pero si el Sacerdote muere, el búho se pierde como cualquier otro equipo.'
+    name_i18n:
+      es: Marcas de Verena
+    runtime:
+      grant: selectable
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.priest-of-verena.rule.marks-of-verena.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.priest-of-verena.rule.marks-of-solkan
+    name: Marks of Solkan (War-Priest Variant)
+    effect: 'War-Priests of Solkan may choose skills from the Strength skills list and can receive a Mark of Solkan instead of choosing a new skill on a double advance roll. Witch-finder: the Priest possesses a sixth sense alerting him to the presence of the minions of Chaos and warlocks; he must declare a charge against any follower of Chaos, warlock, necromancer, sorcerer or warp-tainted character, even if he cannot see them. Inquisitor: the Priest becomes an Inquisitor of Solkan; at the beginning of a new round of combat with the Priest, roll a D6 for an enemy warrior who is not Undead or a follower of Chaos — on a roll of 6 the warrior is judged corrupt: roll on the Random mutation chart and apply the result as its brand. Inquisitors may never leave combat and are Immune to Psychology.'
+    effect_i18n:
+      es: 'Los Sacerdotes de Guerra de Solkan pueden elegir habilidades de la lista de Fuerza y pueden recibir una Marca de Solkan en lugar de elegir una nueva habilidad con un doble en la tirada de avance. Buscador de Brujas: el Sacerdote posee un sexto sentido que le alerta de la presencia de los secuaces del Caos y los hechiceros; debe declarar una carga contra cualquier seguidor del Caos, hechicero, nigromante, brujo o personaje corrompido por la urde, aunque no pueda verlo. Inquisidor: el Sacerdote se convierte en Inquisidor de Solkan; al comienzo de una nueva ronda de combate con el Sacerdote, tira un D6 por cada guerrero enemigo que no sea No Muerto o seguidor del Caos: con un 6 el guerrero es declarado corrupto: tira en la tabla de mutaciones aleatorias y aplica el resultado como su marca. Los Inquisidores nunca pueden abandonar el combate y son Inmunes a la Psicología.'
+    name_i18n:
+      es: Marcas de Solkan (Variante Sacerdote de Guerra)
+    runtime:
+      grant: selectable
+      scope: LATER
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.priest-of-verena.rule.marks-of-solkan.pending-duel
+        scope: LATER
+        binding: null
+        reason: The remaining individual source clause or its canonical item/starting-skill dependency is not yet implemented; retain the existing T13 source question and owning lot.
+  source_refs:
+  - manual: liber-malefic
+    printed_page: 16
+    section: Priests for Every Occasion / Priest of Verena
+    url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
+  experience: 12
+- id: hireling.hired-sword.crimashin
+  kind: hired-sword
+  grade: 2b
+  publication: Relics of the Crusades (Broheim anthology)
+  name: Crimashin
+  name_i18n:
+    es: Crimashin
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 4
+    BS: 3
+    S: 4
+    T: 4
+    W: 1
+    I: 5
+    A: 2
+    Ld: 7
+  warband_rating:
+    kind: base_plus_experience
+    base: 12
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Gromril dagger — counts as a dagger with the gromril weapon upgrade (KB materials-and-upgrades `gromril_weapon`).
+      notes_i18n:
+        es: 'Daga de gromril: cuenta como una daga con la mejora de arma de gromril (materiales y mejoras del KB, `gromril_weapon`).'
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+  skill_access:
+  - combat
+  - speed
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.crimashin.rule.infiltrate
+    name: Infiltrate
+    effect: A Crimashin starts with the Infiltrate skill and may choose from the Combat and Speed lists when he gains a new skill.
+    effect_i18n:
+      es: Un Crimashin empieza con la habilidad Infiltrarse y puede elegir de las listas de Combate y Velocidad cuando gana una habilidad nueva.
+    name_i18n:
+      es: Infiltración
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.crimashin.rule.infiltrate.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Skill access is carried by the canonical profile; acquisition and Infiltrate deployment are outside the duel.
+  - id: hireling.hired-sword.crimashin.rule.a-worthy-foe
+    name: A Worthy Foe
+    effect: The Grand Master will only lend one of his operatives if he can gain something from the transaction, such as the assassination of powerful enemy. A Crimashin will only be a part of a warband if its opponents have a rating of over 250.
+    effect_i18n:
+      es: El Gran Maestro solo prestará a uno de sus operativos si puede ganar algo con la transacción, como el asesinato de un poderoso enemigo. Un Crimashin solo formará parte de una banda si sus oponentes tienen una valoración superior a 250.
+    name_i18n:
+      es: Un Adversario Digno
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.crimashin.rule.a-worthy-foe.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 16
+    section: Hired Swords / Crimashin
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+- id: hireling.hired-sword.holy-man
+  kind: hired-sword
+  grade: 2b
+  publication: Relics of the Crusades (Broheim anthology)
+  name: Holy Man
+  name_i18n:
+    es: Hombre Santo
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 2
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 8
+  warband_rating:
+    kind: base_plus_experience
+    base: 12
+    per_experience_point: 1
+  equipment:
+    fixed_items:
+    - item_id: staff
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Treat as a double-handed weapon.
+      notes_i18n:
+        es: Se trata como arma a dos manos.
+    - item_id: hammer
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Blunt hand weapon, treat as a hammer.
+      notes_i18n:
+        es: Arma de mano contundente, se trata como martillo.
+  skill_access:
+  - strength
+  starting_skill_ids: []
+  rules:
+  - id: hireling.hired-sword.holy-man.rule.true-believer
+    name: True Believer
+    effect: A Holy Man starts with two spells from the Divine Intervention spell list (these are the same as the Prayers of Sigmar as detailed in the core rules).
+    effect_i18n:
+      es: Un Hombre Santo empieza con dos hechizos de la lista de hechizos Intervención Divina (son los mismos que las Plegarias de Sigmar según se detallan en las reglas básicas).
+    name_i18n:
+      es: Creyente Verdadero
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.holy-man.rule.true-believer.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.holy-man.rule.holy
+    name: Holy
+    effect: If a warband that follows the Path of Sigmar or The One hires a Holy Man, his hire fee will be reduced to 20 dinars.
+    effect_i18n:
+      es: Si una banda que sigue el Sendero de Sigmar o El Uno contrata a un Hombre Santo, su coste de contratación se reduce a 20 dinares.
+    name_i18n:
+      es: Santo
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.holy-man.rule.holy.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  - id: hireling.hired-sword.holy-man.rule.skills
+    name: Skills
+    effect: A Holy Man may choose from the Strength and Holy lists when he gains a new skill.
+    effect_i18n:
+      es: Un Hombre Santo puede elegir de las listas de Fuerza y Santa cuando gana una habilidad nueva.
+    name_i18n:
+      es: Habilidades
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.holy-man.rule.skills.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Skill access is carried by the canonical profile; acquisition and Infiltrate deployment are outside the duel.
+  source_refs:
+  - manual: broheim.net
+    printed_page: 16
+    section: Hired Swords / Holy Man
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf

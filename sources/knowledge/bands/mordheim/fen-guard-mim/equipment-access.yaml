@@ -13,21 +13,33 @@ equipment_lists:
   - item_id: axe
     cost: 5
   - item_id: whip
+    applies_to:
+      profile_types:
+      - hero
     cost: 10
     notes: Heroes only
     notes_i18n:
       es: Solo héroes
   - item_id: greenwood_scythe
+    applies_to:
+      profile_ids:
+      - branchwych
     cost: 60
     notes: Branchwych only; Rare 10
     notes_i18n:
       es: Solo la Bruja de las Ramas; Raro 10
   - item_id: throwing_knives
+    applies_to:
+      profile_types:
+      - hero
     cost: 15
     notes: Splinters; Heroes only
     notes_i18n:
       es: Astillas; solo héroes
   - item_id: fish_hook_shot
+    applies_to:
+      profile_types:
+      - hero
     cost: 10
     notes: Vine Tendril; Heroes only
     notes_i18n:
@@ -35,16 +47,25 @@ equipment_lists:
   - item_id: shield
     cost: 5
   - item_id: iron_bark
+    applies_to:
+      profile_types:
+      - hero
     cost: 10
     notes: Heroes only; Rare 5
     notes_i18n:
       es: Solo héroes; Raro 5
   - item_id: armour_of_the_willow_wood
+    applies_to:
+      profile_types:
+      - hero
     cost: 130
     notes: Heroes only
     notes_i18n:
       es: Solo héroes
   - item_id: oaken_armour
+    applies_to:
+      profile_types:
+      - hero
     cost: 150
     notes: Heroes only
     notes_i18n:
@@ -55,11 +76,17 @@ equipment_lists:
     notes_i18n:
       es: Liana Trepadora
   - item_id: horn_of_the_wild_hunt
+    applies_to:
+      profile_ids:
+      - branchnymph
     cost: 110
     notes: text lists 120 gc under Special Equipment; Branchnymph only; Rare 12
     notes_i18n:
       es: el texto indica 120 gc en Equipo Especial; solo la Ninfa de las Ramas; Raro 12
   - item_id: familiar
+    applies_to:
+      profile_ids:
+      - branchwych
     cost: 20
     notes: Branchwych only
     notes_i18n:

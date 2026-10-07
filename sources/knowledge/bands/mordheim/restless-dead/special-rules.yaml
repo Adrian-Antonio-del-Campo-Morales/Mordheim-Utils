@@ -46,15 +46,15 @@ rules:
     profile_ids:
     - liche
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.restless-dead.liche.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: liche--immune-to-psychology
   name: Immune to Psychology
   effect: A Liche is not affected by psychology and never leaves combat.
@@ -71,15 +71,15 @@ rules:
     profile_ids:
     - liche
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.restless-dead.liche.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: liche--no-pain
   runtime:
     scope: 'YES'
@@ -400,15 +400,15 @@ rules:
     profile_ids:
     - grave-guards
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.restless-dead.grave-guards.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: grave-guards--immune-to-poison
   runtime:
     scope: 'YES'
@@ -453,15 +453,15 @@ rules:
     profile_ids:
     - grave-guards
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.restless-dead.grave-guards.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: grave-guards--no-pain
   runtime:
     scope: 'YES'
@@ -554,15 +554,15 @@ rules:
     profile_ids:
     - zombies
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.restless-dead.zombies.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: zombies--may-not-run
   name: May Not Run
@@ -600,15 +600,15 @@ rules:
     profile_ids:
     - zombies
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.restless-dead.zombies.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   rule_ref: shared-rule.immune-to-psychology
 - id: zombies--immune-to-poison
   runtime:
@@ -697,15 +697,15 @@ rules:
     profile_ids:
     - skeletons
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.restless-dead.skeletons.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: skeletons--may-not-run
   name: May Not Run
   effect: Skeletons are slow undead creatures and may not run (but may charge normally).
@@ -749,15 +749,15 @@ rules:
     profile_ids:
     - skeletons
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.restless-dead.skeletons.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: skeletons--immune-to-poison
   runtime:
     scope: 'YES'
@@ -851,15 +851,15 @@ rules:
     profile_ids:
     - wights
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.restless-dead.wights.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: wights--may-not-run
   name: May Not Run
   effect: Wights are slow undead creatures and may not run (but may charge normally).
@@ -903,15 +903,15 @@ rules:
     profile_ids:
     - wights
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.restless-dead.wights.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: wights--immune-to-poison
   runtime:
     scope: 'YES'
@@ -1015,15 +1015,15 @@ rules:
     profile_ids:
     - scarecrows
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.restless-dead.scarecrows.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: scarecrows--immune-to-psychology
   name: Immune to Psychology
   effect: The scarecrow is immune to all psychology and will never leave combat.
@@ -1040,15 +1040,15 @@ rules:
     profile_ids:
     - scarecrows
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.restless-dead.scarecrows.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: scarecrows--immune-to-poison
   runtime:
     scope: 'YES'
@@ -1475,15 +1475,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.restless-dead.band.restless-dead-special-skills-wraith-touch
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.wraith-touch
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.wraith-touch
 - id: band--restless-dead-special-skills-forbidden-rite
   kind: warband_skill
   name: Forbidden Rite

@@ -30,12 +30,9 @@ profiles:
       quantity:
         kind: fixed
         value: 1
-      notes: Two-handed sword — resolved to the KB `two_handed_weapon` item (the source offers no separate
-        double-handed-sword item).
+      notes: Two-handed sword — resolved to the KB `two_handed_weapon` item (the source offers no separate double-handed-sword item).
       notes_i18n:
-        es: >-
-          Espada a dos manos: se resuelve como el objeto `two_handed_weapon` del KB (la fuente
-          no ofrece un objeto separado de espada a dos manos).
+        es: 'Espada a dos manos: se resuelve como el objeto `two_handed_weapon` del KB (la fuente no ofrece un objeto separado de espada a dos manos).'
     - item_id: heavy_armour
       quantity:
         kind: fixed
@@ -47,7 +44,7 @@ profiles:
   starting_skill_ids:
   - skill.combat-master
   - skill.strongman
-  - skill.sign-of-sigmar
+  - skill.sigmar-s-sign
   - skill.protection-of-sigmar
   - skill.righteous-fury
   rules:
@@ -58,30 +55,55 @@ profiles:
       es: la Ira Justiciera de Aldred añade Orcos & Goblins como enemigos afectados.
     name_i18n:
       es: Ira Justiciera (Orcos y Goblins)
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.hatred-orcs-goblins
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.hatred-orcs-goblins
   - id: hireling.dramatis.aldred-fellblade.rule.fellblade
     name: Fellblade
-    effect: >-
-      Aldred is a master with this sword and he can therefore parry with it as though it was a
-      normal sword.
+    effect: Aldred is a master with this sword and he can therefore parry with it as though it was a normal sword.
     effect_i18n:
-      es: >-
-        Aldred es un maestro con esta espada y por tanto puede parar con ella como si fuera una
-        espada normal.
+      es: Aldred es un maestro con esta espada y por tanto puede parar con ella como si fuera una espada normal.
     name_i18n:
       es: Hoja Maldita
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: compiler.aldred-fellblade
+        scope: 'YES'
+        binding:
+          kind: compiler
+          id: compiler.aldred-fellblade
   - id: hireling.dramatis.aldred-fellblade.rule.destiny
     name: Destiny
-    effect: >-
-      If the "Dead" result is rolled on the Serious Injury Chart then Aldred isn't really dead but
-      he decides to quit the warband and travel to another Dwarf Hold in his quest for the sword
-      Karaghul. He is no longer available for the rest of the campaign.
+    effect: If the "Dead" result is rolled on the Serious Injury Chart then Aldred isn't really dead but he decides to quit the warband and travel to another Dwarf Hold in his quest for the sword Karaghul. He is no longer available for the rest of the campaign.
     effect_i18n:
-      es: >-
-        Si se obtiene el resultado "Muerto" en la tabla de Heridas Graves, Aldred no está realmente
-        muerto, sino que decide abandonar la banda y viajar a otro bastión enano en su búsqueda de
-        la espada Karaghul. Ya no estará disponible durante el resto de la campaña.
+      es: Si se obtiene el resultado "Muerto" en la tabla de Heridas Graves, Aldred no está realmente muerto, sino que decide abandonar la banda y viajar a otro bastión enano en su búsqueda de la espada Karaghul. Ya no estará disponible durante el resto de la campaña.
     name_i18n:
       es: Destino
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.dramatis.aldred-fellblade.rule.destiny.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
+  source_notes:
+  - >-
+    The printed Skills line names Sign of Sigmar, Protection of Sigmar and Righteous Fury.
+    Sign of Sigmar resolves to the shared Sigmar's Sign mechanic (skill.sigmar-s-sign), the
+    binding of the Sisters of Sigmar special skill of that name; Protection of Sigmar and
+    Righteous Fury have their own canonical skill entries.
   source_refs:
   - manual: broheim.net
     printed_page: 63
@@ -118,32 +140,23 @@ profiles:
       quantity:
         kind: fixed
         value: 1
-      notes: REL-specific item (see the Angel Wings rule); no KB or 2B catalog equivalent exists — deliberate
-        dangling ref, define at promotion.
+      notes: REL-specific item (see the Angel Wings rule); no KB or 2B catalog equivalent exists — deliberate dangling ref, define at promotion.
       notes_i18n:
-        es: >-
-          Objeto específico de REL (véase la regla Alas de Ángel); no existe equivalente en el
-          KB ni en el catálogo 2B; referencia pendiente deliberada, definir en la promoción.
+        es: Objeto específico de REL (véase la regla Alas de Ángel); no existe equivalente en el KB ni en el catálogo 2B; referencia pendiente deliberada, definir en la promoción.
     - item_id: stickfire
       quantity:
         kind: fixed
         value: 1
-      notes: REL-specific item, "enough stickfire and vermin pots to last for the entire battle"; no KB
-        or 2B catalog equivalent — deliberate dangling ref, define at promotion.
+      notes: REL-specific item, "enough stickfire and vermin pots to last for the entire battle"; no KB or 2B catalog equivalent — deliberate dangling ref, define at promotion.
       notes_i18n:
-        es: >-
-          Objeto específico de REL, "suficiente leña y ollas de alimañas para toda la batalla";
-          sin equivalente en el KB ni en el catálogo 2B; referencia pendiente deliberada,
-          definir en la promoción.
+        es: Objeto específico de REL, "suficiente leña y ollas de alimañas para toda la batalla"; sin equivalente en el KB ni en el catálogo 2B; referencia pendiente deliberada, definir en la promoción.
     - item_id: vermin_pot
       quantity:
         kind: fixed
         value: 1
       notes: REL-specific item (see stickfire note); deliberate dangling ref, define at promotion.
       notes_i18n:
-        es: >-
-          Objeto específico de REL (véase la nota de stickfire); referencia pendiente
-          deliberada, definir en la promoción.
+        es: Objeto específico de REL (véase la nota de stickfire); referencia pendiente deliberada, definir en la promoción.
   starting_skill_ids:
   - skill.leap
   - skill.acrobat
@@ -151,45 +164,37 @@ profiles:
   rules:
   - id: hireling.dramatis.armen-abbas.rule.skills-physician
     name: Physician
-    effect: >-
-      Armen Abbas has the following skills: Leap, Acrobat, Dodge, On the Wings of Angels. He is also
-      counted as a Physician, see the Scholar entry in the Arabian Tribe warband list.
+    effect: 'Armen Abbas has the following skills: Leap, Acrobat, Dodge, On the Wings of Angels. He is also counted as a Physician, see the Scholar entry in the Arabian Tribe warband list.'
     effect_i18n:
-      es: >-
-        Armen Abbas tiene las siguientes habilidades Salto, Acróbata, Esquiva y En las Alas de los
-        Ángeles. También cuenta como Médico, ver la entrada de Erudito en la lista de banda de la
-        Tribu Arabia.
+      es: Armen Abbas tiene las siguientes habilidades Salto, Acróbata, Esquiva y En las Alas de los Ángeles. También cuenta como Médico, ver la entrada de Erudito en la lista de banda de la Tribu Arabia.
     name_i18n:
       es: Médico
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.dramatis.armen-abbas.rule.skills-physician.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Leap and Acrobat concern movement; Dodge concerns shooting; On the Wings of Angels activates when the warband takes Rout tests; the Scholar physiology ability rerolls post-battle serious injuries. All are outside a resolved 1v1 duel.
   - id: hireling.dramatis.armen-abbas.rule.angel-wings
     name: Angel Wings
-    effect: >-
-      The Angel Wings grant Armen the ability to glide through the air. To use the Angel Wings he
-      must give up his movement and apply the effects below. At the beginning of a movement phase in
-      which Armen is at least 3" above ground level, the player may draw a straight line 1" wide and
-      24" long to any point on the table that is at or below the height he starts from. The line may
-      include a turn of up to 45 degrees. The line cannot move through any piece of terrain higher
-      than Armen's starting point. Any enemy model, susceptible to fear, underneath the line must
-      make a leadership test or flee 2D6" directly away from it. At the end of the movement phase,
-      place Armen where the line ends. During the shooting phase Armen will always fire first. His
-      player may work out the point from where he fires from at any point along his line of flight,
-      and the vertical height in inches does not add to the extent of the weapons range.
+    effect: The Angel Wings grant Armen the ability to glide through the air. To use the Angel Wings he must give up his movement and apply the effects below. At the beginning of a movement phase in which Armen is at least 3" above ground level, the player may draw a straight line 1" wide and 24" long to any point on the table that is at or below the height he starts from. The line may include a turn of up to 45 degrees. The line cannot move through any piece of terrain higher than Armen's starting point. Any enemy model, susceptible to fear, underneath the line must make a leadership test or flee 2D6" directly away from it. At the end of the movement phase, place Armen where the line ends. During the shooting phase Armen will always fire first. His player may work out the point from where he fires from at any point along his line of flight, and the vertical height in inches does not add to the extent of the weapons range.
     effect_i18n:
-      es: >-
-        Las Alas de Ángel otorgan a Armen la capacidad de planear por el aire. Para usar las Alas de
-        Ángel debe renunciar a su movimiento y aplicar los efectos siguientes. Al comienzo de una
-        fase de movimiento en la que Armen esté al menos a 3" del nivel del suelo, el jugador puede
-        trazar una línea recta de 1" de ancho y 24" de largo hacia cualquier punto del tablero que
-        esté a la altura desde la que parte o por debajo. La línea puede incluir un giro de hasta 45
-        grados. La línea no puede atravesar ninguna escenografía más alta que el punto de partida de
-        Armen. Cualquier miniatura enemiga susceptible de Miedo que esté bajo la línea debe superar
-        una tirada de Liderazgo o huir 2D6" directamente alejándose de ella. Al final de la fase de
-        movimiento, coloca a Armen donde termina la línea. Durante la fase de disparo Armen siempre
-        disparará primero. Su jugador puede calcular el punto desde el que dispara en cualquier
-        punto de su línea de vuelo, y la altura vertical en pulgadas no suma al alcance de las
-        armas.
+      es: Las Alas de Ángel otorgan a Armen la capacidad de planear por el aire. Para usar las Alas de Ángel debe renunciar a su movimiento y aplicar los efectos siguientes. Al comienzo de una fase de movimiento en la que Armen esté al menos a 3" del nivel del suelo, el jugador puede trazar una línea recta de 1" de ancho y 24" de largo hacia cualquier punto del tablero que esté a la altura desde la que parte o por debajo. La línea puede incluir un giro de hasta 45 grados. La línea no puede atravesar ninguna escenografía más alta que el punto de partida de Armen. Cualquier miniatura enemiga susceptible de Miedo que esté bajo la línea debe superar una tirada de Liderazgo o huir 2D6" directamente alejándose de ella. Al final de la fase de movimiento, coloca a Armen donde termina la línea. Durante la fase de disparo Armen siempre disparará primero. Su jugador puede calcular el punto desde el que dispara en cualquier punto de su línea de vuelo, y la altura vertical en pulgadas no suma al alcance
+        de las armas.
     name_i18n:
       es: Alas de Ángel
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.dramatis.armen-abbas.rule.angel-wings.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
   source_refs:
   - manual: broheim.net
     printed_page: 16
@@ -202,16 +207,139 @@ profiles:
   name: Snerik, Night Goblin Scout
   name_i18n:
     es: Snerik, Explorador Goblin Nocturno
-  normalization_status: out_of_scope
+  normalization_status: normalized
+  characteristics:
+    M: 4
+    WS: 3
+    BS: 3
+    S: 3
+    T: 3
+    W: 1
+    I: 4
+    A: 1
+    Ld: 6
+  equipment:
+    fixed_items:
+    - item_id: dagger
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Secondary hand weapon, as the profile records it.
+    - item_id: sword
+      quantity:
+        kind: fixed
+        value: 1
+      notes: Short sword — resolved to the KB `sword` item, whose rules carry the Parry the profile names.
+    - item_id: short_bow
+      quantity:
+        kind: fixed
+        value: 1
+    unique_equipment:
+    - id: hireling.dramatis.snerik-night-goblin-scout.item.camouflage-cloak
+      name: Camouflage Cloak
+      name_i18n:
+        es: Capa de Camuflaje
+      rules:
+      - hireling.dramatis.snerik-night-goblin-scout.rule.camouflage-cloak
   starting_skill_ids: []
+  rules:
+  - id: hireling.dramatis.snerik-night-goblin-scout.rule.sneak
+    name: Sneak
+    effect: >-
+      Snerik is a master of stealth underground. Whenever any cover is available, he always counts
+      as having Hiding active at the start of the battle, no matter how close enemy models are.
+    effect_i18n:
+      es: >-
+        Snerik es un maestro del sigilo en entornos subterráneos. Siempre cuenta con la habilidad de
+        Esconderse (Hiding) activa al inicio de la batalla si hay algún tipo de cobertura
+        disponible, sin importar la proximidad de los enemigos.
+    name_i18n:
+      es: Escabullirse
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.dramatis.snerik-night-goblin-scout.rule.sneak.non-duel
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is
+          outside a resolved 1v1 duel.
+  - id: hireling.dramatis.snerik-night-goblin-scout.rule.tunnel-guide
+    name: Tunnel Guide
+    effect: >-
+      The warband may re-roll any failed roll on the post-battle exploration table as long as Snerik
+      is not Out of Action.
+    effect_i18n:
+      es: >-
+        Permite a la banda repetir cualquier tirada fallida en la tabla de exploración posterior a
+        la batalla si Snerik no ha quedado Fuera de Combate.
+    name_i18n:
+      es: Guía de los Túneles
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.dramatis.snerik-night-goblin-scout.rule.tunnel-guide.non-duel
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Shooting target size, third-model salvage, trade, exploration, recruitment or post-battle
+          effects are outside a resolved 1v1 duel.
+  - id: hireling.dramatis.snerik-night-goblin-scout.rule.look-what-i-found
+    name: Look What I Found!
+    effect: >-
+      Greedy and sharp-eyed, Snerik automatically adds +1 shard of wyrdstone (or its equivalent in
+      Karak Azgal treasures) to the warband's income if he survives the battle.
+    effect_i18n:
+      es: >-
+        Debido a su naturaleza codiciosa y buen ojo, si Snerik sobrevive a la batalla, añade de
+        forma automática +1 fragmento de Piedra Bruja (o su equivalente en tesoros de Karak Azgal) a
+        los ingresos de la banda.
+    name_i18n:
+      es: ¡Encontré Algo!
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.dramatis.snerik-night-goblin-scout.rule.look-what-i-found.non-duel
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Shooting target size, third-model salvage, trade, exploration, recruitment or post-battle
+          effects are outside a resolved 1v1 duel.
+  - id: hireling.dramatis.snerik-night-goblin-scout.rule.camouflage-cloak
+    name: Camouflage Cloak
+    effect: While Snerik is hidden, the enemy adds +1 to its rolls to detect him.
+    effect_i18n:
+      es: Mientras Snerik está escondido, las tiradas del enemigo para detectarlo reciben +1.
+    name_i18n:
+      es: Capa de Camuflaje
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.dramatis.snerik-night-goblin-scout.rule.camouflage-cloak.non-duel
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is
+          outside a resolved 1v1 duel.
+  source_notes:
+  - The stat block, special rules and starting equipment come from the profile the knowledge-base owner provided
+    on 2026-10-05; no publication printing them has been located, so the warband rating, hiring fee and skill
+    access stay unrecorded.
+  - The published campaign document lists Snerik as hireable by the Night Goblin and Savage Orc warbands but
+    prints no profile; the existing source_refs record the page that names him.
   source_refs:
   - manual: broheim.net
     printed_page: 45
     section: Hired Swords
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
-  out_of_scope_reason: The sources list Snerik Night Goblin Scout as hireable by the Night Goblin and
-    Savage Orc warbands and print no profile; the entry stays unmodelled until the referenced source document
-    is recovered.
 - id: hireling.dramatis.snorri-nosebiter
   kind: dramatis-personae
   grade: 2b
@@ -247,47 +375,73 @@ profiles:
   rules:
   - id: hireling.dramatis.snorri-nosebiter.rule.slayer-rules
     name: Slayer Rules
-    effect: >-
-      Snorri follows all the special rules for Slayers as can be found in the Mordheim rulebook and
-      the Slayer warband.
+    effect: Snorri follows all the special rules for Slayers as can be found in the Mordheim rulebook and the Slayer warband.
     effect_i18n:
-      es: >-
-        Snorri sigue todas las reglas especiales de los Matatrolles que aparecen en el libro de
-        Mordheim y en la banda de Matatrolles.
+      es: Snorri sigue todas las reglas especiales de los Matatrolles que aparecen en el libro de Mordheim y en la banda de Matatrolles.
     name_i18n:
       es: Reglas de Matatrolles
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.psychology-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.psychology-immunity
+      - id: profile.equipment-restrictions
+        scope: 'YES'
+        binding:
+          kind: profile
+          id: profile.equipment-restrictions
+          parameters:
+            forbids:
+            - armour
+            - constant-save-cloak
+            - non-thrown-ranged
+      - id: hireling.dramatis.snorri-nosebiter.rule.slayer-rules.non-duel
+        scope: 'NO'
+        binding: null
+        reason: All Alone, post-battle injury, exploration, advancement and magic rules are outside a resolved 1v1 duel.
   - id: hireling.dramatis.snorri-nosebiter.rule.drunk
     name: Drunk
-    effect: >-
-      Snorri likes a drink before a battle. Roll a D6 on the following table to see what effect it
-      has: 1 - Snorri drinks to forget. This time he has forgotten to turn up. 2 - Snorri's head is
-      feeling a bit delicate. His WS and S are both reduced by -1. 3 - It takes more than that to
-      slow down Snorri. No effect. 4 - The effects on Snorri's digestion become evident to everyone.
-      Any model friend or foe, fighting within 2" of Snorri is at -1 to hit. 5 - Fortified with
-      liquor Snorri gains +1 strength. 6 - A bucket of his favourite vodka has put fire in his
-      belly. Snorri is subject to frenzy.
+    effect: 'Snorri likes a drink before a battle. Roll a D6 on the following table to see what effect it has: 1 - Snorri drinks to forget. This time he has forgotten to turn up. 2 - Snorri''s head is feeling a bit delicate. His WS and S are both reduced by -1. 3 - It takes more than that to slow down Snorri. No effect. 4 - The effects on Snorri''s digestion become evident to everyone. Any model friend or foe, fighting within 2" of Snorri is at -1 to hit. 5 - Fortified with liquor Snorri gains +1 strength. 6 - A bucket of his favourite vodka has put fire in his belly. Snorri is subject to frenzy.'
     effect_i18n:
-      es: >-
-        A Snorri le gusta beber antes de una batalla. Lanza un D6 en la siguiente tabla para ver qué
-        efecto tiene: 1 - Snorri bebe para olvidar. Esta vez ha olvidado presentarse. 2 - La cabeza
-        de Snorri está algo delicada; su HA y su F se reducen en -1. 3 - Hace falta más que eso para
-        frenar a Snorri; sin efecto. 4 - Los efectos en la digestión de Snorri se hacen evidentes
-        para todos: cualquier miniatura, amiga o enemiga, que luche dentro de 2" de Snorri obtiene
-        -1 por impactar. 5 - Fortalecido por el licor, Snorri gana +1 de Fuerza. 6 - Un cubo de su
-        vodka favorito le ha puesto fuego en las tripas: Snorri sufre frenesí.
+      es: 'A Snorri le gusta beber antes de una batalla. Lanza un D6 en la siguiente tabla para ver qué efecto tiene: 1 - Snorri bebe para olvidar. Esta vez ha olvidado presentarse. 2 - La cabeza de Snorri está algo delicada; su HA y su F se reducen en -1. 3 - Hace falta más que eso para frenar a Snorri; sin efecto. 4 - Los efectos en la digestión de Snorri se hacen evidentes para todos: cualquier miniatura, amiga o enemiga, que luche dentro de 2" de Snorri obtiene -1 por impactar. 5 - Fortalecido por el licor, Snorri gana +1 de Fuerza. 6 - Un cubo de su vodka favorito le ha puesto fuego en las tripas: Snorri sufre frenesí.'
     name_i18n:
       es: Ebrio
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.snorri-drunk
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.snorri-drunk
+      - id: hireling.dramatis.snorri-nosebiter.rule.drunk.absent
+        scope: 'NO'
+        binding: null
+        reason: Result 1 means Snorri never joins the battle. Supply a participating pre-battle result 2-6; the duel does not roll or condition away non-participation.
   - id: hireling.dramatis.snorri-nosebiter.rule.lucky
     name: Lucky
-    effect: >-
-      Although he has no armour Snorri has a knack of avoiding harm. He has a 5+ ward save against
-      shooting and combat.
+    effect: Although he has no armour Snorri has a knack of avoiding harm. He has a 5+ ward save against shooting and combat.
     effect_i18n:
-      es: >-
-        Aunque no lleva armadura, Snorri tiene el don de esquivar el daño. Tiene una tirada de
-        salvación especial de 5+ contra disparos y combate.
+      es: Aunque no lleva armadura, Snorri tiene el don de esquivar el daño. Tiene una tirada de salvación especial de 5+ contra disparos y combate.
     name_i18n:
       es: Afortunado
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.snorri-lucky
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.snorri-lucky
   source_refs:
   - manual: broheim.net
     printed_page: 62
@@ -305,20 +459,23 @@ profiles:
   rules:
   - id: hireling.dramatis.strigani-seer-necromancer.rule.hiring-condition
     name: Hiring Condition
-    effect: >-
-      The Strigoi Vampire warband may only hire the Strigani Seer Necromancer if they have no
-      vampire.
+    effect: The Strigoi Vampire warband may only hire the Strigani Seer Necromancer if they have no vampire.
     effect_i18n:
-      es: >-
-        La banda de Vampiros Strigoi solo puede contratar al Adivino Nigromante Strigani si no tiene
-        ningún vampiro.
+      es: La banda de Vampiros Strigoi solo puede contratar al Adivino Nigromante Strigani si no tiene ningún vampiro.
     name_i18n:
       es: Condición de Contratación
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.dramatis.strigani-seer-necromancer.rule.hiring-condition.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Map, shooting, spell/prayer execution, campaign progression or third-model lifecycle is outside a resolved 1v1 duel.
   source_refs:
   - manual: broheim.net
     printed_page: 31
     section: Hired Swords
     url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
-  out_of_scope_reason: The source lists the Strigani Seer Necromancer among the Hired Swords the Strigoi
-    Vampire warband may hire (only when it has no vampire) and prints no stat block; the profile stays
-    unmodelled until the referenced source document is recovered.
+  out_of_scope_reason: The source lists the Strigani Seer Necromancer among the Hired Swords the Strigoi Vampire warband may hire (only when it has no vampire) and prints no stat block; the profile stays unmodelled until the referenced source document is recovered.

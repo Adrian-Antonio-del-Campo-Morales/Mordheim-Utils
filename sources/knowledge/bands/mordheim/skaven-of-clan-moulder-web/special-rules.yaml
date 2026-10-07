@@ -123,16 +123,15 @@ rules:
     band: true
 - id: packmaster--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-moulder-web.packmaster.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
-        psychology/rout mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -335,16 +334,15 @@ rules:
     - wolf-rats
 - id: wolf-rats--poisoned-attack
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-moulder-web.wolf-rats.poisoned-attack
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: fixed-Strength attacks without armour-save modification are weapon
-        mechanics outside the duel scope.
+    - id: mechanic.wolf-rat-bite
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.wolf-rat-bite
   name: Poisoned Attack
   effect: >-
     The mouths of Wolf Rats fester with any number of poxes and corrosive agents, their attacks are
@@ -365,15 +363,15 @@ rules:
     - wolf-rats
 - id: rat-ogres--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Fear is a psychology mechanic outside the duel scope.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Rat Ogres are so terrifying they cause Fear.
   source:
@@ -390,16 +388,22 @@ rules:
     - rat-ogres
 - id: rat-ogres--stupidity
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.stupidity
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.stupidity.outside-duel
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: Stupidity conditional immunity auras are psychology mechanics outside
-        the duel scope.
+        Board movement, campaign progression/participation and independently
+        simulated helper/rider/group producers are outside the 1v1 duel.
+        Admissible individual exemptions and bonuses are supplied active facts.
   name: Stupidity
   source:
     manual: mordheimer.net
@@ -411,7 +415,9 @@ rules:
   applies_to:
     profile_ids:
     - rat-ogres
-  rule_ref: shared-rule.stupidity
+  effect: A Rat Ogre is subject to Stupidity unless a Clan Moulder Hero is within 6 inches.
+  effect_i18n:
+    es: Un Ogro Rata está sujeto a Estupidez salvo que haya un Héroe del Clan Moulder a 6 pulgadas.
 - id: rat-ogres--experience
   runtime:
     scope: LATER
@@ -438,15 +444,14 @@ rules:
   rule_ref: shared-rule.experience
 - id: rat-ogres--large-target
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.skaven-of-clan-moulder-web.rat-ogres.large-target
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: Large Target shooting modifiers are outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Large Target
   source:
     manual: mordheimer.net

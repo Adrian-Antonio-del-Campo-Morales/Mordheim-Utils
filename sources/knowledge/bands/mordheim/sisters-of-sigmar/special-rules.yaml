@@ -21,15 +21,15 @@ rules:
     profile_ids:
     - sigmarite-matriarch
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.sisters-of-sigmar.sigmarite-matriarch.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: sigmarite-matriarch--prayers-of-sigmar
   name: Prayers of Sigmar
   effect: >-
@@ -148,15 +148,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.sisters-of-sigmar.band.special-skills-sign-of-sigmar
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: skill.sigmar-s-sign
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.sigmar-s-sign
 - id: band--special-skills-protection-of-sigmar
   kind: warband_skill
   name: Protection of Sigmar
@@ -247,15 +247,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: selectable
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.sisters-of-sigmar.band.special-skills-righteous-fury
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: skill.righteous-fury
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.righteous-fury
 - id: band--special-skills-absolute-faith
   kind: warband_skill
   name: Absolute Faith
@@ -280,15 +280,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.sisters-of-sigmar.band.special-skills-absolute-faith
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.fear-reroll
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-reroll
 - id: augur--no-armour
   name: No Armour
   effect: >-
@@ -318,3 +318,42 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
+- id: band--sigmarite-hammer-pair
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: band
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          max_item_id: weapon.sigmarite-hammer
+          max_item_copies: 1
+          exempt_profile_ids:
+          - sigmarite-matriarch
+          - sister-superior
+          exempt_max_item_copies: 2
+  name: Sigmarite Warhammers
+  effect: >-
+    Only the Sigmarite Matriarch and Sister Superiors may carry two Sigmarite
+    warhammers at the same time; every other member of the warband carries at
+    most one. It bounds what a warrior may carry, not the weapon she fights
+    with.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Sisters of Sigmar equipment lists / Sigmarite warhammer
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/sisters-of-sigmar
+  name_i18n:
+    es: Martillos Sigmaritas
+  effect_i18n:
+    es: >-
+      Solo la Matriarca Sigmarita y las Hermanas Superiores pueden llevar dos
+      martillos Sigmaritas a la vez; cualquier otro miembro de la banda lleva
+      como máximo uno. Limita lo que el guerrero puede llevar, no con qué arma
+      lucha.
+  applies_to:
+    band: true

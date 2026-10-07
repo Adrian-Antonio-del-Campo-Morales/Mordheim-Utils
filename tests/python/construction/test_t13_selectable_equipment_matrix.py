@@ -1,7 +1,7 @@
 """T13.2d -- selectable rules and equipment: legal selection and compilation.
 
 Derived from the T13.2 partition of
-``docs/knowledge/2a2b/tasks/T13-obligations.csv``: 55 register origins whose
+``docs/knowledge/2a2b/tasks/T13-obligations.csv``: 56 register origins whose
 canonical band rule declares ``runtime.grant: selectable`` and 95 equipment
 origins.  The suite exercises the real construction path (``FighterBuild`` ->
 ``compile_fighter``) and the real availability surface
@@ -34,11 +34,22 @@ ROOT = Path(__file__).resolve().parents[3]
 KNOWLEDGE = ROOT / "sources" / "knowledge"
 REGISTER = ROOT / "docs" / "knowledge" / "2a2b" / "tasks" / "T13-obligations.csv"
 
-#: The ten implemented selectable rules of the partition (eleven origins: Master
-#: of Blades contributes two skill bindings) keyed by their canonical band and
+#: Implemented selectable rules of the partition (Master
+#: of Blades contributes two origins) keyed by their canonical band and
 #: the recipient checked below.  Dwarf Treasure Hunter copies of the same
 #: mechanics are separate origins outside this partition.
 IMPLEMENTED = (
+    ("druchii-mic", "noble", "noble--fey-quickness"),
+    ("snotlings-web", "bullied-goblin", "bullied-goblin--frustratingly-tiny"),
+    ("survivors-of-strigos-sylv", "strigoi-vampire", "strigoi-vampire--curse-of-the-revenant"),
+    ("survivors-of-strigos-sylv", "strigoi-vampire", "strigoi-vampire--great-thirster"),
+    ("sea-ghosts-mim", "feast-master", "band--dance-whirling-death"),
+    ("sea-ghosts-mim", "feast-master", "band--dance-storm-of-blades"),
+    ("sea-ghosts-mim", "feast-master", "band--dance-the-shadows-coil"),
+    ("sea-ghosts-mim", "feast-master", "band--dance-woven-mist"),
+    ("vampire-hunters-of-sylvania-lotd5", "vampire-hunter", "band--special-skill-righteous-aura"),
+    ("vampire-hunters-of-sylvania-lotd5", "vampire-hunter", "band--special-skill-iron-will"),
+
     ("grave-robbers-sylv", "graver", "band--special-skill-hardy-constitution"),
     ("clan-angrund-kep", "dwarf-noble", "band--dwarf-special-skills-master-of-blades"),
     ("clan-angrund-kep", "dwarf-noble", "band--dwarf-special-skills-true-grit"),
@@ -49,6 +60,13 @@ IMPLEMENTED = (
     ("lizardmen-lus", "saurus-totem-warriors", "band--lizardmen-special-skills-saurus-only-bellowing-battle-roar"),
     ("underworld-alliance-mim", "warpstone-troll", "warpstone-troll--vomit-attack"),
     ("halflings-mic", "halfling-elder", "halfling-elder--shifty"),
+    ("halflings-mic", "halfling-elder", "halfling-elder--crude-belch"),
+    # L06/L07 local modifier activation, 2026-10-04.
+    ("high-elves-lus", "loremaster", "band--skill-miniath"),
+    ("high-elves-lus", "loremaster", "band--skill-unerring-strike"),
+    ("high-elves-lus", "loremaster", "band--skill-fey-quickness"),
+    ("knights-of-the-bitter-moors-mim", "questing-knight", "band--virtue-of-valour"),
+    ("silent-brotherhood-sc", "silent-master", "band--skill-cutthroat"),
 )
 
 #: Every selectable origin whose runtime is not executable and whose band
@@ -63,8 +81,6 @@ PENDING = (
     ("grave-robbers-sylv", "graver", "band--special-skill-instinctual-violence"),
     ("grave-robbers-sylv", "graver", "band--special-skill-de-animator"),
     ("necrarchs-the-soul-stealers-lotd1", "necrarch-vampire", "band--special-skill-pull-of-undeath"),
-    ("vampire-hunters-of-sylvania-lotd5", "vampire-hunter", "band--special-skill-iron-will"),
-    ("vampire-hunters-of-sylvania-lotd5", "vampire-hunter", "band--special-skill-righteous-aura"),
     ("vampire-hunters-of-sylvania-lotd5", "vampire-hunter", "band--special-skill-thirst-for-vengeance"),
     ("vampire-hunters-of-sylvania-lotd5", "vampire-hunter", "band--special-skill-blessing-of-morr"),
     ("wood-elves-of-athel-loren-web", "hunt-master", "band--skill-elven-luck"),
@@ -76,15 +92,10 @@ PENDING = (
     ("clockworkers-sc", "master-of-clocks", "band--skill-puppeteer"),
     ("clockworkers-sc", "master-of-clocks", "band--skill-rogue-control"),
     ("clockworkers-sc", "master-of-clocks", "band--skill-gift-of-sentience"),
-    ("high-elves-lus", "loremaster", "band--skill-miniath"),
-    ("high-elves-lus", "loremaster", "band--skill-unerring-strike"),
-    ("high-elves-lus", "loremaster", "band--skill-fey-quickness"),
-    ("knights-of-the-bitter-moors-mim", "questing-knight", "band--virtue-of-valour"),
     ("knights-of-the-bitter-moors-mim", "questing-knight", "band--virtue-of-discipline"),
     ("knights-of-the-bitter-moors-mim", "questing-knight", "band--virtue-of-noble-disdain"),
     ("knights-of-the-bitter-moors-mim", "questing-knight", "band--virtue-of-the-impetuous"),
     ("lizardmen-lus", "saurus-totem-warriors", "band--lizardmen-special-skills-saurus-only-toughened-hide"),
-    ("silent-brotherhood-sc", "silent-master", "band--skill-cutthroat"),
     ("silent-brotherhood-sc", "silent-master", "band--skill-hit-and-run"),
     ("silent-brotherhood-sc", "silent-master", "band--skill-backstabber"),
     ("skaven-of-clan-pestilens-lus", "plague-priest", "band--skill-cloud-of-flies"),
@@ -105,10 +116,6 @@ PENDING_WITHOUT_AVAILABILITY_CHANNEL = (
     ("protectorate-of-sigmar-lotd3", "warrior-priest", "band--special-skill-utter-determination"),
     ("protectorate-of-sigmar-lotd3", "warrior-priest", "band--special-skill-rousing-sermon"),
     ("araby-smugglers-sar", "rais", "band--skill-pious-fury"),
-    ("sea-ghosts-mim", "feast-master", "band--dance-whirling-death"),
-    ("sea-ghosts-mim", "feast-master", "band--dance-storm-of-blades"),
-    ("sea-ghosts-mim", "feast-master", "band--dance-the-shadows-coil"),
-    ("sea-ghosts-mim", "feast-master", "band--dance-woven-mist"),
     ("strigoi-kaz", "vampire", "vampire--bloodline"),
 )
 
@@ -142,8 +149,8 @@ def _runtime_reason(band_id: str, rule_id: str) -> str:
 
 
 def test_the_matrix_tables_cover_every_selectable_origin_of_the_t132_partition():
-    """L04 moves one source-backed origin from profile to selectable:
-    55 origins over 54 canonical rules; the 95 equipment origins are unchanged.
+    """Shifty, Crude Belch and the four acquired dances are selectable:
+    60 origins over 59 canonical rules; the 95 equipment origins are unchanged.
     """
     with REGISTER.open(encoding="utf-8-sig", newline="") as handle:
         rows = list(csv.DictReader(handle))
@@ -163,7 +170,7 @@ def test_the_matrix_tables_cover_every_selectable_origin_of_the_t132_partition()
         if (node.get("runtime") or {}).get("grant") == "selectable":
             selectable.add((Path(row["canonical_file"]).parent.name, row["canonical_id"]))
             selectable_origins += 1
-    assert (selectable_origins, len(selectable), equipment) == (55, 54, 95)
+    assert (selectable_origins, len(selectable), equipment) == (60, 59, 95)
     tabled = {(band_id, rule_id) for band_id, _, rule_id in IMPLEMENTED}
     tabled |= {(band_id, rule_id) for band_id, _, rule_id in PENDING}
     tabled |= {(band_id, rule_id) for band_id, _, rule_id in PENDING_WITHOUT_AVAILABILITY_CHANNEL}
@@ -257,16 +264,26 @@ def test_master_of_blades_projects_both_shared_mechanics_and_the_parry_variant()
     assert {"skill.unbeatable-warrior", "skill.sword-master", "rule.dwarf-axe-parry-reroll"} <= set(fighter.global_effects.tags)
 
 
-def test_automatic_band_grants_are_not_doubled_by_the_selectable_copy():
-    # clan-angrund-kep grants Hard to Kill and concussion immunity band-wide; the
-    # selectable True Grit and Thick Skull copies bind the same mechanics, so the
-    # compiled global effects must be identical with and without them.
-    for rule_id in ("band--dwarf-special-skills-true-grit", "band--dwarf-special-skills-thick-skull"):
-        control = compile_fighter(build("clan-angrund-kep", "dwarf-noble"))
-        selected = compile_fighter(build("clan-angrund-kep", "dwarf-noble", special_rule_ids=(rule_id,)))
-        assert selected.global_effects == control.global_effects, rule_id
-    assert compile_fighter(build("clan-angrund-kep", "dwarf-noble")).global_effects.out_of_action_threshold == 6
-    assert "concussion_immune" in compile_fighter(build("clan-angrund-kep", "dwarf-noble")).global_effects.tags
+def test_clan_angrund_selectable_skills_use_their_printed_operators_not_the_automatic_grants():
+    # clan-angrund-kep grants Hard to Kill (1-2 Knocked Down) and Hard Head
+    # (concussion immunity) band-wide. True Grit (1-3 Knocked Down) and Thick
+    # Skull (3+/2+ save against Stunned) are distinct printed rules and must not
+    # reuse those two operators.
+    control = compile_fighter(build("clan-angrund-kep", "dwarf-noble"))
+    assert control.global_effects.out_of_action_threshold == 6
+    assert "concussion_immune" in control.global_effects.tags
+
+    true_grit = compile_fighter(build(
+        "clan-angrund-kep", "dwarf-noble",
+        special_rule_ids=("band--dwarf-special-skills-true-grit",),
+    ))
+    assert "skill.tough-as-steel" in true_grit.global_effects.tags
+
+    thick_skull = compile_fighter(build(
+        "clan-angrund-kep", "dwarf-noble",
+        special_rule_ids=("band--dwarf-special-skills-thick-skull",),
+    ))
+    assert thick_skull.global_effects.thick_skull is True
 
 
 @pytest.mark.parametrize("rule_id,tag", [

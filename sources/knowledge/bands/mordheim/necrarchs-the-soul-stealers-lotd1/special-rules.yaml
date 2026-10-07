@@ -42,15 +42,15 @@ rules:
     band: true
 - id: necrarch-vampire--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.necrarch-vampire.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: leadership-radios checks are a morale mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -65,15 +65,15 @@ rules:
   rule_ref: shared-rule.leader
 - id: necrarch-vampire--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.necrarch-vampire.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (cause fear).
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   source:
     manual: mordheimer.net
@@ -116,15 +116,15 @@ rules:
     - necrarch-vampire
 - id: necrarch-vampire--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.necrarch-vampire.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology immunity checks.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   source:
     manual: mordheimer.net
@@ -187,15 +187,15 @@ rules:
   rule_ref: shared-rule.no-pain
 - id: thrall--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.thrall.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (cause fear).
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   source:
     manual: mordheimer.net
@@ -210,15 +210,15 @@ rules:
   rule_ref: shared-rule.cause-fear-2
 - id: thrall--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.thrall.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology immunity checks.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   source:
     manual: mordheimer.net
@@ -319,15 +319,15 @@ rules:
     - acolyte
 - id: skeletal-warrior--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.skeletal-warrior.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (cause fear).
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   source:
     manual: mordheimer.net
@@ -365,15 +365,15 @@ rules:
   rule_ref: shared-rule.may-not-run
 - id: skeletal-warrior--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.skeletal-warrior.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology immunity checks.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   source:
     manual: mordheimer.net
@@ -461,15 +461,15 @@ rules:
     - skeletal-warrior
 - id: zombie--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.zombie.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (cause fear).
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   source:
     manual: mordheimer.net
@@ -507,15 +507,15 @@ rules:
   rule_ref: shared-rule.may-not-run
 - id: zombie--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.zombie.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology immunity checks.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   source:
     manual: mordheimer.net
@@ -601,15 +601,15 @@ rules:
   rule_ref: shared-rule.brainless
 - id: abomination--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.abomination.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (cause fear).
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   source:
     manual: mordheimer.net
@@ -624,15 +624,15 @@ rules:
   rule_ref: shared-rule.cause-fear-2
 - id: abomination--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.necrarchs-the-soul-stealers-lotd1.abomination.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology immunity checks.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   source:
     manual: mordheimer.net
@@ -922,3 +922,60 @@ rules:
       máximos: M 6, HA 4, HP 4, F 6, R 6, H 4, I 9, A 3, L 10.
   applies_to:
     band: true
+
+- id: abomination--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+  name: Equipment Restrictions
+  effect: "Abominations do not employ weapons, and suffer no penalties for doing so."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "Henchmen / 0-1 Abomination"
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - abomination
+- id: zombie--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - equipment
+  name: Equipment Restrictions
+  effect: "Zombies never carry any equipment, and do not suffer any penalties for this."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "Henchmen / Zombies"
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/necrarchs-the-soul-stealers
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - zombie

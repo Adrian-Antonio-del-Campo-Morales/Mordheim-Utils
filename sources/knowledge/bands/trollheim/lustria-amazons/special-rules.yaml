@@ -20,15 +20,15 @@ rules:
     profile_ids:
     - amazon-priestess
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lustria-amazons.amazon-priestess.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: amazon-priestess--wizard
   name: Wizard
   effect: >-
@@ -60,12 +60,12 @@ rules:
         Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
 - id: amazon-totem-warriors--frenzy
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'YES'
     grant: profile
     effects:
     - id: trait.frenzy
-      scope: LATER
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.frenzy

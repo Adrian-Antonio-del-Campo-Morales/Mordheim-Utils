@@ -3,15 +3,15 @@ band_id: crooked-moon-kep
 rules:
 - id: band--animosity
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.crooked-moon-kep.band.animosity
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology/turn structure.
+    - id: mechanic.goblin-squabble
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.goblin-squabble
   name: Animosity
   effect: >-
     Goblins spend much of their lives squabbling and fighting amongst themselves. Sometimes this
@@ -35,17 +35,24 @@ rules:
       afectados y actuarán con normalidad.
   applies_to:
     band: true
+    profile_ids:
+    - big-boss
+    - shaman
+    - bosses
+    - squig-hopper
+    - night-goblins
+    - fanatics
 - id: band--hate-stunties-and-skaven
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.crooked-moon-kep.band.hate-stunties-and-skaven
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology. Extends the standard Hate Stunties with Skaven.
+    - id: mechanic.hatred-dwarfs-skaven
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-dwarfs-skaven
   name: Hate Stunties and Skaven
   effect: >-
     Night Goblins are subject to hatred towards Dwarfs and Skaven. This only affects Night Goblins,
@@ -119,15 +126,14 @@ rules:
     band: true
 - id: band--waagh-magic
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.crooked-moon-kep.band.waagh-magic
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Magic subsystem out of the current engine scope; spells preserved verbatim.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: WAAAGH Magic
   effect: >-
     WAAAGH spells are a ritual of art, prayer to Gork and Mork. The Shaman's spells: 1 Gork's Wacky
@@ -178,16 +184,15 @@ rules:
     band: true
 - id: big-boss--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.crooked-moon-kep.big-boss.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Leader re-roll aura is a psychology/rout mechanic; the active engine currently binds
-        leadership through roster leader selection instead of an aura rule.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any model in the warband within 6" of the Big Boss may use his Leadership instead of their own.
@@ -205,16 +210,14 @@ rules:
     - big-boss
 - id: shaman--wizard
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.crooked-moon-kep.shaman.wizard
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Magic is out of the current engine scope. Spell list preserved verbatim in
-        band--waagh-magic.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Wizard
   effect: A Night Goblin Shaman is a Wizard and uses WAAAGH! magic.
   source:
@@ -231,16 +234,14 @@ rules:
     - shaman
 - id: squig-hopper--squig-jump
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.crooked-moon-kep.squig-hopper.squig-jump
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Movement substitution mechanic (2D6 random hop movement) has no matching engine binding;
-        preserved verbatim for the movement equivalence review.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Squig Jump
   effect: >-
     Squig Hoppers move using the random 2D6 Movement characteristic of their Squig mount instead of
@@ -265,16 +266,14 @@ rules:
     - squig-hopper
 - id: fanatics--addict
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.crooked-moon-kep.fanatics.addict
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Pre-battle resource mechanic with warband-participation effects; campaign-adjacent and
-        outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: campaign, recruitment, progression or post-duel aftermath. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Addict
   effect: >-
     The Fanatic is dependent on a regular supply of Mad Cap mushrooms. If he can't get any before a
@@ -327,16 +326,15 @@ rules:
     - fanatics
 - id: fanatics--frantic
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.crooked-moon-kep.fanatics.frantic
-      scope: LATER
-      binding: null
-      reason: >-
-        Strike-first ignoring weapon and initiative order has no matching engine mechanic (verified:
-        no always-strikes-first binding exists in the active KB).
+    - id: mechanic.frantic
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.frantic
   name: Frantic
   effect: >-
     The Fanatic is hyperactive and will strike first in combat, ignoring penalties for weapons or
@@ -357,16 +355,14 @@ rules:
     - fanatics
 - id: cave-squigs--movement
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.crooked-moon-kep.cave-squigs.movement
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Random 2D6 movement substitution has no matching engine binding; preserved verbatim for the
-        movement equivalence review.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Movement
   effect: >-
     Cave Squigs don't have a set movement characteristic but move with an unbelievably random
@@ -392,16 +388,14 @@ rules:
     - cave-squigs
 - id: cave-squigs--minderz
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.crooked-moon-kep.cave-squigs.minderz
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Proximity-based condition with random wandering is a movement/turn-structure rule outside
-        the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Minderz
   source:
     manual: broheim.net
@@ -442,15 +436,15 @@ rules:
     - cave-squigs
 - id: troll--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.crooked-moon-kep.troll.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   source:
     manual: broheim.net
@@ -465,39 +459,49 @@ rules:
   rule_ref: shared-rule.fear
 - id: troll--stupidity
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.crooked-moon-kep.troll.stupidity
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.crooked-moon-kep.troll.stupidity.outside-duel
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: psychology.
+        Board movement, campaign progression/participation and independently
+        simulated helper/rider/group producers are outside the 1v1 duel.
+        Admissible individual exemptions and bonuses are supplied active facts.
   name: Stupidity
   source:
     manual: broheim.net
-    printed_page: 15
+    printed_page: 0
     section: Henchmen / 0-1 Troll / Special Rules / Stupidity
-    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
+    url: https://broheim.net/downloads/campaigns/karakeightpeaks/Death%20Under%20The%20Eight%20Peaks.pdf
   name_i18n:
     es: Estupidez
   applies_to:
     profile_ids:
     - troll
-  rule_ref: shared-rule.stupidity
+  rule_ref: shared-rule.stupidity-2
 - id: troll--regeneration
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.crooked-moon-kep.troll.regeneration
-      scope: LATER
+    - id: skill.regeneration
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.regeneration
+    - id: campaign.post-battle-injury
+      scope: 'NO'
       binding: null
-      reason: >-
-        Regeneration save mechanic has no matching engine binding (verified: no trait.regeneration
-        exists in the active KB); preserved verbatim for the combat equivalence review.
+      reason: Post-battle injury is a campaign state.
   name: Regeneration
   source:
     manual: broheim.net
@@ -558,16 +562,15 @@ rules:
   rule_ref: shared-rule.always-hungry
 - id: troll--vomit-attack
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.crooked-moon-kep.troll.vomit-attack
-      scope: LATER
-      binding: null
-      reason: >-
-        Automatic-hit single attack with fixed Strength and no armour save has no matching engine
-        binding; preserved verbatim for the combat equivalence review.
+    - id: weapon.vomit-attack
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: weapon.vomit-attack
   name: Vomit Attack
   source:
     manual: broheim.net
@@ -582,16 +585,14 @@ rules:
   rule_ref: shared-rule.vomit-attack
 - id: snotling-mob--mob
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.crooked-moon-kep.snotling-mob.mob
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Proximity-based group cohesion rule is a movement/turn-structure mechanic outside the
-        current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Mob
   effect: >-
     Snotlings are naturally gregarious creatures. All members must stay within 6" and all will join
@@ -612,16 +613,17 @@ rules:
     - snotling-mob
 - id: snotling-mob--weedy
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.crooked-moon-kep.snotling-mob.weedy
-      scope: LATER
-      binding: null
-      reason: >-
-        Injury-table modifier has no matching engine binding; preserved verbatim for the combat
-        equivalence review.
+    - id: trait.injury-profile
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.injury-profile
+        parameters:
+          value: 1
   name: Weedy
   source:
     manual: broheim.net
@@ -636,16 +638,14 @@ rules:
   rule_ref: shared-rule.weedy
 - id: snotling-mob--dodgy
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.crooked-moon-kep.snotling-mob.dodgy
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Shooting save modifier (D6 dodge save) has no matching engine binding; preserved verbatim
-        for the combat equivalence review.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Dodgy
   effect: >-
     The little creatures are constantly ducking and diving in the most infuriating way. They get a
@@ -664,3 +664,89 @@ rules:
   applies_to:
     profile_ids:
     - snotling-mob
+
+- id: snotling-mob--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - equipment
+  name: Equipment Restrictions
+  effect: "Snotlings may only ever use a pointy stick, which they will find for themselves at no cost. This counts as a dagger and gives the enemy a +1 to his armour save or a 6+ save if he had none."
+  source:
+    manual: broheim.net
+    printed_page: 15
+    section: "Henchmen / 0-1 Snotling Mob (consists of 5 Snotlings)"
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - snotling-mob
+- id: squig-hopper--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+  name: Equipment Restrictions
+  effect: "A Squig Hopper can't be equipped with any weapon but can pick armour from the Night Goblins list."
+  source:
+    manual: broheim.net
+    printed_page: 13
+    section: "Heroes / 0-2 Squig Hoppers"
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - squig-hopper
+- id: troll--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Trolls do not require weapons to fight but often carry a big club. In any event, Trolls can never be given weapons or armour."
+  source:
+    manual: broheim.net
+    printed_page: 15
+    section: "Henchmen / 0-1 Troll"
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Crooked Moon Night Goblins.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - troll

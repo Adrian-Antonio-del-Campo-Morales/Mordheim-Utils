@@ -43,7 +43,10 @@ profiles:
   - necrarch-vampire--immune-to-psychology
   - necrarch-vampire--immune-to-poison
   - necrarch-vampire--no-pain
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
+    vampire: true
+    vampire_bloodline: necrarch
   equipment_restrictions_i18n:
     es: Un Vampiro Necrarca puede equiparse con la Lista de equipo de héroes necrarca.
 - id: thrall
@@ -86,7 +89,8 @@ profiles:
   - thrall--immune-to-psychology
   - thrall--immune-to-poison
   - thrall--no-pain
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
   equipment_restrictions_i18n:
     es: Un Siervo puede equiparse con la Lista de equipo de héroes necrarca.
 - id: acolyte
@@ -165,7 +169,8 @@ profiles:
   - skeletal-warrior--immune-to-poison
   - skeletal-warrior--no-pain
   - skeletal-warrior--no-brain
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
   equipment_restrictions_i18n:
     es: Los guerreros esqueléticos pueden equiparse con armas y armaduras elegidas de la lista de equipo de los secuaces.
 - id: zombie
@@ -205,7 +210,8 @@ profiles:
   - zombie--immune-to-poison
   - zombie--no-pain
   - zombie--no-brain
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
   equipment_restrictions_i18n:
     es: Los Zombis nunca llevan equipo alguno y no sufren penalización por ello.
 - id: abomination

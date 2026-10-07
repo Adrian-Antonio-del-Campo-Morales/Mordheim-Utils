@@ -20,15 +20,15 @@ rules:
     profile_ids:
     - dark-prince
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lustria-dark-elves.dark-prince.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: darkblades--close-combat-specialists
   name: Close Combat Specialists
   effect: Darkblades may never use missile weapons of any kind.
@@ -566,3 +566,114 @@ rules:
       binding: null
       reason: >-
         Out of scope: magic.
+
+- id: corsairs--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - poison.black-venom
+          - weapon.draich
+          - beastmaster_whip
+  name: Equipment Restrictions
+  effect: "May never use blackpowder weapons. May select the Sea Dragon Cloak even though Corsairs are not Heroes. May not select Black Venom or Draich; those entries are Heroes only. May not select the Beastmaster's Whip; it is Beastmaster only."
+  source:
+    manual: lustria
+    printed_page: 63
+    section: "Corsairs"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - corsairs
+- id: dark-elf-sorceress--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - beastmaster_whip
+  name: Equipment Restrictions
+  effect: "May never use blackpowder weapons. May not select the Beastmaster's Whip; it is Beastmaster only. May not cast spells while wearing armour."
+  source:
+    manual: lustria
+    printed_page: 62
+    section: "0-1 Dark Elf Sorceress"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - dark-elf-sorceress
+- id: dark-prince--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - beastmaster_whip
+  name: Equipment Restrictions
+  effect: "May never use blackpowder weapons. May not select the Beastmaster's Whip; it is Beastmaster only."
+  source:
+    manual: lustria
+    printed_page: 61
+    section: "1 Dark Prince"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - dark-prince
+- id: darkblades--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - beastmaster_whip
+  name: Equipment Restrictions
+  effect: "May never use blackpowder weapons. May never use missile weapons of any kind. May not select the Beastmaster's Whip; it is Beastmaster only."
+  source:
+    manual: lustria
+    printed_page: 61
+    section: "0-2 Darkblades"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - darkblades

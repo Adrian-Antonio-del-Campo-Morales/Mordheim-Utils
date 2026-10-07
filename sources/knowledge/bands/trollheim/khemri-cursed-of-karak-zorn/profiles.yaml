@@ -36,7 +36,7 @@ profiles:
     es: Noble de Karak-Zorn
   rule_ids:
   - karak-zorn-noble--leader
-  combat_traits: &id001
+  combat_traits:
     starting_skills:
     - skill.hard-to-kill
 - id: priest-of-grungni
@@ -75,7 +75,9 @@ profiles:
     es: Sacerdote de Grungni
   rule_ids:
   - priest-of-grungni--devout
-  combat_traits: *id001
+  combat_traits:
+    starting_skills:
+    - skill.hard-to-kill
 - id: longbeard
   name: Longbeard
   type: hero
@@ -109,7 +111,9 @@ profiles:
   name_i18n:
     es: Barbalarga
   rule_ids: []
-  combat_traits: *id001
+  combat_traits:
+    starting_skills:
+    - skill.hard-to-kill
 - id: troll-slayer
   name: Troll Slayer
   type: hero
@@ -146,7 +150,9 @@ profiles:
   - troll-slayer--death-oath
   - troll-slayer--no-armour
   - troll-slayer--no-missile-weapons
-  combat_traits: *id001
+  combat_traits:
+    starting_skills:
+    - skill.hard-to-kill
 - id: clan-warriors
   name: Clan Warriors
   type: henchman
@@ -177,7 +183,9 @@ profiles:
   name_i18n:
     es: Guerreros del Clan
   rule_ids: []
-  combat_traits: *id001
+  combat_traits:
+    starting_skills:
+    - skill.hard-to-kill
 - id: cannibal-dwarfs
   name: Cannibal Dwarfs
   type: henchman
@@ -210,7 +218,10 @@ profiles:
     es: Enanos Caníbales
   rule_ids:
   - cannibal-dwarfs--fear
-  combat_traits: *id001
+  combat_traits:
+    starting_skills:
+    - skill.hard-to-kill
+    species: dwarf
   equipment_restrictions_i18n:
     es: No puede usar otras armas ni armadura alguna. Sus huesos primitivos cuentan como Garrotes.
 - id: shadowed

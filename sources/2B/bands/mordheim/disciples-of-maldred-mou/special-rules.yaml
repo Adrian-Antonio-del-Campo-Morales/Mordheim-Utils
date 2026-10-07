@@ -446,3 +446,32 @@ rules:
       no puede modificarse por debajo de 5+ por fuerza; esto no funciona a caballo.
   applies_to:
     band: true
+
+- id: mercenaries--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - ranged-weapons
+  name: Equipment Restrictions
+  effect: "May be equipped from the Mercenary Equipment list before the first game of a new campaign; after that only from the Squire or Men-at-Arms Equipment Lists. May not use missile weapons."
+  source:
+    manual: broheim.net
+    printed_page: 9
+    section: "Henchmen / 0-6 Mercenaries"
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Disciples%20of%20Maldred.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - mercenaries

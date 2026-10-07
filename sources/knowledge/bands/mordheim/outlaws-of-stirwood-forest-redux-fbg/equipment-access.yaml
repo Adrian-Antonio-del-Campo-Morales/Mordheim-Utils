@@ -26,6 +26,9 @@ equipment_lists:
   - item_id: short_bow
     cost: 5
   - item_id: long_bow
+    applies_to:
+      profile_types:
+      - hero
     cost: 15
     notes: Heroes only
     notes_i18n:
@@ -37,11 +40,17 @@ equipment_lists:
   - item_id: shield
     cost: 5
   - item_id: forest_cloak
+    applies_to:
+      profile_types:
+      - hero
     cost: 45
     notes: Heroes only; Special Equipment section prints 50 gc; Rare 10 (Outlaws only)
     notes_i18n:
       es: Solo héroes; la sección de Equipo Especial imprime 50 gc; Raro 10 (solo forajidos)
   - item_id: hunting_arrows
+    applies_to:
+      profile_types:
+      - hero
     cost: 30
     notes: Heroes only
     notes_i18n:

@@ -54,11 +54,17 @@ equipment_lists:
     notes_i18n:
       es: La primera gratis/3 gc
   - item_id: throwing_knives
+    applies_to:
+      profile_types:
+      - hero
     cost: 15
     notes: Heroes only
     notes_i18n:
       es: Solo héroes
   - item_id: sling
+    applies_to:
+      profile_ids:
+      - flingers
     cost: 2
     notes: Flingers only
     notes_i18n:
@@ -75,6 +81,9 @@ equipment_lists:
     notes_i18n:
       es: Cuerda y garfio
   - item_id: pigback_mount
+    applies_to:
+      profile_types:
+      - hero
     cost: 50
     notes: Heroes only
     notes_i18n:

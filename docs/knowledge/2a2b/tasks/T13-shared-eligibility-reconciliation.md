@@ -182,14 +182,22 @@ and T13-Q095 remain open source questions.
 Canonical parameters publish `forbids: [blackpowder, animal]` ("No warband
 member or hired sword may ever use blackpowder weapons or animals"). Current
 facts: band `equipment_forbids` projects both tokens; the item catalogue tags
-`crossbow_pistol` blackpowder (and the brotherhood list offers it) and `warhound`
-animal.
+`warhound` animal and the blackpowder family (`pistol`, `blunderbuss`,
+`handgun`, `superior_blackpowder`) blackpowder.
 
 - **Shared decision / Warband Manager** — working: `equipmentIssue` on the
-  projected facts returns `equipment_forbidden` for `crossbow_pistol`, an item
-  the list would otherwise permit. The historical "masked by the equipment
-  list" note was true for the pistol only; the crossbow pistol is an observable
-  blackpowder binding today.
+  projected facts returns `equipment_forbidden` for a blackpowder-tagged item.
+  The historical "masked by the equipment list" note was true for the pistol
+  only; the blackpowder token is observable through the weapon aliases today.
+
+**H5 correction (2026-10-04).** The earlier line "the item catalogue tags
+`crossbow_pistol` blackpowder" was a catalogue error, corrected after checking
+the primary sources: the rulebook prints the crossbow pistol under Missile
+Weapons and both blackpowder-banning lists — Silent Brotherhood and Dark Elves —
+sell it, so it is tagged `crossbow` instead; `superior_blackpowder` receives the
+`blackpowder` tag as an out-of-scope family item. The Silence's blackpowder
+token still refuses `pistol`, `blunderbuss` and `handgun`, and the brotherhood's
+own crossbow pistol is kept legal. Provenance: `T13-silence-equipment.md` §12.
 - **Combat Lab** — the `boundEquipment` stage receives the same binding but
   interprets only `armour`, `ranged-weapons`, `heavy-armour`, `weapon.lance`,
   `defence.helmet`; it has no item facts and never consults `equipmentIssue`.

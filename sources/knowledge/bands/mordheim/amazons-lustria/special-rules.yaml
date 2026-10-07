@@ -3,15 +3,15 @@ band_id: amazons-lustria
 rules:
 - id: serpent-priestess--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.amazons-lustria.serpent-priestess.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -231,15 +231,15 @@ rules:
 - id: band--amazon-special-skills-mesmerising-dance
   kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.amazons-lustria.band.amazon-special-skills-mesmerising-dance
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.mesmerising-dance
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.mesmerising-dance
   name: Mesmerising Dance
   effect: >-
     Some Amazon women develop their fighting motions into a graceful dance that can transfix their
@@ -265,15 +265,15 @@ rules:
 - id: band--amazon-special-skills-savage-fury
   kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.amazons-lustria.band.amazon-special-skills-savage-fury
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.savage-fury
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.savage-fury
   name: Savage Fury
   effect: >-
     The Amazon has learned to channel her anger and aggression making her a veritable animal while

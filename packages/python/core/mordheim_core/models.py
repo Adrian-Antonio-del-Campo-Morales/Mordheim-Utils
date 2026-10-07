@@ -45,6 +45,11 @@ class FighterBuild:
     extra_hand_id: str | None = None
     main_poison_id: str | None = None; off_poison_id: str | None = None
     trait_overrides: Mapping[str, object] = field(default_factory=dict)
+    #: Canonical condition ids the warrior currently has (an acquired Fear, a
+    #: serious-injury result, a Cold-Blooded origin …). ``catalog/rules/
+    #: conditions.yaml`` resolves each id to its operator at compile time; an
+    #: id without an executable binding is refused instead of guessed.
+    condition_ids: tuple[str, ...] = ()
     collection: str = "mordheim"
     # None leaves the complete carried kit unspecified; () supplies an empty kit.
     owned_item_ids: tuple[str, ...] | None = field(default=None, kw_only=True)
@@ -60,6 +65,10 @@ class FighterBuild:
                     not isinstance(item, str) or not item.strip() for item in self.owned_item_ids):
                 raise ValueError("owned_item_ids must be an item-id sequence or unknown")
             object.__setattr__(self, "owned_item_ids", tuple(self.owned_item_ids))
+        if not isinstance(self.condition_ids, (tuple, list)) or any(
+                not isinstance(condition, str) or not condition.strip() for condition in self.condition_ids):
+            raise ValueError("condition_ids must be a sequence of canonical condition ids")
+        object.__setattr__(self, "condition_ids", tuple(self.condition_ids))
 
 
 @dataclass(frozen=True, slots=True)
@@ -124,6 +133,10 @@ class CompiledFighter:
     # Optional profile attack, separate from equipped hands and their poisons.
     # The modular round policy chooses it instead of the normal attack pool.
     vomit_attack: EffectSet | None = None
+    # Supplied individual conditions; these values never simulate nearby groups.
+    stupidity_leadership: int | None = None
+    stupidity_leadership_bonus: int = 0
+    animal_handler_leadership: int | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -152,6 +165,8 @@ class DuelContext:
     ``charging=None`` preserves legacy random charge selection; ``()`` means
     neither fighter charges. Explicit charging also requires its player-turn
     owner. Player-turn ownership is independent of charge.
+    Initial charging facts are in-range attempts; a failed Fear test can cancel
+    contact. A later engagement needs a newly supplied local setup.
     """
     first_id: str = "first"
     second_id: str = "second"

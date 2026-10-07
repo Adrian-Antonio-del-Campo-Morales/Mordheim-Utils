@@ -181,9 +181,12 @@ specifications:
     attacker:
       band_id: ostlanders
       profile_id: ogre
+      variant_ids:
+      - promotion.hero
     expect:
       result.skills: &id001
       - skill.expert-swordsman
+      - skill.fearsome
       - skill.mighty-blow
       - skill.resilient
       - skill.step-aside
@@ -199,6 +202,8 @@ specifications:
     attacker:
       band_id: pit-fighters
       profile_id: ogre-pit-fighter
+      variant_ids:
+      - promotion.hero
     expect:
       result.skills: *id001
   - id: streets-access
@@ -210,6 +215,8 @@ specifications:
       collection: trollheim
       band_id: chaos-streets-pit-fighters
       profile_id: ogre-pit-fighter
+      variant_ids:
+      - promotion.hero
     expect:
       result.skills: *id001
   - id: speed-rejected
@@ -221,6 +228,16 @@ specifications:
       profile_id: ogre
       skill_ids:
       - skill.acrobat
+    reject: skills are not available
+  - id: unpromoted-combat-rejected
+    roles:
+    - rejected
+    operation: compile
+    attacker:
+      band_id: ostlanders
+      profile_id: ogre
+      skill_ids:
+      - skill.expert-swordsman
     reject: skills are not available
   - id: contract-present
     operation: construction_tag_presence

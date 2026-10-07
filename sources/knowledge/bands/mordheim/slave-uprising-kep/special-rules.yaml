@@ -11,10 +11,9 @@ rules:
       scope: 'NO'
       binding: null
       reason: >-
-        Combines capture avoidance with a voluntary escape move out of hand-to-hand combat
-        (Ld test at the end of any combat round). Both subsystems are campaign/post-battle
-        or engagement-structure mechanics outside the current 1v1 duel scope; no matching
-        engine mechanic exists.
+        Out of scope: voluntary escape/withdrawal ends the duel without resolving it.
+        Associated movement, interception, re-engagement and campaign injury clauses
+        are also outside the 1v1 combat scope (user ruling 2026-10-04).
   name: Escapists
   effect: >-
     These slaves are specialists at giving the slip in any sticky situation and know that
@@ -41,15 +40,15 @@ rules:
     band: true
 - id: band--hate-skaven
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.slave-uprising-kep.band.hate-skaven
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.hatred-skaven
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-skaven
   name: Hate Skaven
   effect: >-
     After years of mistreatment, the warband's members hate all Skaven. See the Psychology
@@ -69,17 +68,15 @@ rules:
     band: true
 - id: demagogue--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.slave-uprising-kep.demagogue.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Leader re-roll aura is a psychology/rout mechanic; the active engine currently binds
-        leadership through roster leader selection instead of an aura rule (same
-        classification as the active KB and clan-angrund-kep Leader rules).
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any slaves can use his leadership if within 6".
@@ -130,15 +127,15 @@ rules:
     - underlings
 - id: goblin-leader--hate-dwarfs
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.slave-uprising-kep.goblin-leader.hate-dwarfs
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.hatred-dwarfs
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-dwarfs
   name: Special Rules
   effect: >-
     Greenskins have a deep mistrust of Skaven, and this is doubly true in the case of
@@ -191,15 +188,15 @@ rules:
     - human-leader
 - id: goblin-slaves--hate-dwarfs
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.slave-uprising-kep.goblin-slaves.hate-dwarfs
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.hatred-dwarfs
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-dwarfs
   name: Hate Dwarfs
   effect: Hate Dwarfs. See the Psychology section of the Mordheim rules.
   source:

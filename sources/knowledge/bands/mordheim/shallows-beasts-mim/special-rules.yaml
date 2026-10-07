@@ -126,16 +126,15 @@ rules:
     band: true
 - id: buccaneer--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.shallows-beasts-mim.buccaneer.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6" of the Buccaneer may use his Leadership value instead of his own when
@@ -156,16 +155,17 @@ rules:
     - buccaneer
 - id: buccaneer--swashbuckler
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.shallows-beasts-mim.buccaneer.swashbuckler
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+        Out of scope: voluntary escape/withdrawal ends the duel without resolving it.
+        Associated movement, interception, re-engagement and campaign injury clauses
+        are also outside the 1v1 combat scope (user ruling 2026-10-04).
   name: Swashbuckler
   effect: >-
     The Buccaneer cuts a dashing figure in combat, mixing dazzling swordplay and daring feats with
@@ -257,16 +257,15 @@ rules:
     - mutant-priest
 - id: mutant-priest--bite-attack
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.shallows-beasts-mim.mutant-priest.bite-attack
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: compiler.strikes-last-bite
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.strikes-last-bite
   name: Bite Attack
   effect: >-
     The Mutant-Priest has a powerful bite attack. This bite attack uses the Priest's own strength to
@@ -381,16 +380,14 @@ rules:
     - swampers
 - id: swampers--marsh-born
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.shallows-beasts-mim.swampers.marsh-born
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Marsh Born
   effect: >-
     Dense areas of watery fenland and log causeways are called home by Swampers. Swampers re-roll
@@ -412,16 +409,14 @@ rules:
     - swampers
 - id: swampers--herb-lore
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.shallows-beasts-mim.swampers.herb-lore
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Included individual duel effect, not implemented: Source explicitly permits self-healing at own recovery on 4+; canonical recovery projection remains pending. Healing third models and board movement are excluded.'
   name: Herb Lore
   effect: >-
     Out in the Cursed Marsh, Swamp-folk learn basic herb lore to cure simple injuries. Any model in

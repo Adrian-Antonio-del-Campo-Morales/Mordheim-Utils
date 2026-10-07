@@ -21,15 +21,15 @@ rules:
     profile_ids:
     - orc-boss
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.orc-mob.orc-boss.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: orc-shaman--wizard
   name: Wizard
   effect: The Orc Shaman is a wizard and uses Waaagh! Magic.
@@ -68,15 +68,14 @@ rules:
     profile_ids:
     - orc-boyz
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.orc-mob.orc-boyz.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   rule_ref: shared-rule.animosity
 - id: goblin-warriors--animosity
   name: Animosity
@@ -100,15 +99,14 @@ rules:
     profile_ids:
     - goblin-warriors
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.orc-mob.goblin-warriors.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
 - id: goblin-warriors--not-orcs
   name: Not Orcs
   effect: >-
@@ -284,15 +282,15 @@ rules:
     profile_ids:
     - troll
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.orc-mob.troll.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: troll--stupidity
   name: Stupidity
@@ -307,15 +305,19 @@ rules:
     profile_ids:
     - troll
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.orc-mob.troll.stupidity
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.orc-mob.troll.stupidity.movement
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: Random board movement after failure is outside the 1v1 duel scope.
   rule_ref: shared-rule.stupidity-2
 - id: troll--regeneration
   name: Regeneration
@@ -502,15 +504,14 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.orc-mob.band.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
 - id: band--goblin-ratio
   name: Goblin Limit
   source:

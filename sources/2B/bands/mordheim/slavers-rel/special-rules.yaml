@@ -162,16 +162,15 @@ rules:
     band: true
 - id: slave-merchant--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.slavers-rel.slave-merchant.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: Any warrior within 6" of the Slave Merchant may use his Leadership instead of his own.
   source:
@@ -189,16 +188,14 @@ rules:
     - slave-merchant
 - id: overseer--slave-driver
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.slavers-rel.overseer.slave-driver
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Included individual duel effect, not implemented: Supplied qualified provider Leadership within the source-specific 3/6-inch range; canonical provider projection remains pending.'
   name: Slave Driver
   effect: >-
     An Overseer strikes fear into his slaves. Any slave within 3" may use his leadership. If he is
@@ -250,16 +247,15 @@ rules:
     - eunuchs
 - id: ogre-bodyguard--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.slavers-rel.ogre-bodyguard.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Ogres are large, threatening creatures that cause fear.
   source:
@@ -362,16 +358,14 @@ rules:
     - hounds
 - id: hounds--keen-scent
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.slavers-rel.hounds.keen-scent
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: campaign, recruitment, progression or post-duel aftermath. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Keen Scent
   effect: >-
     Hounds will be able to locate the scent of an escaped slave over vast distances. If the warband
@@ -387,6 +381,36 @@ rules:
     es: >-
       Los sabuesos pueden rastrear el olor de un esclavo fugado a grandes distancias. Si la banda
       incluye un Sabueso, los esclavos ignorarán la regla especial de Me largo de aquí.
+  applies_to:
+    profile_ids:
+    - hounds
+
+- id: hounds--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Hounds never use any armour or weapons."
+  source:
+    manual: broheim.net
+    printed_page: 11
+    section: "Henchmen / 0-5 Hounds"
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
   applies_to:
     profile_ids:
     - hounds

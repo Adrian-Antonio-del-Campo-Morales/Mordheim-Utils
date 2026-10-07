@@ -3,16 +3,15 @@ band_id: sea-ghosts-mim
 rules:
 - id: band--sundering
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.sea-ghosts-mim.band.sundering
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.hatred-dark-elves
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-dark-elves
   name: Sundering
   effect: >-
     All elf warriors in a Sea Elf Rangers warband have an unyielding hatred for Dark Elves. Sea Elf
@@ -286,16 +285,15 @@ rules:
     band: true
 - id: wayfinder--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.sea-ghosts-mim.wayfinder.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6 inches of the Wayfinder may use his Leadership value instead of his own
@@ -348,16 +346,15 @@ rules:
     - wayfinder
 - id: feast-master--bestial
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.sea-ghosts-mim.feast-master.bestial
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Bestial
   effect: >-
     Feast-Masters are immune to psychology. Instinctual fury overcomes them in a fight as they dance
@@ -383,11 +380,11 @@ rules:
     implemented: 'YES'
     grant: profile
     effects:
-    - id: trait.natural-armour-save
+    - id: trait.ward-save
       scope: 'YES'
       binding:
         kind: trait
-        id: trait.natural-armour-save
+        id: trait.ward-save
         parameters:
           value: 6
   name: Talismanic Tattoos
@@ -413,16 +410,16 @@ rules:
     - feast-master
 - id: feast-master--shadow-dances-of-loec
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.sea-ghosts-mim.feast-master.shadow-dances-of-loec
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+        Acquisition reference: implemented through the four selectable Shadow Dance records
+        and their per-round choice; this record grants no independent passive effect.
   name: Shadow Dances of Loec
   effect: >-
     Enactors of the Shadow Dances of Loec, Feast-Masters may choose a new Dance to learn from the
@@ -475,16 +472,14 @@ rules:
     - lookouts
 - id: minstrels--songster
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.sea-ghosts-mim.minstrels.songster
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Included individual duel effect, not implemented: Supplied qualified provider grants a personal Leadership reroll and +1 Leadership; canonical provider projection remains pending. Group Rout remains excluded.'
   name: Songster
   effect: >-
     Invigorating deep-sea shanties and reflective Elven lays boost the morale of all those around.
@@ -507,16 +502,16 @@ rules:
     - minstrels
 - id: minstrels--deathdancer
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.sea-ghosts-mim.minstrels.deathdancer
-      scope: LATER
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+        Acquisition reference: implemented through the four selectable Shadow Dance records
+        and their per-round choice; this record grants no independent passive effect.
   name: Deathdancer
   effect: >-
     Occasionally a Minstrel aspires to become a Deathdancer. A Minstrel promoted to Hero may choose
@@ -544,16 +539,14 @@ rules:
     - minstrels
 - id: wildkin--loner
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.sea-ghosts-mim.wildkin.loner
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple opponents. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Loner
   effect: >-
     Wildkin never truly escape from the primal call of isolation. They are immune to All Alone tests
@@ -608,16 +601,17 @@ rules:
     - wildkin
 - id: band--dance-whirling-death
   kind: warband_skill
+  kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.sea-ghosts-mim.band.whirling-death
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: modifiers to Injury rolls are combat-resolution mechanics.
+    - id: dance.whirling-death
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: dance.whirling-death
   name: Whirling Death
   effect: >-
     Each strike of the Wardancer's blade is made with uncanny precision, capable of severing a head
@@ -636,21 +630,24 @@ rules:
       capaz de segar una cabeza o atravesar un corazón con un solo movimiento engañosamente
       elegante. Mientras interpreta esta Danza, el guerrero gana +1 a cualquier tirada de Heridas.
   eligibility: [feast-master]
+  eligibility: [feast-master, minstrels]
   applies_to:
-    profile_ids: [feast-master]
+    profile_ids: [feast-master, minstrels]
+    profile_types: [hero]
     band: true
 - id: band--dance-storm-of-blades
   kind: warband_skill
+  kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.sea-ghosts-mim.band.storm-of-blades
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: attack-count modifiers are combat-resolution mechanics.
+    - id: dance.storm-of-blades
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: dance.storm-of-blades
   name: Storm of Blades
   effect: >-
     The Wardancer rains blow after blow upon their opponent, moving with such speed that the eye
@@ -669,21 +666,24 @@ rules:
       velocidad que el ojo no puede seguir cada corte y estocada. Mientras interpreta esta Danza, el
       guerrero recibe +1 Ataque.
   eligibility: [feast-master]
+  eligibility: [feast-master, minstrels]
   applies_to:
-    profile_ids: [feast-master]
+    profile_ids: [feast-master, minstrels]
+    profile_types: [hero]
     band: true
 - id: band--dance-the-shadows-coil
   kind: warband_skill
+  kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.sea-ghosts-mim.band.the-shadows-coil
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: an unmodifiable saving throw is a combat-resolution mechanic.
+    - id: dance.the-shadows-coil
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: dance.the-shadows-coil
   name: The Shadows Coil
   effect: >-
     With agile grace the Wardancer evades the clumsy attacks of their enemies, becoming almost
@@ -703,21 +703,24 @@ rules:
       dispone de una salvación especial de 4+ que no puede ser modificada por la Fuerza, los
       hechizos ni las armas mágicas.
   eligibility: [feast-master]
+  eligibility: [feast-master, minstrels]
   applies_to:
-    profile_ids: [feast-master]
+    profile_ids: [feast-master, minstrels]
+    profile_types: [hero]
     band: true
 - id: band--dance-woven-mist
   kind: warband_skill
+  kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.sea-ghosts-mim.band.woven-mist
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: striking first and attack-count modifiers are combat-resolution mechanics.
+    - id: dance.woven-mist
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: dance.woven-mist
   name: Woven Mist
   effect: >-
     The sinuous movements of this Dance distract and confuse the enemy, allowing the Wardancer to
@@ -738,6 +741,8 @@ rules:
       Danza, el guerrero reduce en uno su total de ataques pero siempre golpea primero en combate.
       Si su oponente también golpea primero, se resuelven los ataques por orden de Iniciativa.
   eligibility: [feast-master]
+  eligibility: [feast-master, minstrels]
   applies_to:
-    profile_ids: [feast-master]
+    profile_ids: [feast-master, minstrels]
+    profile_types: [hero]
     band: true

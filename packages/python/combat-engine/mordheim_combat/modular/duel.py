@@ -33,7 +33,7 @@ def simulate_duel_reference(
         for _ in range(maximum_rounds):
             if cancel_event is not None and getattr(cancel_event, "is_set")():
                 raise SimulationCancelled("scalar simulation cancelled")
-            if not state.first.active or not state.second.active:
+            if not state.first.active or not state.second.active or not state.engaged:
                 break
             state = rounds.resolve_round(first, second, state, dice, decisions).state
         if state.first.active and not state.second.active:
@@ -62,7 +62,8 @@ def simulate_duel_observed(
     observed leg can replace a counting leg without changing the certified
     numbers.  ``resolution_rounds`` mirrors the vectorized driver's per-row
     ledger: the rounds executed before the duel ended (1..maximum_rounds),
-    with ``maximum_rounds`` for duels that ran out of budget (unresolved).
+    with ``maximum_rounds`` for duels that ran out of budget. A failed initial
+    charge ends this local engagement unresolved after its one attempted round.
     """
     if min(simulations, maximum_rounds) < 1:
         raise ValueError("simulation limits must be positive")
@@ -81,7 +82,7 @@ def simulate_duel_observed(
         for _ in range(maximum_rounds):
             if cancel_event is not None and getattr(cancel_event, "is_set")():
                 raise SimulationCancelled("scalar simulation cancelled")
-            if not state.first.active or not state.second.active:
+            if not state.first.active or not state.second.active or not state.engaged:
                 break
             state = rounds.resolve_round(first, second, state, dice, decisions).state
             rounds_executed += 1

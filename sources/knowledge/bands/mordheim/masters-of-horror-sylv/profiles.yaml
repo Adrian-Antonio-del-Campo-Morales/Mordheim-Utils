@@ -77,7 +77,8 @@ profiles:
   - thrall--immune-to-psychology
   - thrall--immune-to-poison
   - thrall--no-pain
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
 - id: wolfman
   name: Wolfman
   type: hero
@@ -191,6 +192,7 @@ profiles:
   - zombies--no-brain
   combat_traits:
     poison_immune: true
+    creature_kind: undead
   equipment_restrictions_i18n:
     es: Los Zombis nunca llevan equipo alguno y no sufren penalización por ello.
 - id: flesh-construct
@@ -233,6 +235,7 @@ profiles:
   - flesh-construct--cannot-run
   combat_traits:
     poison_immune: true
+    creature_kind: undead
   equipment_restrictions_i18n:
     es: Los Construidos de Carne no usan armas y no sufren penalización alguna.
 - id: the-bitten

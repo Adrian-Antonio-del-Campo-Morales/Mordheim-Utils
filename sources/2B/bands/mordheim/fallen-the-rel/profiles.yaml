@@ -42,7 +42,8 @@ profiles:
   - revenant--immune-to-poison
   - revenant--no-pain
   - revenant--eaters-of-flesh
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
 - id: butcher
   name: Butcher
   type: hero
@@ -219,6 +220,7 @@ profiles:
     es: Perros Salvajes
   rule_ids:
   - wild-dogs--experience
-  combat_traits: {}
+  combat_traits:
+    normal_animal: true
   equipment_restrictions_i18n:
     es: Los perros salvajes nunca usan armaduras ni armas.

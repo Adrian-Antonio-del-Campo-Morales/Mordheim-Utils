@@ -89,6 +89,7 @@ describe.skipIf(!existsSync(ARTEFACT_PATH))("P4.2 artefact ↔ P3.4 ports cohere
       "exploration-and-income", "magic", "mutations", "hired-swords-and-dramatis",
       "hirelings", "warband_groups", "racial_maximums", "post_battle_sequence",
       "scenario-rewards", "warband-rating", "recruitment-and-veterans", "trading-and-rarity",
+      "warband-reference",
     ]);
     for (const key of Object.keys(artefact.campaign)) {
       expect(allowed.has(key), `unexpected campaign key ${key}`).toBe(true);

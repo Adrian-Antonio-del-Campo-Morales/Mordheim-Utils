@@ -3,16 +3,15 @@ band_id: guild-of-disgraced-engineers-mim
 rules:
 - id: band--hard-to-kill
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.guild-of-disgraced-engineers-mim.band.hard-to-kill
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: skill.hard-to-kill
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
   name: Hard to Kill
   effect: >-
     Dwarfs are tough, resilient individuals who can only be taken out of action on a roll of 6
@@ -34,16 +33,17 @@ rules:
     band: true
 - id: band--hard-head
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.guild-of-disgraced-engineers-mim.band.hard-head
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: trait.concussion-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.concussion-immune
+        parameters:
+          value: true
   name: Hard Head
   effect: Dwarfs ignore the special rules for clubs, maces, etc. They too are not easy to knock out!
   source:
@@ -531,16 +531,15 @@ rules:
     band: true
 - id: expelled-engineer--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.guild-of-disgraced-engineers-mim.expelled-engineer.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6" of the Expelled Engineer may use his leadership characteristic when taking
@@ -664,16 +663,14 @@ rules:
     - sapper
 - id: sapper--tunnel-rat
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.guild-of-disgraced-engineers-mim.sapper.tunnel-rat
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Tunnel Rat
   effect: Re-roll characteristics tests when underground.
   source:
@@ -690,16 +687,14 @@ rules:
     - sapper
 - id: thunderers--properly-used
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.guild-of-disgraced-engineers-mim.thunderers.properly-used
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Properly Used
   effect: >-
     Any Thunderer worth their beard knows their weapon inside and out. When using the optional

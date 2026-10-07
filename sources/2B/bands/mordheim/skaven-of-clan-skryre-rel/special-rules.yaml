@@ -117,15 +117,15 @@ rules:
     band: true
 - id: warlock-engineer--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-skryre-rel.warlock-engineer.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: broheim.net
@@ -170,16 +170,14 @@ rules:
     - warlock-engineer
 - id: overseer--slave-driver
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.skaven-of-clan-skryre-rel.overseer.slave-driver
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Included individual duel effect, not implemented: Supplied qualified provider Leadership within the source-specific 3/6-inch range; canonical provider projection remains pending.'
   name: Slave Driver
   effect: >-
     A Skaven Overseer strikes fear into his slaves. They may use his leadership if they are within
@@ -232,16 +230,14 @@ rules:
     - overseer
 - id: skaven-slaves--life-is-cheap
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.life-is-cheap
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Life Is Cheap
   effect: >-
     Skaven slaves are worthless to the Warlock Engineers. Members of a Clan Skryre warband may shoot
@@ -351,16 +347,14 @@ rules:
     - skaven-slaves
 - id: skaven-slaves--worthless
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.skaven-of-clan-skryre-rel.skaven-slaves.worthless
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple opponents. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Worthless
   effect: >-
     A Warlock Engineer doesn't expect much from slaves, and is therefore not unsettled if skaven
@@ -439,3 +433,61 @@ rules:
   applies_to:
     profile_ids:
     - giant-rats
+
+- id: giant-rats--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "None. Giant Rats never use any armour or weapons."
+  source:
+    manual: broheim.net
+    printed_page: 8
+    section: "Henchmen / Giant rats"
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - giant-rats
+- id: skaven-slaves--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - equipment
+  name: Equipment Restrictions
+  effect: "Armed with various scavenged weapons; they count as armed with a single dagger and cannot use any other equipment."
+  source:
+    manual: broheim.net
+    printed_page: 7
+    section: "Henchmen / Skaven slaves"
+    url: https://broheim.net/downloads/fo/97RelicsoftheCrusadesPt2.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - skaven-slaves

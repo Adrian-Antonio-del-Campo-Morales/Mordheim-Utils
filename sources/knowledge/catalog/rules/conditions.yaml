@@ -14,6 +14,18 @@ conditions:
     url: https://mordheimer.net/docs/campaigns
   name_i18n:
     es: Frenesí
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: trait.frenzy
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
 - id: campaign.condition.stupidity
   name: Stupidity
   effect: The warrior suffers from stupidity from now on.
@@ -27,6 +39,18 @@ conditions:
     url: https://mordheimer.net/docs/campaigns
   name_i18n:
     es: Estupidez
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: trait.stupidity
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.stupidity
+        parameters:
+          value: true
 - id: campaign.condition.cannot-run
   name: Smashed Leg
   effect: The warrior may not run any more but he may still charge.
@@ -53,6 +77,16 @@ conditions:
     url: https://mordheimer.net/docs/campaigns
   name_i18n:
     es: Endurecido
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: mechanic.fear-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-immunity
 - id: campaign.condition.causes-fear
   name: Horrible Scars
   effect: The warrior causes fear from now on.
@@ -66,22 +100,49 @@ conditions:
     url: https://mordheimer.net/docs/campaigns
   name_i18n:
     es: Cicatrices Horribles
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: trait.causes-fear
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.causes-fear
+        parameters:
+          value: true
 - id: condition.fear
   name: Fear
   effect: >-
-    A model charged by an enemy that causes fear must pass a Leadership test or flee. A model that
-    causes fear does not need to test when charged by another model that causes fear.
+    A model tests Leadership when charging or being charged by a fear-causing enemy. Failure to
+    charge leaves it stationary; failure when charged requires sixes to hit for that combat round.
+    Fear-causing models ignore these tests. Frenzied models ignore them while within charge range.
   effect_i18n:
     es: >-
-      Una miniatura cargada por un enemigo que cause miedo debe superar una tirada de Liderazgo o
-      huir. Una miniatura que cause miedo no necesita tirada cuando es cargada por otra miniatura
-      que cause miedo.
+      Una miniatura chequea Liderazgo al cargar o recibir una carga de un enemigo que causa Miedo.
+      Si falla al intentar cargar, permanece inmóvil; si falla al recibir la carga, necesita seises
+      para impactar durante esa ronda de combate. Las miniaturas que causan Miedo ignoran estos
+      chequeos. Las miniaturas sujetas a Furia Asesina los ignoran mientras estén a distancia de carga.
   source_refs:
   - manual: mordheim-rulebook
-    printed_page: 0
-    section: Psychology / Fear
+    printed_page: 23
+    section: Leadership and Psychology / Fear and Frenzy
+    url: https://broheim.net/downloads/rules/Mordheim%20-%20Part%201%20-%20Background%20%26%20Rules.pdf
   name_i18n:
     es: Miedo
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: none
+    effects:
+    - id: rule.fear
+      scope: 'NO'
+      binding: null
+      reason: >-
+        General Fear rule text, consumed by psychology.resolve_fear and
+        psychology.causes_fear. It is not a per-warrior condition: supply
+        campaign.condition.causes-fear to make a warrior cause Fear.
 - id: condition.terror
   name: Terror
   effect: >-
@@ -100,18 +161,30 @@ conditions:
 - id: condition.hatred
   name: Hatred
   effect: >-
-    The model must pass a Leadership test to avoid charging an enemy it hates; it re-rolls failed to
-    hit rolls in close combat against hated enemies.
+    A warrior fighting an enemy it hates may re-roll missed attacks in the first turn of their
+    hand-to-hand combat. In later combat turns it fights normally.
   effect_i18n:
     es: >-
-      La miniatura debe superar una tirada de Liderazgo para evitar cargar contra un enemigo al que
-      odia; repite las tiradas de impacto falladas en combate cerrado contra enemigos odiados.
+      Un guerrero que combate contra un enemigo al que odia puede repetir los ataques fallados
+      durante el primer turno de su combate cuerpo a cuerpo. En los turnos de combate posteriores
+      combate normalmente.
   source_refs:
   - manual: mordheim-rulebook
-    printed_page: 0
-    section: Psychology / Hatred
+    printed_page: 23
+    section: Leadership and Psychology / Hatred
+    url: https://broheim.net/downloads/rules/Mordheim%20-%20Part%201%20-%20Background%20%26%20Rules.pdf
   name_i18n:
     es: Odio
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.hatred
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hatred
 - id: condition.stubborn
   name: Stubborn
   effect: >-
@@ -157,19 +230,53 @@ conditions:
     section: Psychology / Immune to Psychology
   name_i18n:
     es: Inmune a la Psicología
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: condition.cold-blooded
   name: Cold-Blooded
-  effect: Lizardmen take Leadership tests using two dice, discarding the highest result.
+  effect: Cold-Blooded uses the lowest two of three dice. Lizardmen apply it to Psychology and Rout tests; Fimir apply it to Leadership tests. Warband Rout resolution is outside Combat Lab's 1v1 scope.
   effect_i18n:
     es: >-
-      Los Hombres Lagarto hacen las tiradas de Liderazgo con dos dados, descartando el resultado más
-      alto.
+      Sangre Fría usa los dos dados más bajos de tres. Los Hombres Lagarto la aplican en chequeos
+      de Psicología y Huida; los Fimir, en chequeos de Liderazgo. La Huida de bandas queda fuera
+      del alcance 1v1 de Combat Lab.
   source_refs:
-  - manual: mordheim-rulebook
-    printed_page: 0
-    section: Psychology / Cold-Blooded
+  - manual: broheim.net
+    printed_page: 1
+    section: Lizardmen / Cold Blooded
+    url: https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf
+  - manual: broheim.net
+    printed_page: 2
+    section: Lords of the Marsh / Cold-blooded
+    url: https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Lords%20Of%20The%20Marsh.pdf
   name_i18n:
     es: Sangre Fría
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    variant_fact: cold_blooded_origin
+    effects:
+    - id: mechanic.cold-blooded-psychology
+      scope: 'YES'
+      variant: lizardmen
+      binding:
+        kind: mechanic
+        id: mechanic.cold-blooded-psychology
+    - id: mechanic.cold-blooded-leadership
+      scope: 'YES'
+      variant: fimir
+      binding:
+        kind: mechanic
+        id: mechanic.cold-blooded-leadership
 note: Structured conditions will be extended as combat and psychology mechanics are reviewed. The general
   ids (condition.*) declare canonical psychology conditions; the campaign ids (campaign.condition.*) cover
   the serious injury effects that apply them.

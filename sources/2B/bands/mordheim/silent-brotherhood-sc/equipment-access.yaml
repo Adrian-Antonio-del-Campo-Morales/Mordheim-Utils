@@ -28,6 +28,11 @@ equipment_lists:
   - item_id: blowpipe
     cost: 25
   - item_id: crossbow
+    applies_to:
+      variants:
+      - modus-operandi.sniper
+      excluded_profile_ids:
+      - silent-master
     cost: 25
     notes: Sniper only
     notes_i18n:
@@ -35,6 +40,11 @@ equipment_lists:
   - item_id: crossbow_pistol
     cost: 35
   - item_id: long_bow
+    applies_to:
+      variants:
+      - modus-operandi.sniper
+      excluded_profile_ids:
+      - silent-master
     cost: 15
     notes: Sniper only
     notes_i18n:

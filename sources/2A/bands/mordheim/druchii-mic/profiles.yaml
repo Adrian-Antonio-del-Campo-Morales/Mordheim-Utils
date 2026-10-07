@@ -38,7 +38,8 @@ profiles:
     es: Noble
   rule_ids:
   - noble--leader
-  combat_traits: {}
+  combat_traits:
+    elf_kind: dark
 - id: lordlings
   name: Lordling
   type: hero
@@ -74,7 +75,8 @@ profiles:
   name_i18n:
     es: Nanolordes
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    elf_kind: dark
 - id: sorceress
   name: Sorceress
   type: hero
@@ -111,7 +113,8 @@ profiles:
     es: Hechicera
   rule_ids:
   - sorceress--wizard
-  combat_traits: {}
+  combat_traits:
+    elf_kind: dark
   equipment_restrictions_i18n:
     es: Una Hechicera no puede lanzar conjuros si lleva armadura.
 - id: beastmaster
@@ -149,7 +152,8 @@ profiles:
     es: Maestro de Bestias
   rule_ids:
   - beastmaster--slavehounds
-  combat_traits: {}
+  combat_traits:
+    elf_kind: dark
 - id: corsairs
   name: Corsairs
   type: henchman
@@ -182,7 +186,8 @@ profiles:
   name_i18n:
     es: Corsarios
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    elf_kind: dark
   equipment_restrictions_i18n:
     es: Además de su lista, los Corsarios pueden llevar Capas de Dragón Marino aunque no sean Héroes.
 - id: shades
@@ -217,7 +222,8 @@ profiles:
     es: Sombras (Shades)
   rule_ids:
   - shades--natural-stealth
-  combat_traits: {}
+  combat_traits:
+    elf_kind: dark
 - id: witch-elves
   name: Witch Elves
   type: henchman
@@ -253,6 +259,7 @@ profiles:
   - witch-elves--maibd-poison
   combat_traits:
     frenzy: true
+    elf_kind: dark
 - id: slavehounds
   name: Slavehounds
   type: henchman

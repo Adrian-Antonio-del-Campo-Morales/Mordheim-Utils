@@ -21,15 +21,15 @@ rules:
     profile_ids:
     - apprentice-sorcerer
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.sons-of-hashut.apprentice-sorcerer.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: apprentice-sorcerer--rituals-of-chaos
   name: Rituals of Chaos
   effect: >-
@@ -490,15 +490,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.sons-of-hashut.band.chaos-dwarfs-special-skills-unlimited-hatred
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: skill.hatred
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hatred
 - id: band--chaos-dwarfs-special-skills-thick-skull
   kind: warband_skill
   name: Thick Skull
@@ -559,3 +559,35 @@ rules:
       binding: null
       reason: >-
         Out of scope: magic.
+- id: blunderbuss-chaos-dwarfs--equipment-restrictions
+  name: Equipment Restrictions
+  effect: >-
+    Starting equipment for a Blunderbuss Chaos Dwarf must include a Chaos Dwarf Blunderbuss from the
+    Blunderbusser Equipment List.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "Henchmen / 0 – 3 Blunderbuss Chaos Dwarfs / Equipment"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/sons-of-hashut
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: >-
+      El equipo inicial de un Enano del Caos con Trabuco debe incluir un Trabuco de Enano del Caos de
+      la Lista de Equipo del Portador de Trabucos.
+  applies_to:
+    profile_ids:
+    - blunderbuss-chaos-dwarfs
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          required_kinds:
+          - chaos_dwarf_blunderbuss

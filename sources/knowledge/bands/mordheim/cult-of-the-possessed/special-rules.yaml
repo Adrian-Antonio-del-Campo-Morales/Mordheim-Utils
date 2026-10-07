@@ -3,15 +3,15 @@ band_id: cult-of-the-possessed
 rules:
 - id: magister--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.cult-of-the-possessed.magister.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any models in the warband within 6" of the Magister may use his Leadership instead of their own.
@@ -63,15 +63,15 @@ rules:
     - magister
 - id: the-possessed--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.cult-of-the-possessed.the-possessed.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: The Possessed are terrifying, twisted creatures and therefore cause fear.
   source:
@@ -145,15 +145,15 @@ rules:
     - mutants
 - id: darksouls--crazed
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.cult-of-the-possessed.darksouls.crazed
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.automatic-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.automatic-leadership
   name: Crazed
   effect: >-
     Darksouls have been driven insane by daemonic possession and know no fear. They automatically
@@ -470,15 +470,15 @@ rules:
 - id: band--mutations-hideous
   kind: mutation
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.band-mutations-hideous
-      scope: LATER
-      binding: null
-      reason: >-
-        fear/psychology is outside the duel runtime
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Hideous
   effect: >-
     The mutant causes fear. Cost: 40 gold crowns

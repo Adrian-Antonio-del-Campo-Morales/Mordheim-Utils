@@ -3,15 +3,15 @@ band_id: black-orcs
 rules:
 - id: black-orc-boss--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.black-orcs.black-orc-boss.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6" of the Boss may use his Leadership characteristic when taking Leadership
@@ -177,15 +177,14 @@ rules:
     - younguns
 - id: orc-boyz--animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.black-orcs.orc-boyz.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   name: Animosity
   source:
     manual: mordheimer.net
@@ -200,15 +199,14 @@ rules:
   rule_ref: shared-rule.animosity
 - id: orc-shootaz--animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.black-orcs.orc-shootaz.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   name: Animosity
   effect: >-
     Subject to the warband's Animosity rule. At the start of the Orc player's turn, roll a D6 for
@@ -291,15 +289,15 @@ rules:
     - orc-nuttaz
 - id: orc-nuttaz--crazy
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.black-orcs.orc-nuttaz.crazy
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.automatic-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.automatic-leadership
   name: Crazy
   effect: >-
     Nuttaz always pass any Leadership-based Tests they have to take. A side effect of this is that
@@ -380,15 +378,15 @@ rules:
     - orc-nuttaz
 - id: troll--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.black-orcs.troll.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   source:
     manual: mordheimer.net
@@ -403,15 +401,19 @@ rules:
   rule_ref: shared-rule.fear
 - id: troll--stupidity
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.black-orcs.troll.stupidity
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.black-orcs.troll.stupidity.movement
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: Random board movement after failure is outside the 1v1 duel scope.
   name: Stupidity
   source:
     manual: mordheimer.net
@@ -604,15 +606,14 @@ rules:
     band: true
 - id: band--animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.black-orcs.band.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   name: Animosity
   effect: >-
     At the start of the Orc player's turn, roll a D6 for each Orc or Goblin Henchman not engaged in
@@ -826,3 +827,32 @@ rules:
     band: true
 
   rule_ref: shared-rule.eadbasher
+
+- id: orc-boyz--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - crossbow
+  name: Equipment Restrictions
+  effect: "May not use Crossbows; they are restricted to Shootaz."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "Orc Boyz"
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/black-orcs
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - orc-boyz

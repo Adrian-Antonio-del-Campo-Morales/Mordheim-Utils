@@ -28,6 +28,11 @@ def _react_to_wound(
     # Rescue is an immediate response to OOA, before the next prepared hit.
     defender_state = _force_of_will(defender, outcome.defender, dice, f"{key}.force-of-will")
     reactive_damage = outcome.damage - outcome.damage_already_reacted
+    if (reactive_damage > 0 and outcome.melee_attack
+            and phases.has_tag(attacker.global_effects, "mechanic.torturer")
+            and not phases.has_tag(defender.global_effects, "nature.undead")):
+        defender_state = replace(defender_state, strength=max(1, defender_state.strength - 1),
+            torture_strength_loss=defender_state.torture_strength_loss + 1)
     if reactive_damage and phases.has_tag(defender.global_effects, "acid_blood"):
         acid = EffectSet(
             tags=("rule.acid-blood", "effect.no-critical"), fixed_strength=3,
@@ -57,8 +62,26 @@ def _react_to_wound(
             wounds=attacker_state.wounds - 1,
             condition=(Condition.OUT if attacker_state.wounds <= 1 else attacker_state.condition),
         )
+    if (defender_state.condition == Condition.OUT and attacker_state.condition == Condition.STANDING
+            and phases.has_tag(attacker.global_effects, "mechanic.great-thirster")):
+        attacker_state = replace(attacker_state, frenzy=True)
     return replace(outcome, attacker=attacker_state, defender=defender_state,
         damage_already_reacted=outcome.damage, reactions_resolved=True)
+
+
+def _revenant_recovery(
+    fighter: CompiledFighter, current: FighterState, dice: DiceSource, key: str,
+) -> FighterState:
+    """Q013: one 5+ attempt at own-turn start, independent of fire saves."""
+    maximum = fighter.characteristics.wounds + int(has_tag(fighter.global_effects, "skill.monstrous"))
+    if (not current.active or current.wounds >= maximum
+            or not has_tag(fighter.global_effects, "mechanic.curse-of-the-revenant")
+            or key in current.resources_spent):
+        return current
+    current = current.spend(key)
+    if dice.roll(RollRequest(key)) >= 5:
+        current = replace(current, wounds=min(maximum, current.wounds + 1))
+    return current
 
 
 def _start_round_state(fighter: CompiledFighter, state: FighterState, *, recover: bool = True) -> tuple[FighterState, bool]:

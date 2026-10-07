@@ -3,15 +3,15 @@ band_id: carnival-of-chaos
 rules:
 - id: carnival-master--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.carnival-of-chaos.carnival-master.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any models in the warband within 6" of the Master may use his Leadership instead of their own.
@@ -239,15 +239,15 @@ rules:
     - plague-bearers
 - id: plague-bearers--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.carnival-of-chaos.plague-bearers.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.automatic-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.automatic-leadership
   name: Immune to Psychology
   effect: >-
     Plague Bearers are Daemons and do not know the concept of fear. They automatically pass any
@@ -268,15 +268,15 @@ rules:
     - plague-bearers
 - id: plague-bearers--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.carnival-of-chaos.plague-bearers.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   effect: Plague Bearers are horrifying supernatural creatures and therefore cause fear.
   source:
@@ -343,15 +343,14 @@ rules:
     - plague-bearers
 - id: plague-bearers--daemonic-instability
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.carnival-of-chaos.plague-bearers.daemonic-instability
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Outside the resolved 1v1 duel: destruction after Out of Action or warband Rout.'
   name: Daemonic Instability
   effect: >-
     Plague Bearers are bound to the world by Dark Sorcery that is highly volatile and unstable. If
@@ -501,15 +500,15 @@ rules:
     - nurglings
 - id: nurglings--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.carnival-of-chaos.nurglings.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.automatic-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.automatic-leadership
   name: Immune to Psychology
   effect: >-
     Nurglings are Daemons and do not know the concept of fear. They automatically pass any
@@ -578,15 +577,14 @@ rules:
     - nurglings
 - id: nurglings--daemonic-instability
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.carnival-of-chaos.nurglings.daemonic-instability
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Outside the resolved 1v1 duel: destruction after Out of Action or warband Rout.'
   name: Daemonic Instability
   effect: >-
     Nurglings are bound to the world by Dark Sorcery that is highly volatile and unstable. If taken
@@ -701,15 +699,15 @@ rules:
     - plague-cart
 - id: plague-cart--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.carnival-of-chaos.plague-cart.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.automatic-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.automatic-leadership
   name: Immune to Psychology
   effect: >-
     The Plague Cart and Guardian are Daemonic. The Plague Cart automatically passes any
@@ -1007,15 +1005,15 @@ rules:
 - id: band--blessings-of-nurgle-hideous
   kind: blessing
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.band-blessings-of-nurgle-hideous
-      scope: LATER
-      binding: null
-      reason: >-
-        fear/psychology is outside the duel runtime
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Hideous
   effect: >-
     Cost: 40 Gold Crowns The Tainted One is so disgusting that its flesh hangs in tatters from its
@@ -1033,3 +1031,33 @@ rules:
       de su cuerpo y sus entrañas están podridas y expuestas. Provoca Miedo.
   applies_to:
     band: true
+
+- id: plague-cart--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "The Plague Cart and its Guardian cannot use weapons or wear armour."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 1 Plague Cart"
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/carnival-of-chaos
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - plague-cart

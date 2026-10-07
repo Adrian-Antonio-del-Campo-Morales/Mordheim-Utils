@@ -86,7 +86,7 @@ def test_reference_bear_hug_is_orchestrated_before_normal_wounds():
     bear = compile_fighter(FighterBuild(
         "mordheim", band_id="kislevites", profile_id="trained-bear",
     ))
-    target = fighter(characteristics=Characteristics(3, 3, 3, 1, 1, 1))
+    target = fighter(characteristics=Characteristics(3, 3, 3, 1, 1, 1, leadership=7))
     state = DuelState(
         initialize_fighter(bear, KeyedDice(1), "bear"),
         initialize_fighter(target, KeyedDice(2), "target"),

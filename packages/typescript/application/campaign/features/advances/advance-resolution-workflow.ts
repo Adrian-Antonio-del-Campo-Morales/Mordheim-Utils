@@ -134,7 +134,13 @@ export function commitAdvanceChoice(document: CampaignDocument, reader: Catalogu
     // publishes (T09 `skill_lists`). A skill off the list is refused; a list
     // still published as prose is reported on the row instead of silently
     // granting the whole special catalogue.
-    const profile=warrior.profile_id?profileFactsOf(reader,document.campaign.identity.band_id,warrior.profile_id):null;
+    const facts=warrior.profile_id?profileFactsOf(reader,document.campaign.identity.band_id,warrior.profile_id):null;
+    // Effective tables of a promoted Hero include the printed promotion grant
+    // (`compiler.promoted-hero-skill-access`); the canonical Henchman row keeps
+    // it in `promotion_skill_access`, so the same facts never widen an
+    // unpromoted warrior's access.
+    const profile=facts&&warrior.kind==="hero"&&facts.promotion_skill_access.length
+      ?{...facts,skill_access:[...new Set([...facts.skill_access,...facts.promotion_skill_access])]}:facts;
     const verdict=profile?skillIssueFor(profile,{id:input.skill_id??"",category,kind:String(skill.record.data["kind"]??"general")}):null;
     if(verdict?.code==="skill_not_permitted") return {ok:false,message:verdict.message,reason:verdict.code,...(verdict.subject_ids?{subject_ids:verdict.subject_ids}:{})};
     // A band special-skill list still published as prose has no members to be a
@@ -227,8 +233,14 @@ export function promotionHeroTables(document: CampaignDocument, reader: Catalogu
  */
 export function promotionTablesForWarrior(document: CampaignDocument, reader: CatalogueReader, warriorId:string): readonly string[] {
   const warrior=document.campaign.warriors.find((item)=>item.id===warriorId);
+  const granted=additionalSkillListsFor(reader,document.campaign.identity.band_id,warrior?.profile_id??null);
+  const facts=warrior?.profile_id?profileFactsOf(reader,document.campaign.identity.band_id,warrior.profile_id):null;
+  // The printed promotion rule (`compiler.promoted-hero-skill-access`) states
+  // the tables this profile may choose once promoted; it substitutes the band's
+  // generic hero tables, which otherwise would offer unrelated lists.
+  if(facts?.promotion_skill_access.length) return [...new Set([...facts.promotion_skill_access,...granted])];
   const tables=new Set<string>(promotionHeroTables(document,reader));
-  for(const table of additionalSkillListsFor(reader,document.campaign.identity.band_id,warrior?.profile_id??null)) tables.add(table);
+  for(const table of granted) tables.add(table);
   return [...tables];
 }
 

@@ -20,15 +20,15 @@ rules:
     profile_ids:
     - loremaster
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lustria-high-elves.loremaster.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: loremaster--spellcaster
   name: Spellcaster
   effect: >-
@@ -466,3 +466,89 @@ rules:
   - explorers
   applies_to:
     band: true
+
+- id: explorers--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - mage_staff
+          - elven_runestones
+  name: Equipment Restrictions
+  effect: "May never use blackpowder weapons. May never use drugs or poisons. May never use Dwarf-made equipment, including Gromril and Obsidian equipment. May not select the Mage Staff or Elven Runestones; those entries are Loremaster only."
+  source:
+    manual: lustria
+    printed_page: 116
+    section: "0-2 Explorers"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - explorers
+- id: sea-guard--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - mage_staff
+          - elven_runestones
+  name: Equipment Restrictions
+  effect: "May never use blackpowder weapons. May never use drugs or poisons. May never use Dwarf-made equipment, including Gromril and Obsidian equipment. May not select the Mage Staff or Elven Runestones; those entries are Loremaster only."
+  source:
+    manual: lustria
+    printed_page: 118
+    section: "Sea Guard"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - sea-guard
+- id: sword-guardians--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - ranged-weapons
+          - mage_staff
+          - elven_runestones
+  name: Equipment Restrictions
+  effect: "May never use blackpowder weapons. May never use drugs or poisons. May never use Dwarf-made equipment, including Gromril and Obsidian equipment. May never use missile weapons. May not select the Mage Staff or Elven Runestones; those entries are Loremaster only."
+  source:
+    manual: lustria
+    printed_page: 117
+    section: "0-2 Sword Guardians"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - sword-guardians

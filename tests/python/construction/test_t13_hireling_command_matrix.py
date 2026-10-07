@@ -15,9 +15,9 @@ What this suite proves, and what it does not:
   canonical YAML and to its published node in the maintained loaders
   (``load_hirelings`` / ``load_campaign_catalog``).  This is **referential
   integrity**, not construction or combat evidence.
-- Current representation: hireling rule nodes carry no ``runtime`` block, and
-  no hireling profile/rule appears in the band-construction index, so the
-  canonical ``compile_fighter`` path cannot reach these origins.  The
+- Native hireling rules carry explicit runtime dispositions. They stay out
+  of the canonical band index; Combat Lab admits them through a separate
+  canonical participant projection with complete printed-kit validation.  The
   free-selection probe only shows the profile rules do not leak into a custom
   build; a custom build is **not** a canonical hireling construction.
 - The five Commands are orders, not battle spells: their lore carries roll and
@@ -297,9 +297,13 @@ def test_hireling_origin_resolves_to_its_canonical_rule_node(origin, owner, _que
     assert node is not None, origin
     assert node["name"].strip(), origin
     assert node["effect"].strip(), origin
-    # Current representation: catalogue data without runtime metadata.  A future
-    # lot that binds these rules must update this expectation deliberately.
-    assert "runtime" not in node, origin
+    runtime = node["runtime"]
+    assert runtime["scope"] in {"YES", "NO", "LATER"}, origin
+    assert (runtime["implemented"] == "YES") == (runtime["scope"] == "YES"), origin
+    if runtime["scope"] == "YES":
+        assert runtime_bindings(node), origin
+    else:
+        assert all(effect.get("reason") for effect in runtime["effects"]), origin
 
 
 @pytest.mark.parametrize(("origin", "owner", "_question"), HIRELING_ORIGINS)
@@ -431,3 +435,39 @@ def test_wandering_knight_is_not_offered_commands_as_selectable_rules():
     offered = {str(rule.get("id")) for rule in available_special_rules(build, None)}
     assert not offered.intersection({spell for spell, *_ in COMMANDS})
     assert not offered.intersection({band for _spell, band, *_ in COMMANDS} | {"wandering-knight--commands"})
+
+@pytest.mark.parametrize('profile,weapon,off,armour', [
+    ('albino-stormvermin', 'weapon.halberd', None, 'armour.heavy-armour'),
+    ('norse-bearman-bodyguard', 'weapon.axe', 'defence.shield', 'armour.light-armour'),
+    ('crimashin', 'weapon.dagger', 'weapon.sword', 'armour.no-armour'),
+    ('holy-man', 'weapon.double-handed-weapon', None, 'armour.no-armour'),
+])
+def test_native_hireling_compiles_its_source_qualified_printed_kit(profile, weapon, off, armour):
+    result = compile_fighter(FighterBuild('mordheim', band_id='hirelings.hired-sword.2b',
+        profile_id='hireling.hired-sword.' + profile, main_weapon_id=weapon,
+        off_hand_id=off, armour_id=armour))
+    assert result.fighter_id.endswith('hireling.hired-sword.' + profile)
+    assert weapon in result.main_weapon.tags
+    if profile == 'crimashin':
+        assert 'material.gromril' in result.main_weapon.tags
+    elif profile == 'holy-man':
+        assert result.main_weapon.strength_bonus == 2
+        assert result.main_weapon.priority == -1 and result.main_weapon.two_handed
+    elif profile == 'norse-bearman-bodyguard':
+        assert result.off_hand.parry
+        assert 'mechanic.centigor-drunken' in result.global_effects.tags
+
+
+def test_native_kit_keeps_whole_choices_quantities_and_materials():
+    base = dict(band_id='hirelings.hired-sword.2b', profile_id='hireling.hired-sword.black-orc-bodyguard',
+                main_weapon_id='weapon.axe', off_hand_id='weapon.axe', armour_id='armour.heavy-armour')
+    assert compile_fighter(FighterBuild('mordheim', **base))
+    # The printed alternative is two axes OR a two-handed weapon, never their union.
+    for options in ({'owned_item_ids': ('heavy_armour', 'helmet', 'axe')},
+                    {'owned_item_ids': ('heavy_armour', 'helmet', 'axe', 'axe', 'two_handed_weapon')},
+                    {'main_material_id': 'material.ithilmar'}):
+        with pytest.raises(ValueError, match='complete legal printed kit'):
+            compile_fighter(FighterBuild('mordheim', **base, **options))
+    with pytest.raises(ValueError, match='intrinsic duel clauses are pending'):
+        compile_fighter(FighterBuild('mordheim', band_id='hirelings.dramatis-personae.2b',
+            profile_id='hireling.dramatis.aldred-fellblade', main_weapon_id='weapon.double-handed-weapon'))

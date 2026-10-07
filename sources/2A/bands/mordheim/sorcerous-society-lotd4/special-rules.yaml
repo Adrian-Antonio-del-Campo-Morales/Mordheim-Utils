@@ -41,27 +41,28 @@ rules:
       scope: 'NO'
       binding: null
       reason: >-
-        Out of scope: miscast resolution is a magic-subsystem interaction. The Magical Failure Table the
-        rule invokes (Border Town Burning, used with permission) is printed with the rule: the band contract
-        has no table slot, so the rows travel as the rule's own text, the way the KB keeps its other printed
-        charts inside the rule that rolls on them.
+        Out of scope: miscast resolution is a magic-subsystem interaction. The Magical Failure Table
+        the rule invokes (Border Town Burning, used with permission) is printed with the rule: the
+        band contract has no table slot, so the rows travel as the rule's own text, the way the KB
+        keeps its other printed charts inside the rule that rolls on them.
   name: The Vagaries of Magic
   effect: >-
-    Members of the Sorcerous Society are using powerful and sometimes little known spells. As a result
-    they are susceptible to the chaotic lure of magic. If a Wizard in the Sorcerous Society Warband
-    rolls a natural 2 (two 1's) when rolling for a spell than they must roll on the Magical Failure
-    Table. Magical Failure Table (used with permission from the Border Town Burning supplement). 2D6
-    result: 2 - Aaarrgh! The powers of Chaos take over the helpless wizard as he horribly mutates to a
-    Spawn of Chaos. Remove the wizard from your roster. 3 - Gglbddlh: The wizard is now stupid. Roll a
-    D6 after the battle: on a score of 2+ the effect ends. 4 - Magical Shutdown: The wizard cannot cast
-    any spells for the duration of this battle. 5-6 - Uh-oh! The spell has been cast successfully - upon
-    the wizard himself! Any additional decisions are made by the wizard's left player. 7 - Pooh, nothing
-    at all! Except for the spell's failure there are no further consequences. 8-9 - Magical Explosion:
-    The wizard is thrown D6 inches in a random direction and then lands knocked down. 10-11 - Magical
-    jam: The wizard cannot cast a spell in his next shooting phase. Missile weapons may be used as
-    normal, of course. 12 - Wait, what's that? The uncontrollable powers of Chaos cause the wizard to
-    mutate. After a moment of horror the transmutation ends. You may choose a free Mutation for the
-    wizard chosen from the Possessed's Mutations chart (Mordheim Rulebook page 76).
+    Members of the Sorcerous Society are using powerful and sometimes little known spells. As a
+    result they are susceptible to the chaotic lure of magic. If a Wizard in the Sorcerous Society
+    Warband rolls a natural 2 (two 1's) when rolling for a spell than they must roll on the Magical
+    Failure Table. Magical Failure Table (used with permission from the Border Town Burning
+    supplement). 2D6 result: 2 - Aaarrgh! The powers of Chaos take over the helpless wizard as he
+    horribly mutates to a Spawn of Chaos. Remove the wizard from your roster. 3 - Gglbddlh: The
+    wizard is now stupid. Roll a D6 after the battle: on a score of 2+ the effect ends. 4 - Magical
+    Shutdown: The wizard cannot cast any spells for the duration of this battle. 5-6 - Uh-oh! The
+    spell has been cast successfully - upon the wizard himself! Any additional decisions are made by
+    the wizard's left player. 7 - Pooh, nothing at all! Except for the spell's failure there are no
+    further consequences. 8-9 - Magical Explosion: The wizard is thrown D6 inches in a random
+    direction and then lands knocked down. 10-11 - Magical jam: The wizard cannot cast a spell in
+    his next shooting phase. Missile weapons may be used as normal, of course. 12 - Wait, what's
+    that? The uncontrollable powers of Chaos cause the wizard to mutate. After a moment of horror
+    the transmutation ends. You may choose a free Mutation for the wizard chosen from the
+    Possessed's Mutations chart (Mordheim Rulebook page 76).
   source:
     manual: mordheimer.net
     printed_page: 0
@@ -92,15 +93,15 @@ rules:
     band: true
 - id: magus--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.sorcerous-society-lotd4.magus.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: leadership-radios checks are a morale mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheimer.net
@@ -124,7 +125,7 @@ rules:
       binding: null
       reason: >-
         Out of scope: magic subsystem. The four Elemental lores this rule draws from are preserved
-        in sources/2A/catalog/magic-2a.yaml; Lesser Magic is already modeled by the active KB as
+        in catalog/campaign/magic.yaml; Lesser Magic is already modeled by the active KB as
         lore.lesser-magic.
   name: Wizard
   effect: >-
@@ -225,7 +226,7 @@ rules:
       scope: 'NO'
       binding: null
       reason: >-
-        Out of scope: magic subsystem; see sources/2A/catalog/magic-2a.yaml for the Elemental lores.
+        Out of scope: magic subsystem; see catalog/campaign/magic.yaml for the Elemental lores.
   name: Wizard
   effect: >-
     The Mage is a wizard, and may randomly generate a spell from any one Elemental list, or from the

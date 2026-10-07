@@ -3,15 +3,15 @@ band_id: night-goblins-web
 rules:
 - id: boss--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.night-goblins-web.boss.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6" of the Boss may use their Leadership value when taking Leadership tests.
@@ -295,15 +295,14 @@ rules:
     - shaman
 - id: night-goblin-warriors--animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.night-goblins-web.night-goblin-warriors.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   name: Animosity
   effect: Night Goblins are subject to the rules for Animosity.
   source:
@@ -664,15 +663,15 @@ rules:
     - great-squig
 - id: great-squig--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.night-goblins-web.great-squig.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   effect: Great Squigs are massive balls of flesh and teeth, they cause fear.
   source:
@@ -745,15 +744,15 @@ rules:
     - great-squig
 - id: troll--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.night-goblins-web.troll.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   source:
     manual: mordheimer.net
@@ -768,15 +767,19 @@ rules:
   rule_ref: shared-rule.fear
 - id: troll--stupidity
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.night-goblins-web.troll.stupidity
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.night-goblins-web.troll.stupidity.movement
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: Random board movement after failure is outside the 1v1 duel scope.
   name: Stupidity
   source:
     manual: mordheimer.net
@@ -912,15 +915,14 @@ rules:
   rule_ref: shared-rule.large-target
 - id: band--animosity
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.night-goblins-web.band.animosity
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Outside the established 1v1 melee: this source tests only models not engaged, then moves or attacks other models. Already-engaged duelists never test.'
   name: Animosity
   effect: >-
     At the start of the Night Goblin player's turn, roll a D6 for each Night Goblin Warrior Henchman

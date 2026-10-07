@@ -20,15 +20,15 @@ rules:
     profile_ids:
     - witch-doctor
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lustria-savage-goblins.witch-doctor.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: witch-doctor--spellcaster
   name: Spellcaster
   effect: >-
@@ -124,12 +124,12 @@ rules:
         Deferred subsystem: psychology or mounts.
 - id: red-teeth--frenzy
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'YES'
     grant: profile
     effects:
     - id: trait.frenzy
-      scope: LATER
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.frenzy
@@ -895,3 +895,86 @@ rules:
       binding:
         kind: compiler
         id: compiler.master-of-throwing-weapons
+
+- id: big-boss--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - sacrifice_dagger
+  name: Equipment Restrictions
+  effect: "May not select the Sacrifice Dagger; it is Witch Doctor only. May not buy the Feather Headdress at creation because the Witch Doctor is the mandatory leader; if leadership later passes to the Big Boss, the source says the headdress is inherited automatically."
+  source:
+    manual: lustria
+    printed_page: 100
+    section: "0-1 Big Boss"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - big-boss
+- id: red-teeth--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - non-thrown-ranged
+          - sacrifice_dagger
+  name: Equipment Restrictions
+  effect: "May not use missile weapons unless they have the Thrown Weapon rule. May not select the Sacrifice Dagger; it is Witch Doctor only. May not select the Feather Headdress unless this model somehow becomes the warband leader."
+  source:
+    manual: lustria
+    printed_page: 101
+    section: "0-2 Red Teeth"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - red-teeth
+- id: trackers--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - sacrifice_dagger
+  name: Equipment Restrictions
+  effect: "The starting Rope and Hook and Bolas may not be sold or transferred and are replaced automatically before the next battle if lost. May not select the Sacrifice Dagger; it is Witch Doctor only. May not select the Feather Headdress unless this model somehow becomes the warband leader."
+  source:
+    manual: lustria
+    printed_page: 101
+    section: "0-2 Trackers"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - trackers

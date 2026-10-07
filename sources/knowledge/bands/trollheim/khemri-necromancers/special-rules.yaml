@@ -18,15 +18,15 @@ rules:
     profile_ids:
     - necromancer
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.khemri-necromancers.necromancer.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: necromancer--wizard
   name: Wizard
   source:
@@ -146,15 +146,15 @@ rules:
     profile_ids:
     - nehekharan-vultures
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.khemri-necromancers.nehekharan-vultures.undead
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.undead
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.undead
 - id: nehekharan-vultures--flight
   name: Flight
   effect: >-
@@ -233,15 +233,15 @@ rules:
     profile_ids:
     - necromantic-abomination
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.khemri-necromancers.necromantic-abomination.undead
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.undead
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.undead
 - id: necromantic-abomination--impossible-to-hide
   name: Impossible to Hide
   effect: The Necromantic Abomination is too large to Hide.

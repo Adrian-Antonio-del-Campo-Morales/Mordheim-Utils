@@ -3,15 +3,15 @@ band_id: battle-monks-of-cathay
 rules:
 - id: emissary--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.battle-monks-of-cathay.emissary.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: Any warrior within 6“ of the Emissary may use his Leadership when taking Ld tests.
   source:
@@ -527,8 +527,9 @@ rules:
       scope: 'NO'
       binding: null
       reason: >-
-        Out of scope: no effect applies to the isolated 1v1 duel or legal fighter skill/equipment
-        construction.
+        Out of scope: voluntary escape/withdrawal ends the duel without resolving it.
+        Associated movement, interception, re-engagement and campaign injury clauses
+        are also outside the 1v1 combat scope (user ruling 2026-10-04).
   name: Leap of Faith
   effect: >-
     The Hero cannot be intercepted whilst charging. He may escape from combat (as described on p.

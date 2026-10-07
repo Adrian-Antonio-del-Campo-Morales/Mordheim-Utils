@@ -584,3 +584,62 @@ rules:
       Líder y entonces usa las reglas normales de Líder.
   applies_to:
     band: true
+
+- id: barbary-monkey--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "This model is an Animal and does not select weapons or armour from the warband equipment lists."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 1 Barbary Monkey"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - barbary-monkey
+- id: estalian-warhound--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "This model is an Animal and does not select weapons or armour from the warband equipment lists."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 2 Estalian Warhound"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/lustrian-reavers
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - estalian-warhound

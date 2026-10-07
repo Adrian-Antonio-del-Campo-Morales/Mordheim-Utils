@@ -362,6 +362,7 @@
       "required": ["id", "name", "name_i18n", "effect", "effect_i18n"],
       "additionalProperties": false,
       "properties": {
+        "runtime": { "$ref": "defs.schema.json#/$defs/rule_runtime" },
         "id": { "$ref": "defs.schema.json#/$defs/id" },
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },

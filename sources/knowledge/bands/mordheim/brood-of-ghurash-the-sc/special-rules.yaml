@@ -3,16 +3,15 @@ band_id: brood-of-ghurash-the-sc
 rules:
 - id: band--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.brood-of-ghurash-the-sc.band.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: All Heroes cause fear.
   source:
@@ -26,6 +25,10 @@ rules:
     es: Todos los héroes causan miedo.
   applies_to:
     band: true
+    profile_ids:
+    - broodmother
+    - firstborns
+    - youths
 - id: band--large
   runtime:
     scope: 'NO'
@@ -104,16 +107,27 @@ rules:
     band: true
 - id: band--brood-mentality
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.brood-of-ghurash-the-sc.band.brood-mentality
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: mechanic.brood-mentality
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.brood-mentality
+    - id: unimplemented.brood-of-ghurash-the-sc.band.brood-mentality.outside-duel
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+        Board movement, campaign progression/participation and independently
+        simulated helper/rider/group producers are outside the 1v1 duel.
+        Admissible individual exemptions and bonuses are supplied active facts.
   name: Brood Mentality
   effect: >-
     All Brood members suffer from stupidity, but trolls taking stupidity tests add 1 point to their
@@ -132,6 +146,12 @@ rules:
       nunca contrata Espadas a Sueldo.
   applies_to:
     band: true
+    profile_ids:
+    - broodmother
+    - firstborns
+    - youths
+    - children
+    - newborns
 - id: band--hoard
   runtime:
     scope: 'NO'
@@ -225,16 +245,15 @@ rules:
     band: true
 - id: broodmother--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.brood-of-ghurash-the-sc.broodmother.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: Any warrior within 6 inches of the Broodmother may use her Leadership instead of his own.
   source:
@@ -253,16 +272,14 @@ rules:
     - broodmother
 - id: broodmother--mother-knows-best
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.brood-of-ghurash-the-sc.broodmother.mother-knows-best
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple opponents. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Mother Knows Best
   effect: When taking rout tests, this model may use the bonus of Brood Mentality.
   source:
@@ -369,16 +386,14 @@ rules:
     - baneworms
 - id: baneworms--lurker
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.brood-of-ghurash-the-sc.baneworms.lurker
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Lurker
   effect: >-
     When charging while hidden in the previous turn, Baneworms may perform a "diving charge" even if
@@ -399,16 +414,14 @@ rules:
     - baneworms
 - id: baneworms--animal
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.brood-of-ghurash-the-sc.baneworms.animal
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: campaign, recruitment, progression or post-duel aftermath. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Animal
   effect: >-
     Baneworms gain no experience and may not climb. They do not benefit or suffer from any of the
@@ -523,16 +536,15 @@ rules:
 - id: band--skill-titanic-strength
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.brood-of-ghurash-the-sc.band.titanic-strength
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: forcing a Strength test on a failed wound roll is a combat-resolution
-        mechanic.
+    - id: mechanic.titanic-strength
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.titanic-strength
   name: Titanic Strength
   effect: >-
     The hero is titanic in size and muscle mass. Whenever this Brood member hits an enemy warrior,

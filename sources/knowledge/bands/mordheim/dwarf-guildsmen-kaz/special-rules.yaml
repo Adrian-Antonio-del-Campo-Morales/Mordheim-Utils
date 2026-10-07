@@ -38,15 +38,15 @@ rules:
     band: true
 - id: master-craftsman--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.dwarf-guildsmen-kaz.master-craftsman.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any model in the warband within 6\" of the Dwarf Master Craftsman may use his Leadership
@@ -67,16 +67,14 @@ rules:
     - master-craftsman
 - id: band--shame
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.dwarf-guildsmen-kaz.band.shame
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: campaign progression and psychology (Immune to Psychology, Trollslayer
-        conversion).
+      reason: 'Outside the resolved duel: post-Out-of-Action campaign conversion into a Slayer.'
   name: Shame
   effect: >-
     If a Dwarf hero is taken OOA in any of the following circumstances the Dwarf is so ashamed by
@@ -113,15 +111,14 @@ rules:
     band: true
 - id: band--miners
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.dwarf-guildsmen-kaz.band.miners
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: deployment.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Miners
   effect: >-
     Miners are particularly adept at finding their way underground and at need will make new

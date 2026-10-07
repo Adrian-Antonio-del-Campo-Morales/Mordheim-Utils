@@ -3,15 +3,15 @@ band_id: black-dwarfs
 rules:
 - id: sorcerer--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.black-dwarfs.sorcerer.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: Any warrior within 6“ of the Sorcerer may use his Leadership when taking Ld tests.
   source:
@@ -118,15 +118,15 @@ rules:
     - bull-centaur
 - id: gaolers--nasty-reputation
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.black-dwarfs.gaolers.nasty-reputation
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.fear-human
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-human
   name: Nasty Reputation
   effect: >-
     Gaolers are known for their brutality. The dreaded sight of them and the very thought of being
@@ -209,15 +209,17 @@ rules:
   - chaos-dwarfs
 - id: band--hard-head
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.black-dwarfs.band.hard-head
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: injuries.
+    - id: trait.concussion-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.concussion-immune
+        parameters:
+          value: true
   name: Hard Head
   effect: >-
     Applies to all warriors except Informers. Chaos Dwarfs ignore the special rules for clubs,
@@ -235,6 +237,7 @@ rules:
       especiales de garrotes, mazas y armas similares.
   applies_to:
     band: true
+    profile_ids: [sorcerer, bull-centaur, gaolers, chaos-dwarfs]
 - id: band--armour
   runtime:
     scope: 'NO'

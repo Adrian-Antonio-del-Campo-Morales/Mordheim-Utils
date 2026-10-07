@@ -11,10 +11,22 @@ from mordheim_construction.eligibility import call
 
 ROOT = Path(__file__).resolve().parents[3]
 CASES = json.loads((ROOT / "tests/fixtures/eligibility/decisions.json").read_text())
+RECIPIENT_CASES = json.loads((ROOT / "tests/fixtures/eligibility/entry-recipients.json").read_text())
 
 
 def codes(result):
     return [issue["code"] for issue in (result if isinstance(result, list) else [result]) if issue]
+
+
+@pytest.mark.parametrize("case", RECIPIENT_CASES, ids=lambda case: case["name"])
+def test_printed_entry_recipients_match_the_direct_typescript_module(case):
+    """The transport projects the same offers as `profileFactsProjection`.
+
+    `tests/typescript/domain/shared-eligibility.test.ts` runs the same fixture
+    against the maintained module directly.
+    """
+    facts = call("profileFacts", case["package"], case["profile"], None, {"mappings": {}})
+    assert [offer["item_id"] for offer in facts["equipment_access"]] == case["offers"]
 
 
 @pytest.mark.parametrize("case", CASES, ids=lambda case: case["name"])

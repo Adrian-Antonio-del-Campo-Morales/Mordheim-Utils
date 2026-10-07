@@ -315,3 +315,75 @@ hashes matched the incoming review record before these documentary corrections.
 The preserved §§1–§9 prefix still hashes to the delivered `b3d05428…`.
 The remaining-plan candidate table now routes F016 rather than reopening F019;
 no F016 implementation or reservation is started by this correction.
+
+## 12. H5 source verification — item family tags (2026-10-04)
+
+Follow-up asked whether the crossbow pistol is a crossbow and/or a blackpowder
+weapon in the primary sources, and to touch tags only if the source proves it.
+Decision and provenance, claim by claim.
+
+- **`crossbow_pistol` is not a blackpowder weapon.** The rulebook prints it in
+the **Missile Weapons** section (mordheimer.net `docs/weapons-armour/missile`:
+"miniature crossbows with all the power and accuracy of the real thing"; Range
+10", S4, Shoot In Hand-To-Hand) and it is absent from the Blackpowder section
+(`docs/weapons-armour/blackpowder`). The optional blackpowder misfire rules
+enumerate "(handgun, pistol, blunderbuss, warplock pistol, etc)" and do not
+include it. The official FAQ entry "Q. Does the crossbow pistol count as a
+pistol in the case of the Pistolier skill? A. Yes. All weapons with the name
+pistol (Warplock, duelling, Crossbow) are pistols." (Annual 2002 p. 105)
+classifies it as a *pistol for that skill* by name, not as powder, and the
+Ultimate FAQ sentence "Pistols are listed under Blackpowder weapons…" answers
+the missile-weapon-limit question ("a brace of pistols counts as two missile
+weapons"), not the family of the crossbow pistol. **Decisive:** both published
+lists of warbands that ban blackpowder sell it — Silent Brotherhood
+(broheim.net `…/sealedcity/Silent Brotherhood.pdf` p. 3 equipment list, 35 gc,
+in the warband whose The Silence reads "No warband member or hired sword may
+ever use blackpowder weapons or animals") and Dark Elves (mordheimer.net
+`…/grade-1b-warbands/dark-elves`: "Dark Elves may never use black powder
+weapons", list sells `crossbow_pistol` at 35 gc).
+- **`crossbow_pistol` counts in the `crossbow` family for prohibitions.** It
+fires crossbow bolts and the printed description calls it a miniature crossbow;
+the Outlaws' "crossbows are not permitted" is a family prohibition and the
+audit's family check expects every item of the family to carry the tag, so a
+missing tag would silently hole that clause. Documented tension:
+
+  the Quick Shot errata carves it **out of that one skill**
+  ("shoot twice per turn with a bow or crossbow (but not a crossbow pistol)",
+  already verbatim in `skill.quick-shot`), and the Pistolier FAQ calls it a
+  pistol **for that skill**; neither redefines the weapon family.
+
+- **`superior_blackpowder` carries the `blackpowder` tag.** It is a batch of
+superior blackpowder (out-of-scope consumable, "+1 Strength to all blackpowder
+weapons … for one game"); the catalogue already tags out-of-scope family items
+(`warhorse`/`warhound`/`hunting_hounds` → `animal`). Classification only: no
+combat support is added (the combat engine has no blackpowder references and
+its simulation mapping stays `out_of_scope`), and no band that forbids
+blackpowder offers it in an equipment list, so purchase verdicts are unchanged.
+The tag does reach the hiring clauses: the Dwarf Slayer Pirate's printed kit
+carries the item, so the Knights of the Bitter Moors' "no Black Powder" clause
+(likewise The Silence) now reports the blackpowder exclusion for him — he was
+already rejected as not applicable to Humans, and the affected regression was
+updated to assert the band clause.
+
+Data changed: `sources/knowledge/catalog/items/weapons-ranged.yaml`
+(`crossbow_pistol` → `tags: [crossbow]`) and
+`sources/knowledge/catalog/items/out-of-scope.yaml` (`superior_blackpowder` →
+`tags: [blackpowder]`). Regressions updated with the same provenance: the F019
+fixture and its two suites (the brotherhood's crossbow pistol is kept legal and
+the blackpowder position witnesses use `weapon.pistol`), `construction-blockers`
+(the tag assertion and the corrected `equipmentIssueFor` verdict), the T10
+application gate (the printed purchase is accepted; an unlisted blackpowder
+item is still refused by the composition) and the reconciliation suite's
+synthetic vocabulary case. Audit delta after the change: the three
+`forbidden_family_missing_tag` findings disappear (the two Outlaws
+`crossbow_pistol` rows and the Silent Brotherhood `superior_blackpowder` row)
+and the five `offer_refused` rows for
+`silent-brotherhood-sc/crossbow_pistol` disappear; every other check keeps the
+`findings.json` counts.
+
+Bibliographic limits: the Silent Brotherhood PDF cannot be fetched by the
+read-only URL reader (`application/pdf` unsupported); its p. 3 equipment list is
+quoted from the repository's canonical copy and the search snippet, the same
+page already cited by `equipment-access.yaml`. The p. 105 Annual FAQ entry was
+read through the transcribed FAQ text of the Mordheim FAQ (scribd) and the
+mordheimer.net FAQ pages.

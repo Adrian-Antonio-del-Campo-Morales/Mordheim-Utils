@@ -215,16 +215,22 @@ describe.skipIf(!ARTEFACT_PATH)("T09 §6 blockers (generated artefact)", () => {
     it("publishes the prohibition band-wide through item tags", () => {
       const band = bandFactsOf(reader, SILENCE)!;
       expect(band.equipment_forbids).toEqual(["animal", "blackpowder"]);
-      expect(itemFactsOf(reader, "crossbow_pistol")?.tags).toContain("blackpowder");
+      // H5 source check (2026-10-04): the rulebook prints the crossbow pistol
+      // under Missile Weapons and the brotherhood list sells it at 35 gc, so
+      // the catalogue tags it as a crossbow, not as blackpowder. Provenance:
+      // docs/knowledge/2a2b/tasks/T13-silence-equipment.md section 12.
+      expect(itemFactsOf(reader, "crossbow_pistol")?.tags).toEqual(["crossbow"]);
+      expect(itemFactsOf(reader, "pistol")?.tags).toContain("blackpowder");
     });
 
-    it("rejects every Black Powder item for a member and keeps a legal weapon", () => {
+    it("rejects every Black Powder item for a member and keeps the printed kit", () => {
       const profile = profileFactsOf(reader, SILENCE, "silent-master")!;
-      // The item the band's list offers is refused by the prohibition itself.
-      expect(equipmentIssueFor(reader, profile, "crossbow_pistol")?.code)
-        .toBe("equipment_forbidden");
-      // Every other Black Powder item is refused as well (its list does not
-      // offer them either), and the tag is what makes the family forbidden.
+      // The printed crossbow pistol the band's list offers stays legal.
+      expect(equipmentIssueFor(reader, profile, "crossbow_pistol")).toBeNull();
+      // The Black Powder family is still refused. The list does not offer
+      // these either, so the access verdict fires first; the tag is the family
+      // witness behind it (the decision boundary is covered by the
+      // reconciliation suite).
       for (const itemId of ["pistol", "blunderbuss", "handgun"]) {
         expect(itemFactsOf(reader, itemId)?.tags, itemId).toContain("blackpowder");
         expect(equipmentIssueFor(reader, profile, itemId), itemId).not.toBeNull();
@@ -240,6 +246,7 @@ describe.skipIf(!ARTEFACT_PATH)("T09 §6 blockers (generated artefact)", () => {
         return !tags.includes("blackpowder") && !tags.includes("animal");
       });
       expect(legal).toContain("sword");
+      expect(legal).toContain("crossbow_pistol");
       expect(equipmentIssueFor(reader, profile, "sword")).toBeNull();
     });
 
@@ -289,9 +296,16 @@ describe.skipIf(!ARTEFACT_PATH)("T09 §6 blockers (generated artefact)", () => {
     it("rejects armour for the Runts", () => {
       const runts = profileFactsOf(reader, SNOTLINGS, "runts")!;
       expect(runts.equipment_forbids).toContain("armour");
-      for (const itemId of ["light_armour", "shield"]) {
+      // The shield and the helmet print no recipients, so the Runts' own
+      // prohibition is what refuses them and the verdict carries the token.
+      for (const itemId of ["shield", "helmet"] as const) {
         expect(equipmentIssueFor(reader, runts, itemId)?.code, itemId).toBe("equipment_forbidden");
       }
+      // light_armour prints "Goblin & BigSnotz only" (F074), so the access
+      // verdict fires first for the Runts. The refusal is the printed one; the
+      // armour token behind it stays latent, exactly like the Black Powder kit.
+      expect(equipmentIssueFor(reader, runts, "light_armour")?.code)
+        .toBe("equipment_not_permitted");
     });
 
     it("keeps the shared list usable for the profiles the rule does not name", () => {
@@ -300,7 +314,15 @@ describe.skipIf(!ARTEFACT_PATH)("T09 §6 blockers (generated artefact)", () => {
       expect(profileFactsOf(reader, SNOTLINGS, "runts")!.equipment_lists)
         .toEqual(scouts.equipment_lists);
       expect(scouts.equipment_forbids).not.toContain("armour");
-      expect(equipmentIssueFor(reader, scouts, "light_armour")).toBeNull();
+      // The Runts' rule names no entry, so the unqualified entries of the shared
+      // list stay open to the other Snotling profiles.
+      expect(equipmentIssueFor(reader, scouts, "shield")).toBeNull();
+      expect(equipmentIssueFor(reader, scouts, "helmet")).toBeNull();
+      // The printed "Goblin & BigSnotz only" clause is what narrows light_armour.
+      expect(equipmentIssueFor(reader, scouts, "light_armour")?.code)
+        .toBe("equipment_not_permitted");
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, SNOTLINGS, "bullied-goblin")!, "light_armour"))
+        .toBeNull();
     });
   });
 
@@ -331,6 +353,10 @@ describe.skipIf(!ARTEFACT_PATH)("T09 §6 blockers (generated artefact)", () => {
       const profile = profileFactsOf(reader, OUTLAWS[0], "outlaws")!;
       const issues = memberEquipmentIssuesFor(reader, profile, ["crossbow_pistol"]);
       expect(issues.map((issue) => issue.code)).toContain("equipment_required_missing");
+      // The crossbow pistol carries the `crossbow` family tag (H5), but the
+      // band never offers it: the access verdict fires first and the family
+      // refusal stays latent, as the F020 record states.
+      expect(itemFactsOf(reader, "crossbow_pistol")?.tags).toContain("crossbow");
       // The band lists carry no crossbow: buying one is refused outright.
       expect(equipmentIssueFor(reader, profile, "crossbow_pistol")?.code)
         .toBe("equipment_not_permitted");
@@ -343,6 +369,11 @@ describe.skipIf(!ARTEFACT_PATH)("T09 §6 blockers (generated artefact)", () => {
           .toContain("cleric");
         expect(memberEquipmentIssuesFor(reader, cleric, []), bandId).toEqual([]);
         expect(memberEquipmentIssuesFor(reader, cleric, ["short_bow"]), bandId).toEqual([]);
+        // The printed exception lifts the family only; the missile cap still applies.
+        expect(
+          memberEquipmentIssuesFor(reader, cleric, ["short_bow", "long_bow"]).map((issue) => issue.code),
+          bandId,
+        ).toEqual(["equipment_limit_exceeded"]);
       }
     });
   });
@@ -376,8 +407,13 @@ describe.skipIf(!ARTEFACT_PATH)("T09 §6 blockers (generated artefact)", () => {
     it("rejects a Hired Sword that is not applicable to Humans", () => {
       const decision = hiringDecisionFor(reader, KNIGHTS, "hireling.hired-sword.dwarf-slayer-pirate");
       expect(decision.kind).toBe("rejected");
-      // The refusal comes from the entry's own eligibility, not from the clause.
-      expect(decision.clause).not.toBe("band-clause");
+      // H5: his printed kit carries Superior Blackpowder, so the band's own
+      // clause (no Black Powder) reports first; the entry's non-Human
+      // eligibility still rejects him through the same decision (its static and
+      // expression paths are covered in construction.test.ts).
+      expect(decision.clause).toBe("band-clause");
+      expect(decision.rule_id).toBe("band--hired-swords");
+      expect(decision.reason).toContain("blackpowder");
       expect(decision.issue?.code).toBe("hiring_not_permitted");
     });
 
@@ -395,6 +431,98 @@ describe.skipIf(!ARTEFACT_PATH)("T09 §6 blockers (generated artefact)", () => {
         reader,
       );
       expect(allowed.ok).toBe(true);
+    });
+  });
+
+  describe("Printed entry recipients (F074)", () => {
+    it("refuses a hero-only entry to the henchmen that share the same list", () => {
+      for (const bandId of ["estalian-corsairs-sar", "sartosan-pirates-sar"] as const) {
+        const captain = profileFactsOf(reader, bandId, "captain")!;
+        const crew = profileFactsOf(reader, bandId, "crew")!;
+        // One printed list, two profiles: the clause is local to the entry, so
+        // it never narrows the list itself.
+        expect(crew.equipment_lists, bandId).toEqual(captain.equipment_lists);
+        expect(equipmentIssueFor(reader, captain, "cat_o_nine_tails"), bandId).toBeNull();
+        expect(equipmentIssueFor(reader, crew, "cat_o_nine_tails")?.code, bandId)
+          .toBe("equipment_not_permitted");
+      }
+    });
+
+    it("keeps the unqualified entries of the same list open to everyone", () => {
+      // The Halfling adventurer list prints short_bow without recipients.
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "halflings-mic", "halfling-scouts")!, "short_bow"))
+        .toBeNull();
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "halflings-mic", "halfling-warriors")!, "short_bow"))
+        .toBeNull();
+      // While the neighbouring clauses stay local to their own entry: a
+      // named-profile clause and a hero clause on the same list.
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "halflings-mic", "halfling-cook")!, "bow"))
+        .toBeNull();
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "halflings-mic", "halfling-scouts")!, "bow"))
+        .toBeNull();
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "halflings-mic", "halfling-warriors")!, "bow")?.code)
+        .toBe("equipment_not_permitted");
+      // The "Heroes & Halfling Warriors only" clause on the spear is local too:
+      // the excluded Henchman is refused while the named one keeps it.
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "halflings-mic", "halfling-scouts")!, "spear")?.code)
+        .toBe("equipment_not_permitted");
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "halflings-mic", "halfling-warriors")!, "spear"))
+        .toBeNull();
+    });
+
+    it("restricts a printed recipient to one named henchman", () => {
+      const master = profileFactsOf(reader, "silent-brotherhood-sc", "silent-master")!;
+      const novices = profileFactsOf(reader, "silent-brotherhood-sc", "brotherhood-novices")!;
+      expect(equipmentIssueFor(reader, master, "long_daggers")).toBeNull();
+      expect(equipmentIssueFor(reader, novices, "long_daggers")?.code).toBe("equipment_not_permitted");
+      // The Band's Silence still forbids Black Powder through the tag family:
+      // the brotherhood list carries no pistol, so the access verdict fires
+      // first and the tag stays the family witness behind it.
+      expect(itemFactsOf(reader, "pistol")?.tags).toContain("blackpowder");
+      expect(equipmentIssueFor(reader, master, "pistol")?.code).toBe("equipment_not_permitted");
+    });
+
+    it("reads a Tomb Lord clause from the shared undead list", () => {
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "khemri-tomb-guardians", "tomb-lord")!, "asp_arrows"))
+        .toBeNull();
+      for (const nonRecipient of ["skeleton-warriors", "necrotect"] as const) {
+        expect(equipmentIssueFor(reader, profileFactsOf(reader, "khemri-tomb-guardians", nonRecipient)!, "asp_arrows")?.code, nonRecipient)
+          .toBe("equipment_not_permitted");
+      }
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "khemri-tomb-guardians", "tomb-lord")!, "serpent_staff")?.code)
+        .toBe("equipment_not_permitted");
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "khemri-tomb-guardians", "mortuary-priest")!, "serpent_staff"))
+        .toBeNull();
+    });
+
+    it("carries the printed Slayer vow as a structured prohibition", () => {
+      const slayer = profileFactsOf(reader, "dwarf-slayers-kaz", "troll-slayers")!;
+      const clansman = profileFactsOf(reader, "dwarf-slayers-kaz", "clansmen")!;
+      expect(slayer.equipment_forbids).toEqual(["armour", "ranged-weapons"]);
+      for (const itemId of ["light_armour", "shield", "helmet", "pistol"] as const) {
+        expect(equipmentIssueFor(reader, slayer, itemId)?.code, itemId).toBe("equipment_forbidden");
+      }
+      // The non-Slayer buys on the same list and keeps the armour.
+      expect(clansman.equipment_lists).toEqual(slayer.equipment_lists);
+      expect(clansman.equipment_forbids).toEqual([]);
+      expect(equipmentIssueFor(reader, clansman, "light_armour")).toBeNull();
+      expect(equipmentIssueFor(reader, clansman, "helmet")).toBeNull();
+    });
+
+    it("applies a printed recipient clause across the collections", () => {
+      // Trollheim bands read the same generated artefact and the same decision.
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "lustria-pirates", "pirate-captain")!, "parrot"))
+        .toBeNull();
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "lustria-pirates", "crew")!, "parrot")?.code)
+        .toBe("equipment_not_permitted");
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "lustria-high-elves", "loremaster")!, "mage_staff"))
+        .toBeNull();
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "lustria-high-elves", "explorers")!, "mage_staff")?.code)
+        .toBe("equipment_not_permitted");
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "chaos-streets-deathbringers", "shadow-blade")!, "witch_sword"))
+        .toBeNull();
+      expect(equipmentIssueFor(reader, profileFactsOf(reader, "chaos-streets-deathbringers", "knives")!, "witch_sword")?.code)
+        .toBe("equipment_not_permitted");
     });
   });
 });

@@ -3,15 +3,15 @@ band_id: horned-hunters
 rules:
 - id: horned-hunter--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.horned-hunters.horned-hunter.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6" of the Horned Hunter may use his Leadership value when taking Leadership
@@ -360,15 +360,15 @@ rules:
 - id: band--horned-hunter-special-skills-foul-odour
   kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.horned-hunters.band.horned-hunter-special-skills-foul-odour
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.foul-odour
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.foul-odour
   name: Foul Odour
   effect: >-
     Worshippers of Taal are one and all prodigious drinkers and none too hygienic! This warrior
@@ -490,3 +490,33 @@ rules:
       cuando esté Oculto.
   applies_to:
     band: true
+
+- id: warhounds--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Warhounds never use or need weapons or armour."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 5 Warhounds"
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/horned-hunters
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - warhounds

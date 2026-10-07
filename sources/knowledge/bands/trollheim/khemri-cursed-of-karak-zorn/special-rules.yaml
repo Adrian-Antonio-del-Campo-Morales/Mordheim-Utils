@@ -19,15 +19,15 @@ rules:
     profile_ids:
     - karak-zorn-noble
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.khemri-cursed-of-karak-zorn.karak-zorn-noble.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: priest-of-grungni--devout
   name: Devout
   effect: >-
@@ -725,3 +725,60 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-missile-weapons
+
+- id: cannibal-dwarfs--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "May not use other weapons or any armour. Their primitive bones count as Clubs."
+  source:
+    manual: khemri
+    printed_page: 69
+    section: "1-5 Cannibal Dwarfs"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - cannibal-dwarfs
+- id: shadowed--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Shadowed may not use weapons or armour and suffer no penalty for fighting without equipment."
+  source:
+    manual: khemri
+    printed_page: 69
+    section: "1-5 Shadowed"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - shadowed

@@ -19,15 +19,15 @@ rules:
     profile_ids:
     - pit-king
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.pit-fighters.pit-king.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: pit-king--pit-fighter
   name: Pit Fighter
   effect: This warrior has the warband's Pit Fighter skill.
@@ -221,15 +221,15 @@ rules:
     profile_ids:
     - dwarf-troll-slayer
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.pit-fighters.dwarf-troll-slayer.death-wish
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: pit-veterans--pit-fighter
   name: Pit Fighter
   effect: This warrior has the warband's Pit Fighter skill.
@@ -378,15 +378,15 @@ rules:
     profile_ids:
     - ogre-pit-fighter
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.pit-fighters.ogre-pit-fighter.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: ogre-pit-fighter--large
   name: Large
   effect: >-
@@ -933,3 +933,33 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-missile-weapons
+
+- id: ogre-pit-fighter--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapon.dwarf-axe
+          - material.gromril
+  name: Equipment Restrictions
+  effect: "May select from the Ogre & Slayer Equipment List. Light armour and helmet are available only to the Ogre Pit Fighter; Dwarf Axe and Gromril Weapon are not available to it."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 1 Ogre Pit Fighter"
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/pit-fighters
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - ogre-pit-fighter

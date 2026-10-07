@@ -14,15 +14,15 @@ rules:
     profile_ids:
     - jarl
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.norse-explorers-btb.jarl.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   rule_ref: shared-rule.leader
 - id: beserkers--berserkers
   name: Berserkers
@@ -37,12 +37,12 @@ rules:
     profile_ids:
     - beserkers
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'YES'
     grant: profile
     effects:
     - id: trait.frenzy
-      scope: LATER
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.frenzy
@@ -85,15 +85,15 @@ rules:
     profile_ids:
     - wulfen
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.norse-explorers-btb.wulfen.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: wulfen--bestial
   name: Bestial
@@ -108,15 +108,15 @@ rules:
     profile_ids:
     - wulfen
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.norse-explorers-btb.wulfen.bestial
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   rule_ref: shared-rule.bestial
 - id: wolves--animals
   name: Animals
@@ -200,15 +200,19 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.norse-explorers-btb.band.norse-special-skills-barbarian-courage
-      scope: LATER
+    - id: mechanic.fear-reroll
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-reroll
+    - id: excluded.norse-explorers-btb.all-alone
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: All Alone tests require multiple fighters and are outside Combat Lab 1v1 duels. The printed individual Fear clause is implemented separately.
   rule_ref: shared-rule.barbarian-courage
 - id: band--norse-special-skills-battle-tongue
   kind: warband_skill
@@ -332,3 +336,33 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
+
+- id: wolves--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Wolves never use or need weapons or armour and fight with their natural fangs."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 5 Wolves"
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/norse
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - wolves

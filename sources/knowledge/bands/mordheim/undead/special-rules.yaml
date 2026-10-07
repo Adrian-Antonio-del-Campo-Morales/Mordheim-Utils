@@ -21,15 +21,15 @@ rules:
     profile_ids:
     - vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.undead.vampire.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: vampire--cause-fear
   name: Cause Fear
   source:
@@ -43,15 +43,15 @@ rules:
     profile_ids:
     - vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.undead.vampire.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: vampire--immune-to-psychology
   name: Immune to Psychology
@@ -66,15 +66,15 @@ rules:
     profile_ids:
     - vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.undead.vampire.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   rule_ref: shared-rule.immune-to-psychology
 - id: vampire--immune-to-poison
   runtime:
@@ -160,15 +160,15 @@ rules:
     profile_ids:
     - ghouls
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.undead.ghouls.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: dire-wolves--charge
   name: Charge
@@ -231,15 +231,15 @@ rules:
     profile_ids:
     - dire-wolves
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.undead.dire-wolves.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: dire-wolves--immune-to-psychology
   name: Immune to Psychology
@@ -254,15 +254,15 @@ rules:
     profile_ids:
     - dire-wolves
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.undead.dire-wolves.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   rule_ref: shared-rule.immune-to-psychology
 - id: dire-wolves--immune-to-poison
   runtime:
@@ -348,15 +348,15 @@ rules:
     profile_ids:
     - zombies
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.undead.zombies.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: zombies--may-not-run
   name: May Not Run
@@ -394,15 +394,15 @@ rules:
     profile_ids:
     - zombies
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.undead.zombies.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   rule_ref: shared-rule.immune-to-psychology
 - id: zombies--immune-to-poison
   runtime:

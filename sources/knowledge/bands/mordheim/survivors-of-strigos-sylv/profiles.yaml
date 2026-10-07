@@ -42,7 +42,10 @@ profiles:
   - strigoi-vampire--immune-to-psychology
   - strigoi-vampire--immune-to-poison
   - strigoi-vampire--no-pain
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
+    vampire: true
+    vampire_bloodline: strigoi
   equipment_restrictions_i18n:
     es: Un Vampiro Estigio no puede empuñar armas, pues se apoya en la fuerza bruta, los dientes y las garras. No sufre penalización alguna por luchar sin armas.
 - id: seer
@@ -221,6 +224,7 @@ profiles:
   - giant-bats--flying
   - giant-bats--large
   - giant-bats--sonic
-  combat_traits: {}
+  combat_traits:
+    normal_animal: true
   equipment_restrictions_i18n:
     es: Fauces y brutalidad.

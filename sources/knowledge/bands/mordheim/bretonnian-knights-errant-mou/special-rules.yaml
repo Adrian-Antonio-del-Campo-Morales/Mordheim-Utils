@@ -45,15 +45,14 @@ rules:
     - knights-errant
 - id: knights-errant--knights-virtue
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.bretonnian-knights-errant-mou.knights-errant.knights-virtue
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: 'Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple opponents. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Knights Virtue
   effect: >-
     A Knight Errant is a chivalrous warrior who is superior to ordinary warriors. He will
@@ -148,3 +147,37 @@ rules:
       practiquen la magia o usen veneno, pues los deshonraría.
   applies_to:
     band: true
+- id: knights-errant--hand-to-hand-weapon
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          required_kinds:
+          - close-combat-weapon
+          required_excludes:
+          - weapon.dagger
+  name: Hand-to-Hand Weapon
+  effect: >-
+    A Knight Errant must buy a weapon from the hand-to-hand combat list; a simple dagger is not
+    acceptable. The clause obliges the purchase, not the weapon he fights with.
+  source:
+    manual: broheim.net
+    printed_page: 4
+    section: heroes / 1- 4 Knights Errant / equipment
+    url: https://broheim.net/downloads/warbands/supplement/mousillon/Bretonnian Knights Errant.pdf
+  name_i18n:
+    es: Arma Cuerpo a Cuerpo
+  effect_i18n:
+    es: >-
+      Un Caballero Errante debe comprar un arma de la lista de combate cuerpo a cuerpo; una simple
+      daga no es aceptable. La cláusula obliga a la compra, no al arma con la que lucha.
+  applies_to:
+    profile_ids:
+    - knights-errant

@@ -160,16 +160,15 @@ skills:
     section: Skills / Strength Skills / Fearsome
     url: https://mordheimer.net/docs/campaigns/skills
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: none
     effects:
-    - id: unimplemented.skill.fearsome
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Does not impact duel simulations: psychology rules are outside the current one-against-one
-        combat scope.
+    - id: skill.fearsome
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.fearsome
   name_i18n:
     es: Temible
 - id: skill.haggle
@@ -659,6 +658,15 @@ skills:
     url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dwarf-rangers
   name_i18n:
     es: Maestro de Combate
+  runtime:
+    grant: none
+    scope: 'NO'
+    implemented: 'NO'
+    effects:
+    - id: unimplemented.skill.combat-master
+      scope: 'NO'
+      binding: null
+      reason: Two or more enemies and All Alone tests are outside resolved 1v1 duels.
 - id: skill.expert-swordsman
   name: Expert Swordsman
   category: combat
@@ -674,6 +682,16 @@ skills:
     printed_page: 0
     section: Heroes / 0 – 2 Companions / Special Rules / Expert Swordsman
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.expert-swordsman
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.expert-swordsman
   name_i18n:
     es: Espadachín Experto
   effect_i18n:
@@ -694,6 +712,16 @@ skills:
   engine_option: Jump Up
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs: []
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.jump-up
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.jump-up
   name_i18n:
     es: Ponerse en Pie
 - id: skill.lightning-reflexes
@@ -711,6 +739,16 @@ skills:
     printed_page: 0
     section: Heroes / 0 – 2 Knights Vanguard / Special Rules / Lightning Reflexes
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.lightning-reflexes
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.lightning-reflexes
   name_i18n:
     es: Reflejos Relámpago
   effect_i18n:
@@ -729,6 +767,16 @@ skills:
   engine_option: Mighty Blow
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs: []
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.mighty-blow
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.mighty-blow
   name_i18n:
     es: Golpe Poderoso
 - id: skill.resilient
@@ -743,6 +791,16 @@ skills:
   engine_option: Resilient
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs: []
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.resilient
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.resilient
   name_i18n:
     es: Resiliente
 - id: skill.step-aside
@@ -757,6 +815,16 @@ skills:
   engine_option: Step Aside
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs: []
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.step-aside
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.step-aside
   name_i18n:
     es: Echarse a un Lado
 - id: skill.strike-to-injure
@@ -770,6 +838,16 @@ skills:
   engine_option: Strike to Injure
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs: []
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.strike-to-injure
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.strike-to-injure
   name_i18n:
     es: Golpear para Herir
 - id: skill.strongman
@@ -787,6 +865,16 @@ skills:
     printed_page: 0
     section: Henchmen / 0 – 3 Blackguards / Special Rules / Strongman
     url: https://mordheimer.net/docs/warbands/grade-1c-warbands/merchant-caravans
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.strongman
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.strongman
   name_i18n:
     es: Forzudo
   effect_i18n:
@@ -805,6 +893,16 @@ skills:
   engine_option: Unstoppable Charge
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs: []
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.unstoppable-charge
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.unstoppable-charge
   name_i18n:
     es: Carga Imparable
 - id: skill.web-of-steel
@@ -818,5 +916,15 @@ skills:
   engine_option: Web of Steel
   rules_source_url: https://mordheimer.net/docs/campaigns/skills
   source_refs: []
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: skill.web-of-steel
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.web-of-steel
   name_i18n:
     es: Telaraña de Acero

@@ -18,6 +18,9 @@ equipment_lists:
   - item_id: halberd
     cost: 10
   - item_id: beastmaster_whip
+    applies_to:
+      profile_ids:
+      - beastmaster
     cost: 10
     notes: Beastmaster only; Common. Internal weapon mechanics are intentionally not modelled here.
     notes_i18n:
@@ -49,6 +52,9 @@ equipment_lists:
     notes_i18n:
       es: Precio inicial específico de la fuente.
   - item_id: dark_venom
+    applies_to:
+      profile_types:
+      - hero
     cost: 15
     notes: 'Heroes only; internal poison mechanics are not modelled here. Source label: black venom.'
     notes_i18n:
@@ -59,6 +65,9 @@ equipment_lists:
     notes_i18n:
       es: Solo héroes y corsarios. El precio de la lista inicial es 50 gc; la entrada detallada es 50+2D6 gc, Raro 10. La mecánica interna de esta armadura no se modela aquí deliberadamente.
   - item_id: draich
+    applies_to:
+      profile_types:
+      - hero
     cost: 45
     notes: Heroes only; Rare 11. Internal weapon mechanics are not modelled here.
     notes_i18n:

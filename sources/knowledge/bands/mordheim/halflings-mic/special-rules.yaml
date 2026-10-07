@@ -90,16 +90,15 @@ rules:
     band: true
 - id: halfling-elder--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.halflings-mic.halfling-elder.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leader aura (friendly models within 6" use his Leadership) is a
-        psychology/rout mechanic outside the duel scope.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   source:
     manual: mordheim-index-catalog
@@ -153,15 +152,14 @@ rules:
     - halfling-cook
 - id: halfling-thief--infiltrator
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.halflings-mic.halfling-thief.infiltrator
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: pre-battle deployment (Infiltrate) is outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Infiltrator
   effect: >-
     He may always be placed on the battlefield after enemy warband(s), and can be placed anywheres
@@ -185,16 +183,14 @@ rules:
     - halfling-thief
 - id: halfling-thief--pick-locks
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.halflings-mic.halfling-thief.pick-locks
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: locked doors and exploration actions are outside the current engine
-        scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Pick Locks
   effect: >-
     When testing to open a locked door, a Halfling Thief needs only make a successful Initiative
@@ -271,16 +267,15 @@ rules:
     - piggies
 - id: village-ogre--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.halflings-mic.village-ogre.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Ogre-kin are large and brutish creatures that cause Fear.
   source:
@@ -297,15 +292,14 @@ rules:
     - village-ogre
 - id: village-ogre--large
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.halflings-mic.village-ogre.large
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: Large-target targeting rules are outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Large
   effect: >-
     Ogre-kin are huge, lumbering creatures and therefor make tempting targets for archers. Any
@@ -415,16 +409,14 @@ rules:
     - village-ogre
 - id: halfling-elder--quiet-as-a-mouse
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.halflings-mic.special.quiet-as-a-mouse
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: hidden-movement detection (Initiative-based Spotting) is outside the
-        current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Quiet as a Mouse
   effect: >-
     The halfling as adept at staying as quiet as a mouse whilst hiding. Enemy warriors must use half
@@ -448,17 +440,17 @@ rules:
     - halfling-thief
     - halfling-youths
 - id: halfling-elder--crude-belch
+  kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.halflings-mic.special.crude-belch
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leadership-test-based combat penalties are not covered by the current
-        engine scope.
+    - id: skill.crude-belch-halfling
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.crude-belch-halfling
   name: Crude Belch
   effect: >-
     Having eaten a meal or six, this halfling may release a withering belch to distract his enemies.
@@ -489,15 +481,15 @@ rules:
     - halfling-youths
 - id: halfling-elder--wizened-halfling
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.halflings-mic.special.wizened-halfling
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: Leadership-test rerolls are not covered by the current engine scope.
+    - id: mechanic.wizened-halfling
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.wizened-halfling
   name: Wizened Halfling (Leaders Only)
   effect: >-
     This old halfling is greatly respected by the other members of the warband and they never
@@ -518,17 +510,17 @@ rules:
   applies_to:
     profile_ids:
     - halfling-elder
+  kind: warband_skill
 - id: halfling-elder--stealthy
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.halflings-mic.special.stealthy
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: hidden-movement rules are outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Stealthy (Halfling Thieves Only)
   effect: >-
     The Halfling Thief can hide even after running, and can run while within 8" of enemy models if
@@ -549,15 +541,14 @@ rules:
     - halfling-thief
 - id: halfling-elder--skilled-huntsman
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.halflings-mic.special.skilled-huntsman
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: shooting-from-hiding is outside the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: shooting, casting or escape without resolving the duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Skilled Huntsman
   effect: >-
     The halfling has been hunting things ever since he was young (the more food he has, the better!)
@@ -663,3 +654,32 @@ rules:
     - halfling-youths
     - halfling-scouts
     - halfling-warriors
+
+- id: piggies--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+  name: Equipment Restrictions
+  effect: "None! Apart from their vicious tempers Piggies don't use weapons and can fight without penalties."
+  source:
+    manual: mordheim-index-catalog
+    printed_page: 0
+    section: "0-4 Piggies"
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/halflings
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - piggies

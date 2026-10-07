@@ -5,8 +5,9 @@ from dataclasses import dataclass
 from mordheim_core.models import FighterBuild
 from mordheim_construction.eligibility import call, construction_call, configuration_context, desktop_call, package_facts
 from mordheim_knowledge.loader import BandPackage
-from mordheim_knowledge.loader import load_bands
+from mordheim_construction.combat_packages import combat_packages
 from mordheim_knowledge.loader import load_collections
+from mordheim_knowledge.loader import load_conditions
 from mordheim_knowledge.loader import load_mechanics
 from mordheim_knowledge.loader import load_racial_maximums
 from mordheim_knowledge.loader import load_runtime_scope
@@ -46,6 +47,19 @@ class ProfileRule:
     runtime_grant: bool
 
 
+@dataclass(frozen=True, slots=True)
+class ConditionChoice:
+    """A canonical condition the caller may supply as a current warrior fact.
+
+    The id is what the construction contract receives; the label is display
+    only. The choice list comes from the KB catalogue, so the editor never
+    keeps a second interpretation of a condition.
+    """
+    id: str
+    name: str
+    summary: str
+
+
 
 #: Canonical bindings that lift the two-hand loadout restriction. The rule
 #: that carries one is selectable, so the exception is a fact of the current
@@ -83,7 +97,7 @@ class CombatCatalogue:
             (package.collection, str(package.band["id"])): package
             for collection in load_collections()
             if ruleset in collection.get("rulesets", ())
-            for package in load_bands(str(collection["id"]))
+            for package in combat_packages(str(collection["id"]))
             if package.ruleset == ruleset
         }
         self._mechanics = {
@@ -130,7 +144,7 @@ class CombatCatalogue:
 
     def profiles(self, collection: str, band_id: str) -> tuple[ProfileChoice, ...]:
         package = self._packages[(collection, band_id)]
-        return tuple(ProfileChoice(collection, band_id, str(row["id"]), str(row["name"])) for row in package.profiles)
+        return tuple(ProfileChoice(collection, band_id, str(row["id"]), str(row["name"])) for row in package.profiles if row.get("characteristics"))
 
     def profile(self, choice: ProfileChoice) -> dict:
         """Return profile data for display, not editable UI state."""
@@ -263,6 +277,14 @@ class CombatCatalogue:
         if not isinstance(record, dict):
             return ""
         return display_effect(record)
+
+    def conditions(self) -> tuple[ConditionChoice, ...]:
+        """Canonical conditions the duel runtime can carry as supplied facts."""
+        return tuple(
+            ConditionChoice(str(row["id"]), display_name(row, str(row["id"])), display_effect(row))
+            for row in load_conditions(self.ruleset)
+            if (row.get("runtime") or {}).get("implemented") == "YES"
+        )
 
     @staticmethod
     def _rule_unavailable_reason(rule: dict) -> str | None:
@@ -483,8 +505,11 @@ class CombatCatalogue:
     def equipment_decisions(self, choice: ProfileChoice, item_ids, *, slot: str = "main",
                             main_weapon_id: str | None = None,
                             off_hand_id: str | None = None,
+                            main_poison_id: str | None = None,
+                            off_poison_id: str | None = None,
                             skills: tuple[str, ...] = (),
-                            exception_rule_ids: tuple[str, ...] = ()) -> dict[str, str | None]:
+                            exception_rule_ids: tuple[str, ...] = (),
+                            variant_ids: tuple[str, ...] = ()) -> dict[str, str | None]:
         """Shared decision per candidate item, in one transport call.
 
         Returns the blocking reason per item id (``None`` when the choice is
@@ -493,19 +518,16 @@ class CombatCatalogue:
         installed catalogue supplies the canonical item facts of every
         candidate, so a large comparison still submits a single batch.
         """
-        package, profile, build = self._selection_context(choice)
+        package, profile, build = self._selection_context(choice, variant_ids=variant_ids)
         selections = [{"id": str(item_id), "kind": "equipment", "slot": slot}
                       for item_id in item_ids]
         selections.extend(entry for entry in (
             self._hand_fact(main_weapon_id), self._hand_fact(off_hand_id)) if entry)
-        facts = {
-            "profile": self._profile_facts(package, profile, build),
-            "items": {}, "skills": {skill_id: self._skill_facts(skill_id) for skill_id in skills},
-            "selections": selections,
-            "slots": {"main_weapon_id": main_weapon_id, "off_hand_id": off_hand_id},
-            "operation": {"product": "combat-lab",
-                          "ignores_hand_restrictions": list(exception_rule_ids)},
-        }
+        facts = self._declared_facts(
+            package, profile, build, selections,
+            main_weapon_id=main_weapon_id, off_hand_id=off_hand_id,
+            main_poison_id=main_poison_id, off_poison_id=off_poison_id,
+            skills=skills, exception_rule_ids=exception_rule_ids)
         proposals = [{"kind": "add", "id": str(item_id), "slot": slot} for item_id in item_ids]
         decisions = construction_call("selectionDecisions", build, facts, proposals)
         result: dict[str, str | None] = {}
@@ -530,26 +552,25 @@ class CombatCatalogue:
         return {"id": item_id, "kind": "equipment", "hands": hands} if isinstance(hands, int) else None
 
     def selection_decisions(self, choice: ProfileChoice, proposals, *, main_weapon_id=None,
-                            off_hand_id=None, skills: tuple[str, ...] = (),
-                            exception_rule_ids: tuple[str, ...] = ()) -> dict[str, str | None]:
+                            off_hand_id=None, main_poison_id=None, off_poison_id=None,
+                            skills: tuple[str, ...] = (),
+                            exception_rule_ids: tuple[str, ...] = (),
+                            variant_ids: tuple[str, ...] = ()) -> dict[str, str | None]:
         """Shared verdict per raw proposal, keyed by the proposed entry id.
 
         The same batch primitive the editor uses, exposed for the comparison
         tabs so a large candidate list still submits a single transport call.
         """
-        package, profile, build = self._selection_context(choice)
+        package, profile, build = self._selection_context(choice, variant_ids=variant_ids)
         selections = [{"id": str(proposal["id"]), "kind": "equipment",
                        "slot": proposal.get("slot", "main")} for proposal in proposals]
         selections.extend(entry for entry in (
             self._hand_fact(main_weapon_id), self._hand_fact(off_hand_id)) if entry)
-        facts = {
-            "profile": self._profile_facts(package, profile, build),
-            "items": {}, "skills": {skill_id: self._skill_facts(skill_id) for skill_id in skills},
-            "selections": selections,
-            "slots": {"main_weapon_id": main_weapon_id, "off_hand_id": off_hand_id},
-            "operation": {"product": "combat-lab",
-                          "ignores_hand_restrictions": list(exception_rule_ids)},
-        }
+        facts = self._declared_facts(
+            package, profile, build, selections,
+            main_weapon_id=main_weapon_id, off_hand_id=off_hand_id,
+            main_poison_id=main_poison_id, off_poison_id=off_poison_id,
+            skills=skills, exception_rule_ids=exception_rule_ids)
         decisions = construction_call("selectionDecisions", build, facts, list(proposals))
         return {
             str(decision["proposal"]["id"]): next(
@@ -557,6 +578,28 @@ class CombatCatalogue:
                 str((decision.get("reports") or [{}])[0].get("message")) if decision.get("reports") else None,
             )
             for decision in decisions
+        }
+
+    def _declared_facts(self, package, profile, build, selections, *, main_weapon_id=None,
+                        off_hand_id=None, main_poison_id=None, off_poison_id=None,
+                        skills: tuple[str, ...] = (), exception_rule_ids: tuple[str, ...] = ()) -> dict:
+        """A single-selection comparison context, with the whole-set facts.
+
+        A direct selection is decided against the same band limits and loaded
+        poisons the final validation reads: the band-wide prohibition tokens, the
+        whole-set equipment limits and the active poisons travel with the
+        candidate instead of being resolved only when the kit is confirmed.
+        """
+        band = desktop_call("bandFacts", build, package=package, profile=profile)
+        return {
+            "profile": self._profile_facts(package, profile, build),
+            "items": {}, "skills": {skill_id: self._skill_facts(skill_id) for skill_id in skills},
+            "selections": selections,
+            "slots": {"main_weapon_id": main_weapon_id, "off_hand_id": off_hand_id,
+                      "main_poison_id": main_poison_id, "off_poison_id": off_poison_id},
+            "limits": band["equipment_limits"], "band_forbids": band["equipment_forbids"],
+            "operation": {"product": "combat-lab",
+                          "ignores_hand_restrictions": list(exception_rule_ids)},
         }
 
     def _profile_facts(self, package, profile, build) -> dict:

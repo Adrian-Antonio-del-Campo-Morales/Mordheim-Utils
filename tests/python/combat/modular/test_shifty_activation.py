@@ -151,13 +151,13 @@ def test_public_modular_request_uses_the_canonical_selection(monkeypatch, oppone
     assert result.unresolved == 1
 
 
-def test_canonical_thief_pistol_only_refusal_precedes_any_dice_or_decision(opponent):
+def test_canonical_thief_pistol_bonus_and_shifty_both_execute(opponent):
     thief = compile_fighter(build('halfling-thief', main_weapon_id='weapon.pistol'))
-    dice, decisions = StrictDice([]), StrictDecisions([])
+    dice, decisions = StrictDice([roll('first.shifty'), roll('second'), roll('first')]), StrictDecisions([])
     initial = initialize_duel(thief, opponent, dice,
         context=DuelContext(charging=('second',), active_participant='second'))
-    with pytest.raises(ValueError, match='pistol-only bonus allocation is unresolved'):
-        resolve_round(thief, opponent, initial, dice, decisions)
+    result = resolve_round(thief, opponent, initial, dice, decisions)
+    assert len(result.attacks) == 3
     dice.finish()
     decisions.finish()
 
@@ -177,4 +177,8 @@ def test_low_level_optimized_entries_refuse_without_losing_other_guards(opponent
                  lambda: simulate_duel_parallel(DuelRequest(*pair, simulations=1))):
         with pytest.raises(ValueError, match='Shifty.*modular'):
             call()
-    compile_duel_plan(hero(selected=False), opponent)
+    # The Elder now has an innate modular-only Leader contract, independently
+    # of selected Shifty. A Cook without either contract remains supported.
+    with pytest.raises(ValueError, match='T13 local modifier.*modular'):
+        compile_duel_plan(hero(selected=False), opponent)
+    compile_duel_plan(hero(profile='halfling-cook', selected=False), opponent)

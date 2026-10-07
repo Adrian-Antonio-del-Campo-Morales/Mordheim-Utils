@@ -1,0 +1,279 @@
+# Maintained clarification input for 2A/2B; never regenerate from audit outputs.
+# A resolved decision clarifies meaning/scope; it does not certify implementation.
+# Original audit IDs are permanent even when runtime classification changes them.
+# Match origin ID + raw effect-text SHA-256 before reusing a clarification.
+# Changed text requires review; a missing/renamed target requires reconciliation.
+# Explicit user rulings override source-review interpretations. Permanent rulings
+# remain in docs/decisions/design-rulings.md and are referenced, not re-authored.
+# Add pending entries with decision_status: pending; do not invent a resolution.
+# This initial register covers the 35 F074 residual origins. It is not the full
+# obligation inventory and is not yet consumed by audit/consolidation generators.
+# Generators must preserve this file and derive work/verification status separately.
+schema_version: 1
+clarifications:
+- id: F074-brood-dagger
+  decision_status: resolved
+  basis: source_review
+  resolved_on: '2026-10-06'
+  scope: 'YES'
+  decision: The printed dagger entry restricts the bearer to Henchmen; the restriction is not merely a
+    free-dagger price condition. Apply it to the configured profile kind among declared users of the Brood
+    list.
+  remaining_work: Encode the Henchman entry restriction in shared eligibility. No new user interpretation
+    is needed.
+  references:
+  - https://broheim.net/downloads/warbands/supplement/sealedcity/Brood%20Of%20Ghurash.pdf#page=2
+  origins:
+  - id: source/bands/mordheim/brood-of-ghurash-the-sc/equipment-access.yaml/@/equipment_lists/0/items/0/notes/unclassified
+    effect_sha256: 3c0df8c923f453806f32b1840fdfb74ee5459ea96162ae4716e2f225deecd9a8
+- id: F074-crooked-moon-daggers
+  decision_status: resolved
+  basis: source_review
+  resolved_on: '2026-10-06'
+  scope: 'YES'
+  decision: Poison Daggers belong to the Fanatic list. Their additional appearance on the ordinary Night
+    Goblin list does not grant them to ordinary Goblins. Fanatics already have their own canonical profile
+    and list.
+  remaining_work: Remove or restrict the incorrect general-list offer while retaining the Fanatic route
+    and its source-qualified Black Lotus effect.
+  references:
+  - https://www.broheim.net/downloads/warbands/supplement/karakeightpeaks/Crooked%20Moon.pdf#page=3
+  origins:
+  - id: source/bands/mordheim/crooked-moon-kep/equipment-access.yaml/@/equipment_lists/0/items/8/notes/unclassified
+    effect_sha256: 010a174a2f34aaf5e3c4dddad2e891f7e3d56809b5ed69cdaf7c5eb03f156774
+- id: F074-pirate-variants
+  decision_status: resolved
+  basis: source_review
+  resolved_on: '2026-10-06'
+  scope: 'YES'
+  decision: These qualifiers select warband variants, not unspecified individual nationalities. The Estalian
+    variant adds rapier/heavy armour and removes crossbows; the Wasteland variant adds handguns. Keep
+    other equipment-list and profile prohibitions conjunctive.
+  remaining_work: Reconcile the affected local offers against the canonical variant; do not invent a nationality
+    selector or override other profile restrictions.
+  references:
+  - https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf#page=2
+  origins:
+  - id: source/bands/mordheim/estalian-corsairs-sar/equipment-access.yaml/@/equipment_lists/0/items/16/notes/unclassified
+    effect_sha256: 82aaa060b32e373b9cbcfb41ccfb941f41367a0ef515911f2ee2e4b7caaa850f
+  - id: source/bands/mordheim/estalian-corsairs-sar/equipment-access.yaml/@/equipment_lists/0/items/7/notes/unclassified
+    effect_sha256: 82aaa060b32e373b9cbcfb41ccfb941f41367a0ef515911f2ee2e4b7caaa850f
+  - id: source/bands/mordheim/sartosan-pirates-sar/equipment-access.yaml/@/equipment_lists/0/items/10/notes/unclassified
+    effect_sha256: 606888ea670c0cd99fca5634ca0770108cf2684430954e37fd1cb4fe443d08e4
+  - id: source/bands/mordheim/sartosan-pirates-sar/equipment-access.yaml/@/equipment_lists/0/items/12/notes/unclassified
+    effect_sha256: 37e37cf37d512df0aae757b298243ce72d08f2b5eb6068cfe210208427c20164
+  - id: source/bands/mordheim/sartosan-pirates-sar/equipment-access.yaml/@/equipment_lists/0/items/18/notes/unclassified
+    effect_sha256: 0e3ab4f5071a509dc74fa4d54ffd77bcb892279cbdc7950e08cb8b5560c47f35
+  - id: source/bands/mordheim/sartosan-pirates-sar/equipment-access.yaml/@/equipment_lists/0/items/7/notes/unclassified
+    effect_sha256: 0e3ab4f5071a509dc74fa4d54ffd77bcb892279cbdc7950e08cb8b5560c47f35
+  - id: source/bands/mordheim/wasteland-privateers-sar/equipment-access.yaml/@/equipment_lists/0/items/11/notes/unclassified
+    effect_sha256: dd2571354f0861989eac58bbe54963bdd00aae58b720d44c7be3bb86b1a8937f
+- id: F074-forest-bosspole
+  decision_status: resolved
+  basis: source_review
+  resolved_on: '2026-10-06'
+  scope: 'YES'
+  decision: The Bosspole recipients are Chieftain and Bosses, not every Hero. Its spear contribution and
+    the bearer's Animosity immunity affect the duel; surrounding-group behavior is outside the simulator.
+  remaining_work: Connect the special-equipment route to chieftain/bosses and its individual spear/immunity
+    contributions; the current out_of_scope item label does not prove those contributions are excluded.
+  references:
+  - https://broheim.net/downloads/warbands/supplement/lustria/Forest%20Goblins.pdf#page=2
+  origins:
+  - id: source/bands/mordheim/forest-goblins-lus/equipment-access.yaml/@/equipment_lists/2/items/0/notes/unclassified
+    effect_sha256: 9f427682f7a7a08dca0b9d5129e4298facaf282cad466b5185cc4fbf5c77d8f8
+- id: F074-halfling-aliases
+  decision_status: resolved
+  basis: source_review
+  resolved_on: '2026-10-06'
+  scope: 'YES'
+  decision: The Cook-only footnote refers to parenthesized culinary aliases. It does not prohibit generic
+    dagger, hammer, axe, sword or helmet for other users of the list.
+  remaining_work: No new mechanical bearer restriction. If presentation is revised, distinguish Cook-only
+    culinary labels from the generic item; retain existing generic access.
+  references:
+  - https://broheim.net/downloads/warbands/experimental/Halflings.pdf#page=1
+  - https://broheim.net/downloads/warbands/experimental/Halflings.pdf#page=2
+  origins:
+  - id: source/bands/mordheim/halflings-mic/equipment-access.yaml/@/equipment_lists/0/items/0/notes/unclassified
+    effect_sha256: 10de7b75385a2ce83b517c881e8a915fdbdf17989839d46eded73738f46478c0
+  - id: source/bands/mordheim/halflings-mic/equipment-access.yaml/@/equipment_lists/0/items/1/notes/unclassified
+    effect_sha256: d9cd7c119fe0d23b7c6f55645b08b610e4b83e3888c46b2e1affc49665e9d076
+  - id: source/bands/mordheim/halflings-mic/equipment-access.yaml/@/equipment_lists/0/items/10/notes/unclassified
+    effect_sha256: c099d7b6d6b87160cea0daad34d365a54f279ed46c53da15a256fdcab83da0c2
+  - id: source/bands/mordheim/halflings-mic/equipment-access.yaml/@/equipment_lists/0/items/2/notes/unclassified
+    effect_sha256: 7cbd4f5bc85e57c569a6db383790233c746fab6990940f9c0ea768681b3e9bd7
+  - id: source/bands/mordheim/halflings-mic/equipment-access.yaml/@/equipment_lists/0/items/3/notes/unclassified
+    effect_sha256: bd3b63ff3f05c59605e9a2fcb13773a497438cf8bf96fcf07ab76474b4085741
+- id: F074-mare-heavy-armour
+  decision_status: resolved
+  basis: user_ruling
+  resolved_on: '2026-10-06'
+  scope: 'YES'
+  decision: The user prioritizes the web version over the conflicting PDF. Heavy armour in the Footman
+    list is restricted to Paragon, Gallant and Redeemed Knights, not Pilgrims.
+  remaining_work: Recipients are already applied in the KB and 2A staging. Retain the shared recipient
+    regression and final integration; this decision does not certify an engine.
+  references:
+  - docs/decisions/design-rulings.md#f074-equipment-bearer-rulings--2026-10-06
+  - https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  origins:
+  - id: source/bands/mordheim/order-of-the-mare-web/equipment-access.yaml/@/equipment_lists/0/items/14/notes/unclassified
+    effect_sha256: 72d5da8b9d1fb1af8911762048976a6d45ce17177ae6328d899c63a0047a4026
+- id: F074-mare-lance
+  decision_status: resolved
+  basis: source_review
+  resolved_on: '2026-10-06'
+  scope: 'YES'
+  decision: The lance entry is Knight-only in both the web and PDF tables. The Paragon has a separate
+    explicit lance prohibition, so Knight status alone does not permit it.
+  remaining_work: Encode the entry restriction and preserve Vow of Poverty. The modular engine's unsupported-lance
+    guard remains a separate effect/support task.
+  references:
+  - https://mordheimer.net/docs/warbands/grade-2a-warbands/order-of-the-mare
+  - https://broheim.net/downloads/warbands/web/Order%20of%20the%20Mare.pdf#page=3
+  origins:
+  - id: source/bands/mordheim/order-of-the-mare-web/equipment-access.yaml/@/equipment_lists/0/items/9/notes/unclassified
+    effect_sha256: 72d5da8b9d1fb1af8911762048976a6d45ce17177ae6328d899c63a0047a4026
+- id: F074-mare-mounts
+  decision_status: resolved
+  basis: source_review
+  resolved_on: '2026-10-06'
+  scope: 'NO'
+  decision: The Knight qualifier is present in the mounted-equipment tables. Barding and warhorse entries
+    belong to excluded mount-equipment support; their absence is not a normal-duel implementation blocker.
+  remaining_work: Keep source text and campaign availability; do not introduce mounted combat to resolve
+    these bearer-audit rows.
+  references:
+  - https://broheim.net/downloads/warbands/web/Order%20of%20the%20Mare.pdf#page=3
+  - sources/knowledge/catalog/items/out-of-scope.yaml
+  - docs/decisions/design-rulings.md#combat-lab-remains-a-1v1-duel-simulator--2026-10-04
+  origins:
+  - id: source/bands/mordheim/order-of-the-mare-web/equipment-access.yaml/@/equipment_lists/0/items/15/notes/unclassified
+    effect_sha256: 72d5da8b9d1fb1af8911762048976a6d45ce17177ae6328d899c63a0047a4026
+  - id: source/bands/mordheim/order-of-the-mare-web/equipment-access.yaml/@/equipment_lists/0/items/16/notes/unclassified
+    effect_sha256: 72d5da8b9d1fb1af8911762048976a6d45ce17177ae6328d899c63a0047a4026
+- id: F074-house-equipment
+  decision_status: resolved
+  basis: source_review
+  resolved_on: '2026-10-06'
+  scope: 'YES'
+  decision: A House is selected for the entire warband. Fierezza, Halcon and Baluardo item qualifiers
+    are explicit. Combat Lab already accepts house_guard_house; absence of an eligibility projection is
+    not a missing semantic decision.
+  remaining_work: Transport the selected House into the shared equipment decision, preserving declared
+    lists, individual restrictions and separate price clauses.
+  references:
+  - https://broheim.net/downloads/warbands/supplement/sealedcity/House%20Guard.pdf#page=3
+  - packages/python/roster-construction/mordheim_construction/compiler.py
+  origins:
+  - id: source/bands/mordheim/house-guard-sc/equipment-access.yaml/@/equipment_lists/0/items/10/notes/unclassified
+    effect_sha256: 4fadcd4170e5390db426aa7393601a9b9722771cbee6cae806338eb24d6e59dd
+  - id: source/bands/mordheim/house-guard-sc/equipment-access.yaml/@/equipment_lists/0/items/12/notes/unclassified
+    effect_sha256: a2f5bd6be2005083f301629a93fca60637e296d030a862ae99e1ca5a8d5d02bd
+  - id: source/bands/mordheim/house-guard-sc/equipment-access.yaml/@/equipment_lists/0/items/15/notes/unclassified
+    effect_sha256: b96ec189e1350e41a303c97179910e5ef347f16cbd2fc8d3ca8ff1158d648940
+  - id: source/bands/mordheim/house-guard-sc/equipment-access.yaml/@/equipment_lists/0/items/4/notes/unclassified
+    effect_sha256: 5768cee2a7debe483801283753155d64efabb91b3c5843485cb00abe1d0386e6
+  - id: source/bands/mordheim/house-guard-sc/equipment-access.yaml/@/equipment_lists/0/items/7/notes/unclassified
+    effect_sha256: 5768cee2a7debe483801283753155d64efabb91b3c5843485cb00abe1d0386e6
+  - id: source/bands/mordheim/house-guard-sc/equipment-access.yaml/@/equipment_lists/0/items/9/notes/unclassified
+    effect_sha256: 4fadcd4170e5390db426aa7393601a9b9722771cbee6cae806338eb24d6e59dd
+- id: F074-lizard-poisons
+  decision_status: resolved
+  basis: source_review
+  resolved_on: '2026-10-06'
+  scope: 'YES'
+  decision: Skink Heroes have the source's poison acquisition route but Skinks use these poisons only
+    on missile weapons. Saurus warriors may use them on melee weapons. Trading procedure does not alter
+    this bearer/weapon split.
+  remaining_work: Publish species-and-weapon-qualified eligibility, admitting the Saurus melee use without
+    admitting Skink melee poison or simulating Trading/shooting.
+  references:
+  - https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf#page=2
+  origins:
+  - id: source/bands/mordheim/lizardmen-lus/equipment-access.yaml/@/equipment_lists/2/items/0/notes/unclassified
+    effect_sha256: 23691a163d068eeda971b78638942e87e08c691ae07e301474dbeae53ee81c00
+  - id: source/bands/mordheim/lizardmen-lus/equipment-access.yaml/@/equipment_lists/2/items/1/notes/unclassified
+    effect_sha256: 23691a163d068eeda971b78638942e87e08c691ae07e301474dbeae53ee81c00
+- id: F074-reptile-venom
+  decision_status: resolved
+  basis: source_review
+  resolved_on: '2026-10-06'
+  scope: 'NO'
+  decision: Reptile Venom belongs to Skink Henchmen missile weapons and lasts one battle. It has no admitted
+    melee contribution.
+  remaining_work: Retain the source and campaign/shooting data; no duel operator is required.
+  references:
+  - https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf#page=2
+  - docs/decisions/design-rulings.md#combat-lab-remains-a-1v1-duel-simulator--2026-10-04
+  origins:
+  - id: source/bands/mordheim/lizardmen-lus/equipment-access.yaml/@/equipment_lists/2/items/2/notes/unclassified
+    effect_sha256: 26502a5bc0000e08198fbe6a862a680649345c5ee1f6241b29cd0719b910f4ec
+- id: F074-lizard-sacred-marks
+  decision_status: resolved
+  basis: source_review
+  resolved_on: '2026-10-06'
+  scope: 'YES'
+  decision: Sacred Markings are Hero-only, with at most one marking. Oversized Jaws is Saurus-only and
+    modifies its bite; Poison Glands is Skink-only and supplies a replacement bite. Recruitment timing
+    is a separate acquisition clause.
+  remaining_work: Connect source-qualified Hero/species eligibility and the complete admitted bite contributions;
+    do not treat the catalogue's out_of_scope labels as a semantic exclusion of melee effects.
+  references:
+  - https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf#page=2
+  - https://broheim.net/downloads/warbands/supplement/lustria/Lizardmen.pdf#page=3
+  origins:
+  - id: source/bands/mordheim/lizardmen-lus/equipment-access.yaml/@/equipment_lists/2/items/3/notes/unclassified
+    effect_sha256: 5399b97174865dc26f6fe9badebc0d054c6df5d1fdfc79137321706e64264eee
+  - id: source/bands/mordheim/lizardmen-lus/equipment-access.yaml/@/equipment_lists/2/items/4/notes/unclassified
+    effect_sha256: 411effa013c9135ccf5894db5b9b9b5304318437f4d4267e4bfb0acb837a3b63
+- id: F074-sniper-equipment
+  decision_status: resolved
+  basis: source_review
+  resolved_on: '2026-10-06'
+  scope: 'YES'
+  decision: Sniper is a chosen Modus Operandi of a Hero other than the Silent Master, not a missing standalone
+    profile. The ranged entries are conditional on that specialization.
+  remaining_work: Project the existing source specialization into shared eligibility; do not grant the
+    entries to all Heroes or infer a new profile. Shooting resolution remains excluded.
+  references:
+  - https://broheim.net/downloads/warbands/supplement/sealedcity/Silent%20Brotherhood.pdf#page=2
+  origins:
+  - id: source/bands/mordheim/silent-brotherhood-sc/equipment-access.yaml/@/equipment_lists/0/items/7/notes/unclassified
+    effect_sha256: ade1a3bbfeb337ec011fafe265dd9ae3cba9ee9029b157831fd5422fbf2ca50f
+  - id: source/bands/mordheim/silent-brotherhood-sc/equipment-access.yaml/@/equipment_lists/0/items/9/notes/unclassified
+    effect_sha256: ade1a3bbfeb337ec011fafe265dd9ae3cba9ee9029b157831fd5422fbf2ca50f
+- id: F074-underworld-leaders
+  decision_status: resolved
+  basis: source_review
+  resolved_on: '2026-10-06'
+  scope: 'YES'
+  decision: The warband has two leaders. Man Catcher is printed on both faction equipment lists with a
+    Leader-only qualifier; both Goblin Bully and Skaven Slum Lord qualify. The KB's unconnected miscellaneous-list
+    placement is not a source ambiguity.
+  remaining_work: Restore source-backed access for the two canonical leaders through their declared lists;
+    do not select an invented sole leader or grant it to every Hero.
+  references:
+  - https://broheim.net/downloads/warbands/supplement/mutinyinmarienburg/Underworld%20Alliance.pdf#page=2
+  origins:
+  - id: source/bands/mordheim/underworld-alliance-mim/equipment-access.yaml/@/equipment_lists/2/items/3/notes/unclassified
+    effect_sha256: c68785c42f3b5b7c4daaf182fcba014fdafba56e9ef9af66df9ab566bacf30d0
+- id: F074-wood-elf-ithilmar
+  decision_status: resolved
+  basis: user_ruling
+  resolved_on: '2026-10-06'
+  scope: 'YES'
+  decision: The user restricts the local Ithilmar weapon and armour entries to Heroes, including promoted
+    Henchmen. The discount/rarity rules are separate acquisition conditions, not exceptions to use eligibility.
+  remaining_work: Hero-type entry restrictions are already applied to both local lists and 2A staging;
+    retain promotion.hero regression and final integration. Do not change printed prices or impose a global
+    restriction on other warbands' Ithilmar items.
+  references:
+  - docs/decisions/design-rulings.md#f074-equipment-bearer-rulings--2026-10-06
+  - https://broheim.net/downloads/warbands/web/Wood%20Elves%20of%20Athel%20Loren.pdf#page=2
+  origins:
+  - id: source/bands/mordheim/wood-elves-of-athel-loren-web/equipment-access.yaml/@/equipment_lists/1/items/4/notes/unclassified
+    effect_sha256: 936d4b46ee5f9148c820dba686910c09603bef59bec4af5bcfb069e16c812f3c
+  - id: source/bands/mordheim/wood-elves-of-athel-loren-web/equipment-access.yaml/@/equipment_lists/1/items/9/notes/unclassified
+    effect_sha256: 7351121c4e7bea910940ade66652f2e0c0ff5669d32d3539f1b542c9acae7b9e

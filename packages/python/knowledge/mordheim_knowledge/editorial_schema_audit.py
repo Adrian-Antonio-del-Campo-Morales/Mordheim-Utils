@@ -74,6 +74,14 @@ JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str | dict[str, str]] = {
     ): "mirror of the TRAIT_TYPES registry, guarded by its own test",
     (
         "profiles.yaml.schema.json",
+        "unused_enum_value",
+        "#/$defs/profile.combat_traits.vampire_bloodline",
+    ): {
+        "str:lahmian": "compile_fighter accepts this Vampire bloodline and emits its vampire-bloodline tag",
+        "str:von-carstein": "compile_fighter accepts this Vampire bloodline and emits its vampire-bloodline tag",
+    },
+    (
+        "profiles.yaml.schema.json",
         "unused_type",
         "#/$defs/profile.group_size.maximum",
     ): "`int | None` in knowledge_port/profile: the campaign engines branch on `is not None`",
@@ -302,6 +310,14 @@ JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str | dict[str, str]] = {
         "str:animal": "a beast attached to a warband is a canonical `profile.type` of profiles.yaml",
         "str:henchman": "a list printed for a henchman group is a valid recipient; `henchman` is a canonical `profile.type`",
         "str:summoned": "a summoned creature is a canonical `profile.type` of profiles.yaml",
+    },
+    (
+        "equipment-access.yaml.schema.json",
+        "unused_enum_value",
+        "#/$defs/equipment_entry.applies_to.profile_types[]",
+    ): {
+        "str:animal": "entryReachesProfile compares this canonical profile.type with entry recipients, as it does for list recipients",
+        "str:summoned": "entryReachesProfile compares this canonical profile.type with entry recipients, as it does for list recipients",
     },
 }
 

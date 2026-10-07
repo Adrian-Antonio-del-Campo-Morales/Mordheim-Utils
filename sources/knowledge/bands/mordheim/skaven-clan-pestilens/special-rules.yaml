@@ -19,15 +19,15 @@ rules:
     profile_ids:
     - plague-priest
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-clan-pestilens.plague-priest.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: pestilens-sorcerer--spellcaster
   name: Spellcaster
   effect: >-
@@ -93,15 +93,15 @@ rules:
     profile_ids:
     - rat-ogre
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-clan-pestilens.rat-ogre.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: rat-ogre--stupidity
   name: Stupidity
@@ -116,15 +116,22 @@ rules:
     profile_ids:
     - rat-ogre
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-clan-pestilens.rat-ogre.stupidity
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.skaven-clan-pestilens.rat-ogre.stupidity.outside-duel
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: psychology or mounts.
+        Board movement, campaign progression/participation and independently
+        simulated helper/rider/group producers are outside the 1v1 duel.
+        Admissible individual exemptions and bonuses are supplied active facts.
   rule_ref: shared-rule.stupidity
 - id: rat-ogre--experience
   name: Experience

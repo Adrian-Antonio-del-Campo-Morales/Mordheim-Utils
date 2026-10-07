@@ -3,15 +3,15 @@ band_id: lizardmen
 rules:
 - id: skink-priest--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lizardmen.skink-priest.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     The Skink Priest is the leader of the Warband and any Lizardmen within 6" may use his Leadership
@@ -115,15 +115,15 @@ rules:
     - kroxigor
 - id: kroxigor--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lizardmen.kroxigor.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   effect: Kroxigor are large and frightening monsters that cause Fear.
   source:
@@ -291,15 +291,21 @@ rules:
     - saurus-braves
 - id: band--cold-blooded
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.lizardmen.band.cold-blooded
-      scope: LATER
+    - id: mechanic.cold-blooded-psychology
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.cold-blooded-psychology
+    - id: unimplemented.lizardmen.band.cold-blooded.rout
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: psychology.
+        Outside Combat Lab's 1v1 scope: warband Rout tests and their
+        Saurus/Kroxigor Leadership-provider restriction.
   name: Cold Blooded
   effect: >-
     When taking a Psychology test or Rout test, Lizardmen roll 3D6 and use the lowest two dice. A

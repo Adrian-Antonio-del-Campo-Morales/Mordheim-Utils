@@ -27,16 +27,14 @@ rules:
     band: true
 - id: band--short-shanks
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.militiant-mootlanders-mim.band.short-shanks
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Short Shanks
   effect: >-
     Halflings riding draft horses, warhorses or anything larger than a mule or mountain goat move 2
@@ -85,16 +83,14 @@ rules:
     band: true
 - id: band--spry
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.militiant-mootlanders-mim.band.spry
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Spry
   effect: Any Halfling Rogue may run or charge while climbing.
   source:
@@ -139,16 +135,15 @@ rules:
     band: true
 - id: burgermeister--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.militiant-mootlanders-mim.burgermeister.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6 inches of the Burgermeister may use his Leadership value instead of his own
@@ -267,16 +262,14 @@ rules:
     - thieves
 - id: thieves--infiltration
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.militiant-mootlanders-mim.thieves.infiltration
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Infiltration
   effect: A Halfling Thief can infiltrate. See the Skaven special skill of the same name.
   source:
@@ -294,16 +287,14 @@ rules:
     - thieves
 - id: thieves--pick-locks
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.militiant-mootlanders-mim.thieves.pick-locks
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Pick Locks
   effect: >-
     When testing to open a locked door, the Thief just needs to make an Initiative test in order to

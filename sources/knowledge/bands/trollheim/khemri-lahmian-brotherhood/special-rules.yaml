@@ -19,15 +19,15 @@ rules:
     profile_ids:
     - lahmian-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.khemri-lahmian-brotherhood.lahmian-vampire.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: lahmian-vampire--undead
   name: Undead
   effect: >-
@@ -47,15 +47,15 @@ rules:
     profile_ids:
     - lahmian-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.khemri-lahmian-brotherhood.lahmian-vampire.undead
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.undead
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.undead
 - id: lahmian-vampire--local-knowledge
   name: Local Knowledge
   effect: >-
@@ -421,15 +421,15 @@ rules:
     profile_ids:
     - spirits
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.khemri-lahmian-brotherhood.spirits.undead
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.undead
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.undead
 - id: spirits--spiritual-weapons
   runtime:
     scope: 'YES'
@@ -961,3 +961,139 @@ rules:
       binding: null
       reason: >-
         Out of scope: campaign, shooting, movement, terrain, deployment, magic, or non-duel context.
+
+- id: blood-slaves--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - snake_whip
+  name: Equipment Restrictions
+  effect: "Foreign background only. Use the Foreign Warband Undead Equipment List. May not select the Snake Whip; it is restricted to the Lahmian Vampire and Blood Sister."
+  source:
+    manual: khemri
+    printed_page: 88
+    section: "0-5 Blood Slaves"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - blood-slaves
+- id: lackeys--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - snake_whip
+  name: Equipment Restrictions
+  effect: "Use only the Undead Equipment List assigned by the selected Foreign or Native background. May not select the Snake Whip; it is restricted to the Lahmian Vampire and Blood Sister."
+  source:
+    manual: khemri
+    printed_page: 87
+    section: "0-2 Lackeys"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - lackeys
+- id: necromancer--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - snake_whip
+  name: Equipment Restrictions
+  effect: "Use only the Undead Equipment List assigned by the selected Foreign or Native background. May not select the Snake Whip; it is restricted to the Lahmian Vampire and Blood Sister."
+  source:
+    manual: khemri
+    printed_page: 86
+    section: "0-1 Necromancer"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - necromancer
+- id: skeleton-warriors--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - snake_whip
+  name: Equipment Restrictions
+  effect: "Use only the Undead Equipment List assigned by the selected Foreign or Native background. May not select the Snake Whip; it is restricted to the Lahmian Vampire and Blood Sister."
+  source:
+    manual: khemri
+    printed_page: 88
+    section: "Skeleton Warriors"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - skeleton-warriors
+- id: spirits--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - snake_whip
+  name: Equipment Restrictions
+  effect: "Native background only. Use the Native Warband Undead Equipment List. May not select the Snake Whip; it is restricted to the Lahmian Vampire and Blood Sister."
+  source:
+    manual: khemri
+    printed_page: 89
+    section: "0-5 Spirits"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - spirits

@@ -19,6 +19,7 @@ from mordheim_knowledge.campaign import load_campaign_catalog
 from mordheim_knowledge.campaign import load_hirelings
 from mordheim_knowledge.campaign import load_post_battle_sequence
 from mordheim_knowledge.campaign import load_warband_groups
+from mordheim_knowledge.loader import load_skills
 
 
 SEQUENCE_STEP_IDS = (
@@ -242,6 +243,32 @@ def test_hireling_catalogue_rejects_undeclared_rule_reference(monkeypatch):
     _spoof(monkeypatch, "core.yaml", mutate)
     with pytest.raises(ValueError, match="references undeclared rules"):
         load_hirelings()
+
+
+def test_hireling_catalogue_starting_skills_resolve_in_the_skill_catalogue():
+    """T13-F037: every declared starting skill resolves in the skill catalogue.
+
+    The hireling loader validates rule and item references but not the
+    ``starting_skill_ids`` yet; this regression locks the data contract so a
+    dangling reference cannot reappear silently.
+    """
+    skills = {str(row["id"]) for row in load_skills("mordheim")}
+    unresolved = sorted(
+        (profile["id"], skill_id)
+        for profile in load_hirelings().profiles
+        for skill_id in profile.get("starting_skill_ids") or ()
+        if skill_id not in skills
+    )
+    assert unresolved == []
+    aldred = next(
+        profile for profile in load_hirelings().profiles
+        if profile["id"] == "hireling.dramatis.aldred-fellblade"
+    )
+    assert "skill.sigmar-s-sign" in aldred["starting_skill_ids"]
+    assert "skill.sign-of-sigmar" not in aldred["starting_skill_ids"]
+    assert {"skill.protection-of-sigmar", "skill.righteous-fury"} <= set(
+        aldred["starting_skill_ids"]
+    )
 
 
 def test_warband_groups_registry_loads_and_resolves():

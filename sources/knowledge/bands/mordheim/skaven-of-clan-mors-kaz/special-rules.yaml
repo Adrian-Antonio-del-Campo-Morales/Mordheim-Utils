@@ -34,15 +34,15 @@ rules:
     band: true
 - id: claw-leader--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-mors-kaz.claw-leader.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any model in the warband within 6\" of the Claw Leader may use his Leadership instead of their
@@ -206,15 +206,15 @@ rules:
     - skavenslaves
 - id: rat-ogre--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-mors-kaz.rat-ogre.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (cause fear).
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Rat Ogres are so frightening they cause fear.
   source:
@@ -231,15 +231,22 @@ rules:
     - rat-ogre
 - id: rat-ogre--stupidity
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-mors-kaz.rat-ogre.stupidity
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.skaven-of-clan-mors-kaz.rat-ogre.stupidity.outside-duel
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: psychology (stupidity).
+        Board movement, campaign progression/participation and independently
+        simulated helper/rider/group producers are outside the 1v1 duel.
+        Admissible individual exemptions and bonuses are supplied active facts.
   name: Stupidity
   source:
     manual: broheim.net

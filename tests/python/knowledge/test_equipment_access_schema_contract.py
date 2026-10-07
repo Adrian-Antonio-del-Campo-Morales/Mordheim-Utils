@@ -164,8 +164,16 @@ def test_malformed_list_note_blocks_are_rejected():
 
 
 def test_every_declared_recipient_kind_validates():
+    schema = editorial_schemas.schema_for(SCHEMA)
+    profile_kinds = editorial_schemas.schema_for(PROFILES_SCHEMA)["$defs"]["profile"]["properties"]["type"]["enum"]
+    for definition in ("equipment_list", "equipment_entry"):
+        kinds = schema["$defs"][definition]["properties"]["applies_to"]["properties"]["profile_types"]["items"]["enum"]
+        assert set(kinds) == set(profile_kinds)
     for kind in ("hero", "henchman", "animal", "summoned"):
         assert problems(equipment_access(applies_to={"profile_types": [kind]})) == [], kind
+        entry = equipment_access()
+        entry["equipment_lists"][0]["items"][0]["applies_to"] = {"profile_types": [kind]}
+        assert problems(entry) == [], kind
 
 
 def test_undeclared_or_malformed_recipient_blocks_are_rejected():
@@ -207,11 +215,17 @@ def test_a_new_recipient_value_is_a_finding(monkeypatch):
     clone["$defs"]["equipment_list"]["properties"]["applies_to"]["properties"]["profile_types"][
         "items"
     ]["enum"].append("swarm")
+    clone["$defs"]["equipment_entry"]["properties"]["applies_to"]["properties"]["profile_types"][
+        "items"
+    ]["enum"].append("swarm")
     findings = audit.audit_strictness(KNOWLEDGE)
     declared = finding(findings, RECIPIENT_VOCABULARY, "unused_enum_value")
     assert declared is not None
     assert declared.members == ("str:animal", "str:henchman", "str:summoned", "str:swarm")
     assert declared in audit.unjustified_findings(findings)
+    entry = finding(findings, "#/$defs/equipment_entry.applies_to.profile_types[]", "unused_enum_value")
+    assert entry is not None and "str:swarm" in entry.members
+    assert entry in audit.unjustified_findings(findings)
 
 
 # --------------------------------------------------------------------------- #

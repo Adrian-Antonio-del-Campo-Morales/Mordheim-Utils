@@ -10,8 +10,9 @@
  * (`commitInitialWarband`) and the service seam (`assignEquipment`,
  * `transferEquippedItem`), for the published cases the review named:
  *
- * - `silent-brotherhood-sc / silent-master` + `crossbow_pistol` (band forbids
- *   `blackpowder`);
+ * - `silent-brotherhood-sc / silent-master` + `crossbow_pistol` (the printed
+ *   list item; H5 shows it is not blackpowder, so the gate accepts it) and an
+ *   unlisted blackpowder item (still refused);
  * - `outlaws-of-stirwood-forest-redux-fbg / bandit-leader` (band compiles the kit
  *   from `bow` only, one missile weapon, `cleric` exempt);
  * - `khemri-lahmian-brotherhood / lahmian-vampire` (the background variant
@@ -99,25 +100,23 @@ describe.skipIf(!ARTEFACT_PATH)("T10 review: the equipment contract on the incre
   const artefact = readArtefactDocument(ARTEFACT_PATH as string);
   const reader = ArtefactKnowledgeReader.from(artefact);
 
-  it("refuses a blackpowder item the band forbids, on the purchase and at the confirmation", () => {
+  it("accepts the printed crossbow pistol and still refuses an unlisted blackpowder item", () => {
+    // H5 source check (2026-10-04): the rulebook prints the crossbow pistol
+    // under Missile Weapons and the brotherhood list sells it at 35 gc, so the
+    // band's own Silence does not refuse it. Provenance:
+    // docs/knowledge/2a2b/tasks/T13-silence-equipment.md section 12.
     const document = draftDocument(SHADOWS, [warrior("master", "silent-master", "hero")]);
-    const bought = buyDraftEquipment(document, { warrior_id: "master", item_id: "crossbow_pistol", unit_price: 25 }, reader);
-    expect(bought.ok).toBe(false);
-    if (!bought.ok) {
-      expect(bought.reason).toBe("limit_violated");
-      expect(bought.message).toContain("blackpowder");
-      expect(bought.subject_ids).toEqual([SHADOWS, "silent-master", "crossbow_pistol"]);
-    }
-    // The confirmation route reaches the same verdict even when the item is
-    // already on the roster: it is the composition that is judged. The roster
-    // satisfies the band minimums so the equipment verdict is what refuses it.
+    const bought = buyDraftEquipment(document, { warrior_id: "master", item_id: "crossbow_pistol", unit_price: 35 }, reader);
+    expect(bought.ok, bought.ok ? "" : bought.message).toBe(true);
+    // A blackpowder item the band's lists do not offer cannot enter the roster:
+    // the confirmation route judges the composition and refuses it.
     const composed = draftDocument(SHADOWS, [
-      warrior("master", "silent-master", "hero", 1, [item("crossbow_pistol")]),
+      warrior("master", "silent-master", "hero", 1, [item("pistol")]),
       warrior("novices", "brotherhood-novices", "henchman", 2),
     ]);
     const committed = commitInitialWarband(composed, reader);
     expect(committed.ok).toBe(false);
-    if (!committed.ok) expect(committed.message).toContain("blackpowder");
+    if (!committed.ok) expect(committed.message).toContain("not on any equipment list");
   });
 
   it("refuses a missile weapon the band does not offer, and the family outside its printed list", () => {
@@ -152,13 +151,16 @@ describe.skipIf(!ARTEFACT_PATH)("T10 review: the equipment contract on the incre
     if (!committed.ok) expect(committed.message).toContain("no \"bow\"");
   });
 
-  it("leaves the exempt profile free of the family and the missile cap", () => {
+  it("keeps the missile cap on the profile exempt from the compulsory family", () => {
     const document = draftDocument(OUTLAWS, [warrior("cleric", "cleric", "hero")]);
+    // The printed exception only lifts the compulsory bow: the Cleric may carry
+    // none or one missile weapon, never two.
     const bow = buyDraftEquipment(document, { warrior_id: "cleric", item_id: "bow", unit_price: 10 }, reader);
     expect(bow.ok, bow.ok ? "" : bow.message).toBe(true);
     if (!bow.ok) return;
     const second = buyDraftEquipment(bow.state, { warrior_id: "cleric", item_id: "long_bow", unit_price: 20 }, reader);
-    expect(second.ok, second.ok ? "" : second.message).toBe(true);
+    expect(second.ok).toBe(false);
+    if (!second.ok) expect(second.message).toContain("missile weapons");
   });
 
   it("activates the equipment lists the selected background publishes", () => {

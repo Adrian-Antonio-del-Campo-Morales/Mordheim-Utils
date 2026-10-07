@@ -264,6 +264,12 @@ value at either path is a member the mapping does not name and stays a finding.
 A mapped member the documents start exercising turns the entry stale, exactly
 like an entry that stops matching a finding.
 
+Equipment-entry recipients retain the same canonical profile-type vocabulary:
+the unused `animal` and `summoned` members are justified individually by
+`entryReachesProfile`. The profile trait's unused `lahmian` and `von-carstein`
+bloodlines are likewise justified individually by the compiler's accepted
+bloodline/tag contract. These mappings do not excuse new unused enum members.
+
 The audit reads the same merged schemas the validators use, aggregates evidence
 by definition instead of by use site, and counts a branch's vocabulary only when
 the branch matches — so "nothing uses it" means the whole knowledge base, not

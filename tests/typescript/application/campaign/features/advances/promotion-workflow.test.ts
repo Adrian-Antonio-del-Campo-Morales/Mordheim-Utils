@@ -10,8 +10,10 @@ import { describe, expect, it } from "vitest";
 import type { CampaignDocument } from "@domain/campaign/index";
 import type { KnowledgeReader } from "@domain/campaign/kernel/ports";
 import {
+  commitAdvanceChoice,
   promoteHenchman,
   promotionHeroTables,
+  promotionTablesForWarrior,
   resolveAdvanceRoll,
   setPromotionSkillTables,
 } from "@app/campaign/features/advances/advance-resolution-workflow";
@@ -186,5 +188,107 @@ describe("setPromotionSkillTables (desktop set_promotion_skill_tables)", () => {
     if (!badTable.ok) expect(badTable.message).toContain("available");
     const wrongCount = setPromotionSkillTables(promoted.document, reader(), { warrior_id: hero.id, tables: ["Combat"] });
     expect(wrongCount.ok).toBe(false);
+  });
+});
+
+/**
+ * External-audit regression: the printed promotion grant of the Ogre
+ * (`compiler.promoted-hero-skill-access`) governs the promoted Hero's tables
+ * without granting them to the unpromoted Henchman.
+ */
+describe("promoted Ogre skill tables (compiler.promoted-hero-skill-access)", () => {
+  const OGRE_BAND = "ostlanders";
+  function ogreReader(): CatalogueReader {
+    const queryKnowledge: CatalogueReader["queryKnowledge"] = (query) => {
+      if (query.id.kind === "skill_id") {
+        const value = query.id.value as string;
+        if (value === "skill.arcane-lore" || value === "skill.mighty-blow") return { ok: true, record: {
+          kind: "skill", id: { kind: "skill_id", value }, names: { en: value },
+          data: { category: value === "skill.arcane-lore" ? "academic" : "strength" } } };
+      }
+      return { ok: false as const, reason: "not_found" };
+    };
+    return {
+      queryKnowledge,
+      queryMany: (queries) => queries.map((query) => queryKnowledge(query)),
+      list: (kind) => kind === "profile" ? [
+        { id: "ogre", band_id: OGRE_BAND, type: "henchman", skill_access: [], promotion_skill_access: ["combat", "strength"] },
+        { id: "elder", band_id: OGRE_BAND, type: "hero", skill_access: ["combat", "shooting", "strength", "speed", "special"] },
+      ] : [],
+      campaignSection: () => ({}),
+    };
+  }
+
+  /** A promoted Ogre Hero with a pending skill advance; `skillAccess` is the state under test. */
+  function promotedOgre(skillAccess: readonly string[]): CampaignDocument {
+    const doc: unknown = {
+      view: {},
+      campaign: {
+        identity: { campaign_name: "Promo", warband_name: "Test", warband_type: "Ostlanders", band_id: OGRE_BAND, mercenary_variant: null },
+        configuration: { is_draft: false, starting_gold: 500, minimum_models: 3, maximum_models: 15, hero_limit: 5 },
+        resources: { stash_value: 0, rare_finds: 0, treasures: 0, campaign_points: 0 },
+        current_state_number: 1,
+        warriors: [{ id: "ogre#promoted", name: "Ogre Champion", profile_name: "Ogre", kind: "hero", profile_id: "ogre",
+          stats: { M: 6, WS: 3, BS: 2, S: 4, T: 4, W: 3, I: 3, A: 1, Ld: 8 }, equipment: [], skills: [], experience: 8, cost: 110,
+          skill_access: [...skillAccess] }],
+        battles: [], states: [{ number: 1, date: "2026-09-10", gold: 500, wyrdstone: 0, rating: 0, models: 1, max_models: 15, heroes: 1, henchmen: 0, experience: 8 }],
+        post_battles: [{ battle_number: 1, complete: false, active_step: 0, completed_steps: [], review_open: false,
+          pending_follow_ups: [],
+          pending_advances: [{ warrior_id: "ogre#promoted", warrior_name: "Ogre Champion", table: "hero", threshold: null,
+            roll_total: 11, subroll: null, committed: false, applied_label: "", advance_options: [{ kind: "choose_skill" }] }],
+          veteran_pool: 0, sale_resolved: true, step_state: {}, gold_delta: 0, equipment_obligations: [], event_log: [], searches: {} }],
+        inventory: [], special_rules: [], manual_log: [],
+      },
+    };
+    return doc as CampaignDocument;
+  }
+
+  /** A pending promotion of a single Ogre Henchman in the Ostlanders band. */
+  function makeOgrePromotion(): CampaignDocument {
+    const doc: unknown = {
+      view: {},
+      campaign: {
+        identity: { campaign_name: "Promo", warband_name: "Test", warband_type: "Ostlanders", band_id: OGRE_BAND, mercenary_variant: null },
+        configuration: { is_draft: false, starting_gold: 500, minimum_models: 3, maximum_models: 15, hero_limit: 5 },
+        resources: { stash_value: 0, rare_finds: 0, treasures: 0, campaign_points: 0 },
+        current_state_number: 1,
+        warriors: [{ id: "ogres", name: "Ogres", profile_name: "Ogre", kind: "henchman", profile_id: "ogre",
+          stats: { M: 6, WS: 3, BS: 2, S: 4, T: 4, W: 3, I: 3, A: 1, Ld: 8 }, equipment: [], skills: [], experience: 8, cost: 110, quantity: 1 }],
+        battles: [], states: [{ number: 1, date: "2026-09-10", gold: 500, wyrdstone: 0, rating: 0, models: 1, max_models: 15, heroes: 0, henchmen: 1, experience: 8 }],
+        post_battles: [{ battle_number: 1, complete: false, active_step: 0, completed_steps: [], review_open: false,
+          pending_follow_ups: [],
+          pending_advances: [{ warrior_id: "ogres", warrior_name: "Ogres", table: "henchman_group", threshold: null,
+            roll_total: null, subroll: null, committed: false, applied_label: "", advance_options: [{ kind: "promote_henchman" }] }],
+          veteran_pool: 0, sale_resolved: true, step_state: {}, gold_delta: 0, equipment_obligations: [], event_log: [], searches: {} }],
+        inventory: [], special_rules: [], manual_log: [],
+      },
+    };
+    return doc as CampaignDocument;
+  }
+
+  it("offers the printed grant instead of the band's generic hero tables", () => {
+    const promoted = promoteHenchman(makeOgrePromotion(), ogreReader(), { warrior_id: "ogres", threshold: null });
+    expect(promoted.ok).toBe(true);
+    if (!promoted.ok) return;
+    const hero = promoted.document.campaign.warriors.find((w) => w.kind === "hero" && w.id.includes("promoted"))!;
+    expect(promotionTablesForWarrior(promoted.document, ogreReader(), hero.id)).toEqual(["combat", "strength"]);
+    expect(setPromotionSkillTables(promoted.document, ogreReader(), { warrior_id: hero.id, tables: ["combat", "strength"] }).ok).toBe(true);
+    expect(setPromotionSkillTables(promoted.document, ogreReader(), { warrior_id: hero.id, tables: ["shooting", "speed"] }).ok).toBe(false);
+  });
+
+  it("refuses an academic skill and accepts the granted tables", () => {
+    const arcane = commitAdvanceChoice(promotedOgre(["combat", "strength"]), ogreReader(),
+      { warrior_id: "ogre#promoted", threshold: null, kind: "choose_skill", skill_id: "skill.arcane-lore" });
+    expect(arcane.ok).toBe(false);
+    if (!arcane.ok) expect(arcane.message).toContain("outside");
+    const granted = commitAdvanceChoice(promotedOgre(["combat", "strength"]), ogreReader(),
+      { warrior_id: "ogre#promoted", threshold: null, kind: "choose_skill", skill_id: "skill.mighty-blow" });
+    expect(granted.ok).toBe(true);
+  });
+
+  it("still refuses an academic skill for an unprepared promoted state", () => {
+    const result = commitAdvanceChoice(promotedOgre([]), ogreReader(),
+      { warrior_id: "ogre#promoted", threshold: null, kind: "choose_skill", skill_id: "skill.arcane-lore" });
+    expect(result.ok).toBe(false);
   });
 });

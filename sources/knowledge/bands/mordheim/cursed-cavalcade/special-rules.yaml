@@ -3,15 +3,15 @@ band_id: cursed-cavalcade
 rules:
 - id: aristocrat--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.cursed-cavalcade.aristocrat.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior of the Cavalcade Warband within 6" of the Aristocrat may use his Leadership value
@@ -641,15 +641,15 @@ rules:
 - id: band--cursed-cavalcade-special-skills-torturer
   kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-torturer
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.torturer
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.torturer
   name: Torturer
   effect: >-
     Having learned the craft of torture in the Ritual of the Comet, the warrior knows how to inflict
@@ -714,3 +714,33 @@ rules:
       sufre daño con normalidad. El duelista permanece en la zona elevada.
   applies_to:
     band: true
+
+- id: fighting-ape--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "A Fighting Ape never uses weapons or armour and does not need them to fight effectively."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 1 Fighting Ape"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/cursed-cavalcade
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - fighting-ape

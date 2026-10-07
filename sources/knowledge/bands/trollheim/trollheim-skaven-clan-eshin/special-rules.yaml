@@ -18,15 +18,15 @@ rules:
     profile_ids:
     - assassin-adept
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.trollheim-skaven-clan-eshin.assassin-adept.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: assassin-adept--consummate-fighter
   name: Consummate Fighter
   effect: >-

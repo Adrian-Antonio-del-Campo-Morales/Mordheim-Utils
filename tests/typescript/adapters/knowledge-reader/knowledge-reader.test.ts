@@ -11,6 +11,7 @@ import { existsSync } from "node:fs";
 import { readArtefactDocument } from "../../../support/kb-artefact";
 import { join } from "node:path";
 import { ArtefactKnowledgeReader, resolveName } from "@adapters/knowledge-reader/index";
+import { equipmentIssueFor, itemFactsOf, profileFactsOf } from "@domain/campaign/construction";
 
 const REPO_ROOT = join(import.meta.dirname, "..", "..", "..", "..");
 const ARTEFACT_PATH = join(
@@ -231,5 +232,41 @@ describe("real generated artefact", () => {
       id: { kind: "item_id", value: "definitely-not-an-item" },
     });
     expect(missing.ok).toBe(false);
+  });
+});
+
+
+describe("mechanic-concession item facts", () => {
+  it("reuses alias facts without inventing item records or dropping prohibition tags", () => {
+    const aliasReader = ArtefactKnowledgeReader.from({ ...syntheticArtefact(), items: [
+      { item_id: "club", name: "Club", kind: "close-combat-weapon", mechanic_id: "weapon.mace" },
+      { item_id: "other-club", name: "Other Club", kind: "trollheim-equipment", mechanic_id: "weapon.mace", tags: ["poison"] },
+    ] });
+    expect(itemFactsOf(aliasReader, "weapon.mace")).toEqual({ kind: "", mechanic_id: "weapon.mace", tags: ["poison"] });
+    expect(itemFactsOf(aliasReader, "club")?.tags).toEqual([]);
+    const profile = profileFactsOf(aliasReader, "sisters-of-sigmar", "sigmarite-matriarch")!;
+    expect(equipmentIssueFor(aliasReader, { ...profile, equipment_access: [{ item_id: "weapon.mace" }],
+      equipment_forbids: ["poison"] }, "weapon.mace")?.code).toBe("equipment_forbidden");
+    expect(aliasReader.queryKnowledge({ id: { kind: "item_id", value: "weapon.mace" } })).toEqual({ ok: false, reason: "not_found" });
+    expect(itemFactsOf(aliasReader, "weapon.vomit-attack")).toBeNull();
+    expect(itemFactsOf(aliasReader, "unknown")).toBeNull();
+  });
+
+  const published = join(REPO_ROOT, "outputs", "web-public", "knowledge", "knowledge-web.json");
+  it.skipIf(!existsSync(published))("permits the four canonical H7 concessions through the actual reader", () => {
+    const real = ArtefactKnowledgeReader.from(readArtefactDocument(published));
+    for (const [band, profileId, item] of [
+      ["skaven-of-clan-pestilens-mou", "plague-rat", "poison.black-lotus"],
+      ["tomb-guardians", "tomb-scorpions", "poison.black-lotus"],
+      ["khemri-tomb-guardians", "tomb-scorpions", "poison.black-lotus"],
+      ["lustria-savage-goblins", "zomblintua", "weapon.mace"],
+    ]) {
+      const profile = profileFactsOf(real, band!, profileId!)!;
+      expect(profile).not.toBeNull();
+      expect(profile.equipment_access?.some(offer => offer.item_id === item)).toBe(true);
+      expect(itemFactsOf(real, item!)).not.toBeNull();
+      expect(equipmentIssueFor(real, profile, item!)).toBeNull();
+      expect(real.queryKnowledge({ id: { kind: "item_id", value: item! } })).toEqual({ ok: false, reason: "not_found" });
+    }
   });
 });

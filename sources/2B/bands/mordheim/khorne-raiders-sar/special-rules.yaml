@@ -50,12 +50,10 @@ rules:
     implemented: 'NO'
     grant: band
     effects:
-    - id: unimplemented.khorne-raiders-sar.item.hellblade
+    - id: reference.hellblade
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: 'Equipment reference: selected Hellblade item executes weapon.hellblade; no independent band-wide weapon bonus.'
   name: Hellblade
   effect: >-
     Cost 35 gc, Availability Rare 8. A rare blade charged with the power of Khorne himself. Range:
@@ -218,16 +216,21 @@ rules:
     - quartermasters
 - id: cannibal-boys--frenzy
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.khorne-raiders-sar.cannibal-boys.frenzy
+    - id: trait.frenzy
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
+    - id: excluded.khorne-raiders-sar.cannibal-boys--frenzy.board-charge
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: Compulsory charge range, movement and target selection on a board are outside the 1v1 duel. In-contact attack doubling, psychology exemption and loss after knockdown/stun use the existing Frenzy operator.
   name: Frenzy (Cannibal Boys)
   effect: Cannibal Boys suffer the rules for Frenzy as described in the Psychology section.
   source:
@@ -244,16 +247,19 @@ rules:
     - cannibal-boys
 - id: madbrains--immune-to-psychology
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.khorne-raiders-sar.madbrains.immune-to-psychology
+    - id: mechanic.automatic-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.automatic-leadership
+    - id: campaign.madbrains.leader-promotion
       scope: 'NO'
       binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+      reason: Leader promotion belongs to campaign progression, outside the 1v1 duel.
   name: Immune to Psychology (Madbrains)
   effect: >-
     Madbrains pass any Leadership test they are required to take. They cannot be promoted to Leader.
@@ -428,3 +434,60 @@ rules:
   applies_to:
     profile_ids:
     - flayerkin
+
+- id: flayerkin--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+  name: Equipment Restrictions
+  effect: "May not use any weapons other than their Hooks. May only use armour from the Madbrain Equipment list; the Hooks are fixed (see Hooks). The Armour section is available to Quartermasters and Flayerkin only."
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: "Henchmen / 0-3 Flayerkin"
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Khorne%20Raiders.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - flayerkin
+- id: madbrains--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - armour
+  name: Equipment Restrictions
+  effect: "The Armour section is available to Quartermasters and Flayerkin only."
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: "Henchmen / 0-5 Madbrains"
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Khorne%20Raiders.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - madbrains

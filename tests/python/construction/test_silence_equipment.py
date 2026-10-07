@@ -79,12 +79,25 @@ def test_blackpowder_verdict_stays_at_the_stage_and_keeps_lists_incidental():
 
 
 def test_every_bound_position_and_the_animal_boundary_are_checked():
-    assert "blackpowder" in call("buildRestriction", embedded_context(silence_build(off_hand_id="weapon.pistol")),
-                                 "boundEquipment")
-    assert "blackpowder" in call("buildRestriction", embedded_context(silence_build(extra_hand_id="crossbow_pistol")),
-                                 "boundEquipment")
-    assert "blackpowder" in call("buildRestriction", embedded_context(silence_build(armour_id="crossbow_pistol")),
-                                 "boundEquipment")
+    # The main hand carries a legal weapon, so every witness proves the stage
+    # scans the position it names instead of inheriting the main hand's verdict.
+    for position in ({"off_hand_id": "weapon.pistol"},
+                     {"extra_hand_id": "weapon.pistol"},
+                     {"armour_id": "weapon.pistol"}):
+        assert "blackpowder" in call(
+            "buildRestriction",
+            embedded_context(silence_build(main_weapon_id="weapon.sword", **position)),
+            "boundEquipment"), position
+    # H5 (2026-10-04): the crossbow pistol is printed under Missile Weapons, not
+    # Blackpowder, and the brotherhood list sells it at 35 gc; the stage keeps
+    # it legal in every bound position. Source provenance:
+    # docs/knowledge/2a2b/tasks/T13-silence-equipment.md section 12.
+    assert call("buildRestriction", embedded_context(
+        silence_build(main_weapon_id="weapon.sword", extra_hand_id="crossbow_pistol")),
+        "boundEquipment") is None
+    assert call("buildRestriction", embedded_context(
+        silence_build(main_weapon_id="weapon.sword", armour_id="crossbow_pistol")),
+        "boundEquipment") is None
     # animal has no admitted Combat Lab equipment position today: this is a
     # boundary witness over its canonical item facts, not a canonical build.
     assert "animal" in call("buildRestriction", embedded_context(

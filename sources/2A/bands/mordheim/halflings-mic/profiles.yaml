@@ -38,7 +38,8 @@ profiles:
     es: Anciano Mediano
   rule_ids:
   - halfling-elder--leader
-  combat_traits: {}
+  combat_traits:
+    species: halfling
 - id: halfling-cook
   name: Halfling Cook
   type: hero
@@ -74,7 +75,8 @@ profiles:
     es: Cocinero Mediano
   rule_ids:
   - halfling-cook--master-chef
-  combat_traits: {}
+  combat_traits:
+    species: halfling
 - id: halfling-thief
   name: Halfling Thief
   type: hero
@@ -113,7 +115,8 @@ profiles:
   - halfling-thief--infiltrator
   - halfling-thief--pick-locks
   - halfling-thief--cutpurse
-  combat_traits: {}
+  combat_traits:
+    species: halfling
 - id: halfling-youths
   name: Halfling Youths
   type: hero
@@ -148,7 +151,8 @@ profiles:
   name_i18n:
     es: Jóvenes Medianos
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    species: halfling
 - id: halfling-scouts
   name: Halfling Scouts
   type: henchman
@@ -180,7 +184,8 @@ profiles:
   name_i18n:
     es: Exploradores Medianos
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    species: halfling
 - id: halfling-warriors
   name: Halfling Warriors
   type: henchman
@@ -212,7 +217,8 @@ profiles:
   name_i18n:
     es: Guerreros Medianos
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    species: halfling
 - id: piggies
   name: Piggies
   type: henchman
@@ -245,7 +251,8 @@ profiles:
     es: Cerditos
   rule_ids:
   - piggies--animals
-  combat_traits: {}
+  combat_traits:
+    normal_animal: true
   equipment_restrictions_i18n:
     es: ¡Ninguno! Aparte de su genio feroz, los Cerditos no usan armas y pueden luchar sin penalización.
 - id: village-ogre
@@ -284,4 +291,5 @@ profiles:
   - village-ogre--skills
   - village-ogre--slow-witted
   - village-ogre--protective
-  combat_traits: {}
+  combat_traits:
+    species: ogre

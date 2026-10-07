@@ -167,6 +167,144 @@ def _bound_effects(package, binding_id: str):
             yield rule, recipients, band_wide, dict(binding.get("parameters") or {})
 
 
+def _recipient_type_matches(rule, profile) -> bool:
+    """Mirror of the shared recipient-type filter (`applies_to.profile_types`)."""
+    types = {str(value) for value in (rule.get("applies_to") or {}).get("profile_types") or ()}
+    return not types or str(profile.get("type") or "") in types
+
+
+def _applicable_profile_rules(package, profile):
+    """Mirror of the shared `applicableProfileRules` (profile-scoped facts).
+
+    A fact belongs to the profile when the profile references the rule
+    (`rule_ids`) or when the rule itself grants to it (`grant: profile` plus its
+    recipient list). The recipient type filter is conjunctive, exactly like the
+    shared predicate.
+    """
+    profile_id = str(profile.get("id") or "")
+    referenced = {str(value) for value in profile.get("rule_ids") or ()}
+    for rule in package.special_rules:
+        if not _recipient_type_matches(rule, profile):
+            continue
+        recipients = {str(value) for value in (rule.get("applies_to") or {}).get("profile_ids") or ()}
+        grant = str((rule.get("runtime") or {}).get("grant") or "")
+        if str(rule.get("id") or "") in referenced or (grant == "profile" and profile_id in recipients):
+            yield rule
+
+
+def _band_wide_rules(package, profile):
+    """Mirror of the shared `applicableRules` band branch (F017 contract).
+
+    A band grant reaches a profile when `applies_to.band` is true, its
+    recipient list is absent/empty or contains the profile, and its
+    `eligibility` list is absent/empty or contains the profile. Both filters are
+    conjunctive; the accepted contract keeps absent and empty lists
+    unrestricted.
+    """
+    profile_id = str(profile.get("id") or "")
+    for rule in package.special_rules:
+        applies = rule.get("applies_to") or {}
+        if str((rule.get("runtime") or {}).get("grant") or "") != "band" or applies.get("band") is not True:
+            continue
+        if not _recipient_type_matches(rule, profile):
+            continue
+        recipients = {str(value) for value in applies.get("profile_ids") or ()}
+        if recipients and profile_id not in recipients:
+            continue
+        eligibility = {str(value) for value in rule.get("eligibility") or ()}
+        if eligibility and profile_id not in eligibility:
+            continue
+        yield rule
+
+
+def _profile_fact_rules(package, profile):
+    """Every rule whose profile bindings the shared module materializes."""
+    seen: set[str] = set()
+    for rule in _applicable_profile_rules(package, profile):
+        seen.add(str(rule.get("id")))
+        yield rule
+    for rule in _band_wide_rules(package, profile):
+        if str(rule.get("id")) not in seen:
+            yield rule
+
+
+def _entry_reaches_profile(item: dict, profile) -> bool:
+    """Whether a printed line's recipients include this profile.
+
+    Mirror of `entryReachesProfile` in
+    `packages/typescript/domain/eligibility/index.ts`: a line that names its
+    recipients ('Heroes only') is offered only to them; the selectors are a
+    union, and a line without `applies_to` reaches the whole list. A named
+    denial (`excluded_profile_ids`) is conjunctive and read first, exactly like
+    the shared predicate. A variant gate is conjunctive and decided by the
+    build's declared selection; the canonical profile of this artefact declares
+    none, so a conditional line never reaches it.
+    """
+    recipients = item.get("applies_to") or {}
+    if not recipients:
+        return True
+    if str(profile.get("id") or "") in {str(value) for value in recipients.get("excluded_profile_ids") or ()}:
+        return False
+    if recipients.get("variants"):
+        return False
+    if str(profile.get("type") or "") in {str(value) for value in recipients.get("profile_types") or ()}:
+        return True
+    return str(profile.get("id") or "") in {str(value) for value in recipients.get("profile_ids") or ()}
+
+
+def _printed_offer_excluded(band_id: str, profile, list_id: str, item_id: str) -> bool:
+    """Conditional printed offers the shared projection removes (access truth).
+
+    These are the profile-specific exceptions of `profileEquipmentItems` in
+    `packages/typescript/domain/eligibility/index.ts` that the source does not
+    express as a per-entry recipient set: the artefact carries the effective
+    access, not only the printed list. Provenance of each exception:
+
+    - `darksteel_blade` outside any hero;
+    - `skull_busta` for the Savage Orcs' Gobbo Boyz.
+
+    Printed `applies_to` recipients ('Heroes only', 'Halfling Cooks only') are
+    not listed here: `_entry_reaches_profile` reads them from the source.
+    """
+    profile_type = str(profile.get("type") or "")
+    if item_id == "darksteel_blade" and profile_type != "hero":
+        return True
+    if item_id == "skull_busta" and band_id == "savage-orcs-kaz" \
+            and str(profile.get("id") or "") == "gobbo-boyz":
+        return True
+    return False
+
+
+def _spirit_knife_allowed(band_id: str, profile) -> bool:
+    """The ethereal Hero exception of `profileEquipmentItems` (spirit knife)."""
+    if band_id != "call-of-the-night-haint-mim" or str(profile.get("type") or "") != "hero":
+        return False
+    return any(str(rule_id).endswith("--ethereal") or str(rule_id) == "revenants--spectral-ascension"
+               for rule_id in profile.get("rule_ids") or ())
+
+
+def _profile_equipment_concessions(package, profile, mechanics) -> list[str]:
+    """Equipment-family mechanics a profile's own rules grant (access truth).
+
+    Mirror of the concession loop of `profileEquipment`: every in-scope
+    equipment binding of a profile-scoped rule is offered exactly like a listed
+    item, record or not.
+    """
+    granted: set[str] = set()
+    for rule in _applicable_profile_rules(package, profile):
+        for effect in (rule.get("runtime") or {}).get("effects") or ():
+            if not isinstance(effect, dict):
+                continue
+            binding = effect.get("binding")
+            if not isinstance(binding, dict):
+                continue
+            binding_id = str(binding.get("id") or "")
+            if binding_id in mechanics and binding_id.startswith(
+                    ("weapon.", "armour.", "defence.", "material.", "preparation.", "poison.")):
+                granted.add(binding_id)
+    return sorted(granted)
+
+
 def _band_equipment_data(package) -> tuple[list[str], dict]:
     """Band-wide prohibitions and equipment limits declared by the band rules."""
     forbids: set[str] = set()
@@ -183,25 +321,157 @@ def _band_equipment_data(package) -> tuple[list[str], dict]:
         for key in ("max_missile_weapons", "required_tag", "exempt_profile_ids"):
             if parameters.get(key) is not None:
                 limits[key] = parameters[key]
+        # A copy bound is nested, mirroring `EquipmentLimits.item_copy_limit`:
+        # the whole-set contract counts owned copies, so the flat parameters are
+        # never resolved by a reader.
+        item_id = str(parameters.get("max_item_id") or "")
+        copies = parameters.get("max_item_copies")
+        if item_id and isinstance(copies, int) and not isinstance(copies, bool):
+            limit = {"item_id": item_id, "maximum": copies,
+                     "exempt_profile_ids": [str(value) for value in parameters.get("exempt_profile_ids") or ()]}
+            exempt_max = parameters.get("exempt_max_item_copies")
+            if isinstance(exempt_max, int) and not isinstance(exempt_max, bool):
+                limit["exempt_maximum"] = exempt_max
+            limits["item_copy_limit"] = limit
         if limits:
             # The reader reports the limit's owner rule, never a bare value.
             limits["rule_id"] = str(_rule["id"])
     return sorted(forbids), limits
 
 
-def _profile_skill_data(package, profile_id: str) -> tuple[set[str], list[dict]]:
-    """Skill tables a published rule grants this profile, and their bound lists."""
+def _loadout_items(value) -> list[str]:
+    """Item ids of one loadout entry, flattening `choose_one` alternatives.
+
+    The loadout is a set: its printed price belongs to the whole kit, so the
+    reader sees membership and provenance only — no per-item cost is invented.
+    """
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, list):
+        return [item for entry in value for item in _loadout_items(entry)]
+    if isinstance(value, dict):
+        return [item for entry in value.values() for item in _loadout_items(entry)]
+    return []
+
+
+def _profile_restriction_data(package, profile) -> tuple[list[dict], list[dict]]:
+    """Compulsory-item and poison-application facts of one profile.
+
+    Mirror of the `required_kinds`/`required_excludes` and `poisons`/
+    `weapon_kinds` reads of `profileFactsProjection` in
+    `packages/typescript/domain/eligibility/index.ts`: the same binding and the
+    same recipients, so neither consumer interprets the clause on its own.
+    """
+    required: list[dict] = []
+    poison: list[dict] = []
+    for rule in _profile_fact_rules(package, profile):
+        for effect in (rule.get("runtime") or {}).get("effects") or ():
+            if not isinstance(effect, dict):
+                continue
+            binding = effect.get("binding")
+            if not isinstance(binding, dict) \
+                    or str(binding.get("id")) != "profile.equipment-restrictions":
+                continue
+            parameters = binding.get("parameters") or {}
+            kinds = [str(value) for value in parameters.get("required_kinds") or () if str(value).strip()]
+            if kinds:
+                required.append({
+                    "rule_id": str(rule["id"]), "kinds": kinds,
+                    "excludes": [str(value) for value in parameters.get("required_excludes") or ()
+                                 if str(value).strip()],
+                })
+            poisons = [str(value) for value in parameters.get("poisons") or () if str(value).strip()]
+            if poisons:
+                poison.append({
+                    "rule_id": str(rule["id"]), "poisons": poisons,
+                    "weapon_kinds": [str(value) for value in parameters.get("weapon_kinds") or ()
+                                    if str(value).strip()],
+                })
+    return required, poison
+
+
+def _profile_missile_limit_data(package, profile) -> list[dict]:
+    """Printed missile bounds of the profile's own clauses (whole-set bound).
+
+    Mirror of `ProfileFacts.missile_weapon_limit` in
+    `packages/typescript/domain/eligibility/index.ts`: only a rule granted to
+    the profile itself states a bound of that profile's clause — a band-wide
+    bound belongs to the band's `equipment_limits` — and the printed exemption
+    ids stay published because the clause leaves them out of the count instead
+    of refusing them.
+    """
+    bounds: list[dict] = []
+    for rule in _profile_fact_rules(package, profile):
+        if str((rule.get("runtime") or {}).get("grant") or "") == "band":
+            continue
+        for effect in (rule.get("runtime") or {}).get("effects") or ():
+            if not isinstance(effect, dict) or str(effect.get("scope")) != "YES":
+                continue
+            binding = effect.get("binding")
+            if not isinstance(binding, dict) \
+                    or str(binding.get("id")) != "profile.equipment-restrictions":
+                continue
+            parameters = binding.get("parameters") or {}
+            maximum = parameters.get("max_missile_weapons")
+            if isinstance(maximum, bool) or not isinstance(maximum, int) or maximum < 0:
+                continue
+            bounds.append({
+                "rule_id": str(rule["id"]), "maximum": maximum,
+                "exempt_item_ids": [str(value) for value in parameters.get("exempt_item_ids") or ()
+                                    if str(value).strip()],
+            })
+    return bounds
+
+
+def _profile_promotion_skill_data(package, profile) -> list[str]:
+    """Skill tables a published rule opens for the profile once it is promoted.
+
+    Recipients follow the shared `applicableRules` contract: a band grant with
+    absent/empty recipients reaches every member (F017), while a profile grant
+    reaches only its named profiles.
+    """
+    categories: list[str] = []
+    for rule in _profile_fact_rules(package, profile):
+        if str((rule.get("runtime") or {}).get("implemented")) != "YES":
+            continue
+        for effect in (rule.get("runtime") or {}).get("effects") or ():
+            if not isinstance(effect, dict):
+                continue
+            binding = effect.get("binding")
+            if not isinstance(binding, dict) \
+                    or str(binding.get("id")) != "compiler.promoted-hero-skill-access":
+                continue
+            for category in (binding.get("parameters") or {}).get("allowed_skill_lists") or ():
+                text = str(category).strip()
+                if text and text not in categories:
+                    categories.append(text)
+    return categories
+
+
+def _profile_skill_data(package, profile) -> tuple[set[str], list[dict]]:
+    """Skill tables a published rule grants this profile, and their bound lists.
+
+    The bound list is published even when it has no transcribed members: the
+    empty list is the prose-only state of the printed table, and both consumers
+    must report it as pending instead of treating the whole special catalogue
+    as published. Recipients follow the same shared contract as every other
+    profile fact (band grants reach every member unless restricted).
+    """
     categories: set[str] = set()
     lists: list[dict] = []
-    for rule, recipients, _band_wide, parameters in _bound_effects(package, "profile.skill-access"):
-        if profile_id not in recipients:
-            continue
-        category = str(parameters.get("category") or "").strip()
-        if not category:
-            continue
-        categories.add(category)
-        skills = sorted({str(skill) for skill in parameters.get("skills") or () if str(skill).strip()})
-        if skills:
+    for rule in _profile_fact_rules(package, profile):
+        for effect in (rule.get("runtime") or {}).get("effects") or ():
+            if not isinstance(effect, dict) or str(effect.get("scope")) != "YES":
+                continue
+            binding = effect.get("binding")
+            if not isinstance(binding, dict) or str(binding.get("id")) != "profile.skill-access":
+                continue
+            parameters = binding.get("parameters") or {}
+            category = str(parameters.get("category") or "").strip()
+            if not category:
+                continue
+            categories.add(category)
+            skills = sorted({str(skill) for skill in parameters.get("skills") or () if str(skill).strip()})
             lists.append({"rule_id": str(rule["id"]), "category": category, "skills": skills})
     return categories, sorted(lists, key=lambda row: (row["rule_id"], row["category"]))
 
@@ -299,6 +569,9 @@ def _profile_rout_test_exempt(package, profile: dict) -> bool:
 
 def _build_profiles(ruleset: str) -> list[dict]:
     profiles: list[dict] = []
+    mechanics = {str(row.get("id") or "")
+                 for family in ("weapons", "armours", "defences", "materials", "preparations", "poisons")
+                 for row in load_mechanics(ruleset).get(family) or ()}
     for collection in (row["id"] for row in load_collections() if ruleset in set(row.get("rulesets") or ())):
         for package in load_bands(str(collection)):
             if package.ruleset != ruleset:
@@ -320,36 +593,52 @@ def _build_profiles(ruleset: str) -> list[dict]:
                       if rule.get("rule_ref") and str(profile["id"]) in set((rule.get("applies_to") or {}).get("profile_ids") or ())),
                 })
                 entry["equipment_forbids"] = sorted({
-                    str(effect.get("binding", {}).get("parameters", {}).get("forbids"))
+                    str(token).strip()
                     for rule in package.special_rules
                     if str(profile["id"]) in set((rule.get("applies_to") or {}).get("profile_ids") or ())
                     for effect in (rule.get("runtime") or {}).get("effects") or ()
                     if isinstance(effect, dict)
                     and isinstance(effect.get("binding"), dict)
                     and effect["binding"].get("id") == "profile.equipment-restrictions"
-                    and effect["binding"].get("parameters", {}).get("forbids")
+                    for token in (
+                        (effect["binding"].get("parameters", {}).get("forbids"),)
+                        if isinstance(effect["binding"].get("parameters", {}).get("forbids"), str)
+                        else effect["binding"].get("parameters", {}).get("forbids") or ()
+                    )
+                    if str(token).strip()
                 })
                 # The desktop resolves a profile's initial purchases through
                 # its named equipment lists.  Materialise that relationship
                 # in the web artefact so UI readers can show both permitted
                 # equipment and reverse rule links without reopening YAML.
                 access: list[dict] = []
-                # Every band may expose a common equipment list in addition
-                # to profile-specific lists.  The desktop resolver applies
-                # both; materialise both here so common grants (for example
-                # the first free dagger) reach every eligible profile.
-                profile_list_ids = list(profile.get("equipment_lists") or ())
-                profile_list_ids.extend(
-                    list_id for list_id in equipment_lists
-                    if list_id.endswith("-equipment-lists") and list_id not in profile_list_ids
-                )
-                for list_id in profile_list_ids:
+                # Only the lists the profile declares: a band common list is
+                # common because its members name it, never because its id
+                # happens to end in `-equipment-lists`. A creature whose
+                # profile declares no list buys nothing, exactly like the
+                # shared projection decides.
+                for list_id in profile.get("equipment_lists") or ():
                     equipment_list = equipment_lists.get(str(list_id))
                     if not equipment_list:
                         continue
+                    # Loadouts are whole kits with one printed price: they
+                    # contribute membership and provenance (`loadout_id`), so
+                    # the reader can see the alternatives without an invented
+                    # per-item cost.
+                    for loadout in equipment_list.get("loadouts") or ():
+                        loadout_id = str(loadout.get("id") or "")
+                        for item_id in _loadout_items(loadout.get("items")):
+                            if not item_id:
+                                continue
+                            row: dict = {"item_id": str(item_id), "list_id": str(list_id)}
+                            if loadout_id:
+                                row["loadout_id"] = loadout_id
+                            access.append(row)
                     for item in equipment_list.get("items") or ():
                         item_id = str(item.get("item_id") or "")
                         if not item_id:
+                            continue
+                        if not _entry_reaches_profile(item, profile):
                             continue
                         row = {"item_id": item_id, "list_id": str(list_id)}
                         if isinstance(item.get("cost"), int):
@@ -374,12 +663,42 @@ def _build_profiles(ruleset: str) -> list[dict]:
                 # Skill tables a published band rule grants this profile, and the
                 # printed membership of each bounded list: the reader never has to
                 # resolve a rule-level `profile.skill-access` binding itself.
-                granted, skill_lists = _profile_skill_data(package, str(profile["id"]))
+                # The same set carries the printed exceptions and the equipment
+                # concessions, so the reader sees the effective access.
+                access = [row for row in access
+                          if not _printed_offer_excluded(str(package.band["id"]), profile,
+                                                         str(row.get("list_id") or ""), str(row["item_id"]))
+                          and not (row["item_id"] == "spirit_knife"
+                                   and not _spirit_knife_allowed(str(package.band["id"]), profile))]
+                known = {str(row["item_id"]) for row in access}
+                for item_id in _profile_equipment_concessions(package, profile, mechanics):
+                    if item_id not in known:
+                        access.append({"item_id": item_id})
+                entry["equipment_access"] = sorted(
+                    access,
+                    key=lambda row: (str(row["item_id"]), str(row.get("list_id") or "")),
+                )
+                required_equipment, poison_application = _profile_restriction_data(package, profile)
+                if required_equipment:
+                    entry["required_equipment"] = required_equipment
+                if poison_application:
+                    entry["poison_application"] = poison_application
+                missile_limit = _profile_missile_limit_data(package, profile)
+                if missile_limit:
+                    entry["missile_weapon_limit"] = missile_limit
+                granted, skill_lists = _profile_skill_data(package, profile)
                 if granted:
                     declared = {str(value) for value in entry.get("skill_access") or ()}
                     entry["skill_access"] = sorted(declared | granted)
                 if skill_lists:
                     entry["skill_lists"] = skill_lists
+                # The promotion-gated grant is materialized separately: the
+                # advance flow offers these tables only once the Henchman is a
+                # Hero, and the base `skill_access` of the canonical row stays
+                # untouched for every unpromoted selection.
+                promotion = _profile_promotion_skill_data(package, profile)
+                if promotion:
+                    entry["promotion_skill_access"] = promotion
                 profiles.append(entry)
     return sorted(profiles, key=_sort_key)
 
@@ -392,6 +711,9 @@ def _build_items(ruleset: str) -> list[dict]:
                 continue
             referenced_items.update(str(item["item_id"]) for equipment_list in package.equipment_lists
                                     for item in equipment_list.get("items") or () if item.get("item_id"))
+            referenced_items.update(item_id for equipment_list in package.equipment_lists
+                                    for loadout in equipment_list.get("loadouts") or ()
+                                    for item_id in _loadout_items(loadout.get("items")) if item_id)
             referenced_items.update(str(item if isinstance(item, str) else item.get("item_id") or "")
                                     for profile in package.profiles for item in profile.get("fixed_equipment") or ())
     mechanics = {

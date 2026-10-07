@@ -162,7 +162,7 @@ def test_profile_lists_every_special_skill_from_its_band_only():
                 if rule.get("kind") == "warband_skill"
             }
             for skill in catalogue.skills(choice):
-                if skill.category != "special":
+                if skill.selection_kind != "warband_skill":
                     continue
                 assert skill.rule_id in warband_rule_ids
 
@@ -172,12 +172,12 @@ def test_free_selection_lists_every_warband_skill_but_does_not_grant_band_access
     skills = catalogue.skills(None)
     warband_skills = [skill for skill in skills if skill.selection_kind == "warband_skill"]
 
-    # 382 listing rows over 300 unique rules: the same printed warband skill
-    # legitimately appears once per band that carries it (one row per collection).
-    # The 2A/2B promotion (commit c837758) brought the catalogue from 305 rows
-    # over 237 unique rules to today's counts.
-    assert len(warband_skills) == 382
-    assert len({skill.rule_id for skill in warband_skills}) == 300
+    # Compare the actual source identities, including legitimate per-band
+    # copies, rather than freezing a pre-activation catalogue count.
+    expected = {f"warband-skill:{package.collection}:{package.band['id']}:{rule['id']}"
+                for package in catalogue.bands_for_categories(set())
+                for rule in package.special_rules if rule.get('kind') == 'warband_skill'}
+    assert {skill.id for skill in warband_skills} == expected
     hit_and_run = next(skill for skill in warband_skills if skill.rule_id == "band--arabian-tomb-raiders-special-skills-hit-and-run")
     assert not hit_and_run.runtime_available
     assert hit_and_run.unavailable_reason
@@ -266,4 +266,4 @@ def test_profile_build_can_apply_user_edited_characteristics():
     ))
 
     assert fighter.fighter_id == "mercenaries:mercenary-captain"
-    assert fighter.characteristics == Characteristics(5, 4, 4, 2, 5, 2)
+    assert fighter.characteristics == Characteristics(5, 4, 4, 2, 5, 2, movement=4, leadership=8)

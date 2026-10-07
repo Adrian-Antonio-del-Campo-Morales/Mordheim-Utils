@@ -785,3 +785,37 @@ rules:
       Equipo de Monje, y puede aprender la habilidad 'Concentración de Energía'.
   applies_to:
     band: true
+- id: pirates--no-armour
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: armour-suit
+  name: No Armour
+  effect: >-
+    These profiles may not wear armour.
+  source:
+    manual: broheim.net
+    printed_page: 1
+    section: profile entries / No Armour
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  name_i18n:
+    es: Sin Armadura
+  effect_i18n:
+    es: >-
+      Estos perfiles no pueden llevar armadura.
+  applies_to:
+    profile_ids:
+    - disgraced-warlord
+    - shanghaires
+    - litter-bearers
+    - deck-hands
+    - gunners
+    - martial-artists

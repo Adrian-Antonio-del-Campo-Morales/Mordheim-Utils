@@ -1,5 +1,7 @@
 # T13.4a — Shifty semantic review dossier
 
+> Current F005 disposition — 2026-10-04: the user accepted coexistence of the pistol and Shifty extra attacks. The modular implementation now supports pistol-only loadouts; mixed kits retain melee nomination. Earlier dated refusal/S2 limits below are historical and superseded. F026/Q151 broader pistol contracts and optimized ports remain separate. See [implementation and validation](T13-local-modifiers-defences.md#q128q013f005--accepted-contracts-implemented).
+
 > Current ownership — 2026-10-02. The [shared eligibility boundary](../../../reference/eligibility.md#construction-boundary-for-phased-implementation) is already implemented for both products. Pilot combat tests below prove the modular mechanism at their reviewed revision; injected tags do not establish canonical legal selection or activation. After the required source decisions, reuse shared eligibility for legal access and separately prove KB binding/compiler activation before optimized ports. Historical results and later acceptance sections retain their own stated limits.
 
 Prepared for human review on 2026-10-01. Current status, 2026-10-02:

@@ -35,6 +35,7 @@ profiles:
     es: Conquistador
   rule_ids:
   - conqueror--survivor
+  combat_traits: {}
 - id: saurus-slayer
   name: Saurus Slayer
   type: hero
@@ -73,6 +74,7 @@ profiles:
   combat_traits:
     starting_skills:
     - skill.duellist
+    lizardman: true
 - id: reaver-beastmaster
   name: Reaver Beastmaster
   type: hero
@@ -144,7 +146,8 @@ profiles:
   - estalian-warhound--armoured
   - estalian-warhound--animal
   - estalian-warhound--beastmaster-leadership
-  combat_traits: {}
+  combat_traits:
+    normal_animal: true
   equipment_restrictions_i18n:
     es: Este modelo es un Animal y no selecciona armas ni armaduras de las listas de equipo de la banda.
 - id: barbary-monkey
@@ -182,7 +185,8 @@ profiles:
   - barbary-monkey--nimble
   - barbary-monkey--animal
   - barbary-monkey--beastmaster-leadership
-  combat_traits: {}
+  combat_traits:
+    normal_animal: true
   equipment_restrictions_i18n:
     es: Este modelo es un Animal y no selecciona armas ni armaduras de las listas de equipo de la banda.
 - id: jungle-shadow

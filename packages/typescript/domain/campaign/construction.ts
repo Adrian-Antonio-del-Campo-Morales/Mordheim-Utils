@@ -29,7 +29,10 @@ import {
 } from "./band-variants";
 import type { KnowledgeReader, KnowledgeResult } from "./kernel/ports";
 import type { Campaign, IdString, OpenPayload, Warrior } from "./kernel/state";
-import { equipmentIssue, skillIssue, equipmentSetIssues } from "../eligibility/index";
+import {
+  carriedItemFacts, equipmentIssue, skillIssue, equipmentSetIssues,
+  type EquipmentItemCopyLimit, type ItemFacts, type MissileWeaponLimit, type RequiredEquipment,
+} from "../eligibility/index";
 export { EQUIPMENT_TAG_VOCABULARY } from "../eligibility/index";
 import TABLES from "./construction-tables.json";
 import CLAUSES from "./construction-clauses.json";
@@ -96,6 +99,12 @@ export interface BandEquipmentLimits {
   readonly max_missile_weapons?: number;
   readonly required_tag?: string;
   readonly exempt_profile_ids?: readonly IdString[];
+  /**
+   * Printed bound on how many copies of one item a member may carry at once
+   * ('only the Matriarch and Sister Superiors may carry two Sigmarite
+   * warhammers at the same time'). It bounds possession, not active slots.
+   */
+  readonly item_copy_limit?: EquipmentItemCopyLimit;
 }
 
 /** Roster limits and slots declared by the band record. */
@@ -163,12 +172,28 @@ export interface ProfileFacts {
   readonly equipment_forbids_malformed: readonly string[];
   readonly equipment_restrictions: readonly string[];
   readonly skill_access: readonly string[];
+  /**
+   * Skill tables the profile gains only once promoted (`compiler.promoted-hero-
+   * skill-access`). A projection that describes the configured Hero merges them
+   * into `skill_access`; the canonical row keeps them here so no unpromoted
+   * Henchman is granted them and the promotion flow can still offer them.
+   */
+  readonly promotion_skill_access: readonly string[];
   /** Bounded special-skill lists a band rule grants this profile. */
   readonly skill_lists: readonly ProfileSkillList[];
   readonly rule_ids: readonly IdString[];
   readonly inherent_rules: readonly IdString[];
   readonly combat_traits: OpenPayload;
   readonly characteristics: Readonly<Record<string, unknown>>;
+  /** Compulsory-item obligations of the profile's own printed clauses. */
+  readonly required_equipment?: readonly RequiredEquipment[];
+  /**
+   * Printed missile bounds of the profile's own clauses ('may only purchase ONE
+   * non-pebble or non-slingshot missile weapon'), with the printed items the
+   * clause does not count. The bound judges the whole owned set, never one
+   * slot, and counts units rather than distinct ids.
+   */
+  readonly missile_weapon_limit?: readonly MissileWeaponLimit[];
   /** Bloodline option the profile belongs to (`profiles.yaml` `bloodline`). */
   readonly bloodline: string | null;
   /**
@@ -335,7 +360,23 @@ export function profileFactsOf(
     equipment_forbids: forbids,
     equipment_forbids_malformed: malformed,
     equipment_restrictions: strings(row["equipment_restrictions"]),
+    required_equipment: (Array.isArray(row["required_equipment"]) ? (row["required_equipment"] as OpenPayload[]) : [])
+      .map((entry) => ({
+        rule_id: String(entry["rule_id"] ?? ""),
+        kinds: strings(entry["kinds"]),
+        excludes: strings(entry["excludes"]),
+      }))
+      .filter((entry) => entry.rule_id !== "" && entry.kinds.length > 0),
+    missile_weapon_limit: (Array.isArray(row["missile_weapon_limit"])
+      ? (row["missile_weapon_limit"] as OpenPayload[]) : [])
+      .map((bound) => ({
+        rule_id: String(bound["rule_id"] ?? ""),
+        maximum: nonNegative(bound["maximum"]) ?? 0,
+        exempt_item_ids: strings(bound["exempt_item_ids"]),
+      }))
+      .filter((bound) => bound.rule_id !== ""),
     skill_access: strings(row["skill_access"]),
+    promotion_skill_access: strings(row["promotion_skill_access"]),
     skill_lists: (Array.isArray(row["skill_lists"]) ? (row["skill_lists"] as OpenPayload[]) : [])
       .map((list) => ({
         rule_id: String(list["rule_id"] ?? ""),
@@ -714,16 +755,26 @@ export function itemFactsOf(
   reader: KnowledgeReader,
   itemId: IdString,
 ): { readonly kind: string; readonly mechanic_id: string | null; readonly tags: readonly string[] } | null {
-  const result = reader.queryKnowledge({ id: { kind: "item_id", value: itemId } });
-  if (!result.ok) return null;
-  const data = result.record.data as OpenPayload;
-  const kind = data["kind"];
-  if (typeof kind !== "string") return null;
-  return {
-    kind,
-    mechanic_id: typeof data["mechanic_id"] === "string" ? (data["mechanic_id"] as string) : null,
-    tags: strings(data["tags"]),
+  const factsOf = (data: OpenPayload): ItemFacts | null => {
+    const kind = data["kind"];
+    if (typeof kind !== "string") return null;
+    return {
+      kind,
+      mechanic_id: typeof data["mechanic_id"] === "string" ? data["mechanic_id"] : null,
+      tags: strings(data["tags"]),
+    };
   };
+  const result = reader.queryKnowledge({ id: { kind: "item_id", value: itemId } });
+  if (result.ok) return factsOf(result.record.data);
+  if (!reader.list) return null;
+  const items: Record<string, ItemFacts> = {};
+  for (const row of reader.list("item")) {
+    const id = row["item_id"];
+    const facts = factsOf(row);
+    if (typeof id === "string" && facts) items[id] = facts;
+  }
+  // Same alias merge as Combat Lab; a mechanic id remains no purchasable record.
+  return carriedItemFacts({ items }, itemId);
 }
 
 /**

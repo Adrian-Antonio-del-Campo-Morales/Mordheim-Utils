@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from mordheim_core.models import Characteristics
-from mordheim_knowledge.loader import load_bands
+from mordheim_construction.combat_packages import combat_packages
 from mordheim_knowledge.loader import load_runtime_scope
 from mordheim_knowledge.loader import runtime_bindings
 from mordheim_construction.eligibility import call, desktop_call, package_facts
@@ -17,7 +17,7 @@ def _profile(build, root):
     # equipment, skills and special rules.
     if build.characteristics is not None and not build.band_id:
         return build.characteristics, {}, None, None, ()
-    for package in load_bands(build.collection, root):
+    for package in combat_packages(build.collection, root):
         if package.band.get("id") != build.band_id: continue
         if package.ruleset != build.ruleset:
             raise ValueError(
@@ -31,6 +31,15 @@ def _profile(build, root):
             exclusions={(row.get("band_id"),row.get("profile_id")):row.get("reason") for row in load_runtime_scope(build.ruleset,root).get("profile_exclusions") or ()}
             reason=exclusions.get((build.band_id,build.profile_id))
             if reason:raise ValueError(f"profile is outside the duel runtime: {build.band_id}/{build.profile_id}: {reason}")
+            if "hireling_equipment" in profile:
+                if profile.get("normalization_status") != "normalized" or not profile.get("characteristics"):
+                    raise ValueError(f"hireling has no canonical duel profile: {profile['id']}")
+                pending = [r['id'] for r in package.special_rules
+                    if profile['id'] in (r.get('applies_to') or {}).get('profile_ids', ())
+                    and (not r.get('runtime') or ((r['runtime'].get('grant') == 'profile')
+                        and r['runtime'].get('scope') != 'NO' and r['runtime'].get('implemented') != 'YES'))]
+                if pending:
+                    raise ValueError(f"hireling intrinsic duel clauses are pending: {pending}")
             c = profile["characteristics"]
             if build.band_id == "carnival-of-chaos" and build.profile_id == "plague-cart":
                 guardian = next(component for component in profile.get("components") or () if component.get("id") == "guardian")
@@ -87,6 +96,8 @@ def _profile_rule_mechanics(package, profile):
         if (rule.get("runtime") or {}).get("implemented") == "YES"
         and (rule.get("runtime") or {}).get("grant") in {"profile", "band"}
         for binding in runtime_bindings(rule, "mechanic")
+        if not (binding.get("parameters") or {}).get("profile_ids")
+        or profile["id"] in binding["parameters"]["profile_ids"]
     )
 
 

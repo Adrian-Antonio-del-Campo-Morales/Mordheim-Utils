@@ -59,15 +59,15 @@ rules:
     band: true
 - id: band--undead-foes
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.grave-robbers-sylv.band.undead-foes
-      scope: LATER
-      binding: null
-      reason: >-
-        Psychology subsystem (hatred): not covered by the current engine scope.
+    - id: mechanic.hatred-undead
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-undead
   name: Undead Foes
   effect: Grave Robbers hate Undead models.
   source:
@@ -113,15 +113,14 @@ rules:
     - junior-medic
 - id: band--special-skill-darkstalker
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: selectable
     effects:
     - id: unimplemented.grave-robbers-sylv.special-skill.darkstalker
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Psychology and hidden-model subsystems: not covered by the current engine scope.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Darkstalker
   effect: >-
     The warrior is accustomed to darkness and has almost cat-like sight. Ignores All Alone tests and

@@ -18,6 +18,7 @@ profiles:
     Ld: 7
   equipment_lists:
   - greenskin-equipment-list
+  - miscellaneous-items
   fixed_equipment: []
   equipment_restrictions: []
   skill_access:
@@ -39,7 +40,8 @@ profiles:
   rule_ids:
   - goblin-bully--leader
   - goblin-bully--one-upmanship
-  combat_traits: {}
+  combat_traits:
+    species: goblin
 - id: skaven-slum-lord
   name: Skaven Slum Lord
   type: hero
@@ -57,6 +59,7 @@ profiles:
     Ld: 7
   equipment_lists:
   - skaven-equipment-list
+  - miscellaneous-items
   fixed_equipment: []
   equipment_restrictions: []
   skill_access:
@@ -78,7 +81,8 @@ profiles:
   rule_ids:
   - skaven-slum-lord--leader
   - skaven-slum-lord--sneaky-snark
-  combat_traits: {}
+  combat_traits:
+    species: skaven
 - id: skaven-slave-champions
   name: Skaven Slave Champions
   type: hero
@@ -96,6 +100,7 @@ profiles:
     Ld: 6
   equipment_lists:
   - skaven-equipment-list
+  - miscellaneous-items
   fixed_equipment: []
   equipment_restrictions: []
   skill_access:
@@ -114,7 +119,8 @@ profiles:
     es: Campeones Esclavos Skaven
   rule_ids:
   - skaven-slave-champions--tunnel-rat
-  combat_traits: {}
+  combat_traits:
+    species: skaven
 - id: goblin-stinky-gits
   name: Goblin Stinky Gits
   type: hero
@@ -132,6 +138,7 @@ profiles:
     Ld: 6
   equipment_lists:
   - greenskin-equipment-list
+  - miscellaneous-items
   fixed_equipment: []
   equipment_restrictions: []
   skill_access:
@@ -150,7 +157,8 @@ profiles:
     es: Apestosos Goblins
   rule_ids:
   - goblin-stinky-gits--disgusting
-  combat_traits: {}
+  combat_traits:
+    species: goblin
 - id: skaven-slaves
   name: Skaven Slaves
   type: henchman
@@ -182,7 +190,8 @@ profiles:
   name_i18n:
     es: Esclavos Skaven
   rule_ids: []
-  combat_traits: {}
+  combat_traits:
+    species: skaven
 - id: boglars
   name: Boglars
   type: henchman
@@ -288,7 +297,8 @@ profiles:
   rule_ids:
   - giant-rats--pack-size
   - giant-rats--experience
-  combat_traits: {}
+  combat_traits:
+    normal_animal: true
 - id: warpstone-troll
   name: Warpstone Troll
   type: henchman

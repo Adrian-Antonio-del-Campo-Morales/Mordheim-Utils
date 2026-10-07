@@ -37,15 +37,14 @@ rules:
     band: true
 - id: band--hate-stunties
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'NO'
     grant: band
     effects:
     - id: unimplemented.night-goblins-kaz.band.hate-stunties
-      scope: LATER
+      scope: 'YES'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology (hatred towards Dwarfs, except Fanatics).
+      reason: 'Included individual duel effect, not implemented: Dwarf-qualified first-round Hatred for explicit Night Goblin recipients excluding Fanatics; this canonical grant is not activated.'
   name: Hate Stunties
   effect: >-
     Night Goblins are subject to hatred towards Dwarfs. This only affects Night Goblins, not any
@@ -131,15 +130,15 @@ rules:
     band: true
 - id: big-boss--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.night-goblins-kaz.big-boss.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any model in the warband within 6\" of the Big Boss may use his Leadership instead of their own.
@@ -346,15 +345,15 @@ rules:
     - cave-squigs
 - id: troll--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.night-goblins-kaz.troll.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (cause fear).
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Trolls are frightening monsters, which cause fear.
   source:
@@ -371,15 +370,19 @@ rules:
     - troll
 - id: troll--stupidity
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.night-goblins-kaz.troll.stupidity
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.night-goblins-kaz.troll.stupidity.movement
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology (stupidity).
+      reason: Random board movement after failure is outside the 1v1 duel scope.
   name: Stupidity
   source:
     manual: broheim.net
@@ -394,16 +397,19 @@ rules:
   rule_ref: shared-rule.stupidity-2
 - id: troll--regeneration
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.night-goblins-kaz.troll.regeneration
-      scope: LATER
+    - id: skill.regeneration
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.regeneration
+    - id: campaign.post-battle-injury
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: wound regeneration is not part of the close-combat damage pipeline yet;
-        no binding is invented.
+      reason: Post-battle injury is a campaign state.
   name: Regeneration
   source:
     manual: broheim.net
@@ -468,16 +474,15 @@ rules:
   rule_ref: shared-rule.always-hungry
 - id: troll--vomit-attack
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.night-goblins-kaz.troll.vomit-attack
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: a single automatic-hit S5 armour-ignoring attack replaces the normal
-        attack sequence; needs a dedicated mechanic that does not exist yet; no binding is invented.
+    - id: weapon.vomit-attack
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: weapon.vomit-attack
   name: Vomit Attack
   source:
     manual: broheim.net
@@ -525,15 +530,17 @@ rules:
     - snotling-mob
 - id: snotling-mob--weedy
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.night-goblins-kaz.snotling-mob.weedy
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: alternate injury chart is an out-of-duel/campaign mechanic.
+    - id: trait.injury-profile
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.injury-profile
+        parameters:
+          value: 1
   name: Weedy
   source:
     manual: broheim.net

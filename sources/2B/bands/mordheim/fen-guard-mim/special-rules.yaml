@@ -31,16 +31,15 @@ rules:
     band: true
 - id: band--fear-of-fire
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.fen-guard-mim.band.fear-of-fire
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.fears-fire
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fears-fire
   name: Fear of Fire
   effect: >-
     Active fires, torch wielding enemies or any flame on the battlefield cause fear in Fen Guard.
@@ -121,16 +120,15 @@ rules:
     band: true
 - id: band--hard-to-kill
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.fen-guard-mim.band.hard-to-kill
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.fen-hard-to-kill
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fen-hard-to-kill
   name: Hard to Kill
   effect: >-
     Dryads and Spiteborn can only be taken out of action on a roll of 6 instead of 5-6 on the injury
@@ -150,18 +148,18 @@ rules:
       combate. Los ataques de fuego ignoran esta regla.
   applies_to:
     band: true
+    profile_ids: [dryads, spiteborn]
 - id: band--hard-to-rattle
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.fen-guard-mim.band.hard-to-rattle
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.hard-to-rattle
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hard-to-rattle
   name: Hard to Rattle
   effect: >-
     All Fen Guard count as wearing a helmet, which gives a 4+ stun save. Fire attacks ignore this
@@ -364,16 +362,15 @@ rules:
     band: true
 - id: branchwych--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.fen-guard-mim.branchwych.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6 inches of the Branchwych may use her Leadership when taking Leadership
@@ -394,16 +391,15 @@ rules:
     - branchwych
 - id: branchwych--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.fen-guard-mim.branchwych.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: A Branchwych is immune to psychology.
   source:
@@ -546,16 +542,20 @@ rules:
     - branchwych
 - id: branchnymph--instinctual
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.fen-guard-mim.branchnymph.instinctual
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Instinctual
   effect: >-
     Branch Nymphs live only to battle in defence of their home: they are immune to psychology and
@@ -578,16 +578,15 @@ rules:
     - branchnymph
 - id: dryads--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.fen-guard-mim.dryads.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Dryads are a fearsome sight causing fear in their enemies.
   source:
@@ -604,16 +603,14 @@ rules:
     - dryads
 - id: dryads--root-walk
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.fen-guard-mim.dryads.root-walk
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Root Walk
   effect: >-
     Dryads may only run in swamp, dirt or forest terrain; on any city terrain a dryad may only walk
@@ -634,16 +631,14 @@ rules:
     - dryads
 - id: dryads--tanglevine
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.fen-guard-mim.dryads.tanglevine
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple opponents. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Tanglevine
   effect: >-
     For each Dryad a warrior is in combat with after the first, they lose 1 attack, to a minimum of
@@ -664,16 +659,15 @@ rules:
     - dryads
 - id: treekin--immune-to-psychology
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.fen-guard-mim.treekin.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Immune to Psychology
   effect: Treekin know no emotion and are immune to psychology.
   source:
@@ -690,16 +684,15 @@ rules:
     - treekin
 - id: treekin--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.fen-guard-mim.treekin.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Treekin are terrifying and cause fear.
   source:
@@ -716,15 +709,14 @@ rules:
     - treekin
 - id: treekin--may-not-run
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.fen-guard-mim.treekin.may-not-run
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: May Not Run
   source:
     manual: broheim.net

@@ -37,7 +37,7 @@ DOCUMENTS = editorial_schemas.BAND_DOCUMENTS
 SCHEMA_FILES = editorial_schemas.schema_files()
 
 #: JSON Schema type of each Python type the compiler accepts in TRAIT_TYPES.
-TRAIT_JSON_TYPES = {int: "integer", bool: "boolean", (list, tuple): "array"}
+TRAIT_JSON_TYPES = {str: "string", int: "integer", bool: "boolean", (list, tuple): "array"}
 
 
 def band_packages() -> list[Path]:
@@ -122,6 +122,21 @@ def test_combat_traits_definition_matches_the_compiler_registry():
     assert combat_traits["additionalProperties"] is False
     declared = {key: value["type"] for key, value in combat_traits["properties"].items()}
     assert declared == {key: TRAIT_JSON_TYPES[value] for key, value in TRAIT_TYPES.items()}
+    # Unused bloodline members remain justified only by an executable contract.
+    from mordheim_construction.compiler import compile_fighter
+    from mordheim_core.models import Characteristics, FighterBuild
+
+    for bloodline in combat_traits["properties"]["vampire_bloodline"]["enum"]:
+        fighter = compile_fighter(FighterBuild(
+            "mordheim", Characteristics(3, 3, 3, 1, 3, 1),
+            trait_overrides={"vampire": True, "vampire_bloodline": bloodline},
+        ))
+        assert f"vampire-bloodline.{bloodline}" in fighter.global_effects.tags
+    with pytest.raises(ValueError, match="unknown vampire_bloodline"):
+        compile_fighter(FighterBuild(
+            "mordheim", Characteristics(3, 3, 3, 1, 3, 1),
+            trait_overrides={"vampire": True, "vampire_bloodline": "unknown-lineage"},
+        ))
 
 
 def test_supported_combat_traits_are_compiler_traits():

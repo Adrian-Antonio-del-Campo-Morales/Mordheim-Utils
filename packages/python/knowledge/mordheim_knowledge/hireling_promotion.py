@@ -76,11 +76,6 @@ OUT_OF_SCOPE_REASONS: dict[str, str] = {
         "warband may hire (only when it has no vampire) and prints no stat block; the profile stays "
         "unmodelled until the referenced source document is recovered."
     ),
-    "hireling.dramatis.snerik-night-goblin-scout": (
-        "The sources list Snerik Night Goblin Scout as hireable by the Night Goblin and Savage Orc "
-        "warbands and print no profile; the entry stays unmodelled until the referenced source "
-        "document is recovered."
-    ),
 }
 
 #: The static half of each printed "may be hired" rule, in the registry's group

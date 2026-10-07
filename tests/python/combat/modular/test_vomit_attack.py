@@ -48,6 +48,10 @@ def choice(key, value=True):
 
 
 def run(first, second, rolls, choices, state=None):
+    # Vomit witnesses assume the active Troll passed its mandatory Psychology
+    # test. Keep that canonical prerequisite explicit in the strict request tape.
+    if state is None and "mechanic.stupidity" in first.global_effects.tags and not first.global_effects.frenzy:
+        rolls[:0] = [roll("round.0.first.stupidity.0"), roll("round.0.first.stupidity.1")]
     dice, decisions = StrictDice(rolls), StrictDecisions(choices)
     if state is None:
         state = initialize_duel(first, second, dice, context=DuelContext(

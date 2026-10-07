@@ -44,6 +44,9 @@ def compile_band(band_id: str, profile_id: str, *, collection: str = COLLECTION,
 # poison immunity: trait.poison-immune -> global_effects.poison_immunity
 # ---------------------------------------------------------------------------
 POISON_RECIPIENTS = (
+    *(("blood-dragons-mou", profile, profile + "--immune-to-poisons")
+      for profile in ("vampire", "wights", "skeleton-warriors", "grave-guards", "hell-hounds")),
+    ("fallen-the-rel", "revenant", "revenant--immune-to-poison"),
     # "The Cairn Wraith is immune to poison." and the six sibling rules of
     # call-of-the-night-haint-mim (one profile rule per recipient profile).
     ("call-of-the-night-haint-mim", "cairn-wraith", "cairn-wraith--immune-to-poison"),
@@ -79,6 +82,8 @@ POISON_RECIPIENTS = (
 )
 
 POISON_NON_RECIPIENTS = (
+    ("blood-dragons-mou", "dreg"),
+    ("fallen-the-rel", "butcher"),
     # One valid profile per bad whose automatic rules grant no poison immunity.
     ("call-of-the-night-haint-mim", "corpse-master"),
     ("masters-of-horror-sylv", "mad-scientist"),
@@ -119,8 +124,7 @@ NATURAL_ARMOUR_RECIPIENTS = (
     ("halflings-mic", "halfling-cook", "halfling-elder--layers-of-fat", 6),
     ("halflings-mic", "halfling-thief", "halfling-elder--layers-of-fat", 6),
     ("halflings-mic", "halfling-youths", "halfling-elder--layers-of-fat", 6),
-    # "gains a special 6+ save" (Talismanic Tattoos).
-    ("sea-ghosts-mim", "feast-master", "feast-master--talismanic-tattoos", 6),
+    # Talismanic Tattoos is a special save, corrected under F022/L07.
     # "All Lizardmen ... Saurus 5+, Skinks 6+" (band-wide compiler contract).
     ("lizardmen-lus", "skink-priest", "band--scaly-skin", 6),
     ("lizardmen-lus", "skink-braves", "band--scaly-skin", 6),
@@ -196,6 +200,14 @@ def test_frenzy_stays_absent_from_non_recipients(band_id, profile_id):
 # no pain: mechanic skill.ignore-pain -> tag-only compiled observable
 # ---------------------------------------------------------------------------
 NO_PAIN_RECIPIENTS = (
+    *(("call-of-the-night-haint-mim", profile, profile + "--no-pain")
+      for profile in ("cairn-wraith", "tomb-banshee", "malignant-spirits", "revenants",
+                      "spirit-hosts", "poltergeists", "mourngul")),
+    *(("masters-of-horror-sylv", profile, profile + "--no-pain")
+      for profile in ("thrall", "zombies", "flesh-construct")),
+    ("survivors-of-strigos-sylv", "strigoi-vampire", "strigoi-vampire--no-pain"),
+    *(("blood-dragons-mou", profile, profile + "--no-pain")
+      for profile in ("vampire", "wights", "skeleton-warriors", "grave-guards", "hell-hounds")),
     # "No Pain" profiles; the compiled connection is the skill.ignore-pain tag.
     ("fallen-the-rel", "revenant", "revenant--no-pain"),
     ("necrarchs-the-soul-stealers-lotd1", "abomination", "abomination--no-pain"),
@@ -276,6 +288,7 @@ def test_hard_to_kill_threshold_stays_absent_from_non_recipients(band_id, profil
 # hard head: trait.concussion-immune -> compiled trait tag
 # ---------------------------------------------------------------------------
 HARD_HEAD_RECIPIENTS = (
+    ("dwarf-slayer-cult-web", "giant-slayer", "band--hard-head"),
     ("adventurers-kaz", "dwarf", "dwarf--hard-head"),
     ("clan-angrund-kep", "dwarf-noble", "band--hard-head"),
     ("clan-angrund-kep", "dwarf-troll-slayers", "band--hard-head"),

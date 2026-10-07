@@ -34,16 +34,15 @@ rules:
     band: true
 - id: revenant--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.fallen-the-rel.revenant.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: Any friendly warrior within 6" of the Revenant may use his Leadership instead of his own.
   source:
@@ -60,16 +59,15 @@ rules:
     - revenant
 - id: revenant--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.fallen-the-rel.revenant.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   effect: Revenants are terrifying Undead creatures and therefore cause fear.
   source:
@@ -86,16 +84,17 @@ rules:
     - revenant
 - id: revenant--immune-to-poison
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.fallen-the-rel.revenant.immune-to-poison
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Provisional classification: no engine effect assigned yet; pending scope refinement and
-        equivalence review before promotion.
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
   name: Immune to Poison
   effect: Revenants are not affected by any poison.
   source:
@@ -135,16 +134,14 @@ rules:
   rule_ref: shared-rule.no-pain
 - id: revenant--eaters-of-flesh
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.fallen-the-rel.revenant.eaters-of-flesh
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: actions outside an already engaged two-participant duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Eaters of Flesh
   effect: >-
     If the Revenant takes a living enemy out of action and is not in base contact with an enemy
@@ -169,16 +166,15 @@ rules:
     - revenant
 - id: butcher--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.fallen-the-rel.butcher.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   effect: >-
     Butchers are degenerate men involved in shocking acts of brutality. They therefore cause fear.
@@ -198,16 +194,14 @@ rules:
     - butcher
 - id: butcher--eaters-of-flesh
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.fallen-the-rel.butcher.eaters-of-flesh
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: actions outside an already engaged two-participant duel. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Eaters of Flesh
   effect: >-
     If the Butcher takes a living enemy out of action and is not in base contact with an enemy
@@ -232,16 +226,15 @@ rules:
     - butcher
 - id: ghouls--cause-fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.fallen-the-rel.ghouls.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Cause Fear
   effect: Ghouls are twisted and cursed men that cause fear.
   source:
@@ -258,16 +251,15 @@ rules:
     - ghouls
 - id: sgulls--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.fallen-the-rel.sgulls.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Sgulls are horrifying Undead creatures that cause fear.
   source:

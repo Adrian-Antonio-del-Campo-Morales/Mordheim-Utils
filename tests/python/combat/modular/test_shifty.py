@@ -251,10 +251,13 @@ def test_melee_bonus_does_not_create_an_additional_pistol_shot():
 
 
 @pytest.mark.parametrize('off_hand', [None, 'weapon.pistol'])
-def test_pistol_only_bonus_needs_explicit_allocation_contract(off_hand):
+def test_pistol_only_bonus_stacks_with_the_ordinary_pistol_attack(off_hand):
     first = fighter(shifty=True, main_weapon_id='weapon.pistol', off_hand_id=off_hand)
-    with pytest.raises(ValueError, match='pistol-only bonus allocation is unresolved'):
-        run(first, fighter(initiative=3), [])
+    count = 2 if off_hand else 1
+    result, requests = run(first, fighter(initiative=3),
+        [miss('first.shifty'), miss('second'), *(miss('first', i) for i in range(count))])
+    assert len(result.attacks) == count + 2
+    assert requests[0].key == 'round.0.first.shifty.attack.0.hit'
 
 
 def test_removing_provisional_binding_is_detected_by_the_timing_fixture():

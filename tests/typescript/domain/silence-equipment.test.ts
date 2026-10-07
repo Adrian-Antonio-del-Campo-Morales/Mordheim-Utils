@@ -6,7 +6,9 @@
  * Expectations come from the canonical item facts (shared fixture
  * `tests/fixtures/eligibility/silence-equipment.json`, verified against the
  * live KB by the Python suite) and the accepted F035 dispositions; they never
- * come from `buildRestriction` output.
+ * come from `buildRestriction` output. The H5 source check (2026-10-04)
+ * classifies `crossbow_pistol` as `crossbow`, not `blackpowder`; provenance in
+ * `docs/knowledge/2a2b/tasks/T13-silence-equipment.md` section 12.
  */
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
@@ -99,8 +101,22 @@ describe("T13-F019 blackpowder at the bound-equipment stage", () => {
   it("checks every bound equipment position", () => {
     expect(buildRestriction(context({ build: { off_hand_id: "weapon.pistol" } }), "boundEquipment")).toContain("blackpowder");
     expect(buildRestriction(context({ build: { extra_hand_id: "weapon.pistol" } }), "boundEquipment")).toContain("blackpowder");
-    expect(buildRestriction(context({ build: { armour_id: "crossbow_pistol" } }), "boundEquipment")).toContain("blackpowder");
+    expect(buildRestriction(context({ build: { armour_id: "weapon.pistol" } }), "boundEquipment")).toContain("blackpowder");
     expect(buildRestriction(context({ build: { defence_ids: ["warhound"] } }), "boundEquipment")).toContain("animal");
+  });
+
+  it("keeps the printed crossbow pistol legal", () => {
+    // H5 source check: the rulebook prints it under Missile Weapons and the
+    // brotherhood list sells it at 35 gc, so it is a crossbow, not blackpowder.
+    // Provenance: docs/knowledge/2a2b/tasks/T13-silence-equipment.md section 12.
+    expect(items["crossbow_pistol"]!.tags).toEqual(["crossbow"]);
+    expect(buildRestriction(context({ build: { extra_hand_id: "crossbow_pistol" } }), "boundEquipment")).toBeNull();
+    expect(buildRestriction(context({ build: { armour_id: "crossbow_pistol" } }), "boundEquipment")).toBeNull();
+    expect(equipmentIssue({
+      profile: neutral(["blackpowder", "animal"]),
+      item_id: "crossbow_pistol",
+      item: items["crossbow_pistol"]!,
+    })).toBeNull();
   });
 
   it("refuses the animal token at the decision boundary and the stage boundary", () => {

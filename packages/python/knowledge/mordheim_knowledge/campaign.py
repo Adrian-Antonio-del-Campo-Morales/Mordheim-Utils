@@ -141,6 +141,10 @@ def _declared_ids(node) -> list[str]:
     found: list[str] = []
     if isinstance(node, dict):
         for key, value in node.items():
+            # Runtime ids reference shared operators; they do not declare new
+            # campaign/profile identities and can legitimately repeat.
+            if key == "runtime":
+                continue
             if key == "id" and isinstance(value, str):
                 found.append(value)
             else:

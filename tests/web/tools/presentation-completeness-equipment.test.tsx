@@ -134,9 +134,9 @@ describe("equipment catalogue resolves in ES and EN (real artefact)", () => {
 });
 
 describe("equipment catalogue separates absence from resolution failures", () => {
-  it("documents exactly 24 canonical rows whose source publishes no description", () => {
+  it("documents exactly 22 canonical rows whose source publishes no description", () => {
     const absent = entries.es.filter((entry) => entry.effect.trim() === String(sourceDescriptionUnavailableText("es")).trim());
-    expect(absent.length).toBe(24);
+    expect(absent.length).toBe(22);
     for (const entry of absent) {
       const row = rowOf(entry.entry_id);
       expect(row, `${entry.entry_id} row`).toBeDefined();

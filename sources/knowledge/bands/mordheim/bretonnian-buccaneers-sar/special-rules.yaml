@@ -78,16 +78,15 @@ rules:
     band: true
 - id: captain--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.bretonnian-buccaneers-sar.captain.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any pirate within 6" of the Captain may use his Leadership characteristic when taking any
@@ -143,16 +142,14 @@ rules:
     - gunners
 - id: boatswains--expert-riggers
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.bretonnian-buccaneers-sar.boatswains.expert-riggers
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: map, movement, deployment or visibility. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Expert Riggers
   effect: >-
     Boatswains are highly trained in using their ropes, as they are the ones who maintain the
@@ -291,16 +288,14 @@ rules:
     - swabbies
 - id: swabbies--dont-mind-them-mates
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
     - id: unimplemented.bretonnian-buccaneers-sar.swabbies.dont-mind-them-mates
-      scope: LATER
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Outside the established 1v1 melee scope: group Rout, All Alone or combat against multiple opponents. Source prose is retained; this is an exclusion, not deferred modular implementation.'
   name: Don't Mind Them Mates, They Ain't True Pirates!
   effect: >-
     The rest of the crew barely notice if any Swabbies run away or go Out of Action - they know
@@ -323,3 +318,38 @@ rules:
   applies_to:
     profile_ids:
     - swabbies
+- id: pirates--no-armour
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: armour-suit
+  name: No Armour
+  effect: >-
+    Pirate Captains, Ship's Mates, Cabin Boys, Crew, Gunners and Boatswains may not wear armour.
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: Pirate Equipment List / profile entries
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Human%20Pirates.pdf
+  name_i18n:
+    es: Sin Armadura
+  effect_i18n:
+    es: >-
+      Los capitanes piratas, compañeros de barco, grumetes, tripulación, artilleros y contramaestres
+      no pueden llevar armadura.
+  applies_to:
+    profile_ids:
+    - captain
+    - mates
+    - cabin-boys
+    - crew
+    - gunners
+    - boatswains

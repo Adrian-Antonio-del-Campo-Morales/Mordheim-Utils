@@ -14,15 +14,15 @@ rules:
     profile_ids:
     - jarl
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.norse-explorers-lustria.jarl.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   rule_ref: shared-rule.leader
 - id: beserkers--berserkers
   name: Berserkers
@@ -37,12 +37,12 @@ rules:
     profile_ids:
     - beserkers
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'YES'
     grant: profile
     effects:
     - id: trait.frenzy
-      scope: LATER
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.frenzy
@@ -85,15 +85,15 @@ rules:
     profile_ids:
     - wulfen
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.norse-explorers-lustria.wulfen.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: wulfen--bestial
   name: Bestial
@@ -108,15 +108,15 @@ rules:
     profile_ids:
     - wulfen
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.norse-explorers-lustria.wulfen.bestial
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   rule_ref: shared-rule.bestial
 - id: wolves--animals
   name: Animals
@@ -200,15 +200,19 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.norse-explorers-lustria.band.norse-special-skills-barbarian-courage
-      scope: LATER
+    - id: mechanic.fear-reroll
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-reroll
+    - id: excluded.norse-explorers-lustria.all-alone
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: All Alone tests require multiple fighters and are outside Combat Lab 1v1 duels. The printed individual Fear clause is implemented separately.
   rule_ref: shared-rule.barbarian-courage
 - id: band--norse-special-skills-battle-tongue
   kind: warband_skill

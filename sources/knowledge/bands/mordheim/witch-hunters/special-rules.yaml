@@ -14,15 +14,15 @@ rules:
     profile_ids:
     - witch-hunter-captain
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.witch-hunters.witch-hunter-captain.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   rule_ref: shared-rule.leader
 - id: witch-hunter-captain--burn-the-witch
   name: Burn the Witch!
@@ -122,15 +122,15 @@ rules:
     profile_ids:
     - flagellants
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.witch-hunters.flagellants.fanatical
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.automatic-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.automatic-leadership
 - id: war-hounds--animals
   name: Animals
   effect: Warhounds are animals and never gain Experience.
@@ -215,3 +215,33 @@ rules:
       binding:
         kind: compiler
         id: compiler.no-missile-weapons
+
+- id: war-hounds--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Warhounds never use or need weapons or armour."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 5 War hounds"
+    url: https://mordheimer.net/docs/warbands/grade-1a-warbands/witch-hunters
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - war-hounds

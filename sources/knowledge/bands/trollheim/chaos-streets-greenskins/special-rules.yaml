@@ -19,15 +19,15 @@ rules:
     profile_ids:
     - orc-boss
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.chaos-streets-greenskins.orc-boss.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: orc-shaman--wizard
   name: Wizard
   effect: >-
@@ -778,3 +778,60 @@ rules:
         id: profile.equipment-restrictions
         parameters:
           forbids: armour
+
+- id: cave-squigs--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Cave Squigs use their huge mouths and natural ferocity and never use or need weapons or armour."
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 134
+    section: "0-5 Cave Squigs"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - cave-squigs
+- id: troll--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "A Troll never uses weapons or armour. A model may be depicted carrying a huge club, but it has no equipment effect."
+  source:
+    manual: chaos-in-the-streets
+    printed_page: 135
+    section: "0-1 Troll"
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - troll

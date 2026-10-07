@@ -12,6 +12,9 @@ equipment_lists:
   - item_id: club
     cost: 3
   - item_id: sacrifice_dagger
+    applies_to:
+      profile_ids:
+      - witch-doctor
     cost: 10
     notes: Witch Doctor only; Common. Internal weapon and sacrifice mechanics are intentionally not modelled here.
     notes_i18n:
@@ -42,6 +45,9 @@ equipment_lists:
   - item_id: light_armour
     cost: 20
   - item_id: feather_headdress
+    applies_to:
+      profile_ids:
+      - witch-doctor
     cost: 20
     notes: Warband leader only. At creation the mandatory Witch Doctor is the leader. The detailed entry is Rare 6 and states that the headdress is inherited by each new leader and must be worn. Internal
       item mechanics are intentionally not modelled here.

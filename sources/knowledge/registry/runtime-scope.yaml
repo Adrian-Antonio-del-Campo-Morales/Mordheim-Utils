@@ -50,9 +50,6 @@ mechanic_exclusions:
 - id: skill.eagle-eyes
   reason: >-
     Missile-weapon range rules are outside the current close-combat-only scope.
-- id: skill.fearsome
-  reason: >-
-    Psychology rules are outside the current one-against-one combat scope.
 - id: skill.haggle
   reason: >-
     Post-battle trading rules are outside the current combat scope.
@@ -109,6 +106,17 @@ special_rule_policy:
   executable_binding: profile.combat_traits
   note: Only normalized combat_traits participate in one-against-one runtime combat. Other rule_ids remain available to the UI as editorial rules but cannot silently affect a duel.
 supported_combat_traits:
+- wheelo_fitting
+- righteous_charge_active
+- active_command
+- sex
+- creature_kind
+- species
+- normal_animal
+- lizardman
+- vampire
+- lit_item
+- elf_kind
 - starting_skills
 - poison_immune
 - undead_or_possessed

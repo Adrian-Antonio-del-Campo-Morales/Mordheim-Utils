@@ -34,6 +34,8 @@ rules:
       binding:
         kind: trait
         id: trait.concussion-immune
+        parameters:
+          value: true
   name: Hard Head
   source:
     manual: broheim.net
@@ -70,16 +72,15 @@ rules:
   rule_ref: shared-rule.armour-2
 - id: band--hate-skavens-orcs-and-goblins
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.clan-angrund-kep.band.hate-skavens-orcs-and-goblins
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology. This variant adds Skavens to the standard Dwarf hatred (Orcs
-        and Goblins); resolves against shared-rule.hate-orcs-and-goblins at the equivalence review.
+    - id: mechanic.hatred-skaven-orcs-goblins
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-skaven-orcs-goblins
   name: Hate Skavens, Orcs and Goblins
   effect: >-
     All Dwarfs hate Skavens, Orcs and Goblins. See the Psychology section of the Mordheim rules for
@@ -144,16 +145,15 @@ rules:
   rule_ref: shared-rule.incomparable-miners
 - id: dwarf-noble--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.clan-angrund-kep.dwarf-noble.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Leader re-roll aura is a psychology/rout mechanic; the active engine currently binds
-        leadership through roster leader selection instead of an aura rule.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any models in the warband within 6" of the Dwarf Noble may use his Leadership instead of their
@@ -210,15 +210,15 @@ rules:
     - dwarf-engineer
 - id: dwarf-troll-slayers--deathwish
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.clan-angrund-kep.dwarf-troll-slayers.deathwish
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   name: Deathwish
   source:
     manual: broheim.net
@@ -418,6 +418,8 @@ rules:
       binding:
         kind: trait
         id: trait.concussion-immune
+        parameters:
+          value: true
   name: Thick Skull
   source:
     manual: broheim.net
@@ -523,3 +525,34 @@ rules:
       en el que carga.
   applies_to:
     band: true
+
+- id: dwarf-troll-slayers--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - armour
+          - constant-save-cloak
+          - non-thrown-ranged
+  name: Equipment Restrictions
+  effect: "Slayers may never carry or use missile weapons or any form of armour."
+  source:
+    manual: broheim.net
+    printed_page: 19
+    section: "Heroes / 0-1 Dwarf Troll Slayer"
+    url: https://broheim.net/downloads/campaigns/karakazgal/Karak Azgal.pdf
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - dwarf-troll-slayers

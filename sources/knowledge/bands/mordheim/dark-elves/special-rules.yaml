@@ -3,15 +3,15 @@ band_id: dark-elves
 rules:
 - id: high-born--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.dark-elves.high-born.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any models in the warband within 6" of the High Born may use his Leadership instead of their
@@ -208,15 +208,27 @@ rules:
     - cold-one-beasthounds
 - id: cold-one-beasthounds--stupidity
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.dark-elves.cold-one-beasthounds.stupidity
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: mechanic.handler-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.handler-leadership
+    - id: unimplemented.dark-elves.cold-one-beasthounds.stupidity.outside-duel
+      scope: 'NO'
       binding: null
       reason: >-
-        Deferred subsystem: psychology.
+        Board movement, campaign progression/participation and independently
+        simulated helper/rider/group producers are outside the 1v1 duel.
+        Admissible individual exemptions and bonuses are supplied active facts.
   name: Stupidity
   effect: >-
     Cold One Beasthounds may use the basic Leadership of the Beastmaster if they are within 6" of
@@ -280,15 +292,15 @@ rules:
     - cold-one-beasthounds
 - id: cold-one-beasthounds--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.dark-elves.cold-one-beasthounds.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   effect: Cold One Beasthounds cause Fear.
   source:
@@ -305,15 +317,15 @@ rules:
     - cold-one-beasthounds
 - id: band--kindred-hatred
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.dark-elves.band.kindred-hatred
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.hatred-high-elves
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-high-elves
   name: Kindred Hatred
   effect: Dark Elves Hate all High Elf warriors, including High Elf Hired Swords.
   source:
@@ -329,6 +341,13 @@ rules:
       Elfos Altos.
   applies_to:
     band: true
+    profile_ids:
+    - high-born
+    - beastmaster
+    - fellblades
+    - dark-elf-sorceress
+    - corsairs
+    - shades
 - id: band--excellent-sight
   runtime:
     scope: 'NO'
@@ -463,15 +482,15 @@ rules:
 - id: band--dark-elf-special-skills-fey-quickness
   kind: warband_skill
   runtime:
-    scope: 'NO'
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.dark-elves.band.dark-elf-special-skills-fey-quickness
-      scope: 'NO'
-      binding: null
-      reason: >-
-        Out of scope: attacks.
+    - id: skill.elven-agility
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.elven-agility
   name: Fey Quickness
   effect: >-
     Few can ever hope to match an Elf’s inhuman quickness and agility. An Elf with Fey Quickness can
@@ -589,3 +608,33 @@ rules:
       binding: null
       reason: >-
         Out of scope: magic.
+
+- id: cold-one-beasthounds--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Cold One Beasthounds are animals and use only their claws and jaws; they do not use weapons or armour."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 2 Cold One Beasthounds"
+    url: https://mordheimer.net/docs/warbands/grade-1b-warbands/dark-elves
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - cold-one-beasthounds

@@ -44,7 +44,10 @@ profiles:
   - vampire--no-pain
   - vampire--summoner
   - vampire--bloodline-abilities
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
+    vampire: true
+    vampire_bloodline: blood-dragon
   equipment_restrictions_i18n:
     es: No puede usar armas de proyectil.
 - id: wights
@@ -86,7 +89,8 @@ profiles:
   - wights--immune-to-poisons
   - wights--no-pain
   - wights--killing-blow
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
   equipment_restrictions_i18n:
     es: No puede usar armas de proyectil.
 - id: dreg
@@ -160,7 +164,8 @@ profiles:
   - skeleton-warriors--no-pain
   - skeleton-warriors--slow
   - skeleton-warriors--no-brain
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
 - id: grave-guards
   name: Grave Guards
   type: henchman
@@ -198,7 +203,8 @@ profiles:
   - grave-guards--no-pain
   - grave-guards--slow
   - grave-guards--killing-blow
-  combat_traits: {}
+  combat_traits:
+    creature_kind: undead
   equipment_restrictions_i18n:
     es: Nunca más Guardias de Tumba que Esqueletos
 - id: hell-hounds

@@ -14,11 +14,17 @@ equipment_lists:
   - item_id: sword
     cost: 10
   - item_id: long_daggers
+    applies_to:
+      profile_types:
+      - hero
     cost: 10
     notes: Heroes only; Rare 6
     notes_i18n:
       es: Solo héroes; Raro 6
   - item_id: great_weapon
+    applies_to:
+      profile_types:
+      - hero
     cost: 15
     notes: Two-handed weapon; Heroes only
     notes_i18n:
@@ -28,6 +34,11 @@ equipment_lists:
   - item_id: blowpipe
     cost: 25
   - item_id: crossbow
+    applies_to:
+      variants:
+      - modus-operandi.sniper
+      excluded_profile_ids:
+      - silent-master
     cost: 25
     notes: Sniper only
     notes_i18n:
@@ -35,6 +46,11 @@ equipment_lists:
   - item_id: crossbow_pistol
     cost: 35
   - item_id: long_bow
+    applies_to:
+      variants:
+      - modus-operandi.sniper
+      excluded_profile_ids:
+      - silent-master
     cost: 15
     notes: Sniper only
     notes_i18n:

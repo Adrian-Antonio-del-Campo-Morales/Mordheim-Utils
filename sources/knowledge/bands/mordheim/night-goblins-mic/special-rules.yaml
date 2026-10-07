@@ -3,15 +3,15 @@ band_id: night-goblins-mic
 rules:
 - id: big-boss--leader
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.night-goblins-mic.big-boss.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Leader
   effect: >-
     Any warrior within 6" of the Big Boss may use his Leadership characteristic when taking
@@ -117,17 +117,21 @@ rules:
     - fanatics
 - id: fanatics--looney
   runtime:
-    scope: LATER
+    scope: 'YES'
     implemented: 'YES'
     grant: profile
     effects:
     - id: trait.frenzy
-      scope: LATER
+      scope: 'YES'
       binding:
         kind: trait
         id: trait.frenzy
         parameters:
           value: true
+    - id: excluded.post-battle-mushroom-damage
+      scope: 'NO'
+      binding: null
+      reason: Permanent damage after the battle is campaign aftermath, outside the 1v1 duel.
   name: Looney
   effect: >-
     Due to the effect of the Mushrooms he is subject to frenzy. He must also test for permanent
@@ -246,15 +250,15 @@ rules:
   rule_ref: shared-rule.animal
 - id: troll--fear
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.night-goblins-mic.troll.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Fear
   source:
     manual: mordheimer.net
@@ -269,15 +273,19 @@ rules:
   rule_ref: shared-rule.fear
 - id: troll--stupidity
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.night-goblins-mic.troll.stupidity
-      scope: LATER
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
+    - id: unimplemented.night-goblins-mic.troll.stupidity.movement
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: Random board movement after failure is outside the 1v1 duel scope.
   name: Stupidity
   source:
     manual: mordheimer.net
@@ -532,15 +540,15 @@ rules:
     - snotling-mob-consists-of-5-snotlings
 - id: band--animosity
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: band
     effects:
-    - id: unimplemented.night-goblins-mic.band.animosity
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.goblin-squabble
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.goblin-squabble
   name: Animosity
   effect: >-
     At the beginning of each Night Goblin turn roll a D6. On a 1, the Night Goblins squabble and do
@@ -560,6 +568,12 @@ rules:
       Cueva, Snotlings y otros no goblins no se ven afectados.
   applies_to:
     band: true
+    profile_ids:
+    - big-boss
+    - shaman
+    - bosses
+    - night-goblins
+    - fanatics
 - id: band--hate-stunties
   runtime:
     scope: LATER
@@ -749,3 +763,90 @@ rules:
       luchará el último en el combate, igual que si se hubiera levantado de un derribo.
   applies_to:
     band: true
+
+- id: cave-squigs--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Cave Squigs never use or need weapons or armour."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 5 Cave Squigs"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - cave-squigs
+- id: snotling-mob-consists-of-5-snotlings--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - equipment
+  name: Equipment Restrictions
+  effect: "Each Snotling may only ever use its free pointy stick, which counts as a dagger."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 1 Snotling Mob (consists of 5 Snotlings)"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - snotling-mob-consists-of-5-snotlings
+- id: troll--equipment-restrictions
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids:
+          - weapons
+          - armour
+  name: Equipment Restrictions
+  effect: "Trolls can never be given weapons or armour."
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: "0 \u2013 1 Troll"
+    url: https://mordheimer.net/docs/warbands/grade-1c-warbands/night-goblins
+  name_i18n:
+    es: Restricciones de Equipo
+  effect_i18n:
+    es: "es"
+  applies_to:
+    profile_ids:
+    - troll

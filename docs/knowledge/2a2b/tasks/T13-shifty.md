@@ -1,5 +1,7 @@
 # T13.4a — Shifty, accepted modular contract
 
+> Current F005 disposition — 2026-10-04: the user accepted coexistence of the pistol and Shifty extra attacks. The modular implementation now supports pistol-only loadouts; mixed kits retain melee nomination. Earlier dated refusal/S2 limits below are historical and superseded. F026/Q151 broader pistol contracts and optimized ports remain separate. See [implementation and validation](T13-local-modifiers-defences.md#q128q013f005--accepted-contracts-implemented).
+
 > Current ownership — 2026-10-03. The [shared eligibility boundary](../../../reference/eligibility.md#construction-boundary-for-phased-implementation) is already implemented for both products. [L04 below](#l04-canonical-activation--2026-10-03) activates explicit canonical selection for Elder, Cook, Thief and Youths and proves modular execution without injected tags. Accepted S1–S4/F060 and the shared construction decision are reused unchanged. Historical pilot results retain their dated limits; promoted local participants, pistol-only allocation and optimized ports remain separate.
 
 Current acceptance — 2026-10-02: the user accepted independently reviewed S1–S4.

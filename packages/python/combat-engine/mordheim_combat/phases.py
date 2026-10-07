@@ -143,6 +143,12 @@ def resolve_priority(context: PriorityContext) -> PriorityResult:
     # Lost Innocence explicitly retains strike-first when standing up.
     if context.stood_up and not has_tag(fighter.global_effects, "skill.always-strikes-first"):
         value = -1
+    if has_tag(fighter.global_effects, "dance.woven-mist-active"):
+        value = max(1, value)
+    if has_tag(fighter.global_effects, "mechanic.frantic"):
+        # Frantic's explicit top priority remains stronger than an ordinary Dance.
+        # Frantic explicitly ignores weapon penalties and ordinary Initiative.
+        value = 30
     initiative = max(
         context.initiative_floor,
         fighter.characteristics.initiative
@@ -182,6 +188,9 @@ def build_attacks(context: AttackPoolContext) -> AttackPoolResult:
         fighter.characteristics.attacks
         if context.base_attacks is None else context.base_attacks
     )
+    if context.charging and has_tag(effect, "mechanic.sabretusk-charge"):
+        # The printed clause replaces A1 with A2; it is not a generic +1.
+        base_characteristic = 2
     extra_weapon_attack = int(fighter.off_hand_attacks or fighter.main_weapon.paired)
     attacks = (
         base_characteristic
@@ -219,7 +228,8 @@ def build_attacks(context: AttackPoolContext) -> AttackPoolResult:
     attacks += extra_weapon_attack
     if has_tag(fighter.main_weapon, "weapon.fist") and not ignores_unarmed_penalties(effect):
         attacks = min(attacks, 1)
-    if has_tag(fighter.main_weapon, "weapon.vomit-attack"):
+    if (has_tag(fighter.main_weapon, "weapon.vomit-attack")
+            or has_tag(fighter.main_weapon, "effect.wraith-touch")):
         attacks = 1
     if has_tag(effect, "skill.sweep") and fighter.main_weapon.two_handed:
         attacks = 1
@@ -251,7 +261,8 @@ def build_attacks(context: AttackPoolContext) -> AttackPoolResult:
         attacks = max(0, attacks - effect.energy_focus_attacks)
     if has_tag(fighter.main_weapon, "effect.serpent-staff-power"):
         attacks = 1
-    return AttackPoolResult(max(0, attacks - context.attack_penalty))
+    return AttackPoolResult(max(0, attacks - context.attack_penalty
+        - int(has_tag(effect, "dance.woven-mist-active"))))
 
 
 @dataclass(frozen=True, slots=True)
@@ -262,6 +273,7 @@ class HitContext:
     automatic: bool = False
     reroll: bool = False
     key: str = "hit"
+    needs_sixes: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -273,11 +285,12 @@ class HitResult:
 
 
 def resolve_hit(context: HitContext, dice: DiceSource) -> HitResult:
-    if context.defender_ws == 0:
+    if context.defender_ws == 0 and not context.needs_sixes:
         # An automatic hit has no natural die face for poison/other triggers.
         return HitResult(0, 0, True)
-    target = max(2, min(6, to_hit_target(context.attacker_ws, context.defender_ws) - context.modifier))
-    if context.automatic:
+    target = (6 if context.needs_sixes else
+              max(2, min(6, to_hit_target(context.attacker_ws, context.defender_ws) - context.modifier)))
+    if context.automatic and not context.needs_sixes:
         return HitResult(target, 0, True)
     roll = dice.roll(RollRequest(context.key))
     success = roll >= target
@@ -713,6 +726,17 @@ def resolve_strike_sequence(context: RoundContext, dice: DiceSource) -> RoundRes
         trace=tuple(ordered_trace),
     )
     return RoundResult(state,results)
+
+
+def resolve_leadership(
+    value: int | None, dice: DiceSource, key: str, *, discard_highest: bool = False, discard_lowest: bool = False,
+) -> bool:
+    """Two d6, or Cold-Blooded's lowest two of three, against known Leadership."""
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        raise ValueError("Leadership test requires explicit non-negative integer Leadership")
+    rolls = [dice.roll(RollRequest(f"{key}.{index}"))
+             for index in range(3 if discard_highest or discard_lowest else 2)]
+    return sum(rolls) - (min(rolls) if discard_lowest else max(rolls) if discard_highest else 0) <= value
 
 
 def _characteristic_test(

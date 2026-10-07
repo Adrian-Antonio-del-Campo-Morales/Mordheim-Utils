@@ -27,8 +27,8 @@ describe("RulesPage magic groups", () => {
         { id: "sisters", name: "Sisters", name_i18n: { es: "Hermanas de Sigmar" } },
       ],
       rules_prose: { "profile-special-rules": [
-        { id: "captain--leader", band_id: "reiklanders", name: "Leader", name_i18n: { es: "Jefe" }, effect: "Leads." },
-        { id: "matriarch--leader", band_id: "sisters", name: "Leader", name_i18n: { es: "Jefe" }, effect: "Leads." },
+        { id: "captain--leader", band_id: "reiklanders", name: "Leader", name_i18n: { es: "Jefe" }, effect: "Leads.", effect_i18n: { es: "Lidera." } },
+        { id: "matriarch--leader", band_id: "sisters", name: "Leader", name_i18n: { es: "Jefe" }, effect: "Leads.", effect_i18n: { es: "Lidera." } },
       ] },
     }));
   });
@@ -61,7 +61,9 @@ describe("RulesPage magic groups", () => {
     fireEvent.click(screen.getByRole("button", { name: /Reiklandeses/ }));
     const sheet = screen.getByRole("article", { name: "Reiklandeses" });
     expect(within(sheet).getByRole("heading", { name: "Composición" })).toBeInTheDocument();
-    expect(within(sheet).getByRole("button", { name: "Jefe" })).toHaveAttribute("data-tooltip");
+    const leader = within(sheet).getByText("Jefe", { selector: "summary" }).closest("details");
+    expect(leader).not.toBeNull();
+    expect(within(leader as HTMLElement).getByText("Lidera.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Hermanas de Sigmar/ })).toBeInTheDocument();
   });
 
