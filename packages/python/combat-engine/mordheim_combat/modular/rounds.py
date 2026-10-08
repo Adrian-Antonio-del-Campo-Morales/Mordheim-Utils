@@ -453,8 +453,10 @@ def resolve_round(
         second, first, second_count, first_round=first_round,
         charging=second_charging, charged=first_charging,
     )
-    first_count = apply_opponent_attack_modifiers(first, second, first_count, first_round=first_round)
-    second_count = apply_opponent_attack_modifiers(second, first, second_count, first_round=first_round)
+    first_count = apply_opponent_attack_modifiers(
+        first, second, first_count, first_round=first_round, defer_grapple=True)
+    second_count = apply_opponent_attack_modifiers(
+        second, first, second_count, first_round=first_round, defer_grapple=True)
     if first_state.on_fire or first_state.animosity_failed or first_state.stupidity_failed or first_state.charm_attack_blocked or first_state.condition != Condition.STANDING:
         first_count = 0
     if second_state.on_fire or second_state.animosity_failed or second_state.stupidity_failed or second_state.charm_attack_blocked or second_state.condition != Condition.STANDING:
@@ -775,6 +777,7 @@ def resolve_spawn_attack_count(
 
 def apply_opponent_attack_modifiers(
     attacker: CompiledFighter, defender: CompiledFighter, count: int, *, first_round: bool,
+    defer_grapple: bool = False,
 ) -> int:
     if not count:
         return 0
@@ -791,7 +794,12 @@ def apply_opponent_attack_modifiers(
         and not phases.has_tag(attacker.global_effects, "nature.daemon")
     ):
         count = max(1, count - 1)
-    return max(1, count + defender.global_effects.incoming_attacks_modifier)
+    modifier = defender.global_effects.incoming_attacks_modifier
+    if defer_grapple and modifier < 0 and has_tag(defender.global_effects, "rule.tentacle-grapple"):
+        # Keep Tentacle's one optional loss for the allocated pool; other
+        # incoming reductions retain their usual count/floor semantics.
+        modifier += 1
+    return max(1, count + modifier)
 
 
 def apply_round_weapon_attack_modifiers(

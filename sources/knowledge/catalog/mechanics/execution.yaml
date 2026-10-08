@@ -20,6 +20,17 @@ mechanics:
   trigger: attack
   application: attack
   stacking: stack
+- id: weapon.ladle
+  handler: effect-set
+  parameters:
+    concussion: true
+    ignore_armour_except_shield_and_skills: true
+    tags:
+    - weapon.ladle
+    - weapon.mace
+  trigger: attack
+  application: attack
+  stacking: stack
 - id: weapon.dagger
   handler: effect-set
   parameters:
@@ -34,6 +45,16 @@ mechanics:
   parameters:
     armour_penetration: 1
     tags:
+    - weapon.axe
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: weapon.cleaver
+  handler: effect-set
+  parameters:
+    armour_penetration: 1
+    tags:
+    - weapon.cleaver
     - weapon.axe
   trigger: attack
   application: attack
@@ -506,6 +527,14 @@ mechanics:
   trigger: attack
   application: attack
   stacking: stack
+- id: weapon.barbed-whip
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.barbed-whip
+  trigger: attack
+  application: attack
+  stacking: stack
 - id: weapon.sun-gauntlet
   handler: effect-set
   parameters:
@@ -637,6 +666,10 @@ mechanics:
     tags:
     - weapon.misericordia
     target_armour_bonus: 1
+    # Printed item clause: "When attacking knocked down opponents,
+    # Misericordia bypasses all armor saves."  Only this item binds the
+    # operator, so the clause is carried here rather than on weapon.mace.
+    ignore_armour_against_knocked_down: true
   trigger: attack
   application: attack
   stacking: stack

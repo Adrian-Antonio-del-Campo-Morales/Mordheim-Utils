@@ -325,14 +325,39 @@ def prepare_hit_context(
     )
 
 
+def _supplied_ward(effects: EffectSet) -> int:
+    """The special save one effect set supplies on its own."""
+    ward = effects.ward_save
+    if effects.step_aside:
+        ward = min(ward, 4 if phases.has_tag(effects, "skill.vampire-reflexes") else 5)
+    if effects.step_aside and phases.has_tag(effects, "skill.elven-agility"):
+        ward = min(ward, 4)
+    return ward
+
+
 def prepare_special_save_context(
     defender: CompiledFighter, incoming: EffectSet, *, key: str = "special",
 ) -> SpecialSaveContext:
-    ward = defender.global_effects.ward_save
-    if defender.global_effects.step_aside:
-        ward = min(ward, 4 if phases.has_tag(defender.global_effects, "skill.vampire-reflexes") else 5)
-    if defender.global_effects.step_aside and phases.has_tag(defender.global_effects, "skill.elven-agility"):
-        ward = min(ward, 4)
+    if incoming.ignore_armour_except_shield_and_skills:
+        # Printed Ladle clause: "The only saving throws allowed are from shields
+        # or skills".  Read the special save from the shield and skill
+        # selections alone, so an equipment defence (Enchanted Skins), a
+        # mechanic-granted ward or a supplied trait cannot save while a skill's
+        # own save (Step Aside, Elven Agility) still resolves.  A save source
+        # that only reminds us for mundane attacks keeps that limit.
+        allowed = defender.shield_and_skill_effects
+        return SpecialSaveContext(
+            _supplied_ward(allowed), allowed.regeneration_save,
+            ward_blocked=(
+                allowed.ward_save_mundane_only and phases.has_tag(incoming, "attack.magical")
+            ),
+            regeneration_blocked=(
+                allowed.regeneration_blocked_by_fire and phases.has_tag(incoming, "attack.fire")
+                or allowed.regeneration_blocked_by_blessed and phases.has_tag(incoming, "attack.blessed")
+            ),
+            key=key,
+        )
+    ward = _supplied_ward(defender.global_effects)
     ward_blocked = defender.global_effects.ward_save_mundane_only and phases.has_tag(incoming, "attack.magical")
     # This source treats its listed metals as magical only for this save.
     # Do not change the incoming attack's magic status or other wards.
@@ -431,19 +456,32 @@ def prepare_armour_context(
     if phases.has_tag(effect, "skill.monster-slayer-effective-strength-armour") and strength < defender_state.toughness:
         armour_strength = max(armour_strength, defender_state.toughness)
     armour_save = defender.armour_save
+    natural_armour_save = defender.natural_armour_save
+    natural_armour_worst_save = defender.natural_armour_worst_save
+    if effect.ignore_armour_except_shield_and_skills:
+        # Printed Ladle clause: only shields and skills may save, so the armour
+        # the defender wears, its natural armour and every other provenance are
+        # denied while the shield and skill selections keep their own save.
+        armour_save = max(1, 7 - defender.shield_and_skill_effects.armour_save_bonus)
+        natural_armour_save = 7
+        natural_armour_worst_save = 7
     if (phases.has_tag(defender.global_effects, "mechanic.norse-bulwark")
             and phases.has_tag(defender.main_weapon, "weapon.axe")
             and defender.off_hand is not None and phases.has_tag(defender.off_hand, "defence.shield")):
         armour_save = max(2, armour_save - 1)
+    ignore_armour = effect.ignore_armour or (
+        effect.ignore_armour_against_knocked_down
+        and defender_state.condition == phases.Condition.KNOCKED_DOWN
+    )
     return ArmourContext(
-        armour_save, defender.natural_armour_save,
-        defender.natural_armour_worst_save, defender.natural_armour_unmodified,
+        armour_save, natural_armour_save,
+        natural_armour_worst_save, defender.natural_armour_unmodified,
         armour_strength, effect.armour_penetration + cutthroat,
         effect.target_armour_bonus - (
             weapon.target_armour_bonus
             if phases.has_tag(weapon, "weapon.fist") and phases.ignores_unarmed_penalties(effect) else 0
         ),
-        effect.ignore_armour, defender.global_effects.armour_save_floor,
+        ignore_armour, defender.global_effects.armour_save_floor,
         defender.global_effects.armour_cannot_be_ignored,
         phases.has_tag(effect, "attack.magical"), defender.global_effects.natural_armour_negated_by_magic,
         key=key,

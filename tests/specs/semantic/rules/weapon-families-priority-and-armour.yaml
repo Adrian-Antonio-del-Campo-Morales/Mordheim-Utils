@@ -147,6 +147,33 @@ specifications:
       attacker.main_weapon.two_handed: true
       result.wound: 3
       result.armour: 3
+  - id: pike-ordinary-after-first-round
+    roles:
+    - inactive
+    - consumer
+    - boundary
+    operation: acting_order
+    attacker:
+      main_weapon_id: weapon.pike
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 1
+        attacks: 1
+    defender:
+      characteristics:
+        weapon_skill: 3
+        strength: 3
+        toughness: 3
+        wounds: 3
+        initiative: 6
+        attacks: 1
+    context:
+      first_round: false
+    expect:
+      result.first_acts: false
   - id: pike-rejects-offhand
     roles:
     - rejected

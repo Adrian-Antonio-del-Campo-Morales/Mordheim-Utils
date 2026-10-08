@@ -619,6 +619,16 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     # weapon modifiers never leak into horns, hooves, claws, or bites.
     if "centigors--trample" in automatic_rule_ids:
         extra_attacks.append(EffectSet(tags=("rule.trample",)))
+    # Spiked Tail: one repeated natural tail attack in each close-combat phase at
+    # the bearer's Strength +1.  Fimir Warriors and Young Nobles print the same
+    # clause, so one profile contribution carries both recipients.
+    if automatic_rule_ids & {"fimir-warriors--spiked-tail", "young-nobles--spiked-tail"}:
+        extra_attacks.append(EffectSet(tags=("rule.spiked-tail",), strength_bonus=1))
+    # Sword-Gnoblar: the carried gnoblar adds one Strength 2 close-combat attack
+    # made at the owning model's Weapon Skill, resolved with the bearer's own
+    # attacks (the sole opponent is the directed target in a duel).
+    if "sword_gnoblar" in carried_items:
+        extra_attacks.append(EffectSet(tags=("rule.sword-gnoblar",), fixed_strength=2))
     if "compiler.bite-attack" in automatic_compiler_contracts:
         extra_attacks.append(EffectSet(
             tags=("weapon.natural-attacks", "rule.bite-attack"),
@@ -663,6 +673,35 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         armour_save+=1
     if traits.get("natural_armour_stacks") and natural_armour_save<=6:
         armour_save-=7-natural_armour_save
+    # Printed "no save except shields or skills" clause: the saves a defender
+    # keeps when every other source is denied.  ``armour_save`` and
+    # ``global_effects`` mix contributions by provenance (a pelt cloak, a
+    # mechanic-granted bonus, a supplied trait all reach the same fields), so
+    # the shield and skill selections are merged on their own instead of being
+    # inferred from the composite total.  The printed Cloak-and-Dagger trait
+    # makes its bearer "count as using a shield", so it belongs with the
+    # shields, and the mounted kite shield keeps the extra point the composite
+    # save also carries.
+    # ``effects`` only carries executable mechanics: a profile skill whose
+    # runtime scope is NO (Dodge, Leap, Acrobat) is skipped above and has no
+    # contribution to merge, so it is filtered out here as well.
+    shield_and_skill_ids = tuple(dict.fromkeys(
+        mechanic_id
+        for mechanic_id in (*global_ids, *(traits.get("starting_skills") or ()))
+        if mechanic_id in effects
+        and (mechanic_id.startswith("skill.")
+             or mechanic_id in {"defence.shield", "defence.buckler", "defence.kite-shield"})
+    ))
+    shield_and_skill_effects = apply_execution_effects(
+        EffectSet(), shield_and_skill_ids, effects, "passive", "fighter")
+    shield_and_skill_effects = apply_execution_effects(
+        shield_and_skill_effects, shield_and_skill_ids, effects, "duel_start", "fighter")
+    if traits.get("counts_as_shield"):
+        shield_and_skill_effects = merge_effects(
+            shield_and_skill_effects, EffectSet(armour_save_bonus=1))
+    if build.off_hand_id == "defence.kite-shield" and build.mounted:
+        shield_and_skill_effects = merge_effects(
+            shield_and_skill_effects, EffectSet(armour_save_bonus=1))
     missile_weapon_limit=1 if "compiler.bow-discipline" in compiler_contracts else 5 if "compiler.master-of-throwing-weapons" in compiler_contracts else 2
     construction_tags=tuple(sorted(compiler_contracts))
     ballistic_skill=int((profile.get("characteristics") or {}).get("BS") or 0) if profile is not None else 0
@@ -672,4 +711,4 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         raise ValueError("Handler Leadership requires a handler-only Leadership rule")
     if traits.get("stupidity_leadership_bonus", 0) and "mechanic.brood-mentality" not in global_effects.tags:
         raise ValueError("Stupidity Leadership bonus requires Brood Mentality")
-    return CompiledFighter(f"{build.band_id or 'custom'}:{build.profile_id or 'custom'}",characteristics,main_effect,off_effect,global_effects,max(1,armour_save),4 if "defence.helmet" in build.defence_ids else 5 if "defence.cooking-pot-helmet" in build.defence_ids else 7,natural_armour_save,bool(build.off_hand_id and build.off_hand_id.startswith("weapon.")),bool(traits.get("natural_armour_unmodified",False)),int(traits.get("injury_profile") or 0),random_characteristics,natural_armour_worst_save=int(traits.get("natural_armour_worst_save") or 7),extra_attacks=tuple(extra_attacks),missile_weapon_limit=missile_weapon_limit,ballistic_skill=ballistic_skill,construction_tags=construction_tags,main_weapon_without_poison=main_without_poison,off_hand_without_poison=off_without_poison,mounted=build.mounted,unarmed_weapon=effects["weapon.fist"].effect,vomit_attack=vomit_attack, stupidity_leadership=traits.get("stupidity_leadership"), stupidity_leadership_bonus=traits.get("stupidity_leadership_bonus", 0), animal_handler_leadership=handler_value)
+    return CompiledFighter(f"{build.band_id or 'custom'}:{build.profile_id or 'custom'}",characteristics,main_effect,off_effect,global_effects,max(1,armour_save),4 if "defence.helmet" in build.defence_ids else 5 if "defence.cooking-pot-helmet" in build.defence_ids else 7,natural_armour_save,bool(build.off_hand_id and build.off_hand_id.startswith("weapon.")),bool(traits.get("natural_armour_unmodified",False)),int(traits.get("injury_profile") or 0),random_characteristics,natural_armour_worst_save=int(traits.get("natural_armour_worst_save") or 7),extra_attacks=tuple(extra_attacks),missile_weapon_limit=missile_weapon_limit,ballistic_skill=ballistic_skill,construction_tags=construction_tags,main_weapon_without_poison=main_without_poison,off_hand_without_poison=off_without_poison,mounted=build.mounted,unarmed_weapon=effects["weapon.fist"].effect,vomit_attack=vomit_attack, shield_and_skill_effects=shield_and_skill_effects, stupidity_leadership=traits.get("stupidity_leadership"), stupidity_leadership_bonus=traits.get("stupidity_leadership_bonus", 0), animal_handler_leadership=handler_value)

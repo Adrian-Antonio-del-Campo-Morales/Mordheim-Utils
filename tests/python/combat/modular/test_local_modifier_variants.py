@@ -995,11 +995,13 @@ def test_cold_blooded_psychology_uses_lowest_two_in_the_real_fear_charge(band, f
         require_optimized_support(skink, enemy())
 
 
-@pytest.mark.parametrize('band,profile,faces,passed', [
-    ('lords-of-the-marsh-mim', 'young-nobles', (6, 3, 3), True),
-    ('lizardmen-lus', 'skink-great-crests', (3, 5), False),
+@pytest.mark.parametrize('band,profile,faces,passed,attacks', [
+    # The Young Noble also prints a Spiked Tail attack (Lords of the Marsh), so a
+    # resolved round holds one attack more than the plain Skink's single attack.
+    ('lords-of-the-marsh-mim', 'young-nobles', (6, 3, 3), True, 3),
+    ('lizardmen-lus', 'skink-great-crests', (3, 5), False, 2),
 ])
-def test_cold_blooded_variants_distinguish_crude_belch_from_psychology(band, profile, faces, passed):
+def test_cold_blooded_variants_distinguish_crude_belch_from_psychology(band, profile, faces, passed, attacks):
     halfling = canonical('halflings-mic', 'halfling-elder', 'weapon.mace',
                         special_rule_ids=('halfling-elder--crude-belch',))
     tested = canonical(band, profile, 'weapon.axe')
@@ -1007,14 +1009,14 @@ def test_cold_blooded_variants_distinguish_crude_belch_from_psychology(band, pro
     rolls = [(f'round.0.first.crude-belch.leadership.{i}', face) for i, face in enumerate(faces)]
     rolls += [('round.0.first.attack.0.hit', 1)]
     if passed:
-        rolls.append(('round.0.second.attack.0.hit', 1))
+        rolls += [(f'round.0.second.attack.{i}.hit', 1) for i in range(attacks - 1)]
     dice = StrictDice([{'key': key, 'value': face} for key, face in rolls])
     choices = StrictDecisions([{'key': 'round.0.first.crude-belch', 'value': True}])
     state = initialize_duel(halfling, tested, dice, context=DuelContext(
         charging=('first',), active_participant='first'))
     result = resolve_round(halfling, tested, state, dice, choices)
     dice.finish(); choices.finish()
-    assert len(result.attacks) == 2
+    assert len(result.attacks) == attacks
     assert result.attacks[-1].hit_roll == (1 if passed else None)
 
 
@@ -1110,7 +1112,9 @@ def test_stupidity_persists_through_enemy_turn_then_pass_restores_attacks():
     rolls += [('round.0.second.attack.0.hit', 5), ('round.0.second.attack.0.wound', 1),
               ('round.1.second.attack.0.hit', 1)]
     rolls += [(f'round.2.first.stupidity.{i}', face) for i, face in enumerate((6, 3, 3))]
-    rolls += [('round.2.second.attack.0.hit', 1), ('round.2.first.attack.0.hit', 1)]
+    # The recovered Young Noble attacks with its weapon and its Spiked Tail.
+    rolls += [('round.2.second.attack.0.hit', 1), ('round.2.first.attack.0.hit', 1),
+              ('round.2.first.attack.1.hit', 1)]
     dice = StrictDice([{'key': key, 'value': face} for key, face in rolls])
     decisions = StrictDecisions([])
     state = initialize_duel(fighter, foe, dice, context=DuelContext(
@@ -1120,7 +1124,7 @@ def test_stupidity_persists_through_enemy_turn_then_pass_restores_attacks():
         result = resolve_round(fighter, foe, state, dice, decisions)
         results.append(result); state = result.state
     dice.finish(); decisions.finish()
-    assert [len(r.attacks) for r in results] == [1, 1, 2]
+    assert [len(r.attacks) for r in results] == [1, 1, 3]
     assert [r.state.first.stupidity_failed for r in results] == [True, True, False]
     assert results[0].attacks[0].hit_target == 4 and results[0].attacks[0].hit
     assert state.first.condition == Condition.STANDING
@@ -2255,9 +2259,11 @@ def test_slayer_compound_rule_preserves_novice_and_rememberer_exceptions(profile
 
 
 def test_ogre_hunter_huuuuge_preserves_light_armour_but_refuses_heavy():
-    assert canonical('ogre-hunting-party-web', 'ogre-hunter', 'weapon.axe', armour_id='armour.light-armour').armour_save == 6
+    # The Ogre Equipment List offers the Cleaver (which counts as an Axe);
+    # ``weapon.cleaver`` is the axe-profile weapon the list actually resolves.
+    assert canonical('ogre-hunting-party-web', 'ogre-hunter', 'weapon.cleaver', armour_id='armour.light-armour').armour_save == 6
     with pytest.raises(ValueError, match='heavy armour'):
-        canonical('ogre-hunting-party-web', 'ogre-hunter', 'weapon.axe', armour_id='armour.heavy-armour')
+        canonical('ogre-hunting-party-web', 'ogre-hunter', 'weapon.cleaver', armour_id='armour.heavy-armour')
 
 
 

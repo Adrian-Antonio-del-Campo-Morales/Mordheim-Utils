@@ -51,6 +51,27 @@ def _weapon_for_attack(fighter: CompiledFighter, index: int, count: int, first_r
     return fighter.off_hand if index == count - 1 else fighter.main_weapon
 
 
+def _grapple_lost_attacks(
+    weapons: tuple[EffectSet, ...], lost: int, mutant: CompiledFighter,
+    decisions: DecisionPolicy, key: str, minimum_attacks: int = 1,
+) -> tuple[EffectSet, ...]:
+    """Nominate an allocated attack, preserving the warrior's phase minimum.
+
+    A separately timed bonus allows the current pool to fall to zero. Declining
+    all offers leaves the actual allocation untouched; no count is reconstructed.
+    """
+
+    while lost > 0 and len(weapons) > minimum_attacks:
+        for index in range(len(weapons)):
+            if decisions.choose(f"{key}.grapple-lost-attack.{index}", mutant):
+                weapons = (*weapons[:index], *weapons[index + 1:])
+                break
+        else:
+            return weapons
+        lost -= 1
+    return weapons
+
+
 def allocate_attack_weapons(
     fighter: CompiledFighter, count: int, first_round: bool,
     decisions: DecisionPolicy, *, key: str,
@@ -158,6 +179,27 @@ def _resolve_prepared_defences(
 
     return attacker_state, defender_state, resolved
 
+def _declared_unpredictable_attack(
+    weapons: tuple[EffectSet, ...], decisions: DecisionPolicy | None, key: str,
+    attacker: CompiledFighter,
+) -> int | None:
+    """The printed Unpredictable declaration: which allocated attack is unparriable.
+
+    *"The Hero may declare one of its attacks Unpredictable; that attack cannot
+    be parried by the opponent."*  The declaration is taken when the pool is
+    resolved, before any attack is rolled, and it nominates exactly one attack:
+    each allocated attack is offered in allocation order and the first accepted
+    one is the declaration, so the bearer's choice decides which attack the
+    defender cannot parry.  A bearer that declares none leaves every attack
+    parryable.  With no decision policy the pool keeps the established default
+    the optimized drivers also take and the first allocated attack carries the
+    declaration.
+    """
+    for index in range(len(weapons)):
+        if decisions is None or decisions.choose(f"{key}.unpredictable-attack.{index}", attacker):
+            return index
+    return None
+
 
 def _resolve_attack_pool(
     attacker: CompiledFighter, defender: CompiledFighter,
@@ -224,13 +266,23 @@ def _resolve_attack_pool(
         weapons = (EffectSet(tags=("mechanic.body-slam",), strength_bonus=1, hit_modifier=1),)
     else:
         whip = whipcrack_weapon(attacker) if not vomit and first_round and charging else None
-        weapons = allocate_attack_weapons(attacker, count - int(whip is not None), first_round, decisions, key=key)
+        weapons = allocate_attack_weapons(
+            attacker, count - int(whip is not None), first_round, decisions, key=key)
         if whip is not None:
             weapons += (whip,)
     if not single_bonus and not vomit:
         weapons += tuple(weapon for weapon in attacker.extra_attacks
                          if not any(has_tag(weapon, tag) for tag in ("rule.strikes-last-bite", "rule.eagle-friend"))
                          and (charging or not phases.has_tag(weapon, "rule.horned-one")))
+    if (defender.global_effects.incoming_attacks_modifier < 0
+            and phases.has_tag(defender.global_effects, "rule.tentacle-grapple")
+            and "tentacle-grapple" not in defender_state.resources_spent):
+        remaining = _grapple_lost_attacks(
+            weapons, 1, defender, decisions, key, minimum_attacks)
+        if len(remaining) < len(weapons):
+            # One loss for the entire phase, even with Shifty/Whipcrack pools.
+            defender_state = defender_state.spend("tentacle-grapple")
+        weapons = remaining
     if attacker_state.attack_penalty:
         # Kusara Kama chooses the affected hand after hitting, before the
         # opponent's reply is resolved. Remove that hand's attack, retaining
@@ -248,7 +300,11 @@ def _resolve_attack_pool(
         weapons = tuple(remaining)
     weapons = tuple(weapon_against_opponent(attacker, defender, weapon) for weapon in weapons)
     if weapons and phases.has_tag(attacker.global_effects, "mechanic.unpredictable-attack"):
-        weapons = (merge_effects(weapons[0], EffectSet(cannot_be_parried=True)), *weapons[1:])
+        declared = _declared_unpredictable_attack(weapons, decisions, key, attacker)
+        if declared is not None:
+            weapons = (*weapons[:declared],
+                       merge_effects(weapons[declared], EffectSet(cannot_be_parried=True)),
+                       *weapons[declared + 1:])
 
     prepared_attacks: list[tuple[EffectSet, AttackOutcome]] = []
     attack_keys = []

@@ -121,10 +121,13 @@ def resolve_priority(context: PriorityContext) -> PriorityResult:
         weapon_priority = 0
     if has_tag(fighter.main_weapon, "weapon.long-boat-hook") and not context.first_round:
         weapon_priority = 0
-    # The spear's Strike First only applies in the first turn of hand-to-hand
-    # combat (mordheimer.net, close-combat weapons / Strike First), mirroring
-    # the long-boat-hook's first-round scope.
-    if has_tag(fighter.main_weapon, "weapon.spear") and not context.first_round:
+    # The spear's and the pike's printed Strike First only applies in the first
+    # turn of hand-to-hand combat (mordheimer.net, close-combat weapons / Strike
+    # First), mirroring the long-boat-hook's first-round scope.  Both printed
+    # items carry the same turn-scoped wording, so both leave the layer once the
+    # first turn is over.
+    if (has_tag(fighter.main_weapon, "weapon.spear")
+            or has_tag(fighter.main_weapon, "weapon.pike")) and not context.first_round:
         weapon_priority = 0
     value = weapon_priority + fighter.global_effects.priority
     if has_tag(fighter.main_weapon, "weapon.trident") and context.charged:

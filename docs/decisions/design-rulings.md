@@ -83,8 +83,7 @@ its existing optional continuation. Each new hit has its own natural-die provena
 
 These are project composition/order rulings justified by the original Night Haint
 and general/Barrage sources, not quotations of an explicit combined rule.
-[Source locators and accepted review scope](../knowledge/2a2b/tasks/T13-spectral-touch-review.md),
-[contract and implementation proof](../knowledge/2a2b/tasks/T13-spectral-touch.md).
+[Consolidated 2A/2B knowledge and ruling index](../knowledge/2a2b/2A2B-Knowledge.md).
 The accepted source interpretation does not itself certify canonical grants,
 every legal equipment composition or optimized execution. Spirit Knife/Q146
 requires separate recipient and source review.
@@ -120,9 +119,8 @@ The user accepted the independently reviewed S1–S4 recommendations on
   Halfling loadouts.
 
 These are accepted project composition/order interpretations, not quotations of
-an explicit combined source rule. [Sources and independent recommendations](../knowledge/2a2b/tasks/T13-shifty-independent-review.md#11-decisions-ready-for-human-acceptance)
-and [acceptance record](../knowledge/2a2b/tasks/T13-shifty-review.md#human-acceptance--2026-10-02)
-bind future activation/specifications and optimized ports. F003 closes at this
+an explicit combined source rule. [Consolidated 2A/2B knowledge](../knowledge/2a2b/2A2B-Knowledge.md)
+records the acceptance and its limits; they bind future activation/specifications and optimized ports. F003 closes at this
 modular boundary; canonical Shifty activation, maintained poison witnesses,
 pistol-only allocation, Crude Belch implementation and optimized execution retain
 their separate evidence and ownership.
@@ -187,7 +185,7 @@ Do not invent a replacement item, access route or ordinary-helmet alias.
 Ordinary-helmet Basha remains implemented and unchanged.
 F063 no longer blocks L07 or modular completion. The pending KB removal and
 dependent reference/generated-data cleanup remain tracked in
-[F063](../knowledge/2a2b/tasks/T13-execution-follow-ups.md#t13-f063--skull-busta-knights-helm-counterpart-is-absent-from-the-kb).
+[F063](../knowledge/2a2b/2A2B-Knowledge.md#6-open-follow-up-findings).
 
 ## Combat Lab remains a 1v1 duel simulator — 2026-10-04
 

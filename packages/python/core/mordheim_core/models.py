@@ -105,6 +105,16 @@ class EffectSet:
     regeneration_blocked_by_blessed: bool = False
     ignition_threshold: int = 7
     caught_fire_threshold: int = 7
+    # Printed coup-de-grace clause: the attack bypasses all armour saves when the
+    # defender is Knocked Down.  Distinct from the static ``ignore_armour`` flag,
+    # which has no condition scope.
+    ignore_armour_against_knocked_down: bool = False
+    # Printed Ladle clause ("The only saving throws allowed are from shields
+    # or skills"): the armour the defender wears is denied while the saving
+    # throws a shield or a skill supplies are not.  Distinct from
+    # ``ignore_armour`` (every armour save denied) and from
+    # ``ignore_armour_against_knocked_down`` (condition-scoped).
+    ignore_armour_except_shield_and_skills: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -118,6 +128,13 @@ class CompiledFighter:
     injury_profile: int = 0
     random_characteristics: tuple[tuple[str,int,int,int], ...] = ()
     natural_armour_worst_save: int = 7
+    # The passive effects of the shield and skill selections alone, carried so
+    # a printed clause can select a save by its source.  ``armour_save`` and
+    # ``global_effects`` mix every contribution whatever its provenance (worn
+    # armour, a pelt cloak, a mechanic-granted bonus, a supplied trait), so
+    # neither can answer "what would this defender save on with only a shield
+    # or a skill".
+    shield_and_skill_effects: EffectSet = EffectSet()
     extra_attacks: tuple[EffectSet, ...] = ()
     missile_weapon_limit: int = 2
     ballistic_skill: int = 0

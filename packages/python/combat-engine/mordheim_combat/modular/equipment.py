@@ -13,7 +13,8 @@ def is_pistol(weapon: EffectSet | None) -> bool:
 def whipcrack_weapon(fighter: CompiledFighter) -> EffectSet | None:
     for weapon in (fighter.main_weapon, fighter.off_hand):
         if weapon is not None and any(has_tag(weapon, tag) for tag in (
-                'weapon.steel-whip', 'weapon.beastlash', 'weapon.pirate-scourge', 'weapon.serpent-whip')):
+                'weapon.steel-whip', 'weapon.beastlash', 'weapon.pirate-scourge',
+                'weapon.serpent-whip', 'weapon.barbed-whip')):
             return weapon
     return None
 

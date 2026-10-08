@@ -452,13 +452,14 @@ rules:
 - id: young-nobles--spiked-tail
   runtime:
     scope: 'YES'
-    implemented: 'NO'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: trait.extra-attack-tail
+    - id: profile-rule.young-nobles--spiked-tail
       scope: 'YES'
-      binding: null
-      reason: 'Included individual duel effect, not implemented: Separate repeated natural melee attack at bearer Strength +1; canonical contribution remains pending.'
+      binding:
+        kind: compiler
+        id: profile-rule.young-nobles--spiked-tail
   name: Spiked Tail
   effect: >-
     Fimir Nobles have a flexible tail with a mace-like bony tip; the Young Noble gains an extra tail
@@ -662,13 +663,14 @@ rules:
 - id: fimir-warriors--spiked-tail
   runtime:
     scope: 'YES'
-    implemented: 'NO'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: trait.extra-attack-tail
+    - id: profile-rule.fimir-warriors--spiked-tail
       scope: 'YES'
-      binding: null
-      reason: 'Included individual duel effect, not implemented: Separate repeated natural melee attack at bearer Strength +1; canonical contribution remains pending.'
+      binding:
+        kind: compiler
+        id: profile-rule.fimir-warriors--spiked-tail
   name: Spiked Tail
   effect: >-
     Fimir warriors have a flexible tail with a mace-like bony tip; the warrior gains an extra tail

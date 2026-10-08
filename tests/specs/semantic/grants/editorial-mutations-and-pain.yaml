@@ -158,8 +158,11 @@ specifications:
     digest: 538479c488452523d568fb600cb628aa3dabcd707a8bd2ff88c10d0768c4e384
   - target: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-tentacle/special-rule.band--mutations-tentacle
     digest: 22faefba7593ee193480bbf880f9f831aefb18dbfe9d18beb674420f07569016
-  interpretation: Tentacle is selectable by Mutants and Possessed and removes one attack from the opponent
-    without reducing it below one.
+  interpretation: Tentacle is selectable by Mutants and Possessed, removes one attack from the opponent
+    without reducing it below one, and lets the mutant nominate which of the opponent's allocated attacks is
+    lost; a lone attack cannot be taken.  The nomination is offered before any of the opponent's attacks is
+    rolled, and accepting the first allocation reproduces the flat incoming modifier the optimized drivers
+    apply.
   cases:
   - id: mordheim-recipients
     roles:
@@ -231,6 +234,92 @@ specifications:
       - band--mutations-tentacle
     expect:
       result.attacks: 1
+  - id: grapple-keeps-the-off-hand-attack
+    roles:
+    - compiled
+    - active
+    - consumer
+    - boundary
+    operation: pool
+    attacker:
+      main_weapon_id: weapon.sigmarite-hammer
+      off_hand_id: weapon.mace
+    defender:
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-tentacle
+    context:
+      count: 2
+    decisions:
+    - key: test.grapple-lost-attack.0
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 5
+    - key: test.attack.0.wound
+      value: 3
+    expect:
+      result.attacks.0.wounded: false
+  - id: grapple-nominates-the-nominated-attack
+    roles:
+    - active
+    - consumer
+    - sequence
+    operation: pool
+    attacker:
+      main_weapon_id: weapon.sigmarite-hammer
+      off_hand_id: weapon.mace
+    defender:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-tentacle
+    context:
+      count: 2
+    decisions:
+    - key: test.grapple-lost-attack.0
+      value: false
+    - key: test.grapple-lost-attack.1
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 5
+    - key: test.attack.0.wound
+      value: 3
+    - key: test.attack.0.injury.0
+      value: 1
+    expect:
+      result.attacks.0.wounded: true
+  - id: grapple-can-be-declined
+    roles:
+    - active
+    - consumer
+    operation: pool
+    attacker:
+      main_weapon_id: weapon.sigmarite-hammer
+      off_hand_id: weapon.mace
+    defender:
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-tentacle
+    context:
+      count: 2
+    decisions:
+    - key: test.grapple-lost-attack.0
+      value: false
+    - key: test.grapple-lost-attack.1
+      value: false
+    rolls:
+    - key: test.attack.0.hit
+      value: 1
+    - key: test.attack.1.hit
+      value: 1
+    expect:
+      result.attacks.0.hit: false
+      result.attacks.1.hit: false
   - id: absent
     roles:
     - inactive

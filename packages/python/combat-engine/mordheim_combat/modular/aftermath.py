@@ -94,6 +94,7 @@ def _start_round_state(fighter: CompiledFighter, state: FighterState, *, recover
     return replace(
         state, condition=condition, parries_remaining=_parry_capacity(fighter),
         critical_available=True, attack_penalty=0, hampered_hands=(),
+        resources_spent=state.resources_spent - {"tentacle-grapple"},
     ), stood
 
 

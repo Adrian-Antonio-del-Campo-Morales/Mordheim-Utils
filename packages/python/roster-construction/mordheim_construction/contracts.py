@@ -120,7 +120,11 @@ COMPILER_CONTRACTS = {
 SPECIAL_RULE_EFFECTS = {
     "band--beastmen-special-skills-mutant": {},
     "band--marauder-special-skills-mutant": {},
-    "band--mutations-tentacle": {"effects": {"incoming_attacks_modifier": -1}},
+    # Tentacle: the printed grapple lets the mutant nominate which of the
+    # opponent's attacks is lost, so the compiled effect carries the rule's
+    # own tag beside the flat modifier the optimized drivers already apply.
+    "band--mutations-tentacle": {"effects": {"incoming_attacks_modifier": -1,
+        "tags": ("rule.tentacle-grapple",)}},
     "band--blessings-of-nurgle-cloud-of-flies": {"traits": {"cloud_of_flies": True}},
     # Bloated Foulness: +1 Wound, +1 Toughness and Movement -1 (its source
     # wording); movement is carried, not consumed by the duel engine.
@@ -144,7 +148,8 @@ SPECIAL_RULE_EFFECTS = {
     "band--norse-special-skills-berserk-charge": {"effects": {"tags": ("rule.berserk-charge",)}},
     "band--necromantic-modification-multiple-limbs": {"effects": {"attacks_bonus": 1}},
     "band--necromantic-modification-putrid-stench": {"effects": {"incoming_hit_modifier": -1, "tags": ("rule.putrid-stench",)}},
-    "band--mutations-tentacle": {"effects": {"incoming_attacks_modifier": -1}},
+    "band--mutations-tentacle": {"effects": {"incoming_attacks_modifier": -1,
+        "tags": ("rule.tentacle-grapple",)}},
     "band--shield-bash": {},
     "band--skaven-special-skills-tail-fighting": {},
     "band--sacred-mark-venom-glands": {},
@@ -154,6 +159,11 @@ SPECIAL_RULE_EFFECTS = {
 PROFILE_RULE_EFFECTS = {
     "fanatics--frantic": {"effects": {"priority": 10}},
     "centigors--trample": {},
+    # Spiked Tail adds one repeated natural tail attack at the bearer's
+    # Strength +1; the extra attack itself is assembled in ``compile_fighter``
+    # because it is a separate profile, not a flat bonus on the bearer's pool.
+    "fimir-warriors--spiked-tail": {},
+    "young-nobles--spiked-tail": {},
     "trained-bear--bear-hug": {"effects": {"bear_hug": True}},
 }
 

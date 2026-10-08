@@ -32,6 +32,8 @@ Contracts:
 
 - [Modify the knowledge base](guides/modify-knowledge-base.md)
 - [Implement and verify rules](guides/implement-and-verify-rules.md)
+- [Modular engine implementation](guides/modular-engine-implementation.md) —
+  active T13 scope and reusable semantic contracts for later optimized ports.
 - [Modify an application](guides/modify-application.md)
 - [Use and extend campaign knowledge](guides/campaign-knowledge.md)
 - [Develop and release](guides/develop-and-release.md) — the fast loop, the
@@ -44,8 +46,9 @@ Contracts:
 
 ## Knowledge base — modelling documents
 
-- [2A/2B integration checklist and agent tasks](knowledge/2a2b/README.md) —
-  phased execution, ownership, synchronization gates and task prompts.
+- [2A/2B consolidated knowledge](knowledge/2a2b/2A2B-Knowledge.md) —
+  scope, product boundary, permanent rulings index, clarifications and
+  remaining work.
 
 The catalogue and registry rules of the canonical data:
 

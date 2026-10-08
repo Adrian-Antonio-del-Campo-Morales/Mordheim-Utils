@@ -137,8 +137,8 @@ change the generic dagger/staff catalogue. Native profiles with pending
 intrinsic duel clauses are refused before compilation; name-only entries stay
 in the source catalogue but are not offered as editable stat profiles.
 
-See [L05 delivery](../knowledge/2a2b/tasks/T13-canonical-choices.md) for the
-source-backed recipients, marker contract and still-gated behaviors.
+See the [2A/2B consolidated knowledge](../knowledge/2a2b/2A2B-Knowledge.md) for
+the source-backed recipients, marker contract and still-gated behaviors.
 
 `EquipmentLimits.exempt_profile_ids` exempts a profile only from `required_tag`;
 `max_missile_weapons` still applies. For Outlaws, the Cleric may omit the bow
@@ -254,7 +254,7 @@ A legal but unsupported effect may be refused by Combat Lab's runtime gate.
 That refusal does not redefine the tabletop selection as illegal. Conversely,
 an injected effect tag proving a combat sequence does not prove canonical access.
 
-For [2A/2B integration](../knowledge/2a2b/README.md), T09's accepted Web flows
+For [2A/2B integration](../knowledge/2a2b/2A2B-Knowledge.md), T09's accepted Web flows
 remain accepted. T13.2 is consumer reconciliation, binding/effect compilation
 and activation work using this existing module. F035 revalidates earlier evidence
 after extraction; it is not a task to implement the module again. Before

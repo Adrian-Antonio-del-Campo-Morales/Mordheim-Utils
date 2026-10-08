@@ -45,6 +45,8 @@ operator_fields:
   step_aside: [special_save]
   thick_skull: [injury]
   ignore_armour: [armour]
+  ignore_armour_against_knocked_down: [armour]
+  ignore_armour_except_shield_and_skills: [armour, special_save]
   automatic_hit: [hit]
   cannot_be_parried: [parry]
   bear_hug: [hit, wound, armour]
@@ -125,6 +127,8 @@ semantic_evidence:
   special_compiler_bindings:
     profile-rule.centigors--trample: compiled-extra-attack
     profile-rule.fanatics--frantic: compiled-priority
+    profile-rule.fimir-warriors--spiked-tail: compiled-extra-attack
+    profile-rule.young-nobles--spiked-tail: compiled-extra-attack
     special-rule.trained-bear--bear-hug: compiled-cross-phase-flag
     special-rule.band--beastmen-special-skills-mutant: cross-band-mutation-grant
     special-rule.band--marauder-special-skills-mutant: cross-band-mutation-grant

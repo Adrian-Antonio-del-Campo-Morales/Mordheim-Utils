@@ -1467,6 +1467,12 @@ specifications:
       main_weapon_id: weapon.sword
     context:
       count: 1
+    # Unpredictable is a declaration now, so the case names the attack it makes
+    # unparryable; accepting the first offer reproduces the old reading in which
+    # the first allocated attack carried the property.
+    decisions:
+    - key: test.unpredictable-attack.0
+      value: true
     rolls:
     - key: test.attack.0.hit
       value: 4

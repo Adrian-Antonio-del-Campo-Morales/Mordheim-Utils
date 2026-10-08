@@ -4,6 +4,11 @@ Prerequisites: [Architecture](../reference/architecture.md) (the path of a
 rule, engine layers) and [Verification](../reference/verification.md) (what
 each layer certifies).
 
+For current T13 implementation, follow the
+[modular implementation guide](modular-engine-implementation.md). Implement
+only the modular behavior; the optimized ports and broad certification steps
+below belong to later, separately authorized batches.
+
 ## Implement combat behaviour
 
 1. Classify the effect as construction, modifier, local resolution or
@@ -323,7 +328,7 @@ cause of the defect.
 
 ## Local context and strict engine replay
 
-The [T13.1 contract](../knowledge/2a2b/tasks/T13-contracts.md) documents optional
+The local-context contract documents optional
 local participant IDs, numeric M/Ld preservation, explicit distances/contact, and
 independent charge/player-turn facts. Use `prepare_duel_context` in both production
 and verification; missing required facts must fail rather than become defaults.

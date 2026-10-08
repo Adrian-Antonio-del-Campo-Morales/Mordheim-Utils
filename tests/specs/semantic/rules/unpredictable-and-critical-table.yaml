@@ -6,10 +6,11 @@ specifications:
   sources:
   - target: mechanic/mechanic.unpredictable-attack
     digest: d6d6173c945b6a753b6f0c975a5da73def242dc87e53b0c05798273b816e0d11
-  interpretation: The canonical convention allows a single attack per phase to be unparriable. With two
-    attacks, the first of the pool receives the declaration and the second keeps the ordinary resolution.
-    The parry capability is not consumed by skipping the unpredictable attack; it is consumed when attempting
-    to parry the next one. With a single attack it applies to that attack.
+  interpretation: The Hero declares which of its attacks is Unpredictable and only that attack cannot be
+    parried; the declaration is offered for each allocated attack in order and nominates exactly one, so a
+    two-weapon bearer decides which attack the defender may not parry. An attack the bearer does not declare
+    (and a pool whose bearer declares none) keeps the ordinary parry resolution. The parry capability is not
+    consumed by skipping the unpredictable attack; it is consumed when attempting to parry the next one.
   cases:
   - id: compiled
     roles:
@@ -42,6 +43,9 @@ specifications:
       - skill.unbeatable-warrior
     context:
       count: 2
+    decisions:
+    - key: test.unpredictable-attack.0
+      value: true
     rolls:
     - key: test.attack.0.hit
       value: 4
@@ -56,6 +60,44 @@ specifications:
       result.attacks.0.wounded: false
       result.attacks.1.parried: true
       result.defender.parries_remaining: 1
+  - id: declared-second-attack-keeps-the-first-parryable
+    roles:
+    - active
+    - consumer
+    - sequence
+    - consumption
+    - boundary
+    operation: pool
+    attacker:
+      skill_ids:
+      - mechanic.unpredictable-attack
+      main_weapon_id: weapon.mace
+    defender:
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      skill_ids:
+      - skill.unbeatable-warrior
+    context:
+      count: 2
+    decisions:
+    - key: test.unpredictable-attack.0
+      value: false
+    - key: test.unpredictable-attack.1
+      value: true
+    rolls:
+    - key: test.attack.0.hit
+      value: 4
+    - key: test.attack.1.hit
+      value: 5
+    - key: test.attack.0.parry
+      value: 5
+    - key: test.attack.1.wound
+      value: 1
+    expect:
+      result.attacks.0.parried: true
+      result.attacks.1.parried: false
+      result.attacks.1.wounded: false
+      result.defender.parries_remaining: 1
   - id: single-attack-omits-parry
     roles:
     - active
@@ -69,6 +111,9 @@ specifications:
       main_weapon_id: weapon.sword
     context:
       count: 1
+    decisions:
+    - key: test.unpredictable-attack.0
+      value: true
     rolls:
     - key: test.attack.0.hit
       value: 4
@@ -104,6 +149,7 @@ specifications:
     value: []
     cases:
     - one-unparryable-second-parried
+    - declared-second-attack-keeps-the-first-parryable
     - single-attack-omits-parry
 - id: hobgoblin-sneaky-unpredictable
   scope_digest: ea4090654a79e79bb19b0855371a062c6a9a10c1ab40f7d8abdb42634a425b97
@@ -147,6 +193,9 @@ specifications:
       main_weapon_id: weapon.sword
     context:
       count: 1
+    decisions:
+    - key: test.unpredictable-attack.0
+      value: true
     rolls:
     - key: test.attack.0.hit
       value: 4
@@ -231,6 +280,9 @@ specifications:
       main_weapon_id: weapon.sword
     context:
       count: 1
+    decisions:
+    - key: test.unpredictable-attack.0
+      value: true
     rolls:
     - key: test.attack.0.hit
       value: 4
@@ -314,6 +366,9 @@ specifications:
       main_weapon_id: weapon.sword
     context:
       count: 1
+    decisions:
+    - key: test.unpredictable-attack.0
+      value: true
     rolls:
     - key: test.attack.0.hit
       value: 4

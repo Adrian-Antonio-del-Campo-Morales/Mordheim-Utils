@@ -294,7 +294,7 @@ number written here.
 
 ## Local context and strict engine replay
 
-The [T13.1 contract](../knowledge/2a2b/tasks/T13-contracts.md) documents optional
+The local-context contract documents optional
 local participant IDs, numeric M/Ld preservation, explicit distances/contact, and
 independent charge/player-turn facts. Use `prepare_duel_context` in both production
 and verification; missing required facts must fail rather than become defaults.

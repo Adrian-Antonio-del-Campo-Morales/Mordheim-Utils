@@ -439,6 +439,33 @@ rules:
   applies_to:
     profile_ids:
     - disgraced-warlord
+- id: dragon-monk--unarmed-mastery
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: skill.unarmed-fighting
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.unarmed-fighting
+  name: Unarmed Mastery (Dragon Monk)
+  effect: >-
+    Dragon Monks suffer no penalties for fighting unarmed and receive +1 Attack when doing so.
+  source:
+    manual: broheim.net
+    printed_page: 3
+    section: Heroes / 0-1 Dragon Monk
+    url: https://broheim.net/downloads/warbands/supplement/sartosa/Pirates%20of%20the%20Cathayan%20Sea.pdf
+  name_i18n:
+    es: Maestría sin Armas (Monje Dragón)
+  effect_i18n:
+    es: >-
+      Los Monjes Dragón no sufren penalización por luchar sin armas y reciben +1 Ataque al hacerlo.
+  applies_to:
+    profile_ids:
+    - dragon-monk
 - id: dragon-monk--art-of-silent-death
   runtime:
     scope: 'NO'
