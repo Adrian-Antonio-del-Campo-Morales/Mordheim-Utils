@@ -1,0 +1,103 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-bulging-biceps/skill.mighty-biceps
+# scaffold_fingerprint: de685fc3db2b49c343bd228e4dc730f50723a69b36073e2696683aa75e859875
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the
+# printed sentence, the recorded contract and the authored mechanic origin of the same skill, whose
+# pair differs only in the skill and in the declared second-round wound die so the retained
+# heavy-weapon term is the only explanation of the difference.  REVIEWED still requires manual
+# semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the printed retention: the flail's first-round Strength bonus
+# applies for this bearer in the second round as well, and the same declared die fails once the skill
+# is removed.  The bearer is a hand-built fixture carrying the band's printed rule as the canonical
+# skill the shared operator consumes.
+# origin_id:
+#   rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-bulging-biceps/skill.mighty-biceps
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-pit-fighters/special-rules.yaml
+# source_fingerprint:
+#   1a71001bf7c7ac0244b43b3c1127a5a96c6d6518f789ebd99a1dffb02c7e910e
+# source_sha256_at_generation:
+#   f4e29e8d48c3d995458d7577adad6618e309358e5df77d4d6760fcbf720a73a7
+# Printed rule text:
+#   The Hero ignores the penalty from the Heavy weapon special rule; the weapon's Strength bonus applies in every round of close combat.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Hero ignores the Heavy weapon penalty, so the weapon Strength bonus applies in every round of close combat. Closure: the first-round Strength bonus of the heavy weapon applies in every round.
+# effect_id:
+#   skill.mighty-biceps
+# relation:
+#   equivalent
+# parameters:
+#   {"retains": "heavy weapon Strength bonus"}
+# conditions:
+#   {"recipient": "Pit Fighter Hero"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared mighty-biceps operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"skill.mighty-biceps","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare modifier stage, applicable weapon, replacement versus added attacks, nominated hand/poison transport and resource lifetime. Preserve Shifty S1-S4 and pistol composition; A=2 on charge is not an unrestricted +1 Attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract of the shared operator, never from
+# engine output.  The bearer uses a flail, whose printed first-round Strength bonus is two: with the
+# skill the bonus survives into the second round, so a wound die of three wounds a Toughness 3
+# opponent from Strength 2 + 2.  Round 0 is spent on misses so the second round is the only round
+# that can show the difference.
+- audit_id: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-bulging-biceps/skill.mighty-biceps
+  id: the-heavy-weapon-bonus-is-retained-in-the-second-round
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.flail
+      skill_ids: [skill.mighty-biceps]
+      characteristics: {weapon_skill: 3, strength: 2, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 3}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2}
+    1: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+# Without the skill the identical second-round wound die of three fails against Toughness 3 from
+# Strength 2, so the same attack deals no damage: the printed retention is what the pair isolates.
+- audit_id: rule/trollheim/chaos-streets-pit-fighters/band--pit-fighter-skill-bulging-biceps/skill.mighty-biceps
+  id: without-the-skill-the-bonus-is-not-retained
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.flail
+      characteristics: {weapon_skill: 3, strength: 2, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 3}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2}
+    1: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

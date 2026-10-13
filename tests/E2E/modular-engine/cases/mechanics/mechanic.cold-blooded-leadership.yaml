@@ -1,0 +1,98 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.cold-blooded-leadership
+# scaffold_fingerprint: 0f9c1f69d74d05e333cd0d331ebefe86c033ba3634aa000e5445bca9f4e96294
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: cold-blooded-leadership (scope: YES)
+# AUTHORED[cold-blooded-leadership]: 2 scenarios cover the three dice with the
+#   highest discarded on an ordinary Fear test and on a fire-fear test.
+# origin_id:
+#   mechanic/mechanic.cold-blooded-leadership
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   aa3dcb07096089cd1eb8d4af97d5dbb54658de88d1c24b63945cf78dcf5bc094
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   For individual Leadership tests, roll three dice and discard the highest result.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Cold-Blooded (Leadership): for an individual Leadership test roll three dice and discard the highest; the lowest two are used. Observable: a Leadership test rolls 3D6 and discards the highest.
+# effect_id:
+#   mechanic.cold-blooded-leadership
+# relation:
+#   equivalent
+# parameters:
+#   {"roll_3_discard_highest":true}
+# conditions:
+#   {"trigger":"individual Leadership test, including Psychology","resolution":"3D6 with the discard rule applied by phases.resolve_leadership(discard_highest=...)","recipient":"this warrior","duration":"whole duel"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Cold-Blooded variant implemented via discard_highest in leadership.resolve_local_leadership. The Lizardman/Fimir split is a variant_fact; the printed Rout sentence is excluded separately. Selectively verified equivalence: {"review_file":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"cold-blooded-leadership","verified_family":"mechanic.cold-blooded-leadership","verified_peer_keys":[{"origin_id":"rule/mordheim/lords-of-the-marsh-mim/band--cold-blooded/mechanic.cold-blooded-leadership","clause_id":"cold-blooded-leadership"},{"origin_id":"mechanic/mechanic.cold-blooded-leadership","clause_id":"cold-blooded-leadership"},{"origin_id":"source/catalog/rules/conditions.yaml/condition.cold-blooded/unclassified","clause_id":"cold-blooded-leadership"}],"sharing_boundary":"Same 3D6 discard-highest convention for individual Leadership, including Psychology. Related to the Psychology-only variant, not identical applicability.","evidence":"inspection","limit":"Only this closed selection was checked. No acceptance of the entire review, KB activation, implementation closure or execution evidence."}
+
+# --- Authored scenarios ---
+# Three dice are rolled and the declared six is discarded, so the test passes on
+# 7 against Leadership 7; the ordinary pair would have summed to 12 and failed.
+- audit_id: mechanic/mechanic.cold-blooded-leadership
+  id: an-ordinary-test-keeps-the-lowest-two-of-three
+  covers: [cold-blooded-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.cold-blooded-leadership]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.2, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit_target: 4, state.second.fear_hit_sixes: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The Leadership variant is not limited to Psychology: the fire-fear test is not an
+# ordinary Fear test, yet the third die and the discarded six are still there and the
+# charge survives.
+- audit_id: mechanic/mechanic.cold-blooded-leadership
+  id: a-fire-fear-test-also-keeps-the-lowest-two
+  covers: [cold-blooded-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.cold-blooded-leadership, mechanic.fears-fire]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.brazier-iron
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+    - {key: round.0.first.fear.charge.2, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first_charged: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

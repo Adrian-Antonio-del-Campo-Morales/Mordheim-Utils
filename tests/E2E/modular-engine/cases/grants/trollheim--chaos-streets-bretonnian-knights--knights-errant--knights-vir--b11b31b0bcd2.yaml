@@ -1,0 +1,81 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-bretonnian-knights/knights-errant--knights-virtue/unimplemented.chaos-streets-bretonnian-knights.knights-errant.knights-virtue
+# scaffold_fingerprint: d1331bc66dbaa80fed0833fcf9997a839eae662306accb6672bf448b9b9ba5a4
+# authoring_status: PARTIAL
+# authoring_progress: the admitted no-panic clause has no authored scenario.  The pending requirement is
+# named in the clause note below: an admitted individual consumer for the lasting state "never panics or
+# breaks from combat".  The Mordheim origins of the same printed sentence (bretonnian-knights/knights-errant
+# and bretonnian-chapel-guard/band--virtue-of-purity) carry the identical pending note.  REVIEWED still
+# requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: no-panic-and-all-alone--scope--no-panic (scope: YES)
+# PARTIAL[no-panic-and-all-alone--scope--no-panic]: [C] no scenario is authorable in this revision.  The
+# recorded consumer list is empty: Break/Rout and All-Alone behaviour are group-subsystem rules the
+# isolated duel never exercises, so no observation exists for "never panics or breaks from combat".  The
+# missing datum is an admitted individual consumer for that lasting state; the printed sentence stays
+# recorded above rather than dropped.
+# origin_id:
+#   rule/trollheim/chaos-streets-bretonnian-knights/knights-errant--knights-virtue/unimplemented.chaos-streets-bretonnian-knights.knights-errant.knights-virtue
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-bretonnian-knights/special-rules.yaml
+# source_fingerprint:
+#   546a44f05f731ebd9233fbb6078f105ea075b0298f02e6e10e25c5106608c5d0
+# source_sha256_at_generation:
+#   444d18a7bba2ef6381bbf12f2edb95460202869111309d84648d2cf4b5a00a0b
+# Printed rule text:
+#   never panics or breaks from combat
+# Semantic contract (check analysis_status before treating as accepted):
+#   A duelist who never panics or breaks from combat is a lasting individual state that decides whether the single duel continues, not a voluntary escape the simulator must resolve. Printed clause: never panics or breaks from combat
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Break/Rout and All-Alone behaviour belong to the excluded group subsystem; the isolated 1v1 duel never takes such tests, so no consumer is assigned. The clauses are explicit rather than dropped. Scope review integration: {"clause_id":"no-panic-and-all-alone","review_clause_id":"no-panic","source_state":"unverified","review_status":"reviewed","scope_reason":"A duelist who never panics or breaks from combat is a lasting individual state that decides whether the single duel continues, not a voluntary escape the simulator must resolve.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"never panics or breaks from combat and never needs Leadership tests for fighting alone","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: no-panic-and-all-alone--scope--all-alone (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/trollheim/chaos-streets-bretonnian-knights/knights-errant--knights-virtue/unimplemented.chaos-streets-bretonnian-knights.knights-errant.knights-virtue
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-bretonnian-knights/special-rules.yaml
+# source_fingerprint:
+#   546a44f05f731ebd9233fbb6078f105ea075b0298f02e6e10e25c5106608c5d0
+# source_sha256_at_generation:
+#   444d18a7bba2ef6381bbf12f2edb95460202869111309d84648d2cf4b5a00a0b
+# Printed rule text:
+#   never needs Leadership tests for fighting alone
+# Semantic contract (check analysis_status before treating as accepted):
+#   Never needing Leadership tests for fighting alone is the group enemy-counting rule, excluded from the duel. Printed clause: never needs Leadership tests for fighting alone
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Break/Rout and All-Alone behaviour belong to the excluded group subsystem; the isolated 1v1 duel never takes such tests, so no consumer is assigned. The clauses are explicit rather than dropped. Scope review integration: {"clause_id":"no-panic-and-all-alone","review_clause_id":"all-alone","source_state":"unverified","review_status":"reviewed","scope_reason":"Never needing Leadership tests for fighting alone is the group enemy-counting rule, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"never panics or breaks from combat and never needs Leadership tests for fighting alone","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

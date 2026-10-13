@@ -1,0 +1,114 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/druchii-mic/band--disdain/unimplemented.druchii-mic.band.disdain
+# scaffold_fingerprint: 22632115afd7d73b8edb0efcb9968deba7fcfff6c909e2d0110229dc48ddd2eb
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenario(s) in this file.  The admitted whole clause now carries the
+#   printed prohibition as a construction refusal plus its acceptance control.  RECIPIENT: the origin row
+#   band--disdain carries `applies_to: {band: true}` and lists no profile ids, so the printed recipient set is
+#   the whole warband; the refusal is declared on the band's own Noble (druchii-mic/profiles.yaml, the printed
+#   hero that is its mandatory leader) and the earlier note's reason - "the recipient profile id of this band is
+#   not recorded in this origin" - is withdrawn: a band-granted rule needs no per-profile list.  INPUT: the
+#   fixture supplies the loadout (main_weapon_id: weapon.pistol), the same build shape the identical
+#   dark-elves clause is authored with.  DIAGNOSTIC: the shared stage's compiler-contract branch
+#   `has("compiler.no-blackpowder-weapons") && containsAny(hands, BLACKPOWDER_WEAPONS)` returns
+#   `blackpowder weapons are forbidden for ${who}` with BLACKPOWDER_WEAPONS
+#   ['weapon.pistol','weapon.duelling-pistol'] (packages/python/roster-construction/mordheim_construction/
+#   _eligibility.js, and its mirror packages/typescript/domain/eligibility/index.ts), which is exactly what
+#   rule/mordheim/dark-elves/band--black-powder-weapons authors for the same printed sentence; the earlier
+#   note already recorded that reading.
+#   DEFECTS THE SCENARIOS DETECT (recorded, not hidden, and not a reason to withhold them): (1) this band's rule
+#   declares no binding and no effect id at all
+#   (sources/knowledge/bands/mordheim/druchii-mic/special-rules.yaml, rule band--disdain: effects bind the
+#   placeholder `unimplemented.druchii-mic.band.disdain` with `binding: null`), so no contract reaches the
+#   build; (2) the same source row's own runtime block records `scope: LATER / implemented: 'NO'` with the
+#   reason "equipment-purchase restrictions are roster-construction mechanics outside the duel scope", while
+#   the semantic register admits the clause as in-scope - the conflict is visible in the refusal the scenario
+#   requires, and the resolution is an explicit re-scope plus the activation binding, not a new operator.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the printed band prohibition is evidenced as a construction refusal and its acceptance
+#   control.  The recipient build carrying weapon.pistol in main_weapon_id is refused with "blackpowder
+#   weapons are forbidden for druchii-mic/noble", and the same recipient without the item is accepted at
+#   construction.  The refusal does not come from the recorded parameter token, which the shared stage does
+#   not interpret; it comes from the band-granted compiler contract compiler.no-blackpowder-weapons, whose
+#   branch and consumer are named in authoring_progress and whose only missing piece on this band is the KB
+#   activation row.  The prohibition is a legality clause (what the warrior may carry), not the shooting
+#   resolution it mentions, so it is authored rather than deferred.
+# origin_id:
+#   rule/mordheim/druchii-mic/band--disdain/unimplemented.druchii-mic.band.disdain
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/druchii-mic/special-rules.yaml
+# source_fingerprint:
+#   7c333737a6971d4d5b3c9b165c794a6de5907971590beff5a206b3ef66388faa
+# source_sha256_at_generation:
+#   11d6f002ba8d0940a01ca59db39fa129b536f71613f157ebdf0f18c00a5c2949
+# Printed rule text:
+#   Dark Elves may never use black powder weapons, as they find them too crude, noisy and unreliable.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Band prohibition: the Druchii may never use black powder weapons.
+# effect_id:
+#   compiler.no-blackpowder-weapons
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipient": "druchii-mic", "forbids": "black-powder weapons"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Manually checked: the identical printed prohibition is published by the dark-elves band as compiler.no-blackpowder-weapons and enforced in equipmentIssue (categoryProhibitions). It is an admitted construction prohibition, not excluded by any shooting producer; this band declares no binding, so the pending step is the connection of the duplicate, not a new operator. Surface reuse candidate: {"family":"C-FORBID","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the actual forbidden categories and recipients. Body-armour-only, all armour, missiles, blackpowder, drugs and poisons are distinct restrictions. Construction legality can affect a melee build even when shooting is excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed prohibition, the band's own rule row and the shared stage's compiler-contract
+# branch that the identical dark-elves clause is authored against; no engine output was consulted.
+
+- audit_id: rule/mordheim/druchii-mic/band--disdain/unimplemented.druchii-mic.band.disdain
+  id: druchii-carrying-a-blackpowder-weapon-is-refused
+  covers: [whole]
+  # A printed member of the band carrying a blackpowder weapon.  The message is the band-wide contract
+  # branch's own wording, so an unrelated failure cannot satisfy it.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: druchii-mic
+      profile_id: noble
+      main_weapon_id: weapon.pistol
+  expect_error: blackpowder weapons are forbidden for druchii-mic/noble
+
+- audit_id: rule/mordheim/druchii-mic/band--disdain/unimplemented.druchii-mic.band.disdain
+  id: druchii-without-a-blackpowder-weapon-is-accepted-at-construction
+  covers: [whole]
+  # The same band's member with no blackpowder weapon is admitted: the prohibition bounds what may be
+  # carried, not membership of the band.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: druchii-mic
+      profile_id: noble
+    second:
+      collection: mordheim
+      band_id: druchii-mic
+      profile_id: noble
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

@@ -1,0 +1,106 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-iron-sinews/skill.iron-sinews
+# scaffold_fingerprint: dfc10aedd7d46a3f8064973b4582dd5d66d70ebfb422f87af05a0e3c98f09fab
+# authoring_status: AUTHORED
+# authoring_progress: the admitted plus-one-strength clause carries 2 authored scenarios derived from the
+#   printed rule and the recorded contract: with the band row band--strigoi-power-iron-sinews selected the
+#   bearer's wound die of three lands because the Strength it uses is one higher than the fixture base,
+#   while the identical strike without the row needs a four and the same three misses.  The bearer is
+#   charged by a hand-built fixture, so no charge test is declared and the tape holds only the two strikes.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: plus-one-strength (scope: YES)
+# AUTHORED[plus-one-strength]: 2 scenarios cover the printed +1 Strength of the shared skill.iron-sinews
+#   operator as the Strigoi origin carries it.  Strength 3 is supplied as the bearer's fixture base so the
+#   printed bonus is the only thing that can lower the wound target from four to three against the
+#   fixture's Toughness 3, and the bearer's own printed Weapon Skill is left in place.  The printed rider
+#   "does not count towards its characteristic maximum" is a character-sheet consequence with no duel
+#   observable and is recorded rather than asserted, exactly as the register boundary separates the shared
+#   modifier facet from the maximum exception.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-iron-sinews/skill.iron-sinews
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-undead-bloodlines/special-rules.yaml
+# source_fingerprint:
+#   a26ae58e89814ac76a133bd47e064fe0a6fb108cd47e3fa01855d1f06e0b80cb
+# source_sha256_at_generation:
+#   aaa7750bfbf16797ddd93878e0cd88fd550a10fdd09818c2cdb767f9356d47d2
+# Printed rule text:
+#   The Vampire gains +1 Strength. This does not count toward its normal characteristic maximum.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The vampire gains +1 Strength and the bonus does not count towards its characteristic maximum; observable: the Strength used in the wound roll is one higher.
+# effect_id:
+#   skill.iron-sinews
+# relation:
+#   equivalent
+# parameters:
+#   {"strength_bonus":1}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#    Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"plus-one-strength","audit_group":"EQ-skill.iron-sinews","verified_facet":"skill.iron-sinews","relationship":"shared_facet","boundary":"Share the +1 Strength facet only. The Vampire maximum exception and Abomination acquisition price are source-specific clauses, not inherited from the shared modifier.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the band row the audit id names; no engine
+# output was consulted.  The hand-built charger strikes first and misses on the declared natural 1, then the
+# bearer's single strike is resolved: a four hits at equal Weapon Skill and the wound die of three is the
+# discriminating face.
+
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-iron-sinews/skill.iron-sinews
+  id: the-selected-power-raises-the-strength-used-in-the-wound-roll
+  covers: [plus-one-strength]
+  fighters:
+    first:
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: strigoi-vampire
+      special_rule_ids: [band--strigoi-power-iron-sinews]
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--strigoi-power-iron-sinews/skill.iron-sinews
+  id: without-the-selected-power-the-same-wound-die-falls-short
+  covers: [plus-one-strength]
+  fighters:
+    first:
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: strigoi-vampire
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.second.wounds: 2, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

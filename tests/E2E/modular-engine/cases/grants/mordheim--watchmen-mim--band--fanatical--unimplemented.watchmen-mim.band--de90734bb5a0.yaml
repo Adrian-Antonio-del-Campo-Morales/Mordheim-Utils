@@ -1,0 +1,199 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/watchmen-mim/band--fanatical/unimplemented.watchmen-mim.band.fanatical
+# scaffold_fingerprint: 9b6ace8b8d841a63a2c9f9e2791b9362ecbda06a28e2dcf6655ccd52819e995d
+# authoring_status: PARTIAL
+# authoring_progress: the two admitted clauses of the band's Fanatical rule have no authored scenario, each
+#   for its own recorded reason.  The autopass clause owns an effect id (mechanic.automatic-leadership) but the
+#   record itself states there is no binding on it - "No binding on this record; the canonical effect exists,
+#   so the missing step is the KB connection" - so the band's grant cannot be told apart from its absence and
+#   the canonical effect is already evidenced by its own authored case.  The advance clause carries no effect
+#   id ("(not recorded)"), relation unresolved, and its printed text is the fragment "(auto-pass Leadership"
+#   whose only companion sentence is the 30-experience campaign promotion this file records as out of scope.
+#   Pending: (a) the KB connection that binds this band's Knight of Purity output to mechanic.automatic-leadership
+#   (then the admission is the passed Leadership-based test plus the non-fanatical control), and (b) the promoted
+#   profile identity the advance clause applies to.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: fanatical-advance--scope--automatic-leadership (scope: YES)
+# PARTIAL[fanatical-advance--scope--automatic-leadership]: [C] no scenario is authorable while the clause has no
+#   effect id, no consumer and an unresolved relation.  Its printed text is the fragment "(auto-pass Leadership",
+#   and the record's own integration note keeps the 30-experience promotion as roster progression outside the
+#   duel, so the admitted residue is the auto-pass state without a named recipient profile or binding.  The
+#   missing datum is the promoted profile the state attaches to; the runner cannot make a state the
+#   difference when nothing in the build carries it.
+# origin_id:
+#   rule/mordheim/watchmen-mim/band--fanatical/unimplemented.watchmen-mim.band.fanatical
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/watchmen-mim/special-rules.yaml
+# source_fingerprint:
+#   17b33ad4941dcdc2814d0ba0cfab818f6a7ddd4cd3c20c199e782dde3222cf94
+# source_sha256_at_generation:
+#   d14a3ccea705e31d0f6395fb2ca9cf42ebc50ceef2a0ea19ea1c5f1f30d3280a
+# Printed rule text:
+#   (auto-pass Leadership
+# Semantic contract (check analysis_status before treating as accepted):
+#   Automatically passing Leadership-based tests is an admitted lasting individual state of that duelist. Printed clause: (auto-pass Leadership
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The 30-experience promotion is roster progression; the auto-pass consequence is emitted as a separate in-scope clause. Scope review integration: {"clause_id":"fanatical-advance","review_clause_id":"automatic-leadership","source_state":"unverified","review_status":"reviewed","scope_reason":"Automatically passing Leadership-based tests is an admitted lasting individual state of that duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"with 30 experience a Hero becomes a crusader of Law (auto-pass Leadership)","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: fanatical-autopass--scope--automatic-leadership (scope: YES)
+# AUTHORED[fanatical-autopass--scope--automatic-leadership]: 2 scenarios take the printed auto-pass onto the
+#   Leadership tests a duel round forces on the bearer, in both directions: the charged Knight passes the
+#   Fear test with no Leadership die requested at all, and the charging Knight keeps the charge under the
+#   same dice.  The bearer is the hand-built fixture carrying the canonical operator directly, which is the
+#   device the accepted twins of this mechanic use (carnival-of-chaos nurglings/plague-bearers, black-orcs
+#   orc-nuttaz crazy, cult-of-the-possessed darksouls crazed), because this band row carries no binding of
+#   its own.  PENDING[B] the KB connection from this band origin to mechanic.automatic-leadership: with the
+#   operator supplied by the fixture these tapes evidence the printed outcome, and the band's own grant is
+#   what the connection would add.
+# origin_id:
+#   rule/mordheim/watchmen-mim/band--fanatical/unimplemented.watchmen-mim.band.fanatical
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/watchmen-mim/special-rules.yaml
+# source_fingerprint:
+#   17b33ad4941dcdc2814d0ba0cfab818f6a7ddd4cd3c20c199e782dde3222cf94
+# source_sha256_at_generation:
+#   d14a3ccea705e31d0f6395fb2ca9cf42ebc50ceef2a0ea19ea1c5f1f30d3280a
+# Printed rule text:
+#   Knights of Purity automatically pass all Leadership-based tests
+# Semantic contract (check analysis_status before treating as accepted):
+#   Knights of Purity automatically passing all Leadership-based tests is an admitted lasting individual state of those duelists. Printed clause: Knights of Purity automatically pass all Leadership-based tests
+# effect_id:
+#   mechanic.automatic-leadership
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Auto-pass Leadership for the promoted profile; the 30-experience trigger is emitted separately as roster progression. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Scope review integration: {"clause_id":"fanatical-autopass","review_clause_id":"automatic-leadership","source_state":"matched","review_status":"reviewed","scope_reason":"Knights of Purity automatically passing all Leadership-based tests is an admitted lasting individual state of those duelists.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"A Knight of Purity automatically passes all Leadership-based tests it is required to take. Observable: no Leadership test ever fails for this warrior.","effect_id":"mechanic.automatic-leadership","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"any Leadership-based test\",\"recipient\":\"a Knight of Purity\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"connection","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"Knights of Purity are vigilante crusaders hell-bent on the destruction of Chaos. Any Hero of the Watch with 30 experience points becomes a crusader of Law; Knights of Purity automatically pass all Leadership-based tests they are required to take.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"mechanic.automatic-leadership","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare each immunity or automatic-pass clause separately. Psychology immunity is not automatic success on every Leadership test. Preserve ordinary Hatred/Frenzy suppression and the explicit Strigoi exception; excluded running, experience and group tests remain excluded.","boundary":"Current child only; do not import excluded sibling or combined-parent behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: fanatical-advance--scope--campaign-trigger (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/watchmen-mim/band--fanatical/unimplemented.watchmen-mim.band.fanatical
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/watchmen-mim/special-rules.yaml
+# source_fingerprint:
+#   17b33ad4941dcdc2814d0ba0cfab818f6a7ddd4cd3c20c199e782dde3222cf94
+# source_sha256_at_generation:
+#   d14a3ccea705e31d0f6395fb2ca9cf42ebc50ceef2a0ea19ea1c5f1f30d3280a
+# Printed rule text:
+#   with 30 experience a Hero becomes a crusader of Law
+# Semantic contract (check analysis_status before treating as accepted):
+#   Becoming a crusader of Law after gaining 30 experience is a campaign advancement trigger, excluded from the duel. Printed clause: with 30 experience a Hero becomes a crusader of Law
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The 30-experience promotion is roster progression; the auto-pass consequence is emitted as a separate in-scope clause. Scope review integration: {"clause_id":"fanatical-advance","review_clause_id":"campaign-trigger","source_state":"unverified","review_status":"reviewed","scope_reason":"Becoming a crusader of Law after gaining 30 experience is a campaign advancement trigger, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"with 30 experience a Hero becomes a crusader of Law (auto-pass Leadership)","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: fanatical-autopass--scope--campaign-trigger (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/watchmen-mim/band--fanatical/unimplemented.watchmen-mim.band.fanatical
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/watchmen-mim/special-rules.yaml
+# source_fingerprint:
+#   17b33ad4941dcdc2814d0ba0cfab818f6a7ddd4cd3c20c199e782dde3222cf94
+# source_sha256_at_generation:
+#   d14a3ccea705e31d0f6395fb2ca9cf42ebc50ceef2a0ea19ea1c5f1f30d3280a
+# Printed rule text:
+#   Any Hero of the Watch with 30 experience points becomes a crusader of Law
+# Semantic contract (check analysis_status before treating as accepted):
+#   Becoming a crusader of Law after gaining 30 experience points is a campaign advancement trigger, excluded from the duel. Printed clause: Any Hero of the Watch with 30 experience points becomes a crusader of Law
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Auto-pass Leadership for the promoted profile; the 30-experience trigger is emitted separately as roster progression. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Scope review integration: {"clause_id":"fanatical-autopass","review_clause_id":"campaign-trigger","source_state":"matched","review_status":"reviewed","scope_reason":"Becoming a crusader of Law after gaining 30 experience points is a campaign advancement trigger, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"A Knight of Purity automatically passes all Leadership-based tests it is required to take. Observable: no Leadership test ever fails for this warrior.","effect_id":"mechanic.automatic-leadership","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"any Leadership-based test\",\"recipient\":\"a Knight of Purity\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"connection","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"Knights of Purity are vigilante crusaders hell-bent on the destruction of Chaos. Any Hero of the Watch with 30 experience points becomes a crusader of Law; Knights of Purity automatically pass all Leadership-based tests they are required to take.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the accepted twins of the same mechanic; no
+# engine output was consulted.  The Fear causer opposite the bearer is a hand-built fixture declaring the
+# printed trait, and every strike is declared as a natural 1, so a passing round reports nothing but the
+# absence of the Fear request.
+- audit_id: rule/mordheim/watchmen-mim/band--fanatical/unimplemented.watchmen-mim.band.fanatical
+  id: the-charged-knight-of-purity-passes-the-fear-test-without-a-die
+  covers: [fanatical-autopass--scope--automatic-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.automatic-leadership]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 5}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: false, state.first.condition: STANDING, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/watchmen-mim/band--fanatical/unimplemented.watchmen-mim.band.fanatical
+  id: the-charging-knight-of-purity-keeps-its-charge-without-a-die
+  covers: [fanatical-autopass--scope--automatic-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.automatic-leadership]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 5}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.fear_hit_sixes: false, state.first_charged: true, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

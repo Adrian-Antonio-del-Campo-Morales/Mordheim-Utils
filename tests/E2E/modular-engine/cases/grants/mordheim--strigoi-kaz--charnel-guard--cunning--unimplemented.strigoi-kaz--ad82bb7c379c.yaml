@@ -1,0 +1,87 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/strigoi-kaz/charnel-guard--cunning/unimplemented.strigoi-kaz.charnel-guard.cunning
+# scaffold_fingerprint: 7227e619a97ccc61318c28b50e1987c0fdd0280ad58535de7a64731fba3e3526
+# authoring_status: PARTIAL
+# authoring_progress: both admitted clauses stay without scenarios for the reasons recorded under each
+# PARTIAL note below: the source's own runtime block is scope LATER with implemented NO and a null
+# binding, its stated reason is that skill acquisition is a campaign progression mechanic, and the
+# register records that Cunning has no canonical grant while an unconditional equipment ban can still
+# win.  execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: weapons-expert-missile-access (scope: YES)
+# PARTIAL[weapons-expert-missile-access]: [E] no scenario is authored for this clause.  Category E: the class is admitted but the clause's own consumers sit in excluded scope - campaign skill acquisition and missile use - as the register's inherited analysis records.  The register's own
+# inherited analysis excludes campaign skill acquisition and missile use ("Acquiring the skill and
+# resolving expanded missile use are excluded; no extra melee attack follows from Weapons Expert"), the
+# source's runtime block is scope LATER / implemented NO / binding null, and the clause is
+# legal-construction access: with the acquisition excluded and no missile phase in the one-against-one
+# runner, the admitted consequence has no observable the duel can carry.
+# origin_id:
+#   rule/mordheim/strigoi-kaz/charnel-guard--cunning/unimplemented.strigoi-kaz.charnel-guard.cunning
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/strigoi-kaz/special-rules.yaml
+# source_fingerprint:
+#   fa4ee1090c6581fc2d18204851b0206b2d783fd70d8ef2dc639bc5978b0e7810
+# source_sha256_at_generation:
+#   fff01094ff532d683f96e4307109eef60ea535fc1e707be07db567aa31988053
+# Printed rule text:
+#   A Charnel Guard may learn Weapons Expert to use additional missile weapons.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Learning Weapons Expert to use additional missile weapons is legal-construction access for this duelist. Printed clause: A Charnel Guard may learn Weapons Expert to use additional missile weapons.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Separated from the supplied Weapons Training melee permission. Scope review integration: {"clause_id":"weapons-expert-missile-access","review_clause_id":"weapons-expert-missile-access","source_state":"unverified","review_status":"reviewed","scope_reason":"Learning Weapons Expert to use additional missile weapons is legal-construction access for this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Acquiring the skill and resolving expanded missile use are excluded; no extra melee attack follows from Weapons Expert.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{\"excluded\":[\"campaign skill acquisition\",\"missile use\"]}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/strigoi-kaz/special-rules.yaml\",\"sources/knowledge/catalog/skills/general.yaml\",\"docs/decisions/design-rulings.md\"]"},"inherited_clause_text":"A Charnel Guard may learn Weapons Expert to use additional missile weapons.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."} Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: weapons-training-permission (scope: YES)
+# PARTIAL[weapons-training-permission]: [C] no scenario is authored for this clause.  Category C: no canonical grant or allowed-list projection exists for Cunning, so the printed permission has no identity to be declared against.  The register states that
+# "the shared rule recognizes Weapons Training, but Cunning has no canonical grant and the unconditional
+# equipment ban can still win", and that neither the missing binding nor training's existence proves the
+# full route works.  The pending item is therefore the Cunning grant plus the exception it must win
+# against the equipment ban - two construction facts the duel runner never evaluates - so a scenario
+# would have to fabricate both the grant and its diagnostic.
+# origin_id:
+#   rule/mordheim/strigoi-kaz/charnel-guard--cunning/unimplemented.strigoi-kaz.charnel-guard.cunning
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/strigoi-kaz/special-rules.yaml
+# source_fingerprint:
+#   fa4ee1090c6581fc2d18204851b0206b2d783fd70d8ef2dc639bc5978b0e7810
+# source_sha256_at_generation:
+#   fff01094ff532d683f96e4307109eef60ea535fc1e707be07db567aa31988053
+# Printed rule text:
+#   A Charnel Guard may learn Weapons Training and thereby use weapons outside its ordinary allowance.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A supplied Weapons Training selection allows this Charnel Guard the printed melee-weapon expansion; skill acquisition is not simulated.
+# effect_id:
+#   proposed.charnel-guard-weapons-training
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {"profile":"charnel-guard","requires_skill":"skill.weapons-training"}
+# dependencies:
+#   ["skill.weapons-training"]
+# Register notes (context only, not behavioral authority):
+#   The shared rule recognizes Weapons Training, but Cunning has no canonical grant and the unconditional equipment ban can still win. Represent the exception and then check both consumers; neither the missing binding nor training's existence proves the full route works. Scope review integration: {"clause_id":"weapons-training-permission","review_clause_id":"weapons-training-permission","source_state":"unverified","review_status":"reviewed","scope_reason":"Learning Weapons Training to use weapons outside the ordinary allowance is legal-construction access for this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"C-DIFFICULT","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Keep one Difficult-to-Use weapon plus an ordinary hand weapon distinct from ignoring every Difficult-to-Use restriction. Weapons Training expands allowed identities; it does not imply the same waiver.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

@@ -1,0 +1,93 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/maneaters/sabretusks--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: a166e6e15ab7f88e84fc85afb316084eb73758a6901fce8ebc0e99bb807afb67
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying weapon.sword in main_weapon_id is refused with ""weapons" is forbidden for maneaters/sabretusks.", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# origin_id:
+#   rule/mordheim/maneaters/sabretusks--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/maneaters/special-rules.yaml
+# source_fingerprint:
+#   a21272c20f9e057427e5ead747dc9460608544d031db96dd3215c0f2e05f5f04
+# source_sha256_at_generation:
+#   3a08e324408189c522ac15ffd4ef1ebf9f6762f1a8e9ab7608ad27662721e804
+# Printed rule text:
+#   Sabretusks fight with their tusks and primal ferocity and do not select weapons or armour.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Prohibition: Sabretusks may not take weapons or armour; their natural attacks remain.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["weapons","armour"]}
+# conditions:
+#   {"recipient":"sabretusks"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   List-valued forbids. Surface reuse candidate: {"family":"903","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Separate intrinsic attacks, equipment selection, active use, ownership and an explicitly supported unarmed waiver. No weapons/armour text alone does not grant a waived penalty or extra attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/maneaters/sabretusks--equipment-restrictions/profile.equipment-restrictions
+  id: sabretusks-with-weapons-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: sabretusks
+      main_weapon_id: weapon.sword
+  expect_error: '"weapons" is forbidden for maneaters/sabretusks.'
+
+- audit_id: rule/mordheim/maneaters/sabretusks--equipment-restrictions/profile.equipment-restrictions
+  id: sabretusks-with-armour-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: sabretusks
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for maneaters/sabretusks
+
+- audit_id: rule/mordheim/maneaters/sabretusks--equipment-restrictions/profile.equipment-restrictions
+  id: sabretusks-without-weapons-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: sabretusks
+    second:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: sabretusks
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

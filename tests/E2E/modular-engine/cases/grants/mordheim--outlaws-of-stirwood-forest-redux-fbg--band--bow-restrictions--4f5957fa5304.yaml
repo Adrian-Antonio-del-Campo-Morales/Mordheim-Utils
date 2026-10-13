@@ -1,0 +1,132 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/outlaws-of-stirwood-forest-redux-fbg/band--bow-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: 7af936587a630e52dea9337ee8a697a31e99f8a567a40eec0a20d8e04d3c5165
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared token 'crossbow' IS enforced over the build loadout by the shared eligibility
+# stage, contrary to the earlier note: _eligibility.js::buildRestriction (stage boundEquipment) collects the
+# binding's forbids tokens from profile_bindings, keeps the ones that are interpreted tokens or that resolve
+# to a catalogue item (BOUND_STAGE_TOKENS holds only armour, ranged-weapons, heavy-armour, weapon.lance and
+# defence.helmet), and runs equipmentIssue over [main_weapon_id, off_hand_id, extra_hand_id, armour_id,
+# ...defence_ids]; equipmentIssue's forbids loop emits `"${token}" is forbidden for ${band}/${profile}.` for
+# a token that equals the carried item id or one of its tags, and 'crossbow' is in EQUIPMENT_TAG_VOCABULARY.
+# The catalogue row is sources/knowledge/catalog/items/weapons-ranged.yaml (`- id: crossbow`, tags: crossbow).
+# The binding itself is printed in sources/knowledge/bands/mordheim/outlaws-of-stirwood-forest-redux-fbg/
+# special-rules.yaml (`band--bow-restrictions`, runtime.grant: band, applies_to.band: true, binding
+# profile.equipment-restrictions, forbids: crossbow).  Two refusals (one per printed recipient family) and one
+# acceptance tape are declared.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/outlaws-of-stirwood-forest-redux-fbg/band--bow-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/outlaws-of-stirwood-forest-redux-fbg/special-rules.yaml
+# source_fingerprint:
+#   cd31552a0f8172766784a8de5b559d78aef07cde208b3a6e551a1d96d5969ee5
+# source_sha256_at_generation:
+#   8c7e382ae387b5103b5a482eac03052cdba7656f28196095c659d9902c643e06
+# Printed rule text:
+#   Every warrior must carry a type of bow, but not crossbows, as part of their equipment.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Obligation/prohibition: each warrior must acquire one bow-type weapon and may not take a crossbow, with the Cleric exempt from the bow requirement.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":"crossbow","required_tag":"bow","max_missile_weapons":1,"exempt_profile_ids":["cleric"]}
+# conditions:
+#   {"scope":"whole warband"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The binding combines a forbids token, a missile bound, a required tag and an exemption; the shared decision reads each parameter. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Requiring a bow-type weapon and refusing crossbows is an admitted construction clause of these warriors.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"904","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the actual forbidden categories and recipients. Body-armour-only, all armour, missiles, blackpowder, drugs and poisons are distinct restrictions. Construction legality can affect a melee build even when shooting is excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 4 authored scenario(s) in this file; authored clauses ['whole']; no admitted clause of
+# this origin is left pending.  REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+# The declared token 'crossbow' is enforced over the build loadout, not over a carried kit: the shared stage
+# keeps the interpreted token and runs equipmentIssue over the build's own weapon/armour/defence slots, whose
+# forbids loop prints `"crossbow" is forbidden for <band>/<profile>.`  No carried-item input is needed, which
+# is why the earlier 'no build can carry it' note was wrong.
+
+- audit_id: rule/mordheim/outlaws-of-stirwood-forest-redux-fbg/band--bow-restrictions/profile.equipment-restrictions
+  id: a-crossbow-is-refused-for-an-outlaw
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest-redux-fbg
+      profile_id: outlaws
+      owned_item_ids: [crossbow]
+  expect_error: '"crossbow" is forbidden for outlaws-of-stirwood-forest-redux-fbg/outlaws.'
+
+- audit_id: rule/mordheim/outlaws-of-stirwood-forest-redux-fbg/band--bow-restrictions/profile.equipment-restrictions
+  id: a-crossbow-is-refused-for-the-bandit-leader
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest-redux-fbg
+      profile_id: bandit-leader
+      owned_item_ids: [crossbow]
+  expect_error: '"crossbow" is forbidden for outlaws-of-stirwood-forest-redux-fbg/bandit-leader.'
+
+# The Cleric's printed exemption covers only the bow obligation (exempt_profile_ids in the binding feeds the
+# required_tag check alone), so the crossbow refusal is declared for the Cleric too: it is the printed
+# "Every warrior must carry a type of bow, but not crossbows" read with the Cleric exemption of the bow alone.
+
+- audit_id: rule/mordheim/outlaws-of-stirwood-forest-redux-fbg/band--bow-restrictions/profile.equipment-restrictions
+  id: a-crossbow-is-refused-for-the-cleric
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest-redux-fbg
+      profile_id: cleric
+      owned_item_ids: [crossbow]
+  expect_error: '"crossbow" is forbidden for outlaws-of-stirwood-forest-redux-fbg/cleric.'
+
+# Acceptance control: a printed recipient whose bow satisfies the clause is admitted at construction and its
+# duel runs with no eligibility refusal.  The randomiser for that build and every instruction to the defender
+# are empty, and the participant is declared out at the outset, so a round cannot resolve: rounds_executed 0.
+
+- audit_id: rule/mordheim/outlaws-of-stirwood-forest-redux-fbg/band--bow-restrictions/profile.equipment-restrictions
+  id: a-bow-carrying-outlaw-is-admitted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest-redux-fbg
+      profile_id: outlaws
+      main_weapon_id: weapon.mace
+      owned_item_ids: [bow]
+    second:
+      collection: mordheim
+      band_id: outlaws-of-stirwood-forest-redux-fbg
+      profile_id: outlaws
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

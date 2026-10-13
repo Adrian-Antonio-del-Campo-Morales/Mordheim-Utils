@@ -48,6 +48,11 @@ class FighterState:
     drunken_result: int = 0
     animosity_failed: bool = False
     last_shadow_dance: str | None = None
+    dodge_trick_active: bool = False
+    banter_trick_active: bool = False
+    trip_trick_active: bool = False
+    mouth_sewn: bool = False
+    hillman_wolf: bool = False
 
     @property
     def active(self) -> bool:

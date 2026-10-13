@@ -1,0 +1,93 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/warband/skill.tireless/skill.tireless
+# scaffold_fingerprint: ae1491bbe141e9d7825649a198f6ada36f93089616308b66a7702128abd9509b
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: retains-heavy-weapon-strength (scope: YES)
+# AUTHORED[retains-heavy-weapon-strength]: 2 scenarios contrast a later round without
+#   and with the printed retention.
+# origin_id:
+#   rule/catalog/warband/skill.tireless/unclassified
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/skills/warband.yaml
+# source_fingerprint:
+#   288c77c80c5ae057d25de0a2cfe8775a0144a45e93a62a02e6a51ce5bc5882a9
+# source_sha256_at_generation:
+#   cbce88f8e195c72b1767c88af362131455b99435c0ffb53e58b55b7306161198
+# Printed rule text:
+#   Retains the Strength bonus of heavy weapons in later rounds.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Strength bonus of heavy weapons is retained in later rounds; observable: no Strength drop after the first round of a combat with a flail or morning star.
+# effect_id:
+#   skill.tireless
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed as a retainer on the flail and morning-star first-round Strength bonus, so the bonus is granted in every round for a tireless bearer. Surface reuse candidate: {"family":"skill.tireless","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare modifier stage, applicable weapon, replacement versus added attacks, nominated hand/poison transport and resource lifetime. Preserve Shifty S1-S4 and pistol composition; A=2 on charge is not an unrestricted +1 Attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The catalog warband skill list prints the canonical tireless wording. The morning
+# star prints its +1 Strength for the first round only, so the later round separates
+# the retained bonus from the ordinary profile.
+- audit_id: rule/catalog/warband/skill.tireless/skill.tireless
+  id: the-heavy-weapon-bonus-lapses-without-the-skill
+  covers: [retains-heavy-weapon-strength]
+  fighters:
+    first:
+      main_weapon_id: weapon.morning-star
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 3}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2}
+    1: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+- audit_id: rule/catalog/warband/skill.tireless/skill.tireless
+  id: the-bonus-is-retained-with-the-skill
+  covers: [retains-heavy-weapon-strength]
+  fighters:
+    first:
+      main_weapon_id: weapon.morning-star
+      skill_ids: [skill.tireless]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 3}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2}
+    1: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

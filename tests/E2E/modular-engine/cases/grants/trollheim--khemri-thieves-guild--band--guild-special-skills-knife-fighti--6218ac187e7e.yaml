@@ -1,0 +1,104 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-thieves-guild/band--guild-special-skills-knife-fighting/skill.knife-fighting
+# scaffold_fingerprint: 32a9a1b2d1bfbc9e35a1bc93a8ad55326c877840de596d825d9e522245348aae
+# authoring_status: AUTHORED
+# authoring_progress: the admitted knife-fighting-bonus clause carries 2 authored scenarios derived from the
+#   printed sentence and the modular consumer.  The blocker recorded here previously was FALSE for the
+#   consumed half: the printed weapon identities are the catalogue ids the shared hit context already reads -
+#   packages/python/combat-engine/mordheim_combat/modular/contexts.py adds the printed +1 Weapon Skill when
+#   the fighter carries the skill and is using "weapon.dagger" or "weapon.yambiya" - so weapon.dagger is the
+#   admitted item id this note said was missing (it is the ordinary catalogue dagger every other case uses).
+#   Scenario 1 shows the +1 Weapon Skill moving an equal-Weapon-Skill duel's to-hit target from four to three,
+#   so a declared hit die of three lands; scenario 2 removes the skill and the identical die misses, which is
+#   what isolates the bonus.  The printed injury half and the untouched weapon armour bonus are recorded below
+#   as not asserted, because this file's own contract does not name the injury roll key.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: knife-fighting-bonus (scope: YES)
+# AUTHORED[knife-fighting-bonus]: 2 scenarios cover the printed +1 Weapon Skill.  The skill is supplied on
+#   the build as the canonical tag skill.knife-fighting and the weapon as the catalogue's own weapon.dagger,
+#   which with weapon.yambiya is exactly the pair the hit context reads.  Scenario 1: at equal Weapon Skill
+#   the printed to-hit target is four, so a declared hit die of three lands only because of the printed bonus;
+#   scenario 2 removes the skill and the same declared three misses.  Not asserted here: the printed +1 to the
+#   injury roll and the untouched weapon armour bonus, whose roll keys this origin's contract does not name -
+#   they stay recorded rather than guessed.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/khemri-thieves-guild/band--guild-special-skills-knife-fighting/skill.knife-fighting
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-thieves-guild/special-rules.yaml
+# source_fingerprint:
+#   f0f366563ea2497821373c7ff90c74eefa9c0237402503ff426952b4241ecfe9
+# source_sha256_at_generation:
+#   e5ff6041e2cf3c08ebd45f6229309d00e871afa5361b2c5873f4a578792c7827
+# Printed rule text:
+#   While using a Yambiya or Dagger, the Hero gains +1 WS and +1 on the Injury roll. The opponent still receives the normal +1 armour-save modifier for being attacked with such a weapon.
+# Semantic contract (check analysis_status before treating as accepted):
+#   While using a Dagger or Yambiya the warrior gains +1 Weapon Skill and +1 on the injury roll, and the opponent still receives the normal +1 armour save; observable: one better Weapon Skill and one higher injury total with the dagger's save modifier unchanged.
+# effect_id:
+#   skill.knife-fighting
+# relation:
+#   equivalent
+# parameters:
+#   {"injury_modifier":1,"ws_bonus":1}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Two printings of the same skill (Thieves' Guild and the shared register). All three halves are consumed: the Weapon Skill bonus in the hit context, the injury modifier in the injury context, and the untouched weapon armour bonus. Surface reuse candidate: {"family":"skill.knife-fighting","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare actual weapon identity, charge/first-round condition, natural versus modified Strength, failed versus all-roll reroll and critical eligibility. Keep weapon-independent restrictions and special attacks outside an unsupported shared benefit.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The printed bonus in the hit context: the skill plus the printed knife raises the bearer's Weapon Skill
+# against an equal-Weapon-Skill defender, so a declared hit die of three reaches the printed three instead of
+# the unaided four.
+- audit_id: rule/trollheim/khemri-thieves-guild/band--guild-special-skills-knife-fighting/skill.knife-fighting
+  id: the-printed-bonus-lifts-a-declared-three-onto-the-hit-target
+  covers: [knife-fighting-bonus]
+  fighters:
+    first:
+      main_weapon_id: weapon.dagger
+      skill_ids: [skill.knife-fighting]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.1.hit: false, state.second.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the very same knife in the very same hands without the skill, where the declared three misses
+# the printed four - so the hit above is attributable to the printed bonus and to nothing else.
+- audit_id: rule/trollheim/khemri-thieves-guild/band--guild-special-skills-knife-fighting/skill.knife-fighting
+  id: the-same-declared-three-misses-without-the-skill
+  covers: [knife-fighting-bonus]
+  fighters:
+    first:
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,100 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-multiple-limbs/special-rule.band--necromantic-modification-multiple-limbs
+# scaffold_fingerprint: 35f1cf50e77b249a476f51a356d840e3df024609a5f2702ce98316dc57dd962f
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the
+# printed line and the recorded contract that names the granted attack (attacks_bonus 1, no
+# replacement), read on the bearer's charge pool exactly as the shared extra-attack operator's own
+# case reads it.  The bearer is the Abomination profile with the row selected and one Attack as its
+# fixture base, and the pair differs only in that row.  REVIEWED still requires manual semantic review
+# and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the printed granted attack: the bearer's charge pool carries two
+# attack dice with the row and one without it, every declared die is a miss so the pool size is the
+# only difference, and the defender is declared with no attacks so the tape holds only the bearer's
+# dice.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/khemri-necromancers/band--necromantic-modification-multiple-limbs/special-rule.band--necromantic-modification-multiple-limbs
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-necromancers/special-rules.yaml
+# source_fingerprint:
+#   2259a21dec4863eff83a9ca5420e74b4725ba78d9dae5570cde57c9c0c6b889b
+# source_sha256_at_generation:
+#   5919ead4bc02e6bbc69f322bde34060778fff791f89ae27775559ac0ca2bafb1
+# Printed rule text:
+#   The Necromantic Abomination gains +1 Attack.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Granted attack: the selected Necromantic Modification adds +1 Attack on top of the profile's two attacks, requiring neither a charge nor the first round.
+# effect_id:
+#   special-rule.band--necromantic-modification-multiple-limbs
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipient":"necromantic-abomination","attacks":1}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The contract contributes attacks_bonus 1 and does not replace an existing attack. Surface reuse candidate: {"family":"skill.extra-attack","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare modifier stage, applicable weapon, replacement versus added attacks, nominated hand/poison transport and resource lifetime. Preserve Shifty S1-S4 and pistol composition; A=2 on charge is not an unrestricted +1 Attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed line and the recorded contract of the shared extra-attack operator, never
+# from engine output.  The bearer charges, so the printed extra attack is on top of its fixture base of
+# one; each attack is scripted as a miss on a natural 1 and the defender's pool is empty, so the number
+# of declared dice is the whole difference between the pair.
+
+- audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-multiple-limbs/special-rule.band--necromantic-modification-multiple-limbs
+  id: the-selected-modification-grants-an-extra-attack
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids: [band--necromantic-modification-multiple-limbs]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-multiple-limbs/special-rule.band--necromantic-modification-multiple-limbs
+  id: without-the-selected-modification-the-base-attacks-stand
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

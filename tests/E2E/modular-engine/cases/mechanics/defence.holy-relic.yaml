@@ -1,0 +1,222 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/defence.holy-relic
+# scaffold_fingerprint: 52c9204c5c8edb706ff4517b5953c57761e8232754012485501ddfffca231efe
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry authored scenarios: the first
+#   required Leadership test is auto-passed without consuming a die, and a second
+#   required test is not, including when the bearer owns two relics. REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: first-leadership-pass--scope--first-leadership-pass (scope: YES)
+# AUTHORED[first-leadership-pass--scope--first-leadership-pass]: 2 scenarios show
+#   that the first required Leadership test of the bearer is passed with no die
+#   requested and the once-per-game use is spent, and that a later required test
+#   in the same duel is rolled normally. Pending semantic review.
+# origin_id:
+#   mechanic/defence.holy-relic
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   57b99800b7e7246174c842d6f2bfe8009f240e4489c146c7a8dabd8649f537ea
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   A model with a holy relic will automatically pass the first Leadership test he is required to make in the game.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Automatically passing the first Leadership test of the game is an admitted individual Leadership consequence of the bearer. Printed clause: A model with a holy relic will automatically pass the first Leadership test he is required to make in the game.
+# effect_id:
+#   defence.holy-relic
+# relation:
+#   related
+# parameters:
+#   {"auto_pass_leadership_tests":1}
+# conditions:
+#   {"trigger":"first required individual Leadership test","resource":"one shared relic use per bearer/game, not per copy or clause"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   First-Leadership auto-pass; resolve_local_leadership spends 'leadership.holy-relic' once. The printed Rout clause is recorded separately. Scope review integration: {"clause_id":"first-leadership-pass","review_clause_id":"first-leadership-pass","source_state":"matched","review_status":"reviewed","scope_reason":"Automatically passing the first Leadership test of the game is an admitted individual Leadership consequence of the bearer.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"A model with a holy relic automatically passes the first Leadership test it is required to make in the duel. Observable: the first Leadership test succeeds without dice and the single-use resource is spent.","effect_id":"defence.holy-relic","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"first Leadership test this model must take\",\"resolution\":\"auto-pass before dice\",\"recipient\":\"this model\",\"duration\":\"once per duel\",\"stacking\":\"single use; two relics do not stack\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"C07-leadership-rerolls","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"A model with a holy relic will automatically pass the first Leadership test he is required to make in the game. If worn by the leader, it will allow him to automatically pass the first Rout test if he has not taken any Leadership tests before. You can only ignore the first Leadership test in any single game – owning two or more holy relics will not allow you to ignore second and subsequent tests.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Selectively verified equivalence: {"review_file":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"first-leadership-pass","verified_family":"defence.holy-relic","verified_peer_keys":[{"origin_id":"item/holy_relic","clause_id":"first-leadership-pass--scope--first-leadership-pass"},{"origin_id":"item/holy_relic","clause_id":"first-leadership-pass--scope--single-relic-rule"},{"origin_id":"item/holy_relic_pilgrim_only","clause_id":"first-leadership-pass--scope--first-leadership-pass"},{"origin_id":"item/holy_relic_pilgrim_only","clause_id":"first-leadership-pass--scope--single-relic-rule"},{"origin_id":"mechanic/defence.holy-relic","clause_id":"first-leadership-pass--scope--first-leadership-pass"},{"origin_id":"mechanic/defence.holy-relic","clause_id":"first-leadership-pass--scope--single-relic-rule"},{"origin_id":"source/catalog/hirelings/hired-swords/grade-2b.yaml/hireling.hired-sword.sister-of-sigmar.rule.candle-tree/hireling.hired-sword.sister-of-sigmar.rule.candle-tree.relic","clause_id":"counts-as-holy-relic"}],"sharing_boundary":"Same first-required-individual-Leadership auto-pass and single shared use regardless of copies. Split trigger and non-stacking rows are facets of one resource, not extra uses; no Rout clause is imported.","evidence":"inspection","limit":"Only this closed selection was checked. No acceptance of the entire review, KB activation, implementation closure or execution evidence."}
+#
+# Clause: first-leadership-pass--scope--single-relic-rule (scope: YES)
+# AUTHORED[first-leadership-pass--scope--single-relic-rule]: 2 scenarios show
+#   that a second relic adds no second use: one relic and two relics both spend
+#   exactly one shared use and leave the following test to be rolled. Pending
+#   semantic review.
+# origin_id:
+#   mechanic/defence.holy-relic
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   57b99800b7e7246174c842d6f2bfe8009f240e4489c146c7a8dabd8649f537ea
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   You can only ignore the first Leadership test in any single game – owning two or more holy relics will not allow you to ignore second and subsequent tests.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Limiting the relic to one ignored Leadership test in a game is part of the same admitted individual relic consequence and is recorded on its own text. Printed clause: You can only ignore the first Leadership test in any single game – owning two or more holy relics will not allow you to ignore second and subsequent tests.
+# effect_id:
+#   defence.holy-relic
+# relation:
+#   related
+# parameters:
+#   {"copies_stack":false,"maximum_uses":1}
+# conditions:
+#   {"resource":"one shared relic use per bearer/game, not per copy or clause"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   First-Leadership auto-pass; resolve_local_leadership spends 'leadership.holy-relic' once. The printed Rout clause is recorded separately. Scope review integration: {"clause_id":"first-leadership-pass","review_clause_id":"single-relic-rule","source_state":"matched","review_status":"reviewed","scope_reason":"Limiting the relic to one ignored Leadership test in a game is part of the same admitted individual relic consequence and is recorded on its own text.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"A model with a holy relic automatically passes the first Leadership test it is required to make in the duel. Observable: the first Leadership test succeeds without dice and the single-use resource is spent.","effect_id":"defence.holy-relic","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"first Leadership test this model must take\",\"resolution\":\"auto-pass before dice\",\"recipient\":\"this model\",\"duration\":\"once per duel\",\"stacking\":\"single use; two relics do not stack\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"C07-leadership-rerolls","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"A model with a holy relic will automatically pass the first Leadership test he is required to make in the game. If worn by the leader, it will allow him to automatically pass the first Rout test if he has not taken any Leadership tests before. You can only ignore the first Leadership test in any single game – owning two or more holy relics will not allow you to ignore second and subsequent tests.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Selectively verified equivalence: {"review_file":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"first-leadership-pass","verified_family":"defence.holy-relic","verified_peer_keys":[{"origin_id":"item/holy_relic","clause_id":"first-leadership-pass--scope--first-leadership-pass"},{"origin_id":"item/holy_relic","clause_id":"first-leadership-pass--scope--single-relic-rule"},{"origin_id":"item/holy_relic_pilgrim_only","clause_id":"first-leadership-pass--scope--first-leadership-pass"},{"origin_id":"item/holy_relic_pilgrim_only","clause_id":"first-leadership-pass--scope--single-relic-rule"},{"origin_id":"mechanic/defence.holy-relic","clause_id":"first-leadership-pass--scope--first-leadership-pass"},{"origin_id":"mechanic/defence.holy-relic","clause_id":"first-leadership-pass--scope--single-relic-rule"},{"origin_id":"source/catalog/hirelings/hired-swords/grade-2b.yaml/hireling.hired-sword.sister-of-sigmar.rule.candle-tree/hireling.hired-sword.sister-of-sigmar.rule.candle-tree.relic","clause_id":"counts-as-holy-relic"}],"sharing_boundary":"Same first-required-individual-Leadership auto-pass and single shared use regardless of copies. Split trigger and non-stacking rows are facets of one resource, not extra uses; no Rout clause is imported.","evidence":"inspection","limit":"Only this closed selection was checked. No acceptance of the entire review, KB activation, implementation closure or execution evidence."}
+#
+# Clause: rout-pass (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   mechanic/defence.holy-relic
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   57b99800b7e7246174c842d6f2bfe8009f240e4489c146c7a8dabd8649f537ea
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   If worn by the leader, it will allow him to automatically pass the first Rout test
+# Semantic contract (check analysis_status before treating as accepted):
+#   (not recorded)
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Rout test belongs to the excluded group/Rout subsystem; an isolated 1v1 duel never takes one, so no consumer is assigned.
+
+# --- Authored scenarios ---
+# mechanic/defence.holy-relic — one automatic Leadership pass per bearer, never
+# per copy.
+#
+# Expectations come from the printed rule and the admitted clauses
+# `first-leadership-pass--scope--first-leadership-pass` and
+# `first-leadership-pass--scope--single-relic-rule` of
+# docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv, never from engine output:
+# "A model with a holy relic will automatically pass the first Leadership test he
+# is required to make in the game ... owning two or more holy relics will not
+# allow him to ignore second and subsequent tests."  The relic is carried, not
+# equipped: it is declared through `owned_item_ids`, which is how the printed
+# carried item grants the effect.
+#
+# The rule is observable in two independent ways.  First, an auto-passed test
+# consumes no die at all, and the strict tape would fail if one were requested,
+# so the state's spent-resource set is the observable that the single shared use
+# happened.  Second, the same set proves that a following required test was NOT
+# auto-passed: the recorded test is rolled normally and can fail.
+#
+# The required tests used here are the Fear test at the charge and the Stupidity
+# test of a Head Injury.  Both are printed Leadership tests: the fear-causing
+# opponent charges the bearer, and the Head Injury result 6 of the printed
+# Disability table makes a group "subject to Stupidity".  A failed charge fear
+# test cancels the charge, which is why the second scenario terminates as
+# disengaged instead of reaching the attack phase.
+#
+# The first scenario declares the shared profiles and duel context as YAML
+# anchors; the sibling aliases them and keeps its own Leadership dice.
+
+- audit_id: mechanic/defence.holy-relic
+  id: holy-relic-passes-the-first-leadership-test-without-a-die
+  covers: [first-leadership-pass--scope--first-leadership-pass]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      owned_item_ids: [holy_relic]
+      characteristics: &relic-bearer-ws3-s3-t3-w2-i5-ld8 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: &fear-causer-ws3-s3-t3-w2-i2-ld8 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 8}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.resources_spent: [leadership.holy-relic], state.first.condition: STANDING, attacks.0.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The once-per-game use is spent by the first required test, so the next required
+# test of the same bearer is rolled: the Head Injury Stupidity test is
+# auto-passed with no die, and the charge Fear test then rolls two dice and fails
+# on a total of twelve against Leadership 8, so the charge is cancelled before
+# any attack.
+
+- audit_id: mechanic/defence.holy-relic
+  id: holy-relic-does-not-pass-a-second-required-test
+  covers: [first-leadership-pass--scope--first-leadership-pass, first-leadership-pass--scope--single-relic-rule]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      owned_item_ids: [holy_relic]
+      characteristics: *relic-bearer-ws3-s3-t3-w2-i5-ld8
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: *fear-causer-ws3-s3-t3-w2-i2-ld8
+  initial_state:
+    first: {resources_spent: [disability.6]}
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {state.first.resources_spent: [disability.6, leadership.holy-relic], state.first.stupidity_failed: false, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The two siblings below declare the printed Head Injury result 6 (subject to
+# Stupidity) as an initial resource, which is what asks for the first required
+# Leadership test and what the relic's auto-pass spends its one use on.  The
+# spent-resource set is therefore the declared entry together with the single
+# relic use, and it never gains a second relic use.
+#
+# A second relic is a second copy of one carried item, not a second use: the
+# bearer still spends exactly one shared resource and the second required test is
+# still rolled and can fail, exactly as with a single relic.
+
+- audit_id: mechanic/defence.holy-relic
+  id: two-holy-relics-still-grant-only-one-pass
+  covers: [first-leadership-pass--scope--single-relic-rule]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      owned_item_ids: [holy_relic, holy_relic]
+      characteristics: *relic-bearer-ws3-s3-t3-w2-i5-ld8
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: *fear-causer-ws3-s3-t3-w2-i2-ld8
+  initial_state:
+    first: {resources_spent: [disability.6]}
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {state.first.resources_spent: [disability.6, leadership.holy-relic], state.first.stupidity_failed: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

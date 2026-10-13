@@ -20,6 +20,18 @@ def whipcrack_weapon(fighter: CompiledFighter) -> EffectSet | None:
 
 
 def equipment_for_state(fighter: CompiledFighter, state: FighterState, *, first_round: bool) -> CompiledFighter:
+    if state.hillman_wolf:
+        natural = EffectSet(tags=('weapon.natural-attacks', 'rule.unarmed-without-penalties'))
+        # The source discards all equipment until after battle; no in-duel
+        # reversion or equipment recovery is printed.
+        return replace(fighter, main_weapon=natural, off_hand=None, off_hand_attacks=False,
+            main_weapon_without_poison=natural, off_hand_without_poison=None,
+            armour_save=7, helmet_save=7, natural_armour_save=7,
+            shield_and_skill_effects=EffectSet(),
+            global_effects=replace(fighter.global_effects, parry=False,
+                armour_save_bonus=0, ward_save=7, regeneration_save=7),
+            extra_attacks=(EffectSet(tags=('rule.hillman-bite',), strength_bonus=-1),),
+            main_hand_slot='natural')
     main = None if 'main' in state.broken_hands or (not first_round and is_pistol(fighter.main_weapon)) else fighter.main_weapon
     off = None if 'off' in state.broken_hands or (not first_round and is_pistol(fighter.off_hand)) else fighter.off_hand
     main_clean, off_clean = fighter.main_weapon_without_poison, fighter.off_hand_without_poison

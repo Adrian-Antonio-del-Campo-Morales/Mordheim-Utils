@@ -1,0 +1,135 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/maneaters/band--ogres-special-skills-bull-charge/mechanic.bull-charge
+# scaffold_fingerprint: 53c1319aea1c063e9fc8f5db806f78b9adce9508da77022db1f9c94cb41b0dec
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries 3 authored scenarios for the printed charge
+# substitution: the declared single +1 attack that knocks the defender down without a To Wound roll,
+# the recorded reading of "if successful" as an unparried unsaved hit (the armour save that leaves the
+# defender standing), and the declined declaration that resolves the normal attacks.  REVIEWED still
+# requires manual semantic review and execution_status stays UNEXECUTED; no behavioral result is
+# claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover the printed charge: the declared charge resolves exactly one
+# attack on its own key (round.0.first.bull-charge.hit) instead of the profile's two and an unparried,
+# unsaved hit leaves the defender KNOCKED_DOWN without a To Wound roll; an armour save stops that
+# knock-down and the defender stays standing, which is the recorded project reading of the printed
+# "if successful"; and declining the declaration resolves the profile's normal attacks.  The fixed
+# fixture declares the canonical mechanic.bull-charge operator that the band's printed stanza
+# repeats, so the recipient is the printed Ogre and the band origin adds no second runtime
+# contribution.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/maneaters/band--ogres-special-skills-bull-charge/mechanic.bull-charge
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/maneaters/special-rules.yaml
+# source_fingerprint:
+#   47d69b1ef2166f4c85a7432deedda377312e831e0d527645e47770bdf944133e
+# source_sha256_at_generation:
+#   3a08e324408189c522ac15ffd4ef1ebf9f6762f1a8e9ab7608ad27662721e804
+# Printed rule text:
+#   Ogres learn to use their vast bulk in a charge, trampling the enemy to the ground. When charging, an Ogre with this skill may attempt a single attack with a +1 'to hit' modifier rather than making his normal attacks. If successful the enemy model is automatically knocked down.
+# Semantic contract (check analysis_status before treating as accepted):
+#   When charging an Ogre may attempt a single attack at +1 to hit rather than his normal attacks, and a successful attack automatically knocks the enemy down. Closure: one +1 hit attack whose hit leaves the target knocked down.
+# effect_id:
+#   mechanic.bull-charge
+# relation:
+#   equivalent
+# parameters:
+#   {"attack_count": 1, "consequence": "defender knocked down", "hit_modifier": 1}
+# conditions:
+#   {"recipient": "Ogre", "trigger": "charge"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared bull-charge operator, whose pool handler substitutes the single attack and applies the knockdown without a wound roll. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"mechanic.bull-charge","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The declared replacement pool is one attack on its own key, so the ordered tape shows one attack
+# where the profile has two, and the automatic knock-down needs no To Wound roll.
+- audit_id: rule/mordheim/maneaters/band--ogres-special-skills-bull-charge/mechanic.bull-charge
+  id: a-declared-bull-charge-knocks-the-enemy-down
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bull-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bull-charge, value: true}
+  rolls:
+    - {key: round.0.first.bull-charge.hit, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: True, state.second.condition: KNOCKED_DOWN, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.bull-charge.hit, sides: 6, value: 3}
+
+# The recorded reading of the printed "if successful": an armour save stops the knock-down, so the
+# defender stays standing and the round continues.
+- audit_id: rule/mordheim/maneaters/band--ogres-special-skills-bull-charge/mechanic.bull-charge
+  id: an-unsaved-hit-knocks-down-while-a-save-leaves-the-defender-standing
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bull-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bull-charge, value: true}
+  rolls:
+    - {key: round.0.first.bull-charge.hit, value: 3}
+    - {key: round.0.first.bull-charge.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: True, state.second.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "rather than making his normal attacks": declining the declaration resolves the
+# profile's two attacks on their own keys instead of the single charge attack.
+- audit_id: rule/mordheim/maneaters/band--ogres-special-skills-bull-charge/mechanic.bull-charge
+  id: declining-the-declaration-resolves-the-normal-attacks
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bull-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bull-charge, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}

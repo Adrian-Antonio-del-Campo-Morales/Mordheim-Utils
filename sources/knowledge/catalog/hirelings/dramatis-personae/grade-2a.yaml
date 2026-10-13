@@ -35,6 +35,16 @@ profiles:
         Causa miedo.
     name_i18n:
       es: Miedo
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.causes-fear
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.causes-fear
   - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.daemonic-flesh
     name: Daemonic Flesh
     effect: Has source 5+ daemonic save and magical attacks.
@@ -199,6 +209,16 @@ profiles:
         No realiza la prueba de Totalmente Solo.
     name_i18n:
       es: Solitario
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: profile
+      effects:
+      - id: loner
+        scope: 'NO'
+        binding: null
+        reason: >-
+          All Alone group counting is outside the individual duel.
   - id: hireling.dramatis.the-dark-jester-in-mordheim.rule.confound-and-confuse
     name: Confound and Confuse
     effect: Chooses a source combat trick each combat turn.
@@ -207,6 +227,14 @@ profiles:
         Elige un truco de combate de la fuente en cada turno de combate.
     name_i18n:
       es: Confundir y Trastornar
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: confound-and-confuse
+        scope: 'YES'
+        binding: {kind: mechanic, id: mechanic.confound-and-confuse}
   - id: hireling.dramatis.the-dark-jester-in-mordheim.rule.sidestepper
     name: Sidestepper
     effect: May use the source 4+ special dodge.
@@ -215,6 +243,14 @@ profiles:
         Puede usar la esquiva especial de 4+ de la fuente.
     name_i18n:
       es: Apartador
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: sidestepper
+        scope: 'YES'
+        binding: {kind: mechanic, id: skill.dodge-sidestepper}
   - id: hireling.dramatis.the-dark-jester-in-mordheim.rule.babbling-banter
     name: Babbling Banter
     effect: Applies source to-hit modifiers.
@@ -223,6 +259,14 @@ profiles:
         Aplica los modificadores para impactar de la fuente.
     name_i18n:
       es: Charlatanería
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: babbling-banter
+        scope: 'YES'
+        binding: {kind: mechanic, id: mechanic.babbling-banter}
   - id: hireling.dramatis.the-dark-jester-in-mordheim.rule.trip
     name: Trip
     effect: May replace a wound attempt with a source 2+ trip.
@@ -231,6 +275,14 @@ profiles:
         Puede sustituir un intento de herir por un derribo de 2+ de la fuente.
     name_i18n:
       es: Viaje
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: trip
+        scope: 'YES'
+        binding: {kind: mechanic, id: mechanic.confound-and-confuse}
   source_notes:
   - Source equipment is a skeleton hobby horse counting as club and a sack of spikes counting as morning
     star.
@@ -292,6 +344,16 @@ profiles:
         Causa miedo.
     name_i18n:
       es: Causa Miedo
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.causes-fear
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.causes-fear
   - id: hireling.dramatis.the-headless-horseman.rule.immune-to-psychology
     name: Immune to Psychology
     effect: Horseman and steed are immune to psychology.
@@ -300,6 +362,16 @@ profiles:
         El jinete y la montura son inmunes a la psicología.
     name_i18n:
       es: Inmune a la Psicología
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.psychology-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.psychology-immunity
   - id: hireling.dramatis.the-headless-horseman.rule.immune-to-poison
     name: Immune to Poison
     effect: Horseman and steed are immune to poison.
@@ -324,6 +396,16 @@ profiles:
         El jinete y la montura cuentan como No-muertos.
     name_i18n:
       es: No Muerto
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.undead
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.undead
   - id: hireling.dramatis.the-headless-horseman.rule.expert-rider
     name: Expert Rider
     effect: Counts as stationary for shooting after moving.
@@ -416,6 +498,16 @@ profiles:
         Inmune a la psicología y a Totalmente Solo.
     name_i18n:
       es: Desquiciado
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.psychology-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.psychology-immunity
   - id: hireling.dramatis.the-foole.rule.bored-now
     name: Bored Now
     effect: Cannot work for the same warband consecutively.
@@ -500,6 +592,18 @@ profiles:
         Sujeto a Frenesí.
     name_i18n:
       es: Enajenado
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: trait.frenzy
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.frenzy
+          parameters:
+            value: true
   - id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.causes-fear
     name: Causes Fear
     effect: Causes fear.
@@ -508,6 +612,16 @@ profiles:
         Causa miedo.
     name_i18n:
       es: Causa Miedo
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.causes-fear
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.causes-fear
   - id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.immune-to-poison
     name: Immune to Poison
     effect: Immune to poison.

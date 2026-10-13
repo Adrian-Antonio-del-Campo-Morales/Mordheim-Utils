@@ -1,0 +1,92 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/general/skill.lightning-reflexes/skill.lightning-reflexes
+# scaffold_fingerprint: 657197b3d5af0ac8ddddf363504d175e5631ffa08ae95c471a40af91de4a8de7
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: strike-first-when-charged (scope: YES)
+# AUTHORED[strike-first-when-charged]: 2 scenarios cover the charged warrior
+#   acting before the charger by Initiative and the same duel without the skill.
+# origin_id:
+#   rule/catalog/general/skill.lightning-reflexes/unclassified
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/skills/general.yaml
+# source_fingerprint:
+#   33979850ecb7ec56bb00000f58c4b664b759e48e517ab24162808b9cd189a056
+# source_sha256_at_generation:
+#   16b13d23ef1660c8a2c3edd4647a196146bdf006873e80e98d4d110b8bd2510c
+# Printed rule text:
+#   If the warrior is charged, he will strike first against those that charged that turn. As the charger(s) will also normally strike first (for charging), the order of attack between the charger(s) and the warrior will be determined by comparing Initiative values.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A warrior who is charged strikes first against those that charged him, with ties between two strike-first fighters decided by Initiative; observable: the priority comparison against the charger.
+# effect_id:
+#   skill.lightning-reflexes
+# relation:
+#   equivalent
+# parameters:
+#   {"strikes_first_when_charged":true,"tie_break":"initiative"}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Shared-register printing of the Knights Vanguard rule (G107). Two records of one skill contribute once. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"strike-first-when-charged","audit_group":"EQ-skill.lightning-reflexes","verified_facet":"skill.lightning-reflexes","relationship":"shared_facet","boundary":"Strike First against that turn chargers, followed by the ordinary tie handling; no unconditional permanent Strike First.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# The general skill list carries the shared wording of the Knights Vanguard rule,
+# so the priority tie-break is evidenced here against the same charger.
+# The warrior is charged and the rule gives him strike first against the model
+# that charged, so both stand in the strike-first tier and the printed tie-break
+# is Initiative: the charged warrior's 5 beats the charger's 2 and he acts first.
+- audit_id: rule/catalog/general/skill.lightning-reflexes/skill.lightning-reflexes
+  id: the-charged-warrior-acts-before-the-charger
+  covers: [strike-first-when-charged]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.lightning-reflexes]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The identical duel without the skill: the charge alone holds the strike-first
+# tier, so the charger resolves before the higher Initiative, which isolates the
+# reversal to the skill.
+- audit_id: rule/catalog/general/skill.lightning-reflexes/skill.lightning-reflexes
+  id: without-the-skill-the-charger-acts-first
+  covers: [strike-first-when-charged]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

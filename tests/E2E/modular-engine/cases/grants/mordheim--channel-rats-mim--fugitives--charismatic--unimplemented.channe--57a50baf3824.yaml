@@ -1,0 +1,57 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/channel-rats-mim/fugitives--charismatic/unimplemented.channel-rats-mim.fugitive.charismatic
+# scaffold_fingerprint: b55ef01724c1a84d32d656f0926c3a1164a7c8bca9f82d8b8aa75acdce8219f0
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is authored for the admitted clause because the record names a
+# proposed effect with no operator and no supplied opponent facts to gate on.  The exact missing
+# representation is named in the clause note below.  REVIEWED still requires manual semantic review
+# and execution_status stays UNEXECUTED.
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: charismatic (scope: YES)
+# PARTIAL[charismatic]: [C] the printed sentence gates an opposing charge on the opponent's sex ("any
+# model from the opposite sex (Sisters of Sigmar, Amazons, Kislev Ranger etc), must make a Leadership
+# test if they wish to charge a Fugitive").  The recorded effect is the proposed
+# proposed.sex-qualified-charge-gate, and the register states plainly that the complete resolve_fear
+# path has no opposite-sex qualification and that these are "existing seams, not an already
+# implemented Charismatic operator".  The missing representation is therefore twofold: a supplied
+# sex/identity fact on the opposing participant (the engine models neither sex nor the printed
+# recipient list) and the gate itself on the charge seam the record names, which would turn a failed
+# test into a cancelled voluntary charge.  Writing the scenario first would assert a gate the engine
+# does not carry; the closest admitted device, the Fear charge test with its declared dice, is what
+# the accepted fear grants already evidence, and it is not this clause.  REVIEWED still requires
+# manual semantic review.
+# origin_id:
+#   rule/mordheim/channel-rats-mim/fugitives--charismatic/unimplemented.channel-rats-mim.fugitive.charismatic
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/channel-rats-mim/special-rules.yaml
+# source_fingerprint:
+#   8b73744897bfb25d0fc01f0d24290ecbac0b3b6e5bd879a17cd27a34380cba85
+# source_sha256_at_generation:
+#   172af5d984aa411ff17433343c1bf1c59ed4d08c382f7bdbd128bbce66bbe4ba
+# Printed rule text:
+#   Heartless seducers oozing machismo. A romantic rogue to the last, any model from the opposite sex (Sisters of Sigmar, Amazons, Kislev Ranger etc), must make a Leadership test if they wish to charge a Fugitive.
+# Semantic contract (check analysis_status before treating as accepted):
+#   An opposing model of the opposite sex must pass a Leadership test to charge this warrior. Observable: a failed test cancels the opposing voluntary charge.
+# effect_id:
+#   proposed.sex-qualified-charge-gate
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"an opposing warrior declares a charge","recipient":"the charging opponent","exception":"only a supplied opposite-sex opponent is gated"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The complete resolve_fear path has no opposite-sex qualification for this source. Reuse its charge-failure/state seam and resolve_local_leadership infrastructure, but add the specific gate and explicit sex facts. These are existing seams, not an already implemented Charismatic operator.
+
+[]  # Empty scenario list: this file contributes no test or coverage.

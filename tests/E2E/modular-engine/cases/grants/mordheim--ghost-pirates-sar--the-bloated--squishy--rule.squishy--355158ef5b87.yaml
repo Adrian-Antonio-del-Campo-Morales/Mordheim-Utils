@@ -1,0 +1,92 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/ghost-pirates-sar/the-bloated--squishy/rule.squishy
+# scaffold_fingerprint: 5c8bd5d742c91913f0db7556e8f78109d32abde3ffc6297e1a956996c76355a4
+# authoring_status: AUTHORED
+# authoring_progress: the admitted squishy-suppresses-no-pain clause carries two authored scenarios derived from the printed rule, the applied ruling Q037 recorded in the register, and the recorded contract of the shared squishy operator.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: squishy-suppresses-no-pain (scope: YES)
+# AUTHORED[squishy-suppresses-no-pain]: 2 scenarios roll the same Stunned injury result against a bearer of No Pain, with and without Squishy, and observe the standing Stun against the downgrade.  The register records this band origin as carrying the shared operator (the applied ruling Q037 makes Squishy a suppression of the ignore-pain flag, which is why the same profile's No Pain row is deliberately not projected); the tapes therefore read the canonical operator through the fighter's grant list exactly as the mechanic origin's own case does.
+# origin_id:
+#   rule/mordheim/ghost-pirates-sar/the-bloated--squishy/rule.squishy
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/ghost-pirates-sar/special-rules.yaml
+# source_fingerprint:
+#   dd725e9d0621be91e1831b8a8dbd95044d31ca68e1f8c8a7913c6474a8f52bd1
+# source_sha256_at_generation:
+#   e36151eb2583cf79753b995c8d262ea21bb2fa98e2610490873857cdaae46c55
+# Printed rule text:
+#   While the Bloated are far beyond feeling pain, they are slightly easier to break than normal Zombies. They do NOT treat rolls of 'stunned' as knocked down.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Bloated do not treat Stunned as Knocked Down: Squishy overrides the warband's No Pain clause; observable: the bearer remains Stunned.
+# effect_id:
+#   rule.squishy
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The applied ruling (Q037) is consumed as a suppression of the ignore_pain flag, which is why the same profile's No Pain row is deliberately not projected; the KB keeps that row out of scope with the ruling recorded as its reason.
+
+# --- Authored scenarios ---
+# The bearer carries No Pain, which would otherwise turn a Stunned injury result
+# into Knocked Down.  Squishy suppresses that flag, so the printed Stunned result
+# stands and the bearer's own attack is still scheduled by the round, which is why
+# its declared miss is part of the tape.
+- audit_id: rule/mordheim/ghost-pirates-sar/the-bloated--squishy/rule.squishy
+  id: no-pain-cannot-quiet-the-stun-under-squishy
+  covers: [squishy-suppresses-no-pain]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.ignore-pain, rule.squishy]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.condition: STUNNED, state.second.wounds: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The identical duel and tape without Squishy: No Pain acts on the same Stunned
+# result and downgrades it, which isolates the printed override to Squishy.
+- audit_id: rule/mordheim/ghost-pirates-sar/the-bloated--squishy/rule.squishy
+  id: no-pain-alone-still-quiets-the-same-stun
+  covers: [squishy-suppresses-no-pain]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.ignore-pain]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.condition: KNOCKED_DOWN, state.second.wounds: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

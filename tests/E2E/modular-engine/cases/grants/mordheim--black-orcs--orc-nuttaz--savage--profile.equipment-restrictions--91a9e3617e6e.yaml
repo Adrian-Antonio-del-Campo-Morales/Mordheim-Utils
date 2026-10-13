@@ -1,0 +1,227 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/black-orcs/orc-nuttaz--savage/profile.equipment-restrictions
+# scaffold_fingerprint: 564e4500f4c870e41d1e8a702ec382c194cde75137bd6d25f9d98c05f51f45c6
+# authoring_status: PARTIAL
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: extra-attack (scope: YES)
+# PARTIAL[extra-attack]: [C] superseded-by-sibling (reclassification of the former [A]).  The register
+#   note itself records that this row's 'extra-attack' clause is superseded by the sibling
+#   `skill.extra-attack` effect of the same rule ("the rule now declares a distinct
+#   skill.extra-attack effect (binding mechanic skill.extra-attack, attacks_bonus 1) whose
+#   equivalent row records the off-profile extra attack... This profile.equipment-restrictions
+#   row's 'extra-attack' clause is superseded by it"), and that sibling already carries its own
+#   authored attack-route tape and its no-grant control
+#   (mordheim--black-orcs--orc-nuttaz--savage--skill.extra-attack--a2076fec4fe0.yaml: the
+#   printed Nuttaz fights with two attack entries, and the bearer without the rule keeps one).
+#   The printed extra attack is therefore evidenced at its canonical row, not here: the missing
+#   datum is the register's deletion, not a scenario.  The three scenarios this file carries
+#   evidence the equipment-restriction content (the `whole` clause), which is what this row's
+#   admission owns; the clause-id / covers-label mismatch stays flagged for the coordinator.
+# origin_id:
+#   rule/mordheim/black-orcs/orc-nuttaz--savage/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-orcs/special-rules.yaml
+# source_fingerprint:
+#   24e6554360540e2c524f45b777dad8bedbc938a5aad77a82a15bcbcc7053a916
+# source_sha256_at_generation:
+#   033545b947532c3193948d1c1e85930a8f543a3f8a55e89401e4000e4ace47c8
+# Printed rule text:
+#   Additionally they fight with an extra attack whilst in combat. This does not appear on their profile nor does it count towards the racial maximum.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Individual combat bonus: an Orc Nuttaz fights with one extra attack in close combat; the bonus is off-profile and does not count towards the racial maximum.
+# effect_id:
+#   skill.extra-attack
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipient":"orc-nuttaz","extra_attacks":1,"off_profile":true}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Subsumed by the sibling `skill.extra-attack` effect of the same rule: the rule now declares a distinct skill.extra-attack effect (binding mechanic skill.extra-attack, attacks_bonus 1) whose equivalent row records the off-profile extra attack that never enters the characteristic. This profile.equipment-restrictions row's 'extra-attack' clause is superseded by it; the prohibition itself is the separate `whole` clause. Supersedes the earlier 'new identity required' note. Evidence is inspection (source/engine read, not an executed duel); coordinator acceptance pending. Surface reuse candidate: {"family":"skill.extra-attack","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare modifier stage, applicable weapon, replacement versus added attacks, nominated hand/poison transport and resource lifetime. Preserve Shifty S1-S4 and pistol composition; A=2 on charge is not an unrestricted +1 Attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"} Consumer/traceability: this row adds no second runtime contribution, its route is the sibling `rule/mordheim/black-orcs/orc-nuttaz--savage/skill.extra-attack` effect resolved at phases.build_attacks, so the reference is not left empty.
+#
+# Clause: mandatory-charge (scope: YES)
+# PARTIAL[mandatory-charge]: [C] not asserted here, and the reason is an accepted scope disposition rather
+#   than a missing fixture fact: the printed obligation governs run/charge distance and direction, which is
+#   the movement subsystem the 1v1 duel does not admit, so the clause has no duel-time observation.  The
+#   register note records the same resolved 1v1 exclusion (deferred with the movement subsystem, not queued
+#   for implementation) while its scope-review entry classifies the charge obligation itself as an admitted
+#   individual consequence; the two are recorded together rather than silently dropped.  REVIEWED still
+#   requires manual semantic review.
+# origin_id:
+#   rule/mordheim/black-orcs/orc-nuttaz--savage/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-orcs/special-rules.yaml
+# source_fingerprint:
+#   24e6554360540e2c524f45b777dad8bedbc938a5aad77a82a15bcbcc7053a916
+# source_sha256_at_generation:
+#   033545b947532c3193948d1c1e85930a8f543a3f8a55e89401e4000e4ace47c8
+# Printed rule text:
+#   Nuttaz must always run or charge their maximum distance towards the nearest opponent they can see.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Being obliged to run or charge toward the nearest visible opponent is an admitted individual charge consequence of these duelists. Printed clause: Nuttaz must always run or charge their maximum distance towards the nearest opponent they can see.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Deferred with the movement subsystem. Coordinator disposition: this printed clause has a resolved 1v1 exclusion; it is not queued for implementation or a future scope decision. Source metadata reconciliation is separate from duel behaviour. Scope review integration: {"clause_id":"mandatory-charge","review_clause_id":"whole","source_state":"matched","review_status":"reviewed","scope_reason":"Being obliged to run or charge toward the nearest visible opponent is an admitted individual charge consequence of these duelists.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Compulsory movement towards the nearest visible enemy is a movement clause outside the 1v1 duel runtime.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{\"excluded\":\"movement\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/black-orcs/special-rules.yaml\",\"docs/decisions/design-rulings.md\"]"},"inherited_clause_text":"Nuttaz must always run or charge their maximum distance towards the nearest opponent they can see.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying armour.heavy-armour in armour_id is refused with "armour is forbidden for black-orcs/orc-nuttaz", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# origin_id:
+#   rule/mordheim/black-orcs/orc-nuttaz--savage/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-orcs/special-rules.yaml
+# source_fingerprint:
+#   24e6554360540e2c524f45b777dad8bedbc938a5aad77a82a15bcbcc7053a916
+# source_sha256_at_generation:
+#   033545b947532c3193948d1c1e85930a8f543a3f8a55e89401e4000e4ace47c8
+# Printed rule text:
+#   They can never use any form of armour or ranged weapons.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Prohibition: Orc Nuttaz may never use armour (including shield and helmet) or ranged weapons; the build must reject them.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["armour","ranged-weapons"]}
+# conditions:
+#   {"recipient":"orc-nuttaz"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   List-valued forbids may be stringified by the generator and skipped (index.ts:1498-1501), so the enforcement is not established from the KB binding alone. Surface reuse candidate: {"family":"902","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the actual forbidden categories and recipients. Body-armour-only, all armour, missiles, blackpowder, drugs and poisons are distinct restrictions. Construction legality can affect a melee build even when shooting is excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: no-leader (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/black-orcs/orc-nuttaz--savage/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-orcs/special-rules.yaml
+# source_fingerprint:
+#   24e6554360540e2c524f45b777dad8bedbc938a5aad77a82a15bcbcc7053a916
+# source_sha256_at_generation:
+#   033545b947532c3193948d1c1e85930a8f543a3f8a55e89401e4000e4ace47c8
+# Printed rule text:
+#   Orc Nuttaz can never have the Leader ability.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The bar on having the Leader ability is a warband composition rule, outside the duel. Printed clause: Orc Nuttaz can never have the Leader ability.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Record the permanent recipient prohibition; the current local Leader recipient is not evidence of a general prohibition contract. After canonical representation, check construction and nearby-provider admission. Do not simulate succession or Rout. Scope review integration: {"clause_id":"no-leader","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The bar on having the Leader ability is a warband composition rule, outside the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"An Orc Nuttaz must not receive the Leader ability, independently of group Rout tests.","effect_id":"proposed.leader-grant-prohibition","relation":"independent","parameters":"{}","conditions":"{\"profile\":\"orc-nuttaz\",\"window\":\"construction\"}","consumer":"[\"packages/typescript/domain/eligibility/index.ts::applicableRules\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]","implementation_work":"data","dependencies":"[]","implementation_batch":"D-leader-recipients","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/black-orcs/special-rules.yaml\",\"packages/python/combat-engine/mordheim_combat/modular/leadership.py\"]"},"inherited_clause_text":"Orc Nuttaz can never have the Leader ability.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: no-rout-leadership (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/black-orcs/orc-nuttaz--savage/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-orcs/special-rules.yaml
+# source_fingerprint:
+#   24e6554360540e2c524f45b777dad8bedbc938a5aad77a82a15bcbcc7053a916
+# source_sha256_at_generation:
+#   033545b947532c3193948d1c1e85930a8f543a3f8a55e89401e4000e4ace47c8
+# Printed rule text:
+#   Orc Nuttaz cannot lend their Leadership for Rout tests.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The group Rout-value restriction is outside an isolated duel.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Separated from the admitted Leader recipient prohibition. Scope review integration: {"clause_id":"no-rout-leadership","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Being unable to lend Leadership for Rout tests is the excluded group rout procedure.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: ['extra-attack', 'mandatory-charge']. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/black-orcs/orc-nuttaz--savage/profile.equipment-restrictions
+  id: orc-nuttaz-with-armour-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: orc-nuttaz
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for black-orcs/orc-nuttaz
+
+- audit_id: rule/mordheim/black-orcs/orc-nuttaz--savage/profile.equipment-restrictions
+  id: orc-nuttaz-with-ranged-weapons-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: orc-nuttaz
+      main_weapon_id: weapon.pistol
+  expect_error: missile weapons are forbidden for black-orcs/orc-nuttaz
+
+- audit_id: rule/mordheim/black-orcs/orc-nuttaz--savage/profile.equipment-restrictions
+  id: orc-nuttaz-without-armour-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: orc-nuttaz
+    second:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: orc-nuttaz
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

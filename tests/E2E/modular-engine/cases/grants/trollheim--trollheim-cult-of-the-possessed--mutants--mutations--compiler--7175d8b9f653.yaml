@@ -1,0 +1,55 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/trollheim-cult-of-the-possessed/mutants--mutations/compiler.mutant-requires-mutation-at-recruitment
+# scaffold_fingerprint: 840e6a5ca805c4a6cb298269ca5dd0cef4d5d962a12fb57952769b65a19a3a89
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where the printed selection it requires is absent is refused with "at least one mutation is required for trollheim-cult-of-the-possessed/mutants", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).  Remaining unrepresentable tokens of this clause: the accepted control build for this clause needs the band's own printed selection ids (the contract refuses their absence), which are not resolved by this model.
+# origin_id:
+#   rule/trollheim/trollheim-cult-of-the-possessed/mutants--mutations/compiler.mutant-requires-mutation-at-recruitment
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/trollheim-cult-of-the-possessed/special-rules.yaml
+# source_fingerprint:
+#   2dc97ca2469f44e47721b64ea5f8f78cddbc36c711c94a9e073a845b5cc3843f
+# source_sha256_at_generation:
+#   3f3cf34fc9139fe856d2d8fdf26aef5a8f7f4ec5301f7a9accdfaab17c697bc9
+# Printed rule text:
+#   Each Mutant must begin with one or more Mutations when recruited.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Recruitment obligation: a Mutant build requires at least one mutation; costs and later changes are campaign.
+# effect_id:
+#   compiler.mutant-requires-mutation-at-recruitment
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipient":"mutants","minimum":1}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Trollheim duplicate of the Mutant obligation.
+# authoring_progress: 1 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/mutants--mutations/compiler.mutant-requires-mutation-at-recruitment
+  id: mutants-with-compiler-mutant-requires-mutation-at-recruitment-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+  expect_error: at least one mutation is required for trollheim-cult-of-the-possessed/mutants

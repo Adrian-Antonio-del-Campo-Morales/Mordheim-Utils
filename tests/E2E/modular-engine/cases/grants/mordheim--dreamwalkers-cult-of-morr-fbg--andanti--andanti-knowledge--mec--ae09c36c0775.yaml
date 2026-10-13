@@ -1,0 +1,98 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dreamwalkers-cult-of-morr-fbg/andanti--andanti-knowledge/mechanic.andanti-knowledge
+# scaffold_fingerprint: 9413c0813d75a6d582b3eb6a4de80a259385dc03e459feb7c88f41038c481d7d
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed
+#   rule and the recorded contract: the Andanti's declared three hits an explicit Vampire opponent and
+#   the identical three misses any other opponent.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios evidence the printed +1 To Hit on the real attack route: the declared
+#   three that a Weapon Skill 3 opponent refuses hits once the opposing profile is supplied as a
+#   Vampire, and the same three misses without that supplied opponent.  The nominated bloodline is part
+#   of the supplied condition, so the bonus is tied to the printed opponent and not to a warband name.
+#   REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/dreamwalkers-cult-of-morr-fbg/andanti--andanti-knowledge/mechanic.andanti-knowledge
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dreamwalkers-cult-of-morr-fbg/special-rules.yaml
+# source_fingerprint:
+#   d90e80542fdbe22e7495c1d918c145d7d27cdf9aa1a9d32d03d11bb63acc4b83
+# source_sha256_at_generation:
+#   bce246c4f3df53d3522ececae0ba7d1d12acadfab3eb7ab30860dd129c2147aa
+# Printed rule text:
+#   Their secret knowledge makes them skilled fighters against vampires: when fighting a vampire they get +1 to hit in close combat.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Conditional to-hit bonus: the Andanti gain +1 to hit in close combat when fighting a vampire.
+# effect_id:
+#   mechanic.andanti-knowledge
+# relation:
+#   equivalent
+# parameters:
+#   {"to_hit_bonus":1}
+# conditions:
+#   {"recipient":"the-andanti","opponent":"vampire"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Declared and implemented; recorded as a cross-family reference to the attacks lot for the to-hit resolution. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"+1 To Hit in close combat against vampires is an admitted individual attack consequence of this duelist with the opposing profile supplied as a current condition.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-mechanic.andanti-knowledge","verified_facet":"mechanic.andanti-knowledge","relationship":"shared_facet","boundary":"Melee hit bonus against an explicit Vampire opponent only; preserve bearer eligibility and do not infer Vampire from warband name.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# Andanti is the bearer with the printed operator declared, and the opponent's Vampire identity is the
+# supplied condition the contract names; the opposing fighter strikes back with a natural one so the
+# tape stays thin.
+
+- audit_id: rule/mordheim/dreamwalkers-cult-of-morr-fbg/andanti--andanti-knowledge/mechanic.andanti-knowledge
+  id: a-vampire-opponent-is-hit-on-three
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.andanti-knowledge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {vampire: true, vampire_bloodline: von-carstein}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/dreamwalkers-cult-of-morr-fbg/andanti--andanti-knowledge/mechanic.andanti-knowledge
+  id: a-non-vampire-opponent-needs-the-four
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.andanti-knowledge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

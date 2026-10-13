@@ -1,0 +1,119 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.serpent-whip
+# scaffold_fingerprint: 1cd391064a8c33fa22d677cf76b551ee7ffc1b3a45e585b21f60c0b032352f8d
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries three authored scenarios for the refused parry, the bonus attack and the Lotus rule. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover the refused parry, the charged strike-first bonus attack and the Black Lotus automatic wound on a natural six.
+# origin_id:
+#   mechanic/weapon.serpent-whip
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   73c70af608686fd1431d0db4a6eb92b6baad9aacdf526928e3a2c6eabca5c66d
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Whip attack that cannot be parried and uses Black Lotus; grants one strike-first attack when charging or charged.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Whip that cannot be parried, carries Black Lotus and grants one strike-first attack when charging or charged. Closure: the Lotus-whip profile with an unparryable strike-first bonus attack.
+# effect_id:
+#   weapon.serpent-whip
+# relation:
+#   equivalent
+# parameters:
+#   {"cannot_be_parried": true, "priority": 1, "tags": ["weapon.serpent-whip", "poison.black-lotus"]}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Three printed parts are delivered by dedicated mechanisms (cannot_be_parried, the Black Lotus tag, the whipcrack pool bonus). The Serpent Whip is the one whip whose bonus explicitly strikes first when charged and when charging, which the pool-level bonus with priority 1 provides. Surface reuse candidate: {"family":"W-weapon.serpent-whip","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/weapon.serpent-whip - unparryable, coated with Black Lotus and
+# granting one strike-first bonus attack when charging or charged.
+#
+# Expectations come from the printed rule and the admitted clause `whole`, never
+# from engine output.  The whip's own priority is 1, so every scenario opens the
+# round with the bearer's pool.
+# A sword-armed defender is never offered a parry against the whip: no parry die is scripted and the strict tape proves none was requested.
+
+- audit_id: mechanic/weapon.serpent-whip
+  id: serpent-whip-cannot-be-parried-by-a-sword
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.serpent-whip
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Charged, the bearer gains the printed bonus attack and that bonus alone strikes first: it resolves before the charging enemy and before the bearer's own ordinary attack.
+
+- audit_id: mechanic/weapon.serpent-whip
+  id: serpent-whip-bonus-strikes-first-when-its-bearer-is-charged
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.serpent-whip
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &a-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.whipcrack.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.whipcrack.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+# Black Lotus rides on the whip: a natural hit six offers the optional critical attempt, and declining it leaves the automatic wound with no wound die at all.
+
+- audit_id: mechanic/weapon.serpent-whip
+  id: a-natural-six-wounds-automatically-without-a-wound-die
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.serpent-whip
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.attack.0.lotus-critical, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

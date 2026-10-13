@@ -1,0 +1,171 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/druchii-mic/slavehounds--beastmaster/mechanic.handler-leadership
+# scaffold_fingerprint: 74ded3408b653fce20fd2e477dae132e397f4a0c2a9e7133b5dd8acb0cb51c91
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: handler-leadership--scope--handler-leadership (scope: YES)
+# AUTHORED[handler-leadership--scope--handler-leadership]: 1 scenario reads the printed "Slavehounds may use his Leadership instead of their own for any Leadership test, provided that the Beastmaster is within 6 inches": the bearer is the printed Slavehounds profile (Leadership 5) and the supplied value is the printed Beastmaster's Leadership 8, so a declared stupidity total of seven passes because the supplied handler value is the one tested and the charge and its attack stand.  The handler's standing status and the printed 6-inch range stay supplied facts of the duel, which the mechanic origin's own case records as unmodelled.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/druchii-mic/slavehounds--beastmaster/mechanic.handler-leadership
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/druchii-mic/special-rules.yaml
+# source_fingerprint:
+#   961567f74b9647b012e396c271e4490fbb35a7b94017905b855f180b613486aa
+# source_sha256_at_generation:
+#   11d6f002ba8d0940a01ca59db39fa129b536f71613f157ebdf0f18c00a5c2949
+# Printed rule text:
+#   As long as Beastmaster is not knocked down, stunned or out of action, Slavehounds may use his Leadership instead of their own for any Leadership test, provided that the Beastmaster is within 6" of the Slavehound in question.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Using the handler's Leadership within 6 inches while he stands is an admitted individual Leadership consequence with the handler supplied as a condition. Printed clause: As long as Beastmaster is not knocked down, stunned or out of action, Slavehounds may use his Leadership instead of their own for any Leadership test, provided that the Beastmaster is within 6" of the Slavehound in question.
+# effect_id:
+#   mechanic.handler-leadership
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Handler-only Leadership (mechanic.handler-leadership): leadership.resolve_local_leadership uses fighter.stupidity_leadership and blocks leader borrowing for handler-only warriors. Scope review integration: {"clause_id":"handler-leadership","review_clause_id":"handler-leadership","source_state":"matched","review_status":"reviewed","scope_reason":"Using the handler's Leadership within 6 inches while he stands is an admitted individual Leadership consequence with the handler supplied as a condition.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Use own Leadership or the supplied eligible handler's own value within 6 inches; ordinary warband Leader borrowing is prohibited. Observable: the test uses the handler's value and never the warband leader's.","effect_id":"mechanic.handler-leadership","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"this warrior takes a Leadership or Stupidity test\",\"recipient\":\"this animal warrior\",\"duration\":\"per test\",\"exceptions\":\"no ordinary leader borrowing; handler must be supplied and within 6 inches and not knocked down/stunned/out of action\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"C01-leadership","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"Slavehounds are vicious creatures that are barely kept under control by their Beastmaster. As long as Beastmaster is not knocked down, stunned or out of action, Slavehounds may use his Leadership instead of their own for any Leadership test, provided that the Beastmaster is within 6\" of the Slavehound in question. But, since Beastmaster is the only authority they respect, they cannot use Leadership of warband Leader. Consequently, if the Beastmaster is unable to participate in a battle, then neither will the beasts. If the warband does not contain a Beastmaster, there is no one able to control Slavehounds, so they have to stay in warband's camp (and when feeding time comes, it has to be done from a safe distance).","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"mechanic.handler-leadership","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","boundary":"Current child only; do not import excluded sibling or combined-parent behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: handler-leadership--scope--handler-leadership-source-limits (scope: YES)
+# AUTHORED[handler-leadership--scope--handler-leadership-source-limits]: 1 scenario reads the printed "they cannot use Leadership of warband Leader": the same declared total of seven is tested with no handler value supplied against the Slavehounds' own printed Leadership 5 and fails, cancelling the charge, even though a standing same-band Noble four inches away is supplied as an admitted nearby participant; that standing leader is never the source and no borrow is offered for it, which is the printed prohibition.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/druchii-mic/slavehounds--beastmaster/mechanic.handler-leadership
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/druchii-mic/special-rules.yaml
+# source_fingerprint:
+#   961567f74b9647b012e396c271e4490fbb35a7b94017905b855f180b613486aa
+# source_sha256_at_generation:
+#   11d6f002ba8d0940a01ca59db39fa129b536f71613f157ebdf0f18c00a5c2949
+# Printed rule text:
+#   But, since Beastmaster is the only authority they respect, they cannot use Leadership of warband Leader.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The prohibition on the warband leader's Leadership and on the handler's borrowed bonus is a limit on the supplied Leadership source of the same admitted clause. Printed clause: But, since Beastmaster is the only authority they respect, they cannot use Leadership of warband Leader.
+# effect_id:
+#   mechanic.handler-leadership
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Handler-only Leadership (mechanic.handler-leadership): leadership.resolve_local_leadership uses fighter.stupidity_leadership and blocks leader borrowing for handler-only warriors. Scope review integration: {"clause_id":"handler-leadership","review_clause_id":"handler-leadership-source-limits","source_state":"matched","review_status":"reviewed","scope_reason":"The prohibition on the warband leader's Leadership and on the handler's borrowed bonus is a limit on the supplied Leadership source of the same admitted clause.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Use own Leadership or the supplied eligible handler's own value within 6 inches; ordinary warband Leader borrowing is prohibited. Observable: the test uses the handler's value and never the warband leader's.","effect_id":"mechanic.handler-leadership","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"this warrior takes a Leadership or Stupidity test\",\"recipient\":\"this animal warrior\",\"duration\":\"per test\",\"exceptions\":\"no ordinary leader borrowing; handler must be supplied and within 6 inches and not knocked down/stunned/out of action\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"C01-leadership","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"Slavehounds are vicious creatures that are barely kept under control by their Beastmaster. As long as Beastmaster is not knocked down, stunned or out of action, Slavehounds may use his Leadership instead of their own for any Leadership test, provided that the Beastmaster is within 6\" of the Slavehound in question. But, since Beastmaster is the only authority they respect, they cannot use Leadership of warband Leader. Consequently, if the Beastmaster is unable to participate in a battle, then neither will the beasts. If the warband does not contain a Beastmaster, there is no one able to control Slavehounds, so they have to stay in warband's camp (and when feeding time comes, it has to be done from a safe distance).","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"mechanic.handler-leadership","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","boundary":"Current child only; do not import excluded sibling or combined-parent behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: handler-leadership--scope--handler-presence-condition (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/druchii-mic/slavehounds--beastmaster/mechanic.handler-leadership
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/druchii-mic/special-rules.yaml
+# source_fingerprint:
+#   961567f74b9647b012e396c271e4490fbb35a7b94017905b855f180b613486aa
+# source_sha256_at_generation:
+#   11d6f002ba8d0940a01ca59db39fa129b536f71613f157ebdf0f18c00a5c2949
+# Printed rule text:
+#   Consequently, if the Beastmaster is unable to participate in a battle, then neither will the beasts. If the warband does not contain a Beastmaster, there is no one able to control Slavehounds, so they have to stay in warband's camp (and when feeding time comes, it has to be done from a safe distance).
+# Semantic contract (check analysis_status before treating as accepted):
+#   The requirement that the beasts stay in camp without a Beastmaster is a warband roster and campaign condition, excluded from the duel. Printed clause: Consequently, if the Beastmaster is unable to participate in a battle, then neither will the beasts. If the warband does not contain a Beastmaster, there is no one able to control Slavehounds, so they have to stay in warband's camp (and when feeding time comes, it has to be done from a safe distance).
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Handler-only Leadership (mechanic.handler-leadership): leadership.resolve_local_leadership uses fighter.stupidity_leadership and blocks leader borrowing for handler-only warriors. Scope review integration: {"clause_id":"handler-leadership","review_clause_id":"handler-presence-condition","source_state":"matched","review_status":"reviewed","scope_reason":"The requirement that the beasts stay in camp without a Beastmaster is a warband roster and campaign condition, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Use own Leadership or the supplied eligible handler's own value within 6 inches; ordinary warband Leader borrowing is prohibited. Observable: the test uses the handler's value and never the warband leader's.","effect_id":"mechanic.handler-leadership","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"this warrior takes a Leadership or Stupidity test\",\"recipient\":\"this animal warrior\",\"duration\":\"per test\",\"exceptions\":\"no ordinary leader borrowing; handler must be supplied and within 6 inches and not knocked down/stunned/out of action\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"C01-leadership","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"Slavehounds are vicious creatures that are barely kept under control by their Beastmaster. As long as Beastmaster is not knocked down, stunned or out of action, Slavehounds may use his Leadership instead of their own for any Leadership test, provided that the Beastmaster is within 6\" of the Slavehound in question. But, since Beastmaster is the only authority they respect, they cannot use Leadership of warband Leader. Consequently, if the Beastmaster is unable to participate in a battle, then neither will the beasts. If the warband does not contain a Beastmaster, there is no one able to control Slavehounds, so they have to stay in warband's camp (and when feeding time comes, it has to be done from a safe distance).","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# authoring_progress: both admitted clauses carry one authored scenario each, derived from the
+#   printed rule, the printed Slavehounds, Beastmaster and Noble profiles and the recorded
+#   handler-leadership contract; the canonical mechanic is supplied on the bearer because this
+#   record's binding is the pending connection the register names.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# bearer is the printed Slavehounds profile and the Leadership test is supplied as the fixture
+# condition the rule speaks about; the Beastmaster is supplied as its value and the warband leader as
+# an admitted nearby participant, never simulated.
+
+- audit_id: rule/mordheim/druchii-mic/slavehounds--beastmaster/mechanic.handler-leadership
+  id: the-supplied-beastmasters-value-is-the-one-tested
+  covers: [handler-leadership--scope--handler-leadership]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: druchii-mic
+      profile_id: slavehounds
+      skill_ids: [mechanic.handler-leadership]
+      trait_overrides: {stupidity: true, stupidity_leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed source limit: with no handler value supplied the same seven is tested against the
+# Slavehounds' own Leadership 5 and fails, and the standing Noble of the same warband supplies
+# nothing because the printed rule forbids borrowing the warband leader's Leadership.
+- audit_id: rule/mordheim/druchii-mic/slavehounds--beastmaster/mechanic.handler-leadership
+  id: the-warband-leader-is-never-the-source-of-this-test
+  covers: [handler-leadership--scope--handler-leadership-source-limits]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: druchii-mic
+      profile_id: slavehounds
+      skill_ids: [mechanic.handler-leadership]
+      trait_overrides: {stupidity: true}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, warlord, 4]]
+    nearby:
+      - participant_id: warlord
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: druchii-mic, profile_id: noble}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

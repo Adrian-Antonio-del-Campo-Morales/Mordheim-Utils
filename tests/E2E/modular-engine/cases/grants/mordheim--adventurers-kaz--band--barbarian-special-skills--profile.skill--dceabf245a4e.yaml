@@ -1,0 +1,85 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/adventurers-kaz/band--barbarian-special-skills/profile.skill-access
+# scaffold_fingerprint: f716749d9d5cc53be1ab11ea7027411c8c9907aad164aa50714669810ee99434
+# authoring_status: AUTHORED
+# authoring_progress: both halves of the admitted clause carry an authored scenario: the Barbarian
+#   Hero that selects the declared table member is built and the duel runs, and a special skill
+#   outside the printed table is refused with the shared access diagnostic.  The member list is the
+#   one the band binding itself declares, not an interpretation.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the printed permission (Barbarian Heroes may use the
+#   Barbarian table instead of the standard skill lists).  The admission scenario builds the
+#   recipient with the binding's own member skill.hard-to-kill and records that the duel ran
+#   unrefused; the closure scenario shows a special skill outside the printed table refused by the
+#   shared access route.  The member's own duel consequences belong to its own mechanic identity
+#   and are not re-asserted here.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/adventurers-kaz/band--barbarian-special-skills/profile.skill-access
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/adventurers-kaz/special-rules.yaml
+# source_fingerprint:
+#   888e396b4a9b3dbfa2cc18a0025c617cc1928acbca2c5e51ff3e905c3b15ac3a
+# source_sha256_at_generation:
+#   e59d9527e127b6f401008b4fd0e1e466aaf141f6138db69329e8175a735dcd03
+# Printed rule text:
+#   Barbarians may use the following skill list instead of the standard skill lists.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Permission: a Barbarian Hero may replace its standard skill lists with the special table {Hard to Kill, Ferocious Charge, Instinctive Warrior}; each member is selected individually and is not auto-granted.
+# effect_id:
+#   profile.skill-access
+# relation:
+#   equivalent
+# parameters:
+#   {"category":"special","skills":["skill.hard-to-kill","skill.ferocious-charge","skill.instinctive-warrior"]}
+# conditions:
+#   {"grant":"profile","replaces_standard_lists":true}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Published named table governs both offer and final membership; the three listed skills are separate shared skills and this access clause grants no behaviour itself. Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded semantic contract and the band binding's own member
+# list; no engine output was consulted.  Both fighters are given zero attacks so the round resolves
+# without dice and the observation is about admission, not about the member's mechanics.
+
+- audit_id: rule/mordheim/adventurers-kaz/band--barbarian-special-skills/profile.skill-access
+  id: the-declared-table-member-is-admitted-to-the-recipient
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: adventurers-kaz
+      profile_id: barbarian
+      skill_ids: [skill.hard-to-kill]
+      main_weapon_id: weapon.natural-attacks
+    second:
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_final: {rounds_executed: 1}
+
+- audit_id: rule/mordheim/adventurers-kaz/band--barbarian-special-skills/profile.skill-access
+  id: a-special-skill-outside-the-printed-table-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: adventurers-kaz
+      profile_id: barbarian
+      skill_ids: [skill.monster-slayer]
+  expect_error: "skills are not available to adventurers-kaz/barbarian: ['skill.monster-slayer']"

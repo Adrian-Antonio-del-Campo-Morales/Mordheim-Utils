@@ -1,0 +1,156 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-shornaal/mechanic.mark-of-shornaal
+# scaffold_fingerprint: 81755aab70f4c39397f8c4f7c8bc534d2f79ffcf0b323234535cba96374ef8f1
+# authoring_status: PARTIAL
+# authoring_progress: 1 of the two faces of the printed mark is authored.  The failed test is
+#   evidenced: three declared dice that discard the lowest fail the Leadership test, and the engine
+#   then blocks the marked leader's attacker and resolves the leader's own attacks as automatic hits
+#   (charm_attack_blocked / charm_auto_hit).  The passed-test face stays pending because the automatic
+#   hit's own dice are not established here: the record closes on the once-per-battle passed resource
+#   but not on which dice the automatic incoming hit requests, so declaring its tape would invent an
+#   observable.  Named pending requirement: the automatic-hit dice of the blocked branch, after which
+#   the passed face is the same test with a passed total and the enemy attacking normally.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [three authored scenarios cover the faces readable without probing the engine.  (1)
+#   the failed test blocks the attacker and makes the leader's hits automatic; (2) the passed test
+#   lets the enemy attack normally with the flag cleared; (3) the printed once-per-battle
+#   resumption is the two-round tape below, derived by hand from the spent-resource guard the
+#   operator code declares and the already-authored passed-tape request pattern, extended one
+#   round with no new request: the strict tape would reject any undeclared round-1 request, so
+#   the absence of the round-1 shornaal die is the assertion.  Still pending [C]: the automatic-hit
+#   dice of the blocked branch (the wound/injury continuation after an automatic hit needs the
+#   attack-phase request order, which the authoring rule forbids probing; deriving it from engine
+#   output is out of scope) [; named exactly in the closed original review note below]
+#   The resumption tape scenario does NOT demonstrate the automatic-hit dice of the blocked branch
+#   - that is the explicit residual pending demoed here for the coordinator - and the shelf of the
+#   two-round tape rests on the documented resource guard, not on an engine observation.  Closing
+#   review classifies it [B] (the branch itself is the same identified operator gap the note
+#   records, the tape's absence is the honest residual).
+#   Original note: 1 authored scenario declares the printed 3D6-discard-lowest test and its failure
+#   consequence (the marked leader's attacker is blocked and his own hits become automatic), with the
+#   declared sixes making the discard rule itself unobservable in this shape so that the test cannot
+#   pass by accident.  The passed face and the automatic hit's dice stay pending as recorded above.
+#   The register's own warning to reject the reversed dice draft is honoured: the dice declared here
+#   are three and the lowest is the one discarded, so the failing total is the sum of the two highest.
+# origin_id:
+#   rule/mordheim/marauders-of-chaos/band--mark-of-shornaal/mechanic.mark-of-shornaal
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/marauders-of-chaos/special-rules.yaml
+# source_fingerprint:
+#   8d446c1e8975c84d4956466626b499d13f732094d794cc151bfdbb2496eb7d8c
+# source_sha256_at_generation:
+#   501a50b0b257497d4817e6d76326eb3504f13f454c12a57d3e72077681bbe574
+# Printed rule text:
+#   Enemy models that are not Immune to Psychology cannot attack a marked leader in close combat unless they pass a Leadership test on 3D6, discarding the lowest die.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Mark effect: a non-immune enemy must pass a 3D6-discard-lowest Leadership test to attack the marked leader; on failure it is hit automatically, and once passed no further test is required that battle.
+# effect_id:
+#   mechanic.mark-of-shornaal
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"test":"3D6 discard lowest","failure":"automatic incoming hits","once_per_battle":true,"cold-blooded":"not allowed"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The Seer ritual and item-creation effects are separate and not modelled. Surface review warning: Reject the reversed dice draft for Mark of Shornaal. Roll 3D6 and discard the LOWEST die, preserving the psychology exception and per-battle passed-test state.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# marked leader is the owner of the effect and the unmarked enemy is the model that must pass the
+# printed test before it may attack; the declared sixes make the test fail whatever the discard rule
+# does with them, and the engine's own blocked/auto-hit pair is then read from the state.  Note for
+# execution: the automatic hit's own dice are deliberately left undeclared, because this record does
+# not establish them; the case fails if the engine asks for one.
+- audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-shornaal/mechanic.mark-of-shornaal
+  id: a-failed-test-blocks-the-attacker-of-the-marked-leader
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.mark-of-shornaal]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.shornaal.0, value: 6}
+    - {key: round.0.second.shornaal.1, value: 6}
+    - {key: round.0.second.shornaal.2, value: 6}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: True, state.second.charm_auto_hit: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The passed face of the same printed test.  The three declared dice discard the lowest (1) and total
+# 5 against the enemy's Leadership 7, so the test passes: the enemy is not blocked and both sides
+# attack normally.  Both attacks are declared as the miss on 1, so the only observable the round
+# carries is the cleared blocked flag.
+- audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-shornaal/mechanic.mark-of-shornaal
+  id: a-passed-test-lets-the-enemy-attack-normally
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.mark-of-shornaal]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.shornaal.0, value: 1}
+    - {key: round.0.second.shornaal.1, value: 2}
+    - {key: round.0.second.shornaal.2, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed once-per-battle term: once the test is passed and the resource spent, no further
+#   test is required that battle.  Round 0 passes on the 1+2+3 sweep already declared above and
+#   spends no further resource, so round 1 requests no shornaal die at all: the strict tape of
+#   this scenario declares only the round-1 attack dice, so any engine that asked for the test a
+#   second time fails the case instead of passing quietly.
+- audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-shornaal/mechanic.mark-of-shornaal
+  id: after-a-passed-test-round-one-requests-no-second-test
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.mark-of-shornaal]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.second.shornaal.0, value: 1}
+    - {key: round.0.second.shornaal.1, value: 2}
+    - {key: round.0.second.shornaal.2, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.charm_attack_blocked: False}
+    1: {state.second.charm_attack_blocked: False}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

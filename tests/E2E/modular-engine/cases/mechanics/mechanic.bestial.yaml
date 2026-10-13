@@ -1,0 +1,88 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.bestial
+# scaffold_fingerprint: 503036e5aec3aa4394f4e73c4695c54468419d4b5238330b447ec3de76bcb459
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: bestial (scope: YES)
+# AUTHORED[bestial]: 2 scenarios evidence the 6+ special save holding at its threshold and failing one face below it. Pending semantic review.
+# origin_id:
+#   mechanic/mechanic.bestial
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   34960454abb15966911179a0dac5d5a010a657f3d8e1a9b233d73238e0fa1689
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   The vampire has an innate way of avoiding being hurt. He has a 6+ ward save against all attacks.
+# Semantic contract (check analysis_status before treating as accepted):
+#   This warrior has a 6+ ward save against all attacks. Observable: an unsaved hit may still be negated on a 6.
+# effect_id:
+#   mechanic.bestial
+# relation:
+#   related
+# parameters:
+#   {"ward_save":6}
+# conditions:
+#   {"trigger":"an attack that has hit and wounded this warrior","recipient":"this warrior","duration":"whole duel"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Cross-family special save (block B granularity); execution.yaml models it as ward_save 6.
+
+# --- Authored scenarios ---
+# The printed save is 6+ taken after the wound; the special-save face carries the threshold and one face below it.
+- audit_id: mechanic/mechanic.bestial
+  id: the-6-plus-six-plus-save-holds-at-the-threshold
+  covers: [bestial]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      skill_ids: [mechanic.bestial]
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: mechanic/mechanic.bestial
+  id: one-face-below-the-6-plus-save-fails
+  covers: [bestial]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      skill_ids: [mechanic.bestial]
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

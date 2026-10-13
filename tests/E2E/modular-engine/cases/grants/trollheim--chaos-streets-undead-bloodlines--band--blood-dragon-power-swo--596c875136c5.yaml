@@ -1,0 +1,259 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-sword-master/skill.sword-master
+# scaffold_fingerprint: b176a38c606a1414879de147707c2560933045b61de3946e0b323a1e5169b6a9
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry authored scenarios derived from the printed rule, the
+# printed profile and the recorded contract: the equality of the parry including a natural six (which
+# this band row can parry because the compiler projects the dedicated rule.blood-dragon-sword-master tag
+# onto it), the natural six that an unenhanced parry cannot touch, the single reroll that recovers a
+# failed parry, the failed reroll that is not rolled again, and the printed refusal to parry a second
+# attack even with two parrying weapons.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: match-parry-and-parry-a-six (scope: YES)
+# AUTHORED[match-parry-and-parry-a-six]: 3 scenario(s) cover the clause: the parry succeeds on an
+# equal die, it succeeds against a natural six, and the same natural six cannot be parried at all
+# without the band rule.  The six-parry half is representable here, unlike the catalogue row of the
+# same printed sentence, because this record owns the tag rule.blood-dragon-sword-master that the
+# collector reads.
+# origin_id:
+#   rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-sword-master/skill.sword-master
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-undead-bloodlines/special-rules.yaml
+# source_fingerprint:
+#   8055ccafc7c990dcdaacf75c2331a6bc633a63399cc08427118dd56e79d7a1c0
+# source_sha256_at_generation:
+#   aaa7750bfbf16797ddd93878e0cd88fd550a10fdd09818c2cdb767f9356d47d2
+# Printed rule text:
+#   When parrying, the Vampire only needs to equal the opponent's roll and may therefore parry a roll of 6. The Vampire may also re-roll one failed parry, but may not re-roll the re-roll and may not parry more than one attack.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The vampire only needs to equal the opponent's roll and may therefore parry a natural 6; observable: a parry roll equal to the hit roll blocks, including against a 6.
+# effect_id:
+#   skill.sword-master
+# relation:
+#   equivalent
+# parameters:
+#   {"can_parry_six":true,"match_allowed":true}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The equality half is consumed by the match allowance and the parry-a-six half by the dedicated blood-dragon flag, which is read in the parry eligibility test. Surface reuse candidate: {"family":"skill.sword-master","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: one-reroll-only (scope: YES)
+# AUTHORED[one-reroll-only]: 3 scenario(s) cover the clause: the single reroll recovers a failed
+# parry, a failed reroll is not rolled again, and the printed refusal to parry more than one attack
+# leaves the second attack of a two-weapon pool resolved.
+# origin_id:
+#   rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-sword-master/skill.sword-master
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-undead-bloodlines/special-rules.yaml
+# source_fingerprint:
+#   8055ccafc7c990dcdaacf75c2331a6bc633a63399cc08427118dd56e79d7a1c0
+# source_sha256_at_generation:
+#   aaa7750bfbf16797ddd93878e0cd88fd550a10fdd09818c2cdb767f9356d47d2
+# Printed rule text:
+#   When parrying, the Vampire only needs to equal the opponent's roll and may therefore parry a roll of 6. The Vampire may also re-roll one failed parry, but may not re-roll the re-roll and may not parry more than one attack.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The vampire may re-roll one failed parry but not the re-roll, and may not parry more than one attack; observable: a single reroll and a single attempt per phase.
+# effect_id:
+#   skill.sword-master
+# relation:
+#   equivalent
+# parameters:
+#   {"attempts":1,"rerolls":1}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The parry resolution rolls at most one reroll, and the capacity stays at one attempt because this fighter has no two-parry skill. Surface reuse candidate: {"family":"skill.sword-master","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Family model (Blood Dragon power: Sword Master): the bearer is the printed recipient of this band
+# record, built from its own collection, band and profile and selecting the band row named in the audit
+# id, whose selected runtime binds the admitted skill identity and whose row the compiler maps onto the
+# dedicated tag rule.blood-dragon-sword-master.  Physical characteristics are supplied as fixture facts
+# (WS3 S3 T3 W2 I2 A1) so the dice thresholds and the strike order are fixed, while the printed
+# Leadership stays in place; the bearer parries with a sword and its own attack pool is declared empty
+# so the tape holds only the parry under test.  Every expectation is read from the printed rule (only
+# needs to equal the opponent's roll and may therefore parry a roll of 6; may re-roll one failed parry
+# but not the re-roll; may not parry more than one attack) and the recorded parameters, never from
+# engine output; the roll tape is derived statically and stays unexecuted.  The control cases remove
+# the band selection and keep the same warrior and the same tape, so only the grant explains the
+# difference.
+
+# The printed equality: a parry die equal to the declared To Hit four blocks the blow.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-sword-master/skill.sword-master
+  id: an-equal-parry-die-blocks-the-attack
+  covers: [match-parry-and-parry-a-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+      special_rule_ids: [band--blood-dragon-power-sword-master]
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.parries_remaining: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed conclusion "and may therefore parry a roll of 6": the natural six is met by the parry die
+# of six and the attack is blocked.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-sword-master/skill.sword-master
+  id: the-vampire-parries-a-natural-six
+  covers: [match-parry-and-parry-a-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+      special_rule_ids: [band--blood-dragon-power-sword-master]
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.parry, value: 6}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.parries_remaining: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The boundary of that conclusion: the same warrior and the same natural six without the band rule is
+# offered no parry attempt at all, so the blow is resolved and wounds.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-sword-master/skill.sword-master
+  id: without-the-band-rule-a-natural-six-cannot-be-parried
+  covers: [match-parry-and-parry-a-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed single reroll: the first parry die is below the hit and the reroll meets the printed
+# equality, so the hit is blocked.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-sword-master/skill.sword-master
+  id: the-single-reroll-recovers-a-failed-parry
+  covers: [one-reroll-only]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+      special_rule_ids: [band--blood-dragon-power-sword-master]
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.parry.reroll, value: 5}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.parries_remaining: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed refusal "may not re-roll the re-roll": the recovery die also fails and no further parry
+# die appears in the tape, so the wound is resolved.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-sword-master/skill.sword-master
+  id: a-failed-reroll-is-not-rolled-again
+  covers: [one-reroll-only]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+      special_rule_ids: [band--blood-dragon-power-sword-master]
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.parry.reroll, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed refusal "may not parry more than one attack": the Vampire holds two parrying weapons and
+# one parry die is still consumed by the phase, so the second attack of the pool is resolved.  The
+# contrast is the two-attempt pair authored for the unbeatable-warrior record, whose printed flag raises
+# that capacity; this skill does not.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-sword-master/skill.sword-master
+  id: two-weapons-still-parry-only-one-attack
+  covers: [one-reroll-only]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+      special_rule_ids: [band--blood-dragon-power-sword-master]
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.first.attack.1.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.1.parried: false, attacks.1.damage: 1, state.second.parries_remaining: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

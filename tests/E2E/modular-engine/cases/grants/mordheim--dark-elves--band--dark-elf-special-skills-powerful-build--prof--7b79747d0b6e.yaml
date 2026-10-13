@@ -1,0 +1,117 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dark-elves/band--dark-elf-special-skills-powerful-build/profile.skill-access
+# scaffold_fingerprint: 61e9df3e3c736b8dcdafb76a794aba5adabed57f51feb5f9cbfac6052643eddf
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored scenarios in contrast: the Heavy
+#   Born that selects the Powerful Build grant adds the Strength list and may take a Strength skill,
+#   while the same warrior without the grant is refused.  The printed Sorceress exclusion and the
+#   two-bearer cap are the clause marked outside the duel scope below.  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole--scope--skill-access (scope: YES)
+# AUTHORED[whole--scope--skill-access]: 2 scenarios contrast the selected grant with its absence.
+#   The admission scenario builds the recipient with `special_rule_ids`
+#   [band--dark-elf-special-skills-powerful-build] and skill.mighty-blow, the canonical Strength
+#   skill, and records that the duel ran unrefused; the control scenario builds the same warrior
+#   with the same Strength skill and no grant, and the shared access route refuses it.  The printed
+#   Sorceress exclusion has no declared parameter and the excluded profile is not named here, so its
+#   refusal stays unrepresented.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/dark-elves/band--dark-elf-special-skills-powerful-build/profile.skill-access
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dark-elves/special-rules.yaml
+# source_fingerprint:
+#   ab36b1f7890333a00f36d22d3ab199733b665d7a3d3fc9a677f69dd7ce7960aa
+# source_sha256_at_generation:
+#   4be3ba1ddf10e16be4b15f25080eba60b5ab2595e25d1be84e27eef4f0e6de0e
+# Printed rule text:
+#   A warrior with this skill may choose skills from the Strength table
+# Semantic contract (check analysis_status before treating as accepted):
+#   Choosing skills from the Strength table is construction skill access for this warrior. Printed clause: A warrior with this skill may choose skills from the Strength table
+# effect_id:
+#   profile.skill-access
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The declared binding carries only the Strength category; the Sorceress exclusion and the two-bearer cap are printed obligations with no declared parameter, so the projection still has to express them. Scope review integration: {"clause_id":"whole","review_clause_id":"skill-access","source_state":"matched","review_status":"reviewed","scope_reason":"Choosing skills from the Strength table is construction skill access for this warrior.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Skill-list access with limits: Powerful Build grants the Strength table but may not be taken by the Sorceress and by no more than two warriors at a time.","effect_id":"profile.skill-access","relation":"parameterized_variant","parameters":"{\"category\":\"strength\"}","conditions":"{\"recipient\":\"dark-elf warriors\",\"excludes\":[\"sorceress\"],\"max_bearers\":2}","consumer":"[\"packages/typescript/domain/eligibility/index.ts::skillCategoryAllowed\",\"apps/combat-lab/mordheim_combat_lab/application/catalogue.py::skills\"]","implementation_work":"connection","dependencies":"[]","implementation_batch":"batch.D.skill-access","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/dark-elves/special-rules.yaml\"]"},"inherited_clause_text":"A warrior with this skill may choose skills from the Strength table. The Sorceress may never take this skill and no more than two warriors in the warband may take this skill at any one time.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","boundary":"Current child only; do not import excluded sibling or combined-parent behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: whole--scope--warband-take-limit (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/dark-elves/band--dark-elf-special-skills-powerful-build/profile.skill-access
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dark-elves/special-rules.yaml
+# source_fingerprint:
+#   ab36b1f7890333a00f36d22d3ab199733b665d7a3d3fc9a677f69dd7ce7960aa
+# source_sha256_at_generation:
+#   4be3ba1ddf10e16be4b15f25080eba60b5ab2595e25d1be84e27eef4f0e6de0e
+# Printed rule text:
+#   and no more than two warriors in the warband may take this skill at any one time.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Limiting how many warriors in the warband may take the skill is a warband composition rule, excluded from the duel. Printed clause: and no more than two warriors in the warband may take this skill at any one time.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The declared binding carries only the Strength category; the Sorceress exclusion and the two-bearer cap are printed obligations with no declared parameter, so the projection still has to express them. Scope review integration: {"clause_id":"whole","review_clause_id":"warband-take-limit","source_state":"matched","review_status":"reviewed","scope_reason":"Limiting how many warriors in the warband may take the skill is a warband composition rule, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Skill-list access with limits: Powerful Build grants the Strength table but may not be taken by the Sorceress and by no more than two warriors at a time.","effect_id":"profile.skill-access","relation":"parameterized_variant","parameters":"{\"category\":\"strength\"}","conditions":"{\"recipient\":\"dark-elf warriors\",\"excludes\":[\"sorceress\"],\"max_bearers\":2}","consumer":"[\"packages/typescript/domain/eligibility/index.ts::skillCategoryAllowed\",\"apps/combat-lab/mordheim_combat_lab/application/catalogue.py::skills\"]","implementation_work":"connection","dependencies":"[]","implementation_batch":"batch.D.skill-access","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/dark-elves/special-rules.yaml\"]"},"inherited_clause_text":"A warrior with this skill may choose skills from the Strength table. The Sorceress may never take this skill and no more than two warriors in the warband may take this skill at any one time.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded semantic contract and the dark-elf profile's own
+# printed lists (combat, shooting, academic, speed, special: Strength is absent without the grant);
+# no engine output was consulted.  Both fighters are given zero attacks so the round resolves
+# without dice and the observation is about access, not about the skill's mechanics.
+
+- audit_id: rule/mordheim/dark-elves/band--dark-elf-special-skills-powerful-build/profile.skill-access
+  id: the-selected-grant-admits-a-strength-skill
+  covers: [whole--scope--skill-access]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: high-born
+      special_rule_ids: [band--dark-elf-special-skills-powerful-build]
+      skill_ids: [skill.mighty-blow]
+      main_weapon_id: weapon.axe
+    second:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_final: {rounds_executed: 1}
+
+- audit_id: rule/mordheim/dark-elves/band--dark-elf-special-skills-powerful-build/profile.skill-access
+  id: the-same-strength-skill-is-refused-without-the-grant
+  covers: [whole--scope--skill-access]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: high-born
+      skill_ids: [skill.mighty-blow]
+  expect_error: "skills are not available to dark-elves/high-born: ['skill.mighty-blow']"

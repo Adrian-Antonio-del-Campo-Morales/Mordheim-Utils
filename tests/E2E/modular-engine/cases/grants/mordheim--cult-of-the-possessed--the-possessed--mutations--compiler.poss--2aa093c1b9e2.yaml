@@ -1,0 +1,105 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/cult-of-the-possessed/the-possessed--mutations/compiler.possessed-optional-mutations-at-recruitment
+# scaffold_fingerprint: 55aab4db8ecc7fff64a308ec5f6099c33113edc52f9bfd7af01181e1a0c1ce5e
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed
+#   "may" and the recorded ruling: a Possessed recruited with no mutation is a legal build the duel
+#   runs, and the same recipient recruited with one mutation row is equally legal and strikes the extra
+#   attack that row supplies.  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios evidence the optional recruitment selection on the printed recipient:
+#   the Possessed that reaches the field with no mutation at all is compiled and fights with its single
+#   weapon attack, and the same recipient that supplies one mutation row fights with the extra die that
+#   row grants.  Together they show the printed "one or more mutations each" as a permission with a
+#   standing zero minimum rather than a requirement.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/cult-of-the-possessed/the-possessed--mutations/compiler.possessed-optional-mutations-at-recruitment
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/cult-of-the-possessed/special-rules.yaml
+# source_fingerprint:
+#   6586a0caead4d46bd200165251ba283cce26af94111990555e7e44d23a673a54
+# source_sha256_at_generation:
+#   6e992ccfd48a6106eaaf66a5af08cf6eda3fc61a966227bcb975fb73cc2c3776
+# Printed rule text:
+#   Possessed may start the game with one or more mutations each.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Optional recruitment selection: a Possessed may be recruited with one or more mutations, and the standing ruling allows starting with none.
+# effect_id:
+#   compiler.possessed-optional-mutations-at-recruitment
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipient":"the-possessed","minimum_mutations":0,"maximum":"unbounded"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Declared and implemented; the recorded ruling that a Possessed may start with zero mutations respects the printed may and is carried by the same binding.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded ruling; no engine output was consulted.  The
+# recipient is the band's printed Possessed profile in both scenarios, and the opponent is hand-built
+# with no attacks of its own, so the tape holds only the recipient's own dice and every strike is
+# declared as a natural one.
+
+- audit_id: rule/mordheim/cult-of-the-possessed/the-possessed--mutations/compiler.possessed-optional-mutations-at-recruitment
+  id: a-possessed-may-start-with-no-mutation
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: the-possessed
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_initial: {first.wounds: 2}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/cult-of-the-possessed/the-possessed--mutations/compiler.possessed-optional-mutations-at-recruitment
+  id: a-possessed-may-start-with-one-mutation
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: the-possessed
+      special_rule_ids: [band--mutations-great-claw]
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

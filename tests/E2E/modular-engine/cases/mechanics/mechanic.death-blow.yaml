@@ -1,0 +1,156 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.death-blow
+# scaffold_fingerprint: 546686fea75fc8a77f7a3945409c1ff980241c8ba5020d26de0e800d60d6f074
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: optional-use (scope: YES)
+# AUTHORED[optional-use]: 1 scenario shows the elective nature of the replacement:
+#   the bearer declines the per-round declaration and both of his profile attacks are
+#   resolved instead of one.
+# origin_id:
+#   mechanic/mechanic.death-blow
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   e4125403789a140e18967c3debd2970846b94b739be48c7cd99dc3ce1b1aa9fc
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   If the Hero has at least 2 Attacks on its profile, it may replace all of its attacks with a single attack resolved at +1 To Hit, +1 To Wound and +1 on the Injury roll.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The hero may replace his attacks, so the option must be electable per round; observable: the bearer can decline and attack normally.
+# effect_id:
+#   mechanic.death-blow
+# relation:
+#   equivalent
+# parameters:
+#   {"declinable":true}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed as a per-round decision that removes the effect from the fighter's tags for that round only when the bearer declines. Surface reuse candidate: {"family":"mechanic.death-blow","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: single-attack-with-bonuses (scope: YES)
+# AUTHORED[single-attack-with-bonuses]: 2 scenarios cover the accepted replacement:
+#   one attack that hits and wounds on faces a lower target cannot reach without the
+#   printed +1 To Hit and +1 To Wound, and one that turns the injury roll into a Stun
+#   that the same face alone does not reach.
+# origin_id:
+#   mechanic/mechanic.death-blow
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   e4125403789a140e18967c3debd2970846b94b739be48c7cd99dc3ce1b1aa9fc
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   If the Hero has at least 2 Attacks on its profile, it may replace all of its attacks with a single attack resolved at +1 To Hit, +1 To Wound and +1 on the Injury roll.
+# Semantic contract (check analysis_status before treating as accepted):
+#   With at least 2 Attacks the hero may replace all his attacks with a single attack at +1 to hit, +1 to wound and +1 on the injury roll; observable: one attack with all three bonuses.
+# effect_id:
+#   mechanic.death-blow
+# relation:
+#   equivalent
+# parameters:
+#   {"hit_modifier":1,"injury_modifier":1,"wound_modifier":1}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The count is cut to one attack when the profile has at least two attacks, and the three bonuses ride on the same effect, so the printed alternative is consumed as one whole. Surface reuse candidate: {"family":"mechanic.death-blow","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The bearer with two Attacks declines the replacement, so both attacks of the pool are
+# resolved: the declared tape carries the second attack die that the accepted
+# replacement would never request, and both attacks miss on ones.
+- audit_id: mechanic/mechanic.death-blow
+  id: the-bearer-declines-and-attacks-normally
+  covers: [optional-use]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.death-blow]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.death-blow, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The accepted replacement resolves a single attack whose faces are read against the
+# lowered targets: the same warrior's Weapon Skill 3 is a 4+ against the defender, so
+# the declared hit of three only strikes through the printed +1 To Hit, and the
+# declared wound of three only wounds through the printed +1 To Wound (Strength 3
+# against Toughness 3 is otherwise a 4+).
+- audit_id: mechanic/mechanic.death-blow
+  id: the-single-attack-adds-one-to-hit-and-to-wound
+  covers: [single-attack-with-bonuses]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.death-blow]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.death-blow, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The third printed bonus is read on the injury roll: against a one-wound defender the
+# wound costs the last wound, and the declared injury face of two becomes the three that
+# Stuns him only through the printed +1 on the Injury roll.  A Stunned warrior makes no
+# attack, so the round carries no die for the second warrior.
+- audit_id: mechanic/mechanic.death-blow
+  id: the-single-attack-adds-one-on-the-injury-roll
+  covers: [single-attack-with-bonuses]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.death-blow]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.death-blow, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

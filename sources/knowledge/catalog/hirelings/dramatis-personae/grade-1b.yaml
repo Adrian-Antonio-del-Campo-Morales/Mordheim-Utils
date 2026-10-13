@@ -59,6 +59,16 @@ profiles:
         Inmune a la psicología.
     name_i18n:
       es: Psicología
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.psychology-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.psychology-immunity
   - id: hireling.dramatis.abdul-alhazred-the-mad-sorcerer.rule.djinn-master
     name: Djinn Master
     effect: Modifies Lamp of the Djinn rolls according to source.
@@ -111,10 +121,12 @@ profiles:
     unique_equipment:
     - id: hireling.dramatis.crow-master-the.item.mantle-of-crows
       name: Mantle of Crows
+      rules: [hireling.dramatis.crow-master-the.rule.crow-master]
       name_i18n:
         es: Manto de Cuervos
     - id: hireling.dramatis.crow-master-the.item.needle-and-thread
       name: Needle and Thread
+      rules: [hireling.dramatis.crow-master-the.rule.crow-master]
       name_i18n:
         es: Aguja e Hilo
   skill_access: []
@@ -124,12 +136,59 @@ profiles:
   rules:
   - id: hireling.dramatis.crow-master-the.rule.crow-master
     name: Crow Master
-    effect: Uses the source necromantic/crow special rules.
+    effect: >-
+      Mantle of Crows: the mantle appears a simple shabby cloak but has hidden malign power,
+      attracting crows that distract his adversaries. Any enemy model in base-to-base contact
+      with Simius at the start of the Hand-to-hand Combat phase suffers a single automatic
+      Strength 2 hit before any blows are struck.
+      Needle and Thread: if Simius stuns an opponent in Hand-to-Hand combat and has no other
+      enemies standing in base-to-base contact, he sews up the mouth of his enemy. Leaders cannot
+      then use their leader ability and spell casters cannot cast spells for the remainder of the battle.
+      Payment in blood: if the hiring warband loses, roll D6; on 1 Simius abducts the Hero or
+      Henchman with lowest experience (not hired swords), who is removed from the roster as slain.
+      Decay of Ages (difficulty 9): a warrior within 6 inches must pass an immediate Toughness
+      test or lose 1 from all characteristics except Attacks and Wounds. Each Recovery phase
+      repeats the test and loss; success restores all characteristics. A characteristic reaching
+      zero takes the victim out of action. Only one victim may be affected; recasting ends the
+      previous victim's effects.
     effect_i18n:
       es: >-
-        Usa las reglas especiales nigrománticas/de cuervo de la fuente.
+        Manto de Cuervos: el manto parece una capa raída y sencilla, pero esconde un poder maligno que
+        atrae a los cuervos y distrae a sus adversarios. Cualquier modelo enemigo en contacto peana
+        con peana con Simius al comienzo de la fase de combate cuerpo a cuerpo sufre un impacto
+        automático de Fuerza 2 antes de que se golpee. Aguja e Hilo: si Simius aturde a un oponente en
+        combate cuerpo a cuerpo y no queda ningún otro enemigo en contacto peana con peana, le cose
+        la boca; el Líder no puede usar su habilidad de líder y el lanzador de hechizos no puede
+        lanzar durante el resto de la batalla. Pago en sangre: si la banda contratante pierde, tira
+        1D6; con 1 Simius secuestra al Héroe o Secuaz de menor experiencia (no espadas a sueldo),
+        que se elimina de la lista como muerto. Decadencia de las Eras (dificultad 9): un guerrero a
+        6 pulgadas debe pasar de inmediato una tirada de Resistencia o pierde 1 en todas sus
+        características salvo Ataques y Heridas; cada fase de Recuperación repite la tirada y la
+        pérdida, y el éxito restaura todas las características; una característica que llegue a cero
+        deja a la víctima fuera de combate y solo puede verse afectada una víctima.
     name_i18n:
       es: Maestro de Cuervos
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mantle-of-crows
+        scope: 'YES'
+        binding: {kind: mechanic, id: mechanic.mantle-of-crows}
+      - id: needle-and-thread
+        scope: 'YES'
+        binding: {kind: mechanic, id: mechanic.needle-and-thread}
+      - id: payment-in-blood
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Post-battle abduction and roster removal are outside the duel.
+      - id: decay-of-ages
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Spell casting is outside the duel; no supplied spell result is assigned here.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -244,6 +303,16 @@ profiles:
         Usa la regla de odio de la fuente.
     name_i18n:
       es: Odio Ancestral
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.hatred-high-elves
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.hatred-high-elves
   - id: hireling.dramatis.dijin-katal-the-renegade-assassin.rule.excellent-sight
     name: Excellent Sight
     effect: Uses source sight rule.
@@ -516,6 +585,16 @@ profiles:
         Causa miedo.
     name_i18n:
       es: Miedo
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.causes-fear
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.causes-fear
   - id: hireling.dramatis.khar-mel-the-djinn.rule.ethereal
     name: Ethereal
     effect: Has a 5+ unmodifiable save except against magical weapons.
@@ -603,6 +682,20 @@ profiles:
         fuente.
     name_i18n:
       es: Fanáticos
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'NO'
+      effects:
+      - id: mechanic.automatic-leadership
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.automatic-leadership
+      - id: hireling.dramatis.maximilian-the-mad.rule.fanatical.hates-listed-warbands.pending
+        scope: 'YES'
+        binding: null
+        reason: 'Retained individual clause: Max has ordinary first-round Hatred only against opponents belonging to the eleven printed warband categories. Preserve the exact list and ordinary Hatred exemptions, including his separate Frenzy rule; neither species-only nor blanket chaotic-warband Hatred is equivalent. Observable: a qualifying eligible first-round attack may reroll a miss, while an unlisted opponent cannot.'
   - id: hireling.dramatis.maximilian-the-mad.rule.religious-fervour
     name: Religious Fervour
     effect: Subject to Frenzy and source movement compulsion.
@@ -611,6 +704,18 @@ profiles:
         Sujeto a Frenesí y a la compulsión de movimiento de la fuente.
     name_i18n:
       es: Fervor Religioso
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: trait.frenzy
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.frenzy
+          parameters:
+            value: true
   - id: hireling.dramatis.maximilian-the-mad.rule.fear
     name: Fear
     effect: Causes fear; nearby hiring-warband models gain source fear immunity.
@@ -620,6 +725,16 @@ profiles:
         fuente.
     name_i18n:
       es: Miedo
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.causes-fear
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.causes-fear
   - id: hireling.dramatis.maximilian-the-mad.rule.strongman
     name: Strongman
     effect: Uses Strongman-equivalent rule.
@@ -693,6 +808,16 @@ profiles:
         Usa las reglas de Amazonas de la fuente.
     name_i18n:
       es: Amazona
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.amazon-isolationists
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.amazon-isolationists
   - id: hireling.dramatis.penthesilea-mark-of-the-serpent.rule.mark-of-the-serpent
     name: Mark of the Serpent
     effect: Applies source +1 Movement/Initiative treatment.
@@ -709,6 +834,16 @@ profiles:
         Usa la regla misántropa de la fuente.
     name_i18n:
       es: Misántropo
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.hatred-human-warband
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.hatred-human-warband
   unresolved_references:
   - kind: skill
     source_name: Mesmerising Dance

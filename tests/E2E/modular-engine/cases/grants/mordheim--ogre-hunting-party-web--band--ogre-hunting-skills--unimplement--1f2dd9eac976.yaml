@@ -1,0 +1,242 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
+# scaffold_fingerprint: 0fdc46497692da886cfb11dbfff6c6f7d8db4a60c5162c8760e51386a161afd3
+# authoring_status: PARTIAL
+# authoring_progress: the admitted bull-charge clause carries three authored scenarios derived from the
+# printed rule and the recorded contract; the crude-belch, netter and ogre-skill-list-rest clauses remain
+# pending for the concrete reasons recorded in their own notes below.  REVIEWED still requires manual
+# semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: bull-charge (scope: YES)
+# AUTHORED[bull-charge]: 3 scenarios read the printed single attack on the charge: the accepted
+# declaration resolves exactly one attack on its own key at +1 to hit, whose unparried unsaved hit leaves
+# the defender Knocked Down with no To Wound roll, while the printed "if successful" is read as the
+# recorded project reading, so the armour save that keeps the defender standing is the border case; the
+# declined declaration resolves the profile's normal attacks instead.  The Ogre Hunting Party record has
+# no binding of its own but shares the canonical mechanic.bull-charge, so the scenarios read the operator
+# through the fighter's grant list exactly as the mechanic origin's own case does.  REVIEWED still
+# requires manual semantic review.
+# origin_id:
+#   rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/ogre-hunting-party-web/special-rules.yaml
+# source_fingerprint:
+#   b4716bcbca30e0b3acbea529ed38c54fe67c9aee5717e773b414137bc4557a93
+# source_sha256_at_generation:
+#   9a5e0f804e1ae1e6d5bf5840998104bc7e10fdd70f8f985cf96a7c96d3577662
+# Printed rule text:
+#   Bull Charge: when charging, an Ogre with this skill may attempt a single attack with +1 to hit rather than his normal attacks; if successful the enemy is automatically knocked down.
+# Semantic contract (check analysis_status before treating as accepted):
+#   When charging, an Ogre may attempt a single +1 To Hit attack instead of its normal attacks; success automatically knocks the enemy down. Observable: the charge attack set is replaced by one modified attack that knocks down.
+# effect_id:
+#   mechanic.bull-charge
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"the turn this warrior charges"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The Ogre Hunting Party Bull Charge is the same effect as the canonical mechanic.bull-charge used by the other Ogre warbands. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Scope review integration: {"clause_id":"bull-charge","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The single +1-to-hit charge attack with an automatic knock down is an admitted charge attack consequence of this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"mechanic.bull-charge","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: crude-belch (scope: YES)
+# PARTIAL[crude-belch]: [C] no scenario is authorable for this clause.  Category C: the input the clause needs is absent from the executor contract - there is no admitted declaration key for the Ogre/Gnoblar belch and no branch applying the printed -1 To Hit to the engaged enemies - which is why the facet cannot be expressed even as an expectation.  The recorded consumer
+# (resolve_crude_belch) serves only the skill.crude-belch-halfling tag and its consequence is an ordered
+# miss, not the printed "-1 to hit for the turn"; the Ogre/Gnoblar version therefore needs its own
+# behaviour or a parameterised branch, which the record itself names as missing.  The printed extras (the
+# all-engaged recipients and the wait-for-a-new-enemy reuse) have no counterpart either, so no tape can
+# show the difference without inventing the observable.  The missing datum is the branch that applies the
+# printed -1 To Hit consequence to the engaged enemies.
+# origin_id:
+#   rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/ogre-hunting-party-web/special-rules.yaml
+# source_fingerprint:
+#   b4716bcbca30e0b3acbea529ed38c54fe67c9aee5717e773b414137bc4557a93
+# source_sha256_at_generation:
+#   9a5e0f804e1ae1e6d5bf5840998104bc7e10fdd70f8f985cf96a7c96d3577662
+# Printed rule text:
+#   Crude Belch: A Hero with this condition may unleash his noxious fumes on all enemies engaged in close combat; those failing a Ld test suffer -1 to hit for the turn.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Hero may belch on all enemies engaged in close combat; those failing a Leadership test suffer -1 To Hit for the turn, and the Hero must wait for a new enemy to engage before repeating. Observable: a failed enemy test applies a -1 hit modifier for the round.
+# effect_id:
+#   skill.crude-belch-halfling
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"the first round in base contact with a supplied enemy","recipient":"enemies in base contact","reuse":"only after a new enemy engages"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The halfling Crude Belch is implemented via resolve_crude_belch, but that consumer only serves the skill.crude-belch-halfling tag and its consequence is an ordered miss, not a -1 To Hit for the turn. The Ogre/Gnoblar version therefore needs its own behaviour or parameterised branch. Scope review integration: {"clause_id":"crude-belch","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The -1 to hit suffered by enemies who fail the Leadership test is an admitted individual test and attack consequence between the two duellists.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"source-specific-crude-belch","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Keep the Halfling lost-attack clause distinct from the Ogre condition imposing -1 To Hit after a failed Leadership test. Compare duration, test timing and exact consequence; do not substitute attack loss for a hit penalty.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: netter (scope: YES)
+# PARTIAL[netter]: [B] the printed sentence is the resupply provision (three Nets each game, unsellable,
+#   Category B (representable, not implemented): cases/mechanics/mechanic.netter.yaml establishes the
+#   operator and its keys and a sibling band origin already authors its net-charge tape, so a band-origin
+#   tape supplying mechanic.netter is expressible; what this origin still lacks is its own binding/declare,
+#   not the vocabulary to state the printed expectation.
+# restored), which is a kit/rostering fact; its only duel-visible projection is the canonical net-charge
+# operator mechanic.netter, whose tape is authored at its own origin and at the band that binds it.  This
+# record carries no binding (the note states "No binding on this record; the canonical effect exists, so
+# the missing step is the KB connection"), so nothing here distinguishes this band origin from the
+# canonical one and the clause stays pending on that connection.
+# origin_id:
+#   rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/ogre-hunting-party-web/special-rules.yaml
+# source_fingerprint:
+#   b4716bcbca30e0b3acbea529ed38c54fe67c9aee5717e773b414137bc4557a93
+# source_sha256_at_generation:
+#   9a5e0f804e1ae1e6d5bf5840998104bc7e10fdd70f8f985cf96a7c96d3577662
+# Printed rule text:
+#   Netter: each game the Gnoblar hero starts with 3 Nets, which may not be sold or traded and are restored each game.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A Gnoblar Netter starts each game with three Nets and regains unused Nets each game. Observable: the net-charge behaviour is available to this profile.
+# effect_id:
+#   mechanic.netter
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"net-charge declaration","recipient":"this Gnoblar hero"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The Netter clause is the net-charge skill already modelled by mechanic.netter (three nets per game is its resupply provision). No binding on this record; the canonical effect exists, so the missing step is the KB connection. Scope review integration: {"clause_id":"netter","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Starting each game with three Nets that may not be sold and are restored is an admitted construction clause of this hero's kit.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"mechanic.netter","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare target identities, psychology/animal exceptions, test dice, phase, failure consequence and duration. Charge refusal, inability to attack and loss of one attack are distinct; Crude Belch may remove the only attack. Keep supplied individual consequences separate from group emission.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: ogre-skill-list-rest (scope: YES)
+# PARTIAL[ogre-skill-list-rest]: [C] no scenario is authorable for this clause as recorded.  Category C: the resolved access set and the recipient profiles are genuinely absent, so no identity exists to admit or refuse.  The named list
+# is legal-construction access, and the record declares no effect_id and no consumer for it ("Scent
+# Hound, Maneater, Bellowing Roar, Set Traps and Infiltration" each keep their own origin, and those
+# origins are themselves excluded detection, promotion/Rout and deployment content).  The missing datum
+# is the access projection that would map the named printed skills onto this hero's list, after which the
+# clause's evidence is the admission of a named skill and the refusal of one outside the list.
+# origin_id:
+#   rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/ogre-hunting-party-web/special-rules.yaml
+# source_fingerprint:
+#   b4716bcbca30e0b3acbea529ed38c54fe67c9aee5717e773b414137bc4557a93
+# source_sha256_at_generation:
+#   9a5e0f804e1ae1e6d5bf5840998104bc7e10fdd70f8f985cf96a7c96d3577662
+# Printed rule text:
+#   Scent Hound, Maneater, Bellowing Roar, Set Traps and Infiltration
+# Semantic contract (check analysis_status before treating as accepted):
+#   The named skill list is legal-construction access for these heroes, and each named skill keeps its own origin. Printed clause: Scent Hound, Maneater, Bellowing Roar, Set Traps and Infiltration
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Scent Hound is detection, Maneater and Bellowing Roar are promotion/Rout content, and Set Traps/Infiltration are board placement and deployment; all excluded movement/Rout/advancement subsystems. Scope review integration: {"clause_id":"ogre-skill-list-rest","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The named skill list is legal-construction access for these heroes, and each named skill keeps its own origin.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Scent Hound, Maneater, Bellowing Roar, Set Traps and Infiltration","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."} Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
+# declared replacement pool is one attack on its own key, so the tape shows one attack where the fixture
+# has two, and the automatic knock-down needs no To Wound roll.
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
+  id: a-declared-bull-charge-knocks-the-enemy-down
+  covers: [bull-charge]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bull-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bull-charge, value: true}
+  rolls:
+    - {key: round.0.first.bull-charge.hit, value: 3}
+  expect_rounds:
+    0: {attacks.0.hit: true, state.second.condition: KNOCKED_DOWN, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.bull-charge.hit, sides: 6, value: 3}
+
+# The recorded reading of the printed "if successful": an armour save stops the knock-down, so the
+# defender stays standing.
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
+  id: an-unsaved-hit-knocks-down-while-a-save-leaves-the-defender-standing
+  covers: [bull-charge]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bull-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bull-charge, value: true}
+  rolls:
+    - {key: round.0.first.bull-charge.hit, value: 3}
+    - {key: round.0.first.bull-charge.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "rather than making his normal attacks": declining the declaration resolves the profile's
+# two attacks on their own keys instead of the single charge attack.
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
+  id: declining-the-declaration-resolves-the-normal-attacks
+  covers: [bull-charge]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bull-charge]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bull-charge, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+

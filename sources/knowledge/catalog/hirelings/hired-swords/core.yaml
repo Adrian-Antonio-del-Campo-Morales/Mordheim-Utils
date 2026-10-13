@@ -378,6 +378,16 @@ rules:
       url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
   name_i18n:
     es: Deseo de Muerte
+  runtime:
+    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    effects:
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: hireling.hired-sword.dwarf-troll-slayer.rule.hard-to-kill
   name: Hard to Kill
   effect: On the Injury chart the Troll Slayer is taken Out of Action only on a 6; a 5 is Stunned.
@@ -538,6 +548,16 @@ rules:
       url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
   name_i18n:
     es: Miedo
+  runtime:
+    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    effects:
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: hireling.hired-sword.ogre-bodyguard.rule.large-target
   name: Large Target
   effect: The Ogre Bodyguard counts as a Large Target.

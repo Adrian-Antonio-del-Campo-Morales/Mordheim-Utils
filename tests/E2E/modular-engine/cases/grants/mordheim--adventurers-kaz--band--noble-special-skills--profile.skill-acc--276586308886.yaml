@@ -1,0 +1,104 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/adventurers-kaz/band--noble-special-skills/profile.skill-access
+# scaffold_fingerprint: dbabcc85dca562434bd8f9ef41ab7863ab6f2eb98dda28c710170cc7673f263f
+# authoring_status: AUTHORED
+# authoring_progress: both halves of the admitted clause carry an authored scenario: the Imperial
+#   Noble that selects a declared table member is ADMITTED (the expectation is the printed
+#   permission: the build compiles and the engagement starts), and a special skill outside the
+#   printed table is refused with the shared access diagnostic.  CORRECTION (closing pass): the
+#   previous revision made the compiler's own implementation message "named skills have no executable
+#   duel mechanic" the oracle of the admission half.  That message is raised by
+#   packages/python/roster-construction/mordheim_construction/compiler.py (the branch that separates
+#   legality from executable support) when a skill IS a legal member of the published table but has no
+#   executable mechanic, so it evidences the incomplete operator, never the printed permission.  Both
+#   declared members are campaign-search effects; the oracle is now the rule's own outcome (admitted,
+#   one phase resolves, horizon) and the missing capability is recorded in the clause note.  REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the printed permission (the Imperial Noble may use the Noble
+#   table {Trading Flair, Taunt} instead of any of the standard tables).  The admission scenario
+#   asserts the printed admission: the recipient build that selects the declared member
+#   skill.trading-flair is accepted and the engagement starts (zero attacks declared on both sides,
+#   so the observation is admission itself); the closure scenario shows a special skill outside the
+#   printed table refused.  MISSING CAPABILITY (engine, recorded not hidden): both declared members
+#   are campaign-search effects with no duel mechanic, so compiler.py refuses the admitted build
+#   today; the scenario keeps the rule-derived expectation and will demonstrate the permission once
+#   an operator exists.  The recorded open question on Taunt timing belongs to the separate Taunt
+#   identity, not to this access permission.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/adventurers-kaz/band--noble-special-skills/profile.skill-access
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/adventurers-kaz/special-rules.yaml
+# source_fingerprint:
+#   9f91a5a77c57c32e6ebf8152f3af3827251d7c2ddd91210a20908509d265190a
+# source_sha256_at_generation:
+#   e59d9527e127b6f401008b4fd0e1e466aaf141f6138db69329e8175a735dcd03
+# Printed rule text:
+#   The Noble may use the following Skill table instead of any of the standard Skill tables.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Permission: the Imperial Noble may replace its standard skill lists with the special table {Trading Flair, Taunt}; members are individually selectable.
+# effect_id:
+#   profile.skill-access
+# relation:
+#   equivalent
+# parameters:
+#   {"category":"special","skills":["skill.trading-flair","skill.taunt"]}
+# conditions:
+#   {"grant":"profile","replaces_standard_lists":true}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Trading Flair is a campaign search effect; the recorded open question on Taunt timing belongs to the separate Taunt skill origin, not to this access permission. Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded semantic contract and the band binding's own member
+# list; no engine output was consulted.  Both fighters are given zero attacks so the round resolves
+# without dice and the observation is about admission, not about the member's mechanics.
+
+- audit_id: rule/mordheim/adventurers-kaz/band--noble-special-skills/profile.skill-access
+  id: the-declared-table-member-is-admitted-to-the-recipient
+  covers: [whole]
+  # The printed permission is the required behaviour: selecting a declared member of the Noble table
+  # is admitted to the recipient, so the build must compile and the engagement must start.  Both
+  # fighters declare zero attacks, so the observation is admission itself and no member mechanic is
+  # asserted here (both members are campaign-search effects).  The build is refused today by
+  # compiler.py's legality/executable-support branch ("named skills have no executable duel
+  # mechanic"), an implementation gap, not a rule outcome: the expectation is deliberately NOT that
+  # diagnostic.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: adventurers-kaz
+      profile_id: imperial-noble
+      skill_ids: [skill.trading-flair]
+      main_weapon_id: weapon.natural-attacks
+    second:
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_initial: {first.attacks: 0, second.attacks: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/adventurers-kaz/band--noble-special-skills/profile.skill-access
+  id: a-special-skill-outside-the-printed-table-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: adventurers-kaz
+      profile_id: imperial-noble
+      skill_ids: [skill.monster-slayer]
+  expect_error: "skills are not available to adventurers-kaz/imperial-noble: ['skill.monster-slayer']"

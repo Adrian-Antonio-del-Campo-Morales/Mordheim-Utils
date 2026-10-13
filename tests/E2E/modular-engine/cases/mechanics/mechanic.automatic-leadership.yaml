@@ -1,0 +1,117 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.automatic-leadership
+# scaffold_fingerprint: dad2bc61cc47441501e72f50f1f927f7e732c8921d06af8f7b9341913da7fc53
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: automatic-leadership (scope: YES)
+# AUTHORED[automatic-leadership]: 3 scenarios cover the Fear test passed without
+#   a die, the same warrior failing it without the rule, and Stupidity passed the
+#   same way.
+# origin_id:
+#   mechanic/mechanic.automatic-leadership
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   db31940e944f12af522fda9fce6c5283f6868e7900b285d94062714a0e4356ab
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Automatically pass any required Leadership test without rolling dice.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Automatically passes every Leadership-based test it is required to take, without rolling. Observable: no Leadership test — including Fear, Stupidity and other Psychology — ever fails for this warrior.
+# effect_id:
+#   mechanic.automatic-leadership
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"any Leadership-based test this warrior must take","resolution":"leadership.resolve_local_leadership returns a pass before dice","consequence":"the test cannot fail","recipient":"this warrior","duration":"whole duel","stacking":"not cumulative","exceptions":"does not remove the need to attack/charge; separate prohibition clauses are recorded individually"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Auto-pass leadership. Daemonic/Darksoul/Flagellant wording states the same outcome as mechanic.automatic-leadership; the KB entry name 'Immune to Psychology' is a source label, the printed sentence is the auto-pass rule. Surface reuse candidate: {"family":"mechanic.automatic-leadership","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare each immunity or automatic-pass clause separately. Psychology immunity is not automatic success on every Leadership test. Preserve ordinary Hatred/Frenzy suppression and the explicit Strigoi exception; excluded running, experience and group tests remain excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# A Leadership 4 warrior would fail the charged-side Fear test on most dice, yet the
+# rule passes the test before any die: the tape opens with the attack and his own To
+# Hit target stays the ordinary four.
+- audit_id: mechanic/mechanic.automatic-leadership
+  id: a-fear-test-passes-without-a-die
+  covers: [automatic-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.automatic-leadership]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 4}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.hit_target: 4, state.second.fear_hit_sixes: False, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Without the mechanism the same Leadership 4 is tested and fails, which isolates the
+# automatic pass to the printed rule.
+- audit_id: mechanic/mechanic.automatic-leadership
+  id: the-same-warrior-fails-without-the-mechanic
+  covers: [automatic-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 4}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit_target: 6, state.second.fear_hit_sixes: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The clause names Stupidity as well: the start-of-turn test is passed without dice,
+# so the round keeps its attacks.
+- audit_id: mechanic/mechanic.automatic-leadership
+  id: stupidity-also-passes-without-a-die
+  covers: [automatic-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.stupidity, mechanic.automatic-leadership]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 4}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.stupidity_failed: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

@@ -1,0 +1,111 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-strength-of-steel/skill.strength-of-steel
+# scaffold_fingerprint: dda79553ae112af6089b22ed8e4591c591762c35f1c3f14ef14dd50fca493571
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed
+#   rule and the recorded contract: with the band row band--blood-dragon-power-strength-of-steel selected
+#   the charging bearer's wound die of three lands because the charge-turn Strength is one higher than the
+#   fixture base, while the identical charge without the row needs a four and the same three misses.  The
+#   bonus is read on the charging turn only, which is the round the case resolves.  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the printed charge-turn +1 Strength of the shared
+#   skill.strength-of-steel operator as this band origin carries it.  Strength 3 is supplied as the bearer's
+#   fixture base so the printed bonus is the only thing that can lower the wound target from four to three
+#   against the fixture's Toughness 3.  The bearer prints Fear, so the charged fixture takes the printed
+#   charge test and its two dice are declared before contact; every strike that misses is a natural 1.  The
+#   printed rider "does not count toward its normal characteristic maximum" is a character-sheet
+#   consequence with no duel observable and is recorded rather than asserted.  REVIEWED still requires
+#   manual semantic review.
+# origin_id:
+#   rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-strength-of-steel/skill.strength-of-steel
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-undead-bloodlines/special-rules.yaml
+# source_fingerprint:
+#   b5b8eaaef80c4030b737a5bdd222dfd5c3ccc5c267893ed40edd911c47ae76f4
+# source_sha256_at_generation:
+#   aaa7750bfbf16797ddd93878e0cd88fd550a10fdd09818c2cdb767f9356d47d2
+# Printed rule text:
+#   The Vampire gains +1 Strength during the turn in which it charges. This does not count toward its normal characteristic maximum.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Vampire gains +1 Strength during the turn in which it charges, and it does not count toward its normal characteristic maximum. Closure: one point of attack Strength on the charging turn only.
+# effect_id:
+#   skill.strength-of-steel
+# relation:
+#   equivalent
+# parameters:
+#   {"charge_strength_bonus":1,"counts_to_maximum":false}
+# conditions:
+#   {"recipient": "Blood Dragon Vampire"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared strength-of-steel operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.strength-of-steel","verified_facet":"skill.strength-of-steel","relationship":"shared_facet","boundary":"Charge-turn Strength bonus only; expires for later turns and differs from permanent Iron Sinews.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the band row the audit id names; no engine
+# output was consulted.  The bearer charges, so the hand-built defender first passes the printed charge
+# test (Leadership 7 against 3+3) and then the attacker's single strike is resolved; the defender's reply
+# misses on the declared natural 1.
+
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-strength-of-steel/skill.strength-of-steel
+  id: the-selected-power-raises-the-charging-bearers-strength
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+      special_rule_ids: [band--blood-dragon-power-strength-of-steel]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-strength-of-steel/skill.strength-of-steel
+  id: without-the-selected-power-the-same-wound-die-falls-short
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 10, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

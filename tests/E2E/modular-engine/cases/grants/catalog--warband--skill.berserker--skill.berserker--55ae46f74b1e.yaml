@@ -1,0 +1,123 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/warband/skill.berserker/skill.berserker
+# scaffold_fingerprint: 6ec6ffac96f2439221378a59778dd1433b9ff4b931708d0135ee7149d8b4f7f8
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries three authored scenarios derived from the
+# printed rule, the recorded contract and the admitted berserker grants specification: the
+# charging turn still hits on a roll of 3 where the uncharged turn does not, and the same roll
+# misses without the tag.  The printed exclusivity with Ferocious Charge is delivered as a
+# construction rule (compiler.berserker-incompatible-with-ferocious-charge, enforced by the
+# shared eligibility loadout restriction), so no compiled fighter ever holds both tags and no
+# duel-time observable exists for that face: the refusal itself is asserted by the pit-fighters
+# publication that carries the binding.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios read the canonical clause.  A charging attacker with the tag
+# still hits on a declared 3 against an equal-Weapon-Skill opponent where the same attacker
+# without a charge misses, and the same charging roll of 3 misses when the tag is absent, which
+# fixes the +1 to the shared operator.  The printed exclusivity of the same sentence has no
+# duel-time consumer by design: the register note records that the loadout restriction refuses a
+# build holding both tags, so only the construction-family files can assert it.  REVIEWED still
+# requires manual semantic review.
+# origin_id:
+#   rule/catalog/warband/skill.berserker/unclassified
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/skills/warband.yaml
+# source_fingerprint:
+#   f515f692f42fa1d9c521acd29582e500981ee9f29807d8bece6a8db2e017bf43
+# source_sha256_at_generation:
+#   cbce88f8e195c72b1767c88af362131455b99435c0ffb53e58b55b7306161198
+# Printed rule text:
+#   The Slayer may add +1 to his close combat to hit rolls during the turn which he charges (may not be used with Ferocious Charge).
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Slayer may add +1 to his close-combat To Hit rolls during the turn in which he charges and may not use it with Ferocious Charge. Closure: the +1 applies on the charging turn and never together with the doubling.
+# effect_id:
+#   skill.berserker
+# relation:
+#   equivalent
+# parameters:
+#   {"exclusive_with":"skill.ferocious-charge","hit_modifier":1,"trigger":"charging turn","charge_hit_modifier":1}
+# conditions:
+#   {"source": "canonical warband skill list"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Canonical warband skill-list definition of the shared berserker operator and the canonical source of the Ferocious Charge exclusivity. The charging-turn +1 to hit is delivered by contexts.prepare_hit_context; the exclusivity is carried as compiler.berserker-incompatible-with-ferocious-charge and enforced by the shared eligibility loadout restriction, which refuses skill.ferocious-charge alongside it, so this clause needs no behaviour step. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.berserker","verified_facet":"skill.berserker","relationship":"shared_facet","boundary":"Share the charging-turn melee hit bonus. Preserve each printed Ferocious Charge incompatibility; neither the bonus nor incompatibility follows from the name Berserker alone.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the admitted berserker grants
+# specification; no engine output was consulted.  The catalog origin binds no recipient, so the
+# fixture carries the canonical tag itself on a hand-built attacker (Weapon Skill 4, Attacks 1),
+# and the boundaries are the equal-Weapon-Skill hit target and the charging turn; the opponent's
+# strike is a declared natural 1 so nothing else is in question.
+
+- audit_id: rule/catalog/warband/skill.berserker/skill.berserker
+  id: the-charging-turn-hits-on-three
+  covers: [whole]
+  fighters:
+    first:
+      skill_ids: [skill.berserker]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/catalog/warband/skill.berserker/skill.berserker
+  id: the-uncharged-turn-does-not-hit-on-three
+  covers: [whole]
+  fighters:
+    first:
+      skill_ids: [skill.berserker]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/catalog/warband/skill.berserker/skill.berserker
+  id: without-the-tag-the-charging-three-misses
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

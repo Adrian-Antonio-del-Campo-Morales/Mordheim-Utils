@@ -20,15 +20,15 @@ rules:
     profile_ids:
     - dwarf-noble
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-dwarf-treasure-hunters.dwarf-noble.leader
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: dwarf-engineer--expert-armourer
   name: Expert Armourer
   effect: >-
@@ -77,15 +77,15 @@ rules:
     profile_ids:
     - dwarf-troll-slayers
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-dwarf-treasure-hunters.dwarf-troll-slayers.death-oath
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: dwarf-troll-slayers--slayer-skills
   name: Slayer Skills
   effect: >-

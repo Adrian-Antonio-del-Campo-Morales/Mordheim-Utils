@@ -1,0 +1,120 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/warband/skill.sigmar-s-sign/skill.sigmar-s-sign
+# scaffold_fingerprint: c4387bdafd641b7324af54a7f229d83d6b44c3d5cc1989aab592fba741266eba
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause now carries three scenarios: the Undead attacker's reduced pool, the printed Daemon exclusion, and the printed floor "down to a minimum of 1" (a one-attack Undead attacker still resolves its single declared attack die, so a reduction to zero would leave that die unrequested and the tape would fail loudly). The only remaining limit is that no run observation reports the pre-floor count itself. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: sigmar-s-sign (scope: YES)
+# AUTHORED[sigmar-s-sign]: Documented residual (AUTHORED vs observation contract): the printed floor has a written scenario, so the requirement is represented; what stays pending is a genuine observation absence [C], not authoring - no run observation reports the pre-floor attack count (the printed floor itself is authored below); 3 scenarios cover the first-round reduction of an Undead
+#   attacker's pool and the Daemon exclusion, which keeps both of its attacks, with
+#   the printed floor left pending as described above.
+# origin_id:
+#   rule/catalog/warband/skill.sigmar-s-sign/unclassified
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/skills/warband.yaml
+# source_fingerprint:
+#   5978f0bd108d50438d0ad166dba33e14a530e48d7955cffac71b6e131fb80081
+# source_sha256_at_generation:
+#   cbce88f8e195c72b1767c88af362131455b99435c0ffb53e58b55b7306161198
+# Printed rule text:
+#   Undead and Possessed enemies lose one attack in the first round.
+# Semantic contract (check analysis_status before treating as accepted):
+#   An Undead or Possessed opponent loses its first attack against this warrior in the first round of hand-to-hand combat, to a minimum of 1. Observable: the opponent's attack count is one lower in round 0.
+# effect_id:
+#   skill.sigmar-s-sign
+# relation:
+#   related
+# parameters:
+#   {"attack_reduction":1}
+# conditions:
+#   {"trigger":"first round against an Undead or Possessed (non-Daemon) attacker","recipient":"this warrior acting as defender","duration":"first round","exceptions":"daemons are excluded"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Cross-family attack-count reduction (block A granularity) recorded under the C assignment; implemented in apply_opponent_attack_modifiers. Surface reuse candidate: {"family":"skill.sigmar-s-sign","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the exact printed target, charge direction, round/phase, weapon prerequisite and supplied-state restriction. Preserve attack floors and first-round resources; a charge-turn bonus is not automatically a first-duel-round-only bonus, and no nearby-group counting is introduced.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The catalog warband skill list prints the canonical Sign of Sigmar wording: the
+# defender's skill reduces an Undead or Possessed attacker's first-round pool, and
+# Daemons are excluded.
+# The Undead attacker has two Attacks and the defender carries the Sign, so the first
+# round reduces its pool to one: an unreduced pool would have requested the second die.
+- audit_id: rule/catalog/warband/skill.sigmar-s-sign/skill.sigmar-s-sign
+  id: the-undead-attacker-loses-one-attack-in-the-first-round
+  covers: [sigmar-s-sign]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.sigmar-s-sign]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.wounded: True, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed exception: a Daemon attacker keeps its whole pool, so both of its attacks
+# are resolved and the tape carries both attack dice.
+- audit_id: rule/catalog/warband/skill.sigmar-s-sign/skill.sigmar-s-sign
+  id: a-daemon-attacker-keeps-its-attacks
+  covers: [sigmar-s-sign]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.sigmar-s-sign]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: daemon}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit: False, attacks.2.hit: False, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed floor: an Undead attacker whose pool is a single attack keeps that attack
+# ("down to a minimum of 1"), so its declared die is still requested and can wound; a
+# reduction that removed the attack would leave the second fighter's die unrequested.
+- audit_id: rule/catalog/warband/skill.sigmar-s-sign/skill.sigmar-s-sign
+  id: the-printed-floor-keeps-the-attack-of-a-single-attack-undead-attacker
+  covers: [sigmar-s-sign]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.sigmar-s-sign]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.1.hit: True, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

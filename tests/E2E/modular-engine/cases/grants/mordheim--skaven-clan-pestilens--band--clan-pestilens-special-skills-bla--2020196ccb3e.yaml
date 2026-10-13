@@ -1,0 +1,135 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger
+# scaffold_fingerprint: 8dfc9665011adfab5783842a981132bb37075ba4fc0434eb9c2725f8e667d986
+# authoring_status: AUTHORED
+# authoring_progress: the admitted attack-and-backlash clause carries 2 authored scenarios derived
+# from the printed skill text and the shared black-hunger operator: the +1 Attack of the invoked
+# turn appears as a second mace attack and the end-of-turn D3 Strength 3 hits land with no armour
+# roll requested at all.  The printed D3" Movement term is the excluded movement clause of this
+# same file.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: attack-and-backlash (scope: YES)
+# AUTHORED[attack-and-backlash]: 2 scenarios evidence the printed skill for its own bearer: the
+#   invoked turn adds one attack to the printed A1 profile (two mace attacks) and the end-of-turn
+#   backlash is D3 Strength 3 hits with no armour save, proved by a bearer wearing light armour
+#   for whom no armour face is requested.  The retained automatic activation convention of the
+#   permanent duel ruling covers the optional own-turn invocation; the band's Skill-list access
+#   restriction is an acquisition gate and is not a duel-time fact.
+# origin_id:
+#   rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/skaven-clan-pestilens/special-rules.yaml
+# source_fingerprint:
+#   6204ee71560e098e49ce81c645c3a9d5fa2c4ce570558a139ac20d4541f8c3f4
+# source_sha256_at_generation:
+#   fd4ce1ba1a0a29841e324a3b43cdb0d680015e9d6574e092673f0667381e46c3
+# Printed rule text:
+#   At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack and +D3" to his total Movement, then suffers D3 Strength 3 hits with no armour save at the end of the turn.
+# Semantic contract (check analysis_status before treating as accepted):
+#   At the beginning of his turn the Hero may invoke Black Hunger: for that turn he gains +1 Attack and at the end of the turn he suffers D3 Strength 3 hits with no armour save. Closure: the +1 Attack and the D3 S3 no-save hits at the end of that turn.
+# effect_id:
+#   mechanic.black-hunger
+# relation:
+#   related
+# parameters:
+#   {"activation": "optional, own turn", "attacks_bonus": 1, "backlash": "D3 S3 hits, no armour save", "duration": "one turn"}
+# conditions:
+#   {"duration": "one turn", "optional": true, "recipient": "Clan Pestilens Hero"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Second band origin printing the flat D3 inches Movement term; it shares the delivered terms of the shared operator (the +1 Attack and the D3 S3 no-save backlash) and adds no second runtime contribution. The excluded movement term is recorded in its own clause. The former aggregate key is replaced by the attack-and-backlash and movement clause keys. Surface reuse candidate: {"family":"mechanic.black-hunger","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare trigger, current bearer, activation, timing, state duration and reset rules. Keep damage backlash and interrupted continuation; exclude producer movement/group counting or campaign progression.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: movement (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/skaven-clan-pestilens/special-rules.yaml
+# source_fingerprint:
+#   6204ee71560e098e49ce81c645c3a9d5fa2c4ce570558a139ac20d4541f8c3f4
+# source_sha256_at_generation:
+#   fd4ce1ba1a0a29841e324a3b43cdb0d680015e9d6574e092673f0667381e46c3
+# Printed rule text:
+#   And D3" to his total Movement.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The added D3 inches of Movement is map movement, excluded from the duel. Printed clause: And D3" to his total Movement.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Preserved as the origin-specific Movement variant with no duel contribution. Scope review integration: {"clause_id":"movement","review_clause_id":"movement","source_state":"unverified","review_status":"reviewed","scope_reason":"The added D3 inches of Movement is map movement, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The flat D3\" Movement addition of this origin belongs to the excluded movement subsystem; no duel operator is required.","effect_id":"","relation":"independent","parameters":"{\"movement_term\": \"D3in\"}","conditions":"{\"subsystem\": \"movement\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A18-excluded-and-later-clauses","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"And D3\" to his total Movement.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# The bearer is the printed Clan Pestilens Hero's selection: it carries the Black Hunger skill and
+# the fixture's characteristics are hand-built facts.  The invoked turn adds one attack to the
+# printed A1 profile, so the mace strikes twice, and the same tape already carries the end-of-turn
+# backlash.
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger
+  id: the-invocation-grants-one-extra-attack
+  covers: [attack-and-backlash]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.black-hunger]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+    - {key: round.0.first.black-hunger.hit.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.damage: 1, state.second.wounds: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The backlash is an S3 hit with no armour save: the bearer wears a 6+ light armour and the round
+# still resolves no armour roll at all, so the declared wound is taken on the fighter himself.
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-black-hunger/mechanic.black-hunger
+  id: the-backlash-ignores-armour
+  covers: [attack-and-backlash]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      skill_ids: [mechanic.black-hunger]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+    - {key: round.0.first.black-hunger.hit.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.wounds: 1, attacks.3.damage: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,110 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.mace
+# scaffold_fingerprint: c3683c1cb33ea0b57d87a19a7f38f8b4e4bde96211fb01671074509b558ba30f
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries three authored injury-band scenarios.
+#   REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios pin the printed Concussion band at its lower
+#   edge (an injury of 1 stays Knocked Down), its start (2 becomes Stunned)
+#   and its end (4 becomes Stunned). Pending semantic review.
+# origin_id:
+#   mechanic/weapon.mace
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   a62704241eca6a467656ed21b0856c31c94584e0642525fb36f23b44324e4a77
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Uses normal Strength and has Concussion on Injury rolls of 2-4.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Bludgeon whose Injury result 2-4 is Stunned. Closure: a 2-4 Injury total yields STUNNED.
+# effect_id:
+#   weapon.mace
+# relation:
+#   equivalent
+# parameters:
+#   {"concussion":true}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. The shared club/hammer/mace family; the Club, Hammer, Ogre Club and Staff Club Mace item origins bind the same operator with the same wording. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-W-weapon.mace","verified_facet":"weapon.mace","relationship":"shared_facet","boundary":"Concussion maps injury totals 2-4 to Stunned unless Hard Head; not a +Strength bonus or the Shock Rod 1-4 chart. Zomblintua weapon-equivalent attacks remain a separate grant from the item itself.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# weapon.mace - a mace uses normal Strength and has Concussion on Injury rolls of 2-4.
+
+- audit_id: mechanic/weapon.mace
+  id: mace-injury-1-is-knocked-down
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &atk-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/weapon.mace
+  id: mace-injury-2-is-stunned
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *atk-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/weapon.mace
+  id: mace-injury-4-is-stunned
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *atk-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

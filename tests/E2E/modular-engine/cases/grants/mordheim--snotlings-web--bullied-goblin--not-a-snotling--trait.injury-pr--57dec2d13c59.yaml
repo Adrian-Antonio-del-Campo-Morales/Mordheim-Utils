@@ -1,0 +1,104 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/snotlings-web/bullied-goblin--not-a-snotling/trait.injury-profile
+# scaffold_fingerprint: fdd20ff422723df68d99cfcafe32a4fd8e2c921b5defceb69a18a058d8b24183
+# authoring_status: AUTHORED
+# authoring_progress: the admitted exempt-from-snotling-rules clause carries authored scenarios
+# derived from the printed sentence and the recorded contract (the profile grant records the
+# explicit no-exception value, profile 0).  The bearer is the profile build
+# mordheim/snotlings-web/bullied-goblin, which prints that it is not a Snotling; it starts at one
+# Wound and contributes no attacks, so a single unsaved wound reaches the injury table.  A 2
+# knocks it down and a 4 merely stuns it, which is exactly what the Snotling ladder would have
+# turned into Stunned and Out of Action: the pair proves the exemption rather than the band's
+# Not-So-Tough-Gits ladder.  REVIEWED still requires manual semantic review and execution_status
+# stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: exempt-from-snotling-rules (scope: YES)
+# AUTHORED[exempt-from-snotling-rules]: 2 scenarios hold the exemption: the bearer that is not a
+#   Snotling rolls on the normal table, so a 2 leaves it Knocked Down and a 4 only Stuns it, whereas
+#   the band's Snotling ladder would have stunned it and taken it out of action on the same faces.
+# origin_id:
+#   rule/mordheim/snotlings-web/bullied-goblin--not-a-snotling/trait.injury-profile
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/snotlings-web/special-rules.yaml
+# source_fingerprint:
+#   f5dc1e237be48cd73149a220306de7d25e973c4e10c0017fcf5d62597e4a489c
+# source_sha256_at_generation:
+#   7dc940a3784763fc2a3788f764bbbebc42aa05d316da3cf38a6a037564a7415b
+# Printed rule text:
+#   The Bullied Goblin is NOT a Snotling, and does not use the rules for "Dodgy", "Small", and "Not so Tough Git". His rating is still halved (in regards to the rule "Weakness in Numbers"), and may still use a Pebble.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Bullied Goblin does not use Dodgy, Small or Not-So-Tough Gits, so it rolls on the normal injury table and is killed on 1-2; observable: no Snotling injury ladder applies.
+# effect_id:
+#   trait.injury-profile
+# relation:
+#   equivalent
+# parameters:
+#   {"profile":0}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Profile 0 is the explicit 'no exception' value, so the normal table applies; this records the exemption rather than a missing rule. Surface reuse candidate: {"family":"T-INJURY-PROFILE","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the entire printed chart or reaction, received versus inflicted injury, initial condition, exceptions and timing. Reroll, ignore-result roll, wound multiplication and ignition threshold are different effects; do not copy a generic chart or combine them by name.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
+# bearer prints that it is not a Snotling, starts the duel at one Wound and contributes no attacks of
+# its own, so round 0 carries only the attacker's dice and the wound that lands is the one that
+# reaches the injury table.  The blow is an ordinary mace: at Weapon Skill 10 against this bearer's
+# printed Weapon Skill it needs a 3, and Strength 8 against its Toughness needs a 2, so the declared
+# 5 and 5 both pass.  Five is deliberately below a natural six, which would be a critical hit and add
+# a further critical die and an injury modifier.  The normal table takes a fighter out of action on a
+# 5, so both declared faces leave the bearer in the duel and no further die is consumed beyond the
+# injury die itself.
+
+- audit_id: rule/mordheim/snotlings-web/bullied-goblin--not-a-snotling/trait.injury-profile
+  id: the-exempt-bearer-is-knocked-down-on-a-two
+  covers: [exempt-from-snotling-rules]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: snotlings-web, profile_id: bullied-goblin}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.wounded: True, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The face that separates the two ladders: the Snotling table takes its bearers out of action on a
+# 4, the normal table only stuns them.
+
+- audit_id: rule/mordheim/snotlings-web/bullied-goblin--not-a-snotling/trait.injury-profile
+  id: the-exempt-bearer-is-only-stunned-on-a-four
+  covers: [exempt-from-snotling-rules]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: snotlings-web, profile_id: bullied-goblin}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: True, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

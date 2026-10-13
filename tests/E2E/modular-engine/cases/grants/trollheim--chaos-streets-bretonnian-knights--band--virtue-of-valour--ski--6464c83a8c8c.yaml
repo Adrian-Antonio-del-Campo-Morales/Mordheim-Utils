@@ -1,0 +1,124 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour
+# scaffold_fingerprint: 30bd2e37b8b439aaf877098a1595c197363534463b3f18f46b2a39bcd8a557c6
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries three authored scenarios derived from the printed
+# sentence and the recorded contract, mirroring the authored mechanics origin of the same effect_id
+# (cases/mechanics/skill.virtue-of-valour.yaml): a defender whose printed Strength is strictly higher makes
+# the failed hit take a second die and the declared reroll hits, an equal-Strength defender is offered no
+# reroll at all, and a reroll that also fails leaves the miss standing.  The band's own selectable rule
+# `band--virtue-of-valour` binds exactly this canonical id (bands/trollheim/chaos-streets-bretonnian-knights/
+# special-rules.yaml), so the band origin contributes no second runtime term and the tapes read the canonical
+# operator through the fixture's grant list.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover the printed "when fighting a model with a higher Strength
+# characteristic" reroll.  The bearer's printed Strength is 3 in both the trigger and the control fixtures,
+# so the only difference is the defender's printed Strength (4 against 3, the strict comparison the contract
+# closes on), and the third scenario declares a reroll that fails as well, which the printed reroll does not
+# guarantee.  The bearer is a hand-built fixture carrying the canonical operator, exactly as the mechanics
+# origin's own case does, because the band rule adds no second term.
+# origin_id:
+#   rule/trollheim/chaos-streets-bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-bretonnian-knights/special-rules.yaml
+# source_fingerprint:
+#   30692ed660b3883ba755d6b7ed361117f105ef48efd6dee711f5c8b016c65c01
+# source_sha256_at_generation:
+#   444d18a7bba2ef6381bbf12f2edb95460202869111309d84648d2cf4b5a00a0b
+# Printed rule text:
+#   When fighting a model with a higher Strength characteristic, this Knight may re-roll failed To Hit rolls in close combat.
+# Semantic contract (check analysis_status before treating as accepted):
+#   When fighting a model with a higher Strength characteristic this Knight may re-roll failed To Hit rolls in close combat. Closure: the hit reroll applies only against a defender with the higher printed Strength.
+# effect_id:
+#   skill.virtue-of-valour
+# relation:
+#   equivalent
+# parameters:
+#   {"opponent": "higher Strength characteristic", "reroll_hits": true}
+# conditions:
+#   {"recipient": "Bretonnian Knight"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared virtue-of-valour operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"skill.virtue-of-valour","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare actual weapon identity, charge/first-round condition, natural versus modified Strength, failed versus all-roll reroll and critical eligibility. Keep weapon-independent restrictions and special attacks outside an unsupported shared benefit.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  A mace is the
+# plain hand weapon of both fixtures, so the wind-up is the printed Strength comparison and nothing else.
+
+- audit_id: rule/trollheim/chaos-streets-bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour
+  id: a-higher-strength-defender-turns-the-missed-hit-into-a-hit
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.virtue-of-valour]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/chaos-streets-bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour
+  id: an-equal-strength-defender-grants-no-reroll
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.virtue-of-valour]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/chaos-streets-bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour
+  id: a-reroll-that-also-fails-leaves-the-miss-standing
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.virtue-of-valour]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 5, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+

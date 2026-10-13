@@ -1,0 +1,134 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.strongman
+# scaffold_fingerprint: b404420edb3664cde5dceeeeb79b947bb6457ca103e938f406acf00f9df4b258
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenarios cover the ordinary order with a two-handed
+#   weapon and with a broadsword, each paired with the same weapon without
+#   the skill.
+# origin_id:
+#   mechanic/skill.strongman
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   4535e57619fcc4e13cd8aa300f9162ba61a0f7eb896f2ca9b70e00edbec814ba
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Blackguards are capable of great feats of strength. They may use a double-handed weapon without the usual penalty of always striking last. Work out the order of battle as you would with other weapons.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The fighter may use a double-handed weapon without the usual penalty of always striking last, working out the order of battle as with other weapons. Closure: with a two-handed weapon or broadsword the bearer is not pushed to the strike-last tier and stands in the ordinary order.
+# effect_id:
+#   skill.strongman
+# relation:
+#   equivalent
+# parameters:
+#   {"negates": "strikes last", "weapon_scope": ["weapon.double-handed-weapon", "weapon.broadsword"]}
+# conditions:
+#   {"weapon_scope": ["weapon.double-handed-weapon", "weapon.broadsword"]}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   resolve_priority cancels the negative weapon priority when the strongman flag and a two-handed or broadsword weapon are present, and the same condition is used when the optimized plan is compiled, so the printed exception reaches both engines. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.strongman","verified_facet":"skill.strongman","relationship":"shared_facet","boundary":"Share only removal of the applicable weapon Strike Last penalty; not universal Strike First or removal of standing-up penalties. Ulli is a compound profile and retains separate equipment, Unstoppable Charge and Combat Master clauses.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Neither fighter charges, so the order of battle is the ordinary one: with the
+# strike-last penalty removed the two-handed weapon stands in the ordinary tier
+# and the higher Initiative strikes first.
+- audit_id: mechanic/skill.strongman
+  id: a-two-handed-weapon-keeps-the-ordinary-order
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids: [skill.strongman]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The identical duel without the skill: the same weapon keeps its printed strike-last
+# penalty, so the mace opponent resolves before it despite the Initiative, which
+# isolates the exception to the skill.
+- audit_id: mechanic/skill.strongman
+  id: without-the-strongman-the-same-weapon-strikes-last
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: True, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The broadsword is the second weapon the accepted scope names; its own strike-last
+# penalty is removed the same way.
+- audit_id: mechanic/skill.strongman
+  id: a-broadsword-keeps-the-ordinary-order
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.broadsword
+      skill_ids: [skill.strongman]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same broadsword without the skill keeps its penalty.
+- audit_id: mechanic/skill.strongman
+  id: a-broadsword-without-the-skill-strikes-last
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.broadsword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: True, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

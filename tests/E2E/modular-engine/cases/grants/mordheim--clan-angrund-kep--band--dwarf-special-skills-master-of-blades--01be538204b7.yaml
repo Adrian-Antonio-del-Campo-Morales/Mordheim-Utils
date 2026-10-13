@@ -1,0 +1,287 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-master-of-blades/skill.sword-master
+# scaffold_fingerprint: eeec7d29b57ee100400dd620aeaa5e1e0ad908a54835c4a6e4bc41708cfbce5e
+# authoring_status: AUTHORED
+# authoring_progress: all three admitted clauses carry two authored scenarios each, derived from the
+# printed rule, the printed profile and the recorded contracts: an equal parry die blocks where the
+# identical plain parry does not, two Dwarf Axes reroll a failed parry where a single Dwarf Axe is
+# offered no reroll at all, and two parrying weapons give two attempts where one leaves the printed
+# maximum of one.  REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: dwarf-axe-reroll (scope: YES)
+# AUTHORED[dwarf-axe-reroll]: 2 scenario(s) cover the clause: with two Dwarf Axes the failed parry
+# is rolled again and recovered, and the printed condition is visible in the boundary where a single
+# Dwarf Axe is offered no reroll die at all.
+# origin_id:
+#   rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-master-of-blades/skill.sword-master
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clan-angrund-kep/special-rules.yaml
+# source_fingerprint:
+#   ecde1da32646a04fad98fb74edee2285760b09ed04d0b02813fd01e1d089cf85
+# source_sha256_at_generation:
+#   a3d8b4bc4ca8c9711e279023946768eb1625c405d02961534d01facf6b146b09
+# Printed rule text:
+#   This Dwarf's martial skills surpass those of a normal warrior; he has fought unscathed against hordes of Orcs and Goblins. When using a weapon that has a Parry special rule, this hero parries successfully if he beats or matches his opponent's highest 'to hit' roll, not just if he beats the roll. In addition, if this warrior is using two weapons that have the Parry special rule, he is allowed to parry two attacks (if his two dice match or beat the two highest Attack dice against him) instead of the normal maximum of one. Note that if this Dwarf has two Dwarf axes (as detailed above) he can reroll any failed parries.
+# Semantic contract (check analysis_status before treating as accepted):
+#   With two Dwarf Axes he may reroll failed parries; observable: one reroll per failed parry.
+# effect_id:
+#   skill.sword-master
+# relation:
+#   parameterized_variant
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The reroll is conditional on both weapons being Dwarf Axes in the parry context. Surface reuse candidate: {"family":"skill.sword-master","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: parry-matches (scope: YES)
+# AUTHORED[parry-matches]: 2 scenario(s) cover the clause: a parry die equal to the opponent's
+# highest To Hit roll blocks the attack, and the same die against the same parry window without the
+# band rule does not block.
+# origin_id:
+#   rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-master-of-blades/skill.sword-master
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clan-angrund-kep/special-rules.yaml
+# source_fingerprint:
+#   ecde1da32646a04fad98fb74edee2285760b09ed04d0b02813fd01e1d089cf85
+# source_sha256_at_generation:
+#   a3d8b4bc4ca8c9711e279023946768eb1625c405d02961534d01facf6b146b09
+# Printed rule text:
+#   This Dwarf's martial skills surpass those of a normal warrior; he has fought unscathed against hordes of Orcs and Goblins. When using a weapon that has a Parry special rule, this hero parries successfully if he beats or matches his opponent's highest 'to hit' roll, not just if he beats the roll. In addition, if this warrior is using two weapons that have the Parry special rule, he is allowed to parry two attacks (if his two dice match or beat the two highest Attack dice against him) instead of the normal maximum of one. Note that if this Dwarf has two Dwarf axes (as detailed above) he can reroll any failed parries.
+# Semantic contract (check analysis_status before treating as accepted):
+#   With a Parry weapon the hero parries by equalling or beating the opponent's highest hit roll; observable: an equal roll blocks the attack.
+# effect_id:
+#   skill.sword-master
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   match_allowed in _parry_context covers skill.sword-master and its aliases. Surface reuse candidate: {"family":"skill.sword-master","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: two-parries (scope: YES)
+# AUTHORED[two-parries]: 2 scenario(s) cover the clause: two parrying weapons give the bearer two
+# attempts and both attacks of the pool are blocked, and with one parrying weapon the printed normal
+# maximum of one leaves the second attack resolved.
+# origin_id:
+#   rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-master-of-blades/skill.sword-master
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clan-angrund-kep/special-rules.yaml
+# source_fingerprint:
+#   ecde1da32646a04fad98fb74edee2285760b09ed04d0b02813fd01e1d089cf85
+# source_sha256_at_generation:
+#   a3d8b4bc4ca8c9711e279023946768eb1625c405d02961534d01facf6b146b09
+# Printed rule text:
+#   This Dwarf's martial skills surpass those of a normal warrior; he has fought unscathed against hordes of Orcs and Goblins. When using a weapon that has a Parry special rule, this hero parries successfully if he beats or matches his opponent's highest 'to hit' roll, not just if he beats the roll. In addition, if this warrior is using two weapons that have the Parry special rule, he is allowed to parry two attacks (if his two dice match or beat the two highest Attack dice against him) instead of the normal maximum of one. Note that if this Dwarf has two Dwarf axes (as detailed above) he can reroll any failed parries.
+# Semantic contract (check analysis_status before treating as accepted):
+#   With two Parry weapons he may parry two attacks instead of one; observable: two blocks in one phase.
+# effect_id:
+#   skill.sword-master
+# relation:
+#   parameterized_variant
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Attempt count is separate from the match rule; covered by the parry-capacity operator. Surface reuse candidate: {"family":"skill.sword-master","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Family model (Master of Blades, clan Angrund printing): the bearer is the printed recipient of this
+# band record, built from its own band and profile and selecting the band row named in the audit id,
+# exactly as the accepted construction test selects it (clan-angrund-kep/dwarf-noble with
+# band--dwarf-special-skills-master-of-blades, which projects skill.unbeatable-warrior,
+# skill.sword-master and the dwarf parry variant tag rule.dwarf-axe-parry-reroll).  Physical
+# characteristics are supplied as fixture facts (WS3 S3 T3 W2 I2 A1) so the dice thresholds and the
+# strike order are fixed, while the printed Leadership stays in place; the bearer's own attack pool is
+# declared empty so the tape holds only the parry under test.  Every expectation is read from the
+# printed rule (parries when he beats or matches the highest To Hit roll; two Parry weapons allow two
+# attacks; two Dwarf axes reroll failed parries) and the recorded contracts, never from engine output;
+# the roll tape is derived statically and stays unexecuted.  Where a clause is tested with swords the
+# parrying weapon is the ordinary one; the Dwarf Axe cases are the printed reroll condition.
+
+# The printed equality: a parry die equal to the declared To Hit four blocks the blow.
+- audit_id: rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-master-of-blades/skill.sword-master
+  id: an-equal-roll-matches-the-highest-to-hit
+  covers: [parry-matches]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-master-of-blades]
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.parries_remaining: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without the band rule the same die no longer matches: the plain parry must beat the roll, so the blow
+# is resolved and wounds.
+- audit_id: rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-master-of-blades/skill.sword-master
+  id: without-the-band-rule-an-equal-roll-does-not-match
+  covers: [parry-matches]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-noble
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.parries_remaining: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed Dwarf Axe sentence: with two Dwarf Axes the failed parry is rolled again and the reroll
+# matches, so the hit is blocked.
+- audit_id: rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-master-of-blades/skill.sword-master
+  id: two-dwarf-axes-reroll-a-failed-parry
+  covers: [dwarf-axe-reroll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-master-of-blades]
+      main_weapon_id: weapon.dwarf-axe
+      off_hand_id: weapon.dwarf-axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.parry.reroll, value: 5}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed condition of that sentence: with a single Dwarf Axe the reroll is not granted, so the
+# tape holds no reroll die and the wound is resolved.
+- audit_id: rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-master-of-blades/skill.sword-master
+  id: a-single-dwarf-axe-gets-no-reroll
+  covers: [dwarf-axe-reroll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-master-of-blades]
+      main_weapon_id: weapon.dwarf-axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed second attempt: two parrying weapons block both attacks of the pool.
+- audit_id: rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-master-of-blades/skill.sword-master
+  id: two-parrying-weapons-give-two-attempts
+  covers: [two-parries]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-master-of-blades]
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.first.attack.1.parry, value: 5}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.1.parried: true, state.second.parries_remaining: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed boundary "instead of the normal maximum of one": with one parrying weapon the second
+# attack of the pool is resolved even though the hero carries this rule.
+- audit_id: rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-master-of-blades/skill.sword-master
+  id: one-parrying-weapon-keeps-the-normal-maximum
+  covers: [two-parries]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-master-of-blades]
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.first.attack.1.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.1.parried: false, attacks.1.damage: 1, state.second.parries_remaining: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

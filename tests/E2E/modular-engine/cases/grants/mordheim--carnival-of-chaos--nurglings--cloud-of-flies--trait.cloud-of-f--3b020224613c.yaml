@@ -1,0 +1,132 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/carnival-of-chaos/nurglings--cloud-of-flies/trait.cloud-of-flies
+# scaffold_fingerprint: 13ac64f7bb6da3cd4d995bfac77a1a17f6ef269af69c306fd45a85a709bfb12d
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the
+# printed rule, the recorded contract and the printed profile: the bearer's close-combat opponent
+# suffers a -1 to hit modifier, so the same declared face that hits the bearer's equals without the
+# trait misses against the bearer.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios evidence the melee-only incoming hit modifier the record consumes in
+# prepare_hit_context.  The bearer is the printed Nurglings profile that prints the trait, with its
+# Weapon Skill supplied as a fixture fact so the attacker's own Weapon Skill 3 meets an equal score
+# and the ordinary target is four; the declared face of four then misses, because the cloud of flies
+# raises the target by one.  The control repeats the identical duel with a hand-built bearer of the
+# same characteristics and no trait, where the same face of four hits and the declared wound face
+# fails, so the difference is the trait and not the attack.  No charge is declared, so the daemonic
+# bearer is offered no Fear test and the strict tape holds only the attacker's dice.  REVIEWED still
+# requires manual semantic review.
+# origin_id:
+#   rule/mordheim/carnival-of-chaos/nurglings--cloud-of-flies/trait.cloud-of-flies
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/carnival-of-chaos/special-rules.yaml
+# source_fingerprint:
+#   0392ed970bd7009f0d5c98aabb67f8878498884a18dccc6b3a06d7ff3bfca88e
+# source_sha256_at_generation:
+#   ea10f24ff3b1bb4a16d31e0550eb4b011c294a424bd719a00bfba5e72e42a217
+# Printed rule text:
+#   Nurglings are surrounded by a cloud of flies, which buzz around them and their combat opponent. They do not affect the Nurglings but distract foes by buzzing into eyes, nostrils and mouths. A Nurgling’s close combat opponent suffers a -1 to hit modifier on all attacks.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The bearer's close-combat opponents suffer -1 to hit; observable: an opponent's to-hit target is one higher in melee.
+# effect_id:
+#   trait.cloud-of-flies
+# relation:
+#   equivalent
+# parameters:
+#   {"modifier":-1}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   cloud_of_flies trait is consumed as a melee-only incoming hit modifier; the Dodgy entry binds the same mechanical candidate although its printed wording is 'all hits from shooting or hand-to-hand'. See the separate Dodgy clause. Surface reuse candidate: {"family":"T-CLOUD","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare penalty recipient, melee-only/first-round timing, species/fire exceptions and stacking. A hit penalty is not an armour modifier, and natural six handling remains part of the hit resolver.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: dodgy-ranged-part (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/carnival-of-chaos/nurglings--cloud-of-flies/trait.cloud-of-flies
+# analysis_status:
+#   needs_clarification
+# source_file:
+#   bands/mordheim/carnival-of-chaos/special-rules.yaml
+# source_fingerprint:
+#   0392ed970bd7009f0d5c98aabb67f8878498884a18dccc6b3a06d7ff3bfca88e
+# source_sha256_at_generation:
+#   ea10f24ff3b1bb4a16d31e0550eb4b011c294a424bd719a00bfba5e72e42a217
+# Printed rule text:
+#   Nurglings are surrounded by a cloud of flies, which buzz around them and their combat opponent. They do not affect the Nurglings but distract foes by buzzing into eyes, nostrils and mouths. A Nurgling’s close combat opponent suffers a -1 to hit modifier on all attacks.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Nurgling Cloud of Flies text is limited to the close-combat opponent and prints no shooting clause, so this claimed ranged part has no source support. Printed clause: Nurglings are surrounded by a cloud of flies, which buzz around them and their combat opponent. They do not affect the Nurglings but distract foes by buzzing into eyes, nostrils and mouths. A Nurgling’s close combat opponent suffers a -1 to hit modifier on all attacks.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The Dodgy record is bound to the melee-only cloud_of_flies candidate; alternatives: (a) add a ranged incoming modifier for Dodgy, or (b) accept the melee-only approximation in 1v1 duels. A discriminating case is a Snotling shot at range; decision needed. Scope review integration: {"clause_id":"dodgy-ranged-part","review_clause_id":"dodgy-ranged-part","source_state":"matched","review_status":"reviewed","scope_reason":"The Nurgling Cloud of Flies text is limited to the close-combat opponent and prints no shooting clause, so this claimed ranged part has no source support.","notes":"notes: possible wrong binding to the Snotling Dodgy record; the melee sentence is reviewed separately.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Dodgy also penalises shooting hits by -1, which cloud_of_flies does not model; observable: a ranged to-hit target against Snotlings is one higher.","effect_id":"trait.cloud-of-flies","relation":"parameterized_variant","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"connection","dependencies":"[]","implementation_batch":"B08-attacker-modifiers","analysis_status":"needs_clarification","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Nurglings are surrounded by a cloud of flies, which buzz around them and their combat opponent. They do not affect the Nurglings but distract foes by buzzing into eyes, nostrils and mouths. A Nurgling’s close combat opponent suffers a -1 to hit modifier on all attacks.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the printed profile; no engine output was
+# consulted.  The attacker's Weapon Skill 3, Initiative 10 and Strength 3 are hand-built fixture
+# facts; the bearer's attacks are pinned to none by the initial state, so the tape holds only the
+# attacker's own dice.  Five is deliberately unused as a hit face: the discriminator below is the
+# same face of four, which is a hit at equal Weapon Skill and a miss under the printed -1.
+- audit_id: rule/mordheim/carnival-of-chaos/nurglings--cloud-of-flies/trait.cloud-of-flies
+  id: the-cloud-of-flies-raises-the-opponents-to-hit-target
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical duel against a hand-built bearer with the same characteristics and no
+# cloud of flies, where the same declared face of four hits.
+- audit_id: rule/mordheim/carnival-of-chaos/nurglings--cloud-of-flies/trait.cloud-of-flies
+  id: without-the-cloud-of-flies-the-same-face-hits
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: false, state.second.wounds: 2,
+        state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

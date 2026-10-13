@@ -1,0 +1,59 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-paladin-of-horror/unimplemented.khemri-necromancers.band.necromantic-modification-paladin-of-horror
+# scaffold_fingerprint: 335acd2b795eee863fe128f774ed71e3d03a226b0002c1d4b4e9005c51de72ef
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is authorable for the admitted clause, and the missing connection is
+# named in the clause note below.  The printed +1 Leadership has no recorded effect id and no consumer
+# that applies it: the register note records the clause as a profile-characteristic adjustment that the
+# caller must supply, so a tape built with the row can only restate the value it was given and cannot
+# discriminate the rule from its absence.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: leadership-characteristic-bonus (scope: YES)
+# PARTIAL[leadership-characteristic-bonus]: [C] no scenario is authorable for this clause.  Category C: the listed build vocabulary carries no supplied race-role or characteristic-adjustment input, so the printed bonus has nothing to be declared against. The printed
+# sentence adds a flat +1 Leadership to the Abomination and the semantic contract names the observable
+# as "the Leadership supplied to the duel is one point higher than the printed value", but the recorded
+# analysis declines to name an effect id for a bare bonus and records no consumer that applies it ("A
+# profile-characteristic adjustment, not a new runtime branch; the duel must be given the corrected
+# Leadership value. No canonical effect id exists for a bare bonus"). Because the corrected value would
+# have to be supplied by the scenario itself, any tape would restate its own input instead of evidencing
+# the rule, so no scenario can fail and none is written. The missing datum is the compiled +1 Leadership
+# projection the reuse guidance names (mechanic.leadership-bonus), after which the pair would assert the
+# supplied Leadership with and without the selected row. The scope-NO advancement roll and cost of this
+# origin stay outside the admitted clause set, as the register records.
+# origin_id:
+#   rule/trollheim/khemri-necromancers/band--necromantic-modification-paladin-of-horror/unimplemented.khemri-necromancers.band.necromantic-modification-paladin-of-horror
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-necromancers/special-rules.yaml
+# source_fingerprint:
+#   38ad4ff768f9728f7fb78f09c7ce14ac1b53f1937d941cf774470c79620d05fd
+# source_sha256_at_generation:
+#   5919ead4bc02e6bbc69f322bde34060778fff791f89ae27775559ac0ca2bafb1
+# Printed rule text:
+#   The Necromantic Abomination gains +1 Leadership
+# Semantic contract (check analysis_status before treating as accepted):
+#   A flat +1 Leadership to the affected profile, applied at all times. Observable: the Leadership supplied to the duel is one point higher than the printed value.
+# effect_id:
+#   (not recorded)
+# relation:
+#   related
+# parameters:
+#   {"leadership_bonus":1}
+# conditions:
+#   {"trigger":"characteristic always applied","recipient":"Necromantic Abomination"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   A profile-characteristic adjustment, not a new runtime branch; the duel must be given the corrected Leadership value. No canonical effect id exists for a bare bonus. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"leadership-characteristic-bonus","audit_group":"EQ-mechanic.leadership-bonus","verified_facet":"mechanic.leadership-bonus","relationship":"shared_facet","boundary":"Share the compiled +1 Leadership characteristic, keeping the three distinct recipient sets. Not a leader aura or a bonus supplied by allies.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

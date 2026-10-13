@@ -1,0 +1,129 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.sun-gauntlet
+# scaffold_fingerprint: cf9f8b2e62b60914f4eb87a739b5ddbfed5ab1ebe6eb054dbea9d97b3b41e2b6
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries 2 authored scenarios; the excluded ranged clause stays context-only
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the fixed Strength 4 of the off-hand attack
+#   and the armour denial of that same profile.
+# origin_id:
+#   mechanic/weapon.sun-gauntlet
+# analysis_status:
+#   needs_clarification
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   2c7070c055ce41504a553cc6958ef7541a39df033d4d1f53761011962ca1a68e
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Off-hand-only Strength 4 attack that ignores armour saves.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Off-hand-only Strength 4 close-combat attack that ignores armour saves. Closure: the fixed Strength 4 profile ignores the armour save.
+# effect_id:
+#   weapon.sun-gauntlet
+# relation:
+#   equivalent
+# parameters:
+#   {"fixed_strength": 4, "ignore_armour": true}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Contradiction: the canonical item entry prints "Range: 12\" Strength: 4 Accurate" (a missile weapon with no melee clause, no off-hand restriction and no armour denial) while the mechanic entry prints an off-hand-only melee attack that ignores armour, and the contract implements the mechanic reading. An existing binding is not resolution of this source-vs-contract contradiction.
+#   
+#   [M2-offensive 2026-10-08] re-read, still open. The engine implements the mechanic reading (off-hand only, fixed Strength 4, ignores armour) and the item record's own `mechanic_id` points at that mechanic, but the item prose prints a 12" missile weapon with Accurate. Two KB records disagree; the coordinator decides which is canonical rather than this batch copying either.
+#
+# Clause: ranged-profile (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   mechanic/weapon.sun-gauntlet
+# analysis_status:
+#   needs_clarification
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   2c7070c055ce41504a553cc6958ef7541a39df033d4d1f53761011962ca1a68e
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Range: 12" Strength: 4 Accurate : The Sun Gauntlet does not suffer the usual -1 modifier to hit for long range.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Range 12" profile with its Accurate long-range modifier is a missile-weapon rule, and shooting resolution is excluded; that the same source also offers a melee reading does not admit the ranged clause. Printed clause: Range: 12" Strength: 4 Accurate : The Sun Gauntlet does not suffer the usual -1 modifier to hit for long range.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The A family must not expand the shooting subsystem, so the ranged reading stays unmodelled while remaining recorded. The same source-vs-contract conflict is also recorded on the whole-rule clause. Scope review integration: {"clause_id":"ranged-profile","review_clause_id":"ranged-profile","source_state":"unverified","review_status":"reviewed","scope_reason":"The Range 12\" profile with its Accurate long-range modifier is a missile-weapon rule, and shooting resolution is excluded; that the same source also offers a melee reading does not admit the ranged clause.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The ranged Strength 4 Accurate profile belongs to the excluded shooting subsystem and is not modelled; only an explicit coordinator decision could admit it.","effect_id":"","relation":"independent","parameters":"{\"accurate\": true, \"range\": \"12in\", \"strength\": 4}","conditions":"{\"subsystem\": \"shooting\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A18-excluded-and-later-clauses","analysis_status":"needs_clarification","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Range: 12\" Strength: 4 Accurate : The Sun Gauntlet does not suffer the usual -1 modifier to hit for long range.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# mechanic/weapon.sun-gauntlet - the off-hand-only melee reading.
+#
+# Expectations come from the printed mechanic clause, never from engine output.
+# The canonical item entry prints a Range 12" Accurate missile profile instead;
+# that contradiction is preserved and the excluded ranged clause is not asserted.
+# The off-hand profile resolves last in the pool, so it owns the final index: the
+# printed Strength 4 wounds Toughness 3 on 3+, where the mace's own Strength needs 4.
+- audit_id: mechanic/weapon.sun-gauntlet
+  id: sun-gauntlet-off-hand-attack-strikes-at-strength-four
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.sun-gauntlet
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.attack.1.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# No armour die follows the gauntlet's wound roll even though the target wears a
+# 5+ suit, so the printed armour denial is the reason the wound is taken.
+- audit_id: mechanic/weapon.sun-gauntlet
+  id: sun-gauntlet-denies-a-worn-suit-its-save
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.sun-gauntlet
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

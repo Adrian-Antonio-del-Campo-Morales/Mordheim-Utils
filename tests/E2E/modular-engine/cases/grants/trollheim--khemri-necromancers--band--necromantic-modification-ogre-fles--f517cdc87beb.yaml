@@ -1,0 +1,127 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-ogre-flesh/skill.monstrous
+# scaffold_fingerprint: ee54094f46d2ad58c6e96e5b1e106628467b926204af2693862bb895fc9d40ab
+# authoring_status: AUTHORED
+# authoring_progress: the admitted wound-bonus clause carries two authored scenarios derived from the
+# printed line, the recorded contract and the shared operator origin of the same term (skill.monstrous),
+# whose pair differs only in the selected band row and in the starting wounds the state reports.  The
+# printed 2D6 roll of 2 and the 25 gc cost are acquisition data outside the duel and are not asserted.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole--scope--wound-bonus (scope: YES)
+# AUTHORED[whole--scope--wound-bonus]: 2 scenarios cover the printed +1 Wound: with the row selected
+# the bearer starts with one more Wound than its supplied fixture base, and the identical build without
+# the row keeps the printed base.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/khemri-necromancers/band--necromantic-modification-ogre-flesh/skill.monstrous
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-necromancers/special-rules.yaml
+# source_fingerprint:
+#   d09626e00c77bdfbc832f979cd264923024efc540c94ea13c0d7cfa95c008ddf
+# source_sha256_at_generation:
+#   5919ead4bc02e6bbc69f322bde34060778fff791f89ae27775559ac0ca2bafb1
+# Printed rule text:
+#   The Necromantic Abomination gains +1 Wound.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Necromantic Abomination gaining +1 Wound is an admitted characteristic consequence. Printed clause: The Necromantic Abomination gains +1 Wound.
+# effect_id:
+#   skill.monstrous
+# relation:
+#   related
+# parameters:
+#   {"wounds_bonus":1}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin binding the shared monstrous operator to the modification; the printed 2D6 roll of 2 and the 25 gc cost are acquisition data outside the duel. The +1 Wound is the same term analysed for the skill. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Scope review integration: {"clause_id":"whole","review_clause_id":"wound-bonus","source_state":"matched","review_status":"reviewed","scope_reason":"The Necromantic Abomination gaining +1 Wound is an admitted characteristic consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The Necromantic Abomination gains +1 Wound. Closure: the duel starting wounds include one extra wound for the modification.","effect_id":"skill.monstrous","relation":"equivalent","parameters":"{\"cost\": \"25 gc\", \"wounds_bonus\": 1}","conditions":"{\"recipient\": \"Necromantic Abomination\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/state.py::FighterState\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07a-band-skill-projections","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/state.py::FighterState\"]"},"inherited_clause_text":"2 on 2D6; costs 25 gc. The Necromantic Abomination gains +1 Wound.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.monstrous","verified_facet":"skill.monstrous","relationship":"shared_facet","boundary":"Share compiled maximum and initial Wounds +1, not healing or repeated turn-start growth. Preserve source-specific characteristic maximum exemptions and excluded advancement cost.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+#
+# Clause: whole--scope--advancement-roll-and-cost (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/trollheim/khemri-necromancers/band--necromantic-modification-ogre-flesh/skill.monstrous
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-necromancers/special-rules.yaml
+# source_fingerprint:
+#   d09626e00c77bdfbc832f979cd264923024efc540c94ea13c0d7cfa95c008ddf
+# source_sha256_at_generation:
+#   5919ead4bc02e6bbc69f322bde34060778fff791f89ae27775559ac0ca2bafb1
+# Printed rule text:
+#   2 on 2D6; costs 25 gc.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Rolling 2 on 2D6 is the advance roll granting the modification and 25 gc is its price, both excluded from the duel. Printed clause: 2 on 2D6; costs 25 gc.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin binding the shared monstrous operator to the modification; the printed 2D6 roll of 2 and the 25 gc cost are acquisition data outside the duel. The +1 Wound is the same term analysed for the skill. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Scope review integration: {"clause_id":"whole","review_clause_id":"advancement-roll-and-cost","source_state":"matched","review_status":"reviewed","scope_reason":"Rolling 2 on 2D6 is the advance roll granting the modification and 25 gc is its price, both excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The Necromantic Abomination gains +1 Wound. Closure: the duel starting wounds include one extra wound for the modification.","effect_id":"skill.monstrous","relation":"equivalent","parameters":"{\"cost\": \"25 gc\", \"wounds_bonus\": 1}","conditions":"{\"recipient\": \"Necromantic Abomination\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/state.py::FighterState\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07a-band-skill-projections","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/state.py::FighterState\"]"},"inherited_clause_text":"2 on 2D6; costs 25 gc. The Necromantic Abomination gains +1 Wound.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# Derived from the printed line, the recorded contract and the shared operator the audit id binds; no
+# engine output was consulted.  The bearer is the Abomination profile with the row selected and three
+# Wounds as its fixture base, so the printed bonus alone is what raises the starting Wounds the duel
+# state reports, exactly as the shared operator's own case reads it.  Both attack dice are declared
+# misses so the tape is the same in both scenarios.
+
+- audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-ogre-flesh/skill.monstrous
+  id: the-selected-modification-adds-one-wound
+  covers: [whole--scope--wound-bonus]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      special_rule_ids: [band--necromantic-modification-ogre-flesh]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_initial: {first.wounds: 4}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-ogre-flesh/skill.monstrous
+  id: without-the-selected-modification-the-printed-wounds-stand
+  covers: [whole--scope--wound-bonus]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_initial: {first.wounds: 3}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

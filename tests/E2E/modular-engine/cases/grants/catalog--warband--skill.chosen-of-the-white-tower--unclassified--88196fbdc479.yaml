@@ -1,0 +1,145 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/warband/skill.chosen-of-the-white-tower/unclassified
+# scaffold_fingerprint: 820324620b3173890646d337a1f878c9b8565b8ca7c597ed9d018275e204709e
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries four authored scenarios derived from the printed rule and the accepted M3 delivery recorded in this scaffold; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: parry-unarmed-and-reroll (scope: YES)
+# AUTHORED[parry-unarmed-and-reroll]: 4 scenarios evidence the parry granted without
+#   a parrying weapon, the skill's own re-roll with a sword, the refusal of that
+#   re-roll with another parrying weapon (a trident) and the unchosen control.
+# origin_id:
+#   rule/catalog/warband/skill.chosen-of-the-white-tower/unclassified
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/skills/warband.yaml
+# source_fingerprint:
+#   9d6aefd4c9e1488c3943cc61d4cd143aebe7f2b486845f23829bd3a21351ceb9
+# source_sha256_at_generation:
+#   cbce88f8e195c72b1767c88af362131455b99435c0ffb53e58b55b7306161198
+# Printed rule text:
+#   The Elf has been trained in the martial art of the White Tower: he may parry even when he is not armed with a buckler or a sword, and he may re-roll the parry if he is already armed in that way.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Elf may parry even without a buckler or sword, and may re-roll that parry when armed with one; observable: a parry attempt with no parrying weapon, plus a reroll when armed normally.
+# effect_id:
+#   proposed.skill.chosen-of-the-white-tower
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The KB row is an unclassified record with no binding. The two halves map cleanly onto existing operators (a parry grant and a native-parry reroll), but no effect row exists for this skill, so nothing is consumed until the row is created; the shared register also carries Fey Quickness and Instinctive Warrior in the same state.
+#   
+#   [Coordinator review 2026-10-08] Not accepted as complete. Chosen of the White Tower: the new reroll shares Miniath's native_parry predicate, which admits any parrying weapon. The printed clause allows the skill reroll when armed with a sword or buckler. An isolated synthetic parrying axe without either identity returns reroll=True. Restrict only this skill's reroll recipient, preserve Miniath and independent reroll sources, and add one sword/buckler versus other-parrying-weapon discriminator. Owner: modular defence consumers plus canonical contract/transport as needed. Resume in the M3 correction batch; close when the source-derived boundary and existing focal controls pass. The earlier no-residual delivery claim is superseded; the existing executed evidence remains valid only for its tested cases.
+#   
+#   [M3-defences 2026-10-08] delivered, acceptance defect corrected. Chosen of the White Tower gained a canonical runtime block, a close-combat/execution mechanic and a registry family; `state._parry_capacity` counts the new tag so the parry is granted without a sword or a buckler. The skill's own re-roll is now a separate motive in `contexts._parry_context`: `chosen_armed` fires only when the bearer carries a `weapon.sword` or a `defence.buckler`, so a trident (another parrying weapon) parries with `reroll` False, while Miniath keeps its own native-parry re-roll untouched. The focused suite proves the parry without a parrying weapon, the unchosen negative control, the sword and buckler re-roll, the trident non-re-roll and the independent Miniath re-roll. No residual.
+#   
+#   [Coordinator acceptance 2026-10-08] The returned M3 correction is accepted for its exercised modular contract after the current 28-case defence suite and 9-case M4 suite passed. Historical defect notes above are resolved by this correction; unrelated source/access gaps and untested compositions retain their own limits.
+
+# --- Authored scenarios ---
+# The printed clause and the accepted M3 delivery in this scaffold's register notes
+# split into two halves: the parry granted even without a buckler or sword, and the
+# skill's own re-roll restricted to a sword or buckler recipient.
+# A mace cannot parry, so the declared parry die exists only because the printed
+# training grants one: the five beats the attack roll of four.
+- audit_id: rule/catalog/warband/skill.chosen-of-the-white-tower/unclassified
+  id: the-training-grants-a-parry-without-a-parrying-weapon
+  covers: [parry-unarmed-and-reroll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.chosen-of-the-white-tower]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Armed with a sword the bearer may re-roll the failed parry: the three fails against
+# the four and the re-rolled five blocks, which is the printed sword recipient.
+- audit_id: rule/catalog/warband/skill.chosen-of-the-white-tower/unclassified
+  id: a-failed-parry-with-a-sword-is-rolled-again
+  covers: [parry-unarmed-and-reroll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      skill_ids: [skill.chosen-of-the-white-tower]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.first.attack.0.parry.reroll, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# A trident is a parrying weapon as well, but it is neither the sword nor the buckler
+# the printed clause names: the failed three stands and no second parry die is taken,
+# so the attack proceeds into its wound roll.
+- audit_id: rule/catalog/warband/skill.chosen-of-the-white-tower/unclassified
+  id: another-parrying-weapon-is-not-rolled-again
+  covers: [parry-unarmed-and-reroll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.trident
+      skill_ids: [skill.chosen-of-the-white-tower]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The unchosen control: the identical mace bearer without the skill is offered no parry
+# at all, which isolates the granted parry to the printed training.
+- audit_id: rule/catalog/warband/skill.chosen-of-the-white-tower/unclassified
+  id: without-the-training-no-parry-is-offered
+  covers: [parry-unarmed-and-reroll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

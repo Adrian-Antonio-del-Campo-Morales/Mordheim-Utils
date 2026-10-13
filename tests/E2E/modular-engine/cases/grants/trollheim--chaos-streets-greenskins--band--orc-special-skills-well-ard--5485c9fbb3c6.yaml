@@ -1,0 +1,97 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-well-ard/mechanic.armour-save-bonus
+# scaffold_fingerprint: 61eadbc71265804bf8e52501507be3d44ad483097f66d0c5238d8bc08204f8ba
+# authoring_status: AUTHORED
+# authoring_progress: the admitted plus-one-to-armour-saves clause carries two authored scenarios
+# derived from the printed rule, the adopted ruling and the recorded contract.  REVIEWED still
+# requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: plus-one-to-armour-saves (scope: YES)
+# AUTHORED[plus-one-to-armour-saves]: 2 scenarios evidence the printed one-point improvement on the
+# real attack route: the bearer carries no body armour at all, so the declared armour target is the
+# 6+ save the adopted ruling maintains for an unarmoured Well 'Ard warrior, and the declared six
+# holds it while the declared five is a wound.  The scenarios read the canonical operator through the
+# fighter's grant list, as the mechanic origin's own case does; the printed sentence adds no band term
+# of its own (the register records the same rule as the Orc Mob printing in another supplement,
+# resolved by the same maintained ruling).  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-well-ard/mechanic.armour-save-bonus
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-greenskins/special-rules.yaml
+# source_fingerprint:
+#   a3853ee808e9ef05ef435d17beff73f048e2576d2e1c3c433fe4fe6b46ee6d69
+# source_sha256_at_generation:
+#   1b19dcf625dc2c081e181903a0b5187e723a29d16860685568c19f6e1b964ef4
+# Printed rule text:
+#   The Orc gains +1 to its armour saving throws.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Orc gains +1 to its armour saving throws; the bonus also creates a 6+ save when it has no body armour, and it is ordinary armour subject to the relevant penetration modifiers; observable: the armour target is one point better and an unarmoured bearer saves on 6+.
+# effect_id:
+#   mechanic.armour-save-bonus
+# relation:
+#   equivalent
+# parameters:
+#   {"armour_save_bonus":1}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Same rule as the Orc Mob printing (G120) in another supplement; resolved by the same existing adopted ruling, not by the code agreeing with itself: tests/specs/semantic/rules/contextual-bonuses-and-rulings.yaml entry 'well-ard-no-armour-ruling' (question_status resolved) rules that Well 'Ard creates a 6+ armour save if the warrior had none and turns the absence of armour into a 6+ save applying as ordinary armour that still suffers the relevant penetration modifiers. That decision covers both Well 'Ard origins and is not extended to any other bonus. The compiler implements it (compile_fighter: armour_base 7 with no body armour, then max(1, base - bonus)) and is recorded as the matching consumer, not as the basis. Selectively verified equivalence: {"review_file":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"plus-one-to-armour-saves","verified_family":"mechanic.armour-save-bonus","verified_peer_keys":[{"origin_id":"rule/mordheim/orc-mob/band--orc-special-skills-well-ard/mechanic.armour-save-bonus","clause_id":"plus-one-to-armour-saves"},{"origin_id":"rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-well-ard/mechanic.armour-save-bonus","clause_id":"plus-one-to-armour-saves"}],"sharing_boundary":"Same bearer armour-save improvement. Preserve the maintained 6+ unarmoured baseline and armour-penetration clauses; the review wording does not replace them.","evidence":"inspection","limit":"Only this closed selection was checked. No acceptance of the entire review, KB activation, implementation closure or execution evidence."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the adopted Well 'Ard ruling and the recorded contract; no engine
+# output was consulted.  The bearer wears no armour, which is the case the ruling covers.
+- audit_id: rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-well-ard/mechanic.armour-save-bonus
+  id: the-improved-save-holds-on-six
+  covers: [plus-one-to-armour-saves]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.armour-save-bonus]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-well-ard/mechanic.armour-save-bonus
+  id: the-improved-save-fails-on-five
+  covers: [plus-one-to-armour-saves]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.armour-save-bonus]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

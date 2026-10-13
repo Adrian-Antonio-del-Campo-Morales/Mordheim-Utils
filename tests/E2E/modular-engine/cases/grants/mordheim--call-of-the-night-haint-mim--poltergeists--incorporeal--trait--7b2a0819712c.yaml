@@ -1,0 +1,104 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/call-of-the-night-haint-mim/poltergeists--incorporeal/trait.injury-profile
+# scaffold_fingerprint: f318378f4b0bea60b70693d9040ecbe1618c710742853878eeadf3ad5a22a1fb
+# authoring_status: AUTHORED
+# authoring_progress: the admitted immediate-out clause carries authored scenarios derived from the
+# printed sentence and the recorded contract (injury profile 2, the same path as Downtrodden).  The
+# bearer is the profile build mordheim/call-of-the-night-haint-mim/poltergeists, which prints that a
+# wounded Poltergeist is taken out of action without an injury roll; it contributes no attacks, so
+# round 0 carries only the attacker's dice.  The bearer also prints Ethereal, so the blow is
+# declared with its interception die one face below the 4+ it needs before the wound is established;
+# after that the tape declares no injury die, and the strict tape fails if the engine requests one.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: immediate-out (scope: YES)
+# AUTHORED[immediate-out]: 2 scenarios show the printed end: once the wound is established the
+#   bearer is Out of Action with no injury die at all, both at its printed Wound and at one Wound
+#   above it, so the outcome cannot be the ordinary injury ladder.  The Ethereal interception die is
+#   part of the same tape, declared below its own threshold so the wound is real.
+# origin_id:
+#   rule/mordheim/call-of-the-night-haint-mim/poltergeists--incorporeal/trait.injury-profile
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/call-of-the-night-haint-mim/special-rules.yaml
+# source_fingerprint:
+#   830632476ea4d779faaf12dec6417d5e1811a0a27eef3c462f97b1870c17d509
+# source_sha256_at_generation:
+#   d2e90dc0bf631c7cf3b2aaef1f8477ffa2db9a479224496cd5720932414cb94b
+# Printed rule text:
+#   When a Poltergeist is wounded do not roll for injury; it is immediately taken out of action.
+# Semantic contract (check analysis_status before treating as accepted):
+#   When a Poltergeist is wounded do not roll for injury; it is immediately taken out of action; observable: the first unsaved wound ends it regardless of remaining Wounds.
+# effect_id:
+#   trait.injury-profile
+# relation:
+#   equivalent
+# parameters:
+#   {"profile":2}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Same profile-2 path as Downtrodden: consumed after the save chain in _resolve_wound_damage. Surface reuse candidate: {"family":"T-INJURY-PROFILE","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the entire printed chart or reaction, received versus inflicted injury, initial condition, exceptions and timing. Reroll, ignore-result roll, wound multiplication and ignition threshold are different effects; do not copy a generic chart or combine them by name.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
+# bearer prints the rule and contributes no attacks of its own, so round 0 carries only the
+# attacker's dice.  The bearer's Ethereal intercepts a non-magical blow on a 4+, so the tape declares
+# that die first, one face below its threshold, and only then the wound roll.  The blow is an
+# ordinary mace: at Weapon Skill 10 against this bearer's printed Weapon Skill it needs a 3, and
+# Strength 8 against Toughness 3 needs a 2, so the declared 5 and 5 both pass.  Five is deliberately
+# below a natural six, which would be a critical hit and add a further critical die.  After the wound
+# roll the tape declares nothing: an injury die requested here would fail the fixture, so the two
+# scenarios prove the printed 'do not roll for injury' rather than assume it.
+
+- audit_id: rule/mordheim/call-of-the-night-haint-mim/poltergeists--incorporeal/trait.injury-profile
+  id: the-first-wound-takes-the-poltergeist-out-without-an-injury-roll
+  covers: [immediate-out]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: call-of-the-night-haint-mim, profile_id: poltergeists}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.ethereal, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.wounded: True, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The recorded contract adds 'regardless of remaining Wounds'; the same bearer at one Wound more
+# than the profile prints is still ended by that first unsaved wound.
+
+- audit_id: rule/mordheim/call-of-the-night-haint-mim/poltergeists--incorporeal/trait.injury-profile
+  id: the-first-wound-takes-out-a-poltergeist-above-its-printed-wounds
+  covers: [immediate-out]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: call-of-the-night-haint-mim, profile_id: poltergeists}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.ethereal, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.wounded: True, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

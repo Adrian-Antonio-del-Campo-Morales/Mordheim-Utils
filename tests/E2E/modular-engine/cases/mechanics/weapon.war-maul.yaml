@@ -1,0 +1,230 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.war-maul
+# scaffold_fingerprint: 620955a0ddbe855295051e5be51fd7d07be3c60a904d73a52cdfe3ddf0b9d677
+# authoring_status: AUTHORED
+# authoring_progress: 7 authored scenarios cover all five printed modifiers: the +2 Strength, the -1 armour save on both faces, the strike-last priority, the refused parry, the two-handed occupancy and, via a second strike-last weapon at equal priority, the printed -1 Initiative in the priority tie-break
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 7 scenarios evidence the printed +2 Strength, the -1 armour
+#   save on both faces, the strike-last priority, the refused parry, the two-handed
+#   occupancy and the -1 Initiative. The Initiative penalty acts through the
+#   tie-break of the priority comparison, which needs a second strike-last weapon
+#   at the same tier: against a broadsword (Strike Last, no Initiative penalty) the
+#   maul's lowered Initiative loses a tie-break it would otherwise win and turns a
+#   win into an exact tie that needs the priority die.
+# origin_id:
+#   mechanic/weapon.war-maul
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   3ed638c8ba42da2ef1236a4832b9510164453a372cb0773f39e032d59b51ef50
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Two-handed, +2 Strength, -1 Initiative, strikes last, cannot be parried and adds -1 to armour saves.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Two-handed Strength +2 maul that strikes last, imposes -1 Initiative, cannot be parried and adds -1 to armour saves. Closure: all five printed modifiers on the profile.
+# effect_id:
+#   weapon.war-maul
+# relation:
+#   equivalent
+# parameters:
+#   {"armour_penetration": 1, "cannot_be_parried": true, "initiative_bonus": -1, "priority": -1, "strength_bonus": 2, "two_handed": true}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts.  Surface reuse candidate: {"family":"W-WAR-MAUL","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/weapon.war-maul - four of the five printed modifiers.
+#
+# Expectations come from the printed rule and the admitted clause, never from
+# engine output.  Because the maul strikes last, the defender resolves first and
+# the maul's own attack is the second entry of the round's attack list.
+# The printed -1 Initiative has no observation here; see the PARTIAL note.
+# Strength 5 wounds Toughness 3 on 2+, so the 3 lands: the wielder's own Strength
+# would have needed 4 and the next scenario shows that boundary.
+- audit_id: mechanic/weapon.war-maul
+  id: war-maul-adds-two-strength
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.war-maul
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# A Strength 1 bearer has no lower target to reach, so the same 3 that the +2
+# variant wounds on is here compared against the unboosted target and misses.
+- audit_id: mechanic/weapon.war-maul
+  id: war-maul-wounds-one-face-below-at-strength-three
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.war-maul
+      characteristics: {weapon_skill: 3, strength: 1, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.1.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed -1 moves a worn 5+ to 6+, so a 5 fails the improved save.
+- audit_id: mechanic/weapon.war-maul
+  id: war-maul-save-fails-one-face-below-the-penalised-target
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.war-maul
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.1.saved: False, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The other face of the same penalised target holds.
+- audit_id: mechanic/weapon.war-maul
+  id: war-maul-penalised-save-holds-on-a-six
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.war-maul
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.armour, value: 6}
+  expect_rounds:
+    0: {attacks.1.saved: True, attacks.1.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The defender's sword has its parries left, yet the landed hit draws no parry die.
+- audit_id: mechanic/weapon.war-maul
+  id: war-maul-cannot-be-parried
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.war-maul
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.1.parried: False, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: mechanic/weapon.war-maul
+  id: war-maul-occupies-both-hands-so-an-off-hand-weapon-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.war-maul
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "main weapon occupies both hands"
+
+# Every strike-last weapon shares the lower tier, so the printed -1 Initiative is
+# read where the tier cannot decide: within the tier the effective Initiatives are
+# compared, and the maul's own is one lower.  The broadsword also strikes last and
+# carries no Initiative penalty, so equal printed Initiative must resolve to the
+# maul acting second, with no priority-tie die at all.
+- audit_id: mechanic/weapon.war-maul
+  id: war-maul-lowered-initiative-loses-the-strikes-last-tie-break
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.war-maul
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.broadsword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+
+# The other face: the same penalty turns a win into an exact tie, so the priority
+# die is required where the unpenalised print would have no die.  Both initials are
+# one apart and the maul's -1 makes them equal.
+- audit_id: mechanic/weapon.war-maul
+  id: war-maul-lowered-initiative-turns-a-win-into-an-exact-tie
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.war-maul
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.broadsword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.priority-tie, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.priority-tie, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}

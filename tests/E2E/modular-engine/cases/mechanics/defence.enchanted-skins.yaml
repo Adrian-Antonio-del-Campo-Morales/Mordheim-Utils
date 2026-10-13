@@ -1,0 +1,138 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/defence.enchanted-skins
+# scaffold_fingerprint: 720eb2e72698187e622746af05b57a1cf93519ebe453455496c94ed163a025fd
+# authoring_status: AUTHORED
+# authoring_progress: the admitted special-save clause carries two authored
+#   boundary scenarios; the excluded enemy-magic clause stays excluded.
+#   REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: six-plus-special-save (scope: YES)
+# AUTHORED[six-plus-special-save]: 2 scenarios cover the 6+ special save after
+#   the armour phase holding at the threshold and failing one face below.
+#   Pending semantic review.
+# origin_id:
+#   mechanic/defence.enchanted-skins
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   4a6233984bfc80e5bc509ef3c9959b89dbd4b5cab09454e1c306a3420c7738dc
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Unmodified 6+ special save against wounds after armour saves.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A 6+ special save against any wounds inflicted, taken after armour saves and not modifiable; observable: a 6+ special save after the armour phase.
+# effect_id:
+#   defence.enchanted-skins
+# relation:
+#   equivalent
+# parameters:
+#   {"unmodified":true,"ward_save":6}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#    Surface reuse candidate: {"family":"D-ENCH-SKINS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Confirm the printed saving value, equipment slot, combinability, save stage and exceptions. Intrinsic kit, armour floor and helmet reaction are distinct; movement/ownership lifecycle clauses are not new duel behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: unaffected-by-enemy-magic-on-five (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   mechanic/defence.enchanted-skins
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   4a6233984bfc80e5bc509ef3c9959b89dbd4b5cab09454e1c306a3420c7738dc
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Unmodified 6+ special save against wounds after armour saves.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The clause id claims being unaffected by enemy magic on a 5+, which concerns being affected by spell and prayer effects whose casting and resolution are excluded producers with no duel-time counterpart; the magic half has no admitted consequence of its own. Printed clause: Unmodified 6+ special save against wounds after armour saves.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Casting and spells are outside the duel runtime, and no mechanism models resistance to magic, so the sentence is recorded as an unresolved second half of the same item. Scope review integration: {"clause_id":"unaffected-by-enemy-magic-on-five","review_clause_id":"unaffected-by-enemy-magic-on-five","source_state":"matched","review_status":"reviewed","scope_reason":"The clause id claims being unaffected by enemy magic on a 5+, which concerns being affected by spell and prayer effects whose casting and resolution are excluded producers with no duel-time counterpart; the magic half has no admitted consequence of its own.","notes":"Source discrepancy: the frozen mechanism text carries only the 6+ save sentence, so the clause id names a magic-resistance sentence that catalog/mechanics/close-combat.yaml does not contain for this record; the mechanical text check located only the save sentence verbatim (full_text_literal) and no sentence was fabricated. The item-level magic sentence exists in catalog/items/weapons-close-combat.yaml and is reviewed at that origin (row 635).","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The wearer is unaffected by enemy magic on a roll of 5+; observable: a 5+ roll that refuses an enemy spell.","effect_id":"proposed.defence.enchanted-skins.magic-resist","relation":"unresolved","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"data","dependencies":"[]","implementation_batch":"B10-special-defences","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_special_save_context\",\"packages/python/combat-engine/mordheim_combat/phases.py::resolve_special_save\"]"},"inherited_clause_text":"Unmodified 6+ special save against wounds after armour saves.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# mechanic/defence.enchanted-skins — the 6+ special save after armour.
+#
+# Expectations come from the printed rule and the accepted clause
+# `six-plus-special-save` of
+# docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv, never from engine output:
+# the enchanted skins give an unmodified 6+ special save against wounds, taken
+# after armour saves; observable on the special-save die that follows the
+# armour phase.  With no body armour there is no armour die, so the special-save
+# die is the only defence and its boundary is exactly 6.  The excluded enemy-
+# magic clause is not asserted here.
+#
+# The first scenario declares the shared profiles as YAML anchors; the sibling
+# aliases them and keeps its own special-save face and expectation.
+
+- audit_id: mechanic/defence.enchanted-skins
+  id: enchanted-skins-save-holds-on-six
+  covers: [six-plus-special-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &attacker-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.enchanted-skins]
+      characteristics: &defender-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: a 5 fails the special save and the wound
+# is taken.
+
+- audit_id: mechanic/defence.enchanted-skins
+  id: enchanted-skins-fails-on-five
+  covers: [six-plus-special-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *attacker-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.enchanted-skins]
+      characteristics: *defender-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

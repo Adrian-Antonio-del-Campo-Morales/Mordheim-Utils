@@ -1,0 +1,82 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/bretonnian-chapel-guard/knights-errant--vain/profile.equipment-restrictions
+# scaffold_fingerprint: 024c340f0c05d7a77f720c4a718ac1c41902e56ca169c1fe66fdd57f60eac723
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying defence.helmet in defence_ids is refused with "helmet is forbidden for bretonnian-chapel-guard/knights-errant", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# origin_id:
+#   rule/mordheim/bretonnian-chapel-guard/knights-errant--vain/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/bretonnian-chapel-guard/special-rules.yaml
+# source_fingerprint:
+#   b3a874b907c692720fcb5f3992572c90789c805f331c29e7897324da5894750b
+# source_sha256_at_generation:
+#   9139664c4fa318c014e7f07bca71391533c1eaecdc6d1a19f66e2126ed5826f5
+# Printed rule text:
+#   The Knight may not wear a helmet, as it reduces their chances of being noticed by pretty ladies.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Profile equipment prohibition: the Knights Errant may not wear a helmet.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":"defence.helmet"}
+# conditions:
+#   {"recipient":"knights-errant"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Declared by knights-errant--vain; the prohibition is a real helmet token, not a descriptive note. Surface reuse candidate: {"family":"CON-FORBID-CATEGORY","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the actual forbidden categories and recipients. Body-armour-only, all armour, missiles, blackpowder, drugs and poisons are distinct restrictions. Construction legality can affect a melee build even when shooting is excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/bretonnian-chapel-guard/knights-errant--vain/profile.equipment-restrictions
+  id: knights-errant-with-defence-helmet-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: knights-errant
+      defence_ids:
+      - defence.helmet
+  expect_error: helmet is forbidden for bretonnian-chapel-guard/knights-errant
+
+- audit_id: rule/mordheim/bretonnian-chapel-guard/knights-errant--vain/profile.equipment-restrictions
+  id: knights-errant-without-defence-helmet-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: knights-errant
+    second:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: knights-errant
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

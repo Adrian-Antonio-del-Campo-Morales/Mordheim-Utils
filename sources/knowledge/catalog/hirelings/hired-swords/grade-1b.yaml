@@ -323,6 +323,16 @@ profiles:
         Usa la regla de sangre fría de la fuente.
     name_i18n:
       es: Sangre Fría
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.cold-blooded-psychology
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.cold-blooded-psychology
   unresolved_references:
   - kind: equipment_modifier
     source_name: poison darts
@@ -382,6 +392,16 @@ profiles:
         Causa miedo.
     name_i18n:
       es: Miedo
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.causes-fear
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.causes-fear
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.bio-machinery
     name: Bio Machinery
     effect: Uses the source bio-machinery rule.
@@ -390,6 +410,16 @@ profiles:
         Usa la regla de biomaquinaria de la fuente.
     name_i18n:
       es: Biomaquinaria
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.psychology-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.psychology-immunity
   - id: hireling.hired-sword.clan-skryre-rat-ogre.rule.wyrdstone-powered
     name: Wyrdstone Powered
     effect: Requires source-defined wyrdstone upkeep/power.
@@ -506,6 +536,16 @@ profiles:
         Usa la regla de odio de los Elfos Oscuros de la fuente.
     name_i18n:
       es: Odio Ancestral
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.hatred-high-elves
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.hatred-high-elves
   unresolved_references:
   - kind: equipment_mapping
     source_name: Repeater Crossbow
@@ -654,6 +694,16 @@ profiles:
         Odia a los Orcos y Goblins.
     name_i18n:
       es: Odio a Orcos y Goblins
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.hatred-orcs-goblins
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.hatred-orcs-goblins
   - id: hireling.hired-sword.dwarf-pathfinder.rule.elf-grudge
     name: Elf Grudge
     effect: Uses the source Elf-grudge restriction.
@@ -749,6 +799,16 @@ profiles:
         Odia a los Orcos y Goblins.
     name_i18n:
       es: Odio a Orcos y Goblins
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.hatred-orcs-goblins
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.hatred-orcs-goblins
   - id: hireling.hired-sword.dwarf-treasure-hunter.rule.treasure-hunter
     name: Treasure Hunter
     effect: Uses the source treasure-hunting subtable.
@@ -905,6 +965,16 @@ profiles:
         Odia las categorías de enemigos del Caos/No Muertos enumeradas en la fuente.
     name_i18n:
       es: Odio
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: skill.hatred
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: skill.hatred
   unresolved_references:
   - kind: equipment_choice
     source_name: heavy chain (counts as flail) or two Hammers/Clubs
@@ -1395,6 +1465,16 @@ profiles:
         Inmune al Miedo.
     name_i18n:
       es: Endurecido
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.fear-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.fear-immunity
   - id: hireling.hired-sword.old-prospector.rule.finders-keepers
     name: Finders Keepers
     effect: Keeps source-defined Treasure/Wyrdstone finds.
@@ -1704,6 +1784,16 @@ profiles:
         Odia a los Elfos Oscuros.
     name_i18n:
       es: Odio a los Elfos Oscuros
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.hatred-dark-elves
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.hatred-dark-elves
   - id: hireling.hired-sword.shadow-warrior.rule.excellent-sight
     name: Excellent Sight
     effect: Uses the source improved spotting rule.
@@ -2148,6 +2238,16 @@ profiles:
         fuente respecto a los lanzadores de hechizos aliados.
     name_i18n:
       es: Quemad a la Bruja
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: skill.hatred
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: skill.hatred
   - id: hireling.hired-sword.witch-hunter.rule.in-sigmar-s-name
     name: In Sigmar's Name
     effect: May reroll failed Fear tests.
@@ -2156,6 +2256,16 @@ profiles:
         Puede repetir las tiradas de Miedo falladas.
     name_i18n:
       es: En Nombre de Sigmar
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.fear-reroll
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.fear-reroll
   - id: hireling.hired-sword.witch-hunter.rule.sigmar-s-reward
     name: Sigmar's Reward
     effect: Can reduce upkeep when source victory conditions are met.
@@ -2236,6 +2346,16 @@ profiles:
         Odia las miniaturas sigmaritas enumeradas en la fuente.
     name_i18n:
       es: Odio
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.ulric-intense-rivals
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.ulric-intense-rivals
   - id: hireling.hired-sword.wolf-priest-of-ulric.rule.wolf-companion
     name: Wolf Companion
     effect: May be accompanied by the source Wolf Companion.

@@ -1,0 +1,105 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.strike-first-vs-skinks-first-round
+# scaffold_fingerprint: 8aa0b3c521c174c306bfbe2db5fdcafbda499083dc9c764ec057c72df2d74a1f
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios show the spike in the first combat round with
+#   the ordinary order restored afterwards, and the same two rounds without
+#   the mechanic.
+# origin_id:
+#   mechanic/mechanic.strike-first-vs-skinks-first-round
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   63e5003ded7dc000aa3bd242991860377f093940bcd9a96163c179f3f07237a1
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Always strikes first in the first combat round against Skink profiles.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Always strikes first in the first combat round against Skink profiles. Closure: against a Skink the priority spike applies in the first round and the ordinary order returns afterwards.
+# effect_id:
+#   mechanic.strike-first-vs-skinks-first-round
+# relation:
+#   equivalent
+# parameters:
+#   {"condition": "first combat round only", "opponent": "Skinks", "priority": 20}
+# conditions:
+#   {"opponent": "species.skink", "round_scope": "first round"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   resolve_priority applies the 20 value only in the first round for the first-round variant, returning to the ordinary weapon and Initiative order afterwards. Surface reuse candidate: {"family":"M-FIRST-SKINKS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The first combat round belongs to the Hero; the recorded event order then returns
+# to the ordinary tier and Initiative, where the Skink's 5 resolves before the
+# Hero's 2.  Every roll is declared in that order, so the tape itself carries the
+# reversal, and the second-round hit is left as a miss to keep the state stable.
+- audit_id: mechanic/mechanic.strike-first-vs-skinks-first-round
+  id: the-spike-holds-in-the-first-round-and-lapses-afterwards
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.strike-first-vs-skinks-first-round]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: skink}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+    1: {state.second.wounds: 1}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 4}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.1.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.1.first.attack.0.hit, sides: 6, value: 1}
+# The same two rounds without the mechanic: the charge places the Skink first in the
+# opening round as well, so the tape differs only in the first round's order.
+- audit_id: mechanic/mechanic.strike-first-vs-skinks-first-round
+  id: without-the-mechanic-the-first-round-follows-the-charge
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: skink}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+    1: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+

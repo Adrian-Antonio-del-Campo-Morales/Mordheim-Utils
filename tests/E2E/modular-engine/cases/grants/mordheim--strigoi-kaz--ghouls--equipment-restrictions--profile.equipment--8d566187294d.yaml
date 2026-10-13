@@ -1,0 +1,81 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/strigoi-kaz/ghouls--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: 0cec586ee013ec264ed0bdee3e784ce0934370c415cc592d2b8b2918bf179fb9
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying weapon.sword in main_weapon_id is refused with ""equipment" is forbidden for strigoi-kaz/ghouls.", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# origin_id:
+#   rule/mordheim/strigoi-kaz/ghouls--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/strigoi-kaz/special-rules.yaml
+# source_fingerprint:
+#   659ea16df71dcfeded6caefc00c13cc33072d0b5c368b02eae43eb9a9d74b375
+# source_sha256_at_generation:
+#   fff01094ff532d683f96e4307109eef60ea535fc1e707be07db567aa31988053
+# Printed rule text:
+#   Ghouls never carry any equipment, apart from a few bones, which they use as primitive weapons.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Prohibition: Ghouls carry no equipment; the bones are a primitive fixed weapon.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["equipment"]}
+# conditions:
+#   {"recipient":"ghouls","fixed_item":"bones"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   List-valued equipment token. Surface reuse candidate: {"family":"903","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Separate intrinsic attacks, equipment selection, active use, ownership and an explicitly supported unarmed waiver. No weapons/armour text alone does not grant a waived penalty or extra attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/strigoi-kaz/ghouls--equipment-restrictions/profile.equipment-restrictions
+  id: ghouls-with-equipment-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: strigoi-kaz
+      profile_id: ghouls
+      main_weapon_id: weapon.sword
+  expect_error: '"equipment" is forbidden for strigoi-kaz/ghouls.'
+
+- audit_id: rule/mordheim/strigoi-kaz/ghouls--equipment-restrictions/profile.equipment-restrictions
+  id: ghouls-without-equipment-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: strigoi-kaz
+      profile_id: ghouls
+    second:
+      collection: mordheim
+      band_id: strigoi-kaz
+      profile_id: ghouls
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

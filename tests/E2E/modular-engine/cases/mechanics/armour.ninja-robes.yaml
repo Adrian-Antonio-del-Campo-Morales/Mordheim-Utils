@@ -1,0 +1,130 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/armour.ninja-robes
+# scaffold_fingerprint: a5f35f6dcde4730c8b86ac71e3147f580b02b2acb524cab0348e17b7397fcb49
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored boundary
+#   scenarios for the 6+ save; the shield-combination prohibition is an
+#   unauthored loadout restriction recorded under the clause marker. REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: six-plus-no-shield (scope: YES)
+# AUTHORED[six-plus-no-shield]: 3 scenarios cover the 6+ save holding at the
+#   threshold, failing one face below it, and the printed shield prohibition
+#   as a construction refusal. The refusal uses the declared `expect_error`
+#   contract and names the shared eligibility diagnostic. Pending semantic
+#   review.
+# RUNNER-GAP: `corpus.py`, `test_cases.py` and README document `expect_error`,
+#   but the current `runner.check_case` does not yet implement it, so the
+#   refusal scenario cannot execute until that declared contract is wired.
+#   Recorded as an executor gap (outside this directory's scope).
+# origin_id:
+#   mechanic/armour.ninja-robes
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   d75ac337d678b97ae93135895f1cd80caf98181b32d48bcd9ecc798d8b26e423
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Counts as Toughened Leathers (also called Hardened Leathers): grants a 6+ armour save and cannot combine with a shield.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Ninja Robes count as Toughened Leathers, granting a 6+ armour save and no combination with a shield; observable: a 6+ save and a rejected loadout with a shield.
+# effect_id:
+#   armour.ninja-robes
+# relation:
+#   equivalent
+# parameters:
+#   {"base_save":6,"combines_with":["helmet","buckler"]}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Same item family as Toughened Leathers (G259/G279); the only printed difference is the shield exclusion, which the compatibility list captures. Surface reuse candidate: {"family":"A-COMPAT6","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/armour.ninja-robes — the 6+ save and its threshold boundary.
+#
+# Expectations come from the printed rule and the accepted clause
+# `six-plus-no-shield` of docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv,
+# never from engine output: ninja robes count as toughened leathers and save
+# an incoming close-combat wound on a 6 before Strength modifiers.  An
+# unmodified Strength 3 attacker applies no save modifier, so the boundary is
+# exactly 6: the six holds, the five fails.  The shield prohibition is not
+# asserted here (see the clause marker).
+#
+# The first scenario declares the shared profiles as YAML anchors; the sibling
+# aliases them and keeps its own armour face and expectation.
+
+- audit_id: mechanic/armour.ninja-robes
+  id: ninja-robes-save-holds-on-six
+  covers: [six-plus-no-shield]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &attacker-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.ninja-robes
+      characteristics: &defender-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: the five is not a 6+, so the wound is
+# taken and the defender drops a wound.  No other armour face is scripted.
+
+- audit_id: mechanic/armour.ninja-robes
+  id: ninja-robes-save-fails-on-five
+  covers: [six-plus-no-shield]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *attacker-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.ninja-robes
+      characteristics: *defender-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The clause's second half is a loadout prohibition, not an in-duel effect: a
+# robe-and-shield build must be refused at construction, and the declared
+# expect_error contract requires that the refusal name the authored reason.
+# The eligibility layer answers for both ninja robes and toughened leathers.
+
+- audit_id: mechanic/armour.ninja-robes
+  id: ninja-robes-refuse-a-shield-loadout
+  covers: [six-plus-no-shield]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      armour_id: armour.ninja-robes
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  expect_error: "toughened leathers cannot be combined with a shield"

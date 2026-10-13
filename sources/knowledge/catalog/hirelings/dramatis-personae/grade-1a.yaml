@@ -61,6 +61,16 @@ profiles:
         Inmune a la psicología.
     name_i18n:
       es: Inmune a la Psicología
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.psychology-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.psychology-immunity
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.immune-to-poison
     name: Immune to Poison
     effect: Immune to poison.
@@ -85,6 +95,16 @@ profiles:
         Causa miedo.
     name_i18n:
       es: Causa Miedo
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.causes-fear
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.causes-fear
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.serutat
     name: Serutat
     effect: Uses the source minion/retainer rule.

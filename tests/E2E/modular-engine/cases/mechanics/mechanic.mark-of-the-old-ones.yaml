@@ -1,0 +1,142 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.mark-of-the-old-ones
+# scaffold_fingerprint: 0ec81471ea27d86c0f464d816b3d6ff1b63b33561072128cbaf8328082998b58
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries 4 authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenarios cover the conversion of a failed To Hit roll, of a
+#   failed To Wound roll and of the holder's own failed armour save into a success, and
+#   the single use that makes the next failure in the same duel stand.
+# origin_id:
+#   mechanic/mechanic.mark-of-the-old-ones
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   e9c93769666432411e32476aee3cc9f527b3880fdf0c16e5d1a2f4455dbf1905
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Once per battle, the Hero may change one failed roll into a valid successful result.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Shared mechanic contract: Mark of the Old Ones turns the first failed own roll, including an armour save, into a success and is spent for the duel.
+# effect_id:
+#   mechanic.mark-of-the-old-ones
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"uses":1}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Shared mechanic definition; Sacred Mark availability at recruitment is a separate grant. Surface reuse candidate: {"family":"mechanic.mark-of-the-old-ones","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare this specific printed individual effect and active contract, keeping recipient, timing, exceptions and scope. Similar parameters do not establish whole-rule equivalence or a supplied third fighter.","candidate_parameters":{"convert_failure_to_success":1,"uses":1},"gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# A failed To Hit roll is turned into a valid success: the declared one would miss the
+# printed 4+, and the pool then resolves the ordinary wound against the converted hit.
+# The conversion is recorded as the spent once-per-duel resource.
+- audit_id: mechanic/mechanic.mark-of-the-old-ones
+  id: a-failed-hit-roll-becomes-a-success
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.mark-of-the-old-ones]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, state.first.resources_spent: [mark-of-the-old-ones], state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same conversion applied to a failed To Wound roll: the declared one is below the
+# printed 4+, the wound lands anyway and the mark is spent.
+- audit_id: mechanic/mechanic.mark-of-the-old-ones
+  id: a-failed-wound-roll-becomes-a-success
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.mark-of-the-old-ones]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.damage: 1, state.first.resources_spent: [mark-of-the-old-ones], state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The mark belongs to the warrior who carries it, whoever is rolling: worn with light
+# armour it turns the holder's own failed armour save into a save on a declared five,
+# which the armour's printed 6+ alone would not hold.
+- audit_id: mechanic/mechanic.mark-of-the-old-ones
+  id: the-holder-s-failed-armour-save-becomes-a-save
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      skill_ids: [mechanic.mark-of-the-old-ones]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.resources_spent: [mark-of-the-old-ones], state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# One use, per the recorded contract spent for this duel: the second round repeats the
+# same failed To Hit roll, but the resource is already spent, so that failure stands and
+# no second conversion is offered.
+- audit_id: mechanic/mechanic.mark-of-the-old-ones
+  id: the-single-use-does-not-convert-the-next-failure
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.mark-of-the-old-ones]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, state.first.resources_spent: [mark-of-the-old-ones], state.second.wounds: 1}
+    1: {attacks.0.hit: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

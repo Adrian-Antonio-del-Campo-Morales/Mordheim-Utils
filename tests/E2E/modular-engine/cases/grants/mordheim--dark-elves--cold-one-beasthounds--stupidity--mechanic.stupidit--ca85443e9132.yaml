@@ -1,0 +1,138 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dark-elves/cold-one-beasthounds--stupidity/mechanic.stupidity
+# scaffold_fingerprint: 76ee4f2b3660951d3c448c98ccf79ef17ad55c59813f7046ee4e0346f3de7899
+# authoring_status: AUTHORED
+# authoring_progress: the stupidity half of the compound clause carries three authored
+#   scenarios: the failed test, the passed test and the frenzied exemption.  The co-printed
+#   handler-only Leadership facet (the beast hound uses the supplied Beastmaster's own value and
+#   may never borrow the warband leader) is NOT asserted: the runner's fighter build has no way
+#   to supply ``fighter.stupidity_leadership``, which is a compiled trait of
+#   mechanic.handler-leadership rather than a build input, so that facet stays an explicit
+#   representation gap.  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: stupidity (scope: YES)
+# AUTHORED[stupidity]: Documented difference (AUTHORED vs implementation): every representable face of the clause has a written scenario, so AUTHORED is the correct header; the pending requirement is a genuine adapter-input absence [C], not authoring: the printed handler-only Leadership (fighter.stupidity_leadership) is a compiled trait of mechanic.handler-leadership with no fighter-build input; 3 scenarios cover the start-of-own-turn individual Leadership test of
+#   the bearer built from its printed profile: a total of twelve fails and bars the bearer's own
+#   charge and attacks, a total of two passes and it strikes normally, and an already-frenzied
+#   bearer is exempt from the test with no die requested.  The printed handler-only Leadership
+#   of the same record is not covered and is named as the remaining gap in the progress note.
+# origin_id:
+#   rule/mordheim/dark-elves/cold-one-beasthounds--stupidity/mechanic.stupidity
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dark-elves/special-rules.yaml
+# source_fingerprint:
+#   222edd7073c128d52c4495917288c6db55cbd13e269b3333f75a53c6b847c159
+# source_sha256_at_generation:
+#   4be3ba1ddf10e16be4b15f25080eba60b5ab2595e25d1be84e27eef4f0e6de0e
+# Printed rule text:
+#   Cold One Beasthounds may use the basic Leadership of the Beastmaster if they are within 6" of him. They may never use the Leadership of the warband leader, nor may they benefit from the Beastmaster’s increased Leadership if he is within 6" of the leader.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Stupidity: at the start of this warrior's own turn it tests individual Leadership; on failure it cannot make close-combat attacks until its next own turn. Observable: a failed stupidity test yields zero close-combat attacks for this warrior that turn, without changing enemy To-Hit rolls. This warrior uses the supplied Beastmaster's own Leadership for the test and may never use the warband leader's.
+# effect_id:
+#   mechanic.stupidity
+# relation:
+#   parameterized_variant
+# parameters:
+#   {"leadership_source":"supplied handler's own value"}
+# conditions:
+#   {"trigger":"start of this warrior's own turn","resolution":"individual Leadership test via leadership.resolve_local_leadership (stupidity key); resolves before fear in the round pipeline","consequence":"on failure no close-combat attacks until its next own turn","recipient":"this warrior","duration":"until its next own turn","stacking":"not cumulative","exceptions":"handler-only Leadership: the warband leader cannot be borrowed"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Compound record: the Stupidity clause plus the handler-only Leadership clause (mechanic.handler-leadership). leadership.resolve_local_leadership uses fighter.stupidity_leadership and blocks ordinary leader borrowing for handler-only warriors. Surface reuse candidate: {"family":"mechanic.handler-leadership","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded semantic contract; no engine output was
+# consulted.  The bearer is built from its printed profile with only the physical
+# characteristics supplied as fixture facts and its printed Leadership left in place, so the
+# tested value comes from the profile: a total of twelve is a certain failure (no catalogue
+# Leadership reaches twelve) and a total of two a certain pass.  In the two scenarios whose
+# point is the bearer's own consequence the opponent is supplied with the printed on-fire
+# condition, because a burning model makes no close-combat attack.
+
+- audit_id: rule/mordheim/dark-elves/cold-one-beasthounds--stupidity/mechanic.stupidity
+  id: a-failed-stupidity-test-cancels-its-charge-and-bars-its-attacks
+  covers: [stupidity]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 6}
+    - {key: round.0.first.stupidity.1, value: 6}
+  expect_rounds:
+    0: {state.first.stupidity_failed: true, state.first.condition: STANDING, state.first.wounds: 3, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The printed Cold One Beasthounds cause Fear, so the charging opponent is the model the Fear
+# clause tests: its own charge-test dice are declared before the bearer's strike.
+- audit_id: rule/mordheim/dark-elves/cold-one-beasthounds--stupidity/mechanic.stupidity
+  id: a-passed-stupidity-test-keeps-contact-and-lets-it-strike
+  covers: [stupidity]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  initial_state:
+    second: {on_fire: true}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 1}
+    - {key: round.0.first.stupidity.1, value: 1}
+    - {key: round.0.second.fear.charge.0, value: 1}
+    - {key: round.0.second.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, state.first.condition: STANDING, state.first.wounds: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Being Frenzied removes the Stupidity die; the charging opponent's Fear test against this
+# fear-causing bearer is the only test the round still asks for.
+- audit_id: rule/mordheim/dark-elves/cold-one-beasthounds--stupidity/mechanic.stupidity
+  id: an-already-frenzied-bearer-rolls-no-stupidity-die
+  covers: [stupidity]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  initial_state:
+    first: {frenzy: true, on_fire: true}
+    second: {on_fire: true}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 1}
+    - {key: round.0.second.fear.charge.1, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, state.first.frenzy: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

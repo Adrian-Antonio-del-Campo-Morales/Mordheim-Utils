@@ -1,0 +1,147 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/slayer-pirates-sar/band--slayer-rules/skill.hard-to-kill
+# scaffold_fingerprint: 5a0a10acd935a0357d336a8a75902e7c25463ba14a243ba31a310a3bf15eb05b
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole--scope--hard-to-kill clause carries three authored scenarios
+# derived from the printed Hard to Kill sentence of the block: a five that the ordinary chart takes Out of
+# Action leaves this bearer Stunned, the six still takes it out, and the non-regression control shows the
+# same five on an unmarked bearer is Out of Action.  The bearer is the printed Slayer Captain profile and
+# the composite Slayer-rules key supplies the printed block; both facts are read from the band source, not
+# from the engine.  Only the Hard to Kill sentence is asserted here; the Hard Head sentence has its own
+# file and the hiring sentence stays outside the admitted clause scope.  REVIEWED still requires manual
+# semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole--scope--hard-to-kill (scope: YES)
+# AUTHORED[whole--scope--hard-to-kill]: 3 scenarios evidence the Printed Slayer sentence at its
+#   boundary (a five Stuns instead of taking the bearer out), the six that still takes it out, and the
+#   ordinary chart on an unmarked bearer.  The bearer is the printed Slayer Captain profile and the
+#   composite Slayer-rules key supplies the printed block; only the Hard to Kill sentence is asserted,
+#   because the Hard Head sentence of the same block carries its own row and the Grudgebearers sentence
+#   is retained outside the admitted scope.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/slayer-pirates-sar/band--slayer-rules/skill.hard-to-kill
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/slayer-pirates-sar/special-rules.yaml
+# source_fingerprint:
+#   75a81c0fbda11bedd3e39c895c7ae08f577c148bf8b9b6bd6b38eab00a5493b9
+# source_sha256_at_generation:
+#   3ff6b01e004a6c10a439ee68492f00dc148d7a5e0a55de0dcda0486af1b0d468
+# Printed rule text:
+#   Hard to Kill: Dwarfs are tough, resilient individuals who can only be taken out of action on a roll of 6 instead of 5-6 when rolling on the Injury chart; treat a roll of 1-2 as knocked down, 3-5 as stunned, and 6 as out of action.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Hard to Kill sentence of this band block changes the bearer's injury chart (out on a 6, 1-2 knocked down, 3-5 stunned). Printed clause: Hard to Kill: Dwarfs are tough, resilient individuals who can only be taken out of action on a roll of 6 instead of 5-6 when rolling on the Injury chart; treat a roll of 1-2 as knocked down, 3-5 as stunned, and 6 as out of action.
+# effect_id:
+#   skill.hard-to-kill
+# relation:
+#   related
+# parameters:
+#   {"injury_chart":{"1-2":"knocked-down","3-5":"stunned","6+":"out-of-action"}}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#    Scope review integration: {"clause_id":"whole","review_clause_id":"hard-to-kill","source_state":"matched","review_status":"reviewed","scope_reason":"The Hard to Kill sentence of this band block changes the bearer's injury chart (out on a 6, 1-2 knocked down, 3-5 stunned).","notes":"The Hard Head sentence of the same printed block is reviewed by its own row (236) and the hiring sentence below.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Slayer Hard to Kill: taken out of action only on a 6, 1-2 knocked down, 3-5 stunned; observable: totals 4-5 leave the Slayer stunned.","effect_id":"skill.hard-to-kill","relation":"equivalent","parameters":"{}","conditions":"{}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_injury_context\",\"packages/python/combat-engine/mordheim_combat/phases.py::injury_condition\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"B02-injury-states","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/phases.py::injury_condition\",\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_injury_context\"]"},"inherited_clause_text":"All Slayers are subject to the following special rules. Hard to Kill: Dwarfs are tough, resilient individuals who can only be taken out of action on a roll of 6 instead of 5-6 when rolling on the Injury chart; treat a roll of 1-2 as knocked down, 3-5 as stunned, and 6 as out of action. Hard Head: Dwarfs ignore the special rules for maces, clubs, etc.; they are not easy to knock out! Grudgebearers: Dwarfs hold an ancient grudge against Elves from the days when the two races fought for supremacy in the Old World; a Dwarf warband may never include any kind of Elven Hired Sword or Dramatis Personae.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.hard-to-kill","verified_facet":"skill.hard-to-kill","relationship":"shared_facet","boundary":"Share the wider Stunned band, not True Grit, concussion immunity, or a stun save. Keep printed recipients; the Saurus Hero variant remains Hero-only. Modified injury totals and later injury transformations still apply.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+#
+# Clause: whole--scope--grudgebearers-hiring (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/slayer-pirates-sar/band--slayer-rules/skill.hard-to-kill
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/slayer-pirates-sar/special-rules.yaml
+# source_fingerprint:
+#   75a81c0fbda11bedd3e39c895c7ae08f577c148bf8b9b6bd6b38eab00a5493b9
+# source_sha256_at_generation:
+#   3ff6b01e004a6c10a439ee68492f00dc148d7a5e0a55de0dcda0486af1b0d468
+# Printed rule text:
+#   Grudgebearers: Dwarfs hold an ancient grudge against Elves from the days when the two races fought for supremacy in the Old World; a Dwarf warband may never include any kind of Elven Hired Sword or Dramatis Personae.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A Dwarf warband never including Elven Hired Swords or Dramatis Personae is warband composition and hiring, an explicit exclusion. Printed clause: Grudgebearers: Dwarfs hold an ancient grudge against Elves from the days when the two races fought for supremacy in the Old World; a Dwarf warband may never include any kind of Elven Hired Sword or Dramatis Personae.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#    Scope review integration: {"clause_id":"whole","review_clause_id":"grudgebearers-hiring","source_state":"matched","review_status":"reviewed","scope_reason":"A Dwarf warband never including Elven Hired Swords or Dramatis Personae is warband composition and hiring, an explicit exclusion.","notes":"text: Grudgebearers: ... a Dwarf warband may never include any kind of Elven Hired Sword or Dramatis Personae.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Slayer Hard to Kill: taken out of action only on a 6, 1-2 knocked down, 3-5 stunned; observable: totals 4-5 leave the Slayer stunned.","effect_id":"skill.hard-to-kill","relation":"equivalent","parameters":"{}","conditions":"{}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_injury_context\",\"packages/python/combat-engine/mordheim_combat/phases.py::injury_condition\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"B02-injury-states","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/phases.py::injury_condition\",\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_injury_context\"]"},"inherited_clause_text":"All Slayers are subject to the following special rules. Hard to Kill: Dwarfs are tough, resilient individuals who can only be taken out of action on a roll of 6 instead of 5-6 when rolling on the Injury chart; treat a roll of 1-2 as knocked down, 3-5 as stunned, and 6 as out of action. Hard Head: Dwarfs ignore the special rules for maces, clubs, etc.; they are not easy to knock out! Grudgebearers: Dwarfs hold an ancient grudge against Elves from the days when the two races fought for supremacy in the Old World; a Dwarf warband may never include any kind of Elven Hired Sword or Dramatis Personae.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# Derived from the printed Hard to Kill sentence and the printed band record; no engine output was
+# consulted.  The mace is the concussion weapon of the sibling injury-chart cases, the fixture's
+# Initiative lets it strike first, and the bearer starts at its printed single wound.
+
+- audit_id: rule/mordheim/slayer-pirates-sar/band--slayer-rules/skill.hard-to-kill
+  id: a-five-only-stuns-the-slayer-captain
+  covers: [whole--scope--hard-to-kill]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: slayer-pirates-sar, profile_id: slayer-captain, special_rule_ids: [band--slayer-rules]}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/slayer-pirates-sar/band--slayer-rules/skill.hard-to-kill
+  id: only-the-six-takes-the-slayer-captain-out
+  covers: [whole--scope--hard-to-kill]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: slayer-pirates-sar, profile_id: slayer-captain, special_rule_ids: [band--slayer-rules]}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: rule/mordheim/slayer-pirates-sar/band--slayer-rules/skill.hard-to-kill
+  id: the-ordinary-chart-still-takes-an-unmarked-bearer-out-on-a-five
+  covers: [whole--scope--hard-to-kill]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

@@ -1,0 +1,55 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/night-goblins-web/squig-herder--handle-animal-squig/unimplemented.night-goblins-web.squig-herder.handle-animal-squig
+# scaffold_fingerprint: 5901fbbb127a88e18d2c2a8859211f46ec2ce224a2b4d32a802afb58b00c2d78
+# authoring_status: PARTIAL
+# authoring_progress: the admitted handler-leadership clause cannot be authored from this origin: the
+#   canonical effect and its consumer exist and are authored elsewhere, but the register records no binding
+#   on this record and the Cave Squig prints no Leadership test of its own.  The exact pending datum is named
+#   in the clause marker below.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: handler-leadership (scope: YES)
+# PARTIAL[handler-leadership]: [C] no scenario is authorable without inventing the test.  The printed sentence
+#   ("Any Cave Squig within 6" (12" with a Squig Prodder) of the herder can use their Leadership value when
+#   taking Leadership tests") binds the canonical mechanic.handler-leadership, whose consumer
+#   resolve_local_leadership is recorded (it reads the supplied handler value and blocks ordinary leader
+#   borrowing), and the register adds that "no binding on this record; the canonical effect exists, so the
+#   missing step is the KB connection".  Two data are missing: the KB binding of this origin, and a Leadership
+#   or Stupidity test the Cave Squig actually takes in the duel (its printed profile has no such state), which
+#   is what the authored handler cases use as the vehicle.
+# origin_id:
+#   rule/mordheim/night-goblins-web/squig-herder--handle-animal-squig/unimplemented.night-goblins-web.squig-herder.handle-animal-squig
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/night-goblins-web/special-rules.yaml
+# source_fingerprint:
+#   865c5afb55f732405b0a288bc01aa65f2f20944279ff914269b73a2e8dbbc846
+# source_sha256_at_generation:
+#   0500d0ab2286f4ceb5f0d8954b7b3d4c70326fd53a46a3b3a3e4db85821a24d6
+# Printed rule text:
+#   Any Cave Squig within 6" (12" with a Squig Prodder) of the herder can use their Leadership value when taking Leadership tests.
+# Semantic contract (check analysis_status before treating as accepted):
+#   This animal may use the supplied handler's Leadership within the source range, and not the warband leader's. Observable: the test uses the handler's value.
+# effect_id:
+#   mechanic.handler-leadership
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"an animal Leadership test","exceptions":"no ordinary leader borrowing"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Handler-only Leadership for an animal profile. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Surface reuse candidate: {"family":"mechanic.handler-leadership","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

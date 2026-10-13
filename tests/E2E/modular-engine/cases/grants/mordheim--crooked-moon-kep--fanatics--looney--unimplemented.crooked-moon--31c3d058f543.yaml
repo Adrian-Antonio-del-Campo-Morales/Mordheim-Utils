@@ -1,0 +1,149 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/crooked-moon-kep/fanatics--looney/unimplemented.crooked-moon-kep.fanatics.looney
+# scaffold_fingerprint: 80424582482fb4d57ecb7fc7163519808a0d1077727ae8e945b592f4a76a1b81
+# authoring_status: AUTHORED
+# authoring_progress: the admitted frenzy clause carries 4 authored scenarios for the family model derived
+#   from the printed rule and the recorded semantic contract: doubled attacks while frenzied, the
+#   ordinary Fear test of a received charge skipped, the Stupidity test auto-passed, and Frenzy lost to
+#   the injury that knocks the bearer down.  PENDING GAP (not a scenario gap): this band record is not
+#   yet connected to the canonical trait.frenzy effect, so the compiled Looney may reach the duel
+#   without the frenzy flag the scenarios declare; the co-printed after-battle damage test is a
+#   separate, excluded clause.  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: frenzy (scope: YES)
+# AUTHORED[frenzy]: Documented difference (AUTHORED vs implementation): every face of the clause has a written scenario, so AUTHORED is the correct header; what stays pending is the motor side only [B] - this band record is not yet connected to the canonical trait.frenzy, so the compiled Looney may reach the duel without the frenzy flag the scenarios declare; 4 scenario(s) cover every face of the clause (doubled attack count, skipped Fear
+#   dice, auto-passed Head Injury Stupidity test, frenzy cleared by the knock-down injury and not
+#   regranted when the bearer stands up).  The named gap is the unrecorded KB connection of this band
+#   record to trait.frenzy, not a missing requirement.
+# origin_id:
+#   rule/mordheim/crooked-moon-kep/fanatics--looney/unimplemented.crooked-moon-kep.fanatics.looney
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/crooked-moon-kep/special-rules.yaml
+# source_fingerprint:
+#   330468d37266b694dc3fd6d1e77ae1467b66db6bdc8c1aad487da5002dcd51b9
+# source_sha256_at_generation:
+#   b4c792c5bc3ab074e3780a036b5af795eae3bf1eb8b75035fc31d4764deec7d6
+# Printed rule text:
+#   Due to the effect of the mushrooms he is subject to frenzy.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The mushrooms making this warrior subject to frenzy is an admitted lasting individual psychology state; the after-battle damage test belongs to its own separated clause. Printed clause: Due to the effect of the mushrooms he is subject to frenzy.
+# effect_id:
+#   trait.frenzy
+# relation:
+#   equivalent
+# parameters:
+#   {"value":true}
+# conditions:
+#   {"trigger":"duel start"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Frenzy granted by a pre-battle source. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Scope review integration: {"clause_id":"frenzy","review_clause_id":"frenzy","source_state":"matched","review_status":"reviewed","scope_reason":"The mushrooms making this warrior subject to frenzy is an admitted lasting individual psychology state; the after-battle damage test belongs to its own separated clause.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Subject to Frenzy (mushroom/venom induced): doubled attacks, no fear or stupidity test, must charge. Observable: the frenzy flag is set for this warrior.","effect_id":"trait.frenzy","relation":"equivalent","parameters":"{\"value\":true}","conditions":"{\"trigger\":\"duel start\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/psychology.py::resolve_stupidity\"]","implementation_work":"connection","dependencies":"[]","implementation_batch":"C05-frenzy","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/psychology.py::resolve_stupidity\"]"},"inherited_clause_text":"Due to the effect of the mushrooms he is subject to frenzy. He must also test for permanent damage after the battle as described in the rulebook.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"trait.frenzy","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact supplied/rolled state, trigger, frequency, duration, termination and attack-count contribution. Permanent and conditional Frenzy, +1 Attack and doubling are different. Do not implement group creation, movement or campaign tables merely to supply an individual state.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Family model (Frenzy granted by the Looney's mushrooms): the bearer is Frenzied from
+# duel start (doubled attacks, psychology exemption), takes no Fear test for the charge
+# it receives, and loses Frenzy when an injury knocks it down; standing up does not
+# regrant it.  Attack order follows core/combat-order: a charge and any strike-first
+# effect share the top tier before ordinary Initiative, and a warrior that stood up
+# strikes last in that turn only.  This profile declares no strike-first ability, so the
+# charging opponent resolves before the bearer.  The band's printed Animosity rule is
+# implemented, so the bearer tests on its own turn and a 3 passes the printed 1-fails band.
+
+- audit_id: rule/mordheim/crooked-moon-kep/fanatics--looney/unimplemented.crooked-moon-kep.fanatics.looney
+  id: a-frenzied-looney-strikes-twice-with-its-single-profile-attack
+  covers: [frenzy]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: crooked-moon-kep, profile_id: fanatics}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/crooked-moon-kep/fanatics--looney/unimplemented.crooked-moon-kep.fanatics.looney
+  id: a-frenzied-looney-takes-no-fear-test-for-the-charge-it-receives
+  covers: [frenzy]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: crooked-moon-kep, profile_id: fanatics}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, state.second.fear_hit_sixes: false, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/crooked-moon-kep/fanatics--looney/unimplemented.crooked-moon-kep.fanatics.looney
+  id: a-frenzied-looney-auto-passes-the-head-injury-stupidity-test
+  covers: [frenzy]
+  fighters:
+    first: {collection: mordheim, band_id: crooked-moon-kep, profile_id: fanatics}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  initial_state:
+    first: {attacks: 1, resources_spent: [disability.6]}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.animosity, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: true, state.first.stupidity_failed: false, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/crooked-moon-kep/fanatics--looney/unimplemented.crooked-moon-kep.fanatics.looney
+  id: the-injury-that-knocks-the-looney-down-ends-its-frenzy-and-standing-does-not-regrant-it
+  covers: [frenzy]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: crooked-moon-kep, profile_id: fanatics}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+    - {key: round.1.second.animosity, value: 3}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: false, state.second.condition: KNOCKED_DOWN}
+    1: {state.second.frenzy: false, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

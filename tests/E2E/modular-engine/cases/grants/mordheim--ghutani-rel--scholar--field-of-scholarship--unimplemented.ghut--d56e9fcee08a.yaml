@@ -1,0 +1,114 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/ghutani-rel/scholar--field-of-scholarship/unimplemented.ghutani-rel.scholar.field-of-scholarship
+# scaffold_fingerprint: 6d814d7d80b1b6730e02da867077350f755f374b8981266f6523bccaf9e6e5be
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is authorable from this file's recorded evidence.  Both admitted
+# clauses register effect_id (not recorded) with relation "unresolved" and an empty consumer, so neither
+# the printed Physiology reroll of an injury result nor the printed Poetry Leadership is bound to any
+# admitted operator: a search of packages/python/roster-construction and of the combat engine finds no
+# request key, message or branch for this origin, and no accepted case in this revision declares the
+# injury-reroll key or the supplied Poetry condition the tapes would need.  REVIEWED still requires
+# manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: field-of-scholarship--scope--injury-reroll (scope: YES)
+# PARTIAL[field-of-scholarship--scope--injury-reroll]: [C] pending an accepted effect_id and the operator plus request key for rerolling an injury result (the register leaves the effect unrecorded and the relation unresolved), and the printed scope of the Physiology reroll - which injury faces it covers.  With those the tape is an ordinary injury route with one declared reroll against the bearer, held against the same tape without the rule.
+# origin_id:
+#   rule/mordheim/ghutani-rel/scholar--field-of-scholarship/unimplemented.ghutani-rel.scholar.field-of-scholarship
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/ghutani-rel/special-rules.yaml
+# source_fingerprint:
+#   069a17e0b1374e280e3cceeeea60ba5a708d73861b7091e1b2f4ec0e57517584
+# source_sha256_at_generation:
+#   c085329f1a4ab0a9711592362709178cc4a73b51902b58857e26be288cc4d6c4
+# Printed rule text:
+#   Physiology injury reroll
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Physiology reroll of an injury result is an admitted individual injury consequence of this duelist. Printed clause: Physiology injury reroll
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Exploration, post-battle Serious Injuries and a campaign-win condition on the Poetry bonus; all campaign scope. Scope review integration: {"clause_id":"field-of-scholarship","review_clause_id":"injury-reroll","source_state":"unverified","review_status":"reviewed","scope_reason":"The Physiology reroll of an injury result is an admitted individual injury consequence of this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Cartography exploration bonus, Physiology injury reroll, Poetry leader Leadership","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: field-of-scholarship--scope--leader-leadership (scope: YES)
+# PARTIAL[field-of-scholarship--scope--leader-leadership]: [C] not asserted here.  The clause registers
+#   effect_id (not recorded) with relation unresolved and an empty consumer, and its own register note
+#   keeps the Poetry bonus in campaign scope ("a campaign-win condition on the Poetry bonus"), so nothing in
+#   the shared construction stage or in the duel reads it: no operator, request key or message is bound to
+#   this origin.  The pending datum is the admitted operator that turns the printed supplied-leader
+#   condition into a Leadership value; with it the tape is the ordinary nearby-provider shape the
+#   leader-borrow cases of this corpus already use.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/ghutani-rel/scholar--field-of-scholarship/unimplemented.ghutani-rel.scholar.field-of-scholarship
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/ghutani-rel/special-rules.yaml
+# source_fingerprint:
+#   069a17e0b1374e280e3cceeeea60ba5a708d73861b7091e1b2f4ec0e57517584
+# source_sha256_at_generation:
+#   c085329f1a4ab0a9711592362709178cc4a73b51902b58857e26be288cc4d6c4
+# Printed rule text:
+#   Poetry leader Leadership
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Poetry Leadership supplied to the leader is the supplied leader condition the ruling admits. Printed clause: Poetry leader Leadership
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Exploration, post-battle Serious Injuries and a campaign-win condition on the Poetry bonus; all campaign scope. Scope review integration: {"clause_id":"field-of-scholarship","review_clause_id":"leader-leadership","source_state":"unverified","review_status":"reviewed","scope_reason":"The Poetry Leadership supplied to the leader is the supplied leader condition the ruling admits.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Cartography exploration bonus, Physiology injury reroll, Poetry leader Leadership","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: field-of-scholarship--scope--exploration (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/ghutani-rel/scholar--field-of-scholarship/unimplemented.ghutani-rel.scholar.field-of-scholarship
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/ghutani-rel/special-rules.yaml
+# source_fingerprint:
+#   069a17e0b1374e280e3cceeeea60ba5a708d73861b7091e1b2f4ec0e57517584
+# source_sha256_at_generation:
+#   c085329f1a4ab0a9711592362709178cc4a73b51902b58857e26be288cc4d6c4
+# Printed rule text:
+#   Cartography exploration bonus
+# Semantic contract (check analysis_status before treating as accepted):
+#   A Cartography exploration bonus is campaign exploration content, excluded from the duel. Printed clause: Cartography exploration bonus
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Exploration, post-battle Serious Injuries and a campaign-win condition on the Poetry bonus; all campaign scope. Scope review integration: {"clause_id":"field-of-scholarship","review_clause_id":"exploration","source_state":"unverified","review_status":"reviewed","scope_reason":"A Cartography exploration bonus is campaign exploration content, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Cartography exploration bonus, Physiology injury reroll, Poetry leader Leadership","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

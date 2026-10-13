@@ -237,16 +237,17 @@ rules:
     - red-toof-clan-goblins
 - id: red-toof-clan-goblins--berserkers
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.forest-goblins-lus.red-toof-clan-goblins.berserkers
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: trait.frenzy
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
   name: Berserkers
   effect: >-
     Red Toof Clan Goblins allow themselves to be bitten by poisonous wildlife before battle; the

@@ -1,0 +1,107 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/cursed-cavalcade/great-bear--maddened-with-pain/trait.maddened-with-pain
+# scaffold_fingerprint: 200f2bed47ee239c6f8e860b4248fbae584344b036200b3b1c2ff0aa96d4293c
+# authoring_status: AUTHORED
+# authoring_progress: the admitted extra-attack-after-wound clause carries 2 authored scenarios derived
+#   from the printed rule and the recorded contract: the bearer that has lost a wound strikes with one
+#   attack die more in the next round, and the identical bearer that has lost none keeps its profile
+#   attack.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: extra-attack-after-wound (scope: YES)
+# AUTHORED[extra-attack-after-wound]: 2 scenarios cover "as soon as the Great Bear suffers a single
+#   wound it gains an additional attack".  The first round supplies the wound on the printed attack
+#   route, and the second round's tape asks for one more die than the profile supplies; the control
+#   repeats the same two rounds with the opponent missing throughout, where the extra die never appears.
+#   The added attack is visible as an attack count, not as a re-derived value, so the tape is the
+#   evidence.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/cursed-cavalcade/great-bear--maddened-with-pain/trait.maddened-with-pain
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/cursed-cavalcade/special-rules.yaml
+# source_fingerprint:
+#   b51c2c315fd9d8b1b2abde1225c14bc90e2a5e64133d9c5b7bfe617a4f761f76
+# source_sha256_at_generation:
+#   15a4f9a2b9c55c6ef8e50bfc55b1af9a2418c12db0c4da71d80ed3b88e7264f2
+# Printed rule text:
+#   As soon as the Great Bear suffers a single wound it gains an additional attack.
+# Semantic contract (check analysis_status before treating as accepted):
+#   As soon as the Great Bear suffers a single wound it gains an additional attack; observable: an extra attack appears for the rest of the duel after the first wound.
+# effect_id:
+#   trait.maddened-with-pain
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed as an attack-count bonus once the fighter is wounded: phases.build_attacks adds the extra attack when the wounded flag is set (the same flag is read by the vectorized and native ports). The hit-pool citations of the neighbouring clauses are not the consumer here. Surface reuse candidate: {"family":"trait.maddened-with-pain","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare trigger, current bearer, activation, timing, state duration and reset rules. Keep damage backlash and interrupted continuation; exclude producer movement/group counting or campaign progression.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# bearer is a hand-built fixture carrying the printed trait, because the clause is about the wound the
+# bearer suffers rather than about one printed statline.  Every strike is declared as a natural one, so
+# only the pool sizes speak, and the bearer's two wounds mean one wound taken leaves it active.
+
+- audit_id: rule/mordheim/cursed-cavalcade/great-bear--maddened-with-pain/trait.maddened-with-pain
+  id: after-the-first-wound-the-bear-strikes-with-one-more-attack
+  covers: [extra-attack-after-wound]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {maddened_with_pain: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.1.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 3}
+    1: {state.first.wounds: 1, state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The control: the same two rounds with the opponent missing, so the bear never loses a wound and the
+# second round asks for its single profile attack again.
+- audit_id: rule/mordheim/cursed-cavalcade/great-bear--maddened-with-pain/trait.maddened-with-pain
+  id: an-unwounded-bear-keeps-its-profile-attack
+  covers: [extra-attack-after-wound]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {maddened_with_pain: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+    1: {state.first.wounds: 2, state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+

@@ -214,15 +214,17 @@ rules:
     - fanatics
 - id: fanatics--looney
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.night-goblins-kaz.fanatics.looney
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology (frenzy) and post-battle permanent damage tests.
+    - id: trait.frenzy
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
   name: Looney
   effect: >-
     Due to the effect of the Mushrooms he is subject to Frenzy. He must also test for permanent

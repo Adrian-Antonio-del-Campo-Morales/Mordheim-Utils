@@ -1,0 +1,149 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dreamwalkers-cult-of-morr-fbg/band--special-skill-inspiring-presence/unimplemented.dreamwalkers-cult-of-morr-fbg.special-skill.inspiring-presence
+# scaffold_fingerprint: f7fce97637bce46738886593f5c1afd03ca5ea2f0326559ff68b8052a79c847e
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: inspiring-presence-borrow (scope: YES)
+# AUTHORED[inspiring-presence-borrow]: 3 scenarios read the printed "Morr Worshippers may borrow the Dreamer's Leadership within 12 inches instead of the normal 6": the provider is the printed Dreamer profile (Leadership 8) supplied as an admitted nearby participant of the borrower's own side, the borrower is the printed Morr Worshwishpers profile (Leadership 7), and the test it takes is the Fear test of the charge it receives.  At a supplied twelve inches the borrow is offered and, taken, carries a declared total of eight, so the charge's hits are not clamped; declined, or offered at twelve and a half inches, the same eight fails against the borrower's own 7 and the hits are clamped to sixes.  The printed bearer restriction (only the Dreamer may take this skill) and the canonical six-inch case are recorded here, not asserted.  The recorded implementation gap is the source-qualified range: resolve_local_leadership rejects a distance greater than six before offering the borrow, so the twelve-inch acceptance is the printed expectation this file states, not an implemented behaviour.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/dreamwalkers-cult-of-morr-fbg/band--special-skill-inspiring-presence/unimplemented.dreamwalkers-cult-of-morr-fbg.special-skill.inspiring-presence
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dreamwalkers-cult-of-morr-fbg/special-rules.yaml
+# source_fingerprint:
+#   4f63d6acd5fa25edc33a98829db68680577c29d395fb969043a287b14ec6c7c2
+# source_sha256_at_generation:
+#   bce246c4f3df53d3522ececae0ba7d1d12acadfab3eb7ab30860dd129c2147aa
+# Printed rule text:
+#   Morr Worshippers may borrow the Dreamer's Leadership within 12 inches instead of the normal 6; only the Dreamer may take this skill.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A supplied standing Dreamer with Inspiring Presence may optionally lend Leadership to a qualified Morr Worshipper up to 12 inches away, preserving the normal borrowing conditions.
+# effect_id:
+#   mechanic.leader-six
+# relation:
+#   parameterized_variant
+# parameters:
+#   {"radius_inches":12}
+# conditions:
+#   {"provider":"Dreamer with Inspiring Presence","recipient":"Morr Worshipper","window":"eligible Leadership test"}
+# dependencies:
+#   ["mechanic.leader-six"]
+# Register notes (context only, not behavioral authority):
+#   resolve_local_leadership rejects distance greater than 6 before offering the borrow; a binding alone cannot implement 12 inches. Implement the source-qualified range/provider/recipient contract, then connect the selectable skill. The existing basic Leader borrow is reused, not stacked. Closure must distinguish 6/12/over-12, wrong provider/recipient and incapacitated provider. No group emission engine is required. Scope review integration: {"clause_id":"inspiring-presence-borrow","review_clause_id":"inspiring-presence-borrow","source_state":"unverified","review_status":"reviewed","scope_reason":"Borrowing the Dreamer's Leadership within 12 inches instead of 6 is an admitted individual Leadership consequence, and restricting the skill to the Dreamer is a bearer restriction on construction.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"M-LEADER-SIX","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# authoring_progress: the admitted inspiring-presence-borrow clause carries 3 authored scenarios
+#   derived from the printed rule, the printed Dreamer and Morr Worshwishpers profiles and the
+#   recorded mechanic.leader-six parameterized contract (radius_inches 12).  The twelve-inch range is
+#   the printed expectation; the register records the engine's six-inch rejection as the pending
+#   implementation, which execution of the first scenario would surface.  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the printed profiles of this band; no
+# engine output was consulted.  The provider is supplied as an admitted nearby participant of the
+# borrower's own side, exactly as the canonical leader-six device does, rather than by simulating a
+# warband, and the borrower's own required test is the Fear test of the charge it receives.
+
+- audit_id: rule/mordheim/dreamwalkers-cult-of-morr-fbg/band--special-skill-inspiring-presence/unimplemented.dreamwalkers-cult-of-morr-fbg.special-skill.inspiring-presence
+  id: a-dreamer-twelve-inches-away-lends-his-leadership-to-a-morr-worshipper
+  covers: [inspiring-presence-borrow]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: dreamwalkers-cult-of-morr-fbg, profile_id: morr-worshwishpers}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: dreamer
+        side_id: second
+        condition: standing
+        fighter: {collection: mordheim, band_id: dreamwalkers-cult-of-morr-fbg, profile_id: dreamer}
+    distances:
+      - [second, dreamer, 12]
+  decisions:
+    - {key: round.0.second.fear.charged.dreamer.leader, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed use is a permission, not a compulsion: declining it keeps the borrower's own printed
+# Leadership 7, which the same total of eight fails, clamping the hits of the charge it received.
+- audit_id: rule/mordheim/dreamwalkers-cult-of-morr-fbg/band--special-skill-inspiring-presence/unimplemented.dreamwalkers-cult-of-morr-fbg.special-skill.inspiring-presence
+  id: declining-the-dreamers-leadership-keeps-the-borrowers-own
+  covers: [inspiring-presence-borrow]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: dreamwalkers-cult-of-morr-fbg, profile_id: morr-worshwishpers}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: dreamer
+        side_id: second
+        condition: standing
+        fighter: {collection: mordheim, band_id: dreamwalkers-cult-of-morr-fbg, profile_id: dreamer}
+    distances:
+      - [second, dreamer, 12]
+  decisions:
+    - {key: round.0.second.fear.charged.dreamer.leader, value: false}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Past the printed radius no use is offered at all, which the strict decision tape itself proves:
+# the same eight fails against the borrower's own Leadership 7.
+- audit_id: rule/mordheim/dreamwalkers-cult-of-morr-fbg/band--special-skill-inspiring-presence/unimplemented.dreamwalkers-cult-of-morr-fbg.special-skill.inspiring-presence
+  id: a-dreamer-beyond-the-printed-radius-supplies-nothing
+  covers: [inspiring-presence-borrow]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: dreamwalkers-cult-of-morr-fbg, profile_id: morr-worshwishpers}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: dreamer
+        side_id: second
+        condition: standing
+        fighter: {collection: mordheim, band_id: dreamwalkers-cult-of-morr-fbg, profile_id: dreamer}
+    distances:
+      - [second, dreamer, 12.5]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

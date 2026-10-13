@@ -1,0 +1,132 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-barbarian-courage/mechanic.fear-reroll
+# scaffold_fingerprint: aaf057f0f819bedf0e7645e5a3805dccde75cdeab745cbfafd242d0ea05e7794
+# authoring_status: AUTHORED
+# authoring_progress: the admitted fear-reroll clause carries 2 authored scenarios derived from the
+#   printed rule and the recorded contract: the warrior bearing the printed operator takes its failed
+#   Fear test again and accepts the second result, so the charge stands, and the identical charge
+#   without the operator keeps the failure and is cancelled.  REVIEWED still requires manual semantic
+#   review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: fear-reroll (scope: YES)
+# AUTHORED[fear-reroll]: 2 scenarios cover the printed optional reroll of a failed Fear test for this
+#   origin.  The register records this band line as the shared mechanic.fear-reroll operator with no
+#   second runtime contribution, so the operator is supplied on the fixture exactly as the canonical
+#   case does; the charge of the rerolling warrior is the vehicle and the second result is the accepted
+#   one.  The all-alone rider printed in the same stanza is out of scope and stays recorded.
+# origin_id:
+#   rule/mordheim/norse-explorers-lustria/band--norse-special-skills-barbarian-courage/mechanic.fear-reroll
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/norse-explorers-lustria/special-rules.yaml
+# source_fingerprint:
+#   d503aaf05764d0ac4c2aa852d4c32986c038d8bbb2f01a4fcd8558e2d33ed715
+# source_sha256_at_generation:
+#   f8fe6b25d322e54829df36a1d7428904749a78b436474e9c3ea8cfc46193d002
+# Printed rule text:
+#   may re-roll failed fear tests
+# Semantic contract (check analysis_status before treating as accepted):
+#   Re-rolling failed fear tests is an admitted individual psychology consequence; the all-alone rider belongs to its own separated clause. Printed clause: may re-roll failed fear tests
+# effect_id:
+#   mechanic.fear-reroll
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"failed Fear test","resolution":"optional reroll","recipient":"this warrior","duration":"per failed Fear test","stacking":"one reroll; never reroll a reroll"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Fear reroll clause (mechanic.fear-reroll); resolve_local_leadership offers it only for a Fear test. Scope review integration: {"clause_id":"fear-reroll","review_clause_id":"fear-reroll","source_state":"unverified","review_status":"reviewed","scope_reason":"Re-rolling failed fear tests is an admitted individual psychology consequence; the all-alone rider belongs to its own separated clause.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"May reroll a failed Fear test once and accept the second result; other Psychology tests are unaffected.","effect_id":"mechanic.fear-reroll","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"failed Fear test\",\"resolution\":\"optional reroll\",\"recipient\":\"this warrior\",\"duration\":\"per failed Fear test\",\"stacking\":\"one reroll; never reroll a reroll\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\",\"packages/python/combat-engine/mordheim_combat/modular/psychology.py::resolve_fear\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"C07-leadership-rerolls","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"As Norse warriors strive to die bravely in battle, they learn to fear nothing and embrace hardship. This hero never needs to take all alone tests and may re-roll failed fear tests.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"mechanic.fear-reroll","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: all-alone (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/norse-explorers-lustria/band--norse-special-skills-barbarian-courage/mechanic.fear-reroll
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/norse-explorers-lustria/special-rules.yaml
+# source_fingerprint:
+#   d503aaf05764d0ac4c2aa852d4c32986c038d8bbb2f01a4fcd8558e2d33ed715
+# source_sha256_at_generation:
+#   f8fe6b25d322e54829df36a1d7428904749a78b436474e9c3ea8cfc46193d002
+# Printed rule text:
+#   never needs to take all alone tests
+# Semantic contract (check analysis_status before treating as accepted):
+#   (not recorded)
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   All-Alone test is the excluded group/multiple-combatant subsystem; an isolated 1v1 duel never triggers it. Recorded; no consumer assigned. Scope review integration: {"clause_id":"all-alone","review_clause_id":"all-alone","source_state":"unverified","review_status":"reviewed","scope_reason":"The exemption from all-alone tests is the group enemy-counting rule, explicitly excluded from a two-duelist simulator.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
+# charge is declared by the bearer of the rule, whose two Fear dice fail on a total of twelve; the
+# accepted second result passes on a total of two.
+
+- audit_id: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-barbarian-courage/mechanic.fear-reroll
+  id: the-failed-fear-test-is-taken-again
+  covers: [fear-reroll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-reroll]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.fear.charge.reroll, value: true}
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+    - {key: round.0.first.fear.charge.reroll.0, value: 1}
+    - {key: round.0.first.fear.charge.reroll.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first_charged: True, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/norse-explorers-lustria/band--norse-special-skills-barbarian-courage/mechanic.fear-reroll
+  id: without-the-rule-the-failed-fear-test-cancels-the-charge
+  covers: [fear-reroll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {state.first_charged: False, state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

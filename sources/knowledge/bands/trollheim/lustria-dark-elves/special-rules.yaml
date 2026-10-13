@@ -210,15 +210,15 @@ rules:
     profile_ids:
     - cold-ones
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-dark-elves.cold-ones.stupidity
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
 - id: cold-ones--scaly-skin
   runtime:
     scope: 'YES'
@@ -260,15 +260,15 @@ rules:
     profile_ids:
     - cold-ones
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-dark-elves.cold-ones.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: band--hatred-high-elves
   name: Hatred of High Elves
   effect: >-
@@ -287,15 +287,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: band
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-dark-elves.band.hatred-high-elves
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.hatred-high-elves
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-high-elves
 - id: band--excellent-sight
   name: Excellent Sight
   effect: >-

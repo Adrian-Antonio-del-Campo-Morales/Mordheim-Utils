@@ -1,0 +1,159 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.netter
+# scaffold_fingerprint: af381930cbff06c1808776c3b7f462d217b0d23b160817c0c55aa52f63b25e76
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries 3 authored scenarios derived from the printed rule and the recorded contract, including the printed hit branch through the admitted Night Goblin profile; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover the declared net charge resolved as its own Ballistic
+#   Skill die before the weapon blows, the same charge without the rule, whose tape carries no
+#   net die at all, and the printed success branch - the net hits, the target fails its
+#   Strength escape test, counts as knocked down, is hit automatically and must still be rolled
+#   To Wound.  The hit branch is reachable because the netter's target comes from the compiled
+#   Ballistic Skill, which a band/profile build supplies: the admitted Night Goblin profile
+#   has BS 3, so the net's target is 4+.  The printed recovery phase in which the netted
+#   warrior cuts itself free and strikes last is the ordinary knocked-down/stood-up handling
+#   that this clause cites, and the scope-NO failed-charge movement stays outside the duel.
+# origin_id:
+#   mechanic/mechanic.netter
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   d73033d774e1fb0d796414590ae5e6299da9d171bedab2c64d85f813449941d5
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   The goblin is adept at using a net to disable his enemies. They learn their skill hunting wild cave squigs in the depths of the mountains. The technique he has mastered is 'chuck and charge'. The goblin may declare that he is making a net charge. He throws the net at a target in the same way as described in the Mordheim rulebook. If he hits and the target fails to escape the net then target counts as knocked down and the goblin completes his charge. If he misses or the target escapes then the goblin makes a failed charge. If the failed charge would take him into base contact then stop him 1" away. A warrior who is caught in a net will be automatically hit in combat. The goblin must still roll to wound just as with a knocked down enemy. In the warrior's next recovery phase, unless he is stunned or out of action he will cut himself out of the net but cannot do anything else and will go last in combat just as if he had stood up from being knocked down.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A goblin may declare a net charge: if the net hits and the target fails to escape, the target counts as knocked down and the goblin completes his charge, the netted warrior is hit automatically in combat and must still be rolled To Wound as against a knocked-down enemy; in his next recovery phase he cuts himself free, cannot do anything else and goes last in combat as if he had stood up. Closure: a netted target is Knocked Down, is hit automatically, and its recovery phase is spent freeing itself with a strikes-last penalty.
+# effect_id:
+#   mechanic.netter
+# relation:
+#   equivalent
+# parameters:
+#   {"consequence": "target counts as knocked down", "escape_test": "Strength", "hit": "ballistic skill", "recovery": "next recovery phase, cuts free and strikes last"}
+# conditions:
+#   {"target_condition": "knocked down", "trigger": "declared net charge"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   _netter resolves the ballistic-skill hit and the Strength escape test and leaves the target KNOCKED_DOWN; the automatic hit follows from the knocked-down helpless path and the wound roll is kept. The free-itself recovery and the strikes-last penalty are delivered by the ordinary knocked-down/stood-up handling of the standing-up rules that the clause itself cites. Surface reuse candidate: {"family":"mechanic.netter","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare target identities, psychology/animal exceptions, test dice, phase, failure consequence and duration. Charge refusal, inability to attack and loss of one attack are distinct; Crude Belch may remove the only attack. Keep supplied individual consequences separate from group emission.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: failed-charge-movement (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   mechanic/mechanic.netter
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   d73033d774e1fb0d796414590ae5e6299da9d171bedab2c64d85f813449941d5
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   If he misses or the target escapes then the goblin makes a failed charge. If the failed charge would take him into base contact then stop him 1" away.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The failed charge and stopping one inch away are charge-distance and spatial consequences, which the duel excludes. Printed clause: If he misses or the target escapes then the goblin makes a failed charge. If the failed charge would take him into base contact then stop him 1" away.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Charge movement and distances are excluded from the 1v1 duelling model, so no operator is required and none exists; the individual combat consequence of the net is analysed in the whole-rule clause. Scope review integration: {"clause_id":"failed-charge-movement","review_clause_id":"failed-charge-movement","source_state":"matched","review_status":"reviewed","scope_reason":"The failed charge and stopping one inch away are charge-distance and spatial consequences, which the duel excludes.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"A missed or escaped net charge is a failed charge that stops 1\" short instead of reaching base contact. Closure: unmodelled while charge movement and distances stay outside the duelling model.","effect_id":"","relation":"independent","parameters":"{\"stop_short\": \"1in\"}","conditions":"{\"subsystem\": \"movement/charge distance\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A18-excluded-and-later-clauses","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"If he misses or the target escapes then the goblin makes a failed charge. If the failed charge would take him into base contact then stop him 1\" away.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# A declared net charge resolves its own Ballistic Skill die before any weapon blow
+# (`round.0.first.netter.hit`).  The attacker carries the rule but no profile, so its
+# compiled Ballistic Skill is 0 and the net's target is 7+: the declared six is a miss
+# by construction, which is exactly the printed "if he misses ... the goblin makes a
+# failed charge" branch with no knock-down consequence.  The target keeps its own
+# attack and the round carries the two ordinary To Hit dice.
+- audit_id: mechanic/mechanic.netter
+  id: a-missed-net-leaves-the-target-standing
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.netter]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.netter.hit, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without the rule the identical charging round asks for no net die: the thrown net is
+# that rule's own step, not part of an ordinary charge.
+- audit_id: mechanic/mechanic.netter
+  id: without-the-rule-no-net-die-is-requested
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed success branch, reached through the rule's own band: the Night Goblin profile carries
+# the printed Ballistic Skill the net's target comes from, so a declared four hits.  The target then
+# fails the printed Strength escape test on a four (its Strength is three), so it counts as knocked
+#  down, is hit automatically in the combat that follows - no To Hit die is requested for the charge -
+# and the wound is still rolled.
+- audit_id: mechanic/mechanic.netter
+  id: a-hit-net-knocks-the-target-down-and-the-charge-strikes-home
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: night-goblins-mic
+      profile_id: night-goblins
+      special_rule_ids: [band--night-goblin-special-skills-netter]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.netter.hit, value: 4}
+    - {key: round.0.first.netter.escape, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+  expect_rounds:
+    0: {attacks.0.knocked_down_target: true, attacks.0.wounded: true, state.second.condition: KNOCKED_DOWN, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

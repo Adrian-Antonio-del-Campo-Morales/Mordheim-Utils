@@ -1,0 +1,105 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/black-orcs/black-orc-boss--black-orc/trait.natural-armour-stacks
+# scaffold_fingerprint: 66815036393146b4f3eec420a70021c8f23aa2dbd380b9bcd680e2420edac043
+# authoring_status: PARTIAL
+# authoring_progress: the recorded "equipment bonuses add to the natural save" observable carries two
+# authored scenarios (the shield-improved five that saves and the four that does not), derived from
+# the printed sentence and the recorded contract.  The register row repeats the open composition
+# question of the sibling row G005, so that reading stays pending below.  REVIEWED still requires
+# manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [D] 2 scenarios cover the printed "may be combined with other equipment to improve
+# it": the Boss carrying a shield saves the unsaved wound on the improved five, and the four is not
+# saved, so the natural save really is improved by the carried equipment rather than left at six.
+# Bearer is the printed Black Orc Boss profile, which receives the natural save from its own profile
+# rule.  PENDING: the printed combination is not asserted for a second armour suit - the register
+# records the same open Toughened Leathers composition question as the sibling row, which is a
+# rules-owner decision, so no armour-over-hide build is authored.  REVIEWED still requires manual
+# semantic review.
+# origin_id:
+#   rule/mordheim/black-orcs/black-orc-boss--black-orc/trait.natural-armour-stacks
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-orcs/special-rules.yaml
+# source_fingerprint:
+#   a93a9f901489edda983d97f5e40022b8c597b1a6ddb6a6f41077f90d32460b83
+# source_sha256_at_generation:
+#   033545b947532c3193948d1c1e85930a8f543a3f8a55e89401e4000e4ace47c8
+# Printed rule text:
+#   Model starts with a natural 6+ Armour Black Orc Save. This save may be combined with other equipment to improve it.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Second candidate of the same sentence: the 6+ natural save combines with equipment; observable: equipment bonuses add to the natural save.
+# effect_id:
+#   trait.natural-armour-stacks
+# relation:
+#   parameterized_variant
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Same open leather question as G005; no separate behaviour of its own. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.
+
+- audit_id: rule/mordheim/black-orcs/black-orc-boss--black-orc/trait.natural-armour-stacks
+  id: the-carried-shield-improves-the-natural-save-to-five
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 3, initiative: 4, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: black-orc-boss
+      main_weapon_id: weapon.axe
+      off_hand_id: defence.shield
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.saved: True, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/black-orcs/black-orc-boss--black-orc/trait.natural-armour-stacks
+  id: the-four-is-not-saved-by-the-improved-natural-armour
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 3, initiative: 4, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: black-orc-boss
+      main_weapon_id: weapon.axe
+      off_hand_id: defence.shield
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.saved: False, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

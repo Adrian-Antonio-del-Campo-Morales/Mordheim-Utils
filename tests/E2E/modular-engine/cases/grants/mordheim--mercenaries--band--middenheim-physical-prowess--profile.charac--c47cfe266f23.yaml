@@ -1,0 +1,100 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/mercenaries/band--middenheim-physical-prowess/profile.characteristics
+# scaffold_fingerprint: a04679cbdb16e30fadbdd4adda355f745c66eb88940738f06c49fb70556e5017
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed
+#   rule and the recorded contract: with the band row band--middenheim-physical-prowess selected the
+#   Mercenary Captain's Strength is one higher than its supplied fixture base of three, so a wound roll
+#   of three against the hand-built Toughness 3 target takes a Wound that the identical blow without the
+#   row leaves unwounded.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the printed Strength bonus.  Strength 3 is supplied as the
+#   bearer's fixture base, which is also the printed Captain value, so the selected row alone can move
+#   the wound target from four to three against the hand-built Strength 3 striker; the declared three is
+#   the single face that separates the two builds.  The bearer is charged, so no charge test is needed,
+#   and the target declares no attacks so the tape holds only the bearer's dice.
+# origin_id:
+#   rule/mordheim/mercenaries/band--middenheim-physical-prowess/profile.characteristics
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/mercenaries/special-rules.yaml
+# source_fingerprint:
+#   15890b21bcc495dc838bc6ea0d32e95142d6d86644eb89757f2706cd5f42136a
+# source_sha256_at_generation:
+#   32b9c8d8ba141f362b3490a9313ce92c6470a81050df14fb72a847bfd5d8e888
+# Printed rule text:
+#   The Mercenary Captain and all Champions in a Middenheim warband start with Strength 4 instead of Strength 3.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Conditional characteristic bonus: a selected Middenheim Captain and Champions start at Strength 4; other profiles and an unselected Captain keep Strength 3.
+# effect_id:
+#   profile.characteristics
+# relation:
+#   equivalent
+# parameters:
+#   {"bonuses":{"strength":1},"profile_ids":["mercenary-captain","champions"]}
+# conditions:
+#   {"selected":"Middenheim"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The per-fighter API rejects selecting this bonus for ineligible profiles; profile_ids gate is odd (Champions is a group id) but the contract is the existing one. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Starting the Middenheim Captain and Champions at Strength 4 is an admitted characteristic of those duelists.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"P-CHARACTERISTICS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the band row the audit id names; no
+# engine output was consulted.
+
+- audit_id: rule/mordheim/mercenaries/band--middenheim-physical-prowess/profile.characteristics
+  id: the-selected-middenheim-row-raises-the-captains-strength
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: mercenary-captain
+      special_rule_ids: [band--middenheim-physical-prowess]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/mercenaries/band--middenheim-physical-prowess/profile.characteristics
+  id: without-the-selected-row-the-same-roll-fails-to-wound
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: mercenaries
+      profile_id: mercenary-captain
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

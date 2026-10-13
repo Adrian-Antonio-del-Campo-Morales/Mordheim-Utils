@@ -1,0 +1,104 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/fallen-the-rel/revenant--cause-fear/mechanic.causes-fear
+# scaffold_fingerprint: ad5fd041418ce376d845fbb5ea905d09c41dfeb5e6a8e724527249e5592513b0
+# authoring_status: AUTHORED
+# authoring_progress: the admitted cause-fear clause carries two authored scenarios for
+#   the two faces of the charged opponent's Leadership test. REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: cause-fear (scope: YES)
+# AUTHORED[cause-fear]: 2 scenarios cover the printed consequence for the warrior charged by
+#   Revenant, which causes Fear: after a failed Leadership test its hit roll of 4 - a roll that
+#   beats its ordinary target - wounds nothing, and after a passed test the same roll wounds it
+#   on its ordinary target, against Toughness 4 and 2 wounds taken from the
+#   profile as printed.  The unarmed causer's own single attack is scripted as a natural 1, and
+#   the opponent's Leadership, Weapon Skill 8 and Strength 8 are hand-built fixture facts, not
+#   profile values.  The cancelled voluntary charge, the one-test-per-pairing rule and the
+#   listed exceptions (an opponent that causes Fear, is immune to Psychology or Fear, or is
+#   Frenzied) are not asserted here: the first is a charge-flag consequence rather than a wound
+#   outcome, and the exceptions need a second Fear-causer or an immunity build this file does
+#   not declare.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED; no behavioral result is claimed.
+# origin_id:
+#   rule/mordheim/fallen-the-rel/revenant--cause-fear/mechanic.causes-fear
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/fallen-the-rel/special-rules.yaml
+# source_fingerprint:
+#   57f1908d958afe059c5d101e689b70f10760b1d572cbc3c480a12b46de225798
+# source_sha256_at_generation:
+#   44fcd6ac65bb083fcce5ed74bbe7d62499783328d35ee64cce47c1471d7c2f14
+# Printed rule text:
+#   Revenants are terrifying Undead creatures and therefore cause fear.
+# Semantic contract (check analysis_status before treating as accepted):
+#   This warrior causes Fear. Observable: in the initial round, an opposing warrior that volunteers a charge must first pass a Leadership test or the charge is cancelled; one that is charged must pass it or can hit only with sixes for that combat round.
+# effect_id:
+#   mechanic.causes-fear
+# relation:
+#   equivalent
+# parameters:
+#   {"value":true}
+# conditions:
+#   {"trigger":"initial round, the opponent charges or is charged by this warrior","resolution":"opponent Leadership test before a voluntary charge or after being charged","consequence":"cancelled voluntary charge, or sixes-to-hit for that combat round","recipient":"the opposing warrior","duration":"that combat round only","stacking":"one test per fighter pairing; no cumulative effect","exceptions":"skipped by an opponent that causes Fear, is immune to Psychology or Fear, or is Frenzied"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Canonical per-warrior Fear (mechanic.causes-fear). psychology.causes_fear declares the threat and psychology.resolve_fear resolves the round-0 test; the printed sentence is a band-specific synonym with no extra clause. Surface reuse candidate: {"family":"mechanic.causes-fear","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded semantic contract; no engine output was
+# consulted.  The causer is the active participant and charges, so the opponent is the
+# warrior the Fear clause tests, and its two Leadership dice are declared first, summed
+# against the Leadership 7 the fixture opponent declares.  The opponent's Weapon Skill 8
+# and Strength 8 are fixture facts chosen so its hit roll of 4 beats its ordinary target and
+# its Strength wounds every Toughness in this band; the strict tape consumes exactly the
+# declared dice, so a Fear test that never happens or a sixes-only clamp that never lifts
+# both fail the case rather than passing quietly.
+
+- audit_id: rule/mordheim/fallen-the-rel/revenant--cause-fear/mechanic.causes-fear
+  id: a-charged-opponent-that-fails-its-fear-test-hits-only-with-sixes
+  covers: [cause-fear]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: fallen-the-rel, profile_id: revenant}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 5}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/fallen-the-rel/revenant--cause-fear/mechanic.causes-fear
+  id: a-charged-opponent-that-passes-its-fear-test-fights-normally
+  covers: [cause-fear]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: fallen-the-rel, profile_id: revenant}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 3}
+    - {key: round.0.first.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

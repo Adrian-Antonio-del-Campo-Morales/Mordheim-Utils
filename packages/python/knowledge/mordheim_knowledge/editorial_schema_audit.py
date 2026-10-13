@@ -248,11 +248,9 @@ JUSTIFIED_FINDINGS: dict[tuple[str, str, str], str | dict[str, str]] = {
         "dead_branch",
         "#/$defs/unique_equipment.counts_as",
     ): "counts_as accepts a plain id or the context object; the Hired Sword family uses the plain id",
-    (
-        "hireling-profile-hired-sword.yaml.schema.json",
-        "unused_property",
-        "#/$defs/unresolved_reference",
-    ): "editorial annotation of a reference the ingest workflow could not resolve",
+    # `#/$defs/unresolved_reference` of the Hired Sword schema is exercised: the
+    # Halfling Knight's unmapped Cavalry Spear and its Hound companion are
+    # declared there, so the former blanket justification is gone.
     (
         "hireling-profile-dramatis-personae.yaml.schema.json",
         "unused_property",

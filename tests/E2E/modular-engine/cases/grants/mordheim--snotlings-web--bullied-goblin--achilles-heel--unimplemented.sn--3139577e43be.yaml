@@ -1,0 +1,87 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/snotlings-web/bullied-goblin--achilles-heel/unimplemented.snotlings-web.special.achilles-heel
+# scaffold_fingerprint: bd92708f36e6c9bd2eeef1fd2de399480400728fe36dce410e477d771cf7f8f0
+# authoring_status: PARTIAL
+# authoring_progress: both admitted clauses stay without scenarios for the reasons recorded under each
+# PARTIAL note below: the granted critical condition is a deferred unimplemented placeholder whose
+# container clause is the conditional criticals-and-charge row, and the printed armour denial is
+# conditional on the Stampede charge attack the one-against-one duel does not carry (the source's own
+# runtime block is scope LATER, implemented NO, binding null).  execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: criticals-and-charge--scope--criticals-on-six (scope: YES)
+# PARTIAL[criticals-and-charge--scope--criticals-on-six]: [C] no scenario is authored for this clause.  Category C: no admitted binding carries the granted critical condition and the conditional-attack carrier is absent.  The
+# register records the row as a deferred unimplemented placeholder ("Retained as deferred rather than
+# admitted") whose parent clause is the conditional criticals-and-charge grant, and the source's runtime
+# block declares scope LATER / implemented NO with a null binding; the observable would be a change to the
+# bearer's critical-hit condition, but with no admitted binding and no conditional-attack carrier in the
+# one-against-one engine the scenario would state an expectation its own record declines to admit.
+# origin_id:
+#   rule/mordheim/snotlings-web/bullied-goblin--achilles-heel/unimplemented.snotlings-web.special.achilles-heel
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/snotlings-web/special-rules.yaml
+# source_fingerprint:
+#   43ac0a72ffe370923dd656cbcb8098a0af45d9b45f135035dfaa3799cc6cd64f
+# source_sha256_at_generation:
+#   7dc940a3784763fc2a3788f764bbbebc42aa05d316da3cf38a6a037564a7415b
+# Printed rule text:
+#   Your Snotling always causes Critical Hits on rolls of 6 (when wounding) regardless of opponent's toughness.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Always causing Critical Hits on rolls of 6 when wounding regardless of Toughness is a change to the bearer's critical-hit condition in the duel. Printed clause: Your Snotling always causes Critical Hits on rolls of 6 (when wounding) regardless of opponent's toughness.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Depends on the Stampede charge attack, which the 1v1 duel does not currently carry; the KB record is an unimplemented placeholder. Retained as deferred rather than admitted. Scope review integration: {"clause_id":"criticals-and-charge","review_clause_id":"criticals-on-six","source_state":"matched","review_status":"reviewed","scope_reason":"Always causing Critical Hits on rolls of 6 when wounding regardless of Toughness is a change to the bearer's critical-hit condition in the duel.","notes":"text: Your Snotling always causes Critical Hits on rolls of 6 (when wounding) regardless of opponent's toughness.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The Snotling causes critical hits on rolls of 6 when wounding regardless of Toughness and, with the Stampede charge, wounding rolls of 5+ deny the enemy any armour save; observable: a critical on a natural 6 and an unsaveable charge wound.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B18-conditional-attacks","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Your Snotling always causes Critical Hits on rolls of 6 (when wounding) regardless of opponent's toughness. In addition, when combined with the Stampede charge attack, on any successful rolls to wound of 5+, the opponent gains no armour save.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: criticals-and-charge--scope--stampede-armour-denial (scope: YES)
+# PARTIAL[criticals-and-charge--scope--stampede-armour-denial]: [C] no scenario is authored for this clause.  Category C: the printed armour denial is conditional on the Stampede charge attack, whose input the one-against-one duel does not carry.  The
+# The printed armour denial is expressly conditional on the Stampede charge attack, and the register
+# states that "the 1v1 duel does not currently carry" that attack and that the KB record is an
+# unimplemented placeholder; the clause's own note adds that its frozen LATER label "rests on a missing
+# duel implementation rather than a scope decision".  The missing item is therefore the Stampede charge
+# clause of this band (a separate origin), without which the 5+ wound face has no carrier.
+# origin_id:
+#   rule/mordheim/snotlings-web/bullied-goblin--achilles-heel/unimplemented.snotlings-web.special.achilles-heel
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/snotlings-web/special-rules.yaml
+# source_fingerprint:
+#   43ac0a72ffe370923dd656cbcb8098a0af45d9b45f135035dfaa3799cc6cd64f
+# source_sha256_at_generation:
+#   7dc940a3784763fc2a3788f764bbbebc42aa05d316da3cf38a6a037564a7415b
+# Printed rule text:
+#   In addition, when combined with the Stampede charge attack, on any successful rolls to wound of 5+, the opponent gains no armour save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   With a successful wound roll of 5+ the opponent gains no armour save; that is an armour-denial consequence of the charge attack for one duelist. Printed clause: In addition, when combined with the Stampede charge attack, on any successful rolls to wound of 5+, the opponent gains no armour save.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Depends on the Stampede charge attack, which the 1v1 duel does not currently carry; the KB record is an unimplemented placeholder. Retained as deferred rather than admitted. Scope review integration: {"clause_id":"criticals-and-charge","review_clause_id":"stampede-armour-denial","source_state":"matched","review_status":"reviewed","scope_reason":"With a successful wound roll of 5+ the opponent gains no armour save; that is an armour-denial consequence of the charge attack for one duelist.","notes":"Conditional on the Stampede charge clause of the same band, which is a separate origin reviewed elsewhere; no exclusion of the interaction itself was found. This differs from the frozen LATER label, which rests on a missing duel implementation rather than a scope decision.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The Snotling causes critical hits on rolls of 6 when wounding regardless of Toughness and, with the Stampede charge, wounding rolls of 5+ deny the enemy any armour save; observable: a critical on a natural 6 and an unsaveable charge wound.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B18-conditional-attacks","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Your Snotling always causes Critical Hits on rolls of 6 (when wounding) regardless of opponent's toughness. In addition, when combined with the Stampede charge attack, on any successful rolls to wound of 5+, the opponent gains no armour save.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

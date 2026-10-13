@@ -1,0 +1,48 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/maneaters/band--ogres-special-skills-crude-belch/unimplemented.maneaters.band.ogres-special-skills-crude-belch
+# scaffold_fingerprint: e23e5c4dc6b1f65c1f7a097267884a9dad3df59c6f9acc0f061953fda4677c2b
+# authoring_status: PARTIAL
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [C] not asserted. the printed clause needs three things this record does not carry: a bound mechanic identity (the register states the KB rule carries no bound mechanic identity at all and that the binding is unparseable, and the recorded effect is only the proposal proposed.mechanic.ogre-crude-belch with relation independent), a Leadership-test operator keyed on the Ogre's own start of turn, and a term that applies a -1 to-hit penalty to every enemy engaged in base contact for that turn together with the printed reuse limit (only after a new enemy engages). The only authored neighbouring operator, the halfling belch row, produces a different consequence (a lost first attack), so mirroring it would assert something the printed sentence does not say. Searching the record, its named effect id and the authored corpus found no key, operator or diagnostic for the -1 to-hit term, the turn duration or the per-engagement guard. REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/maneaters/band--ogres-special-skills-crude-belch/unimplemented.maneaters.band.ogres-special-skills-crude-belch
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/maneaters/special-rules.yaml
+# source_fingerprint:
+#   f0fe4e25af86394dc2a1a946e0b2c9661cd2cdbdbf0d4b13e56b5868ab973d16
+# source_sha256_at_generation:
+#   3a08e324408189c522ac15ffd4ef1ebf9f6762f1a8e9ab7608ad27662721e804
+# Printed rule text:
+#   Ogres eat almost anything. Consequences are to be expected from those inconsiderate enough to consume a rich meal before battle. A Hero with this 'condition' may unleash his thunderous fumes on all enemies engaged in close combat. Those that do not pass a Ld test suffer a -1 'to hit' modifier for the turn. The Ogre must wait until a new enemy engages him in combat before he relieves himself again.
+# Semantic contract (check analysis_status before treating as accepted):
+#   An Ogre Hero may unleash his fumes on all enemies engaged in close combat; those that fail a Leadership test suffer -1 to hit for the turn, and the Ogre must wait until a new enemy engages him before relieving himself again. Closure: a failed Leadership test applies one point of to-hit penalty for that turn and the ability cannot be repeated against the same engagement.
+# effect_id:
+#   proposed.mechanic.ogre-crude-belch
+# relation:
+#   independent
+# parameters:
+#   {"consequence": "-1 to hit for the turn", "reuse": "only after a new enemy engages", "test": "Leadership"}
+# conditions:
+#   {"frequency": "per new engagement", "range": "base contact", "recipient": "Ogre"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The clause is an in-duel debuff (a Leadership test and a to-hit penalty for the turn) and is not excluded by scope, but the KB rule carries no bound mechanic identity at all (the binding is unparseable), so the first unresolved step is the data binding. The -1 to hit term, the turn duration and the per-engagement reuse limit then need a new behaviour operator (recorded here as the next step); this is not the halfling belch, whose consequence is a lost first attack.
+
+# authoring_progress: the admitted whole clause carries no scenario and stays pending with the
+#   missing binding and the two missing terms named in its clause note (the Leadership-test operator
+#   and the turn-scoped -1 to-hit term with its per-engagement reuse guard).  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+
+[]  # Empty scenario list: this file contributes no test or coverage.

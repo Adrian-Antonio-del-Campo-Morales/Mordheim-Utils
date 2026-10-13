@@ -1,0 +1,85 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/pirates/swabbies--rabble/compiler.swabbie-rabble-loadout
+# scaffold_fingerprint: 399f74c07dca4809b37e5f84d5dfc9d067a0652b08d7981fe0bd9b8b868c1f6b
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is derived for the admitted equipment-list clause yet, for the concrete
+# reason recorded in its own note below.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole--scope--equipment-list-access (scope: YES)
+# PARTIAL[whole--scope--equipment-list-access]: [B] the admitted clause is the Swabbie Equipment List bound,
+# and its recorded consumer is the construction/access projection (compile_fighter and
+# COMPILER_CONTRACTS).  The two construction-stage messages the shared eligibility module emits for this
+# area are the per-token "<token>" is forbidden for <band>/<profile>. and the projection's
+# "equipment is not available to <band>/<profile>: [<ids>]"; the second is built from the items the
+# projection refuses for a neutral profile, whose identities cannot be derived statically here, and the
+# corpus fixture declares no equipment-list input beyond the duel loadout.  The missing datum is therefore
+# the illegal item id list for pirates/swabbies (or the per-token binding), after which the evidence is the
+# admission of a Swabbie-list item and the refusal of one outside it.  The scope-NO casting bar
+# (compiler.swabbie-rabble-loadout's "magic is forbidden for Swabbies") concerns the excluded casting
+# subsystem and is recorded, not asserted.
+# origin_id:
+#   rule/mordheim/pirates/swabbies--rabble/compiler.swabbie-rabble-loadout
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/pirates/special-rules.yaml
+# source_fingerprint:
+#   51ae11da77a360f2c2c1fe116cacecc98eef694a8fff2bc3e7dc47fa7bff184a
+# source_sha256_at_generation:
+#   1f8301bb2d29b7318e908c07a24a6a060283c7efefdfa3277e01c23d2c84b963
+# Printed rule text:
+#   Each may use different items, but only from the Swabbie Equipment List.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Restricting these fighters to the Swabbie Equipment List is an admitted construction clause. Printed clause: Each may use different items, but only from the Swabbie Equipment List.
+# effect_id:
+#   compiler.swabbie-rabble-loadout
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   No group homogeneity is imposed on the compiled fighter; spell use is excluded. Scope review integration: {"clause_id":"whole","review_clause_id":"equipment-list-access","source_state":"matched","review_status":"reviewed","scope_reason":"Restricting these fighters to the Swabbie Equipment List is an admitted construction clause.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Per-fighter loadout: each Swabbie is equipped individually from the Swabbie list and may never take magic or spells.","effect_id":"compiler.swabbie-rabble-loadout","relation":"equivalent","parameters":"{}","conditions":"{\"recipient\":\"swabbies\",\"list\":\"swabbie equipment\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\",\"packages/python/roster-construction/mordheim_construction/contracts.py::COMPILER_CONTRACTS\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.loadout","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/pirates/special-rules.yaml\"]"},"inherited_clause_text":"Each may use different items, but only from the Swabbie Equipment List. Swabbies can never use magic or cast spells.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."}
+#
+# Clause: whole--scope--casting-bar (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/pirates/swabbies--rabble/compiler.swabbie-rabble-loadout
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/pirates/special-rules.yaml
+# source_fingerprint:
+#   51ae11da77a360f2c2c1fe116cacecc98eef694a8fff2bc3e7dc47fa7bff184a
+# source_sha256_at_generation:
+#   1f8301bb2d29b7318e908c07a24a6a060283c7efefdfa3277e01c23d2c84b963
+# Printed rule text:
+#   Swabbies can never use magic or cast spells.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The bar on using magic or casting spells concerns the excluded casting subsystem. Printed clause: Swabbies can never use magic or cast spells.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   No group homogeneity is imposed on the compiled fighter; spell use is excluded. Scope review integration: {"clause_id":"whole","review_clause_id":"casting-bar","source_state":"matched","review_status":"reviewed","scope_reason":"The bar on using magic or casting spells concerns the excluded casting subsystem.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Per-fighter loadout: each Swabbie is equipped individually from the Swabbie list and may never take magic or spells.","effect_id":"compiler.swabbie-rabble-loadout","relation":"equivalent","parameters":"{}","conditions":"{\"recipient\":\"swabbies\",\"list\":\"swabbie equipment\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\",\"packages/python/roster-construction/mordheim_construction/contracts.py::COMPILER_CONTRACTS\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.loadout","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/pirates/special-rules.yaml\"]"},"inherited_clause_text":"Each may use different items, but only from the Swabbie Equipment List. Swabbies can never use magic or cast spells.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

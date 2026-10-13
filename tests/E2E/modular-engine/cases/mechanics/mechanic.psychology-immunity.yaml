@@ -1,0 +1,115 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.psychology-immunity
+# scaffold_fingerprint: 16238e81939813ece32ac1a4064e666272c99529c356aaad16ab22dbcbbba1ca
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: psychology-immunity (scope: YES)
+# AUTHORED[psychology-immunity]: 3 scenarios cover the skipped Fear test, the
+#   skipped Stupidity test and a fire-fear Leadership test that still rolls.
+# origin_id:
+#   mechanic/mechanic.psychology-immunity
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   deba23153a520ac3805983e231b9c9dcef156f089a869f6fa93d80f2f2668f7c
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Ignores individual Fear and Stupidity and receives no Hatred or Frenzy benefit. Other Leadership tests are unaffected.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Immune to Psychology: never resolves a Fear or Stupidity test and receives no Hatred reroll or Frenzy benefit. Observable: for this warrior a fear or stupidity test is skipped while other Leadership requirements still roll normally.
+# effect_id:
+#   mechanic.psychology-immunity
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"any individual Psychology test involving this warrior","resolution":"the test is skipped and no Hatred reroll or Frenzy bonus is granted","recipient":"this warrior","duration":"whole duel","stacking":"not cumulative","exceptions":"does not exempt non-Psychology Leadership tests and does not by itself grant Immunity to Fear against a source that expressly overrides it"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Canonical Immunity to Psychology (mechanic.psychology-immunity): leadership.resolve_local_leadership short-circuits psychology tests and state.initialize_fighter suppresses frenzy/stupidity for immune warriors. Surface reuse candidate: {"family":"M-PSYCH-PARTIAL","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare each immunity or automatic-pass clause separately. Psychology immunity is not automatic success on every Leadership test. Preserve ordinary Hatred/Frenzy suppression and the explicit Strigoi exception; excluded running, experience and group tests remain excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The opponent causes Fear, so the charging warrior would test; the immunity removes
+# the test entirely and the round's first event is the hit itself, which shows no
+# Leadership die was taken.
+- audit_id: mechanic/mechanic.psychology-immunity
+  id: fear-is-not-tested-at-all
+  covers: [psychology-immunity]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.psychology-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first_charged: True, state.second.fear_hit_sixes: False, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same exemption covers the start-of-turn Stupidity test, which would otherwise
+# open the tape with a Leadership pair.
+- audit_id: mechanic/mechanic.psychology-immunity
+  id: stupidity-is-not-tested-either
+  covers: [psychology-immunity]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.stupidity, mechanic.psychology-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.stupidity_failed: False}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The opposing brazier iron carries the printed fire attack, so this is not ordinary
+# Fear: the charged-against warrior must still test his Leadership even though he
+# ignores individual Psychology, and the failed test cancels his charge.  This is
+# the clause's 'other Leadership requirements still roll normally'.
+- audit_id: mechanic/mechanic.psychology-immunity
+  id: a-fire-fear-test-is-still-taken
+  covers: [psychology-immunity]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fears-fire, mechanic.psychology-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.brazier-iron
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+

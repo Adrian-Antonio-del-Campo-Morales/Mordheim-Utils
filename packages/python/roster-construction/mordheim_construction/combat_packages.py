@@ -14,10 +14,15 @@ def combat_packages(collection, root=None):
         return
     catalogue = load_hirelings("mordheim", root)
     traits = {row["profile_id"]: row["traits"] for row in load_hireling_traits("mordheim", root)}
-    # The current 2A/2B work admits the promoted 2B hireling catalogue. Other
-    # grades retain their existing campaign paths until their duel review.
-    for kind in ("hired-sword", "dramatis-personae"):
-        native = [p for p in catalogue.profiles if p.get("grade") == "2b" and p["kind"] == kind]
+    # Every normalized grade is its own package, in every kind. Admission is not
+    # a grant: ``selection._profile`` still refuses a profile whose printed
+    # intrinsic clause is pending, missing or unbound, and the refusal names the
+    # clause, so offering a grade never waives a printed rule.
+    grades = sorted({str(profile.get("grade") or "core") for profile in catalogue.profiles})
+    for kind, grade in [(kind, grade) for kind in ("hired-sword", "dramatis-personae")
+                        for grade in grades]:
+        native = [p for p in catalogue.profiles if p["kind"] == kind
+                  and str(p.get("grade") or "core") == grade]
         if not native:
             continue
         profiles, lists, rules = [], [], []
@@ -62,10 +67,13 @@ def combat_packages(collection, root=None):
             list_id = source["id"] + ".kit"
             equipment = profile["hireling_equipment"]
             entries = [*equipment.get("fixed_items", ()), *equipment.get("optional_items", ())]
+            # A printed "choose N from this list" option offers its list, not a bundle.
+            chosen_from = []
             for group in equipment.get("choices", ()):
                 for option in group.get("options", ()):
                     entries.extend(option.get("items", ()))
-            offered = list(dict.fromkeys([*(e["item_id"] for e in entries),
+                    chosen_from.extend(option.get("from_item_ids", ()))
+            offered = list(dict.fromkeys([*(e["item_id"] for e in entries), *chosen_from,
                 *(item["id"] for item in equipment.get("unique_equipment", ())) ]))
             if any(e.get("mechanic_id") == "weapon.double-handed-weapon" for e in entries):
                 offered.append("two_handed_weapon")
@@ -79,8 +87,8 @@ def combat_packages(collection, root=None):
             for source_rule in intrinsic:
                 rules.append({**source_rule, "applies_to": {"profile_ids": [source["id"]]},
                               "kind": "warband_skill" if source_rule.get("kind") == "warband_skill" or source_rule["id"] in source.get("special_skill_rule_ids", ()) else "profile"})
-        title = "Hired Swords · 2B" if kind == "hired-sword" else "Dramatis Personae · 2B"
+        title = ("Hired Swords" if kind == "hired-sword" else "Dramatis Personae") + f" · {grade.upper()}"
         yield BandPackage(collection, "mordheim",
-            {"id": f"hirelings.{kind}.2b", "name": title,
-             "name_i18n": {"es": "Espadas a Sueldo · 2B" if kind == "hired-sword" else title}, "categories": ["2b"]},
+            {"id": f"hirelings.{kind}.{grade}", "name": title,
+             "name_i18n": {"es": f"Espadas a Sueldo · {grade.upper()}" if kind == "hired-sword" else title}, "categories": [grade]},
             tuple(profiles), tuple(lists), tuple(rules), (root or knowledge_root()) / "catalog/hirelings")

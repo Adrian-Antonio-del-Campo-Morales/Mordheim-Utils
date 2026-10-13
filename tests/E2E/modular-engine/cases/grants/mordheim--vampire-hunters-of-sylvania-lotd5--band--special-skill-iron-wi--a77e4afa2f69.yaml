@@ -1,0 +1,88 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/vampire-hunters-of-sylvania-lotd5/band--special-skill-iron-will/mechanic.fear-immunity
+# scaffold_fingerprint: 021e755e487a0740ed073f67bbf57a978b8a56a4859981c1670ffbdbf52737e5
+# authoring_status: AUTHORED
+# authoring_progress: the admitted fear-immunity clause carries 2 authored scenario(s) derived
+# from the printed rule, the recorded semantic contract and the printed profile; any remaining
+# face of the file stays recorded as pending below.  REVIEWED still requires manual semantic
+# review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: fear-immunity (scope: YES)
+# AUTHORED[fear-immunity]: the bearer vampire-hunter is the declared recipient, built from its printed profile (W1 A1); the opponent is a hand-built fixture that declares its own facts.
+#   2 scenario(s) cover the clause: the fear-causing charger reaches the bearer, which would be tested and is not, so the tape holds only the two attack pools; the same setup does request the two-dice Fear test for priest-of-morr, which does not carry the rule.
+#   Every strike is declared as a natural 1, so each round reports the Fear or Stupidity request under test and nothing else.
+#   REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/vampire-hunters-of-sylvania-lotd5/band--special-skill-iron-will/mechanic.fear-immunity
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/vampire-hunters-of-sylvania-lotd5/special-rules.yaml
+# source_fingerprint:
+#   33f92ff8827231ff05588d37b93c3f379a3d0c4530fef16cb3a9bf244ba9ae59
+# source_sha256_at_generation:
+#   39bb9999192149c9ed3f9c1bccbe36bccc647bd09f873344766b911bdf397a6e
+# Printed rule text:
+#   Such is the work of Slayers that there is little room for hesitation. When the opportunity arises, one must be able to strike! As such, the warrior is hardened and immune to Fear.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Immune to Fear: no Fear test is taken; other Leadership and Psychology tests are unaffected. Observable: a fear-needing test is skipped for this warrior, while Stupidity and other Leadership tests still roll.
+# effect_id:
+#   mechanic.fear-immunity
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"this warrior would take a Fear test","resolution":"test skipped","recipient":"this warrior","duration":"whole duel","exceptions":"does not exempt Stupidity or other Leadership tests"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Fear immunity (mechanic.fear-immunity): resolve_local_leadership and psychology.resolve_fear skip the Fear test only. Surface reuse candidate: {"family":"mechanic.fear-immunity","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/vampire-hunters-of-sylvania-lotd5/band--special-skill-iron-will/mechanic.fear-immunity
+  id: the-fear-immune-warrior-is-not-tested
+  covers: [fear-immunity]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: vampire-hunters-of-sylvania-lotd5, profile_id: vampire-hunter, special_rule_ids: [band--special-skill-iron-will]}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/vampire-hunters-of-sylvania-lotd5/band--special-skill-iron-will/mechanic.fear-immunity
+  id: a-band-mate-without-the-immunity-is-tested
+  covers: [fear-immunity]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: vampire-hunters-of-sylvania-lotd5, profile_id: priest-of-morr}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

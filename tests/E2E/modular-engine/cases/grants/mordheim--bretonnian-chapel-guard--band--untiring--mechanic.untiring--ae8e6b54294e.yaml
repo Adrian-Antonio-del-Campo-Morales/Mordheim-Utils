@@ -1,0 +1,204 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/bretonnian-chapel-guard/band--untiring/mechanic.untiring
+# scaffold_fingerprint: 3de6ce95f65c4e2724d73ba0e8647a477a7ce885855a94a20dc40189f8fc2333
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry authored scenarios derived from the printed rule
+# and the recorded contract, mirroring the canonical operator's own case: the 5+ floor a Strength 5
+# attacker cannot push past and the same attack denying the save without the rule, the mundane
+# critical the floor still saves and the magical critical that removes it.  The bearer carries the
+# canonical operator through its grant list, because the band origin is a parameterized variant of
+# the shared clause.  The excluded movement-penalty sentence is retained as context.  REVIEWED still
+# requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: non-magical-immunity (scope: YES)
+# AUTHORED[non-magical-immunity]: 2 scenarios evidence that a mundane critical still meets the 5+
+#   floor while a magical one removes the save.
+# origin_id:
+#   rule/mordheim/bretonnian-chapel-guard/band--untiring/mechanic.untiring
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/bretonnian-chapel-guard/special-rules.yaml
+# source_fingerprint:
+#   78181a61af944d724f7af9bde2b5456ae9ad03f46b3fa73fbb5c1ecfcb91c9f1
+# source_sha256_at_generation:
+#   9139664c4fa318c014e7f07bca71391533c1eaecdc6d1a19f66e2126ed5826f5
+# Printed rule text:
+#   The Knight ignores movement penalties for wearing armour while on foot. Strength, axes, critical hits and similar modifiers cannot reduce the Knight's armour save below 5+, and non-magical means cannot ignore that save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Non-magical means cannot ignore that save; observable: ignore_armour from a mundane source leaves the 5+ save intact, while a magical attack may still ignore it.
+# effect_id:
+#   mechanic.untiring
+# relation:
+#   parameterized_variant
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   armour_cannot_be_ignored is bypassed only when the incoming attack is magical, matching the 'non-magical' wording. Surface reuse candidate: {"family":"M-UNTIRING","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Confirm the printed saving value, equipment slot, combinability, save stage and exceptions. Intrinsic kit, armour floor and helmet reaction are distinct; movement/ownership lifecycle clauses are not new duel behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: save-floor (scope: YES)
+# AUTHORED[save-floor]: 2 scenarios evidence that a Strength 5 attacker cannot push the 5+ save
+#   past 5, and that the same attack denies the save without the rule.
+# origin_id:
+#   rule/mordheim/bretonnian-chapel-guard/band--untiring/mechanic.untiring
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/bretonnian-chapel-guard/special-rules.yaml
+# source_fingerprint:
+#   78181a61af944d724f7af9bde2b5456ae9ad03f46b3fa73fbb5c1ecfcb91c9f1
+# source_sha256_at_generation:
+#   9139664c4fa318c014e7f07bca71391533c1eaecdc6d1a19f66e2126ed5826f5
+# Printed rule text:
+#   The Knight ignores movement penalties for wearing armour while on foot. Strength, axes, critical hits and similar modifiers cannot reduce the Knight's armour save below 5+, and non-magical means cannot ignore that save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Strength, axes, critical hits and similar modifiers cannot reduce the Knight's armour save below 5+; observable: no armour modifier pushes the target number past 5.
+# effect_id:
+#   mechanic.untiring
+# relation:
+#   equivalent
+# parameters:
+#   {"floor":5}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   mechanic.untiring declares armour_save_floor 5; armour_target clamps the final target to the floor. Surface reuse candidate: {"family":"M-UNTIRING","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Confirm the printed saving value, equipment slot, combinability, save stage and exceptions. Intrinsic kit, armour floor and helmet reaction are distinct; movement/ownership lifecycle clauses are not new duel behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: movement-penalty (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/bretonnian-chapel-guard/band--untiring/mechanic.untiring
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/bretonnian-chapel-guard/special-rules.yaml
+# source_fingerprint:
+#   78181a61af944d724f7af9bde2b5456ae9ad03f46b3fa73fbb5c1ecfcb91c9f1
+# source_sha256_at_generation:
+#   9139664c4fa318c014e7f07bca71391533c1eaecdc6d1a19f66e2126ed5826f5
+# Printed rule text:
+#   The Knight ignores movement penalties for wearing armour while on foot. Strength, axes, critical hits and similar modifiers cannot reduce the Knight's armour save below 5+, and non-magical means cannot ignore that save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Ignoring armour movement penalties is an encumbrance/movement rule; the duel has no board movement or movement phase. Printed clause: The Knight ignores movement penalties for wearing armour while on foot. Strength, axes, critical hits and similar modifiers cannot reduce the Knight's armour save below 5+, and non-magical means cannot ignore that save.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Movement/encumbrance is outside the duel runtime; recorded so the clause is not silently dropped. Scope review integration: {"clause_id":"movement-penalty","review_clause_id":"movement-penalty","source_state":"matched","review_status":"reviewed","scope_reason":"Ignoring armour movement penalties is an encumbrance/movement rule; the duel has no board movement or movement phase.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The Knight ignores movement penalties for wearing armour while on foot; observable: no duel-time statistic depends on it.","effect_id":"","relation":"related","parameters":"{}","conditions":"{}","consumer":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\",\"packages/python/roster-construction/mordheim_construction/contracts.py::effect_index\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"B17-construction","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"The Knight ignores movement penalties for wearing armour while on foot. Strength, axes, critical hits and similar modifiers cannot reduce the Knight's armour save below 5+, and non-magical means cannot ignore that save.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  Heavy
+# armour is the printed 5+ and the floor clamps the Strength 5 penalty back to it.
+- audit_id: rule/mordheim/bretonnian-chapel-guard/band--untiring/mechanic.untiring
+  id: the-strength-five-attacker-cannot-worsen-the-floor
+  covers: [save-floor]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 5, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      skill_ids: [mechanic.untiring]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# No armour face is requested: without the floor the target is above 6.
+- audit_id: rule/mordheim/bretonnian-chapel-guard/band--untiring/mechanic.untiring
+  id: without-the-rule-the-strength-five-attack-denies-the-save
+  covers: [save-floor]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 5, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# A critical whose chart ignores armour is a non-magical means; the floor still saves on 5.
+- audit_id: rule/mordheim/bretonnian-chapel-guard/band--untiring/mechanic.untiring
+  id: a-mundane-critical-still-meets-the-five-plus-floor
+  covers: [non-magical-immunity]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 5, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      skill_ids: [mechanic.untiring]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 3}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The magical critical is the printed exception: the save is removed and damage 2 is taken.
+- audit_id: rule/mordheim/bretonnian-chapel-guard/band--untiring/mechanic.untiring
+  id: a-magical-critical-removes-the-save
+  covers: [non-magical-immunity]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {magical_attacks: true}
+      characteristics: {weapon_skill: 3, strength: 5, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      skill_ids: [mechanic.untiring]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

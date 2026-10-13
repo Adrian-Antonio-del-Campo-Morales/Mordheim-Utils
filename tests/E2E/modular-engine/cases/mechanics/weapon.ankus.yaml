@@ -1,0 +1,136 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.ankus
+# scaffold_fingerprint: 60358f5d607769b8da6275458bab05b81e07fc3009f36b7f0d7ee6e03501f3a1
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries four authored scenarios for the Concussion band and the printed strike-first order. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenarios cover the printed Concussion band edges (1, 2 and 4) and the strike-first priority.
+# origin_id:
+#   mechanic/weapon.ankus
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   0d047320f544dcf128f0c9b5012a02ab7f76cd4356c4a74a6a21f3e3e68f3314
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Strikes first and has Concussion on Injury rolls of 2-4.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Strike-first melee weapon whose injury roll of 2-4 is treated as Stunned. Closure: priority 1 in the first and later rounds and a 2-4 Injury total yields STUNNED.
+# effect_id:
+#   weapon.ankus
+# relation:
+#   equivalent
+# parameters:
+#   {"concussion": true, "priority": 1}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. Concussion is consumed by _injury_context (injury_condition treats 2-4 as stunned); priority 1 by resolve_priority. Note the source prints Concussion for the Ankus while the sibling mace-family rule and the operator agree, so no conflict. Surface reuse candidate: {"family":"W-weapon.ankus","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/weapon.ankus - strikes first; Injury rolls of 2-4 are Stunned.
+#
+# Expectations come from the printed rule and the admitted clause `whole`, never
+# from engine output.  The armed attacker has one attack, so the round carries
+# the bearer's single attack index 0 and then the defender's.
+# A roll of 1 stays outside the printed Concussion band, so it is an ordinary knocked-down result.
+
+- audit_id: mechanic/weapon.ankus
+  id: ankus-injury-1-is-knocked-down
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.ankus
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w1-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Concussion on Injury rolls of 2-4 is the printed band; face 2 is treated as Stunned.
+
+- audit_id: mechanic/weapon.ankus
+  id: ankus-injury-2-is-stunned
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.ankus
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Concussion on Injury rolls of 2-4 is the printed band; face 4 is treated as Stunned.
+
+- audit_id: mechanic/weapon.ankus
+  id: ankus-injury-4-is-stunned
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.ankus
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Strikes first: the ordered tape shows the bearer resolving before a higher-Initiative defender.
+
+- audit_id: mechanic/weapon.ankus
+  id: ankus-strikes-first-despite-lower-initiative
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.ankus
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+

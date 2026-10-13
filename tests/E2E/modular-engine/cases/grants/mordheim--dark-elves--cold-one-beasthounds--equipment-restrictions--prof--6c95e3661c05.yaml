@@ -1,0 +1,93 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dark-elves/cold-one-beasthounds--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: dea4d6a069e35a882f0697cfe62e660f8d6c440b709856b57bdce87bb2e04bcd
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying weapon.sword in main_weapon_id is refused with ""weapons" is forbidden for dark-elves/cold-one-beasthounds.", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# origin_id:
+#   rule/mordheim/dark-elves/cold-one-beasthounds--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dark-elves/special-rules.yaml
+# source_fingerprint:
+#   be68ad45bc360f4c05f10e3c9a840615071cb8c3901c424679a831a3a1e8925a
+# source_sha256_at_generation:
+#   4be3ba1ddf10e16be4b15f25080eba60b5ab2595e25d1be84e27eef4f0e6de0e
+# Printed rule text:
+#   Cold One Beasthounds are animals and use only their claws and jaws; they do not use weapons or armour.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Profile equipment prohibition plus intrinsic attack: the Cold One Beasthounds take neither weapons nor armour and fight with claws and jaws.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["weapons","armour"]}
+# conditions:
+#   {"recipient":"cold-one-beasthounds"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Declared by cold-one-beasthounds--equipment-restrictions with a real two-token forbids list. Surface reuse candidate: {"family":"903","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Separate intrinsic attacks, equipment selection, active use, ownership and an explicitly supported unarmed waiver. No weapons/armour text alone does not grant a waived penalty or extra attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/dark-elves/cold-one-beasthounds--equipment-restrictions/profile.equipment-restrictions
+  id: cold-one-beasthounds-with-weapons-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+      main_weapon_id: weapon.sword
+  expect_error: '"weapons" is forbidden for dark-elves/cold-one-beasthounds.'
+
+- audit_id: rule/mordheim/dark-elves/cold-one-beasthounds--equipment-restrictions/profile.equipment-restrictions
+  id: cold-one-beasthounds-with-armour-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for dark-elves/cold-one-beasthounds
+
+- audit_id: rule/mordheim/dark-elves/cold-one-beasthounds--equipment-restrictions/profile.equipment-restrictions
+  id: cold-one-beasthounds-without-weapons-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+    second:
+      collection: mordheim
+      band_id: dark-elves
+      profile_id: cold-one-beasthounds
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

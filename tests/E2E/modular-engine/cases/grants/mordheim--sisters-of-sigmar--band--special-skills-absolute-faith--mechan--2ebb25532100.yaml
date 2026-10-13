@@ -1,0 +1,170 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/sisters-of-sigmar/band--special-skills-absolute-faith/mechanic.fear-reroll
+# scaffold_fingerprint: dcbbf0ef1be7eb875c1dc7570f7cec1d753f4866b3c90ac5ad6c12f6652fa791
+# authoring_status: AUTHORED
+# authoring_progress: the admitted fear-reroll clause carries three authored scenarios derived from the
+# printed sentence and the recorded contract, mirroring the authored optional-reroll grant of the same
+# family in this directory (dwarf-rangers dwarf-longbeards--stubborn): one optional reroll turns the failed
+# Fear test around and the bearer keeps its ordinary hits, the second result is accepted even when the
+# reroll fails again with no third attempt, and a bearer without the grant is offered no reroll at all.  The
+# band's own selectable rule band--special-skills-absolute-faith binds exactly this canonical id
+# (bands/mordheim/sisters-of-sigmar/special-rules.yaml), so the band origin adds no second runtime term and
+# the tapes read the canonical operator through the fixture's grant list.  The printed "does not have to
+# test if she is fighting alone" rider is its own separated clause and is not asserted here.  REVIEWED
+# still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: fear-reroll (scope: YES)
+# AUTHORED[fear-reroll]: 3 scenarios cover the printed "she may re-roll any fear tests".  The bearer is a
+# hand-built fixture of the printed Leadership the charged test uses, carrying the canonical operator; the
+# enemy charges it and is the fear-causer (its causes-fear fact is its own trait_override), so the test is
+# the charged warrior's Fear test, whose printed consequence on a failure is that its own hits need a
+# natural six.  The declared pair of sixes fails the test, the declared choice takes the single offered
+# reroll and the second pair of ones passes it, so the bearer is back to its ordinary hits; the second
+# scenario declares the reroll failing as well and shows the accepted second result; the third carries the
+# same dice without the grant, where no reroll is offered and the failure stands.
+# origin_id:
+#   rule/mordheim/sisters-of-sigmar/band--special-skills-absolute-faith/mechanic.fear-reroll
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/sisters-of-sigmar/special-rules.yaml
+# source_fingerprint:
+#   e7413cced4bde7667192659eb037ecb7a2653eb74bd3cffd4f155b85f1420041
+# source_sha256_at_generation:
+#   47dd3f6aa9031cbf2945b63e084ee09b61a9c89570af9b3eca86c08430b244a5
+# Printed rule text:
+#   She may re-roll any fear tests
+# Semantic contract (check analysis_status before treating as accepted):
+#   Re-rolling any fear test is an admitted individual psychology consequence; the fighting-alone rider belongs to its own separated clause. Printed clause: She may re-roll any fear tests
+# effect_id:
+#   mechanic.fear-reroll
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"failed Fear test","resolution":"optional reroll","recipient":"this warrior"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Fear reroll clause of a compound record. Scope review integration: {"clause_id":"fear-reroll","review_clause_id":"fear-reroll","source_state":"matched","review_status":"reviewed","scope_reason":"Re-rolling any fear test is an admitted individual psychology consequence; the fighting-alone rider belongs to its own separated clause.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"May reroll a failed Fear test once and accept the second result; other Psychology tests are unaffected.","effect_id":"mechanic.fear-reroll","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"failed Fear test\",\"resolution\":\"optional reroll\",\"recipient\":\"this warrior\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"C07-leadership-rerolls","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"The Sister puts her faith in Sigmar, and faces dangers unflinchingly. She may re-roll any fear tests and does not have to test if she is fighting alone against several opponents.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"mechanic.fear-reroll","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: all-alone (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/sisters-of-sigmar/band--special-skills-absolute-faith/mechanic.fear-reroll
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/sisters-of-sigmar/special-rules.yaml
+# source_fingerprint:
+#   e7413cced4bde7667192659eb037ecb7a2653eb74bd3cffd4f155b85f1420041
+# source_sha256_at_generation:
+#   47dd3f6aa9031cbf2945b63e084ee09b61a9c89570af9b3eca86c08430b244a5
+# Printed rule text:
+#   does not have to test if she is fighting alone against several opponents
+# Semantic contract (check analysis_status before treating as accepted):
+#   (not recorded)
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Fighting-alone test is excluded group mechanics; no consumer assigned.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  Both fighters
+# attack once with a plain mace and every declared attack die is a natural one, a miss, so the Fear test and
+# its reroll are the whole of the evidence.
+
+- audit_id: rule/mordheim/sisters-of-sigmar/band--special-skills-absolute-faith/mechanic.fear-reroll
+  id: one-optional-reroll-turns-the-failed-fear-test-around
+  covers: [fear-reroll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-reroll]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.reroll.0, value: 1}
+    - {key: round.0.second.fear.charged.reroll.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/sisters-of-sigmar/band--special-skills-absolute-faith/mechanic.fear-reroll
+  id: the-second-result-is-accepted-even-when-the-reroll-fails
+  covers: [fear-reroll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-reroll]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.reroll.0, value: 6}
+    - {key: round.0.second.fear.charged.reroll.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/sisters-of-sigmar/band--special-skills-absolute-faith/mechanic.fear-reroll
+  id: without-the-grant-the-failure-stands
+  covers: [fear-reroll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+

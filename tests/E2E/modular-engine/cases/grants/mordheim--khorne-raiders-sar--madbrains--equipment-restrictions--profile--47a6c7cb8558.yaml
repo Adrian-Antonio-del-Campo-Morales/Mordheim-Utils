@@ -1,0 +1,81 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/khorne-raiders-sar/madbrains--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: a98e427f0dc35e858b4fc6cba46857f72486c1c11f50fcce255f76fcc24823a6
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying armour.heavy-armour in armour_id is refused with "armour is forbidden for khorne-raiders-sar/madbrains", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# origin_id:
+#   rule/mordheim/khorne-raiders-sar/madbrains--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/khorne-raiders-sar/special-rules.yaml
+# source_fingerprint:
+#   49a9f2fcfb1b9bb975b417dcf5c7010edae8b18af71ff369017347fe91f7f174
+# source_sha256_at_generation:
+#   9f74e3d63c17e04e6c9495f4a23a951580596577ac30feadba8504194b917d94
+# Printed rule text:
+#   The Armour section is available to Quartermasters and Flayerkin only.
+# Semantic contract (check analysis_status before treating as accepted):
+#   List scoping: the Madbrain Armour section reaches only Quartermasters and Flayerkin; other profiles lose that line.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["armour"]}
+# conditions:
+#   {"recipient":"madbrains","allowed_profiles":["quartermasters","flayerkin"]}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The clause is an entry-recipient restriction; it belongs to the shared equipment-entry predicate rather than a new effect. Surface reuse candidate: {"family":"901","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed recipient selectors, including promoted Heroes and selected variants. Share eligibility machinery, not a recipient set; culinary item names alone add no restriction.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/khorne-raiders-sar/madbrains--equipment-restrictions/profile.equipment-restrictions
+  id: madbrains-with-armour-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: khorne-raiders-sar
+      profile_id: madbrains
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for khorne-raiders-sar/madbrains
+
+- audit_id: rule/mordheim/khorne-raiders-sar/madbrains--equipment-restrictions/profile.equipment-restrictions
+  id: madbrains-without-armour-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: khorne-raiders-sar
+      profile_id: madbrains
+    second:
+      collection: mordheim
+      band_id: khorne-raiders-sar
+      profile_id: madbrains
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

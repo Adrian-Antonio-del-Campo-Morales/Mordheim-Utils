@@ -117,6 +117,12 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
                 automatic_rule_effects = merge_effects(automatic_rule_effects, EffectSet(**contract.get("effects", {})))
                 traits.update(contract.get("traits", {}))
     selected_special_effects = EffectSet()
+    if 'compiler.assassin-poisoner' in automatic_compiler_contracts:
+        allowed = {'poison.black-lotus', 'poison.black-venom'}
+        chosen = build.main_poison_id
+        if chosen not in allowed or build.off_poison_id not in (None, chosen):
+            raise ValueError('Poisoner requires one shared Black Lotus or Dark Venom choice before battle')
+        build = replace(build, off_poison_id=chosen if build.off_hand_id else None)
     if profile is not None and "hireling_equipment" in profile:
         kit = desktop_call("hirelingKit", build, root, package=package, profile=profile)
         materials = {}

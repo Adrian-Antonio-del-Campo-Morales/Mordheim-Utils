@@ -1,0 +1,154 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.hypnotist
+# scaffold_fingerprint: 58899bf322433f275e126be44df8cd0c6edd967aa24de210f69eb31a7f992495
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: hypnotist (scope: YES)
+# AUTHORED[hypnotist]: 4 scenarios cover the failed Leadership test that entrances the target and suppresses its attacks, the passed test that leaves it free, the declined declaration with no test at all, and the Sleuth choosing to end an existing trance.
+# origin_id:
+#   mechanic/mechanic.hypnotist
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   296bd6a4dfeb5b43f55b9937e96d6d95fd7e617d1d925ebd62cda75f8f68ba84
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   At the beginning of the combat phase the Sleuth may hypnotise any living warrior in base contact that is not Immune to Psychology. The suspect must pass a Leadership test or be entranced: an entranced warrior may not attack in close combat and is treated as knocked down for the purpose of being attacked. The trance ends when the entranced warrior or the Sleuth has been attacked, or when the Sleuth chooses to end it.
+# Semantic contract (check analysis_status before treating as accepted):
+#   At the start of the combat phase this warrior may hypnotise a living, non-Immune-to-Psychology model in base contact; on a failed Leadership test the target is entranced and may not attack. Observable: a failed test sets the target's charm-attack-blocked state this round.
+# effect_id:
+#   mechanic.hypnotist
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"start of the combat phase, target living, in base contact, not Psychology-immune, not frenzied","resolution":"target Leadership test","consequence":"entranced target cannot attack this round","recipient":"the opposing warrior","duration":"until attacked or ended","exceptions":"Undead, daemons and Psychology-immune models are unaffected"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Implemented in rounds.resolve_round via the entranced/charm_attack_blocked state, with a decision to end the trance. Surface reuse candidate: {"family":"mechanic.hypnotist","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare target identities, psychology/animal exceptions, test dice, phase, failure consequence and duration. Charge refusal, inability to attack and loss of one attack are distinct; Crude Belch may remove the only attack. Keep supplied individual consequences separate from group emission.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The Sleuth is the second fighter and hypnotises the opposing warrior before any blow
+# is struck.  The two declared sixes total twelve against the target's Leadership 6 and
+# fail it, so the target is entranced: its pool is suppressed entirely (the strict tape
+# carries no die for it) while the Sleuth's own attack finds the printed "treated as
+# knocked down for the purpose of being attacked" target, which is an automatic hit
+# whose To Wound die still has to be rolled.  The trance is consumed by that attack, as
+# the printed end condition says.
+- audit_id: mechanic/mechanic.hypnotist
+  id: a-failed-leadership-test-entrances-the-target
+  covers: [hypnotist]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hypnotist]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotist, value: true}
+  rolls:
+    - {key: round.0.second.hypnotist.0, value: 6}
+    - {key: round.0.second.hypnotist.1, value: 6}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.knocked_down_target: true, attacks.0.wounded: false, state.first.wounds: 2, state.first.condition: STANDING, state.first.entranced: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same declaration with a passed test: the two ones total two against Leadership 6,
+# so the target is not entranced at all.  Both warriors then resolve their ordinary
+# attacks, each with its own To Hit die, and no attack is an automatic one.
+- audit_id: mechanic/mechanic.hypnotist
+  id: a-passed-leadership-test-leaves-the-target-free
+  covers: [hypnotist]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hypnotist]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotist, value: true}
+  rolls:
+    - {key: round.0.second.hypnotist.0, value: 1}
+    - {key: round.0.second.hypnotist.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.1.knocked_down_target: false, state.first.entranced: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "may hypnotise" is a declaration: declining it requests no Leadership
+# test (the tape carries neither of the two dice) and leaves the round to the two
+# ordinary attack pools.
+- audit_id: mechanic/mechanic.hypnotist
+  id: declining-the-hypnosis-tests-nothing
+  covers: [hypnotist]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hypnotist]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotist, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.first.entranced: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "or when the Sleuth chooses to end it": the target starts the round
+# already entranced and the Sleuth spends the offered end-hypnosis declaration on it,
+# so the target is free and attacks normally; the same Sleuth then declines a new
+# hypnosis, which is why no Leadership die appears anywhere in the tape.
+- audit_id: mechanic/mechanic.hypnotist
+  id: the-sleuth-chooses-to-end-an-existing-trance
+  covers: [hypnotist]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hypnotist]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  initial_state:
+    first: {entranced: true}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.end-hypnosis, value: true}
+    - {key: round.0.second.hypnotist, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.first.entranced: false, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

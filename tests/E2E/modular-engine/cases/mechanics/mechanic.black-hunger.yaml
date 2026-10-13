@@ -1,0 +1,187 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.black-hunger
+# scaffold_fingerprint: c3eca5db7347ebe5bc2ec66dad202abeb5ca83c116733bb29bd6d93c2f436e6f
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: attack-bonus (scope: YES)
+# AUTHORED[attack-bonus]: 1 scenario shows the printed +1 Attack as a second
+#   mace attack in the same pool.
+# origin_id:
+#   mechanic/mechanic.black-hunger
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   32b798084835eff4db21d15ca2470d91c68d008a454387b20650284ee8b0e5f3
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   For that turn he gains +1 Attack.
+# Semantic contract (check analysis_status before treating as accepted):
+#   While Black Hunger is active the bearer gains +1 Attack for that turn. Closure: the attack pool carries one extra attack from the mechanic tag.
+# effect_id:
+#   mechanic.black-hunger
+# relation:
+#   equivalent
+# parameters:
+#   {"attacks_bonus": 1}
+# conditions:
+#   {"duration": "one turn", "trigger": "own turn"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   effect.attacks_bonus 1 is read by build_attacks for the passive mechanic tag, so the printed +1 Attack is delivered for the whole turn. Scope review integration: {"clause_id":"attack-bonus","review_clause_id":"attack-bonus","source_state":"unverified","review_status":"reviewed","scope_reason":"+1 Attack for that turn is an admitted attack-count consequence of the invoked state.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"mechanic.black-hunger","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare trigger, current bearer, activation, timing, state duration and reset rules. Keep damage backlash and interrupted continuation; exclude producer movement/group counting or campaign progression.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: backlash (scope: YES)
+# AUTHORED[backlash]: 1 scenario shows the end-of-turn 1D3 S3 hits on the bearer
+#   with no armour roll.
+# origin_id:
+#   mechanic/mechanic.black-hunger
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   32b798084835eff4db21d15ca2470d91c68d008a454387b20650284ee8b0e5f3
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   At the end of the turn he suffers 1D3 Strength 3 hits with no armour save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   At the end of the boosted turn the bearer suffers 1D3 Strength 3 hits that allow no armour save. Closure: D3 Strength 3 automatic hits resolve against the bearer with armour denied and no critical.
+# effect_id:
+#   mechanic.black-hunger
+# relation:
+#   equivalent
+# parameters:
+#   {"armour_save": false, "hits": "1D3", "strength": 3}
+# conditions:
+#   {"trigger": "end of the invoking turn"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   _black_hunger rolls 1D3 (RollRequest(...,3)) and resolves each as an automatic, unparryable, armour-ignoring Strength 3 hit with no critical, which is the printed backlash. resolve_round runs it for both fighters once the round attacks finish, the end of the boosted turn under the retained activation convention and the printed D3 S3 unsaveable self-hits. Surface reuse candidate: {"family":"mechanic.black-hunger","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare trigger, current bearer, activation, timing, state duration and reset rules. Keep damage backlash and interrupted continuation; exclude producer movement/group counting or campaign progression.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: invocation (scope: YES)
+# AUTHORED[invocation]: the optional own-turn invocation is exercised by the
+#   extra-attack scenario, whose bearer carries the effect for that turn only.
+# origin_id:
+#   mechanic/mechanic.black-hunger
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   32b798084835eff4db21d15ca2470d91c68d008a454387b20650284ee8b0e5f3
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   At the beginning of his turn, the Hero may invoke Black Hunger. For that turn he gains +1 Attack and adds the result of 1D6 x 0.4" + 1" to his Movement. At the end of the turn he suffers 1D3 Strength 3 hits with no armour save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   At the beginning of his turn the Hero may invoke Black Hunger and its effect lasts for that turn. Closure: the invocation and its one-turn duration are represented for the bearer without depending on map movement.
+# effect_id:
+#   mechanic.black-hunger
+# relation:
+#   equivalent
+# parameters:
+#   {"activation": "optional, own turn", "duration": "one turn"}
+# conditions:
+#   {"duration": "one turn", "optional": true, "trigger": "own turn start"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Split from the former composite row so invocation, attack bonus, backlash and excluded movement stand alone. The printed clause is optional ("may invoke") and the permanent duel-engine ruling retains the documented automatic Black Hunger activation convention (docs/decisions/design-rulings.md), so the passive tag is the decided behaviour, not a defect. The invocation and the one-turn duration are delivered by that convention; the missing map movement is recorded in its own clause and is not an admitted behaviour gap. Surface reuse candidate: {"family":"mechanic.black-hunger","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare trigger, current bearer, activation, timing, state duration and reset rules. Keep damage backlash and interrupted continuation; exclude producer movement/group counting or campaign progression.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: movement (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   mechanic/mechanic.black-hunger
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   32b798084835eff4db21d15ca2470d91c68d008a454387b20650284ee8b0e5f3
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   And adds the result of 1D6 x 0.4" + 1" to his Movement.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The added Movement distance is map movement, which the duel excludes; recording it as LATER would claim a live deferral of an excluded clause. Printed clause: And adds the result of 1D6 x 0.4" + 1" to his Movement.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Recorded explicitly so the excluded half is visible and the closure never depends on map movement. No movement term exists in the duel state; its absence is not an admitted behaviour gap. Scope review integration: {"clause_id":"movement","review_clause_id":"movement","source_state":"unverified","review_status":"reviewed","scope_reason":"The added Movement distance is map movement, which the duel excludes; recording it as LATER would claim a live deferral of an excluded clause.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The printed 1D6 x 0.4\" + 1\" Movement addition belongs to the excluded tabletop movement subsystem; no duel operator is required and the mechanic keeps only its attack and backlash contributions.","effect_id":"","relation":"independent","parameters":"{\"movement_term\": \"1D6 x 0.4in + 1in\"}","conditions":"{\"subsystem\": \"movement\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A18-excluded-and-later-clauses","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"And adds the result of 1D6 x 0.4\" + 1\" to his Movement.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# The backlash is an S3 hit with no armour save: the bearer wears a 6+ light armour
+# and the round still resolves no armour roll at all, so the single declared wound is
+# taken on the fighter himself.
+- audit_id: mechanic/mechanic.black-hunger
+  id: the-backlash-ignores-armour
+  covers: [backlash]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      skill_ids: [mechanic.black-hunger]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+    - {key: round.0.first.black-hunger.hit.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.wounds: 1, attacks.3.damage: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The invoked turn adds one attack to the printed profile: the A1 bearer strikes twice
+# with the mace, and the same tape already carries the end-of-turn backlash.
+- audit_id: mechanic/mechanic.black-hunger
+  id: the-invocation-grants-one-extra-attack
+  covers: [invocation, attack-bonus]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.black-hunger]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.black-hunger.hits, sides: 3, value: 1}
+    - {key: round.0.first.black-hunger.hit.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.damage: 1, state.second.wounds: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

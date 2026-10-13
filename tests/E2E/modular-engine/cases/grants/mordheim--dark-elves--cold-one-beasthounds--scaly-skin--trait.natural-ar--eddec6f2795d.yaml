@@ -1,0 +1,146 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dark-elves/cold-one-beasthounds--scaly-skin/trait.natural-armour-unmodified
+# scaffold_fingerprint: e0bb9aa64e72145192b5764f740da90810c70df3f8ce281c77f4365db4832e58
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry authored scenarios: the unmodified save keeps its
+#   printed six against a high-Strength attacker and beats it only on five, and the printed 'no save'
+#   critical removes it.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: critical-negation (scope: YES)
+# AUTHORED[critical-negation]: 1 scenario covers the printed 'no save' critical: the declared natural
+#   six on the wound face draws the critical die, whose printed no-save result denies the unmodified
+#   save outright - no armour die belongs to the tape - and the critical's extra damage takes the
+#   bearer's last wounds, so the injury face follows.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/dark-elves/cold-one-beasthounds--scaly-skin/trait.natural-armour-unmodified
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dark-elves/special-rules.yaml
+# source_fingerprint:
+#   820de65b47c425d37314c5f14d5bcae0d3b87f1dc9d0e86f64bf1c7e610b7ab5
+# source_sha256_at_generation:
+#   4be3ba1ddf10e16be4b15f25080eba60b5ab2595e25d1be84e27eef4f0e6de0e
+# Printed rule text:
+#   Cold One Beasthounds have tough scaly skin, and are considered to have a 6+ armour save. This save cannot be modified beyond 6 due to strength modifiers but any result of ‘no save’ on the Critical Hit chart will negate the unmodified 6+ save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A 'no save' result on the Critical Hit chart negates the unmodified 6+ save; observable: a critical that removes armour still removes this save.
+# effect_id:
+#   trait.natural-armour-unmodified
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Same printed sentence as the save candidate; recorded here so the exception is not lost when only the flag is read. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: no-strength-reduction (scope: YES)
+# AUTHORED[no-strength-reduction]: 2 scenarios cover the printed cap: with a Strength 9 attacker the
+#   natural save is still asked at its unmodified six and saves the wound on the six, while the same
+#   attack's five takes the wound, so the die is really at six and not standing unrolled.  REVIEWED
+#   still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/dark-elves/cold-one-beasthounds--scaly-skin/trait.natural-armour-unmodified
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dark-elves/special-rules.yaml
+# source_fingerprint:
+#   820de65b47c425d37314c5f14d5bcae0d3b87f1dc9d0e86f64bf1c7e610b7ab5
+# source_sha256_at_generation:
+#   4be3ba1ddf10e16be4b15f25080eba60b5ab2595e25d1be84e27eef4f0e6de0e
+# Printed rule text:
+#   Cold One Beasthounds have tough scaly skin, and are considered to have a 6+ armour save. This save cannot be modified beyond 6 due to strength modifiers but any result of ‘no save’ on the Critical Hit chart will negate the unmodified 6+ save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The save cannot be modified beyond 6 by Strength modifiers; observable: high Strength does not push the target number above 6.
+# effect_id:
+#   trait.natural-armour-unmodified
+# relation:
+#   parameterized_variant
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   natural_armour_unmodified skips the Strength modifier for the natural component only. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profile; no engine output was consulted.  The bearer
+# is the band's own profile that prints the save and starts at two wounds so an unsaved wound leaves it
+# standing.  The attacker's Weapon Skill 10 and Initiative 10 are hand-built fixture facts; it is
+# uncharged so the higher Initiative lets it strike first, and the bearer contributes no attack of its
+# own.
+
+- audit_id: rule/mordheim/dark-elves/cold-one-beasthounds--scaly-skin/trait.natural-armour-unmodified
+  id: high-strength-still-leaves-the-save-at-six
+  covers: [no-strength-reduction]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 9, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: dark-elves, profile_id: cold-one-beasthounds}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/dark-elves/cold-one-beasthounds--scaly-skin/trait.natural-armour-unmodified
+  id: the-unmodified-save-is-beaten-only-on-five
+  covers: [no-strength-reduction]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 9, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: dark-elves, profile_id: cold-one-beasthounds}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/dark-elves/cold-one-beasthounds--scaly-skin/trait.natural-armour-unmodified
+  id: a-no-save-critical-negates-the-unmodified-save
+  covers: [critical-negation]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: dark-elves, profile_id: cold-one-beasthounds}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 3}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 2, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

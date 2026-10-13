@@ -1,0 +1,155 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-monster-slayer/skill.monster-slayer
+# scaffold_fingerprint: e8d3ccced5dd7c88da8ce8c7b5ada504b549fdcd9fdbcd429c14c28433b2b743
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries four authored scenarios: the printed wound
+# cap and its contrast without the band grant, the retained naturally easier target, and the armour
+# face this publication also prints, whose save is computed from the effective Strength and is
+# therefore not rolled at all.  REVIEWED still requires manual semantic review and execution_status
+# stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenarios read both printed sentences on the band's Troll Slayer.  Against
+# the Toughness-6 boundary the attacker's Strength 3 normally needs 5+, so a declared wound roll of
+# 4 wounds with the grant and fails without it; against a Toughness-2 opponent a declared roll of 3
+# still wounds, so the printed retention of a naturally easier target is asserted; and against the
+# same Toughness-6 opponent wearing armour the effective Strength of 6 puts the armour target at 7,
+# so no armour die is declared and the wound stands, which the strict tape enforces (a raw-Strength
+# basis would ask for a 4+ save that is absent from the declaration).  That armour reading is the
+# one recorded by editorial-monster-slayer-armour.yaml for this publication (result.target 7,
+# result.eligible false, no roll).  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-monster-slayer/skill.monster-slayer
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-cursed-of-karak-zorn/special-rules.yaml
+# source_fingerprint:
+#   532561a82afb898cd3aec442738887645abfff2065396e27c0d12c65a3225e4c
+# source_sha256_at_generation:
+#   4295409de5dae3504f8d0e3742c38e22c6cf0d721f20447ec84458d465bc16b1
+# Printed rule text:
+#   The Troll Slayer wounds any opponent on 4+ regardless of Toughness, unless his modified Strength would normally wound on a lower result. If this rule effectively increases the Strength needed to obtain a 4+ wound roll, use that effective Strength when calculating the armour-save modifier.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Always wounds on a 4+ regardless of Toughness unless the modified Strength would need a lower roll; observable: the to-wound target is capped at 4.
+# effect_id:
+#   skill.monster-slayer
+# relation:
+#   equivalent
+# parameters:
+#   {"maximum_wound_target":4,"retain_better_wound_target":true}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Eight Slayer records of the same printed rule, including the shared skill and mechanic definitions. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.monster-slayer","verified_facet":"skill.monster-slayer","relationship":"shared_facet","boundary":"Share the best-of ordinary wound target and 4+. Effective Strength for armour is a separate printed variant, not a consequence automatically granted to every Slayer.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed stanza, the recorded contract and the admitted monster-slayer grants
+# specifications (editorial-monster-slayer-trollheim.yaml and editorial-monster-slayer-armour.yaml);
+# no engine output was consulted.  The bearer is the printed Troll Slayer profile of this band
+# (WS4, BS3, S3, T4, W1, I2, A1) credited with this band's Monster Slayer rule through
+# special_rule_ids, so the case reads the band grant rather than a bare tag.  The hand-built
+# opponent is the Toughness-6 boundary the specifications name (the easier-target scenario lowers it
+# to 2, the armour scenario adds gromril armour to it) and its own strike is a declared natural 1.
+
+- audit_id: rule/trollheim/khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-monster-slayer/skill.monster-slayer
+  id: the-wound-target-is-capped-at-four
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+      special_rule_ids: [band--troll-slayer-special-skills-monster-slayer]
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-monster-slayer/skill.monster-slayer
+  id: without-the-grant-the-same-wound-roll-fails
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-monster-slayer/skill.monster-slayer
+  id: a-naturally-easier-target-is-retained
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+      special_rule_ids: [band--troll-slayer-special-skills-monster-slayer]
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-cursed-of-karak-zorn/band--troll-slayer-special-skills-monster-slayer/skill.monster-slayer
+  id: the-armour-save-uses-the-effective-strength
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-cursed-of-karak-zorn
+      profile_id: troll-slayer
+      special_rule_ids: [band--troll-slayer-special-skills-monster-slayer]
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.gromril-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

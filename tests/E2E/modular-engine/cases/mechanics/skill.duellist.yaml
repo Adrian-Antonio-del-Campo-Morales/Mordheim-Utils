@@ -1,0 +1,87 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.duellist
+# scaffold_fingerprint: a26ca79aa79b0d6ed78294711d11a9bf2321ebb00eef2ad5d4d37cfd2fe3ad65
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios show a failed hit roll
+#   taken again (the first round against a single opponent) and the same roll standing without the skill.
+# origin_id:
+#   mechanic/skill.duellist
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   f96d80014d381cf96c779ef7d75f7f7d1e763bdd256eb46bd06745937031e42f
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   If the Saurus Slayer is engaged with only a single opponent in melee, he may re-roll missed hits in the first round whether he charged or was charged.
+# Semantic contract (check analysis_status before treating as accepted):
+#   If the Saurus Slayer is engaged with only a single opponent in melee he may re-roll missed hits in the first round whether he charged or was charged. Closure: in the first round, with one engaged opponent, missed hits are re-rolled regardless of who charged.
+# effect_id:
+#   skill.duellist
+# relation:
+#   equivalent
+# parameters:
+#   {"first_round": true, "requirement": "single opponent", "reroll_hits": "missed hits"}
+# conditions:
+#   {"opponents": 1, "trigger": "first round"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   _hit_reroll raises the reroll for first_round with the duellist tag and does not test the charge direction, which is the printed "whether he charged or was charged"; a duel always supplies exactly one opponent, which is the printed single-opponent requirement. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.duellist","verified_facet":"skill.duellist","relationship":"shared_facet","boundary":"First-round missed hit reroll with a single opposing fighter, whether charging or charged; different from charge-only skills.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+
+- audit_id: mechanic/skill.duellist
+  id: the-first-round-rerolls-a-missed-hit
+  covers: [whole]
+  fighters:
+    first:
+      skill_ids: [skill.duellist]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/skill.duellist
+  id: the-same-roll-stands-without-the-skill
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

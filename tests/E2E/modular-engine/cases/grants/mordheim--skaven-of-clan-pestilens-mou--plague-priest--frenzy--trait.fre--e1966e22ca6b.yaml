@@ -1,0 +1,137 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-of-clan-pestilens-mou/plague-priest--frenzy/trait.frenzy
+# scaffold_fingerprint: c0274dbc7d417bc933235672b6d9b23abd8e1f098fa9f710d748eacbdce1ddae
+# authoring_status: AUTHORED
+# authoring_progress: the admitted frenzy clause carries 4 authored scenarios for the family model derived
+#   from the printed rule and the recorded semantic contract: doubled attacks while frenzied, the
+#   ordinary Fear test of a received charge skipped, the Stupidity test auto-passed, and Frenzy lost to
+#   the injury that knocks the bearer down.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: frenzy (scope: YES)
+# AUTHORED[frenzy]: 4 scenario(s) cover the clause: the doubled attack count the round's dice consume,
+#   the absence of the round.0 fear dice a received charge would otherwise demand, the auto-passed Head
+#   Injury Stupidity test, and the cleared frenzy flag the knock-down injury leaves beside the later
+#   round that stands the bearer up without regranting it.  The compulsory spatial charge, a parry
+#   prohibition and the Animosity subsystem are not asserted.
+# origin_id:
+#   rule/mordheim/skaven-of-clan-pestilens-mou/plague-priest--frenzy/trait.frenzy
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/skaven-of-clan-pestilens-mou/special-rules.yaml
+# source_fingerprint:
+#   778f9e8991b1cd221b74ff79d81be990093f3d0732c58357b5795ac9dd59bbdf
+# source_sha256_at_generation:
+#   c007e9d5c4230d8711481345f3ba09e5a3af8e1222d693b687798298cf3dc33c
+# Printed rule text:
+#   The Skaven has contracted a disease that gives him feverish nightmares that turn him into a frothing madman in combat. The Skaven is subject to Frenzy.
+# Semantic contract (check analysis_status before treating as accepted):
+#   While Frenzy is active, double the profile Attacks and skip ordinary Fear and Stupidity tests. Being knocked down or stunned ends Frenzy; recovering to Standing does not regrant it. Initial Psychology immunity suppresses ordinary Frenzy unless an explicit source exception applies. Observable: doubled attacks while active, no ordinary Fear/Stupidity roll, and normal attacks after the injury removes Frenzy. Compulsory spatial charging is outside this duel.
+# effect_id:
+#   trait.frenzy
+# relation:
+#   equivalent
+# parameters:
+#   {"value":true}
+# conditions:
+#   {"trigger":"duel initialization, then the current Frenzy state","recipient":"the bearer","duration":"until Frenzy is lost through injury","stacking":"one Frenzy flag; no repeated doubling","exceptions":"explicit source exemptions remain; special Fear sources can override ordinary immunity"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Manually checked this printed Frenzy alias against initialize_fighter, the modular attack-pool construction, resolve_stupidity, resolve_fear and injury clearing. No parry prohibition is inferred from the alias. Spatial compulsory-charge selection is excluded. These are inspection references to the modular path, not verification of an optimized port. Surface reuse candidate: {"family":"trait.frenzy","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact supplied/rolled state, trigger, frequency, duration, termination and attack-count contribution. Permanent and conditional Frenzy, +1 Attack and doubling are different. Do not implement group creation, movement or campaign tables merely to supply an individual state.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/skaven-of-clan-pestilens-mou/plague-priest--frenzy/trait.frenzy
+  id: a-frenzied-plague-priest-strikes-twice-with-its-single-profile-attack
+  covers: [frenzy]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: skaven-of-clan-pestilens-mou, profile_id: plague-priest}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/skaven-of-clan-pestilens-mou/plague-priest--frenzy/trait.frenzy
+  id: a-frenzied-plague-priest-takes-no-fear-test-for-the-charge-it-receives
+  covers: [frenzy]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: skaven-of-clan-pestilens-mou, profile_id: plague-priest}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, state.second.fear_hit_sixes: false, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/skaven-of-clan-pestilens-mou/plague-priest--frenzy/trait.frenzy
+  id: a-frenzied-plague-priest-auto-passes-the-head-injury-stupidity-test
+  covers: [frenzy]
+  fighters:
+    first: {collection: mordheim, band_id: skaven-of-clan-pestilens-mou, profile_id: plague-priest}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  initial_state:
+    first: {attacks: 1, resources_spent: [disability.6]}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: true, state.first.stupidity_failed: false, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/skaven-of-clan-pestilens-mou/plague-priest--frenzy/trait.frenzy
+  id: the-injury-that-knocks-the-plague-priest-down-ends-its-frenzy-and-standing-does-not-regrant-it
+  covers: [frenzy]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: skaven-of-clan-pestilens-mou, profile_id: plague-priest}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: false, state.second.condition: KNOCKED_DOWN}
+    1: {state.second.frenzy: false, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

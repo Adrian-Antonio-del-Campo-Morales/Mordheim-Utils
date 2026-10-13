@@ -1,0 +1,92 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/black-orcs/band--black-orc-special-skills-proven-warrior/compiler.proven-warrior
+# scaffold_fingerprint: e43df7f921c8812069e184a1bb3ac92f19c162bff31ac3caf056bfa0b20a50ff
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the recipient gate of the selectable rule is evidenced as a construction refusal: a
+#   non-Young'un build of the band that declares the selectable skill is refused with "Proven Warrior may
+#   only be selected by a Young'un", while the printed recipient black-orcs/younguns declaring the same
+#   skill is accepted and runs.  The message is the contract's own branch -
+#   `if (has("compiler.proven-warrior") && p.id !== "younguns") return "Proven Warrior may only be
+#   selected by a Young'un";` - reached through the band rule
+#   band--black-orc-special-skills-proven-warrior (runtime grant selectable, effect id
+#   compiler.proven-warrior, sources/knowledge/bands/mordheim/black-orcs/special-rules.yaml).  Consumer:
+#   the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js,
+#   profileSelections).  The positive half of the clause (the promoted model uses the Black Orc lists) is a
+#   skill-list projection with no duel observation and is recorded, not asserted.
+# origin_id:
+#   rule/mordheim/black-orcs/band--black-orc-special-skills-proven-warrior/compiler.proven-warrior
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-orcs/special-rules.yaml
+# source_fingerprint:
+#   c6ef4f1bae661ec9681754ffb8803e59a8309341d31684f2a587a92c08d525b1
+# source_sha256_at_generation:
+#   033545b947532c3193948d1c1e85930a8f543a3f8a55e89401e4000e4ace47c8
+# Printed rule text:
+#   Once he gains this skill, the model is now considered a full Black Orc Warrior and uses their equipment list and skill lists.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Construction grant: a Young'un with Black Orc blood and 25 experience becomes a full Black Orc for equipment access and skill lists.
+# effect_id:
+#   compiler.proven-warrior
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipient":"young-un","prerequisites":["black-orc-blood","25-experience"]}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The contract is present only in a build meeting the prerequisites; campaign progression is excluded.
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# The selectable rule is declared through special_rule_ids, the channel the sibling selectable band
+# skills use in this directory; the contract then gates the recipient.  The refusal is the contract's
+# own message verbatim.
+- audit_id: rule/mordheim/black-orcs/band--black-orc-special-skills-proven-warrior/compiler.proven-warrior
+  id: proven-warrior-on-a-non-young-un-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: orc-boyz
+      special_rule_ids: [band--black-orc-special-skills-proven-warrior]
+  expect_error: Proven Warrior may only be selected by a Young'un
+
+- audit_id: rule/mordheim/black-orcs/band--black-orc-special-skills-proven-warrior/compiler.proven-warrior
+  id: proven-warrior-on-a-young-un-is-accepted-at-construction
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: younguns
+      special_rule_ids: [band--black-orc-special-skills-proven-warrior]
+    second:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: younguns
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

@@ -1,0 +1,60 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--mutations/unimplemented.skaven-of-clan-moulder-web.band.mutations
+# scaffold_fingerprint: 721a011f40336e6c224a8f808804119f81340291eb2072c07431a10898725fa2
+# authoring_status: PARTIAL
+# authoring_progress: the admitted whole clause stays without scenarios for the concrete reason recorded
+# in its PARTIAL note below: the printed sentence is campaign acquisition, the register records it as a
+# permanent duel exclusion with no admitted individual consequence, and the effect_id is not recorded, so
+# nothing in the one-against-one vocabulary could be asserted from it.  execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [E] excluded by an accepted scope decision, recorded in the register itself:
+# "Permanent duel exclusion: campaign acquisition and progression ... are outside the 1v1 duel, so this
+# clause is NO rather than a deferred LATER.  Its whole content is campaign state with no admitted
+# individual consequence.  Coordinator disposition: this printed clause has a resolved 1v1 exclusion; it is
+# not queued for implementation or a future scope decision."  [B] does not apply because there is no duel
+# consequence to express - the individual mutations carry their own construction and effect clauses.
+# Closing review keeps PARTIAL with this citation.
+#   No scenario is authorable for this clause.  The printed "Certain models may purchase
+# Mutations from the Possessed Warband list in the Mordheim Rulebook" is a purchase, and the register's own
+# disposition records it as a permanent duel exclusion - recruitment, prices, roster building and
+# progression are outside the 1v1 duel - with no admitted individual consequence and no recorded
+# effect_id.  The individual mutations and their consequences carry their own construction and effect
+# clauses; the missing item here is not a representation but an admitted duel consequence, of which there
+# is none, so a scenario would have to invent one.
+# origin_id:
+#   rule/mordheim/skaven-of-clan-moulder-web/band--mutations/unimplemented.skaven-of-clan-moulder-web.band.mutations
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/skaven-of-clan-moulder-web/special-rules.yaml
+# source_fingerprint:
+#   672a3dce227a9068f547cba7398abf05c6c3919291b2b95cbb1e31fde442f2e2
+# source_sha256_at_generation:
+#   4e0cb5eef885e921dca3a5273ee89a70bf4763db70b92324a0e7b55c1bb9fd60
+# Printed rule text:
+#   Certain models may purchase Mutations from the Possessed Warband list in the Mordheim Rulebook.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Purchasing Mutations from the Possessed list is construction access to mutations for these models. Printed clause: Certain models may purchase Mutations from the Possessed Warband list in the Mordheim Rulebook.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Permanent duel exclusion: campaign acquisition and progression (experience, advances, characteristic maximums, income, exploration, trading, recruitment, succession, roster size and warband rating) are outside the 1v1 duel, so this clause is NO rather than a deferred LATER. Its whole content is campaign state with no admitted individual consequence. Coordinator disposition: this printed clause has a resolved 1v1 exclusion; it is not queued for implementation or a future scope decision. Source metadata reconciliation is separate from duel behaviour. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"matched","review_status":"reviewed","scope_reason":"Purchasing Mutations from the Possessed list is construction access to mutations for these models.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Purchasing mutations is a campaign producer. Required or supplied individual mutations and their consequences are recorded by their separate construction/effect clauses.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{\"deferred\":\"mutation acquisition\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/skaven-of-clan-moulder-web/special-rules.yaml\"]"},"inherited_clause_text":"Certain models may purchase Mutations from the Possessed Warband list in the Mordheim Rulebook.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

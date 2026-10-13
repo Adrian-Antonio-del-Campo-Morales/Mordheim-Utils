@@ -1,0 +1,109 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--background-selection/compiler.foreign-or-native-background
+# scaffold_fingerprint: 34135d821774fd4cdd12ef976edcf065fd951f3abd19952391751e096a629a19
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries three authored scenarios derived from the printed
+# sentence, the recorded contract and the accepted editorial specification
+# tests/specs/semantic/grants/khemri-background.yaml, whose accepted alternatives-exclusive case names
+# exactly this profile and these variant ids: either background alone is accepted and both together are
+# refused with the message the shared eligibility module emits.  REVIEWED still requires manual semantic
+# review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios evidence the printed exclusive choice on the band's printed lahmian-vampire
+# profile, which the accepted specification uses for this contract: the Foreign background alone and the
+# Native background alone are each accepted (both attack pools suppressed, so the accepted construction is
+# the only thing the round shows), and a build carrying both backgrounds at once is refused with the
+# message quoted verbatim from _eligibility.js::profileTail - "choose exactly one Foreign or Native
+# background".  The later re-recruitment lists the printed sentence also mentions stay outside the duel and
+# are not asserted.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/khemri-lahmian-brotherhood/band--background-selection/compiler.foreign-or-native-background
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-lahmian-brotherhood/special-rules.yaml
+# source_fingerprint:
+#   7668ecec8959e130b199a868cad76285ee2b247808d9652c01a5c5b14191e68b
+# source_sha256_at_generation:
+#   b916cfbc1207fa7a28fd5b0c3cbced9ab169559d0f51326fcf084c55213dd7b8
+# Printed rule text:
+#   Choose exactly one background when the warband is created. Foreign and Native backgrounds use different starting Henchmen and equipment lists.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Construction selection: exactly one Foreign or Native background is chosen; later campaign re-recruitment lists stay outside the duel.
+# effect_id:
+#   compiler.foreign-or-native-background
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"exclusive":true,"options":["foreign","native"]}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The build cannot combine both backgrounds; campaign changes stay outside the duel runtime.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the accepted specification for this origin;
+# no engine output was consulted.  The background is the supplied variant fact background.foreign or
+# background.native on the build.
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--background-selection/compiler.foreign-or-native-background
+  id: both-backgrounds-at-once-are-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: lahmian-vampire
+      variant_ids: [background.foreign, background.native]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  expect_error: "choose exactly one Foreign or Native background"
+
+# One background alone is the printed choice and is accepted.
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--background-selection/compiler.foreign-or-native-background
+  id: the-foreign-background-alone-is-accepted
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: lahmian-vampire
+      variant_ids: [background.foreign]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls: []
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The other printed alternative is equally accepted: the exclusivity bars the pair, not either option.
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--background-selection/compiler.foreign-or-native-background
+  id: the-native-background-alone-is-accepted
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: lahmian-vampire
+      variant_ids: [background.native]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls: []
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

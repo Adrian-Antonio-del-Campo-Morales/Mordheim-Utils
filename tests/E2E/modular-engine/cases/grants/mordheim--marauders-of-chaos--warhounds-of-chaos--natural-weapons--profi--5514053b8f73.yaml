@@ -1,0 +1,108 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/marauders-of-chaos/warhounds-of-chaos--natural-weapons/profile.natural-attacks
+# scaffold_fingerprint: 45315879bd9be76c3f86d4ebe0524d0d5841678cc5cf5a337f291f576f47ee2e
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed
+#   rule, the recorded contract and the accepted profile-row precedent
+#   tests/E2E/modular-engine/cases/grants/mordheim--norse-explorers-btb--wulfen--natural-weapons--profile.natural--42ab9608b8a0.yaml:
+#   the printed Warhound (WS4 S4 T3 W1 I3 A1 Ld5), whose own rule row is profile.natural-attacks, keeps
+#   its printed Strength and so the declared wound face of three takes a Wound from a Toughness 3
+#   opponent, while the identical hand-built fist fighter does not wound with the same face because it
+#   keeps the ordinary unarmed penalty.  The profile prints both this row and its scope-NO sibling
+#   Animals (special-rules.yaml lines 89 and 115), and the row is projected from the printed profile
+#   itself, as the construct projections do.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the printed waiver of the ordinary unarmed penalty together with
+#   the profile's own attack pool.  The Warhound carries no equipment list, so it fights with its innate
+#   attacks; the profile is used without an explicit rule id because the printed record already supplies
+#   it (the same projection the construct profiles use), and the -1 the printed rule waives is what the
+#   hand-built control isolates: its declared wound face of three is one short of the Toughness 3
+#   target once the Fist's Strength - 1 applies.
+# origin_id:
+#   rule/mordheim/marauders-of-chaos/warhounds-of-chaos--natural-weapons/profile.natural-attacks
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/marauders-of-chaos/special-rules.yaml
+# source_fingerprint:
+#   05ea41037a0edf61b2923bc7f289c4c7520c6cc7da90f4d052085c6170583ec9
+# source_sha256_at_generation:
+#   501a50b0b257497d4817e6d76326eb3504f13f454c12a57d3e72077681bbe574
+# Printed rule text:
+#   Warhounds have no weapons but fight without the normal penalties for being unarmed.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Profile rule: the Warhound fights with natural attacks, keeping its printed Attacks and taking no Fist Strength penalty.
+# effect_id:
+#   profile.natural-attacks
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipient":"warhounds-of-chaos","keeps_profile_attacks":true}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Explicit declarative form of the compiler's natural-attack fallback for an unequippable creature. Surface reuse candidate: {"family":"W-NATURAL","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Separate intrinsic attacks, equipment selection, active use, ownership and an explicitly supported unarmed waiver. No weapons/armour text alone does not grant a waived penalty or extra attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the printed profile; no engine output
+# was consulted.  The Warhound has no equipment lists, so its innate attacks are the subject, and its
+# printed Strength 4 is supplied as the fixture base together with the printed profile it belongs to.
+
+- audit_id: rule/mordheim/marauders-of-chaos/warhounds-of-chaos--natural-weapons/profile.natural-attacks
+  id: the-warhound-fights-at-its-own-strength-without-the-unarmed-penalty
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: warhounds-of-chaos
+      characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 5}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same Strength 4 and the same declared faces on a hand-built fist fighter, whose
+# ordinary unarmed penalty the printed rule is what waives, so the three no longer wounds.
+
+- audit_id: rule/mordheim/marauders-of-chaos/warhounds-of-chaos--natural-weapons/profile.natural-attacks
+  id: without-the-row-the-unarmed-penalty-leaves-the-same-roll-unwounded
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -113,6 +113,16 @@ profiles:
         Tiene una interacción de odio/venganza contra los Hombres Bestia definida por la fuente.
     name_i18n:
       es: Venganza de los Hombres Bestia
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: skill.hatred
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: skill.hatred
   - id: hireling.hired-sword.beast-hunter.rule.skull-rack
     name: Skull Rack
     effect: Uses trophies from slain beasts according to the source rule.
@@ -121,6 +131,16 @@ profiles:
         Usa trofeos de las bestias abatidas según la regla de la fuente.
     name_i18n:
       es: Atril de Cráneos
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.causes-fear
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.causes-fear
   - id: hireling.hired-sword.beast-hunter.rule.predator
     name: Predator
     effect: Has the source-defined hunting/predator ability.
@@ -271,36 +291,111 @@ profiles:
   rules:
   - id: hireling.hired-sword.imperial-assassin.rule.poisoner
     name: Poisoner
-    effect: Uses poisons according to the source rule.
+    effect: >-
+      Assassins specialize in the use of poisons. The Assassin starts each game with his weapons
+      poisoned with either Black Lotus or Dark Venom. The controlling player decides which poison
+      the Assassin is armed with before the game starts, and this poison does not need to be traded
+      for. The Assassin cannot poison other warband members' weapons, nor will he loan his out.
     effect_i18n:
       es: >-
-        Usa venenos según la regla de la fuente.
+        Los Asesinos se especializan en el uso de venenos. El Asesino empieza cada partida con sus
+        armas envenenadas con Loto Negro o Veneno Oscuro. El jugador que lo controla decide con qué
+        veneno va armado antes de que empiece la partida, y no necesita intercambiarlo por otra
+        elección. El Asesino no puede envenenar las armas de otros miembros de la banda ni prestar
+        las suyas.
     name_i18n:
       es: Envenenador
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: poison-choice
+        scope: 'YES'
+        binding: {kind: compiler, id: compiler.assassin-poisoner}
+      - id: acquisition-and-lending
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Campaign trading and equipment lending are outside the duel.
   - id: hireling.hired-sword.imperial-assassin.rule.weapons-master
     name: Weapons Master
-    effect: Uses the source weapon-mastery rule.
+    effect: >-
+      The Assassin is a master of weapons and may use any weapon he finds. You may purchase weapons
+      for the Assassin just as you would for any other member of your warband. However, unlike other
+      members of your warband, any weapon you give an Assassin is his to keep; he will not give it
+      to another warband member later. Although he knows how to use them, an Assassin will never
+      use a blackpowder weapon as such devices are far too conspicuous for someone in his profession.
     effect_i18n:
       es: >-
-        Usa la regla de maestría con armas de la fuente.
+        El Asesino es un maestro de las armas y puede usar cualquier arma que encuentre. Puedes
+        comprarle armas como a cualquier otro miembro de tu banda. Sin embargo, a diferencia de
+        otros miembros, cualquier arma que le des es suya y no la entregará después a otro miembro
+        de la banda. Aunque sabe usarlas, un Asesino nunca usará un arma de pólvora, pues tales
+        artilugios son demasiado llamativos para alguien de su profesión.
     name_i18n:
       es: Maestro de Armas
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: weapon-access
+        scope: 'YES'
+        binding: {kind: compiler, id: compiler.weapon-knowledge}
+      - id: no-blackpowder
+        scope: 'YES'
+        binding: {kind: compiler, id: compiler.no-blackpowder-weapons}
+      - id: permanent-ownership
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Purchases and permanent ownership are campaign state.
   - id: hireling.hired-sword.imperial-assassin.rule.backstabber
     name: Backstabber
-    effect: Uses the source backstab rule.
+    effect: >-
+      Backstabber: the Assassin may charge an opponent he cannot see as long as the target is within
+      his charge reach; he then receives +1 to hit with all attacks and +1 on Injury rolls for the
+      first round of combat only. The unseen charge is supplied as a duel fact and is not simulated.
     effect_i18n:
       es: >-
-        Usa la regla de ataque por la espalda de la fuente.
+        Puñalada por la espalda: el Asesino puede cargar contra un enemigo al que no ve siempre que
+        el objetivo esté dentro de su alcance de carga; recibe entonces +1 para impactar con todos
+        sus ataques y +1 en las tiradas de Heridas solo durante la primera ronda de combate. La
+        carga sin visibilidad se aporta como hecho del duelo y no se simula.
     name_i18n:
       es: Puñalada Lamerona
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: backstabber
+        scope: 'YES'
+        binding: {kind: mechanic, id: skill.backstabber}
   - id: hireling.hired-sword.imperial-assassin.rule.hide-in-shadows
     name: Hide in Shadows
-    effect: Uses the source concealment rule.
+    effect: >-
+      The Assassin can blend into the shadows so that his opponents will not see him. As long as
+      he is within 1 inch of a wall or other linear obstacle (hedge, fence, well, etc), opposing
+      models must pass an Initiative test in order to charge or shoot at him.
     effect_i18n:
       es: >-
-        Usa la regla de ocultación de la fuente.
+        El Asesino puede fundirse con las sombras de modo que sus oponentes no lo vean. Mientras esté
+        a 1 pulgada o menos de un muro u otro obstáculo lineal (seto, valla, pozo, etc.), los modelos
+        enemigos deben pasar una tirada de Iniciativa para cargar contra él o dispararle.
     name_i18n:
       es: Ocultarse en las Sombras
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: profile
+      effects:
+      - id: terrain-concealment
+        scope: 'NO'
+        binding: null
+        reason: >-
+          Terrain-qualified charge and shooting tests are excluded by the map ruling.
   source_refs:
   - manual: mordheimer.net
     printed_page: 0

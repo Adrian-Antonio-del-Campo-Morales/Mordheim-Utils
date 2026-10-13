@@ -1,0 +1,77 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/cursed-cavalcade/cursed-piper--danse-macabre/unimplemented.cursed-cavalcade.cursed-piper.danse-macabre
+# scaffold_fingerprint: f56f7fa6a6377e30b7191ca93b3b47b3c300192799511080485f3b1deee6397b
+# authoring_status: PARTIAL
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: control-enemy--scope--danse-state (scope: YES)
+# PARTIAL[control-enemy--scope--danse-state]: [C] not asserted. the admitted facet is the failed-Leadership state in which the dancing warrior cannot attack and must re-test in its recovery phase, but this record's own consumer list is empty, its relation is independent with implementation_work product, and the register states that enemy-model control is a supplied condition plus a per-turn Leadership re-test the 1v1 duel does not model and that the KB record is an unimplemented placeholder. Two representations are missing: an admitted effect identity/binding for the Danse state, and a duel seam that carries a lasting cannot-attack state together with its per-turn re-test (the scenario vocabulary has no state or variant that suppresses a fighter's attacks and no recovery-phase seam). Searching the record, the engine seams it names and the authored corpus found no operator, key or diagnostic for either, so any tape would only restate the fixture's own claim. REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/cursed-cavalcade/cursed-piper--danse-macabre/unimplemented.cursed-cavalcade.cursed-piper.danse-macabre
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/cursed-cavalcade/special-rules.yaml
+# source_fingerprint:
+#   937175d14596a226a0b00b34d5f74f7b829a65029006dd6a4b115fc2a6864eda
+# source_sha256_at_generation:
+#   15a4f9a2b9c55c6ef8e50bfc55b1af9a2418c12db0c4da71d80ed3b88e7264f2
+# Printed rule text:
+#   At the beginning of the enemy's turn, in the recovery phase the warrior will have to pass a Ld test or will continue to be under the Pipers' control and cannot shoot, charge or cast spells. If engaged in close combat the model cannot attack (it is too busy dancing!).
+# Semantic contract (check analysis_status before treating as accepted):
+#   A failed Leadership test leaves the enemy fighter under the Piper's control: it cannot attack in close combat and must re-test in its recovery phase. That is an admitted individual Leadership test and state on one of the two duelists. Printed clause: At the beginning of the enemy's turn, in the recovery phase the warrior will have to pass a Ld test or will continue to be under the Pipers' control and cannot shoot, charge or cast spells. If engaged in close combat the model cannot attack (it is too busy dancing!).
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Enemy-model control is a supplied condition plus a per-turn Leadership re-test that the 1v1 duel does not model; the KB record is an unimplemented placeholder. Retained as deferred, not silently admitted. Scope review integration: {"clause_id":"control-enemy","review_clause_id":"danse-state","source_state":"matched","review_status":"reviewed","scope_reason":"A failed Leadership test leaves the enemy fighter under the Piper's control: it cannot attack in close combat and must re-test in its recovery phase. That is an admitted individual Leadership test and state on one of the two duelists.","notes":"text: The enemy model must take a Ld test. If failed, the warrior ... loses control of his body ... If engaged in close combat the model cannot attack (it is too busy dancing!) ... At the beginning of the enemy's turn, in the recovery phase the warrior will have to pass a Ld test or will continue to be under the Pipers' control and cannot shoot, charge or cast spells.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"After a failed Leadership test the Piper moves and silences an enemy model, re-tested each recovery phase, one target at a time; observable: the controlled model cannot shoot, charge, cast or attack.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B18-conditional-attacks","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"The Piper plays the Danse Macabre in combat. During the shooting phase the Cursed Piper can direct the cursed melody of his flute against one enemy model he can see within 6” from the Piper. The enemy model must take a Ld test. If failed, the warrior is cursed by the Danse Macabre loses control of his body and forced to dance under the Piper’s will. The Piper can move the enemy model in any direction he wishes also out of close combat or force him to fall from height. At the beginning of the enemy’s turn, in the recovery phase the warrior will have to pass a Ld test or will continue to be under the Pipers’ control and cannot shoot, charge or cast spells. If engaged in close combat the model cannot attack (it is too busy dancing!). Only one enemy warrior at time can be controlled by the Danse Macabre. If the Piper targets another warrior the previous one is immediately free from the curse.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: control-enemy--scope--model-movement (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/cursed-cavalcade/cursed-piper--danse-macabre/unimplemented.cursed-cavalcade.cursed-piper.danse-macabre
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/cursed-cavalcade/special-rules.yaml
+# source_fingerprint:
+#   937175d14596a226a0b00b34d5f74f7b829a65029006dd6a4b115fc2a6864eda
+# source_sha256_at_generation:
+#   15a4f9a2b9c55c6ef8e50bfc55b1af9a2418c12db0c4da71d80ed3b88e7264f2
+# Printed rule text:
+#   The Piper can move the enemy model in any direction he wishes also out of close combat or force him to fall from height.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Moving the enemy model in any direction, out of close combat or forcing him to fall from height is board movement, contact-breaking and terrain/height, all excluded. Printed clause: The Piper can move the enemy model in any direction he wishes also out of close combat or force him to fall from height.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Enemy-model control is a supplied condition plus a per-turn Leadership re-test that the 1v1 duel does not model; the KB record is an unimplemented placeholder. Retained as deferred, not silently admitted. Scope review integration: {"clause_id":"control-enemy","review_clause_id":"model-movement","source_state":"matched","review_status":"reviewed","scope_reason":"Moving the enemy model in any direction, out of close combat or forcing him to fall from height is board movement, contact-breaking and terrain/height, all excluded.","notes":"text: The Piper can move the enemy model in any direction he wishes also out of close combat or force him to fall from height.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"After a failed Leadership test the Piper moves and silences an enemy model, re-tested each recovery phase, one target at a time; observable: the controlled model cannot shoot, charge, cast or attack.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B18-conditional-attacks","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"The Piper plays the Danse Macabre in combat. During the shooting phase the Cursed Piper can direct the cursed melody of his flute against one enemy model he can see within 6” from the Piper. The enemy model must take a Ld test. If failed, the warrior is cursed by the Danse Macabre loses control of his body and forced to dance under the Piper’s will. The Piper can move the enemy model in any direction he wishes also out of close combat or force him to fall from height. At the beginning of the enemy’s turn, in the recovery phase the warrior will have to pass a Ld test or will continue to be under the Pipers’ control and cannot shoot, charge or cast spells. If engaged in close combat the model cannot attack (it is too busy dancing!). Only one enemy warrior at time can be controlled by the Danse Macabre. If the Piper targets another warrior the previous one is immediately free from the curse.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# authoring_progress: the admitted control-enemy--scope--danse-state clause carries no scenario and
+#   stays pending with the two missing representations named in its clause note; the scope-NO sibling
+#   clauses (model-movement and their register blocks) are retained unchanged.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+
+[]  # Empty scenario list: this file contributes no test or coverage.

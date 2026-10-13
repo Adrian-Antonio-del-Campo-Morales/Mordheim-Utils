@@ -1,0 +1,85 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-savage-goblins/zomblins--immune-to-poison/trait.poison-immune
+# scaffold_fingerprint: 1c4ce9c395aaccf9773a7d2516eb13b1f25a5846764ce371e84f01ec285f21d8
+# authoring_status: AUTHORED
+# authoring_progress: the admitted immune-to-poison clause carries one authored scenario derived
+# from the printed rule and the printed profile.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED;
+# no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: immune-to-poison (scope: YES)
+# AUTHORED[immune-to-poison]: 1 scenario shows the printed poison immunity against the one duel-time
+# poison rider: a Nightshade-coated mace wounds the bearer, the wound is taken as any
+# wound would be, and the poisoned-wound Initiative penalty is suppressed, so the
+# bearer's recorded initiative_penalty stays 0.  The bearer is the lustria-savage-goblins/zomblins profile
+# that prints the rule, which declares no armour, ward or regeneration save and no
+# Ethereal-class hit gate, so the mace lands its wound without a declared defence die.
+# The bearer starts the duel at two wounds and declares no attack, so a single unsaved
+# wound leaves it standing and no injury roll is needed; the clause is single-faceted,
+# so no second scenario is required.
+# The printed profile lists this rule without the compiled poison_immune trait, which
+# is an implementation observation recorded for execution, not a clause decision.
+# REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+# origin_id:
+#   rule/trollheim/lustria-savage-goblins/zomblins--immune-to-poison/trait.poison-immune
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-savage-goblins/special-rules.yaml
+# source_fingerprint:
+#   9b29b6c6ccdd1f67bf9d9af987df39f58a7f907fc2162a3b12eeffe1d8de6ded
+# source_sha256_at_generation:
+#   84746d9c2e37bfd46fb68ab1b459a9ab5317d55037c20eb6197fbd206ca12c00
+# Printed rule text:
+#   Zomblins are immune to poison.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The creature is not affected by any poison (Zombies, Skeletons with drugs, Stinky Gits, Vampire Bats, Shadowed, Mechanical Beasts, the Undead class rule in two warbands, Stone Golem, Cannibals, Zomblins, Zomblintua, Dire Wolves, the Vampire, Zombies); observable: poison riders and poisonous injury conversion are suppressed against the bearer.
+# effect_id:
+#   trait.poison-immune
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Thirteen groups whose printed predicate is the same immunity and whose consumer is the same poison suppression share this rule instance; the per-origin sentences stay visible because each row keeps its own supplied text. G173 also shrugs off disease on a 4+, which has no duel-time counterpart and is therefore not part of this contract. Surface reuse candidate: {"family":"trait.poison-immune","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share poison rejection, preserving the particular poison route and recipients. Disease/drug immunity does not automatically become an admitted duel operator or a source of extra poison immunity.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule for this bearer and the admitted clause; no engine
+# output was consulted.  Nightshade is the one admitted poison whose consequence is a
+# state change on the warrior it wounds, so it is the rider the immunity must suppress:
+# the coated mace wounds the bearer as any mace would, and the poisoned-wound
+# Initiative penalty never lands.  The attacker's Weapon Skill 10, Strength 8 and
+# Initiative 10 are hand-built fixture facts, not profile values, and its higher
+# Initiative with no charge declared lets it strike first, so the bearer declares no
+# attack of its own and the tape holds only the attacker's hit and wound dice.
+- audit_id: rule/trollheim/lustria-savage-goblins/zomblins--immune-to-poison/trait.poison-immune
+  id: the-poisoned-wound-keeps-its-wound-and-loses-its-rider
+  covers: [immune-to-poison]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblins}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

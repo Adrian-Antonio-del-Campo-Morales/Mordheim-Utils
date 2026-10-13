@@ -1,0 +1,95 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-rangers/band--no-arcane-lore/compiler.no-arcane-lore
+# scaffold_fingerprint: 7135d28ff06fa16e7b7062ff7f1e61410a1b5315db8150e954a2282bfdb5745d
+# authoring_status: AUTHORED
+# authoring_progress: both data the earlier note named are established, so the admitted prohibition is
+# evidenced as a construction refusal: a Dwarf build carrying the catalogue's Arcane Lore skill is
+# refused with "Arcane Lore is forbidden for dwarf-rangers/<profile>", while the same build without the
+# skill is accepted at construction.  The skill id is the catalogue's own `skill.arcane-lore`
+# (sources/knowledge/catalog/skills/general.yaml) and the fragment is the shared stage's own line for
+# this contract (`Arcane Lore is forbidden for ${who}` followed by the refused skill ids,
+# packages/python/roster-construction/mordheim_construction/_eligibility.js, compiler.no-arcane-lore
+# row).  The spell-casting half of the printed sentence stays owned by the excluded casting subsystem
+# and is recorded, not asserted.  REVIEWED still requires manual semantic review and execution_status
+# stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: both named data are established from the repository itself: the catalogue's Arcane Lore skill id `skill.arcane-lore` and the shared stage's verbatim line for this contract (`Arcane Lore is forbidden for <band>/<profile>: ['<id>']`, _eligibility.js compiler.no-arcane-lore row).  Three scenarios: the refusal on the two printed recipients this band's table names (a Longbeard and the Runesmith) and an accepted build without the skill, which frames the refusal.  The fragment asserted is the message prefix through the recipient ids, so the refused-skill list tail cannot make the declaration depend on the catalogue's ordering.  The spell-casting half of the printed sentence is owned by the excluded casting subsystem and is recorded, not asserted.
+# origin_id:
+#   rule/mordheim/dwarf-rangers/band--no-arcane-lore/compiler.no-arcane-lore
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dwarf-rangers/special-rules.yaml
+# source_fingerprint:
+#   0fe8ba527ad9dacf7cf5fe75e6a92616eb01cda734ed2d8a941ec8b266427f1f
+# source_sha256_at_generation:
+#   d777a264de4362ae1b1ae198d5635b010629d1b82186950a5d4a360591eaf6d5
+# Printed rule text:
+#   Dwarfs may never take the Arcane Lore skill and cannot learn to cast spells.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Compiled band prohibition: Dwarfs may never take Arcane Lore and never learn to cast spells.
+# effect_id:
+#   compiler.no-arcane-lore
+# relation:
+#   equivalent
+# parameters:
+#   {"skill_categories":["arcane-lore"]}
+# conditions:
+#   {"recipient":"dwarfs","band":"dwarf-rangers"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Declared and implemented; the spell-casting half belongs to the excluded casting subsystem. Surface reuse candidate: {"family":"C-FORBID-SKILL","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the actual forbidden categories and recipients. Body-armour-only, all armour, missiles, blackpowder, drugs and poisons are distinct restrictions. Construction legality can affect a melee build even when shooting is excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/dwarf-rangers/band--no-arcane-lore/compiler.no-arcane-lore
+  id: dwarf-longbeards-with-arcane-lore-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-longbeards
+      skill_ids: [skill.arcane-lore]
+  expect_error: Arcane Lore is forbidden for dwarf-rangers/dwarf-longbeards
+
+- audit_id: rule/mordheim/dwarf-rangers/band--no-arcane-lore/compiler.no-arcane-lore
+  id: runesmith-with-arcane-lore-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: runesmith
+      skill_ids: [skill.arcane-lore]
+  expect_error: Arcane Lore is forbidden for dwarf-rangers/runesmith
+
+- audit_id: rule/mordheim/dwarf-rangers/band--no-arcane-lore/compiler.no-arcane-lore
+  id: dwarf-longbeards-without-arcane-lore-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-longbeards
+    second:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-clansmen
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

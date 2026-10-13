@@ -1,0 +1,184 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-save
+# scaffold_fingerprint: 1df97aa7d5e41268a9bd567a99c2eefc5ad906763bc9fbcea21633467be0ef96
+# authoring_status: AUTHORED
+# authoring_progress: every admitted clause of this ID carries authored scenarios derived from the
+#   printed rule, its recorded contract and the printed profile, and contrasted with a fixture that
+#   does not hold the row. REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: combines-with-equipment (scope: YES)
+# AUTHORED[combines-with-equipment]: 2 scenarios reach the 5+ the printed combination yields - the
+#   shield's +1 and worn light armour each take the hide one step better - while the five that
+#   wounds the bare hide in the six-plus pair proves the step is the combination and not a
+#   different threshold.
+# origin_id:
+#   rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-orcs/special-rules.yaml
+# source_fingerprint:
+#   70c78aa672099da7d5fd599e9363f5e479d1a403339b60185a4173e2d863cd03
+# source_sha256_at_generation:
+#   033545b947532c3193948d1c1e85930a8f543a3f8a55e89401e4000e4ace47c8
+# Printed rule text:
+#   Model starts with a natural 6+ Armour Black Orc Save. This save may be combined with other equipment to improve it.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The save may be combined with other equipment to improve it; observable: hide plus shield reaches 5+.
+# effect_id:
+#   trait.natural-armour-stacks
+# relation:
+#   parameterized_variant
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Combination rule implemented as the natural_armour_stacks flag; see the Shaggy Hide clarification on Toughened Leathers, which applies to every bearer of this flag. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: six-plus-save (scope: YES)
+# AUTHORED[six-plus-save]: 3 scenarios take the printed 6+ on the real attack route - a six saves
+#   and a five is a wound - and the same dice against a fixture that holds no such row are offered
+#   no armour die at all.
+# origin_id:
+#   rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-orcs/special-rules.yaml
+# source_fingerprint:
+#   70c78aa672099da7d5fd599e9363f5e479d1a403339b60185a4173e2d863cd03
+# source_sha256_at_generation:
+#   033545b947532c3193948d1c1e85930a8f543a3f8a55e89401e4000e4ace47c8
+# Printed rule text:
+#   Model starts with a natural 6+ Armour Black Orc Save. This save may be combined with other equipment to improve it.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Model starts with a natural 6+ armour save; observable: an incoming wound is saved on 6 before any equipment save.
+# effect_id:
+#   trait.natural-armour-save
+# relation:
+#   equivalent
+# parameters:
+#   {"save":6}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Shared printed rule for boss and henchman profile entries. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract of each clause and the printed profile; no
+# engine output was consulted.  The attacker is a hand-built fixture (Weapon Skill 10 and Initiative
+# 10 are fixture facts, not profile values) and the bearer is the band profile that prints the rule.
+# The duel is uncharged and the bearer starts at two wounds and contributes no attacks of its own,
+# so the single incoming mace swing is the whole tape; the wound face is kept below a natural six so
+# no critical die is part of this evidence.
+
+- audit_id: rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-save
+  id: the-black-orcs-hide-saves-on-six
+  covers: [six-plus-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: black-orcs, profile_id: black-orcs}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-save
+  id: one-face-below-the-hide-is-a-wound
+  covers: [six-plus-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: black-orcs, profile_id: black-orcs}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-save
+  id: a-fixture-without-the-row-is-offered-no-save
+  covers: [six-plus-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-save
+  id: a-shield-raises-the-hide-to-five
+  covers: [combines-with-equipment]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: black-orcs, profile_id: black-orcs, off_hand_id: defence.shield}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/black-orcs/black-orcs--black-orc/trait.natural-armour-save
+  id: worn-light-armour-raises-the-hide-to-five
+  covers: [combines-with-equipment]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: black-orcs, profile_id: black-orcs, armour_id: armour.light-armour}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

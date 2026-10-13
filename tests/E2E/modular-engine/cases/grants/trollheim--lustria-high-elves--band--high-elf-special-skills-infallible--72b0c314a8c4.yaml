@@ -1,0 +1,170 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-infallible-strike/skill.sure-strike
+# scaffold_fingerprint: 9fd941bdfbcdf3d2feed7bd232b000bcdea2964f08960bb66004f64b56d6e814
+# authoring_status: REVIEWED
+# authoring_progress: every admitted clause of this ID is represented by an authored
+#   scenario and contrasted with the printed rule, the recorded semantic contract and
+#   the band package. REVIEWED is authoring and semantic contrast only;
+#   execution_status stays UNEXECUTED and no functional result exists.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenarios cover the failed To Wound roll taken again once, the
+#   second roll being final, the unselected contrast and the refusal of a profile
+#   outside the recipient list.
+# origin_id:
+#   rule/trollheim/lustria-high-elves/band--high-elf-special-skills-infallible-strike/skill.sure-strike
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-high-elves/special-rules.yaml
+# source_fingerprint:
+#   17d64d6a6c27ff4f4f077f0a2d40df06c0245f72ed062c85acc8449e73798c93
+# source_sha256_at_generation:
+#   928dea06b6669fea5059222c8f5bd0045a9c16ea84ac406dbdbede9ea0dc851f
+# Printed rule text:
+#   The Hero may re-roll any failed To Wound roll.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Hero may re-roll any failed To Wound roll. Closure: a failed wound roll is taken again once.
+# effect_id:
+#   skill.sure-strike
+# relation:
+#   equivalent
+# parameters:
+#   {"reroll_wounds":true}
+# conditions:
+#   {"recipient": "High Elf Hero"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared sure-strike operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.sure-strike","verified_facet":"skill.sure-strike","relationship":"shared_facet","boundary":"Failed wound rolls only; accept the second roll and never reroll a reroll. Not an automatic hit target or a to-hit reroll.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+#
+# --- Migrated authored scenarios ---
+# Source: cases/grants/warband-grants.yaml
+# One-time migration authorized by the operator; see plan.md.  These
+# scenarios were authored from the rule text and the accepted rulings, not
+# from engine output.  Migrating them does not certify their interpretation
+# or complete coverage of the identity.
+# rule/... grants — a closed batch of warband grants exercised end to end.
+#
+# Each identity here is a printed warband grant (a `rule/<collection>/<band>/
+# <rule>/<binding>` record of docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv).
+# The scenarios take the real route: band and profile from the built warrior,
+# the grant selected through `special_rule_ids`, the shared construction and
+# compilation that bind it, the modular resolution that consumes it, and an
+# observation of the consequence.  No `effect_id` is injected anywhere, and a
+# scenario never lists the granted mechanic as a direct `skill_ids` entry.
+#
+# Recipients are taken from the band package: the profile that the grant's
+# eligibility admits gains the consequence, another profile of the same band is
+# refused with the binding's own diagnostic, and an unselected build of the same
+# recipient shows the consequence absent.  Sharing one binding does not admit
+# other origins, so each identity keeps its own scenarios and clauses.
+#
+# The batch is deliberately closed and small: priority, injury-chart, reroll,
+# critical-ignition, parry-exclusion and characteristic grants, one identity
+# each.  Expanding it needs another reviewed batch, not a wider query.
+
+# The Khemri Lahmian Vampire's Lost Innocence grants strike first.  Both duels
+# below are uncharged, so the only priority tier in play is the grant itself.
+#
+
+- audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-infallible-strike/skill.sure-strike
+  id: the-recipient-rerolls-a-failed-wound
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: loremaster
+      special_rule_ids: [band--high-elf-special-skills-infallible-strike]
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.wound.reroll, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-infallible-strike/skill.sure-strike
+  id: the-unselected-recipient-keeps-the-failed-wound
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: loremaster
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-infallible-strike/skill.sure-strike
+  id: a-profile-outside-the-eligibility-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: sea-guard
+      special_rule_ids: [band--high-elf-special-skills-infallible-strike]
+      main_weapon_id: weapon.dagger
+  expect_error: "special rule is not available to lustria-high-elves/sea-guard"
+
+# Hardy Constitution: the recipient may ignore a critical hit on a 5 or more, and
+# the wound then resolves normally.  The ignition roll is the grant's own die, so
+# the unselected duel never requests it.
+# Note: the comment block immediately above is the migration tail that describes
+# the following per-ID file; it does not describe the scenarios below.
+# --- Additional scenarios ---
+
+# The reuse boundary: the second roll is accepted and never rerolled again, so
+# a failed reroll ends the wound instead of asking for a third die.
+
+- audit_id: rule/trollheim/lustria-high-elves/band--high-elf-special-skills-infallible-strike/skill.sure-strike
+  id: the-rerolled-wound-is-final
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-high-elves
+      profile_id: loremaster
+      special_rule_ids: [band--high-elf-special-skills-infallible-strike]
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.wound.reroll, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

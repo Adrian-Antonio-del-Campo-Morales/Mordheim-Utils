@@ -1,0 +1,73 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-pirates/swabbies--rabble/compiler.swabbie-rabble-loadout
+# scaffold_fingerprint: 444d5428ba9e3c45ad70609f9801bdb9c79298aba2ae47bdd1384871056f0093
+# authoring_status: PARTIAL
+# authoring_progress: 0 authored scenario(s) in this file; authored clauses []; clauses still pending or unrepresentable in this file: ['whole--scope--equipment-list-access'].  Re-derived: the contract's own diagnostic in packages/python/roster-construction/mordheim_construction/_eligibility.js is the profileSelections entry `compiler.swabbie-rabble-loadout -> "magic is forbidden for Swabbies"`, and that message evidences this file's excluded casting-bar sentence, not the admitted list-access clause; the list half is carried by the generic access projection (`equipment is not available to <who>: [...]`), which no accepted consumer attributes to this contract, and the Swabbie Equipment List's resolved item ids are not published in the scaffold.  The missing data are that list's ids plus a contract-scoped diagnostic for them.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole--scope--equipment-list-access (scope: YES)
+# PARTIAL[whole--scope--equipment-list-access]: [B] no scenario is declared for the admitted clause. Its two halves have no consumer of their own: the only message the contract owns is the magic bar (the file's scope-NO sentence), and the list bound is carried by the generic access projection, whose refusal text is `equipment is not available to <who>: [...]` for any item the band lists do not offer. Pending: the Swabbie Equipment List's resolved item ids (to declare the accepted loadout and one item clearly outside it) along with the decision that this projection is the admitted consumer of the clause.
+# origin_id:
+#   rule/trollheim/lustria-pirates/swabbies--rabble/compiler.swabbie-rabble-loadout
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-pirates/special-rules.yaml
+# source_fingerprint:
+#   0987bbe287c894a0cd914a24ff653f4a66f39171f592b099319b074366addaf5
+# source_sha256_at_generation:
+#   f93f6698f586a558e4681de07b60202970b5eb60350a4caa9c9e4e4d4d1931d3
+# Printed rule text:
+#   Each Swabbie may be equipped differently, but only with items from the Swabbie Equipment List.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Restricting each Swabbie to the Swabbie Equipment List is an admitted construction clause. Printed clause: Each Swabbie may be equipped differently, but only with items from the Swabbie Equipment List.
+# effect_id:
+#   compiler.swabbie-rabble-loadout
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   No group homogeneity is imposed; spell use excluded. Scope review integration: {"clause_id":"whole","review_clause_id":"equipment-list-access","source_state":"matched","review_status":"reviewed","scope_reason":"Restricting each Swabbie to the Swabbie Equipment List is an admitted construction clause.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Per-fighter loadout: each Swabbie is equipped individually from the Swabbie list and may never take magic or spells.","effect_id":"compiler.swabbie-rabble-loadout","relation":"equivalent","parameters":"{}","conditions":"{\"recipient\":\"swabbies\",\"list\":\"swabbie equipment\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\",\"packages/python/roster-construction/mordheim_construction/contracts.py::COMPILER_CONTRACTS\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.loadout","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/trollheim/lustria-pirates/special-rules.yaml\"]"},"inherited_clause_text":"Each Swabbie may be equipped differently, but only with items from the Swabbie Equipment List. Swabbies may never use magic or cast spells.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."}
+#
+# Clause: whole--scope--casting-bar (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/trollheim/lustria-pirates/swabbies--rabble/compiler.swabbie-rabble-loadout
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-pirates/special-rules.yaml
+# source_fingerprint:
+#   0987bbe287c894a0cd914a24ff653f4a66f39171f592b099319b074366addaf5
+# source_sha256_at_generation:
+#   f93f6698f586a558e4681de07b60202970b5eb60350a4caa9c9e4e4d4d1931d3
+# Printed rule text:
+#   Swabbies may never use magic or cast spells.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The bar on using magic or casting spells concerns the excluded casting subsystem. Printed clause: Swabbies may never use magic or cast spells.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   No group homogeneity is imposed; spell use excluded. Scope review integration: {"clause_id":"whole","review_clause_id":"casting-bar","source_state":"matched","review_status":"reviewed","scope_reason":"The bar on using magic or casting spells concerns the excluded casting subsystem.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Per-fighter loadout: each Swabbie is equipped individually from the Swabbie list and may never take magic or spells.","effect_id":"compiler.swabbie-rabble-loadout","relation":"equivalent","parameters":"{}","conditions":"{\"recipient\":\"swabbies\",\"list\":\"swabbie equipment\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\",\"packages/python/roster-construction/mordheim_construction/contracts.py::COMPILER_CONTRACTS\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.loadout","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/trollheim/lustria-pirates/special-rules.yaml\"]"},"inherited_clause_text":"Each Swabbie may be equipped differently, but only with items from the Swabbie Equipment List. Swabbies may never use magic or cast spells.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

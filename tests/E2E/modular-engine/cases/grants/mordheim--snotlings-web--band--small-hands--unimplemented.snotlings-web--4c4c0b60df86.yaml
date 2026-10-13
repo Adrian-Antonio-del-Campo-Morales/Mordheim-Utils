@@ -1,0 +1,71 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/snotlings-web/band--small-hands/unimplemented.snotlings-web.band.small-hands
+# scaffold_fingerprint: f092e6407438a67b8abeb13ef589374432fa4ced130196e0213d8966062e1b82
+# authoring_status: PARTIAL
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [C] no scenario is authored, and the two earlier reasons are corrected here because both
+# were false.  (i) "the declared forbids tokens match no catalogue tag the fixture could supply" is wrong:
+# sources/knowledge/catalog/items/weapons-ranged.yaml carries item rows for blunderbuss, elf_bow, handgun and
+# long_bow, the shared stage's own token reader matches a token that equals the item id (tokenForbids), so
+# "handgun" and "blunderbuss" are reachable identities; only the printed "Long Rifles" has no plain row (the
+# catalogue's rifle row is hochland_long_rifle).  (ii) "no duel build can carry them" is wrong for the same
+# reason; the build can name them.  The accurate blocker is gate order plus the recipient's own list: the
+# shared stage evaluates the offered-set gate before the printed forbids gate
+# (equipmentIssue: fixed_equipment, then `"${itemId}" is not on any equipment list of <band>/<profile>.`,
+# then `"${token}" is forbidden for <band>/<profile>.`), and none of this clause's recipient profiles has one
+# of the five named weapons on its own list - the snotling-equipment-list, the snotling-mob-equipment-list and
+# the shoota-equipment-list are recorded in
+# sources/knowledge/bands/mordheim/snotlings-web/equipment-access.yaml, and the only one of them offering a
+# named weapon is the Shoota Equipment List (crossbow, blunderbuss, pistol), whose profile the register's own
+# condition records as this clause's exception ("exception": "shoota-teams").  A build naming a named weapon
+# on a non-excepted recipient is therefore refused by the offered-set gate, which is not this clause's
+# evidence, and the clause's own token refusal cannot be reached with a legal input.  The refusal template is
+# known (`"${token}" is forbidden for ${band}/${profile}.`) and no new operator is needed.  Pending datum:
+# the KB activation binding for this rule plus either a named weapon on a recipient's own list or an accepted
+# disposition that the clause is a Trading-Post/acquisition prohibition with no construction-stage input
+# (the clause's own source row also declares runtime scope LATER / implemented NO with a null binding).
+# REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/snotlings-web/band--small-hands/unimplemented.snotlings-web.band.small-hands
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/snotlings-web/special-rules.yaml
+# source_fingerprint:
+#   9e9143c3f3a67075ab276933dea3df56ffcb6a899fceac69b5aed2609c705b93
+# source_sha256_at_generation:
+#   7dc940a3784763fc2a3788f764bbbebc42aa05d316da3cf38a6a037564a7415b
+# Printed rule text:
+#   Snotlings and the Bullied Goblin may never use Long bows, Elf Bows, Handguns, Long Rifles or Blunderbusses.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Ranged-weapon prohibition tied to advances; the named items are outside the duel runtime.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   parameterized_variant
+# parameters:
+#   {"forbids": ["long-bow", "elf-bow", "handgun", "long-rifle", "blunderbuss"]}
+# conditions:
+#   {"recipient": ["snotlings", "bullied-goblin"], "forbids": ["long-bow", "elf-bow", "handgun", "long-rifle", "blunderbuss"], "exception": "shoota-teams"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Admitted individual construction prohibition despite the shooting producer it mentions, so it is YES rather than LATER. bandEquipmentForbids reads band-grant profile.equipment-restrictions forbids tokens; the Shoota Team exception is the only named recipient carve-out and no binding is published, so the connection is pending. Surface reuse candidate: {"family":"904","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the actual forbidden categories and recipients. Body-armour-only, all armour, missiles, blackpowder, drugs and poisons are distinct restrictions. Construction legality can affect a melee build even when shooting is excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 0 authored scenario(s) in this file; authored clauses []; the admitted whole clause
+#   stays pending on a named input/activation datum, not on a missing operator: the printed refusal template
+#   exists and four of the five named weapons resolve to catalogue rows, but no recipient profile's own list
+#   offers one, so the offered-set gate answers first and the clause's own refusal has no legal input.
+#   REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+[]  # No scenario is declared yet; the pending requirement is named above.

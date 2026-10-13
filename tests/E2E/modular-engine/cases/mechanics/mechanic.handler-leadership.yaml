@@ -1,0 +1,96 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.handler-leadership
+# scaffold_fingerprint: cf91779029683ff7fdd46ad54ef676882a9ab6c35cf6cb3cd2ba719a2954cd4c
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: handler-leadership (scope: YES)
+# AUTHORED[handler-leadership]: 2 scenarios cover the supplied handler value
+#   replacing the animal's own and its absence.  Documented gap: the engine
+#   reads the handler's value as a supplied trait and models neither the
+#   printed 6-inch eligibility of the handler nor the prohibition on ordinary
+#   leader borrowing, so both stay caller-supplied facts (leadership.py:45).
+# origin_id:
+#   mechanic/mechanic.handler-leadership
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   d9057e8821a8b4cd5cef7c29a2a8ea1f8b6b7b858751a7beaadb3ee37c0a5574
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Use own Leadership or the supplied eligible handler's own value within 6 inches. Ordinary warband Leader borrowing is prohibited. For Cold One Beasthounds the Beastmaster's value cannot include borrowed Leader bonuses.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Use own Leadership or the supplied eligible handler's own value within 6 inches; ordinary warband Leader borrowing is prohibited. Observable: the test uses the handler's value and never the warband leader's.
+# effect_id:
+#   mechanic.handler-leadership
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"this warrior takes a Leadership or Stupidity test","recipient":"this animal warrior","duration":"per test","exceptions":"no ordinary leader borrowing; handler must be supplied and within 6 inches and not knocked down/stunned/out of action"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Handler-only Leadership (mechanic.handler-leadership): leadership.resolve_local_leadership uses fighter.stupidity_leadership and blocks leader borrowing for handler-only warriors. Surface reuse candidate: {"family":"mechanic.handler-leadership","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The animal's own printed Leadership 3 fails a total of eight, but the supplied
+# handler value 8 is the one tested, so the charge and the attacks stand.
+- audit_id: mechanic/mechanic.handler-leadership
+  id: the-supplied-handler-value-is-the-one-tested
+  covers: [handler-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.handler-leadership]
+      trait_overrides: {stupidity: true, stupidity_leadership: 8}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# With no handler value supplied the same eight is tested against the animal's own
+# Leadership 3 and fails, so the charge is cancelled and no attack is resolved.
+- audit_id: mechanic/mechanic.handler-leadership
+  id: without-a-handler-value-the-own-leadership-is-tested
+  covers: [handler-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.handler-leadership]
+      trait_overrides: {stupidity: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: True, state.first_charged: False, state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+

@@ -1,0 +1,104 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-absolute-faith/unimplemented.chaos-streets-sigmar-protectorate.band.protectorate-special-skills-absolute-faith
+# scaffold_fingerprint: ffd915dd666c540646fe181ebc7f1621e1ffa9cfe55361225298f098cccaa4c8
+# authoring_status: PARTIAL
+# authoring_progress: the admitted fear-immunity clause carries 1 authored scenario(s) derived
+# from the printed rule, the recorded semantic contract and the printed profile; any remaining
+# face of the file stays recorded as pending below.  REVIEWED still requires manual semantic
+# review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: fear-immunity (scope: YES)
+# PARTIAL[fear-immunity]: [CLOSING-REVIEW [E]] the bearer templar is the declared recipient, built from its printed profile (W1 A1); the opponent is a hand-built fixture that declares its own facts.
+#   1 scenario(s) cover the clause: the printed clause grants a re-roll of a failed Fear test, so the scenario declares the failed first test, the bearer's own decision to re-roll and the passed re-roll.
+#   Every strike is declared as a natural 1, so each round reports the Fear or Stupidity request under test and nothing else.
+#   PARTIAL: the file is recorded under the fear-immunity effect, but the printed clause is a re-roll of failed Fear tests rather than an immunity, so the immunity the effect label asserts is not demonstrated by this scenario.
+#   REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-absolute-faith/unimplemented.chaos-streets-sigmar-protectorate.band.protectorate-special-skills-absolute-faith
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-sigmar-protectorate/special-rules.yaml
+# source_fingerprint:
+#   daba0cd64ebd3c247d4a3939f38f0948ea3f91db260c5d5418fc32a83a07497e
+# source_sha256_at_generation:
+#   eae243a24e97fc69a1d9a9142cd4476f7ab937993cc2060ec782e79150397a1a
+# Printed rule text:
+#   The Hero may re-roll failed Fear tests
+# Semantic contract (check analysis_status before treating as accepted):
+#   Re-rolling failed Fear tests is an admitted individual psychology consequence; the multiple-opponent test belongs to its own separated clause. Printed clause: The Hero may re-roll failed Fear tests
+# effect_id:
+#   mechanic.fear-immunity
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"Fear test","recipient":"this warrior","duration":"whole duel"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Individual Fear immunity granted by this source. No binding on this record; the canonical effect exists, so the missing step is the KB connection. The All-Alone/reroll half is recorded separately. Scope review integration: {"clause_id":"fear-immunity","review_clause_id":"fear-reroll","source_state":"matched","review_status":"reviewed","scope_reason":"Re-rolling failed Fear tests is an admitted individual psychology consequence; the multiple-opponent test belongs to its own separated clause.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Immune to Fear: no Fear test is taken; other Leadership and Psychology tests are unaffected. Observable: a fear-needing test is skipped for this warrior while Stupidity and other Leadership tests still roll.","effect_id":"mechanic.fear-immunity","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"Fear test\",\"recipient\":\"this warrior\",\"duration\":\"whole duel\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\",\"packages/python/combat-engine/mordheim_combat/modular/psychology.py::resolve_fear\"]","implementation_work":"connection","dependencies":"[]","implementation_batch":"C08-fear-immunity","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"The Hero may re-roll failed Fear tests and does not need to take a test for being engaged by multiple opponents.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"mechanic.fear-reroll","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: all-alone-and-reroll (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-absolute-faith/unimplemented.chaos-streets-sigmar-protectorate.band.protectorate-special-skills-absolute-faith
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-sigmar-protectorate/special-rules.yaml
+# source_fingerprint:
+#   daba0cd64ebd3c247d4a3939f38f0948ea3f91db260c5d5418fc32a83a07497e
+# source_sha256_at_generation:
+#   eae243a24e97fc69a1d9a9142cd4476f7ab937993cc2060ec782e79150397a1a
+# Printed rule text:
+#   All Alone test / reroll clause carried by the same sentence
+# Semantic contract (check analysis_status before treating as accepted):
+#   (not recorded)
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   All-Alone tests are the excluded group subsystem and the source-specific reroll needs the producer supplied; recorded so the compound sentence is fully covered, no duel-runtime consumer assigned. Scope review integration: {"clause_id":"all-alone-and-reroll","review_clause_id":"all-alone-and-reroll","source_state":"unverified","review_status":"reviewed","scope_reason":"The All Alone test and reroll clauses carried by these sentences belong to the group enemy-counting and rout procedures, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+
+# --- Authored scenarios ---
+
+- audit_id: rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-absolute-faith/unimplemented.chaos-streets-sigmar-protectorate.band.protectorate-special-skills-absolute-faith
+  id: a-failed-fear-test-is-rerolled
+  covers: [fear-immunity]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: chaos-streets-sigmar-protectorate, profile_id: templar, special_rule_ids: [band--protectorate-special-skills-absolute-faith]}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.second.fear.charged.reroll.0, value: 3}
+    - {key: round.0.second.fear.charged.reroll.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

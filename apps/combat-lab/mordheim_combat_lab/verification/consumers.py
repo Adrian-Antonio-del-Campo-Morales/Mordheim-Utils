@@ -4,6 +4,18 @@ from __future__ import annotations
 
 
 MODULAR_TAG_CONSUMERS = {
+    'mechanic.confound-and-confuse': 'rounds.resolve_round and attacks: per-combat-turn trick selection and one wound replacement.',
+    'mechanic.dodge-sidestepper': 'contexts.prepare_special_save_context: selected unmodifiable 4+ melee dodge.',
+    'mechanic.babbling-banter': 'contexts.prepare_hit_context: selected contact enemy -1 and attacks against it +1.',
+    'mechanic.mantle-of-crows': 'rounds.resolve_round: automatic fixed S2 contact hit before blows each combat phase.',
+    'mechanic.needle-and-thread': 'attacks._resolve_wound_damage and leadership.resolve_local_leadership: a melee stun sews the mouth and bars that fighter as a Leader provider.',
+    'mechanic.hillman-lycanthrope': 'attacks._resolve_wound_damage and equipment.equipment_for_state: wound-triggered wolf form that discards the kit and adds the -1S bite.',
+    'skill.backstabber': 'contexts.prepare_hit_context and attacks._resolve_wound_damage: supplied unseen first-round charge hit/injury bonuses.',
+    'condition.unseen-charge': 'contexts and attacks: supplied Backstabber trigger, no visibility producer.',
+    'condition.mouth-sewn': 'leadership.resolve_local_leadership: a supplied Leader whose mouth was sewn is refused; attacks sets the producer state.',
+    'rule.thin-flesh': 'contexts.prepare_wound_context: melee-only Toughness penalty.',
+    'rule.slay-large-creature': 'contexts._attack_strength: first-round charge Strength against explicit Large target.',    'mechanic.ghostly-howl': 'leadership.resolve_local_leadership: a D6 Leadership penalty on the fear test of the bearer\'s opponent.',
+    'size.large': 'contexts._attack_strength: supplied Large recipient fact.',
     'defence.holy-relic': 'leadership.resolve_local_leadership: the first required Leadership test automatically passes and spends the personal relic resource.',
     'mechanic.dueling-pride': 'contexts._hit_reroll: source-qualified first-combat-turn melee hit reroll.',
     'mechanic.first-failed-leadership-reroll': 'leadership.resolve_local_leadership: one persistent reroll resource for the first failed Leadership test.',

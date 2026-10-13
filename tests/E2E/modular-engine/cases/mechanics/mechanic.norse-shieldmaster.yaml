@@ -1,0 +1,112 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.norse-shieldmaster
+# scaffold_fingerprint: 21d8785339cd816f519495dc1a319767d1a32030eb8632fac9f4c12df065f17e
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries 2 authored scenarios derived from the printed rule and the recorded contract through the admitted Norse Bearman Bodyguard profile; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: shield-parries-in-addition-to-its-save (scope: YES)
+# AUTHORED[shield-parries-in-addition-to-its-save]: 2 scenarios evidence the printed shield
+#   parry and the save throw it keeps, both on the admitted Norse Bearman Bodyguard profile:
+#   the shield requests its own parry die and stops the blow, and when the parry fails the same
+#   shield's +1 save still turns the wound aside.
+#   The route is the printed profile itself: the mechanic arrives only from
+#   `hireling.hired-sword.norse-bearman-bodyguard.rule.shieldmaster` (grant: profile,
+#   implemented: YES) in catalog/hirelings/hired-swords/grade-2b.yaml, which the compiler
+#   carries into `loadout_mechanics` through `_profile_rule_mechanics`, so the shield's
+#   off-hand effect gains the parry flag. `special_rule_ids` still refuses that id (grant:
+#   profile is not selectable); the built band/profile pair is `hirelings.hired-sword.2b`
+#   with the printed kit (axe in hand, shield in the off hand).
+# origin_id:
+#   mechanic/mechanic.norse-shieldmaster
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   d53b7423ae1f3da3647cf1c6afe27f39cffa911b4d161699b961a6d26a5fabb7
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   A Norse mercenary has trained with a shield since childhood becoming so skilled as to repel any blow. A Bearman Bodyguard may parry with it in addition to getting a save throw.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Bearman may parry with his shield in addition to getting a save throw; observable: a shield produces a parry attempt while keeping its save bonus.
+# effect_id:
+#   mechanic.norse-shieldmaster
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The compiler swaps the shield's off-hand effect for a variant that carries the parry flag when this mechanic is present, so the attempt exists and the save is unchanged; same rule as Shield Master (G117, G220).
+
+# --- Authored scenarios ---
+# The printed clause is a shield that parries *in addition to* its save.  The defender is the
+# admitted Norse Bearman Bodyguard profile, whose own Shieldmaster rule is the only consumer that
+# sets the shield's parry flag.  The attacker hits on an equal Weapon Skill (4+) and the parry die
+# of five beats the hit roll, so the attack is stopped before any wound or save is resolved.
+- audit_id: mechanic/mechanic.norse-shieldmaster
+  id: the-shield-parries-the-blow
+  covers: [shield-parries-in-addition-to-its-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.norse-bearman-bodyguard
+      main_weapon_id: weapon.axe
+      off_hand_id: defence.shield
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.0.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same shield keeps the save throw the clause grants "in addition": the failed parry leaves the
+# wound to resolve, and the shield's own +1 lifts light armour from its printed 6+ to 5+, which the
+# declared five satisfies while an unaided 6+ would not.
+- audit_id: mechanic/mechanic.norse-shieldmaster
+  id: the-same-shield-still-contributes-its-save-throw
+  covers: [shield-parries-in-addition-to-its-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: hirelings.hired-sword.2b
+      profile_id: hireling.hired-sword.norse-bearman-bodyguard
+      main_weapon_id: weapon.axe
+      off_hand_id: defence.shield
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.saved: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

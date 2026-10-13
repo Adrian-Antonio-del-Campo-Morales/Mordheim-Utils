@@ -1,0 +1,145 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.choppa
+# scaffold_fingerprint: 92ac9ab2826e83bb0697da87ff1cf81d6f5194acb3300f4f35584eae8c50b443
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries four authored scenarios for the first-round Strength bonus and its expiry, the armour target on both faces and the permitted shield. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenarios cover the first-round +1 Strength and its expiry, both faces of the extra armour penalty and the permitted shield.
+# origin_id:
+#   mechanic/weapon.choppa
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   c95e241116d7c7edc6f3c3e78b0a5ac466baf0a72a47089c2b27eaefa3dc3274
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   +1 Strength in the first round and an additional -1 armour-save modifier; may be used with a shield.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Choppa adds +1 Strength in the first round and an extra -1 armour save, and may be used with a shield. Closure: first-round Strength +1, armour_penetration 1, and a shield remains a legal off hand.
+# effect_id:
+#   weapon.choppa
+# relation:
+#   equivalent
+# parameters:
+#   {"armour_penetration": 1, "first_round_strength_bonus": 1}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. The printed shield permission is the shared loadout check; no duel-specific clause remains. Surface reuse candidate: {"family":"W-weapon.choppa","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare source-specific weapon/alias identity and each mode or clause. Retain mounted/charge conditions, parry limits, dagger/armour effect, poison coating, active hand allocation and local overrides. The magical Misericordia injury chart is not the ordinary dagger variant; a counts-as alias does not inherit every local extension.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/weapon.choppa - +1 Strength in the first round, an extra -1 armour
+# save, and a shield remains legal in the other hand.
+#
+# Expectations come from the printed rule and the admitted clause `whole`, never
+# from engine output.  The two-round scenario carries the Strength expiry in the
+# same duel, and the shield loadout is the control that the penalty did not also
+# forbid the printed off hand.
+# Strength 4 against Toughness 3 wounds on a 3 in the first round; in the second round the same weapon is the bearer's Strength 3, so the 3 no longer wounds on the printed 4+.
+
+- audit_id: mechanic/weapon.choppa
+  id: choppa-adds-one-strength-in-the-first-round-only
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.choppa
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 3}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+    1: {attacks.0.damage: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+# The extra point of armour penetration moves a worn 5+ save to 6+, so the 6 still saves.
+
+- audit_id: mechanic/weapon.choppa
+  id: choppa-save-holds-on-the-penalised-target
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.choppa
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: True, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The 5 that would save against an unpenetrated suit no longer saves.
+
+- audit_id: mechanic/weapon.choppa
+  id: choppa-save-fails-one-below-the-penalised-target
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.choppa
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed permission to use a shield is the positive control on the printed penalty: this loadout compiles and resolves a round.
+
+- audit_id: mechanic/weapon.choppa
+  id: choppa-is-accepted-with-a-shield
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.choppa
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

@@ -561,16 +561,19 @@ rules:
     - machine-ogre
 - id: machine-ogre--bio-machinery
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'NO'
     effects:
-    - id: unimplemented.metal-mongers-mim.machine-ogre.bio-machinery
-      scope: LATER
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
+    - id: machine-ogre--bio-machinery.never-leaves-combat.pending
+      scope: 'YES'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: 'Retained individual clause: Immunity to psychology and never leaving close combat because of psychology are admitted lasting individual states that decide whether the single duel continues. Printed clause: immune to psychology and never leaves combat because of Psychology'
   name: Bio Machinery
   effect: >-
     The Machine-Ogre is simply a mindless fusion of materials animated by warpstone. The

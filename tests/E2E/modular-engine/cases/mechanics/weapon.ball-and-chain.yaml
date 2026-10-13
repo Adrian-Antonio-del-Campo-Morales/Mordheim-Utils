@@ -1,0 +1,152 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.ball-and-chain
+# scaffold_fingerprint: 9f3e0b32cecc483fa5fedae0f0a010b50a145ec4857664528579a791da919679
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries four authored scenarios for the denied save, the D3 damage die and the -1 to hit the wielder plus one refusal for the two-handed occupancy. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenarios and 1 refusal cover the denied save, the D3 damage, the -1 to hit the wielder on both sides of the boundary, and the two-handed occupancy.
+# origin_id:
+#   mechanic/weapon.ball-and-chain
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   7c2d6c697e8ac7e819d2c60d78222b76f289c8140a22886ada17592f9b9727f3
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Range: Close Combat Strength: As user +2 Special Rules Incredible Force: Because the Ball and Chain is so heavy, normal armour does very little to protect against it. No armour saves are allowed against wounds caused by a Ball and Chain. Successful wounds inflict D3 damage. Enemies suffer -1 to hit the wielder in close combat.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Two-handed Strength +2 weapon that denies all armour saves, inflicts D3 damage per unsaved wound, and gives attackers -1 to hit its wielder. Closure: no armour save is attempted, a successful wound rolls D3 damage, and the opponent hit target is one point worse.
+# effect_id:
+#   weapon.ball-and-chain
+# relation:
+#   equivalent
+# parameters:
+#   {"damage_die_sides": 3, "ignore_armour": true, "strength_bonus": 2, "two_handed": true}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. ignore_armour and damage_die_sides are consumed by armbattletarget/_resolve_wound_damage; the -1 to hit the wielder is the defender weapon check in prepare_hit_context. All three printed parts are delivered by the single operator. Surface reuse candidate: {"family":"W-weapon.ball-and-chain","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/weapon.ball-and-chain - Strength +2, no armour saves, D3 damage,
+# and -1 to hit the wielder.
+#
+# Expectations come from the printed rule and the admitted clause `whole`, never
+# from engine output.  The damage die is a three-sided roll, which the strict tape
+# declares with its sides.  The hit-target scenarios leave the bearer unarmoured
+# and unwounded, so the only attack against it is the opponent's.
+# No armour die is requested at all, which the strict tape proves, and the established wound rolls its D3 damage: a 3 on a three-sided die.
+
+- audit_id: mechanic/weapon.ball-and-chain
+  id: ball-and-chain-denies-a-worn-suit-its-save
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.ball-and-chain
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: &d-ws3-s3-t3-w4-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 4, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.damage, sides: 3, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: False, attacks.0.damage: 3, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# An unarmoured target has no save to deny, and the damage die can come up 1.
+
+- audit_id: mechanic/weapon.ball-and-chain
+  id: ball-and-chain-denies-the-save-of-an-unarmoured-target
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.ball-and-chain
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 4, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.damage, sides: 3, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The bearer's attacker needs one point more: an equal Weapon Skill would hit on a 4, and the recorded target is a 5, which still hits on a 5.
+
+- audit_id: mechanic/weapon.ball-and-chain
+  id: ball-and-chain-makes-its-wielder-one-point-harder-to-hit
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.ball-and-chain
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 5}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: True, attacks.1.hit_target: 5}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The 4 that would hit an equal-Weapon-Skill opponent no longer hits the bearer.
+
+- audit_id: mechanic/weapon.ball-and-chain
+  id: ball-and-chain-is-not-hit-on-a-four
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.ball-and-chain
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, attacks.1.hit_target: 5}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed two-handed occupancy is declared as a refusal.
+
+- audit_id: mechanic/weapon.ball-and-chain
+  id: ball-and-chain-occupies-both-hands-so-an-off-hand-weapon-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.ball-and-chain
+      off_hand_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "main weapon occupies both hands"
+

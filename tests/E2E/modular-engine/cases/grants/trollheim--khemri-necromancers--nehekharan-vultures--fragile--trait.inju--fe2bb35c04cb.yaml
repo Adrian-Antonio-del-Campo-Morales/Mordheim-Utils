@@ -1,0 +1,104 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-necromancers/nehekharan-vultures--fragile/trait.injury-profile
+# scaffold_fingerprint: 2c0a7fb1682246d51b57f0d2064f3bf63e78df97e4eb91433b7ee0e68670dec9
+# authoring_status: AUTHORED
+# authoring_progress: the admitted fragile-injury-profile clause carries authored scenarios derived
+# from the printed sentence and the recorded contract (injury profile 3, which resolves 4+ as out of
+# action and everything below as Knocked Down).  The bearer is the profile build
+# trollheim/khemri-necromancers/nehekharan-vultures, which prints its own injury ladder; it starts at
+# one Wound and contributes no attacks, so a single unsaved wound reaches the injury table and the
+# die alone decides the condition.  A 3 leaves it Knocked Down and a 4 takes it out, where the normal
+# table would have stunned it on a 3 and only taken it out on a 5.  The print's 'including the Undead
+# No Pain effect' is redundant on this ladder, since every face below the 4 already resolves to
+# Knocked Down, and is recorded here rather than asserted as a second rule.  REVIEWED still requires
+# manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: fragile-injury-profile (scope: YES)
+# AUTHORED[fragile-injury-profile]: 2 scenarios show the printed ladder face by face: a 3 leaves the
+#   bearer Knocked Down and a 4 takes it Out of Action, where the normal table would have stunned it
+#   and only ended it on a 5.
+# origin_id:
+#   rule/trollheim/khemri-necromancers/nehekharan-vultures--fragile/trait.injury-profile
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-necromancers/special-rules.yaml
+# source_fingerprint:
+#   cef1811f2202de9615b7658eccaa61c01e0891a8d9855f603ea31695476971c2
+# source_sha256_at_generation:
+#   5919ead4bc02e6bbc69f322bde34060778fff791f89ae27775559ac0ca2bafb1
+# Printed rule text:
+#   When a Nehekharan Vulture suffers a Wound, resolve injury as follows: 1-3 Knocked Down, including the Undead No Pain effect; 4-6 Out of Action.
+# Semantic contract (check analysis_status before treating as accepted):
+#   When a Vulture suffers a Wound: 1-3 Knocked Down and 4-6 Out of Action; observable: a total of 3 leaves it Knocked Down and a 4 takes it out of action.
+# effect_id:
+#   trait.injury-profile
+# relation:
+#   equivalent
+# parameters:
+#   {"profile":3}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed as injury profile 3, which resolves 4+ as out of action and everything below as Knocked Down. The print adds 'including the Undead No Pain effect', which is redundant where the result is already Knocked Down. Surface reuse candidate: {"family":"T-INJURY-PROFILE","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the entire printed chart or reaction, received versus inflicted injury, initial condition, exceptions and timing. Reroll, ignore-result roll, wound multiplication and ignition threshold are different effects; do not copy a generic chart or combine them by name.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
+# bearer prints the rule, starts the duel at one Wound and contributes no attacks of its own, so round
+# 0 carries only the attacker's dice and the wound that lands is the one that reaches the injury
+# table.  The blow is an ordinary mace: at Weapon Skill 10 against this bearer's printed Weapon Skill
+# it needs a 3, and Strength 8 against Toughness 3 needs a 2, so the declared 5 and 5 both pass.  Five
+# is deliberately below a natural six, which would be a critical hit and add a further critical die
+# and an injury modifier.  The printed 1-3 half of the ladder resolves to Knocked Down, which the
+# bearer's No Pain would keep in any case, so both scenarios hold the ladder itself.
+
+- audit_id: rule/trollheim/khemri-necromancers/nehekharan-vultures--fragile/trait.injury-profile
+  id: a-three-on-the-printed-ladder-leaves-the-bearer-knocked-down
+  covers: [fragile-injury-profile]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: trollheim, band_id: khemri-necromancers, profile_id: nehekharan-vultures}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {attacks.0.wounded: True, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed 4-6 band: the same bearer is taken Out of Action one face earlier than the normal table
+# would.
+
+- audit_id: rule/trollheim/khemri-necromancers/nehekharan-vultures--fragile/trait.injury-profile
+  id: a-four-on-the-printed-ladder-takes-the-bearer-out
+  covers: [fragile-injury-profile]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: trollheim, band_id: khemri-necromancers, profile_id: nehekharan-vultures}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: True, state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

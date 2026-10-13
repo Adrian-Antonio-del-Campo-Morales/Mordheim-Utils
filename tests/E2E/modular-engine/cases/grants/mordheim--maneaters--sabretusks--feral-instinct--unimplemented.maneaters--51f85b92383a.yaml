@@ -1,0 +1,77 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/maneaters/sabretusks--feral-instinct/unimplemented.maneaters.sabretusks.feral-instinct
+# scaffold_fingerprint: 00fdc982748fd2a0654934ec3066a2c0e078921fe420cdf1f235c0995ecdd410
+# authoring_status: PARTIAL
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: feral-instinct--scope--leadership-test (scope: YES)
+# PARTIAL[feral-instinct--scope--leadership-test]: [C] not asserted. the admitted facet is the compulsory Leadership test the Sabretusk takes at the beginning of the Ogres' turn, whose only printed consequence - the out-of-control state in which the opponent moves the beast - is the excluded scope-NO sibling. the record carries no effect id, its relation is only related, its sole consumer is rounds.resolve_round and its implementation_work is behaviour, and the register states that the exact out-of-control consequence is not in the KB and that the consumer has no such branch, so a new behaviour is needed. Two representations are missing: the effect identity/binding for a turn-start compulsory test on this beast, and the branch in rounds.resolve_round that requests it; without the consequence the test leaves no observable of its own, so a tape would only restate a supplied state. Searching the record, its named consumer seam and the authored corpus found no operator, roll key or diagnostic for either. REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/maneaters/sabretusks--feral-instinct/unimplemented.maneaters.sabretusks.feral-instinct
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/maneaters/special-rules.yaml
+# source_fingerprint:
+#   12346a358a3dd4de51cc95386d0168d32f976f1947d694894e66d6ff5b57ad99
+# source_sha256_at_generation:
+#   3a08e324408189c522ac15ffd4ef1ebf9f6762f1a8e9ab7608ad27662721e804
+# Printed rule text:
+#   At the beginning of the Ogres turn the Sabretusk must pass a Leadership test.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Leadership test the Sabretusk must take at the beginning of the turn is an admitted individual test consequence of that duelist. Printed clause: At the beginning of the Ogres turn the Sabretusk must pass a Leadership test.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Randomised control check on a beast; the exact out-of-control consequence is not in the KB and the consumer has no such branch, so a new behaviour is needed. Scope review integration: {"clause_id":"feral-instinct","review_clause_id":"leadership-test","source_state":"matched","review_status":"reviewed","scope_reason":"The Leadership test the Sabretusk must take at the beginning of the turn is an admitted individual test consequence of that duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"At the beginning of the Ogres' turn the Sabretusk must pass a Leadership test or act out of control. Observable: a failed test applies the out-of-control state for that turn.","effect_id":"","relation":"related","parameters":"{}","conditions":"{\"trigger\":\"start of the owning player's turn\",\"resolution\":\"Leadership test\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round\"]","implementation_work":"behavior","dependencies":"[]","implementation_batch":"C14-control","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round\"]"},"inherited_clause_text":"Even a Guide has difficulty controlling such feral beasts. At the beginning of the Ogres turn the Sabretusk must pass a Leadership test. If the test is failed, the opponent may move the Sabretusk this turn. An uncontrolled Sabretusk may charge models from his own warband!","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: feral-instinct--scope--movement-control (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/maneaters/sabretusks--feral-instinct/unimplemented.maneaters.sabretusks.feral-instinct
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/maneaters/special-rules.yaml
+# source_fingerprint:
+#   12346a358a3dd4de51cc95386d0168d32f976f1947d694894e66d6ff5b57ad99
+# source_sha256_at_generation:
+#   3a08e324408189c522ac15ffd4ef1ebf9f6762f1a8e9ab7608ad27662721e804
+# Printed rule text:
+#   If the test is failed, the opponent may move the Sabretusk this turn. An uncontrolled Sabretusk may charge models from his own warband!
+# Semantic contract (check analysis_status before treating as accepted):
+#   The opponent moving the beast on a failed test, and its ability to charge its own warband, are movement and group-control clauses, excluded from the duel. Printed clause: If the test is failed, the opponent may move the Sabretusk this turn. An uncontrolled Sabretusk may charge models from his own warband!
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Randomised control check on a beast; the exact out-of-control consequence is not in the KB and the consumer has no such branch, so a new behaviour is needed. Scope review integration: {"clause_id":"feral-instinct","review_clause_id":"movement-control","source_state":"matched","review_status":"reviewed","scope_reason":"The opponent moving the beast on a failed test, and its ability to charge its own warband, are movement and group-control clauses, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"At the beginning of the Ogres' turn the Sabretusk must pass a Leadership test or act out of control. Observable: a failed test applies the out-of-control state for that turn.","effect_id":"","relation":"related","parameters":"{}","conditions":"{\"trigger\":\"start of the owning player's turn\",\"resolution\":\"Leadership test\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round\"]","implementation_work":"behavior","dependencies":"[]","implementation_batch":"C14-control","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round\"]"},"inherited_clause_text":"Even a Guide has difficulty controlling such feral beasts. At the beginning of the Ogres turn the Sabretusk must pass a Leadership test. If the test is failed, the opponent may move the Sabretusk this turn. An uncontrolled Sabretusk may charge models from his own warband!","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# authoring_progress: the admitted feral-instinct--scope--leadership-test clause carries no scenario
+#   and stays pending with the missing representations named in its clause note; the scope-NO sibling
+#   (movement-control) is retained unchanged.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+
+[]  # Empty scenario list: this file contributes no test or coverage.

@@ -1,0 +1,55 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/snotlings-web/snotling-mobs--teamwork/unimplemented.snotlings-web.snotling-mobs.teamwork
+# scaffold_fingerprint: ab9dd0a8c76090c8f2cbf8e40fdaca58b7bc9a8d25840caf9bda81382f3294b2
+# authoring_status: PARTIAL
+# authoring_progress: the admitted single-model-projection clause stays without scenarios for the concrete
+# reason recorded in its PARTIAL note below: the register records that the profile already carries a single
+# canonical characteristic block, so the printed "counts as one model" is a projection/accounting fact the
+# duel satisfies vacuously and the stale deferred marker is a data-reconciliation item.  A scenario that
+# cannot fail is not evidence, so this file is not offered as clause-complete.  execution_status stays
+# UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: single-model-projection (scope: YES)
+# PARTIAL[single-model-projection]: [C] no scenario is authorable for this clause.  The printed "they count as
+# one model" is already the duel's own projection - one duelist, one characteristic block, one injury and
+# resource state per side - so every possible tape satisfies it and no face of the dice can discriminate;
+# the register reaches the same conclusion ("Both already have a single canonical characteristic block.
+# Reconcile the stale deferred marker as a projection/accounting fact; no multiple-fighter engine or extra
+# per-Snotling attacks are justified").  What remains is data reconciliation of that stale marker plus the
+# blocked canonical metadata, not an observable, so no scenario is invented.
+# origin_id:
+#   rule/mordheim/snotlings-web/snotling-mobs--teamwork/unimplemented.snotlings-web.snotling-mobs.teamwork
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/snotlings-web/special-rules.yaml
+# source_fingerprint:
+#   0bbc6b1bc8aef58b337df02d049955d151c4bfe8ccc25774097deffb75804182
+# source_sha256_at_generation:
+#   7dc940a3784763fc2a3788f764bbbebc42aa05d316da3cf38a6a037564a7415b
+# Printed rule text:
+#   While a Snotling Mob technically consists of LOTS of snotlings, for all intents and purposes, they count as one model.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Use the one printed profile as one duelist and one injury/resource state, regardless of how many Snotlings the miniature depicts.
+# effect_id:
+#   proposed.single-model-accounting
+# relation:
+#   independent
+# parameters:
+#   {"combatant_count":1}
+# conditions:
+#   {"profile":"snotling-mobs"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Both already have a single canonical characteristic block. Reconcile the stale deferred marker as a projection/accounting fact; no multiple-fighter engine or extra per-Snotling attacks are justified. Canonical metadata may still block admission, so this is data reconciliation rather than certified closure.
+
+[]  # Empty scenario list: this file contributes no test or coverage.

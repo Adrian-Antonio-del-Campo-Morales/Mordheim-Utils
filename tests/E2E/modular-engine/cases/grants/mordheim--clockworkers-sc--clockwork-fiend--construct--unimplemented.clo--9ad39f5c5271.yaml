@@ -1,0 +1,388 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct
+# scaffold_fingerprint: cedf340d5174fe0ea4c07f8a3bcbbfd4b72e329cf1ccc42a1a2b04cf8a37c4cb
+# authoring_status: PARTIAL
+# authoring_progress: the admitted construct-poison-immunity clause carries two authored scenarios derived
+# from the printed rule and the printed profile.
+# The other admitted clauses of this ID remain TODO, so the file stays PARTIAL.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED;
+# no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: construct-drug-immunity (scope: YES)
+# PARTIAL[construct-drug-immunity]: [C] input/observation absent from the executor contract.  The
+#   printed drug facet needs (1) a declarable drug/preparation identity in the fixture vocabulary
+#   (the runner build supplies main_weapon_id / main_poison_id but no drug/carried-item field;
+#   no such catalogue item class exists in sources/knowledge/catalog/items) and (2) the
+#   drug-derived state the record's own semantic contract names ("suppress drug-derived changes
+#   to this construct itself") has no state field or consumer this revision could build on.  The
+#   recorded effect_id is proposed.drug-immunity (unpromoted), so the clause it names is the
+#   missing operator, not an unutilised grant.  The two poison-immunity scenarios in this file
+#   evidence the sibling clause construct-poison-immunity only, which is a different clause id;
+#   they do not carry this facet and are not re-labeled here.
+# origin_id:
+#   rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct
+# analysis_status:
+#   source_blocked
+# source_file:
+#   bands/mordheim/clockworkers-sc/special-rules.yaml
+# source_fingerprint:
+#   d3660039a7f53dbc4d25c37d3f1d7f4d4214eeb3735d6cf01944e142b62b9182
+# source_sha256_at_generation:
+#   a1e5160269bd2f8005f116c863d70f6a3a84622f2f83fb2aedb9d0e4855da69d
+# Printed rule text:
+#   Constructs are unaffected by drugs.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Suppress drug-derived changes to this construct itself, not only poisonous attacks inflicted on it.
+# effect_id:
+#   proposed.drug-immunity
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {"profile":"clockwork-fiend","reference":"band--constructs"}
+# dependencies:
+#   ["rule/mordheim/clockworkers-sc/band--constructs/unimplemented.clockworkers-sc.band.constructs"]
+# Register notes (context only, not behavioral authority):
+#   The poison-immunity field guards incoming poison. Compiler/global preparation effects and the unconditional Mandrake injury flag are different consumers: do not claim a poison binding alone covers all drugs. Resolve the drug contribution/provenance and connect the parent once; no optimized-engine work. Scope review integration: {"clause_id":"construct-drug-immunity","review_clause_id":"construct-drug-immunity","source_state":"unverified","review_status":"reviewed","scope_reason":"Being unaffected by drugs is an admitted individual defensive clause of these Constructs.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+#   
+#   [M3-defences 2026-10-08] blocked with the source's own reason. `clockwork-fiend--construct` is a deferred `scope: LATER / implemented: NO` subsystem, and the clause is wider than the existing field: `poison_immunity` guards incoming poisonous attacks, while suppressing drug-derived changes to the construct itself (compiler/global preparations, the unconditional Mandrake injury flag) is a different consumer. Resolution: re-scope the Construct rule, then bind a self-affecting immunity distinct from the incoming one.
+#
+# Clause: construct-equipment-slot-capacity (scope: YES)
+# PARTIAL[construct-equipment-slot-capacity]: CLOSING-REVIEW [C], 2026-10-10: no scenario is authorable in this revision
+#   with the current executor contract; the original TODO note below the header is superseded.
+# origin_id:
+#   rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clockworkers-sc/special-rules.yaml
+# source_fingerprint:
+#   d3660039a7f53dbc4d25c37d3f1d7f4d4214eeb3735d6cf01944e142b62b9182
+# source_sha256_at_generation:
+#   a1e5160269bd2f8005f116c863d70f6a3a84622f2f83fb2aedb9d0e4855da69d
+# Printed rule text:
+#   The clockwork-fiend has 4 equipment slots and one armour slot; two-handed or missile weapons occupy two slots, other weapons one.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Validate this supplied construct's carried equipment against its source-specific slot capacity, separately from fitting/removal over a campaign.
+# effect_id:
+#   proposed.construct-equipment-slot-limit
+# relation:
+#   related
+# parameters:
+#   {"equipment_slots":4,"armour_slots":1,"two_handed_or_missile_cost":2,"other_weapon_cost":1}
+# conditions:
+#   {"profile":"clockwork-fiend","window":"construction"}
+# dependencies:
+#   ["rule/mordheim/clockworkers-sc/band--constructs/unimplemented.clockworkers-sc.band.constructs"]
+# Register notes (context only, not behavioral authority):
+#   profiles.yaml prints the capacities and Smithery prints slot costs. D already has corresponding profile-restriction origins: these aliases point to the same required shared contract, not another capacity contribution. Canonical facts and a weighted-slot guard remain missing; do not replace this with the unrelated maximum active hands. Scope review integration: {"clause_id":"construct-equipment-slot-capacity","review_clause_id":"construct-equipment-slot-capacity","source_state":"unverified","review_status":"reviewed","scope_reason":"The equipment and armour slot capacities and the two-slot cost of two-handed or missile weapons are loadout construction facts of this clockwork fiend.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+#
+# Clause: construct-excluded-producers--scope--in-built-equipment (scope: YES)
+# PARTIAL[construct-excluded-producers--scope--in-built-equipment]: CLOSING-REVIEW [C], 2026-10-10: no scenario is authorable in this revision
+#   with the current executor contract; the original TODO note below the header is superseded.
+# origin_id:
+#   rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clockworkers-sc/special-rules.yaml
+# source_fingerprint:
+#   d3660039a7f53dbc4d25c37d3f1d7f4d4214eeb3735d6cf01944e142b62b9182
+# source_sha256_at_generation:
+#   a1e5160269bd2f8005f116c863d70f6a3a84622f2f83fb2aedb9d0e4855da69d
+# Printed rule text:
+#   the prohibition on removing already fitted equipment
+# Semantic contract (check analysis_status before treating as accepted):
+#   The prohibition on removing an already fitted weapon or armour is a construction clause of these Constructs. Printed clause: the prohibition on removing already fitted equipment
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Need Orders expressly skips models in close combat. The C parent labels in-built equipment NO, but that label must not swallow the distinct slot-capacity construction condition; D preserves that condition without editing C. Scope review integration: {"clause_id":"construct-excluded-producers","review_clause_id":"in-built-equipment","source_state":"unverified","review_status":"reviewed","scope_reason":"The prohibition on removing an already fitted weapon or armour is a construction clause of these Constructs.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The excluded clauses concern orders/movement outside melee, escape, progression and campaign equipment removal; the allowed slot capacity of a supplied loadout is recorded separately.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{\"excluded\":[\"movement/orders outside melee\",\"escape\",\"progression\",\"campaign equipment removal\"]}","consumer":"[]","implementation_work":"none","dependencies":"[\"rule/mordheim/clockworkers-sc/band--constructs/unimplemented.clockworkers-sc.band.constructs\"]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/clockworkers-sc/special-rules.yaml\",\"docs/decisions/design-rulings.md\"]"},"inherited_clause_text":"Constructs inherit Need Orders, no running/leaving combat, no experience and the prohibition on removing already fitted equipment.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: construct-excluded-producers--scope--never-leaves-combat (scope: YES)
+# PARTIAL[construct-excluded-producers--scope--never-leaves-combat]: CLOSING-REVIEW [C], 2026-10-10: no scenario is authorable in this revision
+#   with the current executor contract; the original TODO note below the header is superseded.
+# origin_id:
+#   rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clockworkers-sc/special-rules.yaml
+# source_fingerprint:
+#   d3660039a7f53dbc4d25c37d3f1d7f4d4214eeb3735d6cf01944e142b62b9182
+# source_sha256_at_generation:
+#   a1e5160269bd2f8005f116c863d70f6a3a84622f2f83fb2aedb9d0e4855da69d
+# Printed rule text:
+#   leaving combat
+# Semantic contract (check analysis_status before treating as accepted):
+#   Never leaving close combat because of psychology is an admitted lasting individual state of these Constructs. Printed clause: leaving combat
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Need Orders expressly skips models in close combat. The C parent labels in-built equipment NO, but that label must not swallow the distinct slot-capacity construction condition; D preserves that condition without editing C. Scope review integration: {"clause_id":"construct-excluded-producers","review_clause_id":"never-leaves-combat","source_state":"unverified","review_status":"reviewed","scope_reason":"Never leaving close combat because of psychology is an admitted lasting individual state of these Constructs.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The excluded clauses concern orders/movement outside melee, escape, progression and campaign equipment removal; the allowed slot capacity of a supplied loadout is recorded separately.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{\"excluded\":[\"movement/orders outside melee\",\"escape\",\"progression\",\"campaign equipment removal\"]}","consumer":"[]","implementation_work":"none","dependencies":"[\"rule/mordheim/clockworkers-sc/band--constructs/unimplemented.clockworkers-sc.band.constructs\"]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/clockworkers-sc/special-rules.yaml\",\"docs/decisions/design-rulings.md\"]"},"inherited_clause_text":"Constructs inherit Need Orders, no running/leaving combat, no experience and the prohibition on removing already fitted equipment.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: construct-no-pain (scope: YES)
+# PARTIAL[construct-no-pain]: CLOSING-REVIEW [C], 2026-10-10: no scenario is authorable in this revision
+#   with the current executor contract; the original TODO note below the header is superseded.
+# origin_id:
+#   rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clockworkers-sc/special-rules.yaml
+# source_fingerprint:
+#   d3660039a7f53dbc4d25c37d3f1d7f4d4214eeb3735d6cf01944e142b62b9182
+# source_sha256_at_generation:
+#   a1e5160269bd2f8005f116c863d70f6a3a84622f2f83fb2aedb9d0e4855da69d
+# Printed rule text:
+#   Constructs treat Stunned results as Knocked Down.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The profile inherits this specific band--constructs clause, with the parent rule's conditions and exceptions intact.
+# effect_id:
+#   skill.ignore-pain
+# relation:
+#   equivalent
+# parameters:
+#   {"stunned_becomes":"knocked-down"}
+# conditions:
+#   {"profile":"clockwork-fiend","reference":"band--constructs"}
+# dependencies:
+#   ["rule/mordheim/clockworkers-sc/band--constructs/unimplemented.clockworkers-sc.band.constructs","skill.ignore-pain"]
+# Register notes (context only, not behavioral authority):
+#   Parent definitions resolve in the KB and C records these same pending connections. Wire the parent to the two construct recipients once; profile aliases must not add a second contribution or grant construct immunities to human heroes. Consumer existence is not canonical reachability. Scope review integration: {"clause_id":"construct-no-pain","review_clause_id":"construct-no-pain","source_state":"unverified","review_status":"reviewed","scope_reason":"Treating Stunned results as Knocked Down is an admitted individual injury consequence of these Constructs.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"construct-no-pain","audit_group":"EQ-skill.ignore-pain","verified_facet":"skill.ignore-pain","relationship":"shared_facet","boundary":"Share the post-chart Stunned-to-Knocked-Down transformation. Preserve recipients and printed Resilient prerequisites; do not add that prerequisite to innate No Pain. Squishy expressly disables No Pain. A conversion is not a helmet roll or ordinary Knocked Down for Jump Up.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+#
+# Clause: construct-poison-immunity (scope: YES)
+# AUTHORED[construct-poison-immunity]: 2 scenarios show the printed poison immunity against the one duel-time
+# poison rider: a Nightshade-coated mace wounds the bearer, the wound is taken as any
+# wound would be, and the poisoned-wound Initiative penalty is suppressed, so the
+# bearer's recorded initiative_penalty stays 0.  The bearer is the clockworkers-sc/clockwork-fiend profile
+# that prints the rule, which declares no armour, ward or regeneration save and no
+# Ethereal-class hit gate, so the mace lands its wound without a declared defence die.
+# The bearer starts the duel at two wounds and declares no attack, so a single unsaved
+# wound leaves it standing and no injury roll is needed; the clause is single-faceted,
+# so the second scenario is the ordinary-neighbour control, which shows that the same poisoned wound really does lower a non-immune target's Initiative by one.
+# The printed profile lists this rule without the compiled poison_immune trait, which
+# is an implementation observation recorded for execution, not a clause decision.
+# REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+# origin_id:
+#   rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clockworkers-sc/special-rules.yaml
+# source_fingerprint:
+#   d3660039a7f53dbc4d25c37d3f1d7f4d4214eeb3735d6cf01944e142b62b9182
+# source_sha256_at_generation:
+#   a1e5160269bd2f8005f116c863d70f6a3a84622f2f83fb2aedb9d0e4855da69d
+# Printed rule text:
+#   Constructs are unaffected by poison.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Inherit the parent's poison-immunity clause once; remove the opposing weapon's poison contribution before attack/wound resolution.
+# effect_id:
+#   trait.poison-immune
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"profile":"clockwork-fiend","reference":"band--constructs"}
+# dependencies:
+#   ["rule/mordheim/clockworkers-sc/band--constructs/unimplemented.clockworkers-sc.band.constructs","trait.poison-immune"]
+# Register notes (context only, not behavioral authority):
+#   The existing poison-immunity path is a canonical connection target. It does not prove immunity to the bearer's own drug preparations; that distinct clause is kept separately. Parent and alias must not double-grant the same immunity. Scope review integration: {"clause_id":"construct-poison-immunity","review_clause_id":"construct-poison-immunity","source_state":"unverified","review_status":"reviewed","scope_reason":"Being unaffected by poison is an admitted individual defensive clause of these Constructs.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"trait.poison-immune","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share poison rejection, preserving the particular poison route and recipients. Disease/drug immunity does not automatically become an admitted duel operator or a source of extra poison immunity.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: construct-psychology-immunity (scope: YES)
+# PARTIAL[construct-psychology-immunity]: CLOSING-REVIEW [C], 2026-10-10: no scenario is authorable in this revision
+#   with the current executor contract; the original TODO note below the header is superseded.
+# origin_id:
+#   rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clockworkers-sc/special-rules.yaml
+# source_fingerprint:
+#   d3660039a7f53dbc4d25c37d3f1d7f4d4214eeb3735d6cf01944e142b62b9182
+# source_sha256_at_generation:
+#   a1e5160269bd2f8005f116c863d70f6a3a84622f2f83fb2aedb9d0e4855da69d
+# Printed rule text:
+#   Constructs are immune to Psychology.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The profile inherits this specific band--constructs clause, with the parent rule's conditions and exceptions intact.
+# effect_id:
+#   mechanic.psychology-immunity
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"profile":"clockwork-fiend","reference":"band--constructs"}
+# dependencies:
+#   ["rule/mordheim/clockworkers-sc/band--constructs/unimplemented.clockworkers-sc.band.constructs","mechanic.psychology-immunity"]
+# Register notes (context only, not behavioral authority):
+#   Parent definitions resolve in the KB and C records these same pending connections. Wire the parent to the two construct recipients once; profile aliases must not add a second contribution or grant construct immunities to human heroes. Consumer existence is not canonical reachability. Scope review integration: {"clause_id":"construct-psychology-immunity","review_clause_id":"construct-psychology-immunity","source_state":"unverified","review_status":"reviewed","scope_reason":"Immunity to Psychology is an admitted lasting individual state of these Constructs.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"mechanic.psychology-immunity","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare each immunity or automatic-pass clause separately. Psychology immunity is not automatic success on every Leadership test. Preserve ordinary Hatred/Frenzy suppression and the explicit Strigoi exception; excluded running, experience and group tests remain excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: construct-excluded-producers--scope--need-orders (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clockworkers-sc/special-rules.yaml
+# source_fingerprint:
+#   d3660039a7f53dbc4d25c37d3f1d7f4d4214eeb3735d6cf01944e142b62b9182
+# source_sha256_at_generation:
+#   a1e5160269bd2f8005f116c863d70f6a3a84622f2f83fb2aedb9d0e4855da69d
+# Printed rule text:
+#   Need Orders
+# Semantic contract (check analysis_status before treating as accepted):
+#   Need Orders is a construct-control interaction of the clockwork subsystem, excluded from the duel. Printed clause: Need Orders
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Need Orders expressly skips models in close combat. The C parent labels in-built equipment NO, but that label must not swallow the distinct slot-capacity construction condition; D preserves that condition without editing C. Scope review integration: {"clause_id":"construct-excluded-producers","review_clause_id":"need-orders","source_state":"unverified","review_status":"reviewed","scope_reason":"Need Orders is a construct-control interaction of the clockwork subsystem, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The excluded clauses concern orders/movement outside melee, escape, progression and campaign equipment removal; the allowed slot capacity of a supplied loadout is recorded separately.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{\"excluded\":[\"movement/orders outside melee\",\"escape\",\"progression\",\"campaign equipment removal\"]}","consumer":"[]","implementation_work":"none","dependencies":"[\"rule/mordheim/clockworkers-sc/band--constructs/unimplemented.clockworkers-sc.band.constructs\"]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/clockworkers-sc/special-rules.yaml\",\"docs/decisions/design-rulings.md\"]"},"inherited_clause_text":"Constructs inherit Need Orders, no running/leaving combat, no experience and the prohibition on removing already fitted equipment.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: construct-excluded-producers--scope--no-experience (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clockworkers-sc/special-rules.yaml
+# source_fingerprint:
+#   d3660039a7f53dbc4d25c37d3f1d7f4d4214eeb3735d6cf01944e142b62b9182
+# source_sha256_at_generation:
+#   a1e5160269bd2f8005f116c863d70f6a3a84622f2f83fb2aedb9d0e4855da69d
+# Printed rule text:
+#   no experience
+# Semantic contract (check analysis_status before treating as accepted):
+#   Gaining no experience is campaign progression, excluded from the duel. Printed clause: no experience
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Need Orders expressly skips models in close combat. The C parent labels in-built equipment NO, but that label must not swallow the distinct slot-capacity construction condition; D preserves that condition without editing C. Scope review integration: {"clause_id":"construct-excluded-producers","review_clause_id":"no-experience","source_state":"unverified","review_status":"reviewed","scope_reason":"Gaining no experience is campaign progression, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The excluded clauses concern orders/movement outside melee, escape, progression and campaign equipment removal; the allowed slot capacity of a supplied loadout is recorded separately.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{\"excluded\":[\"movement/orders outside melee\",\"escape\",\"progression\",\"campaign equipment removal\"]}","consumer":"[]","implementation_work":"none","dependencies":"[\"rule/mordheim/clockworkers-sc/band--constructs/unimplemented.clockworkers-sc.band.constructs\"]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/clockworkers-sc/special-rules.yaml\",\"docs/decisions/design-rulings.md\"]"},"inherited_clause_text":"Constructs inherit Need Orders, no running/leaving combat, no experience and the prohibition on removing already fitted equipment.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: construct-excluded-producers--scope--no-running (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clockworkers-sc/special-rules.yaml
+# source_fingerprint:
+#   d3660039a7f53dbc4d25c37d3f1d7f4d4214eeb3735d6cf01944e142b62b9182
+# source_sha256_at_generation:
+#   a1e5160269bd2f8005f116c863d70f6a3a84622f2f83fb2aedb9d0e4855da69d
+# Printed rule text:
+#   no running
+# Semantic contract (check analysis_status before treating as accepted):
+#   The bar on running is a movement rule, excluded from the duel. Printed clause: no running
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Need Orders expressly skips models in close combat. The C parent labels in-built equipment NO, but that label must not swallow the distinct slot-capacity construction condition; D preserves that condition without editing C. Scope review integration: {"clause_id":"construct-excluded-producers","review_clause_id":"no-running","source_state":"unverified","review_status":"reviewed","scope_reason":"The bar on running is a movement rule, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The excluded clauses concern orders/movement outside melee, escape, progression and campaign equipment removal; the allowed slot capacity of a supplied loadout is recorded separately.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{\"excluded\":[\"movement/orders outside melee\",\"escape\",\"progression\",\"campaign equipment removal\"]}","consumer":"[]","implementation_work":"none","dependencies":"[\"rule/mordheim/clockworkers-sc/band--constructs/unimplemented.clockworkers-sc.band.constructs\"]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/clockworkers-sc/special-rules.yaml\",\"docs/decisions/design-rulings.md\"]"},"inherited_clause_text":"Constructs inherit Need Orders, no running/leaving combat, no experience and the prohibition on removing already fitted equipment.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule for this bearer and the admitted clause; no engine
+# output was consulted.  Nightshade is the one admitted poison whose consequence is a
+# state change on the warrior it wounds, so it is the rider the immunity must suppress:
+# the coated mace wounds the bearer as any mace would, and the poisoned-wound
+# Initiative penalty never lands.  The attacker's Weapon Skill 10, Strength 8 and
+# Initiative 10 are hand-built fixture facts, not profile values, and its higher
+# Initiative with no charge declared lets it strike first, so the bearer declares no
+# attack of its own and the tape holds only the attacker's hit and wound dice.
+- audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct
+  id: the-poisoned-wound-keeps-its-wound-and-loses-its-rider
+  covers: [construct-poison-immunity]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: clockworkers-sc, profile_id: clockwork-fiend}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control uses the same attacker and the same declared dice against an ordinary hand-built neighbour
+# instead of the construct, so the immunity is the only difference between the two scenarios: the poisoned
+# wound lands as before and this time the printed Nightshade penalty does take effect - one unsaved wound
+# lowers the target's Initiative by one, from 5 to 4 (cases/mechanics/poison.nightshade.yaml).
+- audit_id: rule/mordheim/clockworkers-sc/clockwork-fiend--construct/unimplemented.clockworkers-sc.clockwork-fiend.construct
+  id: the-same-poisoned-wound-lowers-an-ordinary-targets-initiative
+  covers: [construct-poison-immunity]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1, state.second.initiative_penalty: 1, state.second.initiative: 4}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

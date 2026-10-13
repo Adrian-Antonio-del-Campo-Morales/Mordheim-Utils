@@ -1,0 +1,171 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-hobgoblin-raiders/band--hobgoblin-special-skills-unpredictable/mechanic.unpredictable-attack
+# scaffold_fingerprint: 0a6b29d9cf35a1b709d939c5a671c80636e6ac1949c7146b6b794de63f82f6e9
+# authoring_status: PARTIAL
+# authoring_progress: the represented clauses are authored; the clause marked PARTIAL
+#   below carries its concrete blocker. PARTIAL is authoring and semantic contrast only;
+#   execution_status stays UNEXECUTED and no functional result exists.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [C] the pending half is an observation the printed recipients cannot produce: the route
+# indexes one declared attack per phase (`round.0.first.unpredictable-attack.0`), and both printed
+# recipients (Sneaky, Khann) have printed Attacks 1 at recruitment, so "one of its attacks for which the
+# others stay parryable" has no eligible build in this revision.  The configuration is not the gap; the
+# bearer's attack count is.  The declaration and its parry refusal are covered, but the printed
+#   "one of its attacks for which the others stay parryable" half has no eligible
+#   build: Sneaky and Khann both have Attacks 1, so the route offers only
+#   `round.0.first.unpredictable-attack.0`; exercising an undeclared sibling in the
+#   same phase needs a bearer with two or more allocated attacks, which the printed
+#   recipients do not reach at recruitment. Recorded, not fabricated.
+# origin_id:
+#   rule/trollheim/khemri-hobgoblin-raiders/band--hobgoblin-special-skills-unpredictable/mechanic.unpredictable-attack
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-hobgoblin-raiders/special-rules.yaml
+# source_fingerprint:
+#   3a8c69423ab927e2de673f98b091a979a7030a68226062f09e69a47a9a77c51c
+# source_sha256_at_generation:
+#   12bbb073550b082f3dfce81a42046b48a4c823b46482412930e25df994ed07b1
+# Printed rule text:
+#   The Hero may declare one of its attacks Unpredictable; that attack cannot be parried by the opponent.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Hero may declare one of its attacks Unpredictable and that attack cannot be parried by the opponent. Closure: the declared attack is refused a parry while the others stay parryable.
+# effect_id:
+#   mechanic.unpredictable-attack
+# relation:
+#   related
+# parameters:
+#   {"cannot_be_parried": true, "selection": "one declared attack", "declaration_input": "decisions.choose(key.unpredictable-attack.<index>)"}
+# conditions:
+#   {"recipient": "Hobgoblin Hero"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The printed declaration is modelled: modular/pools._declared_unpredictable_attack offers each allocated attack in order (`{key}.unpredictable-attack.{index}`) and the first accepted one carries cannot_be_parried, so the bearer's choice decides which attack the defender cannot parry; declining every offer leaves all attacks parryable, and with no decision policy the first allocated attack keeps the established default. Supersedes the earlier note that the route always applied it to the first allocated attack with no choice. Evidence is inspection (source/engine read, not an executed duel); coordinator acceptance pending. Surface reuse candidate: {"family":"mechanic.unpredictable-attack","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# --- Migrated authored scenarios ---
+# Source: cases/grants/warband-grants.yaml
+# One-time migration authorized by the operator; see plan.md.  These
+# scenarios were authored from the rule text and the accepted rulings, not
+# from engine output.  Migrating them does not certify their interpretation
+# or complete coverage of the identity.
+# rule/... grants — a closed batch of warband grants exercised end to end.
+#
+# Each identity here is a printed warband grant (a `rule/<collection>/<band>/
+# <rule>/<binding>` record of docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv).
+# The scenarios take the real route: band and profile from the built warrior,
+# the grant selected through `special_rule_ids`, the shared construction and
+# compilation that bind it, the modular resolution that consumes it, and an
+# observation of the consequence.  No `effect_id` is injected anywhere, and a
+# scenario never lists the granted mechanic as a direct `skill_ids` entry.
+#
+# Recipients are taken from the band package: the profile that the grant's
+# eligibility admits gains the consequence, another profile of the same band is
+# refused with the binding's own diagnostic, and an unselected build of the same
+# recipient shows the consequence absent.  Sharing one binding does not admit
+# other origins, so each identity keeps its own scenarios and clauses.
+#
+# The batch is deliberately closed and small: priority, injury-chart, reroll,
+# critical-ignition, parry-exclusion and characteristic grants, one identity
+# each.  Expanding it needs another reviewed batch, not a wider query.
+
+# The Khemri Lahmian Vampire's Lost Innocence grants strike first.  Both duels
+# below are uncharged, so the only priority tier in play is the grant itself.
+#
+
+- audit_id: rule/trollheim/khemri-hobgoblin-raiders/band--hobgoblin-special-skills-unpredictable/mechanic.unpredictable-attack
+  id: a-declared-unpredictable-attack-cannot-be-parried
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-hobgoblin-raiders
+      profile_id: khann
+      special_rule_ids: [band--hobgoblin-special-skills-unpredictable]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: &ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.unpredictable-attack.0, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, state.second.wounds: 1, state.second.parries_remaining: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-hobgoblin-raiders/band--hobgoblin-special-skills-unpredictable/mechanic.unpredictable-attack
+  id: an-undeclared-attack-is-still-parried
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-hobgoblin-raiders
+      profile_id: khann
+      special_rule_ids: [band--hobgoblin-special-skills-unpredictable]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.unpredictable-attack.0, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2, state.second.parries_remaining: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-hobgoblin-raiders/band--hobgoblin-special-skills-unpredictable/mechanic.unpredictable-attack
+  id: the-unselected-recipient-is-parried
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-hobgoblin-raiders
+      profile_id: khann
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-hobgoblin-raiders/band--hobgoblin-special-skills-unpredictable/mechanic.unpredictable-attack
+  id: another-profile-of-the-band-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-hobgoblin-raiders
+      profile_id: hobgoblin-warriors
+      special_rule_ids: [band--hobgoblin-special-skills-unpredictable]
+      main_weapon_id: weapon.dagger
+  expect_error: "special rule is not available to khemri-hobgoblin-raiders/hobgoblin-warriors"
+
+# Middenheim Physical Prowess is a characteristic grant with an explicit
+# recipient list: the Captain and the Champions start at Strength 4, and no
+# other profile of the band may select the rule at all.

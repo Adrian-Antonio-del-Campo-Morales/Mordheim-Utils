@@ -1,0 +1,116 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/bretonnian-chapel-guard/band--shield-bash/special-rule.band--shield-bash
+# scaffold_fingerprint: e657e6baa9fa22dc72dc4ec874420d37c0e7743425fd616361567974c7d3c086
+# authoring_status: AUTHORED
+# authoring_progress: both halves of the admitted clause carry authored scenarios: the extra attack
+# the qualifying shield adds to the bearer's pool at one point below his Strength, the single attack
+# the same tape leaves without the grant, and the construction refusal of a bearer that declares the
+# rule without a shield or kite shield.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover both halves of the recorded contract: the granted attack with a
+#   qualifying shield (the added club attack at one point below Strength), the absence of that attack
+#   without the grant, and the printed refusal.  The refusal fragment is the verbatim diagnostic the
+#   construction stage emits for this contract (packages/python/roster-construction/
+#   mordheim_construction/_eligibility.js: "Shield Bash requires a shield or kite shield", returned
+#   when band--shield-bash is declared without defence.shield or defence.kite-shield in the off
+#   hand), and the granted attack is the compiled extra attack of packages/python/roster-construction/
+#   mordheim_construction/compiler.py (the weapon.mace effect at strength_bonus -1).
+# origin_id:
+#   rule/mordheim/bretonnian-chapel-guard/band--shield-bash/special-rule.band--shield-bash
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/bretonnian-chapel-guard/special-rules.yaml
+# source_fingerprint:
+#   eca679abff86525c4865962e38fcb633c85a80f2f9d6c995436fcd92a14453d9
+# source_sha256_at_generation:
+#   9139664c4fa318c014e7f07bca71391533c1eaecdc6d1a19f66e2126ed5826f5
+# Printed rule text:
+#   Each turn, the Knight may make one additional attack with a shield or kite shield at -1 Strength. Treat this attack as being made with a club.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Granted attack: with a shield or kite shield the Knight makes one extra club attack per turn at Strength -1; without one of those shields the build is refused.
+# effect_id:
+#   special-rule.band--shield-bash
+# relation:
+#   equivalent
+# parameters:
+#   {"strength_modifier":-1,"weapon_family":"club"}
+# conditions:
+#   {"recipient":"knight","required_equipment":["shield","kite-shield"],"once_per_turn":true}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The contract refuses a build without a qualifying shield; the club treatment flattens the attack family.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# qualifying shield is the off hand the printed clause names, the added attack is the second weapon
+# of the pool (index 1), and the printed -1 Strength lowers that attack's wound target: Strength 3
+# becomes 2, which wounds Toughness 3 on a 5.
+- audit_id: rule/mordheim/bretonnian-chapel-guard/band--shield-bash/special-rule.band--shield-bash
+  id: the-qualifying-shield-adds-a-club-attack-one-strength-lower
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      special_rule_ids: [band--shield-bash]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, attacks.1.wounded: true, attacks.1.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The control for the granted attack: the same shield-bearing bearer and the same tape without the
+# band rule asks for one attack die only, so the second attack does not exist.
+- audit_id: rule/mordheim/bretonnian-chapel-guard/band--shield-bash/special-rule.band--shield-bash
+  id: without-the-grant-the-shield-adds-no-attack
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed refusal: the band rule declared without a qualifying shield never reaches the pool.
+- audit_id: rule/mordheim/bretonnian-chapel-guard/band--shield-bash/special-rule.band--shield-bash
+  id: shield-bash-without-a-qualifying-shield-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: questing-knight
+      main_weapon_id: weapon.mace
+      special_rule_ids: [band--shield-bash]
+  expect_error: Shield Bash requires a shield or kite shield
+

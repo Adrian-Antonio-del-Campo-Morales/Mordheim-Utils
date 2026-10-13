@@ -1,0 +1,148 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/snotlings-web/band--dodgy/skill.elven-agility
+# scaffold_fingerprint: 70902d17a784fd3ed9f5e82b00acfdd219c21b20571f3a042c4f0bec91a3f365
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries four authored scenarios derived from
+# the printed Dodgy sentence, the recorded contract (bound to skill.elven-agility) and the
+# admitted elven-agility semantic specifications: the 6+ dodge/step-aside save holds on its own
+# face and not one below it, Step Aside replaces it with a single 4+ save, and a Snotling-sized
+# bearer without the tag is not offered the save.  The printed sentence makes the save innate to
+# every Snotling, so the fixture carries the canonical skill.elven-agility tag the register
+# binds this band rule to.  REVIEWED still requires manual semantic review and execution_status
+# stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenarios read the printed save and its printed combination.  A
+# close-combat attack whose hit and wound steps cannot fail is discarded on a special save of 6
+# and is not discarded on 5, which fixes the innate dodge/step-aside save to its printed face;
+# with Step Aside held as well it is discarded on 4 and exactly one save die is consumed, so the
+# printed combination raises the save instead of adding a second roll; and with no tag at all
+# the attack reaches the bearer with no save request, which the strict tape enforces.  The
+# register note binds this band sentence to skill.elven-agility, whose Dodge/ranged half stays
+# outside this melee scope.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/snotlings-web/band--dodgy/skill.elven-agility
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/snotlings-web/special-rules.yaml
+# source_fingerprint:
+#   6d453822dc088dc2477d5ae7be206d8b3f216e7386857c66f4394d3c8f43ccb5
+# source_sha256_at_generation:
+#   7dc940a3784763fc2a3788f764bbbebc42aa05d316da3cf38a6a037564a7415b
+# Printed rule text:
+#   Due to their small and dodgy nature, All Snotlings have a 6+ dodge/step aside save in the same way as the Dark Elf Skill "Fey Quickness". Hence, if a Hero gains dodge or step aside, it can be combined to get a 4+ dodge/step aside save respectively.
+# Semantic contract (check analysis_status before treating as accepted):
+#   All Snotlings have a 6+ dodge/step-aside save like Fey Quickness, combinable with Dodge or Step Aside for 4+; observable: the save improves to 4+ in the relevant area when the fighter also has that skill.
+# effect_id:
+#   skill.elven-agility
+# relation:
+#   equivalent
+# parameters:
+#   {"save":6,"melee_avoidance_save":6,"with_step_aside_save":4}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Bound to skill.elven-agility, whose combination rule raises the step-aside save to 4+, matching the printed sentence. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-SK-ELVEN-AGILITY","verified_facet":"elven-agility/melee","relationship":"shared_facet","boundary":"Share only admitted melee avoidance and its Step Aside upgrade. Dodge/ranged consequences remain excluded; the 4+ replaces the corresponding 6+, not an additional roll.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the admitted elven-agility
+# semantic specifications; no engine output was consulted.  The hand-built assailant's hit of 4
+# and wound of 2 cannot fail against the Toughness-3 bearer, so the only undecided step is the
+# special save, and the strict tape fails the case if an extra or an absent save is requested.
+
+- audit_id: rule/mordheim/snotlings-web/band--dodgy/skill.elven-agility
+  id: the-innate-save-holds-on-six
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      skill_ids: [skill.elven-agility]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/snotlings-web/band--dodgy/skill.elven-agility
+  id: one-face-below-the-innate-save-is-not-enough
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      skill_ids: [skill.elven-agility]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/snotlings-web/band--dodgy/skill.elven-agility
+  id: step-aside-combines-the-save-to-four
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      skill_ids: [skill.elven-agility, skill.step-aside]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/snotlings-web/band--dodgy/skill.elven-agility
+  id: without-the-rule-no-save-is-requested
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

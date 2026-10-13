@@ -1,0 +1,97 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.mighty-biceps
+# scaffold_fingerprint: edd29fc9bb5310ab3ada5a4c0dbfc7ab8c3c5a371ee0a6314191b2ac9d6f6420
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; the pair differs only in the skill and in the declared second-round wound die, so the retained heavy-weapon term is the only explanation of the difference. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the flail's printed first-round Strength bonus being retained for this bearer in the second round, and the same declaration failing once the skill is removed.
+# origin_id:
+#   mechanic/skill.mighty-biceps
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   7a1559c754ecdc34e0d6e2dc756459fecad625856d09310d95ca2bfdb073c5e0
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Retains the Strength bonus of heavy weapons.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The fighter retains the Strength bonus of heavy weapons. Closure: the printed first-round Strength bonus of a flail or morning star applies in every round for this bearer.
+# effect_id:
+#   skill.mighty-biceps
+# relation:
+#   equivalent
+# parameters:
+#   {"retains": "heavy weapon Strength bonus", "weapon_scope": "first-round Strength bonus"}
+# conditions:
+#   {"weapon_scope": ["weapon.flail", "weapon.morning-star"]}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   _attack_strength adds the weapon first_round_strength_bonus whenever the mighty-biceps tag is on the effect, independently of the first-round flag, which is the printed retention of the heavy-weapon bonus. Surface reuse candidate: {"family":"skill.mighty-biceps","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare modifier stage, applicable weapon, replacement versus added attacks, nominated hand/poison transport and resource lifetime. Preserve Shifty S1-S4 and pistol composition; A=2 on charge is not an unrestricted +1 Attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The bearer uses a flail, whose printed first-round Strength bonus is two.  With
+# the skill the bonus survives into the second round, so a wound die of three
+# wounds a Toughness 3 opponent from Strength 2 + 2; round 0 is spent on misses so
+# the second round is the only round that can show the difference.
+- audit_id: mechanic/skill.mighty-biceps
+  id: the-heavy-weapon-bonus-is-retained-in-the-second-round
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.flail
+      skill_ids: [skill.mighty-biceps]
+      characteristics: {weapon_skill: 3, strength: 2, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 3}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2}
+    1: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+# Without the skill the identical second-round wound die of three fails against
+# Toughness 3 from Strength 2, so the same attack deals no damage: the printed
+# retention is what the pair isolates.
+- audit_id: mechanic/skill.mighty-biceps
+  id: without-the-skill-the-bonus-is-not-retained
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.flail
+      characteristics: {weapon_skill: 3, strength: 2, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 3}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2}
+    1: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+

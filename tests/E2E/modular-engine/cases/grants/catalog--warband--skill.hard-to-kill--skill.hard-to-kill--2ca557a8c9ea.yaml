@@ -1,0 +1,119 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/warband/skill.hard-to-kill/skill.hard-to-kill
+# scaffold_fingerprint: ee2c0735bc86afbd0d31c4d92d7de21fc0ef6e205ae94f71e1266a844bb0b245
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries three authored scenarios derived from the
+# printed skill sentence: a five that the ordinary chart takes Out of Action leaves this bearer Stunned,
+# the six still takes it out, and the non-regression control shows the same five on an unmarked bearer is
+# Out of Action.  The bearer is a hand-built fighter holding the catalogued skill, the shape the sibling
+# mechanic case uses for this shared definition; the fixture values are hand-built facts, not profile
+# values.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios evidence the wider Stunned band at its boundary (a five Stuns), the six
+#   that still takes the bearer out, and the ordinary chart on an unmarked bearer, so the band is
+#   attributable to the printed skill rather than to the fixture.  The bearer is hand-built and holds the
+#   skill by its catalogued key, because this catalog record is the shared definition rather than a
+#   printed profile; the catalog and mechanic records claim no second contribution.  REVIEWED still
+#   requires manual semantic review.
+# origin_id:
+#   rule/catalog/warband/skill.hard-to-kill/unclassified
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/skills/warband.yaml
+# source_fingerprint:
+#   4881bd7e0b10d152b91f03a72ce8af067591091b8f659e09517f985a6af06ca5
+# source_sha256_at_generation:
+#   cbce88f8e195c72b1767c88af362131455b99435c0ffb53e58b55b7306161198
+# Printed rule text:
+#   Dwarfs are taken out of action only on a 6 on the Injury chart; 1–2 is Knocked Down and 3–5 is Stunned.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Taken out of action only on a 6 on the Injury chart; 1-2 knocked down, 3-5 stunned; observable: totals 4-5 leave the bearer stunned.
+# effect_id:
+#   skill.hard-to-kill
+# relation:
+#   equivalent
+# parameters:
+#   {"injury_chart":{"1-2":"knocked-down","3-5":"stunned","6+":"out-of-action"}}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The catalog and mechanic records are the shared skill definitions of the same printed rule and add no second contribution. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.hard-to-kill","verified_facet":"skill.hard-to-kill","relationship":"shared_facet","boundary":"Share the wider Stunned band, not True Grit, concussion immunity, or a stun save. Keep printed recipients; the Saurus Hero variant remains Hero-only. Modified injury totals and later injury transformations still apply.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed skill sentence; no engine output was consulted.  The fixture mirrors the
+# sibling mechanic case for this shared definition: a hand-built attacker with the mace and a hand-built
+# bearer holding the skill.
+
+- audit_id: rule/catalog/warband/skill.hard-to-kill/skill.hard-to-kill
+  id: a-five-stuns-instead-of-taking-him-out
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.hard-to-kill]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/catalog/warband/skill.hard-to-kill/skill.hard-to-kill
+  id: only-the-six-takes-him-out
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.hard-to-kill]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: rule/catalog/warband/skill.hard-to-kill/skill.hard-to-kill
+  id: the-ordinary-chart-still-takes-an-unmarked-bearer-out-on-a-five
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

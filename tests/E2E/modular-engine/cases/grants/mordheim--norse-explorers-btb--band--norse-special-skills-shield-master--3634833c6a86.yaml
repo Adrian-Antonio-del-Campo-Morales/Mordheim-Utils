@@ -1,0 +1,159 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/norse-explorers-btb/band--norse-special-skills-shield-master/skill.shield-mastery
+# scaffold_fingerprint: ebb05ab040b5c71e1f0086b03c421c94acb0f5502f7d5df48c6928741dd00ffc
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry scenarios derived from the printed rule and this
+# band's own binding (special-rules.yaml id band--norse-special-skills-shield-master, a selectable
+# warband skill, effect skill.shield-mastery): the shield produces a parry attempt, the same shield
+# without the band skill produces none, and the shield still gives its own 6+ save.  The printed text
+# repeats the canonical shared operator without adding a term, so the band origin needs no further
+# scenario.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: parry-with-a-shield (scope: YES)
+# AUTHORED[parry-with-a-shield]: 2 scenarios show the printed shield parry on the hero this band
+# grants it to (norse-explorers-btb / the Shield Master warband skill bound to skill.shield-mastery,
+# selected by the fixture on the admitted Jarl profile).  A shield is not a parrying weapon of its own:
+# with the band skill the parry die of five beats the attacking four and the wound is never rolled,
+# and the control, the identical duel with a hand-built warrior of the same characteristics and no
+# skill, asks for no parry die and takes the wound instead.  REVIEWED still requires manual semantic
+# review.
+# origin_id:
+#   rule/mordheim/norse-explorers-btb/band--norse-special-skills-shield-master/skill.shield-mastery
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/norse-explorers-btb/special-rules.yaml
+# source_fingerprint:
+#   982cd7f1ed0d0e6d6a20925604af34a040803f1e76a25866f83ad3c667a92fb3
+# source_sha256_at_generation:
+#   b620ca2035740bd0b5148cddc43216fc25d24231d5d5c0fe286841330188988f
+# Printed rule text:
+#   Norse warriors begin training with shields when they are still children. Some warriors become so skilled with these weapons they can block almost any blow against them. When this hero is armed with a shield he may parry with it in addition to getting a 6+ save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Armed with a shield the hero may parry with it in addition to receiving the shield's save; observable: a shield produces a parry attempt in a phase where the fighter is charged or charges.
+# effect_id:
+#   skill.shield-mastery
+# relation:
+#   equivalent
+# parameters:
+#   {"shield_parry":true}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed in the parry capacity: the skill contributes one available parry when a shield is equipped. Three records (two bands and the shared-rule register) state the same rule and contribute once. Scope review integration: {"clause_id":"parry-with-a-shield","review_clause_id":"parry-with-a-shield","source_state":"unverified","review_status":"reviewed","scope_reason":"Being allowed to parry with a shield in addition to its save is a defence and parry resource of that fighter.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"parry-with-a-shield","audit_group":"EQ-skill.shield-mastery","verified_facet":"shield-mastery/parry","relationship":"shared_facet","boundary":"Parry facet only; retain the shield armour facet separately and share the normal parry resource.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+#
+# Clause: six-plus-save (scope: YES)
+# AUTHORED[six-plus-save]: 1 scenario carries the printed 6+ shield save that coexists with the parry
+# facet: the parry attempt fails, the wound roll is made, and the shield alone (no body armour) yields
+# an armour die whose six keeps the wound off, which is the ordinary shield composition rather than a
+# second application of the skill.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/norse-explorers-btb/band--norse-special-skills-shield-master/skill.shield-mastery
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/norse-explorers-btb/special-rules.yaml
+# source_fingerprint:
+#   982cd7f1ed0d0e6d6a20925604af34a040803f1e76a25866f83ad3c667a92fb3
+# source_sha256_at_generation:
+#   b620ca2035740bd0b5148cddc43216fc25d24231d5d5c0fe286841330188988f
+# Printed rule text:
+#   Norse warriors begin training with shields when they are still children. Some warriors become so skilled with these weapons they can block almost any blow against them. When this hero is armed with a shield he may parry with it in addition to getting a 6+ save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The shield still gives its 6+ save; observable: a shield and no body armour save on a 6 before Strength modifiers.
+# effect_id:
+#   defence.shield
+# relation:
+#   equivalent
+# parameters:
+#   {"armour_save_bonus":1}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Follows from the ordinary shield composition rather than from the skill; recorded here so the skill is not credited with the save. Scope review integration: {"clause_id":"six-plus-save","review_clause_id":"six-plus-save","source_state":"unverified","review_status":"reviewed","scope_reason":"The 6+ shield save granted alongside the shield parry is the bearer's armour defence in the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"six-plus-save","audit_group":"EQ-skill.shield-mastery","verified_facet":"shield-mastery/save","relationship":"shared_facet","boundary":"Shield armour benefit only; this is not a second save or a second application of the parry facet.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and this band's printed rule binding; no engine output was consulted.
+- audit_id: rule/mordheim/norse-explorers-btb/band--norse-special-skills-shield-master/skill.shield-mastery
+  id: the-shield-parries-with-the-band-skill
+  covers: [parry-with-a-shield]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: jarl
+      special_rule_ids: [band--norse-special-skills-shield-master]
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/mordheim/norse-explorers-btb/band--norse-special-skills-shield-master/skill.shield-mastery
+  id: without-the-skill-the-same-shield-does-not-parry
+  covers: [parry-with-a-shield]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/mordheim/norse-explorers-btb/band--norse-special-skills-shield-master/skill.shield-mastery
+  id: the-shield-keeps-its-six-plus-save
+  covers: [six-plus-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: norse-explorers-btb
+      profile_id: jarl
+      special_rule_ids: [band--norse-special-skills-shield-master]
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.saved: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

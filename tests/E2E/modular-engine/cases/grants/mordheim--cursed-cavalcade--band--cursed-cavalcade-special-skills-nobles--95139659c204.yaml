@@ -1,0 +1,121 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills-noblesse-obliges/unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-noblesse-obliges
+# scaffold_fingerprint: fc03c393b1b3f3bed1b5880edbfec6cbd27cb15eca5ae6fa68ea40e3874ca641
+# authoring_status: PARTIAL
+# authoring_progress: the admitted noblesse-fear-immunity clause carries 2 authored scenario(s) derived
+# from the printed rule, the recorded semantic contract and the printed profile; any remaining
+# face of the file stays recorded as pending below.  REVIEWED still requires manual semantic
+# review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: noblesse-fear-immunity (scope: YES)
+# AUTHORED[noblesse-fear-immunity]: the bearer aristocrat is the declared recipient, built from its printed profile (W1 A1); the opponent is a hand-built fixture that declares its own facts.
+#   2 scenario(s) cover the clause: the fear-causing charger reaches the bearer, which would be tested and is not, so the tape holds only the two attack pools; the same setup does request the two-dice Fear test for companions, which does not carry the rule.
+#   Every strike is declared as a natural 1, so each round reports the Fear or Stupidity request under test and nothing else.
+#   REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills-noblesse-obliges/unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-noblesse-obliges
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/cursed-cavalcade/special-rules.yaml
+# source_fingerprint:
+#   0560226b497553ea2ba6e948abcbc753177deaaa2133815d955ee3df5f0cfbc1
+# source_sha256_at_generation:
+#   15a4f9a2b9c55c6ef8e50bfc55b1af9a2418c12db0c4da71d80ed3b88e7264f2
+# Printed rule text:
+#   The warrior feels utterly superior to his opponents, with long lineage and prestige to look down upon his common enemies, seen as nothing more than cattle to be slaughtered. The Warrior is immune to fear and can stomp opponents who are knocked down with is iron-shod boots. This gives them additional attack against Knocked down opponents at their own Strength.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Immune to Fear. Observable: no Fear test is taken for this warrior.
+# effect_id:
+#   mechanic.fear-immunity
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"Fear test","recipient":"this warrior"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The fear-immunity half of Noblesse Obliges. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Surface reuse candidate: {"family":"mechanic.fear-immunity","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: noblesse-stomp (scope: YES)
+# PARTIAL[noblesse-stomp]: CLOSING-REVIEW [C]: no scenario is authorable in this revision. The printed extra attack against an
+#   already Knocked Down opponent needs a knocked-down defender state whose attack-pool separation
+#   from the ordinary attack is not established by this corpus yet (the same file’s immunity clause
+#   carries its own authored scenarios).
+
+# origin_id:
+#   rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills-noblesse-obliges/unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-noblesse-obliges
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/cursed-cavalcade/special-rules.yaml
+# source_fingerprint:
+#   0560226b497553ea2ba6e948abcbc753177deaaa2133815d955ee3df5f0cfbc1
+# source_sha256_at_generation:
+#   15a4f9a2b9c55c6ef8e50bfc55b1af9a2418c12db0c4da71d80ed3b88e7264f2
+# Printed rule text:
+#   The warrior feels utterly superior to his opponents, with long lineage and prestige to look down upon his common enemies, seen as nothing more than cattle to be slaughtered. The Warrior is immune to fear and can stomp opponents who are knocked down with is iron-shod boots. This gives them additional attack against Knocked down opponents at their own Strength.
+# Semantic contract (check analysis_status before treating as accepted):
+#   May stomp an opponent that is Knocked Down, making an additional attack at the warrior's own Strength. Observable: against a knocked-down opponent this warrior's attack allocation includes one extra attack at its base Strength.
+# effect_id:
+#   proposed.stomp-knocked-down
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"this warrior fights an opponent whose condition is Knocked Down","recipient":"this warrior"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   A separate extra-attack routine conditioned on the opponent's knocked-down condition. The duel attack pool has no branch that grants this warrior an additional base-Strength attack against a knocked-down target, so it needs new behaviour. Surface reuse candidate: {"family":"mechanic.fear-immunity","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills-noblesse-obliges/unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-noblesse-obliges
+  id: the-fear-immune-warrior-is-not-tested
+  covers: [noblesse-fear-immunity]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: cursed-cavalcade, profile_id: aristocrat, special_rule_ids: [band--cursed-cavalcade-special-skills-noblesse-obliges]}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills-noblesse-obliges/unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-noblesse-obliges
+  id: a-band-mate-without-the-immunity-is-tested
+  covers: [noblesse-fear-immunity]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: cursed-cavalcade, profile_id: companions}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

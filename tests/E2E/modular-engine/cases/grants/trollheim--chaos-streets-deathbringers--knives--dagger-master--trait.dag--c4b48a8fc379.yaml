@@ -1,0 +1,129 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-deathbringers/knives--dagger-master/trait.dagger-master
+# scaffold_fingerprint: be8ab8a3dec621c5f0c4e9859f80eb847fd5a3ac57270102205041aa6e597b3b
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries three authored scenarios derived from the printed
+# sentence and the recorded contract that names the reroll branch (raised for a charging dagger or yambiya
+# attack, the printed dagger scope).  The bearer is the band's printed Knives profile with the row
+# selected, and the pair differs only in that row and in the declared charge, while the third scenario
+# keeps the row and the charge and changes the weapon to a non-dagger one.  REVIEWED still requires manual
+# semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover the printed charging-turn reroll and its two printed conditions:
+# the same first-round miss lands through the reroll while the bearer charges with a dagger, no reroll die
+# is requested at all when the bearer does not charge, and no reroll die is requested for the same charge
+# made with a mace because the printed scope is daggers.
+# origin_id:
+#   rule/trollheim/chaos-streets-deathbringers/knives--dagger-master/trait.dagger-master
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-deathbringers/special-rules.yaml
+# source_fingerprint:
+#   f42adeba4a5eb79cb9b3d3acd4b3a96d8b569b4272887fe2387a10b845427d36
+# source_sha256_at_generation:
+#   a1e85e663a8232b4d2114c2431b7a400db58e753da037a543ef2a0307f5d1cbf
+# Printed rule text:
+#   During a turn in which a Knife charges, it may re-roll failed To Hit rolls made with daggers.
+# Semantic contract (check analysis_status before treating as accepted):
+#   During a turn in which a Knife charges he may re-roll failed To Hit rolls made with daggers. Closure: the charging turn re-rolls dagger misses and no other weapon gains the reroll.
+# effect_id:
+#   trait.dagger-master
+# relation:
+#   equivalent
+# parameters:
+#   {"reroll_hits": "dagger attacks", "trigger": "charging turn", "weapon": "daggers"}
+# conditions:
+#   {"recipient": "Deathbringer Knife", "weapon": "weapon.dagger"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The dagger-master reroll branch is raised for a charging dagger or yambiya attack, which is the printed dagger scope; the dagger family tags are the same ones the dagger weapon contract carries. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"trait.dagger-master","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare current admitted facet, weapon/size/recipient conditions and usage limit. A supplied Rememberer benefit does not introduce a third combatant; target Toughness and Large identity need their own source condition. Keep specific attack and critical guards.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract, never from engine output.  The bearer is the
+# band's printed Knives profile carrying the row the audit id names; an absence case supplies no qualifying
+# grant, so the strict tape holds no reroll key and the same miss stands.
+
+# The charging bearer's dagger miss is offered the granted reroll, which lands and wounds.
+- audit_id: rule/trollheim/chaos-streets-deathbringers/knives--dagger-master/trait.dagger-master
+  id: a-charging-dagger-miss-is-rerolled
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: knives
+      special_rule_ids: [knives--dagger-master]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without the printed charging turn the same dagger miss stands: the strict tape requests no reroll.
+- audit_id: rule/trollheim/chaos-streets-deathbringers/knives--dagger-master/trait.dagger-master
+  id: the-same-dagger-miss-stands-without-a-charge
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: knives
+      special_rule_ids: [knives--dagger-master]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed scope is daggers, so the same charge with a mace is not offered the reroll either.
+- audit_id: rule/trollheim/chaos-streets-deathbringers/knives--dagger-master/trait.dagger-master
+  id: a-charging-mace-miss-is-not-rerolled
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: knives
+      special_rule_ids: [knives--dagger-master]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

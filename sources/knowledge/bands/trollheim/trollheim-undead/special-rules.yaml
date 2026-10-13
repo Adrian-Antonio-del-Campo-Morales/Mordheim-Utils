@@ -42,15 +42,15 @@ rules:
     profile_ids:
     - vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.trollheim-undead.vampire.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: vampire--immune-to-psychology
   name: Immune to Psychology
   effect: The Vampire is immune to Psychology and never leaves close combat because of Psychology.
@@ -68,15 +68,15 @@ rules:
     profile_ids:
     - vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.trollheim-undead.vampire.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: vampire--immune-to-poison
   runtime:
     scope: 'YES'
@@ -194,15 +194,15 @@ rules:
     profile_ids:
     - zombies
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.trollheim-undead.zombies.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: zombies--immune-to-psychology
   name: Immune to Psychology
   effect: Zombies are immune to Psychology and never leave close combat because of Psychology.
@@ -220,15 +220,15 @@ rules:
     profile_ids:
     - zombies
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.trollheim-undead.zombies.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: zombies--immune-to-poison
   runtime:
     scope: 'YES'
@@ -318,15 +318,15 @@ rules:
     profile_ids:
     - ghouls
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.trollheim-undead.ghouls.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: dire-wolves--charge
   name: Charge
   effect: A Dire Wolf has 2 Attacks instead of 1 during a turn in which it charges.
@@ -393,15 +393,15 @@ rules:
     profile_ids:
     - dire-wolves
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.trollheim-undead.dire-wolves.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: dire-wolves--immune-to-psychology
   name: Immune to Psychology
   effect: Dire Wolves are immune to Psychology and never leave close combat because of Psychology.
@@ -419,15 +419,15 @@ rules:
     profile_ids:
     - dire-wolves
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.trollheim-undead.dire-wolves.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: dire-wolves--immune-to-poison
   runtime:
     scope: 'YES'

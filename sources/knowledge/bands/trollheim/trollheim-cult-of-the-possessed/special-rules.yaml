@@ -71,15 +71,15 @@ rules:
     profile_ids:
     - the-possessed
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.trollheim-cult-of-the-possessed.the-possessed.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: the-possessed--mutations
   name: Mutations
   effect: >-
@@ -160,15 +160,15 @@ rules:
     profile_ids:
     - darksouls
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.trollheim-cult-of-the-possessed.darksouls.crazed
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.automatic-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.automatic-leadership
 - id: band--mutation-purchase
   name: Mutation Purchase
   effect: >-
@@ -469,17 +469,17 @@ rules:
   applies_to:
     band: true
 - id: band--mutations-hideous
-  kind: mutation
+  kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: selectable
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.band-mutations-hideous
-      scope: LATER
-      binding: null
-      reason: >-
-        fear/psychology is outside the duel runtime
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   name: Hideous
   effect: >-
     The model causes Fear. Cost: 40 gc.

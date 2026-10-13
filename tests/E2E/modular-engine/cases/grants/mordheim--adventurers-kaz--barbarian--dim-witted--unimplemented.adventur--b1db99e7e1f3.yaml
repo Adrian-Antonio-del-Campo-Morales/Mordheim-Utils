@@ -1,0 +1,85 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/adventurers-kaz/barbarian--dim-witted/unimplemented.adventurers-kaz.barbarian.dim-witted
+# scaffold_fingerprint: c66359a11abd0886ee8f83a405c85608a9215dd0bf9ddfaeb191b6c0c55554c6
+# authoring_status: PARTIAL
+# authoring_progress: the admitted individual consequence has no authored scenario because the supplied leader-Leadership fact has no consumer: leadership.resolve_local_leadership only applies the Brood Mentality stupidity bonus, so nothing reads an effective Leadership of 7 supplied by a leader aura. The recipient of the printed rule is the warband group within 6 inches (and the Rout half of the sentence is excluded from the admitted scope), which the duel vocabulary cannot supply.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: dim-witted--scope--leader-leadership-supply (scope: YES)
+# PARTIAL[dim-witted--scope--leader-leadership-supply]: [CLOSING-REVIEW [B]] no scenario is derivable yet.
+#   The printed clause supplies an effective Leadership 7 to the warband members within
+#   6 inches; the consumer list is empty for it (leadership.resolve_local_leadership
+#   applies only the stupidity bonus) and the group recipient is not representable in a
+#   duel, so the missing representation is a supplied per-model Leadership source plus
+#   an observation of the Leadership test it modifies. The conditional Rout half of the
+#   same printed sentence is out of the admitted scope and is not asserted here.
+#   Consumer check (verified against the code): modular/leadership.py::_supplied_provider is a closed
+#   list of printed supplied-provider contracts (mechanic.leader-six/leader-four/leader-twelve,
+#   mechanic.slave-driver, mechanic.relay-orders, mechanic.songster and their band-tag gate), and
+#   resolve_local_leadership reads only fighter.stupidity_leadership and
+#   fighter.stupidity_leadership_bonus as supplied values; this clause's aura is none of those, so no
+#   supplied per-model Leadership source can be declared and the test it modifies cannot be observed.
+# origin_id:
+#   rule/mordheim/adventurers-kaz/barbarian--dim-witted/unimplemented.adventurers-kaz.barbarian.dim-witted
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/adventurers-kaz/special-rules.yaml
+# source_fingerprint:
+#   1704a4718174ee38d66599880424ea4bca121830fdb6dfac0442ae01b7878158
+# source_sha256_at_generation:
+#   e59d9527e127b6f401008b4fd0e1e466aaf141f6138db69329e8175a735dcd03
+# Printed rule text:
+#   effective Leadership 7 for warband members within 6"
+# Semantic contract (check analysis_status before treating as accepted):
+#   Supplying an effective Leadership of 7 to the models within 6 inches is the supplied leader condition the ruling admits for a duelist. Printed clause: effective Leadership 7 for warband members within 6"
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Group Leadership aura (members within 6") plus Rout tests; the recipient is the warband, not the individual duelist, and Rout is an excluded group mechanic. Scope review integration: {"clause_id":"dim-witted","review_clause_id":"leader-leadership-supply","source_state":"unverified","review_status":"reviewed","scope_reason":"Supplying an effective Leadership of 7 to the models within 6 inches is the supplied leader condition the ruling admits for a duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"effective Leadership 7 for warband members within 6\" and Rout tests","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: dim-witted--scope--rout-tests (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/adventurers-kaz/barbarian--dim-witted/unimplemented.adventurers-kaz.barbarian.dim-witted
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/adventurers-kaz/special-rules.yaml
+# source_fingerprint:
+#   1704a4718174ee38d66599880424ea4bca121830fdb6dfac0442ae01b7878158
+# source_sha256_at_generation:
+#   e59d9527e127b6f401008b4fd0e1e466aaf141f6138db69329e8175a735dcd03
+# Printed rule text:
+#   and Rout tests
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Rout test half of the same clause is the excluded group rout procedure. Printed clause: and Rout tests
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Group Leadership aura (members within 6") plus Rout tests; the recipient is the warband, not the individual duelist, and Rout is an excluded group mechanic. Scope review integration: {"clause_id":"dim-witted","review_clause_id":"rout-tests","source_state":"unverified","review_status":"reviewed","scope_reason":"The Rout test half of the same clause is the excluded group rout procedure.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"effective Leadership 7 for warband members within 6\" and Rout tests","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

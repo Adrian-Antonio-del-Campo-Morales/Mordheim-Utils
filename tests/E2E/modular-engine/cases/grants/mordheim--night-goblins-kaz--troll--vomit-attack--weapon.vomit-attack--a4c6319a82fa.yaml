@@ -1,0 +1,86 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/night-goblins-kaz/troll--vomit-attack/weapon.vomit-attack
+# scaffold_fingerprint: 22af837ae2ddaf5c0848ea8be11af414c65328dc57ba9ef307bdb7f2bd0e80c2
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries one authored scenario derived from the printed
+# rule and this band's own rule binding (special-rules.yaml id troll--vomit-attack, applies_to the
+# troll profile, grant profile): the declared replacement resolves as a single automatic Strength 5
+# hit with no To Hit and no armour die.  The clause repeats the canonical shared operator without
+# adding a term, so one scenario is required; the optional-declaration decision, the -1 Attack pool
+# clamp and the declined-pool contrast are covered by cases/mechanics/weapon.vomit-attack.yaml.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 1 scenario shows the declared Vomit Attack resolving as one automatic Strength 5
+# hit that ignores armour saves on the Troll this band grants the ability to (night-goblins-kaz /
+# troll, rule troll--vomit-attack, grant profile).  The round is a deception round because the printed
+# profile also carries the automatic Stupidity rule, so the two Leadership dice of the bearer are
+# declared first; the bearer is Initiative 1, so the hand-built opponent acts first.  No To Hit die is
+# requested for the automatic hit, the Strength 5 wound roll of 3 wounds the Toughness 3 bearer and
+# its plate armour is offered no armour die at all, and the sword of the bearer is offered no parry
+# die.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/night-goblins-kaz/troll--vomit-attack/weapon.vomit-attack
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/night-goblins-kaz/special-rules.yaml
+# source_fingerprint:
+#   cdf9ea91fdea768c4e68f86564a3dca563d2256e3565aded1708fa1f9749f414
+# source_sha256_at_generation:
+#   8c749dc8e1be5533e3e18c76a82230048d971cb79cf25b157b5b88df6062cc0f
+# Printed rule text:
+#   Instead of his normal attacks, a Troll can regurgitate its highly corrosive digestive juices on an unfortunate hand-to-hand combat opponent. This is a single attack that automatically hits with a Strength of 5 and ignores armour saves.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Instead of his normal attacks a Troll may vomit: one attack that hits automatically at Strength 5 and ignores armour saves. Closure: one automatic Strength 5 hit with no armour step.
+# effect_id:
+#   weapon.vomit-attack
+# relation:
+#   equivalent
+# parameters:
+#   {"automatic_hit": true, "fixed_strength": 5, "ignore_armour": true, "replaces_pool": true}
+# conditions:
+#   {"recipient": "Troll", "replaces_pool": true}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared vomit-attack operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The troll's single automatic Strength 5 attack ignoring armour saves is an admitted attack consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"W-weapon.vomit-attack","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare only the current admitted facet, preserving weapon-specific overrides, optional attack replacement, parry and save eligibility, and per-phase reroll resources. Do not inherit the combined parent parameters or introduce capture, shooting, exploration or excluded recipient consequences.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and this band's printed rule binding; no engine output was consulted.
+- audit_id: rule/mordheim/night-goblins-kaz/troll--vomit-attack/weapon.vomit-attack
+  id: the-declared-vomit-attack-is-one-automatic-strength-five-hit-ignoring-armour
+  covers: [whole]
+  fighters:
+    first: {collection: mordheim, band_id: night-goblins-kaz, profile_id: troll}
+    second:
+      main_weapon_id: weapon.sword
+      armour_id: armour.plate-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 10, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.vomit-attack, value: true}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 1}
+    - {key: round.0.first.stupidity.1, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.1.hit: true, attacks.1.saved: false, attacks.1.parried: false, attacks.1.damage: 1,
+        state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.stupidity.0, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.stupidity.1, sides: 6, value: 1}
+    - {kind: decision, key: round.0.first.vomit-attack, value: true}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 3}

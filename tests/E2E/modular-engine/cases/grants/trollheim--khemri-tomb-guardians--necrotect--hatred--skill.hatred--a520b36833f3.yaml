@@ -1,0 +1,53 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-tomb-guardians/necrotect--hatred/skill.hatred
+# scaffold_fingerprint: 5e129e7bffd7fa0de3dd5b9943cdcd71d8a7848d4a7cfd6087123ea3d3701460
+# authoring_status: PARTIAL
+# authoring_progress: the admitted first-round-reroll clause stays without scenarios because no active
+#   binding carries it: the record's own effect_id is not recorded, the printed text is an unconditional
+#   first-round To-Hit reroll rather than identity-filtered Hatred, and the register says a dedicated
+#   binding is still proposed.  A tape cannot declare a reroll die the engine never offers, so the
+#   requirement is recorded below instead of guessed.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: first-round-reroll (scope: YES)
+# PARTIAL[first-round-reroll]: [C] no scenario.  Category C: the printed clause is an unfiltered Hatred, and the shared skill.hatred operator filters on a supplied enemy identity, so the admitted input that expresses this print (a dedicated unfiltered operator or the enemy-identity licence) is absent.  PENDING GAP: an active binding for this band row. The register
+#   records that the printed clause differs from skill.hatred (no enemy filter) and that a dedicated binding
+#   is proposed rather than active, although the engine exposes a hit-reroll effect; until the row is bound
+#   no reroll request exists, so a declared reroll die would be an invented key. Missing data: the binding
+#   and the roll key of the offered first-round reroll.
+# origin_id:
+#   rule/trollheim/khemri-tomb-guardians/necrotect--hatred/skill.hatred
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-tomb-guardians/special-rules.yaml
+# source_fingerprint:
+#   9807f8a6c187b0c431e9af517427ad844b944ecd1f273a69d9be74d5f9d5f0f8
+# source_sha256_at_generation:
+#   a9c8df6aaba67eeae09b5dee369da75a30c41cfc563e893c57ef2a764afbfc0f
+# Printed rule text:
+#   The Necrotect may re-roll failed To Hit rolls during the first round of each close combat.
+# Semantic contract (check analysis_status before treating as accepted):
+#   This warrior may reroll missed To-Hit rolls in the first round of each close combat, against any enemy. Observable: a first-round reroll is always offered.
+# effect_id:
+#   (not recorded)
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"first round of any close combat","consequence":"missed To-Hit rolls may be rerolled once"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed text is an unconditional first-round To-Hit reroll, not identity-filtered Hatred; it was placed in the skill.hatred family but the effect differs (no enemy filter). The engine exposes effect.reroll_hits; a dedicated binding (proposed) is needed rather than skill.hatred. Surface reuse candidate: {"family":"M-HATRED-TARGET","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Possible shared first-round hit-reroll consumer only. Resolve each printed hated target and the ordinary Psychology/Frenzy gates; do not inherit the audit Orc/Goblin effect ID for every target or the Strigoi immunity exception.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

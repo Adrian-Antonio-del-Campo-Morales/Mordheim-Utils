@@ -37,15 +37,15 @@ rules:
     profile_ids:
     - witch-hunter-captain
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.witch-hunters.witch-hunter-captain.burn-the-witch
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.burn-the-witch
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.burn-the-witch
   rule_ref: shared-rule.burn-the-witch
 - id: witch-hunters--burn-the-witch
   name: Burn the Witch!
@@ -60,15 +60,15 @@ rules:
     profile_ids:
     - witch-hunters
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.witch-hunters.witch-hunters.burn-the-witch
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.burn-the-witch
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.burn-the-witch
   rule_ref: shared-rule.burn-the-witch
 - id: warrior-priest--prayers
   name: Prayers

@@ -292,15 +292,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: band
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-amazons.band.isolationists
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.amazon-isolationists
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.amazon-isolationists
 - id: band--norse-enmity
   name: Norse Enmity
   effect: >-
@@ -443,15 +443,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: selectable
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-amazons.band.amazon-special-skills-hypnotic-dance
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.mesmerising-dance
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.mesmerising-dance
 - id: band--amazon-special-skills-animal-fury
   kind: warband_skill
   name: Animal Fury
@@ -475,15 +475,19 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: selectable
+    scope: 'YES'
+    implemented: 'NO'
     effects:
-    - id: unimplemented.lustria-amazons.band.amazon-special-skills-animal-fury
-      scope: LATER
+    - id: mechanic.fear-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-immunity
+    - id: band--amazon-special-skills-animal-fury.fear-immunity--scope--charge-attack.pending
+      scope: 'YES'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+      reason: 'Retained individual clause: The +1 Attack in a turn in which she charges is an admitted individual charge and attack consequence. Printed clause: gains +1 Attack during a turn in which she charges'
 - id: band--amazon-special-skills-elixir-of-life
   kind: warband_skill
   name: Elixir of Life

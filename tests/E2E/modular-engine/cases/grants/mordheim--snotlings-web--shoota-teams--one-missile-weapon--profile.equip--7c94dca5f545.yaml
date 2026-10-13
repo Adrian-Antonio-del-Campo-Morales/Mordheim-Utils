@@ -1,0 +1,105 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/snotlings-web/shoota-teams--one-missile-weapon/profile.equipment-restrictions
+# scaffold_fingerprint: f2554f8e2e37bf95c89e9014fee34a14f1dec345967a04d58aac6fcf49329efe
+# authoring_status: PARTIAL
+# authoring_progress: 2 authored scenario(s) in this file; the admitted whole clause is evidenced as the
+#   printed possession bound (two counted missile weapons are refused, one is accepted).  Still pending in
+#   that clause: the printed exemption face - that a small_pebble or slingshot is not counted - cannot be
+#   added while the vocabulary supplies only the two one-handed slots, because carrying an exempt item beside
+#   a missile weapon would put two entries in the kit and the exemption is only observable above the bound.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [C] the pending exemption face is an observation the contract cannot produce: an exempt item
+# is only observable *above* the bound, which would need it carried beside a counted missile weapon, and the
+# vocabulary supplies only the two one-handed slots (main and off-hand) - so the pair itself becomes the
+# earlier off-hand/hands refusal rather than the possession bound.  A tape asserting the exemption would
+# have to invent the slot.  The possession bound is authored (2 scenarios), the exemption face is not.  The declared
+#   parameters reach the profile's missile_weapon_limit projection in
+#   packages/python/roster-construction/mordheim_construction/_eligibility.js, whose consumer
+#   equipmentSetIssues() emits `${band}/${profile} carries ${counted} missile weapons; the printed clause
+#   allows ${maximum}` followed by ` besides ${exempt_item_ids.join(", ")}.` - the exact string the refusal
+#   scenario asserts.  The unit record of the same projection is
+#   tests/typescript/domain/campaign/t13-construction-restrictions.test.ts (row shoota-teams, rule_id
+#   shoota-teams--one-missile-weapon, exemptions small_pebble and slingshot).  The counting is per carried unit,
+#   not per distinct id, so the refused tape carries the same one-handed missile item twice and the accepted
+#   tape carries it once; the exemption face stays pending for the reason named in authoring_progress.
+# origin_id:
+#   rule/mordheim/snotlings-web/shoota-teams--one-missile-weapon/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/snotlings-web/special-rules.yaml
+# source_fingerprint:
+#   d813207f83051a82022fcb9c8523c01b877bb11b02bad8d064d8054e8ec099b5
+# source_sha256_at_generation:
+#   7dc940a3784763fc2a3788f764bbbebc42aa05d316da3cf38a6a037564a7415b
+# Printed rule text:
+#   May only purchase ONE non-pebble or non-slingshot missile weapon.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Possession bound: at most one missile weapon, exempting the small pebble and slingshot.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"max_missile_weapons":1,"exempt_item_ids":["small_pebble","slingshot"]}
+# conditions:
+#   {"recipients":"snotling shoota team"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Counts units, so two copies of one weapon are two; separate from active slots and from shooting resolution. Surface reuse candidate: {"family":"CON-EQUIP-MISSILE-LIMIT","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 2 authored scenario(s) in this file; the clause 'whole' stays PARTIAL above - the possession bound is authored, the exempt-item face is not.  REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed bound and the shared stage's template, with the unit record of the same
+# projection read as corroboration; no engine output was consulted.
+
+- audit_id: rule/mordheim/snotlings-web/shoota-teams--one-missile-weapon/profile.equipment-restrictions
+  id: two-carried-missile-weapons-exceed-the-printed-bound
+  covers: [whole]
+  fighters:
+    first:
+      owned_item_ids: []
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: shoota-teams
+      main_weapon_id: weapon.pistol
+      off_hand_id: weapon.pistol
+  expect_error: 'snotlings-web/shoota-teams carries 2 missile weapons; the printed clause allows 1 besides small_pebble, slingshot.'
+
+- audit_id: rule/mordheim/snotlings-web/shoota-teams--one-missile-weapon/profile.equipment-restrictions
+  id: a-single-carried-missile-weapon-is-accepted-at-construction
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: shoota-teams
+      main_weapon_id: weapon.mace
+      owned_item_ids: [crossbow]
+    second:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: shoota-teams
+      main_weapon_id: weapon.mace
+      owned_item_ids: [crossbow]
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

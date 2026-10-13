@@ -1,0 +1,107 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/armour.no-armour
+# scaffold_fingerprint: 76878289e6cf53696c5f6620230021c8c4fe82b88c0d9d4fc85379a32d3ef615
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries two authored
+#   scenarios. REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: no-body-armour (scope: YES)
+# AUTHORED[no-body-armour]: 2 scenarios cover that an unarmoured defender is
+#   offered no body armour save and still benefits from a surviving special
+#   save. Pending semantic review.
+# origin_id:
+#   mechanic/armour.no-armour
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   aff657d8f12f665021c193623f6b67da5a5c3c61ef63fd1607810439f5d631ff
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   No body armour is equipped. Other saves may still apply.
+# Semantic contract (check analysis_status before treating as accepted):
+#   No body armour is equipped while other saves may still apply; observable: the armour phase falls back to the natural and special saves only.
+# effect_id:
+#   armour.no-armour
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed as an armour with no base save, so the composed armour target is worse than any natural or special save and those saves still apply.
+
+# --- Authored scenarios ---
+# mechanic/armour.no-armour — no body save, while other saves still apply.
+#
+# Expectations come from the printed rule and the accepted clause
+# `no-body-armour` of docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv,
+# never from engine output: no body armour is equipped, so the armour phase
+# falls back to the natural and special saves only.  The strict tape proves
+# the absence: the first scenario scripts no armour face, so an unsolicited
+# armour die would fail as an unscripted request.  The second scenario keeps
+# the same unarmoured build but adds a documented special save (the lucky
+# charm) to show that the clause's "other saves may still apply" still holds.
+#
+# The first scenario declares the shared profiles as YAML anchors; the sibling
+# aliases the defender and adds its own defence and dice.
+
+- audit_id: mechanic/armour.no-armour
+  id: no-body-armour-offers-no-save
+  covers: [no-body-armour]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &attacker-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &defender-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The clause's other-saves sentence: with no body armour, a documented special
+# save is still offered and discards the first successful hit, so the wound is
+# not taken and the charm is spent.  The charm face is scripted, showing the
+# special save survives the absence of body armour.
+
+- audit_id: mechanic/armour.no-armour
+  id: no-body-armour-still-allows-a-special-save
+  covers: [no-body-armour]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *attacker-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.lucky-charm]
+      characteristics: *defender-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.lucky-charm, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.lucky_charm: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

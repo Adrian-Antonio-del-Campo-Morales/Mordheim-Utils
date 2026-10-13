@@ -1,0 +1,214 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/night-goblins-kaz/band--night-goblin-special-skills/unimplemented.night-goblins-kaz.band.night-goblin-special-skills
+# scaffold_fingerprint: 0b7c2715753a4a870e8400697d1e419fbcba2f0db31d787fcdc4f11de8cbfd0e
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole--scope--netter clause carries 2 authored scenarios written as the
+#   printed expectation on this band's own Netter, derived from the shared operator's authored origin
+#   (cases/mechanics/mechanic.netter.yaml) and its band twin, with the band row declared as
+#   `band--night-goblin-special-skills`.  PENDING GAP (category B, not a scenario gap): this band line is
+#   not wired to the operator - its KB row records scope LATER / implemented 'NO' / null binding - so the
+#   success tape is the expectation and is expected to fail until that connection exists, while the control
+#   tape passes today.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole--scope--netter (scope: YES)
+# AUTHORED[whole--scope--netter]: [B] 2 authored scenarios carry the printed 'chuck and charge'
+#   expectation on this band's Netter (the net charge, the failed escape, the knocked-down automatic hit
+#   that still rolls to wound, and the same charge without the band rule asking for no net die).  The
+#   conflation the marker previously recorded is now the recorded gap, not an authoring blocker: the band
+#   row does not yet carry mechanic.netter, so Documented difference (AUTHORED vs implementation): every representable face of the clause has a written scenario, so AUTHORED is the correct header; what stays pending is the motor side [B] - the binding of this row to the operator.  The
+#   printed sentence names the
+#   technique ("the goblin is adept at using a net to disable his enemies; the technique he has mastered is
+#   'chuck and charge' (see mechanic.netter for the full text)"), and its recorded effect_id is not recorded
+#   with the relation unresolved; the register note reads the line as pointing at the netter mechanic's own
+#   origin, so the in-combat operator exists and is evidenced there.  The missing datum is the binding that
+#   makes a Night Goblin of this band carry mechanic.netter (an identity or build route for the band line);
+#   the other entries of the same stanza (missile range, deployment, infiltration) are excluded by scope.
+# origin_id:
+#   rule/mordheim/night-goblins-kaz/band--night-goblin-special-skills/unimplemented.night-goblins-kaz.band.night-goblin-special-skills
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/night-goblins-kaz/special-rules.yaml
+# source_fingerprint:
+#   e1853033fea955243ee6e16016de6c5668278000465bc4cf7a2b988bdb8a558b
+# source_sha256_at_generation:
+#   8c749dc8e1be5533e3e18c76a82230048d971cb79cf25b157b5b88df6062cc0f
+# Printed rule text:
+#   Netter: the goblin is adept at using a net to disable his enemies; the technique he has mastered is 'chuck and charge' (see mechanic.netter for the full text).
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Netter skill disabling an enemy with a net charge is an admitted charge and state consequence, and this line carries that ability; its full text is analysed at the mechanic origin (row 1008). Printed clause: Netter: the goblin is adept at using a net to disable his enemies; the technique he has mastered is 'chuck and charge' (see mechanic.netter for the full text).
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Excluded by scope: missile range bonuses, post-deployment movement and infiltration are shooting and deployment concerns. The netter skill named in the same stanza is analysed from its own mechanic origin, so the in-combat part of the list is not discarded with the list. Scope review integration: {"clause_id":"whole","review_clause_id":"netter","source_state":"matched","review_status":"reviewed","scope_reason":"The Netter skill disabling an enemy with a net charge is an admitted charge and state consequence, and this line carries that ability; its full text is analysed at the mechanic origin (row 1008).","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The Night Goblin special skills add +6\" to missile weapon range (Ded Shooty), a D3 move of warband members after deployment (Sneaky Git), the Skaven Infiltrate skill, and the netter skill (see the netter mechanic). Closure: unmodelled while shooting range, deployment and infiltration stay outside the duelling model.","effect_id":"","relation":"equivalent","parameters":"{}","conditions":"{\"subsystem\": \"shooting / deployment\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07d-excluded-band-rules","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Ded Shooty: the clever little git adds +6\\\" to the range of any missile weapons he uses (not including nets). Sneaky Git: the greenskin is so sneaky that he can move D3 of his warband members after all other deployment is complete; Night Goblin Big Boss only. Infiltrate: as Skaven skill. Netter: the goblin is adept at using a net to disable his enemies; the technique he has mastered is 'chuck and charge' (see mechanic.netter for the full text).","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: whole--scope--ded-shooty (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/night-goblins-kaz/band--night-goblin-special-skills/unimplemented.night-goblins-kaz.band.night-goblin-special-skills
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/night-goblins-kaz/special-rules.yaml
+# source_fingerprint:
+#   e1853033fea955243ee6e16016de6c5668278000465bc4cf7a2b988bdb8a558b
+# source_sha256_at_generation:
+#   8c749dc8e1be5533e3e18c76a82230048d971cb79cf25b157b5b88df6062cc0f
+# Printed rule text:
+#   Ded Shooty: the clever little git adds +6\" to the range of any missile weapons he uses (not including nets).
+# Semantic contract (check analysis_status before treating as accepted):
+#   Adding six inches to the range of missile weapons concerns shooting and range measurement, which the duel excludes. Printed clause: Ded Shooty: the clever little git adds +6\" to the range of any missile weapons he uses (not including nets).
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Excluded by scope: missile range bonuses, post-deployment movement and infiltration are shooting and deployment concerns. The netter skill named in the same stanza is analysed from its own mechanic origin, so the in-combat part of the list is not discarded with the list. Scope review integration: {"clause_id":"whole","review_clause_id":"ded-shooty","source_state":"matched","review_status":"reviewed","scope_reason":"Adding six inches to the range of missile weapons concerns shooting and range measurement, which the duel excludes.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The Night Goblin special skills add +6\" to missile weapon range (Ded Shooty), a D3 move of warband members after deployment (Sneaky Git), the Skaven Infiltrate skill, and the netter skill (see the netter mechanic). Closure: unmodelled while shooting range, deployment and infiltration stay outside the duelling model.","effect_id":"","relation":"equivalent","parameters":"{}","conditions":"{\"subsystem\": \"shooting / deployment\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07d-excluded-band-rules","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Ded Shooty: the clever little git adds +6\\\" to the range of any missile weapons he uses (not including nets). Sneaky Git: the greenskin is so sneaky that he can move D3 of his warband members after all other deployment is complete; Night Goblin Big Boss only. Infiltrate: as Skaven skill. Netter: the goblin is adept at using a net to disable his enemies; the technique he has mastered is 'chuck and charge' (see mechanic.netter for the full text).","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: whole--scope--infiltrate (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/night-goblins-kaz/band--night-goblin-special-skills/unimplemented.night-goblins-kaz.band.night-goblin-special-skills
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/night-goblins-kaz/special-rules.yaml
+# source_fingerprint:
+#   e1853033fea955243ee6e16016de6c5668278000465bc4cf7a2b988bdb8a558b
+# source_sha256_at_generation:
+#   8c749dc8e1be5533e3e18c76a82230048d971cb79cf25b157b5b88df6062cc0f
+# Printed rule text:
+#   Infiltrate: as Skaven skill.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Infiltrate as the Skaven skill is a deployment rule, which the duel excludes. Printed clause: Infiltrate: as Skaven skill.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Excluded by scope: missile range bonuses, post-deployment movement and infiltration are shooting and deployment concerns. The netter skill named in the same stanza is analysed from its own mechanic origin, so the in-combat part of the list is not discarded with the list. Scope review integration: {"clause_id":"whole","review_clause_id":"infiltrate","source_state":"matched","review_status":"reviewed","scope_reason":"Infiltrate as the Skaven skill is a deployment rule, which the duel excludes.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The Night Goblin special skills add +6\" to missile weapon range (Ded Shooty), a D3 move of warband members after deployment (Sneaky Git), the Skaven Infiltrate skill, and the netter skill (see the netter mechanic). Closure: unmodelled while shooting range, deployment and infiltration stay outside the duelling model.","effect_id":"","relation":"equivalent","parameters":"{}","conditions":"{\"subsystem\": \"shooting / deployment\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07d-excluded-band-rules","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Ded Shooty: the clever little git adds +6\\\" to the range of any missile weapons he uses (not including nets). Sneaky Git: the greenskin is so sneaky that he can move D3 of his warband members after all other deployment is complete; Night Goblin Big Boss only. Infiltrate: as Skaven skill. Netter: the goblin is adept at using a net to disable his enemies; the technique he has mastered is 'chuck and charge' (see mechanic.netter for the full text).","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: whole--scope--sneaky-git (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/night-goblins-kaz/band--night-goblin-special-skills/unimplemented.night-goblins-kaz.band.night-goblin-special-skills
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/night-goblins-kaz/special-rules.yaml
+# source_fingerprint:
+#   e1853033fea955243ee6e16016de6c5668278000465bc4cf7a2b988bdb8a558b
+# source_sha256_at_generation:
+#   8c749dc8e1be5533e3e18c76a82230048d971cb79cf25b157b5b88df6062cc0f
+# Printed rule text:
+#   Sneaky Git: the greenskin is so sneaky that he can move D3 of his warband members after all other deployment is complete; Night Goblin Big Boss only.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Moving warband members after deployment is a deployment and group move, excluded from the duel. Printed clause: Sneaky Git: the greenskin is so sneaky that he can move D3 of his warband members after all other deployment is complete; Night Goblin Big Boss only.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Excluded by scope: missile range bonuses, post-deployment movement and infiltration are shooting and deployment concerns. The netter skill named in the same stanza is analysed from its own mechanic origin, so the in-combat part of the list is not discarded with the list. Scope review integration: {"clause_id":"whole","review_clause_id":"sneaky-git","source_state":"matched","review_status":"reviewed","scope_reason":"Moving warband members after deployment is a deployment and group move, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The Night Goblin special skills add +6\" to missile weapon range (Ded Shooty), a D3 move of warband members after deployment (Sneaky Git), the Skaven Infiltrate skill, and the netter skill (see the netter mechanic). Closure: unmodelled while shooting range, deployment and infiltration stay outside the duelling model.","effect_id":"","relation":"equivalent","parameters":"{}","conditions":"{\"subsystem\": \"shooting / deployment\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07d-excluded-band-rules","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Ded Shooty: the clever little git adds +6\\\" to the range of any missile weapons he uses (not including nets). Sneaky Git: the greenskin is so sneaky that he can move D3 of his warband members after all other deployment is complete; Night Goblin Big Boss only. Infiltrate: as Skaven skill. Netter: the goblin is adept at using a net to disable his enemies; the technique he has mastered is 'chuck and charge' (see mechanic.netter for the full text).","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# The Netter's 'chuck and charge', derived from the printed rule, the shared operator's authored origin
+# and this band's row id; no engine output was consulted.  The bearer is the printed Night Goblin profile
+# of this band with its characteristics supplied as fixture facts, and the opposing duellist declares none
+# of its own attacks so only the netter step is in the tape.
+#
+# EXPECTATION, category B: this band row is not yet wired to the operator (KB scope LATER, implemented
+# 'NO', null binding), so this first tape is expected to fail until the binding exists; a mis-spelled grant
+# id would fail on the grant rather than on the rule.
+- audit_id: rule/mordheim/night-goblins-kaz/band--night-goblin-special-skills/unimplemented.night-goblins-kaz.band.night-goblin-special-skills
+  id: a-hit-net-knocks-the-target-down-and-the-charge-strikes-home
+  covers: [whole--scope--netter]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: night-goblins-kaz
+      profile_id: night-goblins
+      special_rule_ids: [band--night-goblin-special-skills]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.netter.hit, value: 4}
+    - {key: round.0.first.netter.escape, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+  expect_rounds:
+    0: {attacks.0.knocked_down_target: true, attacks.0.wounded: true, state.second.condition: KNOCKED_DOWN,
+        state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.netter.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.netter.escape, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 6}
+# The control passes today: the identical charge on the same profile build without the band netter rule
+# carries no net die at all, so the net step is the rule's own.
+- audit_id: rule/mordheim/night-goblins-kaz/band--night-goblin-special-skills/unimplemented.night-goblins-kaz.band.night-goblin-special-skills
+  id: without-the-band-netter-rule-the-charge-asks-for-no-net-die
+  covers: [whole--scope--netter]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: night-goblins-kaz
+      profile_id: night-goblins
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.knocked_down_target: false, state.second.condition: STANDING,
+        state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}

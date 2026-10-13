@@ -1,0 +1,162 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/clan-angrund-kep/band--slayer-special-skills-monster-slayer/skill.monster-slayer
+# scaffold_fingerprint: 6601000bb7d2165663a59ba41badd747b196ad91ca1feacafd0f56881c245a62
+# authoring_status: PARTIAL
+# authoring_progress: the wounds-on-four-plus clause carries three authored scenarios derived from
+# the printed stanza, the recorded contract and the admitted monster-slayer grants specification
+# (the Toughness-6 cap, its contrast without the grant, and the retained easier target), while the
+# companion effective-strength-for-armour clause stays pending with its reason recorded below.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: effective-strength-for-armour (scope: YES)
+# PARTIAL[effective-strength-for-armour]: [B] the armour-modifier face stays pending.  This origin's
+# printed stanza repeats only the wound sentence and does not itself print the armour sentence;
+# the effective-Strength reading is carried by the separate variant tag
+# skill.monster-slayer-effective-strength-armour, and no accepted source records that this band's
+# recipient is bound to that variant (the karak-zorn publication prints the sentence and is proved
+# by editorial-monster-slayer-armour.yaml).  A duel scenario cannot be fixed before that binding
+# is recorded, because the tape must declare exactly the armour die the engine asks for: a save the
+# effective Strength makes impossible is skipped while a raw-Strength basis still rolls it.
+# origin_id:
+#   rule/mordheim/clan-angrund-kep/band--slayer-special-skills-monster-slayer/skill.monster-slayer
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clan-angrund-kep/special-rules.yaml
+# source_fingerprint:
+#   97345f114c24f1279b5048d1a23a4580d9fcc8e12c1104d9987afe1cb44b6227
+# source_sha256_at_generation:
+#   a3d8b4bc4ca8c9711e279023946768eb1625c405d02961534d01facf6b146b09
+# Printed rule text:
+#   The Slayer always wounds any opponent on a roll of 4+, regardless of Toughness, unless his own Strength (after all modifiers for weapons used, etc) would mean that a lower roll than this is needed.
+# Semantic contract (check analysis_status before treating as accepted):
+#   If the rule would increase the Strength needed for that 4+, use that effective Strength for the armour modifier; observable: the armour save modifier uses the effective Strength.
+# effect_id:
+#   skill.monster-slayer
+# relation:
+#   parameterized_variant
+# parameters:
+#   {"use_effective_strength_for_armour":true}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   skill.monster-slayer-effective-strength-armour raises armour_strength to the defender's Toughness, which is what the printed sentence requires; offensive family, recorded because the Slayer records are in this assignment. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"effective-strength-for-armour","audit_group":"EQ-skill.monster-slayer","verified_facet":"monster-slayer/effective-strength-armour","relationship":"shared_facet","boundary":"Armour-modifier variant only; do not merge it into the ordinary wound-target cap or propagate it to source variants that omit it.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+#
+# Clause: wounds-on-four-plus (scope: YES)
+# AUTHORED[wounds-on-four-plus]: 3 scenarios read the printed cap on the band's Slayer recipient.
+# Against the Toughness-6 boundary the attacker's Strength 3 normally needs 5+, so a declared wound
+# roll of 4 wounds with the grant and fails without it, which fixes the cap to the band rule; and
+# against a Toughness-2 opponent a declared roll of 3 still wounds, so the printed retention of a
+# naturally lower target is asserted as well.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/clan-angrund-kep/band--slayer-special-skills-monster-slayer/skill.monster-slayer
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clan-angrund-kep/special-rules.yaml
+# source_fingerprint:
+#   97345f114c24f1279b5048d1a23a4580d9fcc8e12c1104d9987afe1cb44b6227
+# source_sha256_at_generation:
+#   a3d8b4bc4ca8c9711e279023946768eb1625c405d02961534d01facf6b146b09
+# Printed rule text:
+#   The Slayer always wounds any opponent on a roll of 4+, regardless of Toughness, unless his own Strength (after all modifiers for weapons used, etc) would mean that a lower roll than this is needed.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Slayer always wounds on 4+ regardless of Toughness unless his modified Strength would need a lower roll; observable: the to-wound target is capped at 4.
+# effect_id:
+#   skill.monster-slayer
+# relation:
+#   equivalent
+# parameters:
+#   {"maximum_wound_target":4,"retain_better_wound_target":true}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   prepare_wound_context caps maximum_wound_target at 4 for skill.monster-slayer. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"wounds-on-four-plus","audit_group":"EQ-skill.monster-slayer","verified_facet":"skill.monster-slayer","relationship":"shared_facet","boundary":"Share the best-of ordinary wound target and 4+. Effective Strength for armour is a separate printed variant, not a consequence automatically granted to every Slayer.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed stanza, the recorded contract and the admitted monster-slayer grants
+# specification; no engine output was consulted.  The bearer is the printed Slayer profile of this
+# band (WS4, BS3, S3, T4, W1, I2, A1) credited with this band's Monster Slayer rule through
+# special_rule_ids, so the case reads the band grant rather than a bare tag.  The hand-built
+# opponent is the Toughness-6 boundary the specification names (the easier-target scenario lowers
+# it to 2) and its own strike is a declared natural 1.
+
+- audit_id: rule/mordheim/clan-angrund-kep/band--slayer-special-skills-monster-slayer/skill.monster-slayer
+  id: the-wound-target-is-capped-at-four
+  covers: [wounds-on-four-plus]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-troll-slayers
+      special_rule_ids: [band--slayer-special-skills-monster-slayer]
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/clan-angrund-kep/band--slayer-special-skills-monster-slayer/skill.monster-slayer
+  id: without-the-grant-the-same-wound-roll-fails
+  covers: [wounds-on-four-plus]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-troll-slayers
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 6, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/clan-angrund-kep/band--slayer-special-skills-monster-slayer/skill.monster-slayer
+  id: a-naturally-easier-target-is-retained
+  covers: [wounds-on-four-plus]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-troll-slayers
+      special_rule_ids: [band--slayer-special-skills-monster-slayer]
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

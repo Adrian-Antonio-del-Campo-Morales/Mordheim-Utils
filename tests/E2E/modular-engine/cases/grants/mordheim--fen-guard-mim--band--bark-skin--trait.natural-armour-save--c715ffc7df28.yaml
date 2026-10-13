@@ -1,0 +1,340 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-save
+# scaffold_fingerprint: 4c8267db817343daa5a42f5b604536abcfda4bef2f0ef2be1094104a01ecc652
+# authoring_status: AUTHORED
+# authoring_progress: every admitted clause of this ID carries authored scenarios derived from the
+#   printed rule, its recorded contract and the band package.  The register's own row for the fire
+#   half still reads proposed/unresolved, but the clause's correction notes and the canonical
+#   binding the band carries (trait.natural-armour-negated-by-fire) deliver it, so the negation is
+#   authored against the binding and the printed sentence.  REVIEWED still requires manual semantic
+#   review and execution_status stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: no-save-and-fire-negation (scope: YES)
+# AUTHORED[no-save-and-fire-negation]: 3 scenarios take both halves of the printed sentence onto the
+#   real attack route - a fire attack and an armour-penetrating 'no save' critical ask for no hide
+#   die at all - and a same-Strength non-fire control keeps the die at six, so the absence is the
+#   clause and not the dice.
+# origin_id:
+#   rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/fen-guard-mim/special-rules.yaml
+# source_fingerprint:
+#   80022f799d4dde96e2e97d6340ea147545f6f39d28ee1610f984e20bbd764ca7
+# source_sha256_at_generation:
+#   47c3b126a549eca1cfca78e7eca5c0202cd37398d3adbc52d362dcbaeb7d582c
+# Printed rule text:
+#   Fen Guard have a 6+ armour save which can be stacked with regular armour; it cannot be modified beyond 6 by Strength (except by weapons with the Cutting Edge rule), a 'no save' result on the Critical Hit Charts negates it, and fire attacks ignore this rule.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A no-save critical result negates the hide and fire attacks ignore this rule entirely; observable: no natural save against fire.
+# effect_id:
+#   proposed.trait.natural-armour-negated-by-fire
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The critical-chart no-save half already works because ignore_armour resolves to no save at all; the fire half has no field in the trait contract (only the magic negation exists), so it cannot be wired without a new trait field. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#   
+#   [M3-defences 2026-10-08] delivered, acceptance defect completed. The 'no save' critical half still resolves through `ignore_armour`. The fire half is now representable end to end: `EffectSet.natural_armour_negated_by_fire` mirrors the magic negation, `band--bark-skin` binds `trait.natural-armour-negated-by-fire`, and `TRAIT_TYPES`, the compiler projection, `MODULAR_FIELD_CONSUMERS`, `runtime-scope.yaml` and the execution/operator schemas carry it. `contexts.prepare_armour_context` denies only the inherent hide save for an `attack.fire` hit, leaving a worn armour and other bands' natural armour untouched (the Fimir Scaly Skin control stays 5). The focused suite proves the fire target (7), the non-fire control (6), the Fimir control and a real brazier-iron attack that requests no armour die; the two Fen Guard fire cases in `test_local_modifier_variants.py` were updated to the completed rule. No residual.
+#   
+#   [Coordinator acceptance 2026-10-08] The returned M3 correction is accepted for its exercised modular contract after the current 28-case defence suite and 9-case M4 suite passed. Historical defect notes above are resolved by this correction; unrelated source/access gaps and untested compositions retain their own limits.
+#
+# Clause: six-plus-natural-save (scope: YES)
+# AUTHORED[six-plus-natural-save]: 3 scenarios take the printed 6+ on the real attack route - a six
+#   saves and a five is a wound - and a shield takes the hide one step better, which is the
+#   stacking half of the same printed sentence.
+# origin_id:
+#   rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/fen-guard-mim/special-rules.yaml
+# source_fingerprint:
+#   80022f799d4dde96e2e97d6340ea147545f6f39d28ee1610f984e20bbd764ca7
+# source_sha256_at_generation:
+#   47c3b126a549eca1cfca78e7eca5c0202cd37398d3adbc52d362dcbaeb7d582c
+# Printed rule text:
+#   Fen Guard have a 6+ armour save which can be stacked with regular armour; it cannot be modified beyond 6 by Strength (except by weapons with the Cutting Edge rule), a 'no save' result on the Critical Hit Charts negates it, and fire attacks ignore this rule.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Fen Guard have a 6+ armour save that stacks with regular armour; observable: the natural save is rolled in the armour phase and the better of armour and hide applies.
+# effect_id:
+#   trait.natural-armour-save
+# relation:
+#   equivalent
+# parameters:
+#   {"save":6}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The KB binds the value 6 for the whole band. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: strength-cap-at-six (scope: YES)
+# AUTHORED[strength-cap-at-six]: 3 scenarios hold the printed cap and its exception - a Strength 6
+#   attacker still leaves the die at six and beats it only on five - and an armour-penetrating axe
+#   at the same Strength as the plain cases worsens the save past the cap, asking for no hide die.
+# origin_id:
+#   rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/fen-guard-mim/special-rules.yaml
+# source_fingerprint:
+#   80022f799d4dde96e2e97d6340ea147545f6f39d28ee1610f984e20bbd764ca7
+# source_sha256_at_generation:
+#   47c3b126a549eca1cfca78e7eca5c0202cd37398d3adbc52d362dcbaeb7d582c
+# Printed rule text:
+#   Fen Guard have a 6+ armour save which can be stacked with regular armour; it cannot be modified beyond 6 by Strength (except by weapons with the Cutting Edge rule), a 'no save' result on the Critical Hit Charts negates it, and fire attacks ignore this rule.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Strength modifiers cannot reduce the hide save beyond 6+; observable: a Strength 4 attacker still leaves the 6+ save on a 6.
+# effect_id:
+#   trait.natural-armour-worst-save
+# relation:
+#   equivalent
+# parameters:
+#   {"worst_save":6}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   No trait row carries the cap for this origin, so the composed natural save is worsened by Strength like ordinary armour; the deployment needs the same worst-save field the lizardman Scaly Skin rule already uses. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#   
+#   [Coordinator review 2026-10-08] Not accepted as complete. Bark Skin: natural_armour_worst_save=6 caps the result after Strength and armour penetration together. The printed Cutting Edge exception is lost: a real compiled Dryad facing S3 plus armour_penetration=1 still receives target 6. Preserve the Strength protection while allowing the stated weapon exception to worsen the save, with one Cutting Edge discriminator. Keep the separately recorded fire-negation gap open. Owner: modular defence consumers plus canonical contract/transport as needed. Resume in the M3 correction batch; close when the source-derived boundary and existing focal controls pass. The earlier no-residual delivery claim is superseded; the existing executed evidence remains valid only for its tested cases.
+#   
+#   [M3-defences 2026-10-08] delivered, acceptance defect corrected. `band--bark-skin` keeps the `trait.natural-armour-save` 6 and the `trait.natural-armour-worst-save` 6, but `phases.armour_target` now caps the Strength penalty and the attack's own save bonus and adds the weapon's armour penetration after the cap, so the printed Cutting Edge exception survives instead of being swallowed. The focused suite proves the context values (6 at Strength 3 and 6, and 7 with an armour-penetrating axe at both) plus a real attack pair where the Strength-6 mace still asks for the 6+ hide die while the axe denies it. No residual for the Strength half.
+#   
+#   [Coordinator acceptance 2026-10-08] The returned M3 correction is accepted for its exercised modular contract after the current 28-case defence suite and 9-case M4 suite passed. Historical defect notes above are resolved by this correction; unrelated source/access gaps and untested compositions retain their own limits.
+
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract of each clause and the band package; no
+# engine output was consulted.  Bark Skin is the band's own grant, so it is witnessed through the
+# Spiteborn profile, whose printed entry carries no rule of its own and therefore keeps this tape
+# free of unrelated dice.  The attacker is a hand-built fixture, its Weapon Skill 10 and Initiative
+# 10 are fixture facts, the duel is uncharged, and the bearer starts at two wounds and contributes
+# no attacks of its own.  The wound face stays below a natural six so no critical die is part of
+# the evidence except where the critical itself is the clause.
+
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-save
+  id: the-bark-hide-saves-on-six
+  covers: [six-plus-natural-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: spiteborn
+      main_weapon_id: weapon.sword
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-save
+  id: one-face-below-the-bark-hide-is-a-wound
+  covers: [six-plus-natural-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: spiteborn
+      main_weapon_id: weapon.sword
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-save
+  id: a-shield-stacks-with-the-bark-hide
+  covers: [six-plus-natural-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: spiteborn
+      main_weapon_id: weapon.sword
+      off_hand_id: defence.shield
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-save
+  id: a-strength-six-attacker-still-leaves-the-hide-die-at-six
+  covers: [strength-cap-at-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 6, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: spiteborn
+      main_weapon_id: weapon.sword
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-save
+  id: a-strength-six-attacker-beats-the-capped-hide-on-five
+  covers: [strength-cap-at-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 6, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: spiteborn
+      main_weapon_id: weapon.sword
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-save
+  id: an-armour-penetrating-axe-passes-the-cap
+  covers: [strength-cap-at-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: spiteborn
+      main_weapon_id: weapon.sword
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-save
+  id: a-fire-attack-is-offered-no-hide-die
+  covers: [no-save-and-fire-negation]
+  fighters:
+    first:
+      main_weapon_id: weapon.brazier-iron
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: spiteborn
+      main_weapon_id: weapon.sword
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.ignition, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-save
+  id: the-same-strength-without-fire-still-asks-for-the-die
+  covers: [no-save-and-fire-negation]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 4, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: spiteborn
+      main_weapon_id: weapon.sword
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/fen-guard-mim/band--bark-skin/trait.natural-armour-save
+  id: a-no-save-critical-negates-the-hide
+  covers: [no-save-and-fire-negation]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: spiteborn
+      main_weapon_id: weapon.sword
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 3}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 2, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

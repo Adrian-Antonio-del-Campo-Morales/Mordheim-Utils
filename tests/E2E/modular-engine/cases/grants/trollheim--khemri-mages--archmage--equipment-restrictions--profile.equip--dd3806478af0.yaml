@@ -1,0 +1,97 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-mages/archmage--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: 348b3c120e739e8177785c3d00eb23ede4e62583556d5c91fdfba772c125c48e
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the printed reservation of the Sling to the Pupils is evidenced in both directions.  CHALLENGE
+#   RESULT: the previous note is wrong on the facts - the Sling is a registered catalogue item
+#   (catalog/items/weapons-ranged.yaml, id sling), and the KB DOES declare the binding:
+#   bands/trollheim/khemri-mages/special-rules.yaml, id archmage--equipment-restrictions, runtime grant: profile,
+#   implemented: 'YES', effect profile.equipment-restrictions, parameters forbids: [sling].  What decides the
+#   observable is the band's own list row (equipment-access.yaml, mage-equipment-list): sling carries
+#   applies_to.profile_ids [pupil], and the shared stage honours that selector - profileEquipmentItems filters list
+#   rows through entryReachesProfile and equipmentIssue tests the resulting offered set before its forbids loop
+#   (packages/python/roster-construction/mordheim_construction/_eligibility.js) - so this recipient's build that
+#   slots a Sling is refused with the stage's own access diagnostic (code equipment_not_permitted, a hard issue, not
+#   one of the informational codes).  The second scenario is a Pupil, the printed holder of the Sling, admitted at
+#   construction.  The Familiar acquisition bar printed with the same rows is recorded, not asserted: buying a
+#   Familiar is creation/campaign acquisition, outside the duel.  Consumer: the shared eligibility stage.  REVIEWED
+#   still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/khemri-mages/archmage--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-mages/special-rules.yaml
+# source_fingerprint:
+#   11008782b00224ec5a0c0bc63ef79d5f93073d8ce8f7f9d7b0f86a322e80b3a1
+# source_sha256_at_generation:
+#   685c10336f3b0f32695650cc471e319c32f421962835c77d18b08a451a999128
+# Printed rule text:
+#   Sling is Pupils only.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Prohibition: the Archmage may not take a Sling, which is Pupils-only.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["sling"]}
+# conditions:
+#   {"recipient":"archmage","reserved_for":["pupils"]}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Entry-recipient restriction expressed as a forbids token. Surface reuse candidate: {"family":"901","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed recipient selectors, including promoted Heroes and selected variants. Share eligibility machinery, not a recipient set; culinary item names alone add no restriction.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; no admitted clause of this
+# origin is left pending.  REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/trollheim/khemri-mages/archmage--equipment-restrictions/profile.equipment-restrictions
+  id: the-archmage-may-not-slot-a-sling
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-mages
+      profile_id: archmage
+      owned_item_ids: [sling]
+  expect_error: '"sling" is not on any equipment list of khemri-mages/archmage.'
+
+- audit_id: rule/trollheim/khemri-mages/archmage--equipment-restrictions/profile.equipment-restrictions
+  id: the-slings-printed-holder-is-admitted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-mages
+      profile_id: pupil
+      main_weapon_id: weapon.dagger
+      owned_item_ids: [sling]
+    second:
+      collection: trollheim
+      band_id: khemri-mages
+      profile_id: archmage
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

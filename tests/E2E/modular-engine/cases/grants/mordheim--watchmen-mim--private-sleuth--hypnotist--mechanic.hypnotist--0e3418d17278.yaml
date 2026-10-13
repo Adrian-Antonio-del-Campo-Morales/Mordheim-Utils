@@ -1,0 +1,138 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/watchmen-mim/private-sleuth--hypnotist/mechanic.hypnotist
+# scaffold_fingerprint: 2c06af4c9644afa2e19213ff7dc2709417287001b7759dae43b2b536227d81d0
+# authoring_status: AUTHORED
+# authoring_progress: the admitted hypnotist clause carries three authored scenarios derived from the
+# printed rule, the recorded contract and the band package; the bearer is the printed Private Sleuth
+# profile of this band, the model the printed rule names.  REVIEWED still requires manual semantic
+# review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: hypnotist (scope: YES)
+# AUTHORED[hypnotist]: 3 scenarios cover the printed declaration and its two outcomes: a failed
+# Leadership test (two declared sixes against the target's Leadership 6) entrances the target, which
+# then may not attack and is struck by the Sleuth as a knocked-down target (the printed "treated as
+# knocked down for the purpose of being attacked", so the To Hit die is not requested and only the To
+# Wound die is), a passed test (two declared ones) leaves the target free and it attacks normally, and
+# a declined declaration requests no Leadership test at all (neither die appears in the tape).  The
+# bearer is the printed Private Sleuth profile that prints the rule and declares exactly one attack,
+# and the opposing warrior's Weapon Skill, Strength, Toughness, Initiative and Leadership are
+# hand-built fixture facts, not profile values.  Not asserted here: the printed "trance ends when the
+# entranced warrior or the Sleuth has been attacked" when the trance ends because the SLEUTH was
+# attacked (the Setup makes the Sleuth's own attack the one that consumes the trance), and the printed
+# exclusion of Psychology-immune targets, which needs a second band profile this file does not
+# declare.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/watchmen-mim/private-sleuth--hypnotist/mechanic.hypnotist
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/watchmen-mim/special-rules.yaml
+# source_fingerprint:
+#   46e1e96ccf0f30e8fc1edc9f13e1c2132bc41a0f16a62bf55d14e45d1a079585
+# source_sha256_at_generation:
+#   d14a3ccea705e31d0f6395fb2ca9cf42ebc50ceef2a0ea19ea1c5f1f30d3280a
+# Printed rule text:
+#   At the beginning of the combat phase the Sleuth may hypnotise any living warrior in base contact that is not Immune to Psychology. The suspect must pass a Leadership test or be entranced: an entranced warrior may not attack in close combat and is treated as knocked down for the purpose of being attacked. The trance ends when the entranced warrior or the Sleuth has been attacked, or when the Sleuth chooses to end it.
+# Semantic contract (check analysis_status before treating as accepted):
+#   At the start of the combat phase this warrior may hypnotise a living, non-Immune-to-Psychology model in base contact; on a failed Leadership test the target is entranced and may not attack. Observable: a failed test sets the target's charm-attack-blocked state this round.
+# effect_id:
+#   mechanic.hypnotist
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"start of the combat phase, target living, in base contact, not Psychology-immune, not frenzied","resolution":"target Leadership test","consequence":"entranced target cannot attack this round","recipient":"the opposing warrior","duration":"until attacked or ended","exceptions":"Undead, daemons and Psychology-immune models are unaffected"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Implemented in rounds.resolve_round via the entranced/charm_attack_blocked state, with a decision to end the trance. Surface reuse candidate: {"family":"mechanic.hypnotist","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare target identities, psychology/animal exceptions, test dice, phase, failure consequence and duration. Charge refusal, inability to attack and loss of one attack are distinct; Crude Belch may remove the only attack. Keep supplied individual consequences separate from group emission.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the printed profile; no engine output was
+# consulted.  The declaration is the printed option, and the trance state is the observable.
+- audit_id: rule/mordheim/watchmen-mim/private-sleuth--hypnotist/mechanic.hypnotist
+  id: a-failed-leadership-test-entrances-the-target
+  covers: [hypnotist]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      collection: mordheim
+      band_id: watchmen-mim
+      profile_id: private-sleuth
+  initial_state: {second: {attacks: 1}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotist, value: true}
+  rolls:
+    - {key: round.0.second.hypnotist.0, value: 6}
+    - {key: round.0.second.hypnotist.1, value: 6}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.knocked_down_target: true, attacks.0.wounded: false,
+        state.first.wounds: 2, state.first.condition: STANDING, state.first.entranced: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same declaration with a passed test: two declared ones total two against Leadership 6, so the
+# target is not entranced and resolves its own ordinary attack.
+- audit_id: rule/mordheim/watchmen-mim/private-sleuth--hypnotist/mechanic.hypnotist
+  id: a-passed-leadership-test-leaves-the-target-free
+  covers: [hypnotist]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      collection: mordheim
+      band_id: watchmen-mim
+      profile_id: private-sleuth
+  initial_state: {second: {attacks: 1}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotist, value: true}
+  rolls:
+    - {key: round.0.second.hypnotist.0, value: 1}
+    - {key: round.0.second.hypnotist.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.1.knocked_down_target: false,
+        state.first.entranced: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "may hypnotise" is a declaration: declining it requests no Leadership test, so neither
+# hypnotist die appears and the round is left to the ordinary attack pools.
+- audit_id: rule/mordheim/watchmen-mim/private-sleuth--hypnotist/mechanic.hypnotist
+  id: declining-the-hypnosis-tests-nothing
+  covers: [hypnotist]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      collection: mordheim
+      band_id: watchmen-mim
+      profile_id: private-sleuth
+  initial_state: {second: {attacks: 1}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.hypnotist, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.first.entranced: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

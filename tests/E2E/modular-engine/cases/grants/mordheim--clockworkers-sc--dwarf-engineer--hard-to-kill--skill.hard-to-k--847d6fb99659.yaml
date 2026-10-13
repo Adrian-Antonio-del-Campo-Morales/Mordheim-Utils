@@ -1,0 +1,117 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/clockworkers-sc/dwarf-engineer--hard-to-kill/skill.hard-to-kill
+# scaffold_fingerprint: 0df3318858e9e5daa79fe28cafcfb0d1f62ddd95e4550669ee109eb972dcdc67
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries three authored scenarios derived from the
+# printed rule and the printed profile record: a five that the ordinary chart takes Out of Action leaves
+# this bearer Stunned, the six still takes it out, and the non-regression control shows the same five on
+# an unmarked bearer is Out of Action.  The bearer is the printed Dwarf Engineer profile, whose own rule
+# record carries the sentence, so the rule needs no band-wide key; both facts are read from the band
+# source, not from the engine.  REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios evidence the wider Stunned band at its boundary (a five Stuns), the six
+#   that still takes the bearer out, and the ordinary chart on an unmarked bearer, so the band is
+#   attributable to the printed rule rather than to the fixture.  The recipient is the printed Dwarf
+#   Engineer profile, which carries the sentence as its own rule, so no band-wide key is supplied.  The
+#   printed applicability to Dwarfs is not re-tested here; the printed profile is the evidence.  REVIEWED
+#   still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/clockworkers-sc/dwarf-engineer--hard-to-kill/skill.hard-to-kill
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clockworkers-sc/special-rules.yaml
+# source_fingerprint:
+#   1720bc879da512f63602a5b60472bf06c8f2b88d79f0167a516ebb449153c639
+# source_sha256_at_generation:
+#   a1e5160269bd2f8005f116c863d70f6a3a84622f2f83fb2aedb9d0e4855da69d
+# Printed rule text:
+#   Dwarfs are taken out of action only on a 6 on the Injury chart; 1–2 is Knocked Down and 3–5 is Stunned.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Taken out of action only on a 6 on the Injury chart; 1-2 knocked down, 3-5 stunned; observable: totals 4-5 leave the bearer stunned.
+# effect_id:
+#   skill.hard-to-kill
+# relation:
+#   equivalent
+# parameters:
+#   {"injury_chart":{"1-2":"knocked-down","3-5":"stunned","6+":"out-of-action"}}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The catalog and mechanic records are the shared skill definitions of the same printed rule and add no second contribution. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Clockworkers dwarf engineer's Hard to Kill changes that bearer's injury chart.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.hard-to-kill","verified_facet":"skill.hard-to-kill","relationship":"shared_facet","boundary":"Share the wider Stunned band, not True Grit, concussion immunity, or a stun save. Keep printed recipients; the Saurus Hero variant remains Hero-only. Modified injury totals and later injury transformations still apply.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profile record; no engine output was consulted.
+# The mace is the concussion weapon of the sibling injury-chart cases, the fixture's Initiative
+# lets it strike first, and the bearer starts at its printed single wound.
+
+- audit_id: rule/mordheim/clockworkers-sc/dwarf-engineer--hard-to-kill/skill.hard-to-kill
+  id: a-five-only-stuns-the-dwarf-engineer
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: clockworkers-sc, profile_id: dwarf-engineer}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/clockworkers-sc/dwarf-engineer--hard-to-kill/skill.hard-to-kill
+  id: only-the-six-takes-the-dwarf-engineer-out
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: clockworkers-sc, profile_id: dwarf-engineer}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: rule/mordheim/clockworkers-sc/dwarf-engineer--hard-to-kill/skill.hard-to-kill
+  id: the-ordinary-chart-still-takes-an-unmarked-bearer-out-on-a-five
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

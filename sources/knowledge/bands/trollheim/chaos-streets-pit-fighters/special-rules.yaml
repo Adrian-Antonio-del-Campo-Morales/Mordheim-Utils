@@ -120,15 +120,15 @@ rules:
     profile_ids:
     - dwarf-troll-slayer
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-pit-fighters.dwarf-troll-slayer.hate-orcs-and-goblins
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.hatred-orcs-goblins
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-orcs-goblins
 - id: dwarf-troll-slayer--ancestral-grudge
   name: Ancestral Grudge
   effect: >-
@@ -176,15 +176,15 @@ rules:
     profile_ids:
     - dwarf-troll-slayer
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-pit-fighters.dwarf-troll-slayer.death-oath
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: dwarf-troll-slayer--hard-head
   name: Hard Head
   effect: >-
@@ -378,15 +378,15 @@ rules:
     profile_ids:
     - ogre-pit-fighter
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-pit-fighters.ogre-pit-fighter.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: ogre-pit-fighter--large-target
   name: Large Target
   effect: >-
@@ -770,15 +770,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: band
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-pit-fighters.band.pit-fighter-skill-grizzled-veteran
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: band--troll-slayer-special-skills-monster-slayer
   kind: warband_skill
   runtime:

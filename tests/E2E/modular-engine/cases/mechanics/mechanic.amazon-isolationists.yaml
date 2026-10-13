@@ -1,0 +1,120 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.amazon-isolationists
+# scaffold_fingerprint: 8caa8d430e3d4727c2d792ed87ce4fcb50e2c275673955d20748dcb605794587
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries 3 authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover the first-round reroll of a missed attack against a Lizardmen opponent, the same against a Norse opponent, and the same miss standing when the opponent is outside the printed list.
+# origin_id:
+#   mechanic/mechanic.amazon-isolationists
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   9ca76859f72ae35bd933426f066dd91d8a97d155af82c0672ba308b985ffe9d8
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Re-rolls failed attacks in the first combat round against Lizardmen and Norse.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Shared mechanic contract: the Isolationists effect rerolls failed first-round attacks against Lizardmen or Norse opponents.
+# effect_id:
+#   mechanic.amazon-isolationists
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   This origin is the shared mechanic definition itself; band rules bind to it. Surface reuse candidate: {"family":"M-ISOLATIONISTS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the exact printed target, charge direction, round/phase, weapon prerequisite and supplied-state restriction. Preserve attack floors and first-round resources; a charge-turn bonus is not automatically a first-duel-round-only bonus, and no nearby-group counting is introduced.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The printed target of this shared mechanic is an enemy-identity fact, not a creature kind:
+# the Lizardmen band supplies the band identity the reroll reads, exactly as the Chaotic
+# warband case does for Hatred.  The bearer carries only this mechanic, so the reroll is the
+# only difference from the control below.  A one always misses and a six always hits, which
+# keeps both cases independent of the opponent profile's Weapon Skill, and the supplied wound
+# total keeps the tape on the wound step instead of an injury.
+- audit_id: mechanic/mechanic.amazon-isolationists
+  id: the-first-round-miss-against-lizardmen-is-taken-again
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.amazon-isolationists]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: lizardmen
+      profile_id: skink-braves
+  initial_state:
+    second: {wounds: 3, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit.reroll, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 6}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed list names the Norse as well as the Lizardmen, and the second band supplies only
+# the other identity, so the same first-round reroll is offered there too.
+- audit_id: mechanic/mechanic.amazon-isolationists
+  id: the-first-round-miss-against-norse-is-taken-again
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.amazon-isolationists]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: jarl
+  initial_state:
+    second: {wounds: 3, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit.reroll, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 6}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The control for the clause: an opponent carrying no printed target identity leaves the same
+# declared miss standing, and no reroll die is requested.
+- audit_id: mechanic/mechanic.amazon-isolationists
+  id: the-same-miss-stands-against-an-opponent-outside-the-printed-list
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.amazon-isolationists]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state:
+    second: {wounds: 3, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

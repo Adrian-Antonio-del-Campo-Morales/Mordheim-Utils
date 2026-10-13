@@ -1,0 +1,121 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.sigmar-enlightened
+# scaffold_fingerprint: 534ffc28658d66781f0ac69956c097025127051ea3cbc10881cf4d8f9fe60b63
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover the automatic pass against an Orc opponent and against a Daemon opponent, each with the qualifying opponent supplying the opponent facts and with no Leadership die requested, plus the same Leadership 3 warrior failing the identical test against a Dwarf opponent that qualifies for nothing. Documented gap: the printed clause names Orcs, Goblins and followers of Chaos, while the executor reads the opponent's own tags (species.orc, species.goblin, warband-group.chaotic, nature.daemon, nature.possessed, identity.chaos-follower); nothing in the clause text maps those names to the tags, so each scenario supplies the fact the executor reads and the mapping stays a caller-supplied fact, not an authored decision (leadership.py:33-43).
+# origin_id:
+#   mechanic/mechanic.sigmar-enlightened
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   dcf47fc83620799ca4d29f500c57cc05282fd97407cafbc06425cec78e3991fd
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Automatically passes Leadership tests against Orcs, Goblins or followers of Chaos.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Shared mechanic contract: automatic Leadership pass against explicitly qualified Orc/Goblin/Chaos opponents.
+# effect_id:
+#   mechanic.sigmar-enlightened
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Shared mechanic definition. Surface reuse candidate: {"family":"mechanic.sigmar-enlightened","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare target identities, psychology/animal exceptions, test dice, phase, failure consequence and duration. Charge refusal, inability to attack and loss of one attack are distinct; Crude Belch may remove the only attack. Keep supplied individual consequences separate from group emission.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The marked warrior's own Leadership is 3 and his Stupidity roll of 5,5 would fail,
+# but the opposing Orc is one of the printed qualifying enemies, so the test passes
+# without a die: the declared tape carries no stupidity roll at all and the charge,
+# which a failure cancels, stands.
+- audit_id: mechanic/mechanic.sigmar-enlightened
+  id: an-orc-opponent-is-passed-automatically
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.sigmar-enlightened, mechanic.stupidity]
+      trait_overrides: {species: human}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: orc}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: False, state.first_charged: True, attacks.0.damage: 1,
+        state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# A Daemon opponent is the same automatic pass through the other identity the
+# executor reads, again with no Leadership die declared.
+- audit_id: mechanic/mechanic.sigmar-enlightened
+  id: a-daemon-opponent-is-passed-automatically
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.sigmar-enlightened, mechanic.stupidity]
+      trait_overrides: {species: human}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: daemon}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: False, state.first_charged: True, attacks.0.damage: 1,
+        state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The control: the same warrior and the same enemy Leadership against a Dwarf, who
+# qualifies for nothing, so the test is rolled after all, fails on 5 and 5, and the
+# cancelled charge resolves no attack.
+- audit_id: mechanic/mechanic.sigmar-enlightened
+  id: an-opponent-that-qualifies-for-nothing-forces-the-rolled-test
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.sigmar-enlightened, mechanic.stupidity]
+      trait_overrides: {species: human}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: dwarf}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 5}
+    - {key: round.0.first.stupidity.1, value: 5}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: True, state.first_charged: False,
+        state.engaged: False, state.failed_charges: ['first']}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

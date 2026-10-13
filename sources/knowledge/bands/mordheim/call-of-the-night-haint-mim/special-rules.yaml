@@ -437,13 +437,18 @@ rules:
 - id: tomb-banshee--ghostly-howl
   runtime:
     scope: 'YES'
-    implemented: 'NO'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.tomb-banshee.ghostly-howl
+    - id: fear-test-leadership-penalty
       scope: 'YES'
+      binding: {kind: mechanic, id: mechanic.ghostly-howl}
+    - id: wider-radius-and-other-units
+      scope: 'NO'
       binding: null
-      reason: 'Included individual duel effect, not implemented: Leadership penalty to the duel opponent Fear test; source-specific D6 timing and application remain pending.'
+      reason: >-
+        The printed 6" radius reaches every enemy model on the table; the duel supplies only its two
+        participants, so the effect on any other unit stays outside.
   name: Ghostly Howl
   effect: >-
     Enemies within 6 inches of the Tomb Banshee suffer -D6 to their Leadership when taking fear

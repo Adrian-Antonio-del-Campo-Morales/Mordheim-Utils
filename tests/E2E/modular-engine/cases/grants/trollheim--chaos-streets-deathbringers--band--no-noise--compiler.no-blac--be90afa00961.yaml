@@ -1,0 +1,81 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-deathbringers/band--no-noise/compiler.no-blackpowder-weapons
+# scaffold_fingerprint: 87b8116ae6e980d5acd4254925b7d47701952eaa6cec2525960af3eba4b4a7e1
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying weapon.pistol in main_weapon_id is refused with "blackpowder weapons are forbidden for chaos-streets-deathbringers/shadow-blade", and the same recipient without the item is accepted at construction. The rule applies to the whole band (applies_to.band), so a canonical printed member of the band stands for the printed group named by the contract. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# origin_id:
+#   rule/trollheim/chaos-streets-deathbringers/band--no-noise/compiler.no-blackpowder-weapons
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-deathbringers/special-rules.yaml
+# source_fingerprint:
+#   9567c64ae4c950a69c1595cb1e0f4c49027091197642555a783b0bcb2d1fdab9
+# source_sha256_at_generation:
+#   a1e85e663a8232b4d2114c2431b7a400db58e753da037a543ef2a0307f5d1cbf
+# Printed rule text:
+#   No member of the warband may use blackpowder weapons.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Prohibition: no member of the Deathbringers warband may use blackpowder weapons.
+# effect_id:
+#   compiler.no-blackpowder-weapons
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipients":"deathbringers"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Projectile pistols represented in the duel runtime are tested; shooting stays excluded. Surface reuse candidate: {"family":"C-FORBID","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the actual forbidden categories and recipients. Body-armour-only, all armour, missiles, blackpowder, drugs and poisons are distinct restrictions. Construction legality can affect a melee build even when shooting is excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/trollheim/chaos-streets-deathbringers/band--no-noise/compiler.no-blackpowder-weapons
+  id: shadow-blade-with-compiler-no-blackpowder-weapons-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: shadow-blade
+      main_weapon_id: weapon.pistol
+  expect_error: blackpowder weapons are forbidden for chaos-streets-deathbringers/shadow-blade
+
+- audit_id: rule/trollheim/chaos-streets-deathbringers/band--no-noise/compiler.no-blackpowder-weapons
+  id: shadow-blade-without-compiler-no-blackpowder-weapons-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: shadow-blade
+    second:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: shadow-blade
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

@@ -74,15 +74,15 @@ rules:
     profile_ids:
     - shadow-blade
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-deathbringers.shadow-blade.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: shadow-blade--fade-into-shadows
   name: Fade Into the Shadows
   effect: >-

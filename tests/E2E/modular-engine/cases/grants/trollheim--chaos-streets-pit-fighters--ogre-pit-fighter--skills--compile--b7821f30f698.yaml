@@ -1,0 +1,128 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-pit-fighters/ogre-pit-fighter--skills/compiler.promoted-hero-skill-access
+# scaffold_fingerprint: baedee1e9b801c2ff55237f872f0bacb721a988e6e0c56f6b990aa17ff31b8f4
+# authoring_status: AUTHORED
+# authoring_progress: the admitted promotion-access clause now carries 3 authored scenarios (refusal of a
+#   Strength skill for the unpromoted Ogre, acceptance of the same skill for the promoted Ogre, and refusal
+#   of a skill outside the three printed lists), mirroring the corrected Mordheim origin of this contract.
+#   The blocker recorded below was FALSE and is corrected in the clause note.
+# SUPERSEDED PROGRESS (provenance only): no scenario is derived for the admitted promotion-access clause yet.  The promoted
+# recipient - the only one the printed sentence speaks about - IS expressible as a supplied fact: the
+# runner's build vocabulary converts variant_ids and FighterBuild carries the field (models.py documents
+# "promotion.hero is a supplied local Hero result"), and _eligibility.js::buildAccess reads
+# build.variant_ids.includes("promotion.hero") before adding the binding's allowed_skill_lists.  What is
+# missing is an observation: the access set that branch feeds is consumed by the access/choice projection,
+# while the only construction refusal over supplied skill ids is the shared one
+# ("skills are not available to <band>/<profile>: [...]"), which tests each skill against a neutral
+# profile and therefore reports identically for the promoted and the unpromoted Ogre.  No case in this
+# corpus observes an access projection, so neither the admission of the printed Combat, Strength and
+# Special lists nor the refusal of a skill outside them can be evidenced.  REVIEWED still requires manual
+# semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios evidence the printed comprehension through the shared access stage, mirroring
+# the corrected Mordheim origin of this same contract (rule/mordheim/pit-fighters/ogre-pit-fighter--skills).
+# (1) the unpromoted Ogre declaring a Strength skill is refused with the shared template; (2) the same skill
+# on the build declared with `variant_ids: [promotion.hero]` is accepted at construction; (3) the promoted
+# Ogre declaring a skill outside the three printed lists is refused.
+#   CORRECTION (closing review): the blocker this file recorded - "the only construction refusal tests each
+# skill against a neutral profile and therefore reports identically for the promoted and the unpromoted
+# Ogre" - is FALSE.  packages/python/roster-construction/mordheim_construction/_eligibility.js::buildAccess
+# returns {equipment, skills} and adds the binding's allowed_skill_lists to that access set only for a
+# promoted build (profile.type hero or build.variant_ids containing promotion.hero); the stage that emits
+# "skills are not available to <band>/<profile>: [...]" builds its neutral profile as skill_access =
+# access.skills from that same access set, so the supplied skill_ids DO distinguish the two builds.  The
+# supplied promotion fact is expressible: runner.py::_build converts variant_ids and FighterBuild carries
+# the field (models.py documents "promotion.hero is a supplied local Hero result").  The KB row is the
+# profile-granted compiler.promoted-hero-skill-access of
+# bands/trollheim/chaos-streets-pit-fighters/special-rules.yaml (allowed_skill_lists combat/strength/special).
+#   SUPERSEDED HISTORY (provenance only): pending requirement named exactly: a duel-observable of the
+# skill-access projection - a refusal keyed on the build's accessible skill lists, or an access observation
+# in the runner vocabulary; with the supplied promoted-recipient fact in place the printed clause itself is
+# representable, only the observation was held absent, so no tape was written.
+# origin_id:
+#   rule/trollheim/chaos-streets-pit-fighters/ogre-pit-fighter--skills/compiler.promoted-hero-skill-access
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-pit-fighters/special-rules.yaml
+# source_fingerprint:
+#   e5a4daf3c5fa1e72c8bdc38e820a6c05be20d202cc8014b415ef36921b79d586
+# source_sha256_at_generation:
+#   f4e29e8d48c3d995458d7577adad6618e309358e5df77d4d6760fcbf720a73a7
+# Printed rule text:
+#   If the Ogre Pit Fighter becomes a Hero through The Lad's Got Talent, it may choose Combat, Strength and Pit Fighter Special Skills.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Promotion access: a promoted Ogre Pit Fighter may choose Combat, Strength and its editorial Special list.
+# effect_id:
+#   compiler.promoted-hero-skill-access
+# relation:
+#   equivalent
+# parameters:
+#   {"allowed_skill_lists":["combat","strength","special"]}
+# conditions:
+#   {"recipient":"promoted ogre pit fighter"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   New origin, same parameter set as the Mordheim Pit Fighter origin. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The skill lists allowed to the promoted Ogre are construction skill access; the Lad's Got Talent promotion event itself is campaign and is not what this clause states.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the shared access stage; the refusal message
+# is that stage's template verbatim.
+- audit_id: rule/trollheim/chaos-streets-pit-fighters/ogre-pit-fighter--skills/compiler.promoted-hero-skill-access
+  id: the-unpromoted-ogre-pit-fighter-may-not-take-a-strength-skill
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: ogre-pit-fighter
+      skill_ids: [skill.mighty-blow]
+  expect_error: "skills are not available to chaos-streets-pit-fighters/ogre-pit-fighter: ['skill.mighty-blow']"
+
+- audit_id: rule/trollheim/chaos-streets-pit-fighters/ogre-pit-fighter--skills/compiler.promoted-hero-skill-access
+  id: the-promoted-ogre-pit-fighter-may-take-a-strength-skill
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: ogre-pit-fighter
+      variant_ids: [promotion.hero]
+      skill_ids: [skill.mighty-blow]
+    second:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: ogre-pit-fighter
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out
+
+- audit_id: rule/trollheim/chaos-streets-pit-fighters/ogre-pit-fighter--skills/compiler.promoted-hero-skill-access
+  id: the-promoted-ogre-pit-fighter-may-not-take-a-skill-outside-the-printed-lists
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: ogre-pit-fighter
+      variant_ids: [promotion.hero]
+      skill_ids: [skill.arcane-lore]
+  expect_error: "skills are not available to chaos-streets-pit-fighters/ogre-pit-fighter: ['skill.arcane-lore']"

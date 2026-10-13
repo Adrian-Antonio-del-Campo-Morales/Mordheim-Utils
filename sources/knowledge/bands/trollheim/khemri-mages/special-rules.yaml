@@ -218,15 +218,15 @@ rules:
     profile_ids:
     - mechanical-beast
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.khemri-mages.mechanical-beast.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: mechanical-beast--immune-to-poison
   runtime:
     scope: 'YES'

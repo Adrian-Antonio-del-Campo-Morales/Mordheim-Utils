@@ -1,0 +1,160 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.spear
+# scaffold_fingerprint: 57c73925e50b9c3f53a3b6803d6f63f3f10a0f6269e6173793bc45dc6913f8cd
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries five authored scenarios for the strike-first priority with its expiry and the permitted buckler plus one refusal for any other off hand. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 5 scenarios and 1 refusal cover the first-round strike-first (including while charged) with its expiry, and the printed shield-or-buckler off hand.
+# origin_id:
+#   mechanic/weapon.spear
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   5cf601b61aa7fd1e898f0e849dff8dff4fa0d68282128da4b2e71f67549039c2
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Strikes first in the first round of close combat, even if charged; may only be combined with a shield or buckler.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Spear strikes first in the first round of close combat, even when charged, and may only be combined with a shield or buckler. Closure: priority 1 in the first round only and the off hand limited to shield/buckler.
+# effect_id:
+#   weapon.spear
+# relation:
+#   equivalent
+# parameters:
+#   {"priority": 1}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. resolve_priority zeroes the spear priority outside the first round; that first-round scope is the explicit source ruling recorded in the engine comment. Surface reuse candidate: {"family":"W-weapon.spear","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare source-specific weapon/alias identity and each mode or clause. Retain mounted/charge conditions, parry limits, dagger/armour effect, poison coating, active hand allocation and local overrides. The magical Misericordia injury chart is not the ordinary dagger variant; a counts-as alias does not inherit every local extension.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/weapon.spear - strikes first in the first round of close combat even
+# if charged, and only combines with a shield or a buckler.
+#
+# Expectations come from the printed rule and the admitted clause `whole`, never
+# from engine output.  The charged scenario is the printed exception: the bearer
+# opens the round even though the enemy charged.
+# Neither fighter charges, so only the printed strike-first priority can lift the lower-Initiative bearer above the defender.
+
+- audit_id: mechanic/weapon.spear
+  id: spear-strikes-first-in-the-first-round
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.spear
+      characteristics: &a-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# The printed clause scopes Strike First to the first round even if charged: the tape opens with the bearer even though the enemy is the charging fighter.
+
+- audit_id: mechanic/weapon.spear
+  id: spear-strikes-first-even-when-charged
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.spear
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# The printed strike-first is scoped to the first round of the close combat: the second round's tape opens with the higher-Initiative defender.
+
+- audit_id: mechanic/weapon.spear
+  id: spear-stops-striking-first-after-the-first-round
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.spear
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+    1: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.1.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.1.first.attack.0.hit, sides: 6, value: 1}
+# The printed shield-or-buckler restriction is declared as a refusal.
+
+- audit_id: mechanic/weapon.spear
+  id: spear-is-refused-with-an-off-hand-weapon
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.spear
+      off_hand_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "weapon.spear cannot be combined with weapon.dagger"
+# Control: the same spear with the permitted buckler compiles and resolves a round.
+
+- audit_id: mechanic/weapon.spear
+  id: spear-is-accepted-with-a-buckler
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.spear
+      off_hand_id: defence.buckler
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

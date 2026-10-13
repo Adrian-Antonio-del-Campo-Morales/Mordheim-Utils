@@ -1430,13 +1430,31 @@ profiles:
       es: Marcas de Morr
     runtime:
       grant: selectable
-      scope: LATER
+      scope: 'YES'
       implemented: 'NO'
       effects:
-      - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.marks-of-morr.pending-duel
-        scope: LATER
+      - id: mechanic.psychology-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.psychology-immunity
+      - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.marks-of-morr.augur-one-roll-reroll.pending
+        scope: 'YES'
         binding: null
-        reason: The remaining individual source clause or its canonical item/starting-skill dependency is not yet implemented; retain the existing T13 source question and owning lot.
+        reason: 'Retained individual clause: The selected Augur may spend one resource to reroll one roll he makes during the duel, keeping the rerolled result. The resource is shared across eligible roll points; it never rerolls a reroll.'
+      - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.marks-of-morr.augur-strength-reduction.pending
+        scope: 'YES'
+        binding: null
+        reason: 'Retained individual clause: Compile a selected Augur with Strength one lower before the duel. Observable: all its melee Strength calculations start from the reduced characteristic; no repeated per-turn subtraction.'
+      - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.marks-of-morr.haunted-mien-strictures.pending
+        scope: 'YES'
+        binding: null
+        reason: 'Retained individual clause: A Priest with the supplied Haunted Mien choice no longer receives the Priest strictures restricting equipment. Observable: a choice forbidden solely by those strictures is allowed for Haunted Mien but remains refused for an ordinary Priest or Augur, subject to all other legality rules.'
+      - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.marks-of-morr.haunted-mien-skill-access.pending
+        scope: 'YES'
+        binding: null
+        reason: 'Retained individual clause: The supplied Haunted Mien build has Combat and Strength skill access. Observable: the shared decision offers and validates a legal skill from either category for that build, preserving other choice limits.'
+    kind: warband_skill
   source_refs:
   - manual: liber-malefic
     printed_page: 5

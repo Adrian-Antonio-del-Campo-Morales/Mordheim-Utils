@@ -17,6 +17,12 @@ def fears_opponent_fire(fighter: CompiledFighter, enemy: CompiledFighter) -> boo
 
 
 def causes_fear(fighter: CompiledFighter, enemy: CompiledFighter) -> bool:
+    if (phases.has_tag(enemy.global_effects, "mechanic.fear-of-elves")
+            and any(phases.has_tag(fighter.global_effects, tag) for tag in ("species.high-elf", "species.dark-elf", "species.wood-elf"))):
+        return True
+    if (phases.has_tag(fighter.global_effects, "mechanic.fear-beastmen")
+            and phases.has_tag(enemy.global_effects, "species.beastman")):
+        return True
     if (phases.has_tag(fighter.global_effects, "mechanic.morrs-servant")
             and phases.has_tag(enemy.global_effects, "nature.undead")):
         return True
@@ -106,6 +112,12 @@ def resolve_fear(
                 and phases.has_tag(fighters[index].global_effects, "nature.undead"))
 
     def needs_test(index):
+        enemy = fighters[1 - index]
+        if (charges[index] and phases.has_tag(fighters[index].global_effects, "mechanic.ere-we-go")):
+            return False
+        if (phases.has_tag(fighters[index].global_effects, "mechanic.accustomed-to-fear")
+                and any(phases.has_tag(enemy.global_effects, tag) for tag in ("identity.zombie", "identity.skeleton", "identity.vampire"))):
+            return False
         if morrs_servant(index):
             # This source expressly overrides Undead Psychology exemptions.
             return states[index].condition == phases.Condition.STANDING and states[1 - index].active
@@ -126,7 +138,7 @@ def resolve_fear(
             fighters[index], replace(state, first=states[0], second=states[1]), dice, decisions,
             f"round.0.{label}.fear.{suffix}", first=index == 0,
             psychology=ordinary_fear, fear=ordinary_fear,
-            opponent=fighters[1 - index], return_state=True)
+            opponent=fighters[1 - index], return_state=True, contacting=suffix != "charge")
         return passed
 
     # A voluntary charge must succeed before contact/charged reactions exist.

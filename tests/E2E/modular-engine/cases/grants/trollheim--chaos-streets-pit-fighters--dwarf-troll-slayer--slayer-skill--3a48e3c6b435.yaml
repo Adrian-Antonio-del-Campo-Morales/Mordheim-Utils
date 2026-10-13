@@ -1,0 +1,117 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-pit-fighters/dwarf-troll-slayer--slayer-skill-options/compiler.slayer-skill-options
+# scaffold_fingerprint: 47fc526e3c135d5dda7bb40490c4e5e31254140bd23d6cea2369d25cddded752
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries three authored scenarios derived from the printed
+# sentence, the recorded contract and the accepted editorial specification
+# tests/specs/semantic/grants/trollheim-slayer-skill-options.yaml, whose accepted case names the exact
+# union of the three lists for this recipient: rows of the three named lists are accepted on the Dwarf
+# Troll Slayer together and one at a time, while the same Dwarf list row supplied to the band's ordinary
+# Pit Fighters profile - which the clause does not cover - is refused with the shared eligibility message.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios evidence the printed join.  Two builds of the printed dwarf-troll-slayer
+# profile are accepted: one carrying a Dwarf list row, a Pit Fighter list row and a Slayer list row at the
+# same time (the three lists join without replacing one another), and one carrying a single Dwarf list row
+# (the dwarf list is part of the union on its own).  The control supplies the same Dwarf list row to the
+# band's ordinary Pit Fighters profile, which the clause does not cover, and the shared eligibility stage
+# refuses it; the refusal fragment is quoted verbatim from _eligibility.js::specialRuleRestriction.  Both
+# accepted builds suppress the attack pools, so the accepted construction is the only thing the round
+# shows.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/chaos-streets-pit-fighters/dwarf-troll-slayer--slayer-skill-options/compiler.slayer-skill-options
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-pit-fighters/special-rules.yaml
+# source_fingerprint:
+#   596db4253c90810813720f4565f943e3c0db3eee4135bea0743c34201e136d7e
+# source_sha256_at_generation:
+#   f4e29e8d48c3d995458d7577adad6618e309358e5df77d4d6760fcbf720a73a7
+# Printed rule text:
+#   Whenever the Dwarf Troll Slayer gains a new skill, he may choose from Dwarf Treasure Hunter Special Skills, Pit Fighter Special Skills or Troll Slayer Special Skills.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Access grant: the Dwarf Troll Slayer may choose from the three named special lists joined together.
+# effect_id:
+#   compiler.slayer-skill-options
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipient":"dwarf-troll-slayer","lists":["dwarf-treasure-hunter","pit-fighter","troll-slayer"]}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Three lists join without replacing one another. Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the accepted editorial specification for
+# this origin; no engine output was consulted.  The joined access is a construction fact, so the
+# observable is that the build compiles and its round runs instead of being refused.
+- audit_id: rule/trollheim/chaos-streets-pit-fighters/dwarf-troll-slayer--slayer-skill-options/compiler.slayer-skill-options
+  id: the-three-named-lists-are-accepted-together
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+      special_rule_ids:
+      - band--dwarf-special-skills-thick-skull
+      - band--pit-fighter-skill-force-of-will
+      - band--slayer-special-skills-berserker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls: []
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The dwarf list is one of the three joined lists, so the same recipient carries its row alone without
+# being refused: the join adds lists, it does not require all of them.
+- audit_id: rule/trollheim/chaos-streets-pit-fighters/dwarf-troll-slayer--slayer-skill-options/compiler.slayer-skill-options
+  id: the-dwarf-list-row-is-accepted-on-its-own
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: dwarf-troll-slayer
+      special_rule_ids: [band--dwarf-special-skills-thick-skull]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls: []
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the band's ordinary Pit Fighters profile is not the recipient the printed clause names, so
+# the same Dwarf list row is refused there with the shared eligibility message (template
+# "special rule is not available to <band>/<profile>: <rule id>" from _eligibility.js).
+- audit_id: rule/trollheim/chaos-streets-pit-fighters/dwarf-troll-slayer--slayer-skill-options/compiler.slayer-skill-options
+  id: an-uncovered-profile-is-refused-the-dwarf-list-row
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: pit-fighters
+      special_rule_ids: [band--dwarf-special-skills-thick-skull]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  expect_error: "special rule is not available to chaos-streets-pit-fighters/pit-fighters: band--dwarf-special-skills-thick-skull"

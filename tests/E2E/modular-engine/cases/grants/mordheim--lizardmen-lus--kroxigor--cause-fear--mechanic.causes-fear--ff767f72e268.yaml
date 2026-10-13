@@ -1,0 +1,109 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/lizardmen-lus/kroxigor--cause-fear/mechanic.causes-fear
+# scaffold_fingerprint: 259c5089912d29144e7177c3d0c0b1f82a595d95884a1aedb0680861002f654c
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored scenarios for the two
+#   faces of the charged opponent's Leadership test: a failure that leaves it hitting
+#   only with sixes for that round, and a success that leaves it fighting normally.
+#   REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: cause-fear (scope: YES)
+# AUTHORED[cause-fear]: 2 scenarios cover the printed consequence for the warrior that is
+#   charged by the Kroxigor: after a failed Leadership test its hit roll of 4 -- a roll
+#   that beats its ordinary target against Weapon Skill 3 -- wounds nothing, while the
+#   same roll after a passed test wounds on its ordinary target.  The cancelled
+#   voluntary charge, the one-test-per-pairing rule, and the listed exceptions
+#   (opponent that causes Fear, immune to Psychology or Fear, or Frenzied) are not
+#   asserted here: the first is a charge-flag consequence rather than a wound
+#   outcome, and the exceptions need a second Fear-causer or an immunity build this
+#   file does not declare, so they stay unclaimed rather than assumed.
+# origin_id:
+#   rule/mordheim/lizardmen-lus/kroxigor--cause-fear/mechanic.causes-fear
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/lizardmen-lus/special-rules.yaml
+# source_fingerprint:
+#   e17fe1a00321b04b1ce799340415bf68155a7b6ec88fb9f4396d374ccf0a03d7
+# source_sha256_at_generation:
+#   1f3734be0bdd364b1db4a6fdd021daf593fe0dd12043b32b3b8a69e9ddc633bf
+# Printed rule text:
+#   Kroxigor are large and frightening monsters and cause Fear.
+# Semantic contract (check analysis_status before treating as accepted):
+#   This warrior causes Fear. Observable: in the initial round, an opposing warrior that volunteers a charge must first pass a Leadership test or the charge is cancelled; one that is charged must pass it or can hit only with sixes for that combat round.
+# effect_id:
+#   mechanic.causes-fear
+# relation:
+#   equivalent
+# parameters:
+#   {"value":true}
+# conditions:
+#   {"trigger":"initial round, the opponent charges or is charged by this warrior","resolution":"opponent Leadership test before a voluntary charge or after being charged","consequence":"cancelled voluntary charge, or sixes-to-hit for that combat round","recipient":"the opposing warrior","duration":"that combat round only","stacking":"one test per fighter pairing; no cumulative effect","exceptions":"skipped by an opponent that causes Fear, is immune to Psychology or Fear, or is Frenzied"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Canonical per-warrior Fear (mechanic.causes-fear). psychology.causes_fear declares the threat and psychology.resolve_fear resolves the round-0 test; the printed sentence is a band-specific synonym with no extra clause. Surface reuse candidate: {"family":"mechanic.causes-fear","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded semantic contract; no engine
+# output was consulted.  The Kroxigor charges, so the charging warrior is the
+# Kroxigor and the charged opponent is the one the Fear clause tests: its two
+# Leadership dice are declared first, summed against the Leadership 7 the
+# hand-built opponent declares.  The opponent's Weapon Skill equals the
+# Kroxigor's, so its ordinary hit target is 4+ and its Strength 3 needs 5+ against
+# the Kroxigor's Toughness 4, with the printed 4+ Scaly Skin save declaring its own
+# die.  The Kroxigor's three attacks are scripted as natural 1s so the round shows
+# only what the Fear clause does to the opponent.
+
+- audit_id: rule/mordheim/lizardmen-lus/kroxigor--cause-fear/mechanic.causes-fear
+  id: a-charged-opponent-that-fails-its-fear-test-hits-only-with-sixes
+  covers: [cause-fear]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: lizardmen-lus, profile_id: kroxigor, main_weapon_id: weapon.halberd}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 5}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.2.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/lizardmen-lus/kroxigor--cause-fear/mechanic.causes-fear
+  id: a-charged-opponent-that-passes-its-fear-test-fights-normally
+  covers: [cause-fear]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: lizardmen-lus, profile_id: kroxigor, main_weapon_id: weapon.halberd}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 3}
+    - {key: round.0.first.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.2.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

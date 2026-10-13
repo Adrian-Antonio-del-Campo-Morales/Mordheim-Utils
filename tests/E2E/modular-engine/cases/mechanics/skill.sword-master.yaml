@@ -1,0 +1,198 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.sword-master
+# scaffold_fingerprint: bfbe8edc5ec80686edaee1584ca2f7561e425cbc648c2ae534c1812203256747
+# authoring_status: PARTIAL
+# authoring_progress: the reroll clause carries three authored scenarios and the equality half of the match clause carries two, including its boundary against a plain parry; the printed parry of a natural six cannot be assigned to this clause without deciding the recorded source-versus-contract conflict (see that clause note). REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: match-parry-and-parry-a-six (scope: YES)
+# PARTIAL[match-parry-and-parry-a-six]: 2 scenarios evidence the equality half (an equal parry die blocks an attack that a plain parry would let through, and the same equal die fails without the skill). The printed second half, "may therefore parry a roll of 6", is NOT represented. The blocker is not the vocabulary - a defender that parries a six is reachable and authored in the killing-blow clause through the admitted special rule band--blood-dragon-power-sword-master - but the assignment of the gate to an identity: the executor reads can_parry_six from the tag rule.blood-dragon-sword-master alone (contexts.py `_parry_context`, mirrored in pools.py and the native port), while this clause's own recorded parameters declare can_parry_six=true for skill.sword-master, and the compiler maps the Blood Dragon editorial variant onto the separate tag (compiler.py, the parry_variant table next to band--dwarf-special-skills-master-of-blades). Unresolved source-versus-contract conflict kept, not decided here: the printed text attributes the six-parry to this skill itself, the implementation attributes it to a different admitted tag, and a scenario asserting either reading would silently adopt one. The datum still missing for this clause is the decision (or the consumer change) that fixes which identity carries the six-parry; the two candidate tags and their evidence are named above.
+# origin_id:
+#   mechanic/skill.sword-master
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   259fd4c361891b7cc09cbe2e30bb26ec9c235e7c1a8b9604f3259237518e8101
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   When parrying, the Vampire only needs to equal the opponent's roll and may therefore parry a roll of 6. The Vampire may also re-roll one failed parry, but may not re-roll the re-roll and may not parry more than one attack.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The vampire only needs to equal the opponent's roll and may therefore parry a natural 6; observable: a parry roll equal to the hit roll blocks, including against a 6.
+# effect_id:
+#   skill.sword-master
+# relation:
+#   equivalent
+# parameters:
+#   {"can_parry_six":true,"match_allowed":true}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The equality half is consumed by the match allowance and the parry-a-six half by the dedicated blood-dragon flag, which is read in the parry eligibility test. Surface reuse candidate: {"family":"skill.sword-master","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: one-reroll-only (scope: YES)
+# AUTHORED[one-reroll-only]: 3 scenarios cover a failed parry recovered by the single reroll, the same failure with a reroll that also fails and no second reroll die in the tape, and the plain parry without the skill, which is offered no reroll at all.
+# origin_id:
+#   mechanic/skill.sword-master
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   259fd4c361891b7cc09cbe2e30bb26ec9c235e7c1a8b9604f3259237518e8101
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   When parrying, the Vampire only needs to equal the opponent's roll and may therefore parry a roll of 6. The Vampire may also re-roll one failed parry, but may not re-roll the re-roll and may not parry more than one attack.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The vampire may re-roll one failed parry but not the re-roll, and may not parry more than one attack; observable: a single reroll and a single attempt per phase.
+# effect_id:
+#   skill.sword-master
+# relation:
+#   equivalent
+# parameters:
+#   {"attempts":1,"rerolls":1}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The parry resolution rolls at most one reroll, and the capacity stays at one attempt because this fighter has no two-parry skill. Surface reuse candidate: {"family":"skill.sword-master","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/skill.sword-master — every expectation below comes from the printed
+# rule (the Vampire only needs to equal the opponent's roll; it may re-roll one
+# failed parry but not the re-roll, and may not parry more than one attack) and
+# the recorded contract, never from engine output.  The defender parries with a
+# buckler so the parry window exists; equality and the single reroll are then
+# read off the declared tape.
+- audit_id: mechanic/skill.sword-master
+  id: an-equal-parry-die-blocks-the-attack
+  covers: [match-parry-and-parry-a-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+      skill_ids: [skill.sword-master]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The boundary of the printed equality: the same die against the same parry
+# window without the skill does not block, so the attack is resolved.
+- audit_id: mechanic/skill.sword-master
+  id: without-the-skill-an-equal-parry-die-does-not-block
+  covers: [match-parry-and-parry-a-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, state.second.parries_remaining: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed single reroll recovers a failed attempt: the first parry die is
+# below the hit and the reroll meets the printed equality, so the hit is blocked.
+- audit_id: mechanic/skill.sword-master
+  id: the-single-reroll-recovers-a-failed-parry
+  covers: [one-reroll-only]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+      skill_ids: [skill.sword-master]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.parry.reroll, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed refusal to re-roll the re-roll: the recovery die also fails and no
+# further parry die appears in the tape, so the wound is resolved.
+- audit_id: mechanic/skill.sword-master
+  id: a-failed-reroll-is-not-rolled-again
+  covers: [one-reroll-only]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+      skill_ids: [skill.sword-master]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.parry.reroll, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The contrast: a plain parry that fails is offered no recovery die at all.
+- audit_id: mechanic/skill.sword-master
+  id: without-the-skill-a-failed-parry-is-not-rerolled
+  covers: [one-reroll-only]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

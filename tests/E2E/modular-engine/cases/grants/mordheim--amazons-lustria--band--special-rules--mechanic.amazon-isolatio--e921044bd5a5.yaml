@@ -1,0 +1,206 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/amazons-lustria/band--special-rules/mechanic.amazon-isolationists
+# scaffold_fingerprint: 68a2adebcca9349815b004a02c1b1b8356ffff5daba5f4e510cca588bfbeb86b
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED. The other three printed clauses of this rule text are out of the admitted scope and stay as context, as their own clause lines state.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: isolationists (scope: YES)
+# AUTHORED[isolationists]: 3 scenarios cover the first-round reroll of a missed attack
+#   against a Lizardmen opponent, the same against a Norse opponent, and the same miss
+#   standing when the opponent is outside the printed list.
+# origin_id:
+#   rule/mordheim/amazons-lustria/band--special-rules/mechanic.amazon-isolationists
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/amazons-lustria/special-rules.yaml
+# source_fingerprint:
+#   4889bde37f7bd3a3e3b5fb2b874e485d2f41c222752f718263b102978b38accb
+# source_sha256_at_generation:
+#   d28bfbb2e7601a679cb5acc6d70f7aa00ef9c953d7f1acfe2a7775e6fa40f281
+# Printed rule text:
+#   Amazons get to re-roll any attack rolls that miss in the first round of combat against Lizardmen and Norse.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Individual first-round hit reroll: an Amazon may reroll missed to-hit rolls in the first combat round when the opponent is a Lizardman or a Norse.
+# effect_id:
+#   mechanic.amazon-isolationists
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"window":"first-combat-round","opponent_qualifiers":["Lizardmen","Norse"]}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The rule text bundles four clauses; only Isolationists is an admitted duel effect, the other three are recorded separately below. Surface reuse candidate: {"family":"M-ISOLATIONISTS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the exact printed target, charge direction, round/phase, weapon prerequisite and supplied-state restriction. Preserve attack floors and first-round resources; a charge-turn bonus is not automatically a first-duel-round-only bonus, and no nearby-group counting is introduced.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: norse-enmity (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/amazons-lustria/band--special-rules/mechanic.amazon-isolationists
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/amazons-lustria/special-rules.yaml
+# source_fingerprint:
+#   4889bde37f7bd3a3e3b5fb2b874e485d2f41c222752f718263b102978b38accb
+# source_sha256_at_generation:
+#   d28bfbb2e7601a679cb5acc6d70f7aa00ef9c953d7f1acfe2a7775e6fa40f281
+# Printed rule text:
+#   When facing a Norse Warband an Amazon Warband will fight to the death.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Warband Rout tests, forced continuation and voluntary-rout prohibition are group Rout mechanics outside the duel scope.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Individual first-failed-Rout reroll is still group-level; excluded with the producer. Coordinator disposition: this printed clause has a resolved 1v1 exclusion; it is not queued for implementation or a future scope decision. Source metadata reconciliation is separate from duel behaviour.
+#
+# Clause: not-one-of-us (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/amazons-lustria/band--special-rules/mechanic.amazon-isolationists
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/amazons-lustria/special-rules.yaml
+# source_fingerprint:
+#   4889bde37f7bd3a3e3b5fb2b874e485d2f41c222752f718263b102978b38accb
+# source_sha256_at_generation:
+#   d28bfbb2e7601a679cb5acc6d70f7aa00ef9c953d7f1acfe2a7775e6fa40f281
+# Printed rule text:
+#   The Amazons may not have any Hired Swords or Dramatis Personae unless they are Amazons themselves.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Roster hiring restriction belonging to the shared eligibility/campaign construction, not an admitted duel effect.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   A real restriction but owned by construction; the duel contract does not model hireling hiring. Coordinator disposition: this printed clause has a resolved 1v1 exclusion; it is not queued for implementation or a future scope decision. Source metadata reconciliation is separate from duel behaviour. Scope review integration: {"clause_id":"not-one-of-us","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Which Hired Swords and Dramatis Personae may be hired is a warband roster rule, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+#
+# Clause: sacrifice (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/amazons-lustria/band--special-rules/mechanic.amazon-isolationists
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/amazons-lustria/special-rules.yaml
+# source_fingerprint:
+#   4889bde37f7bd3a3e3b5fb2b874e485d2f41c222752f718263b102978b38accb
+# source_sha256_at_generation:
+#   d28bfbb2e7601a679cb5acc6d70f7aa00ef9c953d7f1acfe2a7775e6fa40f281
+# Printed rule text:
+#   The Amazons follow the rules for Possessed in the Rulebook when it comes to captives.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Captives and post-battle sacrifice are campaign acquisition/aftermath, outside the 1v1 duel runtime.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Excluded producer clause; retained for coverage with no duel consumer. Coordinator disposition: this printed clause has a resolved 1v1 exclusion; it is not queued for implementation or a future scope decision. Source metadata reconciliation is separate from duel behaviour.
+
+# --- Authored scenarios ---
+# The printed target is an enemy-identity fact, not a creature kind: the opponent is
+# built from the band that carries the identity.  A one always misses and a six always
+# hits, which keeps both cases independent of the opponent's Weapon Skill.
+- audit_id: rule/mordheim/amazons-lustria/band--special-rules/mechanic.amazon-isolationists
+  id: the-first-round-miss-against-lizardmen-is-taken-again
+  covers: [isolationists]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.amazon-isolationists]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: lizardmen
+      profile_id: skink-braves
+  initial_state:
+    second: {wounds: 3, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit.reroll, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 6}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed list names the Norse as well, and the second band supplies only that other
+# identity, so the same first-round reroll is offered there too.
+- audit_id: rule/mordheim/amazons-lustria/band--special-rules/mechanic.amazon-isolationists
+  id: the-first-round-miss-against-norse-is-taken-again
+  covers: [isolationists]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.amazon-isolationists]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: jarl
+  initial_state:
+    second: {wounds: 3, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit.reroll, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 6}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The control: an opponent carrying no printed target identity leaves the same declared
+# miss standing, and no reroll die is requested.
+- audit_id: rule/mordheim/amazons-lustria/band--special-rules/mechanic.amazon-isolationists
+  id: the-same-miss-stands-against-an-opponent-outside-the-printed-list
+  covers: [isolationists]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.amazon-isolationists]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state:
+    second: {wounds: 3, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

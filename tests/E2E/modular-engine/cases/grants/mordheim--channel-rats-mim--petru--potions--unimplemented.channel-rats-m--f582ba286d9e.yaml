@@ -1,0 +1,56 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/channel-rats-mim/petru--potions/unimplemented.channel-rats-mim.petru.potions
+# scaffold_fingerprint: 96f77ff67240469d5c00ac502ab4bb743a7150f4688b2b922dfdd30b507969b0
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is authored for the admitted clause: the printed draught table is a
+# pre-battle random preparation with no operator, so the granted statistic cannot be declared.  The
+# exact missing representation is named in the clause note below.  REVIEWED still requires manual
+# semantic review and execution_status stays UNEXECUTED.
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: random-pre-battle-potion (scope: YES)
+# PARTIAL[random-pre-battle-potion]: [C] the printed sentence is a pre-battle draw (1 Debilitating -1 T
+# until a 6 in the recovery phase, 2-3 +1 S, 4-5 +1 T, 6 an extra wound for the battle) whose
+# consequence is an admitted supplied condition of one duelist.  The record states its own gap: the
+# KB row is an unimplemented placeholder, "the potion table has no operator", and the work is recorded
+# as deferred product work for a preparations batch.  The missing representation is an operator that
+# applies the drawn draught as a supplied condition of the fighter (the characteristic bonus or the
+# extra Wound) plus the recovery-phase escape roll it prints; the runner can already supply initial
+# characteristics and an initial Wound value, but writing a scenario that way would show the runner's
+# own override rather than the rule, because no die in the duel is drawn from the table.  The
+# pre-battle choice among the warband's Heroes and the printed prices are campaign inputs, not duel
+# consequences.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/channel-rats-mim/petru--potions/unimplemented.channel-rats-mim.petru.potions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/channel-rats-mim/special-rules.yaml
+# source_fingerprint:
+#   30206bdb48401b8a0ec91d06b8d5a5696fc1f0dc86dbc4446600302d51b2faaf
+# source_sha256_at_generation:
+#   172af5d984aa411ff17433343c1bf1c59ed4d08c382f7bdbd128bbce66bbe4ba
+# Printed rule text:
+#   Offering curatives through supplying suspicious potions, the Petru carries assorted philtres for the purpose of remedial thaumaturgy. A single Hero in the warband may chance upon the Petru before battle to risk one of these vitalogist wares. Roll a D6 to discover the draught's effect: 1 Debilitating (-1 Toughness for the whole of the next battle until they roll a 6 on a D6 in the recovery phase to shrug off the ill effects); 2-3 Strength (+1 Strength bonus until he rolls a 1 on a D6 in the recovery phase); 4-5 Resilience (+1 Toughness until he rolls a 1 on a D6 in the recovery phase); 6 Fortitude (gains an extra wound for the whole battle; once lost the wound cannot be restored).
+# Semantic contract (check analysis_status before treating as accepted):
+#   The draught grants a current bonus of one duelist for the whole battle (-1/+1 S, +1 T, extra wound) with recovery-phase rolls to shrug it off; that is an admitted supplied condition of a fighter. Printed clause: Offering curatives through supplying suspicious potions, the Petru carries assorted philtres for the purpose of remedial thaumaturgy. A single Hero in the warband may chance upon the Petru before battle to risk one of these vitalogist wares. Roll a D6 to discover the draught's effect: 1 Debilitating (-1 Toughness for the whole of the next battle until they roll a 6 on a D6 in the recovery phase to shrug off the ill effects); 2-3 Strength (+1 Strength bonus until he rolls a 1 on a D6 in the recovery phase); 4-5 Resilience (+1 Toughness until he rolls a 1 on a D6 in the recovery phase); 6 Fortitude (gains an extra wound for the whole battle; once lost the wound cannot be restored).
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Pre-battle random preparation with a recovery-phase escape roll; the KB record is an unimplemented placeholder and the potion table has no operator. Not admitted silently: recorded as deferred product work for a preparations batch. Scope review integration: {"clause_id":"random-pre-battle-potion","review_clause_id":"random-pre-battle-potion","source_state":"matched","review_status":"reviewed","scope_reason":"The draught grants a current bonus of one duelist for the whole battle (-1/+1 S, +1 T, extra wound) with recovery-phase rolls to shrug it off; that is an admitted supplied condition of a fighter.","notes":"The pre-battle draw and the choice among the warband's Heroes are supplied inputs, not a simulated warband subsystem; no price or purchase is involved. This differs from the frozen LATER label.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Before battle a single Hero may take one draught: 1 -1 Toughness for the next battle, 2-3 +1 Strength, 4-5 +1 Toughness, 6 an extra wound; each lasts until its own recovery-phase escape roll; observable: the granted statistic in the duel.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B16-preparations","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Offering curatives through supplying suspicious potions, the Petru carries assorted philtres for the purpose of remedial thaumaturgy. A single Hero in the warband may chance upon the Petru before battle to risk one of these vitalogist wares. Roll a D6 to discover the draught's effect: 1 Debilitating (-1 Toughness for the whole of the next battle until they roll a 6 on a D6 in the recovery phase to shrug off the ill effects); 2-3 Strength (+1 Strength bonus until he rolls a 1 on a D6 in the recovery phase); 4-5 Resilience (+1 Toughness until he rolls a 1 on a D6 in the recovery phase); 6 Fortitude (gains an extra wound for the whole battle; once lost the wound cannot be restored).","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

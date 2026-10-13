@@ -63,6 +63,7 @@ TRAIT_TYPES = {
 
 
 COMPILER_CONTRACTS = {
+    "compiler.assassin-poisoner",
     "compiler.woodsmen-quarterstaff",
     "compiler.aldred-fellblade",
     "compiler.no-blackpowder-weapons",

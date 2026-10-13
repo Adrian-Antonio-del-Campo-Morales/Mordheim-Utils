@@ -1,0 +1,268 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-savage-goblins/big-boss--second-in-command/unimplemented.lustria-savage-goblins.big-boss.second-in-command
+# scaffold_fingerprint: 76221ef4cf00c2bcc9299d55832cf6a1cb1b5fcb30ba37695c217ab0869044c2
+# authoring_status: AUTHORED
+# authoring_progress: the admitted leader-four clause carries 4 authored scenarios derived from the
+# printed sentence and the accepted M4b contract: the four-inch fallback is offered while the Witch
+# Doctor's Leadership cannot be used (absent, or standing beyond its own radius) and withheld while a
+# usable same-band leader is supplied within range, with a five-inch negative control.  The evidence of
+# the withholding scenarios is the strict call tape: a wrongly offered borrower would request an
+# undeclared leader decision and the scenario fails there.  REVIEWED still requires manual semantic
+# review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: leader-four--scope--leader-four (scope: YES)
+# AUTHORED[leader-four--scope--leader-four]: 4 scenarios cover the printed conditional four-inch Leader
+#   borrow.  The borrower is a same-band fixture taking an individual Stupidity test, which is the test
+#   whose Leadership may be borrowed, and the Big Boss is supplied as a standing nearby participant
+#   carrying the printed band row.  The standing Witch Doctor within his own radius withholds the
+#   fallback, an absent or out-of-range Witch Doctor admits it, and at five inches the fallback is not
+#   offered at all.  The second printed sentence (leader succession) stays excluded, as its own block
+#   records.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/lustria-savage-goblins/big-boss--second-in-command/unimplemented.lustria-savage-goblins.big-boss.second-in-command
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-savage-goblins/special-rules.yaml
+# source_fingerprint:
+#   7f45d6a1aa1c87114a1c0a30fb18e620b2d80ddf1e4dc09598f9bedf431cc8df
+# source_sha256_at_generation:
+#   84746d9c2e37bfd46fb68ab1b459a9ab5317d55037c20eb6197fbd206ca12c00
+# Printed rule text:
+#   the Big Boss gains the Leader rule with a 4" range
+# Semantic contract (check analysis_status before treating as accepted):
+#   Gaining the Leader rule with a 4-inch range when the Witch Doctor's Leadership is unavailable is the supplied leader condition the ruling admits. Printed clause: the Big Boss gains the Leader rule with a 4" range
+# effect_id:
+#   mechanic.leader-six
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   4-inch conditional leader radius; needs a range parameter and a provider-availability condition. Scope review integration: {"clause_id":"leader-four","review_clause_id":"leader-four","source_state":"matched","review_status":"reviewed","scope_reason":"Gaining the Leader rule with a 4-inch range when the Witch Doctor's Leadership is unavailable is the supplied leader condition the ruling admits.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"When the Witch Doctor's Leadership cannot be used, the Big Boss gains the Leader rule with a 4-inch range. Observable: a supplied 4-inch leader borrow becomes available.","effect_id":"mechanic.leader-six","relation":"parameterized_variant","parameters":"{\"range_inches\":4}","conditions":"{\"trigger\":\"the Witch Doctor's Leadership is unavailable\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"behavior","dependencies":"[]","implementation_batch":"C01-leadership","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"If the Witch Doctor's Leadership cannot be used, the Big Boss gains the Leader rule with a 4\" range. If the Witch Doctor dies, the Big Boss becomes the warband leader until a new Witch Doctor is recruited.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"M-LEADER-FALLBACK","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","boundary":"Current child only; do not import excluded sibling or combined-parent behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#   
+#   [M4-psychology 2026-10-08] delivered. `big-boss--second-in-command` binds the new `mechanic.leader-four`, which carries the Leader tag plus the printed four-inch radius. In the isolated duel the friendly Witch Doctor is never a participant, so the printed 'if the Witch Doctor's Leadership cannot be used' condition holds and no extra supplied flag is invented. The focused suite proves the four-inch borrow, the five-inch negative control and the peer-provider exception. The leader-succession sentence stays a campaign clause recorded separately with no pending work.
+#   
+#   [Coordinator review 2026-10-08] Partial: the 4-inch radius works, but Second in Command is conditional on the Witch Doctor Leadership being unusable. A compiled Big Boss is currently offered and accepted even when a standing same-side/same-band Witch Doctor is supplied within 5 inches. Nearby supplied providers are not combatants; absence from the duel pair does not establish the printed condition. Owner: supplied Leadership consumer and canonical conditional contract. Resume in the next M4 correction/identity batch; close with controls for available, unavailable and absent Witch Doctor facts. The previous No residual claim is superseded.
+#   
+#   [M4b-enemy-identity 2026-10-08] delivered correction. The printed condition recorded above is now modelled instead of assumed: the Big Boss gains the Leader rule only while the Witch Doctor's Leadership cannot be used, and the Witch Doctor may exist as a supplied leader provider without taking part in the duel. `mechanic.leader-four` carries the `mechanic.leader-fallback` marker, and `leadership.resolve_local_leadership` withholds a fallback provider whenever another usable same-warband leader is supplied, so the fallback also never suppresses itself. The focused suite proves the three printed states (Witch Doctor available and standing within his own radius, supplied but not usable because he is knocked down or beyond it, and absent) plus the beyond-four-inches negative control. The leader-succession sentence remains a campaign clause with no pending work.
+#   
+#   [Coordinator M4b acceptance 2026-10-08] Accepted within the exercised supplied-fact contract: the strict focal cases withhold the Big Boss while the standing Witch Doctor is in range, and admit the four-inch fallback when the Witch Doctor is absent, knocked down or out of range. The prior unavailable-condition defect is resolved. No third combatant is simulated.
+#
+# Clause: leader-four--scope--leader-succession (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/trollheim/lustria-savage-goblins/big-boss--second-in-command/unimplemented.lustria-savage-goblins.big-boss.second-in-command
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-savage-goblins/special-rules.yaml
+# source_fingerprint:
+#   7f45d6a1aa1c87114a1c0a30fb18e620b2d80ddf1e4dc09598f9bedf431cc8df
+# source_sha256_at_generation:
+#   84746d9c2e37bfd46fb68ab1b459a9ab5317d55037c20eb6197fbd206ca12c00
+# Printed rule text:
+#   If the Witch Doctor dies, the Big Boss becomes the warband leader until a new Witch Doctor is recruited.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Becoming the warband leader until a new Witch Doctor is recruited is a warband roster transition, excluded from the duel. Printed clause: If the Witch Doctor dies, the Big Boss becomes the warband leader until a new Witch Doctor is recruited.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   4-inch conditional leader radius; needs a range parameter and a provider-availability condition. Scope review integration: {"clause_id":"leader-four","review_clause_id":"leader-succession","source_state":"matched","review_status":"reviewed","scope_reason":"Becoming the warband leader until a new Witch Doctor is recruited is a warband roster transition, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"When the Witch Doctor's Leadership cannot be used, the Big Boss gains the Leader rule with a 4-inch range. Observable: a supplied 4-inch leader borrow becomes available.","effect_id":"mechanic.leader-six","relation":"parameterized_variant","parameters":"{\"range_inches\":4}","conditions":"{\"trigger\":\"the Witch Doctor's Leadership is unavailable\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"behavior","dependencies":"[]","implementation_batch":"C01-leadership","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"If the Witch Doctor's Leadership cannot be used, the Big Boss gains the Leader rule with a 4\" range. If the Witch Doctor dies, the Big Boss becomes the warband leader until a new Witch Doctor is recruited.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the accepted contract recorded above; no engine output was
+# consulted.  The borrower is a band fixture with a supplied Stupidity fact, the provider is the
+# band's own profile row, and every distance is a supplied fact of the duel context.
+
+# The Witch Doctor is present and standing inside his own radius, so his Leadership is available and
+# the printed condition of the fallback does not hold: the tape declares the Witch Doctor's borrow and
+# no Big Boss borrow at all, so a wrongly offered fallback would request an undeclared decision.
+- audit_id: rule/trollheim/lustria-savage-goblins/big-boss--second-in-command/unimplemented.lustria-savage-goblins.big-boss.second-in-command
+  id: a-usable-witch-doctor-withholds-the-fallback
+  covers: [leader-four--scope--leader-four]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      trait_overrides: {stupidity: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 0, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 0}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, witch-doctor, 5], [first, big-boss, 4]]
+    nearby:
+      - participant_id: witch-doctor
+        side_id: first
+        condition: standing
+        fighter:
+          collection: trollheim
+          band_id: lustria-savage-goblins
+          profile_id: witch-doctor
+      - participant_id: big-boss
+        side_id: first
+        condition: standing
+        fighter:
+          collection: trollheim
+          band_id: lustria-savage-goblins
+          profile_id: big-boss
+          special_rule_ids: [big-boss--second-in-command]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.stupidity.leader.witch-doctor, value: true}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_final: {rounds_executed: 1}
+
+# The Witch Doctor is absent, so the printed condition holds and the four-inch fallback is offered and
+# consumed at exactly the printed distance.
+- audit_id: rule/trollheim/lustria-savage-goblins/big-boss--second-in-command/unimplemented.lustria-savage-goblins.big-boss.second-in-command
+  id: the-absent-witch-doctor-admits-the-four-inch-fallback
+  covers: [leader-four--scope--leader-four]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      trait_overrides: {stupidity: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 0, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 0}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, big-boss, 4]]
+    nearby:
+      - participant_id: big-boss
+        side_id: first
+        condition: standing
+        fighter:
+          collection: trollheim
+          band_id: lustria-savage-goblins
+          profile_id: big-boss
+          special_rule_ids: [big-boss--second-in-command]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.stupidity.leader.big-boss, value: true}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_final: {rounds_executed: 1}
+
+# The Witch Doctor is supplied but stands beyond his own radius, so his Leadership cannot be used and
+# the fallback is offered; the tape declares no Witch Doctor borrow, which is the discriminating half.
+- audit_id: rule/trollheim/lustria-savage-goblins/big-boss--second-in-command/unimplemented.lustria-savage-goblins.big-boss.second-in-command
+  id: an-out-of-range-witch-doctor-admits-the-fallback
+  covers: [leader-four--scope--leader-four]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      trait_overrides: {stupidity: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 0, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 0}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, witch-doctor, 7], [first, big-boss, 4]]
+    nearby:
+      - participant_id: witch-doctor
+        side_id: first
+        condition: standing
+        fighter:
+          collection: trollheim
+          band_id: lustria-savage-goblins
+          profile_id: witch-doctor
+      - participant_id: big-boss
+        side_id: first
+        condition: standing
+        fighter:
+          collection: trollheim
+          band_id: lustria-savage-goblins
+          profile_id: big-boss
+          special_rule_ids: [big-boss--second-in-command]
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.stupidity.leader.big-boss, value: true}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_final: {rounds_executed: 1}
+
+# The negative control for the printed radius: no Witch Doctor and the Big Boss one inch beyond the
+# four printed inches, so no borrow is offered and the bearer's own Leadership carries the test.
+- audit_id: rule/trollheim/lustria-savage-goblins/big-boss--second-in-command/unimplemented.lustria-savage-goblins.big-boss.second-in-command
+  id: beyond-four-inches-the-fallback-is-not-offered
+  covers: [leader-four--scope--leader-four]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      trait_overrides: {stupidity: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 0, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 0}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, big-boss, 5]]
+    nearby:
+      - participant_id: big-boss
+        side_id: first
+        condition: standing
+        fighter:
+          collection: trollheim
+          band_id: lustria-savage-goblins
+          profile_id: big-boss
+          special_rule_ids: [big-boss--second-in-command]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {state.first.stupidity_failed: True, state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+

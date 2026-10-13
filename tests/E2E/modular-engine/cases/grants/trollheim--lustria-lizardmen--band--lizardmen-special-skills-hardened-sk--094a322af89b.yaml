@@ -1,0 +1,182 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-lizardmen/band--lizardmen-special-skills-hardened-skin/skill.hard-to-kill
+# scaffold_fingerprint: c84702ee2012ecc3d7ee20720cd8e460533d84a8a954a0456cd565ed20de4034
+# authoring_status: REVIEWED
+# authoring_progress: every admitted clause of this ID is represented by an authored
+#   scenario and contrasted with the printed rule, the recorded semantic contract and
+#   the band package. REVIEWED is authoring and semantic contrast only;
+#   execution_status stays UNEXECUTED and no functional result exists.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: out-of-action-only-on-six (scope: YES)
+# AUTHORED[out-of-action-only-on-six]: 5 scenarios cover Stunned on an injury total
+#   of 5 and Out of Action on 6, the unselected recipient Out on 5, and both refusals
+#   of the printed "Saurus Heroes only" scope (a Skink and a Saurus henchman).
+# origin_id:
+#   rule/trollheim/lustria-lizardmen/band--lizardmen-special-skills-hardened-skin/skill.hard-to-kill
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-lizardmen/special-rules.yaml
+# source_fingerprint:
+#   a29511ab7dd8d06a97a3d5a4177ef1226ba3703e18bafdc2cc4c5dd9062cf2b2
+# source_sha256_at_generation:
+#   aa12f442b9a4a249944f0a02f32858b5b84d237a8d1ccc33a9d1105a00982fc0
+# Printed rule text:
+#   Saurus Heroes only. On the Injury chart, the Hero is taken Out of Action only on a result of 6+.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Saurus Heroes only: the Hero is taken out of action only on a 6+; observable: an injury total of 5 leaves him Stunned.
+# effect_id:
+#   skill.hard-to-kill
+# relation:
+#   equivalent
+# parameters:
+#   {"out_of_action_threshold":6,"profile_scope":"saurus-heroes","injury_chart":{"1-2":"knocked-down","3-5":"stunned","6+":"out-of-action"}}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed as the same out-of-action threshold used by Hard to Kill; the hero-only scope is a construction matter and is not part of the consumed condition. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"out-of-action-only-on-six","audit_group":"EQ-skill.hard-to-kill","verified_facet":"skill.hard-to-kill","relationship":"shared_facet","boundary":"Share the wider Stunned band, not True Grit, concussion immunity, or a stun save. Keep printed recipients; the Saurus Hero variant remains Hero-only. Modified injury totals and later injury transformations still apply.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+#
+# --- Migrated authored scenarios ---
+# Source: cases/grants/warband-grants.yaml
+# One-time migration authorized by the operator; see plan.md.  These
+# scenarios were authored from the rule text and the accepted rulings, not
+# from engine output.  Migrating them does not certify their interpretation
+# or complete coverage of the identity.
+# rule/... grants — a closed batch of warband grants exercised end to end.
+#
+# Each identity here is a printed warband grant (a `rule/<collection>/<band>/
+# <rule>/<binding>` record of docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv).
+# The scenarios take the real route: band and profile from the built warrior,
+# the grant selected through `special_rule_ids`, the shared construction and
+# compilation that bind it, the modular resolution that consumes it, and an
+# observation of the consequence.  No `effect_id` is injected anywhere, and a
+# scenario never lists the granted mechanic as a direct `skill_ids` entry.
+#
+# Recipients are taken from the band package: the profile that the grant's
+# eligibility admits gains the consequence, another profile of the same band is
+# refused with the binding's own diagnostic, and an unselected build of the same
+# recipient shows the consequence absent.  Sharing one binding does not admit
+# other origins, so each identity keeps its own scenarios and clauses.
+#
+# The batch is deliberately closed and small: priority, injury-chart, reroll,
+# critical-ignition, parry-exclusion and characteristic grants, one identity
+# each.  Expanding it needs another reviewed batch, not a wider query.
+
+# The Khemri Lahmian Vampire's Lost Innocence grants strike first.  Both duels
+# below are uncharged, so the only priority tier in play is the grant itself.
+#
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--lizardmen-special-skills-hardened-skin/skill.hard-to-kill
+  id: the-recipient-is-not-out-of-action-on-five
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.dagger
+      characteristics: &plain-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-totem-warrior
+      special_rule_ids: [band--lizardmen-special-skills-hardened-skin]
+      main_weapon_id: weapon.dagger
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--lizardmen-special-skills-hardened-skin/skill.hard-to-kill
+  id: the-recipient-is-out-of-action-on-six
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.dagger
+      characteristics: *plain-attacker
+    second:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-totem-warrior
+      special_rule_ids: [band--lizardmen-special-skills-hardened-skin]
+      main_weapon_id: weapon.dagger
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--lizardmen-special-skills-hardened-skin/skill.hard-to-kill
+  id: the-unselected-recipient-is-out-of-action-on-five
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.dagger
+      characteristics: *plain-attacker
+    second:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-totem-warrior
+      main_weapon_id: weapon.dagger
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--lizardmen-special-skills-hardened-skin/skill.hard-to-kill
+  id: another-profile-of-the-band-is-refused
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+      special_rule_ids: [band--lizardmen-special-skills-hardened-skin]
+      main_weapon_id: weapon.dagger
+  expect_error: "special rule is not available to lustria-lizardmen/skink-priest"
+
+# Infallible Strike: the recipient rerolls a failed To Wound roll.  The extra
+# die is requested only when the grant is selected; the unselected duel fails
+# the wound outright.  The rerolled wound is unsaved because the dagger's own
+# +1 target bonus lifts the unarmoured defender to a six-plus save.
+# Note: the comment block immediately above is the migration tail that describes
+# the following per-ID file; it does not describe the scenarios below.
+# --- Additional scenarios ---
+
+# The printed scope is "Saurus Heroes only"; a Saurus henchman is a Saurus and
+# still outside the recipient list.
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--lizardmen-special-skills-hardened-skin/skill.hard-to-kill
+  id: a-saurus-henchman-is-outside-the-recipient-scope
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: saurus-braves
+      special_rule_ids: [band--lizardmen-special-skills-hardened-skin]
+  expect_error: "special rule is not available to lustria-lizardmen/saurus-braves"

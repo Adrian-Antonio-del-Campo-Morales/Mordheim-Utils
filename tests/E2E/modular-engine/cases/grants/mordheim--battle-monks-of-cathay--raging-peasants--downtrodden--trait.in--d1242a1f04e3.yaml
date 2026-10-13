@@ -1,0 +1,101 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/battle-monks-of-cathay/raging-peasants--downtrodden/trait.injury-profile
+# scaffold_fingerprint: 67c05c7cfe445e815b6ed3a548b4ac908e8f3c73a67f07da81a94d975da7c5d0
+# authoring_status: AUTHORED
+# authoring_progress: the admitted immediate-out clause carries authored scenarios derived from the
+# printed sentence and the recorded contract (injury profile 2, consumed after the save chain and
+# before damage).  The bearer is the profile build mordheim/battle-monks-of-cathay/raging-peasants,
+# which prints that a wounded Peasant is taken out of action without an injury roll; it contributes
+# no attacks, so round 0 carries only the attacker's dice.  The first scenario spends the printed
+# single Wound, and the second shows the same end at one Wound more than the profile prints, so the
+# pair carries the recorded 'regardless of remaining Wounds' part of the contract.  Neither tape
+# declares an injury die, and the strict tape fails if the engine requests one.  REVIEWED still
+# requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: immediate-out (scope: YES)
+# AUTHORED[immediate-out]: 2 scenarios show the printed end: the first unsaved wound takes the
+#   bearer Out of Action with no injury die at all, both at its printed single Wound and at one Wound
+#   above it, so the outcome cannot be the ordinary injury ladder.
+# origin_id:
+#   rule/mordheim/battle-monks-of-cathay/raging-peasants--downtrodden/trait.injury-profile
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/battle-monks-of-cathay/special-rules.yaml
+# source_fingerprint:
+#   2d78d00a9262b06db7bb783dd73d06484ddb2b376ee7bc0a70a7f4c2a9f4ba62
+# source_sha256_at_generation:
+#   65e9f82a2212d3ba8786f77258b0aaf254d75b70d3261ea045fe2592c5608853
+# Printed rule text:
+#   When a Peasant is wounded, do not roll for injury. The model is immediately taken out of action.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Any unsaved wound on the bearer takes it out of action with no injury roll, regardless of remaining Wounds; observable: the first unsaved wound ends the fighter even at full Wounds.
+# effect_id:
+#   trait.injury-profile
+# relation:
+#   equivalent
+# parameters:
+#   {"profile":2}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   trait.injury-profile value 2 is consumed in modular/attacks._resolve_wound_damage after the save chain, before damage; matches 'do not roll for injury, immediately out of action'. Surface reuse candidate: {"family":"T-INJURY-PROFILE","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the entire printed chart or reaction, received versus inflicted injury, initial condition, exceptions and timing. Reroll, ignore-result roll, wound multiplication and ignition threshold are different effects; do not copy a generic chart or combine them by name.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
+# bearer prints the rule and contributes no attacks of its own, so round 0 carries only the
+# attacker's dice.  The blow is an ordinary mace: at Weapon Skill 10 against this bearer's printed
+# Weapon Skill it needs a 3, and Strength 8 against Toughness 3 needs a 2, so the declared 5 and 5
+# both pass.  Five is deliberately below a natural six, which would be a critical hit and add a
+# further critical die.  Unarmoured and with no ward, the bearer reaches the damage step, and the
+# strict tape declares nothing after the wound roll: an injury die requested here would fail the
+# fixture, so the two scenarios prove the printed 'do not roll for injury' rather than assume it.
+
+- audit_id: rule/mordheim/battle-monks-of-cathay/raging-peasants--downtrodden/trait.injury-profile
+  id: the-first-wound-takes-the-peasant-out-without-an-injury-roll
+  covers: [immediate-out]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: raging-peasants}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.wounded: True, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The recorded contract adds 'regardless of remaining Wounds'; the same bearer at one Wound more
+# than the profile prints is still ended by that first unsaved wound.
+
+- audit_id: rule/mordheim/battle-monks-of-cathay/raging-peasants--downtrodden/trait.injury-profile
+  id: the-first-wound-takes-out-a-peasant-above-its-printed-wounds
+  covers: [immediate-out]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: raging-peasants}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.wounded: True, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

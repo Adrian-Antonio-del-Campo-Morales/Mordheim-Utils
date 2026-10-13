@@ -1,0 +1,79 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/black-orcs/band--let-the-goons-do-the-work/unimplemented.black-orcs.band.let-the-goons-do-the-work
+# scaffold_fingerprint: 09f7f28ed71bba986e6db246df68c54b218d637d5be8bc7cf37b7f7b3ecdc2d2
+# authoring_status: AUTHORED
+# authoring_progress: the admitted mount prohibition has no representable observable.  The
+# mount-riding producer is excluded from the duel and no mount-eligibility contract exists to consume
+# the ban, so a build declaring the mounted fact is neither refused nor otherwise observable; the
+# exact pending datum is named in the clause line below.  REVIEWED is not claimed and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [B] the printed prohibition is now authored below against a declarable fact - FighterBuild carries `mounted: bool` and the E2E runner passes the whole fighter mapping into the build - so a mounted Black Orc build expects the refusal.  PENDING[B]: the mount-eligibility contract that would emit it (no such contract or diagnostic exists yet, so the tape fails loudly).  The printed counterpart permission (normal Orcs may ride a boar) is a further variant [A] on the Orc profile.  Original note: no scenario is authored, and the pending datum is named.  The printed prohibition
+# ("Black Orcs do not ride mounts of any kind") has no consumer: neither the shared eligibility stage
+# nor the compiler carries a mount-eligibility contract or refusal diagnostic, so the supplied
+# mounted fact is accepted silently rather than refused, and asserting an acceptance would not
+# evidence the printed ban.  The printed counterpart permission for normal Orcs to ride a boar is
+# equally unobservable.  The recorded pending step is new construction data for mount eligibility,
+# not a new duel operator; until it exists no refusal fragment can be authored.  REVIEWED is not
+# claimed.
+# STATUS REVIEW (this pass): AUTHORED.  The clause's applicable requirements are represented by the
+#   scenarios in this file: the fixture declares the case (the offending input or the admitted
+#   configuration) and the expectation is the rule-derived outcome in the established diagnostic
+#   family.  The pending item named above is engine wiring - the mount-eligibility contract that would emit the printed refusal - which is not a missing case,
+#   input or observation but the defect the authored scenarios are written to detect.  Holding the ID at
+#   PARTIAL for it treated an absent binding/projection/consumer as an absent requirement, which this
+#   pass corrects: PARTIAL is reserved for a genuinely missing scenario, input identity, executor
+#   observation or normative decision.  The pending note above is retained unchanged as the record of
+#   the defect.  REVIEWED (manual semantic review) remains separate and is not claimed here.
+# origin_id:
+#   rule/mordheim/black-orcs/band--let-the-goons-do-the-work/unimplemented.black-orcs.band.let-the-goons-do-the-work
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-orcs/special-rules.yaml
+# source_fingerprint:
+#   1960a1976d8d5d1b9ca2cc873db5db7870f302968be019654c9ee1047c3dca9e
+# source_sha256_at_generation:
+#   033545b947532c3193948d1c1e85930a8f543a3f8a55e89401e4000e4ace47c8
+# Printed rule text:
+#   Black Orcs do not ride mounts of any kind.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Mount prohibition belongs to the excluded mount subsystem; normal Orcs riding boars is also a mount clause.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {"prohibition": "black orcs never ride mounts", "permission": "normal orcs may ride a boar or another permitted mount"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Admitted individual construction prohibition: the mount-riding producer is excluded, but the ban on a Black Orc riding is a legality clause the construction layer can carry, so it is YES rather than NO or LATER. No mount-eligibility contract exists to consume it, so the pending step is new construction data, not a new duel operator; the Orc permission is the counterpart of the same clause.
+
+# --- Authored scenario ---
+# Derived from the printed sentence; no engine output was consulted.  The mounted fact is the
+# fixture's own field, so the configuration is representable; the expected result is the printed
+# refusal, whose exact diagnostic the executor does not define yet (the string below follows the
+# shared "<thing> is forbidden for <band>/<profile>" prohibition convention and is the expectation
+# recorded for the missing contract).
+- audit_id: rule/mordheim/black-orcs/band--let-the-goons-do-the-work/unimplemented.black-orcs.band.let-the-goons-do-the-work
+  id: a-mounted-black-orc-is-refused-by-the-printed-prohibition
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: black-orcs
+      mounted: true
+  expect_error: mounts are forbidden for black-orcs/black-orcs

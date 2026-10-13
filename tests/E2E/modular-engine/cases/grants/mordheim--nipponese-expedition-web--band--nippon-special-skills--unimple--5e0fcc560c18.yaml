@@ -1,0 +1,53 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/nipponese-expedition-web/band--nippon-special-skills/unimplemented.nipponese-expedition-web.special.nippon-special-skills
+# scaffold_fingerprint: bc05d76d712e74ea6072964610ece7424c20d00ef3d0654ceb53e8e393432701
+# authoring_status: PARTIAL
+# authoring_progress: the admitted nippon-skills clause cannot be authored: the printed list is
+#   advancement-time access, the register records no effect id, no parameters and no consumer for the list
+#   origin, and each named skill keeps its own origin.  The exact pending datum is named in the clause marker
+#   below.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: nippon-skills (scope: YES)
+# PARTIAL[nippon-skills]: [C] no scenario is authorable from the list origin.  The printed clause is "Nippon
+#   skill list including Death before Dishonor and Iaijutsu"; its recorded relation is unresolved, no effect id
+#   is claimed for it and the register note reads "Skill selection is advancement-time; the combat-relevant parts
+#   are candidates for the skills equivalence review, but an unselected list origin has no duel-runtime clause."
+#   The missing data are the construction access table that admits these skills to these duelists and the two
+#   named skills' own operators; with them an admission and the closure refusal (a skill outside the printed
+#   table) could be declared with the module's own message.
+# origin_id:
+#   rule/mordheim/nipponese-expedition-web/band--nippon-special-skills/unimplemented.nipponese-expedition-web.special.nippon-special-skills
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/nipponese-expedition-web/special-rules.yaml
+# source_fingerprint:
+#   2bd3d6a22fd64f155ff1a69f955ec0f1eaf250c65f5d05cd308e4648aebfde8a
+# source_sha256_at_generation:
+#   7d0593898b6ae8814ae3ddfc10dfc89c36a1df30b529997ff65b8c117f317541
+# Printed rule text:
+#   Nippon skill list including Death before Dishonor and Iaijutsu
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Nippon skill list is legal-construction access for these duelists, and each named skill keeps its own origin. Printed clause: Nippon skill list including Death before Dishonor and Iaijutsu
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Skill selection is advancement-time; the combat-relevant parts are candidates for the skills equivalence review, but an unselected list origin has no duel-runtime clause. Scope review integration: {"clause_id":"nippon-skills","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The Nippon skill list is legal-construction access for these duelists, and each named skill keeps its own origin.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Nippon skill list including Death before Dishonor and Iaijutsu","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."} Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

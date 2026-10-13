@@ -1,0 +1,93 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/warband/skill.hardy-constitution/skill.hardy-constitution
+# scaffold_fingerprint: d32a3cf724539eb2b343348585f7b85540fc319a74aa8ce8d9771539c78a9364
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: critical-ignored-on-five (scope: YES)
+# AUTHORED[critical-ignored-on-five]: 2 scenarios cover the 5+ that drops the
+#   critical and resolves the wound normally, and a failure that keeps it.
+# origin_id:
+#   rule/catalog/warband/skill.hardy-constitution/unclassified
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/skills/warband.yaml
+# source_fingerprint:
+#   4e607b523b415bb5dc9788c152fab7a4fbb627e66b39a62cb8dff7c4ac537770
+# source_sha256_at_generation:
+#   cbce88f8e195c72b1767c88af362131455b99435c0ffb53e58b55b7306161198
+# Printed rule text:
+#   When the Hero suffers a critical hit, roll D6. On 5+ the critical effect is ignored and the wound is resolved normally; on a failure, resolve the critical hit normally.
+# Semantic contract (check analysis_status before treating as accepted):
+#   When the Hero suffers a critical hit a 5+ ignores the critical and the wound is resolved normally, while a failure resolves it as a critical; observable: the critical's armour-ignoring and injury bonus are dropped on a 5+.
+# effect_id:
+#   skill.hardy-constitution
+# relation:
+#   equivalent
+# parameters:
+#   {"ignore_critical_on":5,"normal_wound_remains":true}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Same skill as the Sartosa pirates printing (G123). The consumer on the reference attack path rolls when the wound is critical and clears the critical flag on a 5+. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"critical-ignored-on-five","audit_group":"EQ-skill.hardy-constitution","verified_facet":"skill.hardy-constitution","relationship":"shared_facet","boundary":"On 5+ remove the critical effect but resolve the normal wound; not a save that cancels the hit or wound.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# The warband skill list prints the canonical hardy-constitution wording. The
+# clause resolves after the To Wound roll and before the critical table: the
+# defender rolls one D6 and on 5+ the critical is dropped, so neither its
+# armour-ignoring nor its extra damage happens.  Both scenarios script the same To
+# Wound six and differ only in that die.
+- audit_id: rule/catalog/warband/skill.hardy-constitution/skill.hardy-constitution
+  id: hardy-constitution-five-drops-the-critical
+  covers: [critical-ignored-on-five]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.hardy-constitution]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.hardy-constitution, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: False, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/catalog/warband/skill.hardy-constitution/skill.hardy-constitution
+  id: hardy-constitution-four-keeps-the-critical
+  covers: [critical-ignored-on-five]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.hardy-constitution]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.hardy-constitution, value: 4}
+    - {key: round.0.first.attack.0.critical, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: True, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

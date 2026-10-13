@@ -1,0 +1,125 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/metal-mongers-mim/machine-ogre--bio-machinery/unimplemented.metal-mongers-mim.machine-ogre.bio-machinery
+# scaffold_fingerprint: d2994370e369d28731dd3ff27077aeaee4b5485c1f1ad1c984483beca0119284
+# authoring_status: PARTIAL
+# authoring_progress: the admitted psychology-immunity clause now carries 1 authored scenario - it is
+#   the canonical immunity the runtime implements, read through the one Psychology request an isolated
+#   duel can make (the charged warrior's round-0 Fear test), so this file is no longer empty.  What is
+#   still pending is the binding the register itself names: this record declares no KB connection for
+#   mechanic.psychology-immunity, so the scenario records the required behaviour and will flag that
+#   missing binding when executed.  The first admitted clause (never-leaves-combat) cannot be authored:
+#   the recorded register states that Break/Rout behaviour is the excluded group subsystem and that no
+#   consumer is assigned to it.  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED.
+# Family review (R4, never-leaves-combat rider of the immune-to-psychology siblings): one disposition
+#   for the whole family - category C, the trigger's producer (Break/Rout) and any fled/left-combat
+#   state are absent from the duel executor, so the rider is documented, not authored; the immunity
+#   clause itself keeps its authored scenarios below.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: never-leaves-combat (scope: YES)
+# PARTIAL[never-leaves-combat]: [C] no scenario is authorable: the printed trigger ("this warrior
+#   would be forced to leave hand-to-hand combat", resolved by break/Rout) has neither a producer
+#   nor an observation in the duel executor. The accepted scope note admits the lasting state and
+#   excludes only its producer ("breaking from combat is resolved by the excluded Rout subsystem"),
+#   and the executor's state contract carries no field for it: modular/state.py::FighterState lists
+#   wounds, condition, frenzy, on_fire, entangled, broken_hands, charm_attack_blocked,
+#   animosity_failed and the other lasting states, but no fled/withdrew/left-combat flag, and the
+#   compiled effect vocabulary carries no such request. Missing capability, exactly: one executor
+#   field or event representing "this warrior would be forced out of hand-to-hand combat" (or the
+#   Break/Rout step that produces it), so that the printed refusal can be read as its negation.
+#   REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/metal-mongers-mim/machine-ogre--bio-machinery/unimplemented.metal-mongers-mim.machine-ogre.bio-machinery
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/metal-mongers-mim/special-rules.yaml
+# source_fingerprint:
+#   01477799602ca59b6041da502443f24a551530d016c4e1092ff736382a97dd22
+# source_sha256_at_generation:
+#   554be263705b3d241b6de0a5c58221f127e427666b6637878d71b4716f5b5b50
+# Printed rule text:
+#   immune to psychology and never leaves combat because of Psychology
+# Semantic contract (check analysis_status before treating as accepted):
+#   Immunity to psychology and never leaving close combat because of psychology are admitted lasting individual states that decide whether the single duel continues. Printed clause: immune to psychology and never leaves combat because of Psychology
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Break/Rout behaviour is the excluded group subsystem; no consumer assigned. Scope review integration: {"clause_id":"never-leaves-combat","review_clause_id":"never-leaves-combat","source_state":"unverified","review_status":"reviewed","scope_reason":"Immunity to psychology and never leaving close combat because of psychology are admitted lasting individual states that decide whether the single duel continues.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"immune to psychology and never leaves combat because of Psychology","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: psychology-immunity (scope: YES)
+# AUTHORED[psychology-immunity]: the printed immunity is read through the one Psychology request this
+#   setup can make - the round-0 Fear test of the charged warrior - exactly as the accepted
+#   tomb-guardians immunity tape does.  The Fear source is the printed Chainsaw Sword grant ("A model
+#   bearing a Chainsaw Sword causes Fear") struck by a hand-built charger, so the machine-ogre is the
+#   charged warrior and carries the request under test; every strike is declared as a natural 1, so the
+#   round reports nothing else, and the declared tape holds no Fear die at all - the strict tape rejects
+#   an undeclared request, so a test the engine still asked for fails the case instead of passing
+#   quietly, and the absence is the assertion.  Printed grant: "The Machine-Ogre is immune to psychology
+#   and never leaves combat."  Register boundary kept: the record declares no KB binding for
+#   mechanic.psychology-immunity, which is the missing step this scenario makes visible, and the
+#   'never leaves combat' half stays a separate clause.  The denial of a Hatred reroll and of a Frenzy
+#   bonus stays pending - neither grant is paired with this profile in the band package.
+# origin_id:
+#   rule/mordheim/metal-mongers-mim/machine-ogre--bio-machinery/unimplemented.metal-mongers-mim.machine-ogre.bio-machinery
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/metal-mongers-mim/special-rules.yaml
+# source_fingerprint:
+#   01477799602ca59b6041da502443f24a551530d016c4e1092ff736382a97dd22
+# source_sha256_at_generation:
+#   554be263705b3d241b6de0a5c58221f127e427666b6637878d71b4716f5b5b50
+# Printed rule text:
+#   The Machine-Ogre is simply a mindless fusion of materials animated by warpstone. The Machine-Ogre is immune to psychology and never leaves combat.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Immune to Psychology: never resolves a Fear or Stupidity test and receives no Hatred reroll or Frenzy benefit. Observable: a fear or stupidity test is skipped while other Leadership tests still roll.
+# effect_id:
+#   mechanic.psychology-immunity
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"any individual Psychology test","recipient":"this warrior","duration":"whole duel","exceptions":"other Leadership tests are unaffected"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The record's blanket reason is 'Deferred subsystem: psychology or mounts', but this printed clause is a canonical psychology effect the runtime already implements, so the clause is admitted and only the binding is missing. No binding on this record; the canonical effect exists, so the missing step is the KB connection. The 'never leaves combat' half is recorded separately. Surface reuse candidate: {"family":"mechanic.psychology-immunity","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare each immunity or automatic-pass clause separately. Psychology immunity is not automatic success on every Leadership test. Preserve ordinary Hatred/Frenzy suppression and the explicit Strigoi exception; excluded running, experience and group tests remain excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule text, the recorded canonical contract and the accepted tomb-guardians
+# immunity tape; no engine output was consulted.
+
+- audit_id: rule/mordheim/metal-mongers-mim/machine-ogre--bio-machinery/unimplemented.metal-mongers-mim.machine-ogre.bio-machinery
+  id: the-machine-ogre-is-not-tested-for-fear
+  covers: [psychology-immunity]
+  fighters:
+    first:
+      main_weapon_id: weapon.chainsaw-sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 7, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: metal-mongers-mim, profile_id: machine-ogre}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.condition: STANDING, state.engaged: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

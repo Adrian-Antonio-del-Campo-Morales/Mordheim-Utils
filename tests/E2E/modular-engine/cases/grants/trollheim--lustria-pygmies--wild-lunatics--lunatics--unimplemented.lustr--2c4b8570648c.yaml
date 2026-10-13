@@ -1,0 +1,96 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-pygmies/wild-lunatics--lunatics/unimplemented.lustria-pygmies.wild-lunatics.lunatics
+# scaffold_fingerprint: a7e26255fe3504fc03363b61f508f94fa561e71c840bd9acdb97c7fdb6861096
+# authoring_status: PARTIAL
+# authoring_progress: the admitted frenzy clause carries 2 authored scenarios that declare the supplied
+#   Frenzy state the printed 1-3 result produces and assert its two duel consequences (the doubled
+#   attack count and the skipped Fear test of a received charge).  PENDING GAPS: the printed start-of-
+#   turn 1D6 that chooses Frenzy on 1-3 and Stupidity on 4-6 is a per-turn random psychology roll the
+#   duel vocabulary does not express, and the accepted semantic contract flattens it to a duel-start
+#   flag, so the Stupidity face and the roll itself are recorded rather than asserted; this band record
+#   is also not yet connected to the canonical trait.frenzy effect.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: frenzy (scope: YES)
+# PARTIAL[frenzy]: PENDING[B,C] this band record is not yet connected to the canonical trait.frenzy, and the printed per-turn 1D6 that chooses Frenzy (1-3) or Stupidity (4-6) has no supplied-state representation; 2 scenario(s) cover the consequences of the supplied Frenzy state.  The named gaps
+#   are the per-turn 1D6 that chooses Frenzy (1-3) or Stupidity (4-6) - not expressible with the run's
+#   supplied-state vocabulary, and flattened by the recorded contract - and the unrecorded KB
+#   connection of this band record to trait.frenzy.
+# origin_id:
+#   rule/trollheim/lustria-pygmies/wild-lunatics--lunatics/unimplemented.lustria-pygmies.wild-lunatics.lunatics
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-pygmies/special-rules.yaml
+# source_fingerprint:
+#   9af053b9ad7e7decaceeacb53d76eccd720a8dae2d3488015a4296f0248f8654
+# source_sha256_at_generation:
+#   e63de02a4ae3f4eb8301513c9e2094f04d624416ce40b1a63b84aaa9a18e8fb7
+# Printed rule text:
+#   At the start of each turn, roll 1D6 for each Wild Lunatic in play. On 1-3 that model gains Frenzy; on 4-6 it gains Stupidity. The printed rule mistakenly says to roll for each Cannibal even though the rule appears under the Wild Lunatic profile.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Subject to Frenzy (mushroom/venom induced): doubled attacks, no fear or stupidity test, must charge. Observable: the frenzy flag is set for this warrior.
+# effect_id:
+#   trait.frenzy
+# relation:
+#   equivalent
+# parameters:
+#   {"value":true}
+# conditions:
+#   {"trigger":"duel start"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Frenzy granted by a pre-battle source. No binding on this record; the canonical effect exists, so the missing step is the KB connection.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/trollheim/lustria-pygmies/wild-lunatics--lunatics/unimplemented.lustria-pygmies.wild-lunatics.lunatics
+  id: the-supplied-frenzy-state-doubles-the-wild-lunatics-attack-count
+  covers: [frenzy]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: lustria-pygmies, profile_id: wild-lunatics, main_weapon_id: weapon.mace}
+  initial_state:
+    second: {attacks: 1, frenzy: true}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-pygmies/wild-lunatics--lunatics/unimplemented.lustria-pygmies.wild-lunatics.lunatics
+  id: the-supplied-frenzy-state-skips-the-fear-test-of-the-charge-the-wild-lunatic-receives
+  covers: [frenzy]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: lustria-pygmies, profile_id: wild-lunatics, main_weapon_id: weapon.mace}
+  initial_state:
+    second: {attacks: 1, frenzy: true}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, state.second.fear_hit_sixes: false, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

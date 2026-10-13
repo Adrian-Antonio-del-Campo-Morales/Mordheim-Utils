@@ -1,0 +1,287 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.sword-master
+# scaffold_fingerprint: e5371b6a1e8ad12e85bb57fefaad446bb9df75f73e4956645b301dee9519ebee
+# authoring_status: AUTHORED
+# authoring_progress: all three admitted clauses carry two authored scenarios each, derived from the
+# printed rule, the printed profile and the recorded contracts: an equal parry die blocks where the
+# identical plain parry does not, two Dwarf Axes reroll a failed parry where a single Dwarf Axe is
+# offered no reroll at all, and two parrying weapons give two attempts where one leaves the printed
+# normal maximum of one.  REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: match-the-to-hit-roll (scope: YES)
+# AUTHORED[match-the-to-hit-roll]: 2 scenario(s) cover the clause: a parry die equal to the
+# opponent's highest To Hit roll blocks the attack, and the same die against the same parry window
+# without the band rule does not block.
+# origin_id:
+#   rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.sword-master
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-dwarf-treasure-hunters/special-rules.yaml
+# source_fingerprint:
+#   c6a28f50e08f7f6581e5c8141d3d0e801d72cbc9b67791b21e6591ddefd7b189
+# source_sha256_at_generation:
+#   c226774c1e97fa5bdd5b3d56c8951205aa46a4beaeb15f615d33422b644900fd
+# Printed rule text:
+#   When using a weapon with the Parry special rule, this Hero parries successfully if his roll equals or exceeds the opponent's highest To Hit roll. If using two weapons with Parry, he may attempt two parries against the two highest attack rolls. If using two Dwarf Axes, he may also re-roll failed parries.
+# Semantic contract (check analysis_status before treating as accepted):
+#   This printing of Master of Blades parries when the roll equals or exceeds the opponent's highest To Hit roll; observable: an equal parry roll blocks.
+# effect_id:
+#   skill.sword-master
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Same skill as the clan Angrund printing (G063) in another supplement; the two share the identity but keep their own rows and their own wording. Surface reuse candidate: {"family":"skill.sword-master","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: reroll-with-two-dwarf-axes (scope: YES)
+# AUTHORED[reroll-with-two-dwarf-axes]: 2 scenario(s) cover the clause: with two Dwarf Axes the
+# failed parry is rolled again and recovered, and the printed condition is visible in the boundary
+# where a single Dwarf Axe is offered no reroll die at all.
+# origin_id:
+#   rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.sword-master
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-dwarf-treasure-hunters/special-rules.yaml
+# source_fingerprint:
+#   c6a28f50e08f7f6581e5c8141d3d0e801d72cbc9b67791b21e6591ddefd7b189
+# source_sha256_at_generation:
+#   c226774c1e97fa5bdd5b3d56c8951205aa46a4beaeb15f615d33422b644900fd
+# Printed rule text:
+#   When using a weapon with the Parry special rule, this Hero parries successfully if his roll equals or exceeds the opponent's highest To Hit roll. If using two weapons with Parry, he may attempt two parries against the two highest attack rolls. If using two Dwarf Axes, he may also re-roll failed parries.
+# Semantic contract (check analysis_status before treating as accepted):
+#   With two Dwarf Axes he may also re-roll failed parries; observable: a failed parry is rolled again.
+# effect_id:
+#   skill.sword-master
+# relation:
+#   equivalent
+# parameters:
+#   {"reroll":"two-dwarf-axes"}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#    Surface reuse candidate: {"family":"skill.sword-master","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: two-parries-with-two-parry-weapons (scope: YES)
+# AUTHORED[two-parries-with-two-parry-weapons]: 2 scenario(s) cover the clause: two parrying weapons
+# give the bearer two attempts against the two highest attack rolls and both attacks of the pool are
+# blocked, and with one parrying weapon the second attack is resolved.
+# origin_id:
+#   rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.sword-master
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-dwarf-treasure-hunters/special-rules.yaml
+# source_fingerprint:
+#   c6a28f50e08f7f6581e5c8141d3d0e801d72cbc9b67791b21e6591ddefd7b189
+# source_sha256_at_generation:
+#   c226774c1e97fa5bdd5b3d56c8951205aa46a4beaeb15f615d33422b644900fd
+# Printed rule text:
+#   When using a weapon with the Parry special rule, this Hero parries successfully if his roll equals or exceeds the opponent's highest To Hit roll. If using two weapons with Parry, he may attempt two parries against the two highest attack rolls. If using two Dwarf Axes, he may also re-roll failed parries.
+# Semantic contract (check analysis_status before treating as accepted):
+#   With two Parry weapons he may attempt two parries against the two highest attack rolls; observable: two attempts per phase.
+# effect_id:
+#   skill.unbeatable-warrior
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#    Surface reuse candidate: {"family":"skill.unbeatable-warrior","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Family model (Master of Blades, Chaos Streets printing of the same skill as the clan Angrund row):
+# the bearer is the printed recipient of this band record, built from its own collection, band and
+# profile and selecting the band row named in the audit id, so the granted effect is what the scenario
+# exercises.  Physical characteristics are supplied as fixture facts (WS3 S3 T3 W2 I2 A1) so the dice
+# thresholds and the strike order are fixed, while the printed Leadership stays in place; the bearer's
+# own attack pool is declared empty so the tape holds only the parry under test.  Every expectation is
+# read from the printed rule (parries when his roll equals or exceeds the opponent's highest To Hit
+# roll; two Parry weapons allow two attempts against the two highest attack rolls; two Dwarf Axes may
+# also re-roll failed parries) and the recorded contracts, never from engine output; the roll tape is
+# derived statically and stays unexecuted.  The two identity rows of this printing share the same
+# behaviour; the sword-master record is authored here and its sibling unbeatable-warrior row is
+# authored separately in this directory.
+
+# The printed equality: a parry die equal to the declared To Hit four blocks the blow.
+- audit_id: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.sword-master
+  id: an-equal-roll-matches-the-highest-to-hit
+  covers: [match-the-to-hit-roll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-master-of-blades]
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.parries_remaining: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without the band rule the same die no longer matches: the plain parry must beat the roll, so the blow
+# is resolved and wounds.
+- audit_id: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.sword-master
+  id: without-the-band-rule-an-equal-roll-does-not-match
+  covers: [match-the-to-hit-roll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.parries_remaining: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed Dwarf Axe sentence: with two Dwarf Axes the failed parry is rolled again and the reroll
+# matches, so the hit is blocked.
+- audit_id: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.sword-master
+  id: two-dwarf-axes-reroll-a-failed-parry
+  covers: [reroll-with-two-dwarf-axes]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-master-of-blades]
+      main_weapon_id: weapon.dwarf-axe
+      off_hand_id: weapon.dwarf-axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.parry.reroll, value: 5}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed condition of that sentence: with a single Dwarf Axe the reroll is not granted, so the
+# tape holds no reroll die and the wound is resolved.
+- audit_id: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.sword-master
+  id: a-single-dwarf-axe-gets-no-reroll
+  covers: [reroll-with-two-dwarf-axes]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-master-of-blades]
+      main_weapon_id: weapon.dwarf-axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed two attempts: two parrying weapons block both attacks of the pool.
+- audit_id: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.sword-master
+  id: two-parrying-weapons-give-two-attempts
+  covers: [two-parries-with-two-parry-weapons]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-master-of-blades]
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.first.attack.1.parry, value: 5}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.1.parried: true, state.second.parries_remaining: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed boundary "instead of the normal maximum of one": with one parrying weapon the second
+# attack of the pool is resolved even though the hero carries this rule.
+- audit_id: rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-master-of-blades/skill.sword-master
+  id: one-parrying-weapon-keeps-the-normal-maximum
+  covers: [two-parries-with-two-parry-weapons]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-dwarf-treasure-hunters
+      profile_id: dwarf-noble
+      special_rule_ids: [band--dwarf-special-skills-master-of-blades]
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.first.attack.1.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.1.parried: false, attacks.1.damage: 1, state.second.parries_remaining: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

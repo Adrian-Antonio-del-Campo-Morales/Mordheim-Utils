@@ -1,0 +1,113 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/turjuk-rel/scholar--field-of-scholarship/unimplemented.turjuk-rel.scholar.field-of-scholarship
+# scaffold_fingerprint: 72215b51842d4545e40abc6307e7442cf782f4011cb371d7b038edb83da03392
+# authoring_status: PARTIAL
+# authoring_progress: neither admitted clause is authorable, for the same reason the sister records of this
+# special skill record (ghutani-rel scholar, muzil-rel scholar), which stand PARTIAL with the same missing
+# datum.  Both clauses carry no effect_id, an independent relation and an empty consumer list, and the record's
+# own note places the whole row in campaign scope: the Physiology injury reroll has no operator that takes a
+# duel injury result again (the injury step resolves one declared table face), and the Poetry Leadership is a
+# supplied leader value with no recorded producer, binding or key.  The missing representation is an
+# injury-reroll operator plus a recorded producer for the supplied Leadership, not a clarification.  REVIEWED
+# still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: field-of-scholarship--scope--injury-reroll (scope: YES)
+# PARTIAL[field-of-scholarship--scope--injury-reroll]: [C] not asserted.  No injury-reroll operator exists for
+# this duelist and the record names no effect_id, binding or consumer, so the printed Physiology reroll of an
+# injury result cannot be evidenced as an observation of this revision.
+# origin_id:
+#   rule/mordheim/turjuk-rel/scholar--field-of-scholarship/unimplemented.turjuk-rel.scholar.field-of-scholarship
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/turjuk-rel/special-rules.yaml
+# source_fingerprint:
+#   cbb890d68f93f57a5db50361cac1c5e9086b8daf15ccfc0136e93b461c9f0e42
+# source_sha256_at_generation:
+#   3c7d9449b43c8ee8e2274792d3199d9f34397216b02fe45e8281276214cac7e1
+# Printed rule text:
+#   Physiology injury reroll
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Physiology reroll of an injury result is an admitted individual injury consequence of this duelist. Printed clause: Physiology injury reroll
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Exploration, post-battle Serious Injuries and a campaign-win condition; campaign scope. Scope review integration: {"clause_id":"field-of-scholarship","review_clause_id":"injury-reroll","source_state":"unverified","review_status":"reviewed","scope_reason":"The Physiology reroll of an injury result is an admitted individual injury consequence of this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Cartography exploration bonus, Physiology injury reroll, Poetry leader Leadership","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: field-of-scholarship--scope--leader-leadership (scope: YES)
+# PARTIAL[field-of-scholarship--scope--leader-leadership]: [C] not asserted.  The clause admits a supplied
+# leader condition, but the record records no producer, effect_id, binding or consumer for it and places the
+# row in campaign scope, so no key or value can be named for the supplied Leadership without inventing one.
+# origin_id:
+#   rule/mordheim/turjuk-rel/scholar--field-of-scholarship/unimplemented.turjuk-rel.scholar.field-of-scholarship
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/turjuk-rel/special-rules.yaml
+# source_fingerprint:
+#   cbb890d68f93f57a5db50361cac1c5e9086b8daf15ccfc0136e93b461c9f0e42
+# source_sha256_at_generation:
+#   3c7d9449b43c8ee8e2274792d3199d9f34397216b02fe45e8281276214cac7e1
+# Printed rule text:
+#   Poetry leader Leadership
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Poetry Leadership supplied to the leader is the supplied leader condition the ruling admits. Printed clause: Poetry leader Leadership
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Exploration, post-battle Serious Injuries and a campaign-win condition; campaign scope. Scope review integration: {"clause_id":"field-of-scholarship","review_clause_id":"leader-leadership","source_state":"unverified","review_status":"reviewed","scope_reason":"The Poetry Leadership supplied to the leader is the supplied leader condition the ruling admits.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Cartography exploration bonus, Physiology injury reroll, Poetry leader Leadership","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: field-of-scholarship--scope--exploration (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/turjuk-rel/scholar--field-of-scholarship/unimplemented.turjuk-rel.scholar.field-of-scholarship
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/turjuk-rel/special-rules.yaml
+# source_fingerprint:
+#   cbb890d68f93f57a5db50361cac1c5e9086b8daf15ccfc0136e93b461c9f0e42
+# source_sha256_at_generation:
+#   3c7d9449b43c8ee8e2274792d3199d9f34397216b02fe45e8281276214cac7e1
+# Printed rule text:
+#   Cartography exploration bonus
+# Semantic contract (check analysis_status before treating as accepted):
+#   A Cartography exploration bonus is campaign exploration content, excluded from the duel. Printed clause: Cartography exploration bonus
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Exploration, post-battle Serious Injuries and a campaign-win condition; campaign scope. Scope review integration: {"clause_id":"field-of-scholarship","review_clause_id":"exploration","source_state":"unverified","review_status":"reviewed","scope_reason":"A Cartography exploration bonus is campaign exploration content, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Cartography exploration bonus, Physiology injury reroll, Poetry leader Leadership","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: PARTIAL - no injury-reroll operator and no recorded supplied-Leadership producer.

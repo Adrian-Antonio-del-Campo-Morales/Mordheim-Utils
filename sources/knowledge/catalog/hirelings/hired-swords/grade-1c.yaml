@@ -35,6 +35,16 @@ profiles:
         Causa miedo.
     name_i18n:
       es: Causan Miedo
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.causes-fear
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.causes-fear
   - id: hireling.hired-sword.bone-goliath.rule.may-not-run
     name: May Not Run
     effect: May not run but may charge.
@@ -51,6 +61,16 @@ profiles:
         Inmune a la psicología.
     name_i18n:
       es: Inmune a la Psicología
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.psychology-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.psychology-immunity
   - id: hireling.hired-sword.bone-goliath.rule.immune-to-poison
     name: Immune to Poison
     effect: Immune to poison.
@@ -91,6 +111,16 @@ profiles:
         Trata Aturdido como Derribado.
     name_i18n:
       es: Sin Dolor
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: skill.ignore-pain
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: skill.ignore-pain
   - id: hireling.hired-sword.bone-goliath.rule.mindless
     name: Mindless
     effect: Never gains Experience.
@@ -371,6 +401,16 @@ profiles:
         Usa la regla de odio de la fuente.
     name_i18n:
       es: Odio
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.hatred-undead
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.hatred-undead
   - id: hireling.hired-sword.grave-robber.rule.grave-robbing
     name: Grave Robbing
     effect: Uses source post-battle grave-robbing table.

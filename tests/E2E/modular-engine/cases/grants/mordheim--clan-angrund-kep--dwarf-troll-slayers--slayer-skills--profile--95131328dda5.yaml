@@ -1,0 +1,87 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/clan-angrund-kep/dwarf-troll-slayers--slayer-skills/profile.skill-access
+# scaffold_fingerprint: 164b18e98f3ebd2823c3e8dde438a64e60ec18016230191e1ba9d358d661d2d4
+# authoring_status: AUTHORED
+# authoring_progress: both halves of the admitted clause carry an authored scenario: the Dwarf Troll
+#   Slayer that selects a printed Slayer skill is built and the duel runs, and a special skill
+#   outside its tables is refused with the shared access diagnostic.  The member used for the
+#   admission is Ferocious Charge, the Slayer special skill this band binds under Slayer Skills.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the printed permission (Troll Slayers may choose from the Troll
+#   Slayer skill table instead of the normal table when they gain a new skill).  The admission
+#   scenario builds the recipient with skill.ferocious-charge, the mechanic this band's own Slayer
+#   Skills rule binds, and records that the duel ran unrefused; the closure scenario shows a special
+#   skill outside the band's tables refused.  The binding declares only the category, so the rest of
+#   the Troll Slayer table stays the KB's to enumerate.  REVIEWED still requires manual semantic
+#   review.
+# origin_id:
+#   rule/mordheim/clan-angrund-kep/dwarf-troll-slayers--slayer-skills/profile.skill-access
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clan-angrund-kep/special-rules.yaml
+# source_fingerprint:
+#   922aa3a569cf33f4d28a3ddb026440955c004e4537e984d74631a700d2e587a2
+# source_sha256_at_generation:
+#   a3d8b4bc4ca8c9711e279023946768eb1625c405d02961534d01facf6b146b09
+# Printed rule text:
+#   Troll Slayers may choose a kill from the Troll Slayer skill table instead of the normal skill table when they gain a new skill.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Special skill-list access: the Dwarf Troll Slayers may choose the Slayer skill table instead of the normal tables.
+# effect_id:
+#   profile.skill-access
+# relation:
+#   equivalent
+# parameters:
+#   {"category":"special"}
+# conditions:
+#   {"recipient":"dwarf-troll-slayers","list":"troll-slayer-skills"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The binding grants the special category; the individual kill effects are separate printed skills. Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded semantic contract and this band's own Slayer Skills
+# binding; no engine output was consulted.  Both fighters are given zero attacks so the round
+# resolves without dice and the observation is about admission, not about the skill's mechanics.
+
+- audit_id: rule/mordheim/clan-angrund-kep/dwarf-troll-slayers--slayer-skills/profile.skill-access
+  id: a-printed-slayer-skill-is-admitted-to-the-recipient
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-troll-slayers
+      skill_ids: [skill.ferocious-charge]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_final: {rounds_executed: 1}
+
+- audit_id: rule/mordheim/clan-angrund-kep/dwarf-troll-slayers--slayer-skills/profile.skill-access
+  id: a-special-skill-outside-the-bands-tables-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-troll-slayers
+      skill_ids: [skill.miniath]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to clan-angrund-kep/dwarf-troll-slayers: ['skill.miniath']"

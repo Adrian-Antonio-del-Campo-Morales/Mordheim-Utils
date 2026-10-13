@@ -1,0 +1,93 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.dueling-pride
+# scaffold_fingerprint: 42df35ca4297b42294f740c7dd98b5ced89dd12cabdee13090d878b0a4bc414d
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios show the first-round reroll against an enemy Hero and
+#   its absence against an enemy Henchman, both supplied as explicit fighter roles.
+# origin_id:
+#   mechanic/mechanic.dueling-pride
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   e27e3bcd3c93b3e120295f9dd78af3d80fd546faf9f51166f9eb39065e0fde9f
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Fierezza Heroes re-roll failed melee hits in the first combat round against enemy Heroes.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Fierezza Heroes re-roll failed close-combat hits in the first combat round when fighting an enemy Hero. Closure: with both fighters Heroes and the Fierezza house declared, missed close-combat hits are re-rolled in the first round only.
+# effect_id:
+#   mechanic.dueling-pride
+# relation:
+#   parameterized_variant
+# parameters:
+#   {"first_round": true, "recipient": "Fierezza Heroes", "reroll": "failed melee hits", "target": "enemy Heroes"}
+# conditions:
+#   {"house": "house-guard.fierezza", "opponent": "fighter-kind.hero", "trigger": "first round"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   _hit_reroll raises pride only for first_round, requires an explicit house-guard.* declaration, resolves house-guard.fierezza with fighter-kind.hero and refuses to guess the opponent role (it raises instead). The printed house/role restrictions are therefore enforced as explicit inputs; the reroll itself is delivered.
+
+# --- Authored scenarios ---
+# The Fierezza House Guard Hero fights an enemy Hero in the first round, so the failed
+# mace hit is taken again.  Both sides declare their fighter role, never a band name.
+- audit_id: mechanic/mechanic.dueling-pride
+  id: a-missed-hit-against-an-enemy-hero-is-taken-again
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.dueling-pride]
+      trait_overrides: {house_guard_house: fierezza, fighter_kind: hero}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {fighter_kind: hero}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed target is the enemy Hero: against a Henchman the same two stands.
+- audit_id: mechanic/mechanic.dueling-pride
+  id: the-same-miss-stands-against-an-enemy-henchman
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.dueling-pride]
+      trait_overrides: {house_guard_house: fierezza, fighter_kind: hero}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {fighter_kind: henchman}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

@@ -1,0 +1,126 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-dark-elves/dark-elf-sorceress--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: 8f8fb465d43fc64868ca835c3dd191fc842c248a9418fafce6dce3bcaf952f49
+# authoring_status: PARTIAL
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole--scope--equipment-bars (scope: YES)
+# PARTIAL[whole--scope--equipment-bars]: [C] 2 scenarios (blackpowder half authored, Whip half pending).  Category C: which message the module emits for a Sorceress carrying the Beastmaster's Whip (the token refusal `\"beastmaster_whip\" is forbidden for lustria-dark-elves/dark-elf-sorceress.` or the aggregated `equipment is not available to ...` summary whose list tail is unrecorded) is the absent observation, and only execution or a recorded sample fixes it.  The
+#   installation the previous note called missing IS declared, in this band's own sources: special-rules.yaml
+#   carries `dark-elf-sorceress--equipment-restrictions` (implemented YES, grant profile, applies_to
+#   profile_ids [dark-elf-sorceress]) with parameters.forbids [beastmaster_whip], and the band row above it
+#   installs compiler.no-blackpowder-weapons with grant: band.  The authored pair therefore is a Sorceress
+#   carrying weapon.pistol refused with the shared blackpowder sentence, plus the accepted-at-construction
+#   control.  Pending is only the Whip half, and not for want of a binding: the Whip's list entry in this band's
+#   equipment-access.yaml is gated `applies_to.profile_ids: [beastmaster]`, so a Sorceress carrying it reaches
+#   the earlier '"beastmaster_whip" is not on any equipment list of <band>/<profile>.' summary rather than the
+#   token refusal, and which of those two messages a Sorceress build raises is the datum that stays open.  The
+#   printed casting-while-armoured sentence stays out of scope as recorded.  REVIEWED still requires manual
+#   semantic review.
+# origin_id:
+#   rule/trollheim/lustria-dark-elves/dark-elf-sorceress--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-dark-elves/special-rules.yaml
+# source_fingerprint:
+#   6b228f7ea0694ef57d8601fd8f10ed9ddc1322bb8b04ab5be42408830cba35b6
+# source_sha256_at_generation:
+#   00d87d88f399d776fda8fb2a10d2efe24738e1874089cf0e5e9749e798f89039
+# Printed rule text:
+#   May never use blackpowder weapons... May not select the Beastmaster's Whip.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The blackpowder bar and the bar on the Beastmaster's Whip are construction restrictions on this Sorceress; the casting clause printed after them is decided separately. Printed clause: May never use blackpowder weapons... May not select the Beastmaster's Whip.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The blackpowder ban is shared; spell casting while armoured is excluded. Scope review integration: {"clause_id":"whole","review_clause_id":"equipment-bars","source_state":"matched","review_status":"reviewed","scope_reason":"The blackpowder bar and the bar on the Beastmaster's Whip are construction restrictions on this Sorceress; the casting clause printed after them is decided separately.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Prohibition: the Dark Elf Sorceress may not use blackpowder weapons or the Beastmaster's Whip; the armour/spell condition is excluded.","effect_id":"profile.equipment-restrictions","relation":"equivalent","parameters":"{\"forbids\":[\"beastmaster_whip\"]}","conditions":"{\"recipient\":\"dark-elf-sorceress\"}","consumer":"[\"packages/typescript/domain/eligibility/index.ts::profileFactsProjection\",\"packages/python/roster-construction/mordheim_construction/eligibility.py::context\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.profile-restrictions","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/trollheim/lustria-dark-elves/special-rules.yaml\"]"},"inherited_clause_text":"May never use blackpowder weapons... May not select the Beastmaster's Whip. May not cast spells while wearing armour.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"905","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the actual forbidden categories and recipients. Body-armour-only, all armour, missiles, blackpowder, drugs and poisons are distinct restrictions. Construction legality can affect a melee build even when shooting is excluded.","boundary":"Current child only; do not import excluded sibling or combined-parent behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: whole--scope--casting-while-armoured (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/trollheim/lustria-dark-elves/dark-elf-sorceress--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-dark-elves/special-rules.yaml
+# source_fingerprint:
+#   6b228f7ea0694ef57d8601fd8f10ed9ddc1322bb8b04ab5be42408830cba35b6
+# source_sha256_at_generation:
+#   00d87d88f399d776fda8fb2a10d2efe24738e1874089cf0e5e9749e798f89039
+# Printed rule text:
+#   May not cast spells while wearing armour.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The bar on casting spells while wearing armour concerns the excluded casting subsystem and states no separate duel consequence. Printed clause: May not cast spells while wearing armour.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The blackpowder ban is shared; spell casting while armoured is excluded. Scope review integration: {"clause_id":"whole","review_clause_id":"casting-while-armoured","source_state":"matched","review_status":"reviewed","scope_reason":"The bar on casting spells while wearing armour concerns the excluded casting subsystem and states no separate duel consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Prohibition: the Dark Elf Sorceress may not use blackpowder weapons or the Beastmaster's Whip; the armour/spell condition is excluded.","effect_id":"profile.equipment-restrictions","relation":"equivalent","parameters":"{\"forbids\":[\"beastmaster_whip\"]}","conditions":"{\"recipient\":\"dark-elf-sorceress\"}","consumer":"[\"packages/typescript/domain/eligibility/index.ts::profileFactsProjection\",\"packages/python/roster-construction/mordheim_construction/eligibility.py::context\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.profile-restrictions","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/trollheim/lustria-dark-elves/special-rules.yaml\"]"},"inherited_clause_text":"May never use blackpowder weapons... May not select the Beastmaster's Whip. May not cast spells while wearing armour.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+# authoring_progress: 2 authored scenario(s) in this file; authored clause: the blackpowder half of
+#   'whole--scope--equipment-bars' (a pistol-carrying Dark Elf Sorceress refused with `blackpowder weapons are
+#   forbidden for lustria-dark-elves/dark-elf-sorceress`, from the band's own compiler.no-blackpowder-weapons row,
+#   plus the accepted-at-construction control).  Still pending in this clause: the Beastmaster's Whip bar, whose
+#   recorded forbids binding does exist but whose gated list entry decides between two stage messages - see the
+#   clause note.  REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/trollheim/lustria-dark-elves/dark-elf-sorceress--equipment-restrictions/profile.equipment-restrictions
+  id: dark-elf-sorceress-with-a-pistol-is-refused
+  covers:
+  - whole--scope--equipment-bars
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-elf-sorceress
+      main_weapon_id: weapon.pistol
+  expect_error: blackpowder weapons are forbidden for lustria-dark-elves/dark-elf-sorceress
+
+- audit_id: rule/trollheim/lustria-dark-elves/dark-elf-sorceress--equipment-restrictions/profile.equipment-restrictions
+  id: dark-elf-sorceress-without-blackpowder-is-accepted-at-construction
+  covers:
+  - whole--scope--equipment-bars
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-elf-sorceress
+    second:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: corsairs
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    second:
+      condition: OUT
+  expect_initial:
+    second.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: second_out

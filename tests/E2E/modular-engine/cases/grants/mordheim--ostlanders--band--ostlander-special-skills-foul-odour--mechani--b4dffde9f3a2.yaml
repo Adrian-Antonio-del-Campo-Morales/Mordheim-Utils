@@ -1,0 +1,103 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/ostlanders/band--ostlander-special-skills-foul-odour/mechanic.foul-odour
+# scaffold_fingerprint: 20e40fbd37cedf5e7f4827a2e67d43c14bf43ffad47493aa57d4807a0c792488
+# authoring_status: AUTHORED
+# authoring_progress: the admitted foul-odour clause carries one authored scenario pair derived from
+# the printed rule and this band's own binding (special-rules.yaml id
+# band--ostlander-special-skills-foul-odour, a selectable warband skill, effect mechanic.foul-odour):
+# a living enemy suffers the printed -1 To Hit, and the printed Undead exemption keeps the ordinary
+# target.  The printed "cannot carry open flames" and "fire attacks +1 Strength" sentences are
+# equipment/attack clauses recorded with their own blocks and are not asserted here.  REVIEWED still
+# requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: foul-odour (scope: YES)
+# AUTHORED[foul-odour]: 2 scenarios show the printed To-Hit penalty on the Ostlander this band grants
+# it to (ostlanders / the Foul Odour warband skill bound to mechanic.foul-odour, selected by the
+# fixture on the admitted Elder profile).  A four would hit an equal Weapon Skill opponent, but against
+# the reeking warrior the target is five, so the living attacker misses; the second scenario is the
+# printed exemption, an Undead attacker, whose same four hits on the ordinary target and wounds.  The
+# Possessed half of the exemption is not asserted because this file declares no second bearer for it.
+# REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/ostlanders/band--ostlander-special-skills-foul-odour/mechanic.foul-odour
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/ostlanders/special-rules.yaml
+# source_fingerprint:
+#   3424463601f35ccde1bd380f122bb58f3d320116b58677cbd41d1a4a4a6e6525
+# source_sha256_at_generation:
+#   77963c68e5c665150de957fc6eee95008625244ff49717bf003d939f4197bf01
+# Printed rule text:
+#   Ostlanders are prodigious drinkers and none too hygienic! This warrior rises head and shoulders above the rest. After a lifetime of drinking, liquor has little effect on him any more... not that this stops him from consuming massive quantities! His unwashed clothes and sweat reek of alcohol and all living enemies (not Undead or Possessed) are at -1 to hit him in hand-to-hand combat. In addition, the warrior cannot carry any open flames (torch, lantern, etc) and fire attacks made against him are resolved at +1 Strength as his booze soaked clothing burns readily.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Living enemies that are neither Undead nor Possessed suffer -1 To Hit against this warrior in close combat. Observable: the To-Hit target is one worse for a living opponent.
+# effect_id:
+#   mechanic.foul-odour
+# relation:
+#   related
+# parameters:
+#   {"hit_modifier":-1}
+# conditions:
+#   {"trigger":"close combat","recipient":"living non-Undead non-Possessed enemies","duration":"whole duel"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Cross-family To-Hit modifier (block A granularity). The co-printed 'cannot carry open flames' and 'fire attacks +1 Strength' sentences are equipment/attack clauses owned by blocks D and A. Surface reuse candidate: {"family":"mechanic.foul-odour","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare penalty recipient, melee-only/first-round timing, species/fire exceptions and stacking. A hit penalty is not an armour modifier, and natural six handling remains part of the hit resolver.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and this band's printed rule binding; no engine output was consulted.
+- audit_id: rule/mordheim/ostlanders/band--ostlander-special-skills-foul-odour/mechanic.foul-odour
+  id: a-living-enemy-needs-five-to-hit-the-reeking-warrior
+  covers: [foul-odour]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: ostlanders
+      profile_id: elder
+      special_rule_ids: [band--ostlander-special-skills-foul-odour]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/mordheim/ostlanders/band--ostlander-special-skills-foul-odour/mechanic.foul-odour
+  id: an-undead-attacker-ignores-the-reek
+  covers: [foul-odour]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: ostlanders
+      profile_id: elder
+      special_rule_ids: [band--ostlander-special-skills-foul-odour]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

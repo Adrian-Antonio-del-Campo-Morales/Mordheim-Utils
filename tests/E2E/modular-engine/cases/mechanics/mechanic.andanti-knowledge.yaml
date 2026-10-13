@@ -1,0 +1,88 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.andanti-knowledge
+# scaffold_fingerprint: 155125757b6cb222d8c2d5513e9f6cc1fc6d91edaf800e5aeb435c8551be88cb
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios evidence the printed +1 To Hit against a Vampire opponent
+#   and the unmodified target against any other opponent.
+# origin_id:
+#   mechanic/mechanic.andanti-knowledge
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   2902e36c45bad2413d4e151009f5a5c5fcec3e720fce38468ec77b9b78d257bd
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   When fighting a vampire they get +1 to hit in close combat.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Shared mechanic contract: Andanti Knowledge grants +1 to hit in close combat against an explicit Vampire opponent.
+# effect_id:
+#   mechanic.andanti-knowledge
+# relation:
+#   equivalent
+# parameters:
+#   {"to_hit_bonus":1}
+# conditions:
+#   {"opponent":"vampire"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Shared mechanic definition; the opponent must be explicitly supplied as a Vampire. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-mechanic.andanti-knowledge","verified_facet":"mechanic.andanti-knowledge","relationship":"shared_facet","boundary":"Melee hit bonus against an explicit Vampire opponent only; preserve bearer eligibility and do not infer Vampire from warband name.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# The 3 that misses a WS3 opponent hits with the printed +1.
+- audit_id: mechanic/mechanic.andanti-knowledge
+  id: a-vampire-opponent-is-hit-on-three
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      skill_ids: [mechanic.andanti-knowledge]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      trait_overrides: {vampire: true, vampire_bloodline: von-carstein}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Without the printed opponent the same 3 fails.
+- audit_id: mechanic/mechanic.andanti-knowledge
+  id: a-non-vampire-needs-the-four
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      skill_ids: [mechanic.andanti-knowledge]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

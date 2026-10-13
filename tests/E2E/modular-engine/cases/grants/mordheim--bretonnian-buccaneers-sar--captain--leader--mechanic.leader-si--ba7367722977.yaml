@@ -1,0 +1,277 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/bretonnian-buccaneers-sar/captain--leader/mechanic.leader-six
+# scaffold_fingerprint: 7a05f2bc4a7ef3aa4bdeaab9f604b2d1815b23bf3f7f70f76ab693ea4bc2d676
+# authoring_status: AUTHORED
+# authoring_progress: the admitted leader-six clause carries 5 authored scenarios for the
+#   printed supplied-leader contract. REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: leader-six (scope: YES)
+# AUTHORED[leader-six]: the printed supplied-leader contract of this leader profile carries
+#   5 scenarios: a same-band borrower that adopts the supplied Leadership for its own
+#   required test and passes with it; the same borrower declining the optional use; a
+#   supplied leader one inch beyond the printed radius; a supplied leader that is not
+#   standing; and the same profile supplied on the opposing side.  The borrower's own
+#   Leadership test is the Fear test of the charge it receives, whose printed consequence
+#   for a failure is explicit in state.second.fear_hit_sixes.
+# origin_id:
+#   rule/mordheim/bretonnian-buccaneers-sar/captain--leader/mechanic.leader-six
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/bretonnian-buccaneers-sar/special-rules.yaml
+# source_fingerprint:
+#   89ab71bc9f104111046cfce011264996947aebcd14cb6a5e8adbe07e6cffaf4b
+# source_sha256_at_generation:
+#   b41d767820570a40cb254a7dbbc530c8c526d93bb508503d9f1637780f78f1d9
+# Printed rule text:
+#   Any pirate within 6" of the Captain may use his Leadership characteristic when taking any Leadership tests.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A standing leader of the same warband within 6 inches may optionally lend his Leadership to this warrior for an individual Leadership test, replacing the tested value. Observable: for a supported duelist whose nearby same-band leader is supplied, the Leadership requirement uses the leader's value and no test is forced when the leader declines.
+# effect_id:
+#   mechanic.leader-six
+# relation:
+#   equivalent
+# parameters:
+#   {"range_inches":6,"provider_standing":true,"optional":true}
+# conditions:
+#   {"trigger":"the supported duelist takes an individual Leadership test","resolution":"before the dice, the borrower may adopt the supplied leader's value","recipient":"any same-band warrior other than the leader","duration":"per test","stacking":"one leader value replaces the tested warrior's own; never additive","exceptions":"provider must be standing, same side and same band tag; handler-only animals cannot borrow; opposing and foreign-band models are excluded"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band-specific wording of the shared 6-inch Leadership borrow (mechanic.leader-six). Consumer leadership.resolve_local_leadership enforces optionality, standing provider, range, same side and same band tag; the duel supplies the leader as an admitted nearby participant, not by simulating a group. Surface reuse candidate: {"family":"mechanic.leader-six","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The supplied leader is a nearby participant of the borrower's own side and band; the
+# borrower is the band's printed swabbies profile (Leadership 6) and the leader
+# is the printed captain profile (Leadership 8).
+#
+# The charged borrower fails against its own Leadership and passes with the
+# supplied leader's value, so the charge it received leaves it unclamped.
+# The supplied leader is a nearby participant of the borrower's own side and band; the
+# borrower is the band's printed swabbies profile (Leadership 6) and the leader
+# is the printed captain profile (Leadership 8), whose printed borrow radius is
+# 6 inches.
+#
+# The charged borrower fails against its own Leadership and passes with the
+# supplied leader's value, so the charge it received leaves it unclamped.
+# The supplied leader is a nearby participant of the borrower's own side and band; the
+# borrower is the band's printed swabbies profile (Leadership 6) and the leader
+# is the printed captain profile (Leadership 8), whose printed borrow radius is
+# 6 inches.
+#
+# The charged borrower fails against its own Leadership and passes with the
+# supplied leader's value, so the charge it received leaves it unclamped.
+# The supplied leader is a nearby participant of the borrower's own side and band; the
+# borrower is the band's printed swabbies profile (Leadership 6) and the leader
+# is the printed captain profile (Leadership 8), whose printed borrow radius is
+# 6 inches.
+#
+# The charged borrower fails against its own Leadership and passes with the
+# supplied leader's value, so the charge it received leaves it unclamped.
+# The supplied leader is a nearby participant of the borrower's own side and band; the
+# borrower is the band's printed swabbies profile (Leadership 6) and the leader
+# is the printed captain profile (Leadership 8), whose printed borrow radius is
+# 6 inches.
+#
+# The charged borrower fails against its own Leadership and passes with the
+# supplied leader's value, so the charge it received leaves it unclamped.
+- audit_id: rule/mordheim/bretonnian-buccaneers-sar/captain--leader/mechanic.leader-six
+  id: a-supplied-leader-at-six-inches-lends-his-leadership
+  covers: [leader-six]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: bretonnian-buccaneers-sar, profile_id: swabbies}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: bretonnian-buccaneers-sar
+          profile_id: captain
+    distances:
+      - [second, leader, 6]
+  decisions:
+    - {key: round.0.second.fear.charged.leader.leader, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The supplied leader is a nearby participant of the borrower's own side and band; the
+# borrower is the band's printed swabbies profile (Leadership 6) and the leader
+# is the printed captain profile (Leadership 8), whose printed borrow radius is
+# 6 inches.
+#
+# The use is optional: the same dice are tested against the borrower's own
+# Leadership when it declines, so the received charge clamps its hits.
+- audit_id: rule/mordheim/bretonnian-buccaneers-sar/captain--leader/mechanic.leader-six
+  id: declining-the-supplied-leader-keeps-the-borrowers-own-leadership
+  covers: [leader-six]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: bretonnian-buccaneers-sar, profile_id: swabbies}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: bretonnian-buccaneers-sar
+          profile_id: captain
+    distances:
+      - [second, leader, 6]
+  decisions:
+    - {key: round.0.second.fear.charged.leader.leader, value: false}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The supplied leader is a nearby participant of the borrower's own side and band; the
+# borrower is the band's printed swabbies profile (Leadership 6) and the leader
+# is the printed captain profile (Leadership 8), whose printed borrow radius is
+# 6 inches.
+#
+# Past the printed radius no use is offered at all, which the strict
+# decision tape itself proves.
+- audit_id: rule/mordheim/bretonnian-buccaneers-sar/captain--leader/mechanic.leader-six
+  id: a-leader-beyond-the-printed-radius-supplies-nothing
+  covers: [leader-six]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: bretonnian-buccaneers-sar, profile_id: swabbies}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: bretonnian-buccaneers-sar
+          profile_id: captain
+    distances:
+      - [second, leader, 7.0]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The supplied leader is a nearby participant of the borrower's own side and band; the
+# borrower is the band's printed swabbies profile (Leadership 6) and the leader
+# is the printed captain profile (Leadership 8), whose printed borrow radius is
+# 6 inches.
+#
+# The printed provider must be in action; a knocked-down leader lends
+# nothing.
+- audit_id: rule/mordheim/bretonnian-buccaneers-sar/captain--leader/mechanic.leader-six
+  id: a-supplied-leader-that-is-not-standing-supplies-nothing
+  covers: [leader-six]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: bretonnian-buccaneers-sar, profile_id: swabbies}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: second
+        condition: knocked-down
+        fighter:
+          collection: mordheim
+          band_id: bretonnian-buccaneers-sar
+          profile_id: captain
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The supplied leader is a nearby participant of the borrower's own side and band; the
+# borrower is the band's printed swabbies profile (Leadership 6) and the leader
+# is the printed captain profile (Leadership 8), whose printed borrow radius is
+# 6 inches.
+#
+# The printed leader lends to his own warband only, so the same profile
+# supplied on the opposing side supplies nothing.
+- audit_id: rule/mordheim/bretonnian-buccaneers-sar/captain--leader/mechanic.leader-six
+  id: a-supplied-leader-on-the-other-side-supplies-nothing
+  covers: [leader-six]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: bretonnian-buccaneers-sar, profile_id: swabbies}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: leader
+        side_id: first
+        condition: standing
+        fighter:
+          collection: mordheim
+          band_id: bretonnian-buccaneers-sar
+          profile_id: captain
+    distances:
+      - [second, leader, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

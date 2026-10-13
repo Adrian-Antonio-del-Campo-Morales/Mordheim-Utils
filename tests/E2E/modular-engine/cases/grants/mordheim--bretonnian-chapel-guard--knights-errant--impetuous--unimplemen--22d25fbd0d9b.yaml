@@ -1,0 +1,118 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/bretonnian-chapel-guard/knights-errant--impetuous/unimplemented.bretonnian-chapel-guard.knights-errant.impetuous
+# scaffold_fingerprint: cf428f3e2b1dfac3851104fb297183489321e25eaf70a7e6550f28c2567c2235
+# authoring_status: PARTIAL
+# authoring_progress: none of the three admitted clauses has an authored scenario.  The pending
+# requirement of each is named in its clause note below: two excluded spatial/movement producers and
+# one supplied-fact qualification with no admitted operator.  REVIEWED still requires manual semantic
+# review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: impetuous-avoid-compulsion (scope: YES)
+# PARTIAL[impetuous-avoid-compulsion]: [CLOSING-REVIEW [E]] no scenario is authorable in this revision.  The recorded
+#   relation is unresolved: the optional Leadership test that avoids the compulsion or keeps the
+#   original target belongs to the excluded spatial charge producer, and the duel receives its charge
+#   facts already resolved.  The missing datum is an admitted producer for that supplied-charge
+#   qualification (the rule never decides the outcome of a supplied charge by itself).
+# origin_id:
+#   rule/mordheim/bretonnian-chapel-guard/knights-errant--impetuous/unimplemented.bretonnian-chapel-guard.knights-errant.impetuous
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/bretonnian-chapel-guard/special-rules.yaml
+# source_fingerprint:
+#   4c9bbbdf73e399589de9730e5edc8d0877dba502dcb5a28cd4776b09f8a7a412
+# source_sha256_at_generation:
+#   9139664c4fa318c014e7f07bca71391533c1eaecdc6d1a19f66e2126ed5826f5
+# Printed rule text:
+#   During each Movement Phase, after declaring charges, a Knight Errant that is not in combat and did not charge this turn must charge an opposing standing warrior (not knocked down or stunned) that is within range if they are able. Likewise, a Knight Errant that declared a charge against a knocked down or stunned opponent will be compelled to charge a viable standing opponent instead. If you wish, you may choose to have the Knight take a leadership test (they may use their Leader's Leadership if they are within range); if the test is passed, they may move as normal or charge their original target. When making a compelled charge, the Knight Errant automatically passes all fear tests or any other psychology tests that would prevent them from charging.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The obligation to charge an in-range standing enemy is an admitted individual charge consequence of this duelist, resolved between the two duellists. Printed clause: During each Movement Phase, after declaring charges, a Knight Errant that is not in combat and did not charge this turn must charge an opposing standing warrior (not knocked down or stunned) that is within range if they are able. Likewise, a Knight Errant that declared a charge against a knocked down or stunned opponent will be compelled to charge a viable standing opponent instead. If you wish, you may choose to have the Knight take a leadership test (they may use their Leader's Leadership if they are within range); if the test is passed, they may move as normal or charge their original target. When making a compelled charge, the Knight Errant automatically passes all fear tests or any other psychology tests that would prevent them from charging.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   This test does not decide the result of an already supplied 1v1 charge. Scope review integration: {"clause_id":"impetuous-avoid-compulsion","review_clause_id":"impetuous-avoid-compulsion","source_state":"matched","review_status":"reviewed","scope_reason":"The obligation to charge an in-range standing enemy is an admitted individual charge consequence of this duelist, resolved between the two duellists.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The optional Leadership test to avoid compulsory movement or retain the original target belongs to that excluded movement producer.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{\"trigger\":\"optional avoidance of spatial charge compulsion\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"During each Movement Phase, after declaring charges, a Knight Errant that is not in combat and did not charge this turn must charge an opposing standing warrior (not knocked down or stunned) that is within range if they are able. Likewise, a Knight Errant that declared a charge against a knocked down or stunned opponent will be compelled to charge a viable standing opponent instead. If you wish, you may choose to have the Knight take a leadership test (they may use their Leader's Leadership if they are within range); if the test is passed, they may move as normal or charge their original target. When making a compelled charge, the Knight Errant automatically passes all fear tests or any other psychology tests that would prevent them from charging.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: impetuous-charge-psychology (scope: YES)
+# PARTIAL[impetuous-charge-psychology]: [CLOSING-REVIEW [C]] no scenario is authorable in this revision.  The contract is
+#   recorded as proposed.compelled-charge-psychology-exemption: only a supplied compelled charge
+#   passes the tests that would prevent it, and no admitted operator or binding supplies a
+#   "compelled charge" fact to the duel, while an unconditional Fear exemption would assert more than
+#   the printed sentence.  The missing datum is the binding that marks a charge as compelled; the
+#   printed qualification itself is recorded above.
+# origin_id:
+#   rule/mordheim/bretonnian-chapel-guard/knights-errant--impetuous/unimplemented.bretonnian-chapel-guard.knights-errant.impetuous
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/bretonnian-chapel-guard/special-rules.yaml
+# source_fingerprint:
+#   4c9bbbdf73e399589de9730e5edc8d0877dba502dcb5a28cd4776b09f8a7a412
+# source_sha256_at_generation:
+#   9139664c4fa318c014e7f07bca71391533c1eaecdc6d1a19f66e2126ed5826f5
+# Printed rule text:
+#   During each Movement Phase, after declaring charges, a Knight Errant that is not in combat and did not charge this turn must charge an opposing standing warrior (not knocked down or stunned) that is within range if they are able. Likewise, a Knight Errant that declared a charge against a knocked down or stunned opponent will be compelled to charge a viable standing opponent instead. If you wish, you may choose to have the Knight take a leadership test (they may use their Leader's Leadership if they are within range); if the test is passed, they may move as normal or charge their original target. When making a compelled charge, the Knight Errant automatically passes all fear tests or any other psychology tests that would prevent them from charging.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Only a supplied compelled charge automatically passes Fear and other Psychology tests that would prevent that charge. Observable: that charge succeeds without such a test; an ordinary charge and unrelated tests retain their normal rules.
+# effect_id:
+#   proposed.compelled-charge-psychology-exemption
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"supplied compelled charge","recipient":"Knight Errant","exceptions":"only tests preventing this charge"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Existing charge and Leadership consumers are insertion seams. Neither unconditional fear-immunity nor automatic-leadership expresses this qualification. No global scope decision or spatial charge subsystem is required to implement the supplied consequence.
+#
+# Clause: impetuous-movement (scope: YES)
+# PARTIAL[impetuous-movement]: [CLOSING-REVIEW [E]] no scenario is authorable in this revision.  The recorded relation is
+#   unresolved and the register states explicitly that no map should be built and no target forced to
+#   manufacture the charge fact: compulsory selection and retargeting need the excluded movement
+#   subsystem.  The missing datum is an admitted supplied-charge fact (the duel's actual charge is
+#   given, not derived), so the printed obligation has no discriminating observation.
+# origin_id:
+#   rule/mordheim/bretonnian-chapel-guard/knights-errant--impetuous/unimplemented.bretonnian-chapel-guard.knights-errant.impetuous
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/bretonnian-chapel-guard/special-rules.yaml
+# source_fingerprint:
+#   4c9bbbdf73e399589de9730e5edc8d0877dba502dcb5a28cd4776b09f8a7a412
+# source_sha256_at_generation:
+#   9139664c4fa318c014e7f07bca71391533c1eaecdc6d1a19f66e2126ed5826f5
+# Printed rule text:
+#   During each Movement Phase, after declaring charges, a Knight Errant that is not in combat and did not charge this turn must charge an opposing standing warrior (not knocked down or stunned) that is within range if they are able. Likewise, a Knight Errant that declared a charge against a knocked down or stunned opponent will be compelled to charge a viable standing opponent instead. If you wish, you may choose to have the Knight take a leadership test (they may use their Leader's Leadership if they are within range); if the test is passed, they may move as normal or charge their original target. When making a compelled charge, the Knight Errant automatically passes all fear tests or any other psychology tests that would prevent them from charging.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The obligation to charge an in-range standing enemy is an admitted individual charge consequence of this duelist, resolved between the two duellists. Printed clause: During each Movement Phase, after declaring charges, a Knight Errant that is not in combat and did not charge this turn must charge an opposing standing warrior (not knocked down or stunned) that is within range if they are able. Likewise, a Knight Errant that declared a charge against a knocked down or stunned opponent will be compelled to charge a viable standing opponent instead. If you wish, you may choose to have the Knight take a leadership test (they may use their Leader's Leadership if they are within range); if the test is passed, they may move as normal or charge their original target. When making a compelled charge, the Knight Errant automatically passes all fear tests or any other psychology tests that would prevent them from charging.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Do not build a map or force a target merely to supply the charge fact. Scope review integration: {"clause_id":"impetuous-movement","review_clause_id":"impetuous-movement","source_state":"matched","review_status":"reviewed","scope_reason":"The obligation to charge an in-range standing enemy is an admitted individual charge consequence of this duelist, resolved between the two duellists.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Compulsory spatial charge selection and retargeting to a standing enemy require range/target movement and are excluded; the duel receives its actual charge facts.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{\"trigger\":\"Movement Phase after charge declarations\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"During each Movement Phase, after declaring charges, a Knight Errant that is not in combat and did not charge this turn must charge an opposing standing warrior (not knocked down or stunned) that is within range if they are able. Likewise, a Knight Errant that declared a charge against a knocked down or stunned opponent will be compelled to charge a viable standing opponent instead. If you wish, you may choose to have the Knight take a leadership test (they may use their Leader's Leadership if they are within range); if the test is passed, they may move as normal or charge their original target. When making a compelled charge, the Knight Errant automatically passes all fear tests or any other psychology tests that would prevent them from charging.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

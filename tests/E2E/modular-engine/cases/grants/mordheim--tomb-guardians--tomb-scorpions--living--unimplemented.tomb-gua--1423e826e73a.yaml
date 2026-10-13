@@ -1,0 +1,55 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/tomb-guardians/tomb-scorpions--living/unimplemented.tomb-guardians.tomb-scorpions.living
+# scaffold_fingerprint: 5eac16f3733fcf105b632170480abae18df2d256c9d8abf55fc8f4a51071fa1d
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is authorable for the admitted living clause.  The record carries no
+# effect_id, an unresolved relation and no consumer, and the band's own row for it is the deferred null
+# placeholder unimplemented.tomb-guardians.tomb-scorpions.living (scope LATER, reason "Deferred subsystem:
+# psychology or mounts").  The printed sentence is a creature-type declaration ("Tomb Scorpions are living
+# creatures and are affected by Psychology normally"), while the same profile compiles
+# combat_traits: {creature_kind: undead} (bands/mordheim/tomb-guardians/profiles.yaml), so a tape asserting
+# the printed living status would have to contradict the compiled creature kind; the classification has no
+# key that exhibits it and the creature-kind Psychology subsystem is deferred.  The missing representation is
+# that creature-kind projection, not a clarification.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: living (scope: YES)
+# PARTIAL[living]: [C] not asserted.  The printed classification has no effect_id, no binding and no consumer,
+# and the profile's creature kind is compiled as undead, so the durable fact the clause states has no
+# observable of its own until the deferred creature-kind Psychology projection exists.
+# origin_id:
+#   rule/mordheim/tomb-guardians/tomb-scorpions--living/unimplemented.tomb-guardians.tomb-scorpions.living
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/tomb-guardians/special-rules.yaml
+# source_fingerprint:
+#   17e1e06e6f94fc9bfc45166daa4a9c6db352cc67643fea3a05d6e4ef7dafb9e6
+# source_sha256_at_generation:
+#   10f2db0476c746dca95df927870c2df119b09ea8a035a89f9c1cdb9e0f620779
+# Printed rule text:
+#   Tomb Scorpions are living creatures and are affected by Psychology normally.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Being a living creature and therefore affected by Psychology normally is an admitted lasting individual state of this duelist. Printed clause: Tomb Scorpions are living creatures and are affected by Psychology normally.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Map/movement, deployment, water/weather or mount mechanics are permanent 1v1 exclusions; the clause is recorded explicitly and no implementation consumer is assigned. Scope review integration: {"clause_id":"living","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Being a living creature and therefore affected by Psychology normally is an admitted lasting individual state of this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Tomb Scorpions are living creatures and are affected by Psychology normally.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: PARTIAL - the printed living classification has no projection or consumer.

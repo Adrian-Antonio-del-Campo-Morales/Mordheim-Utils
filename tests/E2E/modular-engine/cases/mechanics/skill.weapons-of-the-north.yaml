@@ -1,0 +1,144 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.weapons-of-the-north
+# scaffold_fingerprint: b853433b0f3c30ca599e567607e1402d6fed0182c1202dfaa16dc862339315d9
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenarios cover the axe reroll in two consecutive rounds,
+#   the two-handed weapon, the dwarf axe and the refusal outside the scope.
+# origin_id:
+#   mechanic/skill.weapons-of-the-north
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   2b72cb2f95369e74c8c6214fb9e5b01e1004485e613136f311858a382123ab7f
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Re-rolls failed hit rolls with an axe or double-handed weapon.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The fighter re-rolls failed hit rolls with an axe or double-handed weapon. Closure: missed hits with an axe, dwarf axe or two-handed weapon are re-rolled in every round.
+# effect_id:
+#   skill.weapons-of-the-north
+# relation:
+#   equivalent
+# parameters:
+#   {"reroll_hits": "failed hits", "weapon_scope": ["weapon.axe", "weapon.dwarf-axe", "weapon.double-handed-weapon"]}
+# conditions:
+#   {"weapon_scope": "axe or double-handed weapon"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   _hit_reroll raises the reroll for the three weapon tags without a round or charge condition, matching the printed unconditional wording of the skill. Surface reuse candidate: {"family":"skill.weapons-of-the-north","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare actual weapon identity, charge/first-round condition, natural versus modified Strength, failed versus all-roll reroll and critical eligibility. Keep weapon-independent restrictions and special attacks outside an unsupported shared benefit.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The printed wording carries no charging turn and no first-round limit, so the same
+# failed axe hit is taken again in the second round as well.  In the first round the
+# rerolled hit then fails its own To Wound roll, which shows only the hit is taken
+# again.  Nothing here charges either fighter, so the reroll cannot come from a
+# charge.
+- audit_id: mechanic/skill.weapons-of-the-north
+  id: an-axe-miss-is-rerolled-in-every-round
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      skill_ids: [skill.weapons-of-the-north]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 2}
+    - {key: round.1.first.attack.0.hit.reroll, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 4}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 0, state.second.wounds: 2}
+    1: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+# The two-handed weapon is the second weapon in the printed scope and keeps its
+# strike-last priority, so the mace opponent resolves first.
+- audit_id: mechanic/skill.weapons-of-the-north
+  id: a-two-handed-weapon-miss-is-rerolled
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids: [skill.weapons-of-the-north]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: True, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The dwarf axe is the third weapon named by the accepted scope and carries its own
+# tag; the rerolled hit is declared as an ordinary hit so the scenario does not
+# depend on the item's damage profile.
+- audit_id: mechanic/skill.weapons-of-the-north
+  id: a-dwarf-axe-miss-is-rerolled
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.dwarf-axe
+      skill_ids: [skill.weapons-of-the-north]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# A weapon outside the printed axe / two-handed scope keeps its failed hit.
+- audit_id: mechanic/skill.weapons-of-the-north
+  id: an-out-of-scope-weapon-miss-is-not-rerolled
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.weapons-of-the-north]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

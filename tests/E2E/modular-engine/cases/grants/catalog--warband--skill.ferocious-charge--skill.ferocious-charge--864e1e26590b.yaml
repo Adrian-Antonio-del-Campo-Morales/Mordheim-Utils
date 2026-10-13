@@ -1,0 +1,125 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/warband/skill.ferocious-charge/skill.ferocious-charge
+# scaffold_fingerprint: 4fbfd234024a9cfa93aee4c2a2d24e1d96f50611cfb6fd8ba0534abcd0676afd
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries three authored scenarios derived from the
+# printed rule, the recorded contract and the admitted ferocious-charge grants specification: the
+# charging turn carries one roll for each of the doubled attacks at the penalised target, the
+# uncharged turn strikes once at the ordinary target, and the same charging turn without the tag
+# is a single ordinary attack.  REVIEWED still requires manual semantic review and execution_status
+# stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios read the canonical clause on a hand-built single-Attack attacker.
+# The charge consumes two declared hit rolls at the penalised target of 5 (the first holding on 5,
+# the second failing on a 4 that would hit without the penalty), so both the doubled pool and the
+# penalty are asserted together; without a charge the same attacker strikes once at the ordinary
+# target of 4, and without the tag the charging turn is a single ordinary attack whose 4 hits,
+# which fixes both consequences to the shared operator rather than to the charge.  The printed
+# note that the doubling happens before any extra-weapon attack is added is a count-order term
+# that needs a second weapon this clause does not print, so it is not asserted here.
+# REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/catalog/warband/skill.ferocious-charge/unclassified
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/skills/warband.yaml
+# source_fingerprint:
+#   54dc664b5a6226ffd5e9bd19f7dcafba41e10a404b8858ae7a8bfade0977e645
+# source_sha256_at_generation:
+#   cbce88f8e195c72b1767c88af362131455b99435c0ffb53e58b55b7306161198
+# Printed rule text:
+#   The Slayer may double his attacks on the turn in which he charges. He will suffer a –1 to hit penalty on that turn.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Slayer may double his attacks on the turn in which he charges and suffers -1 to hit that turn. Closure: the charging pool is doubled (before the second-weapon attack is added) and one point of to-hit penalty applies.
+# effect_id:
+#   skill.ferocious-charge
+# relation:
+#   equivalent
+# parameters:
+#   {"attacks_multiplier":2,"hit_modifier":-1,"trigger":"charging turn"}
+# conditions:
+#   {"source": "canonical warband skill list"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Canonical definition of the shared ferocious-charge operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the catalog origin creates no second runtime contribution. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.ferocious-charge","verified_facet":"skill.ferocious-charge","relationship":"shared_facet","boundary":"Both charge-turn consequences belong together. Preserve count order, extra-attack timing and the relevant Berserker incompatibility; not ordinary Frenzy.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the admitted ferocious-charge grants
+# specification; no engine output was consulted.  The catalog origin binds no recipient, so the
+# fixture carries the canonical tag itself on a hand-built attacker (Weapon Skill 4, Attacks 1)
+# whose printed single Attack is what the charge doubles, and the opponent is an equal
+# Weapon-Skill boundary whose own strike is a declared natural 1.
+
+- audit_id: rule/catalog/warband/skill.ferocious-charge/skill.ferocious-charge
+  id: the-charging-turn-doubles-the-pool-and-penalises-the-hit
+  covers: [whole]
+  fighters:
+    first:
+      skill_ids: [skill.ferocious-charge]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, attacks.1.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/catalog/warband/skill.ferocious-charge/skill.ferocious-charge
+  id: without-the-charge-the-pool-is-not-doubled
+  covers: [whole]
+  fighters:
+    first:
+      skill_ids: [skill.ferocious-charge]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/catalog/warband/skill.ferocious-charge/skill.ferocious-charge
+  id: without-the-tag-the-charging-turn-is-ordinary
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

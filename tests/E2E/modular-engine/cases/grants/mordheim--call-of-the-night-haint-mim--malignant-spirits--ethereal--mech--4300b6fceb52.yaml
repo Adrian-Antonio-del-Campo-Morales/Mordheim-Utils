@@ -1,0 +1,185 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/call-of-the-night-haint-mim/malignant-spirits--ethereal/mechanic.ethereal-hit-save
+# scaffold_fingerprint: cf5ffe31d4e476f2a732a0cf683a92873d8ed5c50c1c027c8387dfe9ea65ef26
+# authoring_status: AUTHORED
+# authoring_progress: the admitted ethereal-save clause carries 3 authored scenarios derived from
+# the printed band Ethereal rule and the profile grant: the printed 4+ unmodifiable save discards
+# the hit before the wound roll, one face below lets the wound through and a magical attack never
+# rolls it.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: ethereal-save (scope: YES)
+# AUTHORED[ethereal-save]: 3 scenarios evidence the bearer's printed 4+ unmodifiable save taken
+#   after the To Hit roll: it holds on a 4 with no wound die requested at all, it fails one face
+#   below so the wound resolves, and a declared magical attack is never offered it.  The
+#   missile-pass-through and terrain/item sentences of the same printed rule stay excluded, as
+#   this file's own scope rows record; nothing here claims them.
+# origin_id:
+#   rule/mordheim/call-of-the-night-haint-mim/malignant-spirits--ethereal/mechanic.ethereal-hit-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/call-of-the-night-haint-mim/special-rules.yaml
+# source_fingerprint:
+#   9358fd8ff438bcae2cf7415c34193a1e51f4c3a3ead7f141ff8dbd4a1b0e9fdf
+# source_sha256_at_generation:
+#   d2e90dc0bf631c7cf3b2aaef1f8477ffa2db9a479224496cd5720932414cb94b
+# Printed rule text:
+#   See the band Ethereal rule.
+# Semantic contract (check analysis_status before treating as accepted):
+#   4+ unmodifiable save against all attacks, taken after the To Hit roll, unusable with Dodge or Step Aside and without effect against magical attacks; observable: a hit is discarded on 4+ before the wound roll.
+# effect_id:
+#   mechanic.ethereal-hit-save
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed after the To Hit roll in modular/attacks (hit path) and in modular/pools for prepared defences; magical attacks enter as attack.magical, which is exactly the printed exception. Surface reuse candidate: {"family":"mechanic.ethereal-hit-save","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: missile-passthrough (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/call-of-the-night-haint-mim/malignant-spirits--ethereal/mechanic.ethereal-hit-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/call-of-the-night-haint-mim/special-rules.yaml
+# source_fingerprint:
+#   9358fd8ff438bcae2cf7415c34193a1e51f4c3a3ead7f141ff8dbd4a1b0e9fdf
+# source_sha256_at_generation:
+#   d2e90dc0bf631c7cf3b2aaef1f8477ffa2db9a479224496cd5720932414cb94b
+# Printed rule text:
+#   See the band Ethereal rule.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Missile pass-through for this origin depends on shooting resolution and a fighter behind the target, both outside the duel. Printed clause: See the band Ethereal rule.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Needs a multi-model shooting model; in a 1v1 duel there is no model behind the target, so the clause is inapplicable rather than missing. Recorded so it is not silently dropped. Scope review integration: {"clause_id":"missile-passthrough","review_clause_id":"missile-passthrough","source_state":"matched","review_status":"reviewed","scope_reason":"Missile pass-through for this origin depends on shooting resolution and a fighter behind the target, both outside the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"A missile attack that misses because of the ethereal save passes through and hits the next model directly behind; observable: the shooting target behind the spirit is hit.","effect_id":"","relation":"related","parameters":"{}","conditions":"{}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_hit_context\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"B06-ward-and-regeneration","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_hit_context\"]"},"inherited_clause_text":"See the band Ethereal rule.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: terrain-and-items (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/call-of-the-night-haint-mim/malignant-spirits--ethereal/mechanic.ethereal-hit-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/call-of-the-night-haint-mim/special-rules.yaml
+# source_fingerprint:
+#   9358fd8ff438bcae2cf7415c34193a1e51f4c3a3ead7f141ff8dbd4a1b0e9fdf
+# source_sha256_at_generation:
+#   d2e90dc0bf631c7cf3b2aaef1f8477ffa2db9a479224496cd5720932414cb94b
+# Printed rule text:
+#   See the band Ethereal rule.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Leadership test to move through terrain or water and doubled item costs after warband formation; observable: terrain and post-formation purchasing.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Terrain, movement and post-formation acquisition are explicit 1v1 exclusions; the two failure-consequence sentences are retained here as excluded portions of a compound rule.
+
+# --- Authored scenarios ---
+# The bearer is the band's Malignant Spirits profile, which prints the Ethereal rule through its
+# own rule grant; the fixture's characteristics are hand-built facts (the profile is never read
+# for them here) and the bearer contributes no attacks, so the incoming mace swing is the only one.
+#
+# The save holds on the printed 4 and no wound die follows: the save intercepts the hit.
+- audit_id: rule/mordheim/call-of-the-night-haint-mim/malignant-spirits--ethereal/mechanic.ethereal-hit-save
+  id: the-ethereal-save-holds-on-four
+  covers: [ethereal-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: malignant-spirits
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.ethereal, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# One face below the printed save lets the attack continue to the wound roll.
+- audit_id: rule/mordheim/call-of-the-night-haint-mim/malignant-spirits--ethereal/mechanic.ethereal-hit-save
+  id: one-face-below-the-ethereal-save-lets-the-wound-through
+  covers: [ethereal-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: malignant-spirits
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.ethereal, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed exception removes the defence: no ethereal face is requested at all for a declared
+# magical attack, which the strict dice tape itself proves.
+- audit_id: rule/mordheim/call-of-the-night-haint-mim/malignant-spirits--ethereal/mechanic.ethereal-hit-save
+  id: a-magical-attack-bypasses-the-ethereal-save
+  covers: [ethereal-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {magical_attacks: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: malignant-spirits
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

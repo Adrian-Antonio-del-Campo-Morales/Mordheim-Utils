@@ -1,0 +1,99 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist
+# scaffold_fingerprint: 4f82eddd7136307ffccfcbfad761e34217c9b810b5d465bf8388b0968adca829
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is authorable for either admitted clause, and the blocker is the same
+#   for both and is recorded rather than guessed.  The KB record of this clause is the unimplemented
+#   placeholder `unimplemented.masters-of-horror-sylv.special.alchemist` (effects: binding null), the
+#   register records no effect_id, relation: unresolved, consumer: [] and implementation_work:
+#   `product`, and the printed Mad Scientist profile (profiles.yaml, rule_ids mad-scientist--leader and
+#   mad-scientist--immune-to-psychology) carries no alchemist row at all.  A search of packages/python
+#   for `alchemist` and for a potion-table operator returns nothing: there is no consumer of a
+#   game-start D6 potion table, no `FighterState` field for the addiction the printed sentence
+#   produces, and no decision seam for standing-and-brewing.  The characteristic bonuses could only be
+#   supplied through `initial_state`, which would evidence the fixture's own override rather than the
+#   printed table, so no tape can separate the rule from its absence.  What is missing is a product
+#   decision (whether a random pre-battle potion table belongs in a duel projection) plus its operator;
+#   the printed table entries themselves are complete in the source, so this is not source_blocked.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: start-of-game-potion--scope--addiction-state (scope: YES)
+# PARTIAL[start-of-game-potion--scope--addiction-state]: [D] no scenario is authorable.  The admitted
+#   condition limits whether one of the two duelists acts (he stands and brews until a 6 is rolled),
+#   but the record's effect_id is not recorded, its relation is unresolved and its consumer is empty,
+#   and no engine surface carries it: FighterState has no brewing or addicted field and resolve_round
+#   has no branch that could refuse an activation for it, so no observation can stand for the state.
+#   The creature_kind and spellcaster style projection this file's profile does use is present, so the
+#   missing datum is precisely the effect identity and its consumer, not a source or a fixture fact.
+# origin_id:
+#   rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/masters-of-horror-sylv/special-rules.yaml
+# source_fingerprint:
+#   ae304c1393619b7beea650119b5aa963397ccd4e12ca698b2ba59f7fdba9eec6
+# source_sha256_at_generation:
+#   aa3a466c2d2cd487c57151b91ed10b743efa71fdc3ee7c0bbf78b192034ed272
+# Printed rule text:
+#   Highly addictive. Roll D6 after battle. On 5+, Scientist becomes addicted and will not engage in any other activity during a game until he has had his Aberrantius Vigortia potion. He will stand and brew potions until a 6 is rolled.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Once addicted, the scientist will not engage in any other activity during a game and stands brewing until a 6 is rolled; that is a current state limiting whether one of the two duelists acts, admitted as a supplied condition. Printed clause: Highly addictive. Roll D6 after battle. On 5+, Scientist becomes addicted and will not engage in any other activity during a game until he has had his Aberrantius Vigortia potion. He will stand and brew potions until a 6 is rolled.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   A random pre-battle potion with after-battle addiction bookkeeping; the KB record is an unimplemented placeholder, and the choice of whether a random table belongs in a duel projection is a product decision. Scope review integration: {"clause_id":"start-of-game-potion","review_clause_id":"addiction-state","source_state":"matched","review_status":"reviewed","scope_reason":"Once addicted, the scientist will not engage in any other activity during a game and stands brewing until a 6 is rolled; that is a current state limiting whether one of the two duelists acts, admitted as a supplied condition.","notes":"The after-battle D6 that creates the addiction is campaign bookkeeping, but the state it produces acts inside the duel.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"At game start a D6 grants one of six potion effects for the game, and addiction rolls follow after the battle; observable: the granted characteristic for the duel.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B16-preparations","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"The Mad Scientist fancies himself an alchemist and brews all sorts of concoctions and potions to guzzle down prior to battle. Roll a D6 at game-start and consult the following table. 1: Potion of Resilience — Add +1 to Toughness for duration of game. 2: Brew of Strength — Add +1 to Strength for duration of game. 3-4: Quicksilver — Add +1 to Movement for duration of game. 5: Backley's Brew — Remove -1 from both Strength and Initiative until a Toughness test is passed. 6: Aberrantius Vigortia — Adds +1 to both Strength and Toughness. Highly addictive. Roll D6 after battle. On 5+, Scientist becomes addicted and will not engage in any other activity during a game until he has had his Aberrantius Vigortia potion. He will stand and brew potions until a 6 is rolled.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: start-of-game-potion--scope--potion-characteristic-bonuses (scope: YES)
+# PARTIAL[start-of-game-potion--scope--potion-characteristic-bonuses]: [CLOSING-REVIEW [C]] no scenario is authorable.
+#   The six printed table entries are complete (+1 Toughness, +1 Strength, +1 Movement, -1 Strength and
+#   Initiative until a Toughness test is passed, +1 to both), but their consumer is empty and there is
+#   no preparation or potion operator in packages/python to resolve the game-start D6 - a search for
+#   `alchemist` and for the table's own words returns no operator.  Declaring the bonus in
+#   `initial_state` would show the fixture override, not the printed table, and would leave the table
+#   itself unevidenced; the +1 Movement entry also has no duel counterpart at all.  The missing datum
+#   is one operator plus its acceptance decision, which the register itself marks as product work.
+# origin_id:
+#   rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/masters-of-horror-sylv/special-rules.yaml
+# source_fingerprint:
+#   ae304c1393619b7beea650119b5aa963397ccd4e12ca698b2ba59f7fdba9eec6
+# source_sha256_at_generation:
+#   aa3a466c2d2cd487c57151b91ed10b743efa71fdc3ee7c0bbf78b192034ed272
+# Printed rule text:
+#   1: Potion of Resilience — Add +1 to Toughness for duration of game. 2: Brew of Strength — Add +1 to Strength for duration of game. 3-4: Quicksilver — Add +1 to Movement for duration of game. 5: Backley's Brew — Remove -1 from both Strength and Initiative until a Toughness test is passed. 6: Aberrantius Vigortia — Adds +1 to both Strength and Toughness.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The D6 table grants the duelist current characteristic modifiers for the duration of the game (+1 Toughness, +1 Strength, -1 Strength and Initiative until a Toughness test is passed, +1 to both); those are admitted supplied bonuses and penalties of one fighter. Printed clause: 1: Potion of Resilience — Add +1 to Toughness for duration of game. 2: Brew of Strength — Add +1 to Strength for duration of game. 3-4: Quicksilver — Add +1 to Movement for duration of game. 5: Backley's Brew — Remove -1 from both Strength and Initiative until a Toughness test is passed. 6: Aberrantius Vigortia — Adds +1 to both Strength and Toughness.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   A random pre-battle potion with after-battle addiction bookkeeping; the KB record is an unimplemented placeholder, and the choice of whether a random table belongs in a duel projection is a product decision. Scope review integration: {"clause_id":"start-of-game-potion","review_clause_id":"potion-characteristic-bonuses","source_state":"matched","review_status":"reviewed","scope_reason":"The D6 table grants the duelist current characteristic modifiers for the duration of the game (+1 Toughness, +1 Strength, -1 Strength and Initiative until a Toughness test is passed, +1 to both); those are admitted supplied bonuses and penalties of one fighter.","notes":"The result 3-4 (+1 Movement) has no duel application because the duel has no movement; the printed table entry is not admitted as a movement rule.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"At game start a D6 grants one of six potion effects for the game, and addiction rolls follow after the battle; observable: the granted characteristic for the duel.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B16-preparations","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"The Mad Scientist fancies himself an alchemist and brews all sorts of concoctions and potions to guzzle down prior to battle. Roll a D6 at game-start and consult the following table. 1: Potion of Resilience — Add +1 to Toughness for duration of game. 2: Brew of Strength — Add +1 to Strength for duration of game. 3-4: Quicksilver — Add +1 to Movement for duration of game. 5: Backley's Brew — Remove -1 from both Strength and Initiative until a Toughness test is passed. 6: Aberrantius Vigortia — Adds +1 to both Strength and Toughness. Highly addictive. Roll D6 after battle. On 5+, Scientist becomes addicted and will not engage in any other activity during a game until he has had his Aberrantius Vigortia potion. He will stand and brew potions until a 6 is rolled.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

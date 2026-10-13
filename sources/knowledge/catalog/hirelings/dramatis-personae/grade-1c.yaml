@@ -42,6 +42,21 @@ profiles:
         Inmune a la psicología y supera automáticamente las pruebas de Liderazgo.
     name_i18n:
       es: Inmune a la Psicología
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.psychology-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.psychology-immunity
+      - id: mechanic.automatic-leadership
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.automatic-leadership
   - id: hireling.dramatis.belandysh-condemned-champion-of-chen.rule.inconsistency
     name: Inconsistency
     effect: Variable characteristics are rerolled when required by source.
@@ -149,6 +164,16 @@ profiles:
         Inmune a la psicología.
     name_i18n:
       es: Inmune a la Psicología
+    runtime:
+      grant: profile
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.psychology-immunity
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.psychology-immunity
   - id: hireling.dramatis.grand-master-ippan-shu.rule.feather-movement
     name: Feather Movement
     effect: Uses source movement rule.

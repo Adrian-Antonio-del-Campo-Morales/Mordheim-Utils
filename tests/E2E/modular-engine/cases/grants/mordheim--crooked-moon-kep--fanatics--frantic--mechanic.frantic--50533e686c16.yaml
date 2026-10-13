@@ -1,0 +1,108 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/crooked-moon-kep/fanatics--frantic/mechanic.frantic
+# scaffold_fingerprint: 5e11f4984f6c5561499c7d2aa5a1559eee9f1355472d4eae10cfefa5dc907b91
+# authoring_status: AUTHORED
+# authoring_progress: the admitted frantic clause carries two authored scenarios derived from the
+# printed sentence, the recorded contract and this band's own binding (special-rules.yaml: the Fanatic
+# strikes first ignoring penalties for weapons or initiative order, effect mechanic.frantic).  The
+# trigger shows the printed top order against a charger with the higher Initiative and the control
+# keeps the charger first without the band fixture.  REVIEWED still requires manual semantic review
+# and execution_status stays UNEXECUTED.
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: frantic (scope: YES)
+# AUTHORED[frantic]: 2 scenarios evidence the printed top order on the Fanatic this band grants it
+# to.  The opponent charges and has the higher Initiative, so the ordinary order would give it the
+# opening attack, while the declared tape of the round shows the Fanatic's own To Hit die resolved
+# first and the charger's second, both missing, so no wound or armour step is involved.  The control
+# repeats the duel with a hand-built fighter of the same characteristics instead of the band fanatic
+# and shows the charger opening the round.  The printed "ignoring penalties for weapons" facet is
+# proven in cases/mechanics/mechanic.frantic.yaml, so this band origin needs no third scenario.
+# REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/crooked-moon-kep/fanatics--frantic/mechanic.frantic
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/crooked-moon-kep/special-rules.yaml
+# source_fingerprint:
+#   c125b0d146bcc596fb05dad00542061ae66667b051aa0c94f1491d80f7ebbd56
+# source_sha256_at_generation:
+#   b4c792c5bc3ab074e3780a036b5af795eae3bf1eb8b75035fc31d4764deec7d6
+# Printed rule text:
+#   The Fanatic is hyperactive and will strike first in combat, ignoring penalties for weapons or initiative order.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Strikes before ordinary combatants regardless of weapon penalties or Initiative. Observable: this warrior resolves its attacks first against a non-strike-first opponent.
+# effect_id:
+#   mechanic.frantic
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"close combat resolution order","recipient":"this warrior","duration":"whole duel"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   phases.resolve_priority gives mechanic.frantic the top strike-first priority, ignoring weapon penalties and ordinary Initiative. Surface reuse candidate: {"family":"mechanic.frantic","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and this band's printed rule binding; no engine output was
+# consulted.  The fanatic fixture carries no declared weapon, so its attack pool is pinned to one die
+# by the initial state and the tape is one To Hit die per side.  Both dice miss, which keeps the round
+# about the resolution order rather than about damage, and the strict tape makes the order itself the
+# evidence: StrictDice rejects a roll the fixture never declared, and expect_events fixes the sequence.
+#
+# The trigger: the opponent charges and has the higher Initiative, so the ordinary order would give
+# it the opening attack.
+- audit_id: rule/mordheim/crooked-moon-kep/fanatics--frantic/mechanic.frantic
+  id: the-frantic-fanatic-opens-the-round-against-a-charger-with-the-higher-initiative
+  covers: [frantic]
+  fighters:
+    first: {collection: mordheim, band_id: crooked-moon-kep, profile_id: fanatics}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+  initial_state: {first: {attacks: 1}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The control: the identical duel without the band fanatic, where the charge and the higher
+# Initiative decide the opening attack.
+- audit_id: rule/mordheim/crooked-moon-kep/fanatics--frantic/mechanic.frantic
+  id: without-the-band-frantic-grant-the-charger-opens-the-round
+  covers: [frantic]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 3,
+        state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}

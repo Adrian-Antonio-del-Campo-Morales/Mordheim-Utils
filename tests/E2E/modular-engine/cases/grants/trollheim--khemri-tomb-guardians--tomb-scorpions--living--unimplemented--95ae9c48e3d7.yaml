@@ -1,0 +1,44 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-tomb-guardians/tomb-scorpions--living/unimplemented.khemri-tomb-guardians.tomb-scorpions.living
+# scaffold_fingerprint: dfb2040a29596cb11f64620c45fb09ae1a946cccd06ea6c149b58b2c6db5d39b
+# authoring_status: PARTIAL
+# authoring_progress: the admitted living clause was reviewed and no scenario is authorable.  The printed sentence ("Tomb Scorpions are living creatures and are affected by Psychology normally") is a classification: the register records no effect_id, an unresolved relation and no consumer, and its only duel-visible consequence would be a Psychology test the creature does take, whose tape key no case in the current revision records.  Writing one would invent the key.  The missing datum is either a consumer for the classification or a recorded Fear/Psychology test key for the defender.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: living (scope: YES)
+# PARTIAL[living]: [C] no scenario is authorable for this clause.  The classification has no recorded consumer, and the observable it would produce (the creature does take a Psychology test) needs the tape key the psychology context requests from the defender, which no authored case in this revision records.  Pending: that key or an explicit classification consumer.
+# origin_id:
+#   rule/trollheim/khemri-tomb-guardians/tomb-scorpions--living/unimplemented.khemri-tomb-guardians.tomb-scorpions.living
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-tomb-guardians/special-rules.yaml
+# source_fingerprint:
+#   e82dc5d6a721bdd9757db64fdc8572acb3cb4aa909527b7179592698e771951a
+# source_sha256_at_generation:
+#   a9c8df6aaba67eeae09b5dee369da75a30c41cfc563e893c57ef2a764afbfc0f
+# Printed rule text:
+#   Tomb Scorpions are living creatures and are affected by Psychology normally.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Being a living creature and therefore affected by Psychology normally is an admitted lasting individual state of this duelist. Printed clause: Tomb Scorpions are living creatures and are affected by Psychology normally.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Map/movement, deployment, water/weather or mount mechanics are permanent 1v1 exclusions; the clause is recorded explicitly and no implementation consumer is assigned. Scope review integration: {"clause_id":"living","review_clause_id":"whole","source_state":"matched","review_status":"reviewed","scope_reason":"Being a living creature and therefore affected by Psychology normally is an admitted lasting individual state of this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Tomb Scorpions are living creatures and are affected by Psychology normally.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

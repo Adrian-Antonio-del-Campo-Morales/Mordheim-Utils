@@ -560,15 +560,15 @@ rules:
     profile_ids:
     - kroxigor
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-lizardmen.kroxigor.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: kroxigor--large-target
   name: Large Target
   effect: >-
@@ -672,15 +672,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: band
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-lizardmen.band.cold-blooded
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.cold-blooded-psychology
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.cold-blooded-psychology
 - id: band--saurus-rarity
   name: Saurus Rarity
   effect: >-

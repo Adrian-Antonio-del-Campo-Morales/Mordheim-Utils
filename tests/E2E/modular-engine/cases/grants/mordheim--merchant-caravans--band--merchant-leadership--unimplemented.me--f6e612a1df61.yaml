@@ -1,0 +1,210 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/merchant-caravans/band--merchant-leadership/unimplemented.merchant-caravans.band.merchant-leadership
+# scaffold_fingerprint: ddb7752a06807a5bd723dbd3043f2ebc939fb1293a4eda618ad8f2b077f85f58
+# authoring_status: AUTHORED
+# authoring_progress: the admitted leader-leadership-supply clause carries 3 authored scenarios for the
+#   printed supplied-leader contract: a same-band borrower (the printed sell-swords, Leadership 7)
+#   adopts the supplied Merchant's Leadership 8 for its own required test and passes with it; the same
+#   borrower declining the optional use keeps its own value and fails; and a supplied Merchant one inch
+#   beyond the printed 6-inch radius supplies nothing at all.  REVIEWED still requires manual semantic
+#   review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: merchant-leadership--scope--leader-leadership-supply (scope: YES)
+# AUTHORED[merchant-leadership--scope--leader-leadership-supply]: 3 scenarios read the printed
+#   supplied-leader contract through mechanic.leader-six: the supplied Merchant (Leadership 8) is a
+#   nearby participant of the borrower's own side and band, the borrower is the printed sell-swords
+#   profile (Leadership 7), and the borrower's own Leadership test is the Fear test of the charge it
+#   receives, whose printed failure consequence is explicit in state.second.fear_hit_sixes.
+# origin_id:
+#   rule/mordheim/merchant-caravans/band--merchant-leadership/unimplemented.merchant-caravans.band.merchant-leadership
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/merchant-caravans/special-rules.yaml
+# source_fingerprint:
+#   374840ea486fa15fe547e02953b1a2c8613a95fb9df257d9c31b7a5992cd4aab
+# source_sha256_at_generation:
+#   3e94435e726a517b88fb5cf2e080795752a4b654f3c75295c7c2acc50f567056
+# Printed rule text:
+#   The Merchant is the warband leader and warriors within 6" may use his Leadership for Leadership tests.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Leadership supplied by the Merchant to models within 6 inches is the supplied leader condition the ruling admits for a duelist. Printed clause: The Merchant is the warband leader and warriors within 6" may use his Leadership for Leadership tests.
+# effect_id:
+#   mechanic.leader-six
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The band-level leader borrowing is the canonical mechanic.leader-six provider; resolve_local_leadership already implements the 6" borrow. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Scope review integration: {"clause_id":"merchant-leadership","review_clause_id":"leader-leadership-supply","source_state":"matched","review_status":"reviewed","scope_reason":"The Leadership supplied by the Merchant to models within 6 inches is the supplied leader condition the ruling admits for a duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Warriors within 6\" of the Merchant may use his Leadership for Leadership tests. Observable: a supplied nearby warrior may borrow the Merchant's value within 6\".","effect_id":"mechanic.leader-six","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"a Leadership test by a supplied nearby warrior\",\"provider\":\"the supplied Merchant within 6\\\"\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"connection","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"The Merchant is the warband leader and warriors within 6\" may use his Leadership for Leadership tests. If the Merchant permanently leaves the warband, determine a new leader normally. The new leader gains the Merchant special rule, counts as a Merchant for all purposes, and may choose Merchant Special Skills. If no current model may become leader, an Apprentice must be bought as soon as possible to become the leader.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"M-LEADER-FALLBACK","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","boundary":"Current child only; do not import excluded sibling or combined-parent behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: merchant-leadership--scope--leader-succession (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/merchant-caravans/band--merchant-leadership/unimplemented.merchant-caravans.band.merchant-leadership
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/merchant-caravans/special-rules.yaml
+# source_fingerprint:
+#   374840ea486fa15fe547e02953b1a2c8613a95fb9df257d9c31b7a5992cd4aab
+# source_sha256_at_generation:
+#   3e94435e726a517b88fb5cf2e080795752a4b654f3c75295c7c2acc50f567056
+# Printed rule text:
+#   If the Merchant permanently leaves the warband, determine a new leader normally. The new leader gains the Merchant special rule
+# Semantic contract (check analysis_status before treating as accepted):
+#   Determining a new leader and transferring the Merchant rule is a warband roster transition, excluded from the duel. Printed clause: If the Merchant permanently leaves the warband, determine a new leader normally. The new leader gains the Merchant special rule
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The band-level leader borrowing is the canonical mechanic.leader-six provider; resolve_local_leadership already implements the 6" borrow. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Scope review integration: {"clause_id":"merchant-leadership","review_clause_id":"leader-succession","source_state":"matched","review_status":"reviewed","scope_reason":"Determining a new leader and transferring the Merchant rule is a warband roster transition, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Warriors within 6\" of the Merchant may use his Leadership for Leadership tests. Observable: a supplied nearby warrior may borrow the Merchant's value within 6\".","effect_id":"mechanic.leader-six","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"a Leadership test by a supplied nearby warrior\",\"provider\":\"the supplied Merchant within 6\\\"\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]","implementation_work":"connection","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\"]"},"inherited_clause_text":"The Merchant is the warband leader and warriors within 6\" may use his Leadership for Leadership tests. If the Merchant permanently leaves the warband, determine a new leader normally. The new leader gains the Merchant special rule, counts as a Merchant for all purposes, and may choose Merchant Special Skills. If no current model may become leader, an Apprentice must be bought as soon as possible to become the leader.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: merchant-succession (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/merchant-caravans/band--merchant-leadership/unimplemented.merchant-caravans.band.merchant-leadership
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/merchant-caravans/special-rules.yaml
+# source_fingerprint:
+#   374840ea486fa15fe547e02953b1a2c8613a95fb9df257d9c31b7a5992cd4aab
+# source_sha256_at_generation:
+#   3e94435e726a517b88fb5cf2e080795752a4b654f3c75295c7c2acc50f567056
+# Printed rule text:
+#   leader replacement, Merchant special rule and Apprentice purchase
+# Semantic contract (check analysis_status before treating as accepted):
+#   (not recorded)
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Roster succession and hiring; campaign scope. Scope review integration: {"clause_id":"merchant-succession","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Leader replacement, the Merchant rule transfer and buying an Apprentice are warband roster and hiring rules, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the printed profiles of this band; no
+# engine output was consulted.  The provider is supplied as an admitted nearby participant of the
+# borrower's own side, exactly as the canonical leader-six provider is modelled, rather than by
+# simulating a warband.
+
+- audit_id: rule/mordheim/merchant-caravans/band--merchant-leadership/unimplemented.merchant-caravans.band.merchant-leadership
+  id: a-supplied-merchant-at-six-inches-lends-his-leadership
+  covers: [merchant-leadership--scope--leader-leadership-supply]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: merchant-caravans, profile_id: sell-swords}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: merchant
+        side_id: second
+        condition: standing
+        fighter: {collection: mordheim, band_id: merchant-caravans, profile_id: merchant}
+    distances:
+      - [second, merchant, 6]
+  decisions:
+    - {key: round.0.second.fear.charged.merchant.leader, value: true}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed use is a permission, not a compulsion: the same dice tested against the
+# borrower's own Leadership 7 fail on a total of eight, which clamps the hits of the charge it
+# received.
+- audit_id: rule/mordheim/merchant-caravans/band--merchant-leadership/unimplemented.merchant-caravans.band.merchant-leadership
+  id: declining-the-supplied-merchant-keeps-the-borrowers-own-leadership
+  covers: [merchant-leadership--scope--leader-leadership-supply]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: merchant-caravans, profile_id: sell-swords}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: merchant
+        side_id: second
+        condition: standing
+        fighter: {collection: mordheim, band_id: merchant-caravans, profile_id: merchant}
+    distances:
+      - [second, merchant, 6]
+  decisions:
+    - {key: round.0.second.fear.charged.merchant.leader, value: false}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Past the printed radius no use is offered at all, which the strict decision tape itself proves.
+- audit_id: rule/mordheim/merchant-caravans/band--merchant-leadership/unimplemented.merchant-caravans.band.merchant-leadership
+  id: a-merchant-beyond-the-printed-radius-supplies-nothing
+  covers: [merchant-leadership--scope--leader-leadership-supply]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: merchant-caravans, profile_id: sell-swords}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: merchant
+        side_id: second
+        condition: standing
+        fighter: {collection: mordheim, band_id: merchant-caravans, profile_id: merchant}
+    distances:
+      - [second, merchant, 7.0]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

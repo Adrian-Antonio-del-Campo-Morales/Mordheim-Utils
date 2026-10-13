@@ -1,0 +1,81 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/norse-explorers-lustria/beserkers--no-armour/profile.equipment-restrictions
+# scaffold_fingerprint: 60dab83814d8047698f1f04d2df3f01fe491409abe70375fff9afac4a04d4bce
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying armour.heavy-armour in armour_id is refused with "armour is forbidden for norse-explorers-lustria/beserkers", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# origin_id:
+#   rule/mordheim/norse-explorers-lustria/beserkers--no-armour/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/norse-explorers-lustria/special-rules.yaml
+# source_fingerprint:
+#   a942acbc9630039fa153ce1512994c39cddfb5c64979194e7aa80920af5ca199
+# source_sha256_at_generation:
+#   f8fe6b25d322e54829df36a1d7428904749a78b436474e9c3ea8cfc46193d002
+# Printed rule text:
+#   A Berserker may never wear armour.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Prohibition: a Berserker may never wear armour.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":"armour"}
+# conditions:
+#   {"recipient":"beserkers"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   String-valued token. Surface reuse candidate: {"family":"902","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the actual forbidden categories and recipients. Body-armour-only, all armour, missiles, blackpowder, drugs and poisons are distinct restrictions. Construction legality can affect a melee build even when shooting is excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/norse-explorers-lustria/beserkers--no-armour/profile.equipment-restrictions
+  id: beserkers-with-armour-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: beserkers
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for norse-explorers-lustria/beserkers
+
+- audit_id: rule/mordheim/norse-explorers-lustria/beserkers--no-armour/profile.equipment-restrictions
+  id: beserkers-without-armour-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: beserkers
+    second:
+      collection: mordheim
+      band_id: norse-explorers-lustria
+      profile_id: beserkers
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

@@ -1,0 +1,206 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
+# scaffold_fingerprint: ed7025cd44c6d65cbccdb4f72cc96550931640b2ab823b1f59eda7668989089f
+# authoring_status: AUTHORED
+# authoring_progress: the contagious-reaction clause carries 3 authored scenarios derived from the
+# printed rule and the recorded contract; the contagious-rotten-body-prerequisite clause stays pending
+# because the verbatim diagnostic of that skills-stage refusal is not recorded, so the file is not
+# offered as clause-complete.  REVIEWED still requires manual semantic review and execution_status
+# stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: contagious-reaction (scope: YES)
+# AUTHORED[contagious-reaction]: 3 scenarios cover the printed reaction after an established
+#   close-combat Out result: the failed Toughness test costs the attacker one automatic Wound, the
+#   passed test leaves the attacker whole, and the same attack against a bearer without the rule asks
+#   for no reaction die at all.  The printed exemption of Undead and Possessed attackers is recorded as
+#   pending, not asserted: it is derived from the attacker's creature kind, and no scenario here
+#   establishes that route.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-clan-pestilens/special-rules.yaml
+# source_fingerprint:
+#   25ed4426834340b5fbd85be2b658810f45446a263b8b6873f2eb118723278a65
+# source_sha256_at_generation:
+#   0b98f7baf52a9638879fd0916cd1ff6e2b4d911cc25d190982837ec41d129ad4
+# Printed rule text:
+#   A model that takes this Hero Out of Action in close combat must take a Toughness test; if the D6 result is higher than its Toughness it suffers one automatic Wound. A natural 6 always inflicts a Wound. Undead and Possessed are immune to this test.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Reaction: when a resolved close-combat injury takes the Contagious bearer out of action, the attacker tests Toughness; a failed test inflicts one automatic wound, and a natural 6 always fails the test. Undead and Possessed attackers are exempt.
+# effect_id:
+#   trait.contagious
+# relation:
+#   equivalent
+# parameters:
+#   {"value":true,"toughness_gated":true,"auto_wound_on":6,"immune":["undead","possessed"]}
+# conditions:
+#   {"trigger":"a resolved close-combat injury takes the bearer out of action","recipient":"the attacker that caused the injury","test":"Toughness","natural_6":"always fails the test and inflicts a wound","exempt":["undead","possessed"],"stacking":"one reaction per resolved injury"}
+# dependencies:
+#   ["band--clan-pestilens-special-skills-rotten-body"]
+# Register notes (context only, not behavioral authority):
+#   Manually traced: the lustria record binds trait.contagious, compile_fighter maps the true trait to the contagious tag, and aftermath._react_to_wound runs when the bearer reaches OUT on the loss-of-combat path, calling the Toughness test with six_fails=True (a natural 6 always wounds) and exempting an attacker tagged undead_or_possessed, which compile_fighter derives from creature_kind undead/possessed. The exemption is the printed Undead and Possessed pair, not a generic living/opponent check. The printed prerequisite is the sibling construction clause. Selectively verified equivalence: {"review_file":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"contagious-reaction","verified_family":"trait.contagious","verified_peer_keys":[{"origin_id":"rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious","clause_id":"contagious-reaction"},{"origin_id":"rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious","clause_id":"contagious-reaction"}],"sharing_boundary":"Same reaction after an established close-combat Out result: attacker Toughness test, natural 6 fails, one automatic wound, Undead/Possessed exempt. Preserve aftermath._react_to_wound and any existing connection/prerequisite gap.","evidence":"inspection","limit":"Only this closed selection was checked. No acceptance of the entire review, KB activation, implementation closure or execution evidence."}
+#
+# Clause: contagious-rotten-body-prerequisite (scope: YES)
+# AUTHORED[contagious-rotten-body-prerequisite]: 2 scenarios take the printed selection gate onto the
+#   construction stage, which does carry the diagnostic after all: `_eligibility.js` line 1236 returns
+#   "Contagious requires Rotten Body" when the build's special_rule_ids carry
+#   band--clan-pestilens-special-skills-contagious without band--clan-pestilens-special-skills-rotten-body,
+#   so the refusal is asserted verbatim on a build carrying only the Contagious row, and the accepted
+#   pairing of the two rows constructs and resolves (the construct-and-run control).  Documented difference (AUTHORED vs implementation): every representable face of the clause has a written scenario, so AUTHORED is the correct header; what stays pending is the motor side [B] - nothing
+#   engine-side for this clause: the gate is implemented and the neighbouring Mordheim twin of the same
+#   origin carries the same pair; this listria record's own row, however, still carries no KB binding of
+#   the two companion rows, which is what the earlier progress sentence above described as missing.
+#   REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-clan-pestilens/special-rules.yaml
+# source_fingerprint:
+#   25ed4426834340b5fbd85be2b658810f45446a263b8b6873f2eb118723278a65
+# source_sha256_at_generation:
+#   0b98f7baf52a9638879fd0916cd1ff6e2b4d911cc25d190982837ec41d129ad4
+# Printed rule text:
+#   Requires Rotten Body.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Construction prerequisite: Contagious may only be selected by a Hero that also carries Rotten Body; an illegal pairing is refused at skill selection.
+# effect_id:
+#   (not recorded)
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {"trigger": "skill selection", "recipient": "the Contagious bearer", "requires": "band--clan-pestilens-special-skills-rotten-body"}
+# dependencies:
+#   ["band--clan-pestilens-special-skills-rotten-body"]
+# Register notes (context only, not behavioral authority):
+#   Shared selection gate: the skills stage of loadoutRestriction refuses Contagious without band--clan-pestilens-special-skills-rotten-body. Kept separate from the reaction because the consumers and the pending work differ; the gate does not supply the reaction.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The bearer
+# is a hand-built fixture that carries the printed rule (skill_ids: [trait.contagious]), the attacker
+# is the fixture whose Toughness the printed test reads, and one Wound on the bearer makes the first
+# unsaved wound an established Out result.  The reaction die is the `.contagious` entry the recorded
+# consumer takes at the attack's own key, and the illustrated die order is hit, wound, injury, then the
+# reaction.  The attacker (WS3) hits the equal-Weapon-Skill bearer on 4 and wounds Toughness 3 on 4.
+- audit_id: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
+  id: a-failed-toughness-test-costs-the-attacking-model-a-wound
+  covers: [contagious-reaction]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [trait.contagious]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+    - {key: round.0.first.attack.0.contagious, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The same established Out result with the Toughness test passed (2 is not above Toughness 3): the
+# attacker keeps its Wounds, which is the other half of the printed reaction.
+- audit_id: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
+  id: a-passed-toughness-test-leaves-the-attacker-unharmed
+  covers: [contagious-reaction]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [trait.contagious]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+    - {key: round.0.first.attack.0.contagious, value: 2}
+  expect_rounds:
+    0: {state.second.condition: OUT, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The control: the identical attack against a bearer that does not carry the rule.  The tape declares
+# no reaction die at all, so the request is what the rule adds rather than the result alone.
+- audit_id: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
+  id: without-the-rule-the-same-out-result-asks-for-no-reaction
+  covers: [contagious-reaction]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT, state.first.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The printed selection gate, read at the construction stage the record names: the message is the
+# module's own literal (`_eligibility.js` line 1236) and the build declares only the Contagious row.
+- audit_id: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
+  id: the-contagious-row-is-refused-without-rotten-body
+  covers: [contagious-rotten-body-prerequisite]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      special_rule_ids: [band--clan-pestilens-special-skills-contagious]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  maximum_rounds: 1
+  rolls: []
+  expect_error: Contagious requires Rotten Body
+
+# The accepted pairing: both printed rows declared together construct and resolve, with neither pool
+# attacking so the tape is the construction result alone.
+- audit_id: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
+  id: the-pairing-is-accepted-at-construction
+  covers: [contagious-rotten-body-prerequisite]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      special_rule_ids: [band--clan-pestilens-special-skills-contagious, band--clan-pestilens-special-skills-rotten-body]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls: []
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

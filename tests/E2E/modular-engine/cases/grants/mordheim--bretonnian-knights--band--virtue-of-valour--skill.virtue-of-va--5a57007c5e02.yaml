@@ -1,0 +1,93 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour
+# scaffold_fingerprint: 5056bf6db844cee6bf8d49f953124a7174951597c787507f1713fe46f4491ed6
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the
+# printed rule and the recorded contract: the reroll of a failed hand-to-hand hit against an opponent
+# whose printed Strength is strictly higher, and the same miss standing against an equal Strength.
+# The bearer carries the canonical operator through its grant list, because the band origin repeats
+# the shared clause without adding a term.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the reroll against a strictly higher printed Strength and its
+#   refusal against an equal one.
+# origin_id:
+#   rule/mordheim/bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/bretonnian-knights/special-rules.yaml
+# source_fingerprint:
+#   46dd6ad0629fd5cf751aaf23179bd91397d4d257ba2246bdfe308bea5c856950
+# source_sha256_at_generation:
+#   c1020f2844473e436bbda66cf47edf841a2dbf8608c133c3e5e56910f19d471e
+# Printed rule text:
+#   When fighting a model with a higher Strength characteristic, the warrior may re-roll failed hand-to-hand hit rolls.
+# Semantic contract (check analysis_status before treating as accepted):
+#   When fighting a model with a higher Strength characteristic the warrior may re-roll failed close-combat hit rolls. Closure: the reroll applies only while the opponent printed Strength exceeds the bearer Strength.
+# effect_id:
+#   skill.virtue-of-valour
+# relation:
+#   equivalent
+# parameters:
+#   {"opponent": "higher Strength characteristic", "reroll_hits": true}
+# conditions:
+#   {"opponent": "higher Strength", "recipient": "Knight"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared virtue-of-valour operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"skill.virtue-of-valour","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare actual weapon identity, charge/first-round condition, natural versus modified Strength, failed versus all-roll reroll and critical eligibility. Keep weapon-independent restrictions and special attacks outside an unsupported shared benefit.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# comparison is against the printed Strength characteristic, which the fixture supplies directly.
+- audit_id: rule/mordheim/bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour
+  id: a-missed-hit-against-a-stronger-opponent-is-rerolled
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.virtue-of-valour]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/mordheim/bretonnian-knights/band--virtue-of-valour/skill.virtue-of-valour
+  id: an-equal-strength-opponent-grants-no-reroll
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.virtue-of-valour]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

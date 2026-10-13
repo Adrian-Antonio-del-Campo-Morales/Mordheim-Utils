@@ -1,0 +1,109 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-deathbringers/shadow-blade--consummate-fighter/trait.perfect-killer
+# scaffold_fingerprint: c4d4139e57fcdbabaa85937f7ca06756c01f14cf101976924c81ed8431e681f4
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the printed
+# sentence and the recorded contract that names the delivery (the trait is compiled into the bearer's
+# armour penetration, so it reaches every wound the bearer inflicts in the duel).  The bearer is the band's
+# printed Shadow Blade profile with the row selected and the armoured defender is a hand-built fixture, so
+# the additional -1 on the armour save is the only difference between the pair.  The printed second venue
+# (shooting) is outside the duel vocabulary.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the printed additional -1 on the enemy armour save read on the
+# armour roll: against a heavy-armoured Toughness 3 defender the very same armour face of five fails to
+# save while the row is selected, and the identical blow without the row is saved.  The biting venue of
+# the printed sentence is shooting, which the duel vocabulary does not express, so only the close-combat
+# consequence is asserted.
+# origin_id:
+#   rule/trollheim/chaos-streets-deathbringers/shadow-blade--consummate-fighter/trait.perfect-killer
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-deathbringers/special-rules.yaml
+# source_fingerprint:
+#   648790dcbf20cbed416b450026c88ad56a2cb93c5c845a7412b9b8f5f9446566
+# source_sha256_at_generation:
+#   a1e85e663a8232b4d2114c2431b7a400db58e753da037a543ef2a0307f5d1cbf
+# Printed rule text:
+#   Wounds inflicted by the Shadow Blade, whether in shooting or close combat, impose an additional -1 modifier to the enemy's armour save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Wounds inflicted by this fighter, in shooting and close combat, impose an additional -1 modifier on the enemy armour save; observable: the armour target is one lower.
+# effect_id:
+#   trait.perfect-killer
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   perfect_killer is compiled into armour_penetration, so it applies to shooting and melee alike. Surface reuse candidate: {"family":"T-PERFECT-KILLER","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Possible shared additional enemy armour-save modifier on inflicted melee wounds. Preserve the local magnitude, recipient and weapon restrictions; excluded shooting does not create an additional melee contribution.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract, never from engine output.  The bearer is the
+# band's printed Shadow Blade profile carrying the row the audit id names and the defender wears printed
+# heavy armour; the pair differs only in that row, so the declared armour face of five isolates the
+# additional modifier.
+
+- audit_id: rule/trollheim/chaos-streets-deathbringers/shadow-blade--consummate-fighter/trait.perfect-killer
+  id: the-additional-penalty-drops-the-armour-save
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: shadow-blade
+      special_rule_ids: [shadow-blade--consummate-fighter]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: False, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/chaos-streets-deathbringers/shadow-blade--consummate-fighter/trait.perfect-killer
+  id: without-the-row-the-same-armour-face-holds
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-deathbringers
+      profile_id: shadow-blade
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

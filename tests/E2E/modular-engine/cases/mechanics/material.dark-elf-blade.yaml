@@ -1,0 +1,108 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/material.dark-elf-blade
+# scaffold_fingerprint: e434bf8ba0fca6875188c4e2b35a88f5036d1ddddf8d2405c7a7c51376f6df7e
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored scenarios.
+#   REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the +1 on the critical table (a table die
+#   of 2 reaches 3 and denies armour) and the Concussion treatment of an Injury
+#   total of 2 as Stunned. Pending semantic review.
+# origin_id:
+#   mechanic/material.dark-elf-blade
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   33de3bc81890c67731196209958a7f64311c37e21cbaeafb323c57dbc3a037b4
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Adds +1 to the critical hit table and treats Injury results of 2-4 as stunned; retains the underlying weapon's properties.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Dark Elf Blade adds +1 to the critical hit table and treats Injury results of 2-4 as stunned, while retaining the underlying weapon properties. Closure: a critical wound with the blade rolls its critical table with one extra point, an Injury total of 2-4 is Stunned and all other weapon properties stay unchanged.
+# effect_id:
+#   material.dark-elf-blade
+# relation:
+#   equivalent
+# parameters:
+#   {"concussion": true, "critical_injury_bonus": 1, "retains": "underlying weapon properties"}
+# conditions:
+#   {"trigger": "attack and critical"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The contract carries critical_injury_bonus 1, which reaches resolve_critical, and concussion, which the injury condition consumes; the material merges with the weapon profile rather than replacing it, which is the printed "retains the underlying weapon properties".
+
+# --- Authored scenarios ---
+# mechanic/material.dark-elf-blade — +1 critical table and Concussion.
+#
+# Expectations come from the printed rule and the accepted clause `whole` of
+# docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv, never from engine output:
+# the material adds critical_injury_bonus 1 and concussion while keeping the
+# underlying weapon properties.  The critical die is rolled plus that modifier,
+# so a face of 2 reaches 3 and denies armour (a face of 2 alone would not).  The
+# attacker wields a sword, which carries no Concussion of its own, so the second
+# scenario isolates the material's Concussion on a plain injury total of 2.
+#
+# The first scenario declares the shared attacker as YAML anchors; the sibling
+# aliases it and keeps its own defender build and expectation.
+
+- audit_id: mechanic/material.dark-elf-blade
+  id: dark-elf-blade-raises-the-critical-table
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      main_material_id: material.dark-elf-blade
+      characteristics: &attacker-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: &defender-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.saved: false,
+        state.second.condition: KNOCKED_DOWN, state.second.wounds: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The material's Concussion treats an Injury total of 2 as Stunned.  The sword
+# carries no Concussion, so a plain 2 is Stunned only because of the blade.
+
+- audit_id: mechanic/material.dark-elf-blade
+  id: dark-elf-blade-stuns-a-low-injury
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      main_material_id: material.dark-elf-blade
+      characteristics: *attacker-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.critical: false, state.second.condition: STUNNED, state.second.wounds: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

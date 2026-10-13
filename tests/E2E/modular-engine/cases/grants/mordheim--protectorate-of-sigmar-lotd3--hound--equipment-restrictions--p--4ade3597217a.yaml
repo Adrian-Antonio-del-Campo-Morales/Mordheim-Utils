@@ -1,0 +1,93 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/hound--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: 21f3d5947c46368f6b9556e099d060ca109b27663cda0c8f406d00ef8e49efda
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying weapon.sword in main_weapon_id is refused with ""weapons" is forbidden for protectorate-of-sigmar-lotd3/hound.", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# origin_id:
+#   rule/mordheim/protectorate-of-sigmar-lotd3/hound--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/protectorate-of-sigmar-lotd3/special-rules.yaml
+# source_fingerprint:
+#   5f992763ee95da1d5d2f1e4ef8c526ec36a970cc96aaae116ef33d2d4e4e2c49
+# source_sha256_at_generation:
+#   06d57ecdbee0d0cfffc39a30d09ff61277a030d7fb09fae549f7fe1c0ef73898
+# Printed rule text:
+#   A Hound never uses nor needs weapons or armour, and suffers no penalty for doing so.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Prohibition plus profile rule: a Hound takes no weapons or armour and fights without penalty.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["weapons","armour"]}
+# conditions:
+#   {"recipient":"hounds","no_unarmed_penalty":true}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   List-valued forbids. Surface reuse candidate: {"family":"903","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Separate intrinsic attacks, equipment selection, active use, ownership and an explicitly supported unarmed waiver. No weapons/armour text alone does not grant a waived penalty or extra attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/hound--equipment-restrictions/profile.equipment-restrictions
+  id: hound-with-weapons-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: protectorate-of-sigmar-lotd3
+      profile_id: hound
+      main_weapon_id: weapon.sword
+  expect_error: '"weapons" is forbidden for protectorate-of-sigmar-lotd3/hound.'
+
+- audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/hound--equipment-restrictions/profile.equipment-restrictions
+  id: hound-with-armour-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: protectorate-of-sigmar-lotd3
+      profile_id: hound
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for protectorate-of-sigmar-lotd3/hound
+
+- audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/hound--equipment-restrictions/profile.equipment-restrictions
+  id: hound-without-weapons-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: protectorate-of-sigmar-lotd3
+      profile_id: hound
+    second:
+      collection: mordheim
+      band_id: protectorate-of-sigmar-lotd3
+      profile_id: hound
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

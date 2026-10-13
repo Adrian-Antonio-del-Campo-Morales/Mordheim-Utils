@@ -1,0 +1,153 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/warband/skill.tough-as-steel/skill.tough-as-steel
+# scaffold_fingerprint: 47a8e4c0d14b66bdd75d518e806ad2f58408f937ccf2832813a6f9d8e74b93e9
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries 5 authored scenarios derived from the printed injury-table
+# sentence and the recorded contract.  The bearer is a fixture declaring the canonical skill of the shared
+# register row; the two control scenarios repeat the same fixture without the skill, so the injury total
+# alone explains the difference.  The vectorized-port warning recorded below stays open and unasserted.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: out-of-action-only-on-six (scope: YES)
+# AUTHORED[out-of-action-only-on-six]: 5 scenarios cover the printed chart: an injury total of 5 leaves the
+# skill bearer Stunned where the ordinary table takes the same total Out of Action, a total of 3 leaves it
+# Knocked Down where the ordinary table merely Stuns, a total of 6 still takes the bearer out of action, and
+# the control scenarios show the same totals on a bearer without the skill.  A total of 4 is Stunned on both
+# tables, so it does not discriminate and is not used.
+# origin_id:
+#   rule/catalog/warband/skill.tough-as-steel/unclassified
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/skills/warband.yaml
+# source_fingerprint:
+#   5ecd7ddce2c8ea697fd54f1de80ee26b262b08fd1138ea64f666096e97247c74
+# source_sha256_at_generation:
+#   cbce88f8e195c72b1767c88af362131455b99435c0ffb53e58b55b7306161198
+# Printed rule text:
+#   Only goes Out of Action on a 6 on the Injury table.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Only goes out of action on a 6 on the Injury table; observable: an injury total of 4 or 5 leaves the bearer Stunned and only a 6 takes him out of action.
+# effect_id:
+#   skill.tough-as-steel
+# relation:
+#   equivalent
+# parameters:
+#   {"out_of_action_threshold":6,"stunned_from":4}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Shared-register row of True Grit (G162). Warning recorded for follow-up: the vectorized port treats this skill as Hard to Kill, which would leave a bearer Stunned on a 3 as well; the reference path consumes it as True Grit, and the two ports disagree.
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  The bearer
+# starts the duel at one wound and the attacker's plain mace adds no injury modifier, so the declared injury
+# die is the injury total itself; the attacker's higher Initiative and the uncharged context let it strike
+# first, and the bearer declares no attack of its own because every scenario leaves it Stunned, Knocked Down
+# or Out of Action in this round.
+- audit_id: rule/catalog/warband/skill.tough-as-steel/skill.tough-as-steel
+  id: an-injury-total-of-five-stuns-instead-of-removing-the-bearer
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &tas-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.tough-as-steel]
+      characteristics: &tas-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: &tas-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls: &tas-five
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/catalog/warband/skill.tough-as-steel/skill.tough-as-steel
+  id: the-same-total-takes-an-ordinary-bearer-out-of-action
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *tas-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *tas-bearer
+  duel_context: *tas-context
+  maximum_rounds: 1
+  rolls: *tas-five
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: rule/catalog/warband/skill.tough-as-steel/skill.tough-as-steel
+  id: an-injury-total-of-three-leaves-the-bearer-knocked-down
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *tas-attacker
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.tough-as-steel]
+      characteristics: *tas-bearer
+  duel_context: *tas-context
+  maximum_rounds: 1
+  rolls: &tas-three
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/catalog/warband/skill.tough-as-steel/skill.tough-as-steel
+  id: the-same-total-merely-stuns-an-ordinary-bearer
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *tas-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *tas-bearer
+  duel_context: *tas-context
+  maximum_rounds: 1
+  rolls: *tas-three
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/catalog/warband/skill.tough-as-steel/skill.tough-as-steel
+  id: a-total-of-six-still-removes-the-bearer
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *tas-attacker
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.tough-as-steel]
+      characteristics: *tas-bearer
+  duel_context: *tas-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

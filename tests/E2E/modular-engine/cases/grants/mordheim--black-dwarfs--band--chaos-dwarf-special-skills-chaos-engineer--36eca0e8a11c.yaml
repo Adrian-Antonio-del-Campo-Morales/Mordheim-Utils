@@ -1,0 +1,152 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-chaos-engineer/mechanic.chaos-engineer
+# scaffold_fingerprint: c028f564763c4fea2c97faf29a8c57e1b74cf4973e1f07c233e635df8bc147a4
+# authoring_status: PARTIAL
+# authoring_progress: the positive half of the admitted armour-restriction clause carries one
+# authored scenario (the selectable band skill compiles for its printed recipient and the duel runs);
+# the negative half - the refusal of a build wearing the Chaos Armours - stays pending for the reason
+# named in the clause note below: the 1v1 catalogue publishes no in-scope Chaos Armour item.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole--scope--armour-restriction (scope: YES)
+# PARTIAL[whole--scope--armour-restriction]: [CLOSING-REVIEW [C]] the positive half is authored and the negative half is
+#   blocked by a catalogue gap.  The printed selection is observable: the band rule
+#   band--chaos-dwarf-special-skills-chaos-engineer is a selectable warband skill whose binding is
+#   compiler.chaos-engineer, so a Knight of the band that selects it compiles and the duel runs, and
+#   the accepted construction test asserts the compiled tag itself
+#   (tests/python/construction/test_selectable_bindings.py::
+#   test_chaos_engineer_is_an_explicit_positive_only_duel_contract, whose own note records that
+#   "Chaos Armour and rarity rolls are outside the 1v1 catalogue" and that there is "no legal
+#   in-scope forbidden item from which to manufacture a meaningful negative duel fixture").  The
+#   refusal half therefore stays pending: the shared stage answers the shared form
+#   `"<token>" is forbidden for <band>/<profile>` or the contract-specific "Chaos armour is forbidden
+#   for <who>" only for an equipment id that contains "chaos", and this revision records no
+#   executable armour id for that category (the item appears only as campaign and hireling data in
+#   sources/knowledge/catalog/campaign/trading-post.yaml and the hireling catalogues).  The missing
+#   datum is the executable Chaos Armour item id (or the category token the stage compares), not the
+#   printed rule, which is normative and recorded above.  The excluded campaign clauses are retained
+#   as context.
+# origin_id:
+#   rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-chaos-engineer/mechanic.chaos-engineer
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-dwarfs/special-rules.yaml
+# source_fingerprint:
+#   b939fd162a7e765390d81c6bcda514e2d9a5cf0fbc2af3f8a87f0a6780fad2a9
+# source_sha256_at_generation:
+#   f082099d8b12a126a51b43f80512b706de93a2feac6a3a38c86346dcfacae25a
+# Printed rule text:
+#   may never wear the Chaos Armours.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The bar on wearing the Chaos Armours is a construction restriction on the duelist's loadout. Printed clause: may never wear the Chaos Armours.
+# effect_id:
+#   compiler.chaos-engineer
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The +3 search bonus and Rarity/Gift interactions are campaign clauses, recorded as excluded below. Scope review integration: {"clause_id":"whole","review_clause_id":"armour-restriction","source_state":"matched","review_status":"reviewed","scope_reason":"The bar on wearing the Chaos Armours is a construction restriction on the duelist's loadout.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Prohibition: a Chaos Engineer may never wear Chaos Armour; the build must reject that arm category for the recipient.","effect_id":"compiler.chaos-engineer","relation":"equivalent","parameters":"{}","conditions":"{\"recipient\":\"chaos-engineer\",\"denied_item_kind\":\"chaos-armour\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\",\"packages/python/roster-construction/mordheim_construction/contracts.py::COMPILER_CONTRACTS\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.item-prohibition","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/black-dwarfs/special-rules.yaml\"]"},"inherited_clause_text":"The Hero ignores the Rarity and Gift of Chaos special rules and may never wear the Chaos Armours.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."}
+#
+# Clause: search-and-rarity (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-chaos-engineer/mechanic.chaos-engineer
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-dwarfs/special-rules.yaml
+# source_fingerprint:
+#   b939fd162a7e765390d81c6bcda514e2d9a5cf0fbc2af3f8a87f0a6780fad2a9
+# source_sha256_at_generation:
+#   f082099d8b12a126a51b43f80512b706de93a2feac6a3a38c86346dcfacae25a
+# Printed rule text:
+#   Whenever a Hero with this skill searches for Chaos armour or Obsidian Weapons, he gets +3 on the roll.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Campaign search/rarity modifier, outside the duel runtime.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Retained for coverage; no duel consumer. Coordinator disposition: this printed clause has a resolved 1v1 exclusion; it is not queued for implementation or a future scope decision. Source metadata reconciliation is separate from duel behaviour. Scope review integration: {"clause_id":"search-and-rarity","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Searching for Chaos armour or Obsidian Weapons during the post-battle sequence is a campaign procedure, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+#
+# Clause: whole--scope--rarity-and-gift (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-chaos-engineer/mechanic.chaos-engineer
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-dwarfs/special-rules.yaml
+# source_fingerprint:
+#   b939fd162a7e765390d81c6bcda514e2d9a5cf0fbc2af3f8a87f0a6780fad2a9
+# source_sha256_at_generation:
+#   f082099d8b12a126a51b43f80512b706de93a2feac6a3a38c86346dcfacae25a
+# Printed rule text:
+#   The Hero ignores the Rarity and Gift of Chaos special rules
+# Semantic contract (check analysis_status before treating as accepted):
+#   Ignoring the Rarity and Gift of Chaos special rules is an acquisition and campaign rule, excluded from the duel. Printed clause: The Hero ignores the Rarity and Gift of Chaos special rules
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The +3 search bonus and Rarity/Gift interactions are campaign clauses, recorded as excluded below. Scope review integration: {"clause_id":"whole","review_clause_id":"rarity-and-gift","source_state":"matched","review_status":"reviewed","scope_reason":"Ignoring the Rarity and Gift of Chaos special rules is an acquisition and campaign rule, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Prohibition: a Chaos Engineer may never wear Chaos Armour; the build must reject that arm category for the recipient.","effect_id":"compiler.chaos-engineer","relation":"equivalent","parameters":"{}","conditions":"{\"recipient\":\"chaos-engineer\",\"denied_item_kind\":\"chaos-armour\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\",\"packages/python/roster-construction/mordheim_construction/contracts.py::COMPILER_CONTRACTS\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.item-prohibition","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/black-dwarfs/special-rules.yaml\"]"},"inherited_clause_text":"The Hero ignores the Rarity and Gift of Chaos special rules and may never wear the Chaos Armours.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# admitted half is the selection of the band's own special skill, which the recorded binding turns
+# into the compiler contract.
+
+- audit_id: rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-chaos-engineer/mechanic.chaos-engineer
+  id: the-selected-chaos-engineer-skill-compiles-and-the-duel-runs
+  covers:
+  - whole--scope--armour-restriction
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+      special_rule_ids:
+      - band--chaos-dwarf-special-skills-chaos-engineer
+    second:
+      collection: mordheim
+      band_id: black-dwarfs
+      profile_id: sorcerer
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

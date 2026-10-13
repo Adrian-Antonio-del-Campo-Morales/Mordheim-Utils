@@ -1,0 +1,184 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/channel-rats-mim/domnu--bear-hug/unimplemented.channel-rats-mim.domnu.bear-hug
+# scaffold_fingerprint: df38b459497a040a193eee12b01b97ce09ee54eb3da27bfa2dfae28ff0175cef
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry authored scenarios derived from the printed rule,
+# the recorded contract and the delivered operator: two qualifying unarmed hits are replaced by one
+# Bear Hug resolved on an opposed D6+Strength, whose tie/win deals a single automatic wound with no
+# armour die and whose loss deals none, plus the armed control in which no replacement decision is
+# ever offered.  REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: bear-hug (scope: YES)
+# AUTHORED[bear-hug]: 3 scenarios read the printed opposed roll on the real attack route.  The
+# bearer is the printed Domnu profile, whose delivered binding compiles bear_hug plus the
+# rule.bear-hug-unarmed marker the pool gate reads, and whose two unarmed attacks are the printed
+# precondition; the two declared hit faces qualify, so the replacement decision is offered, and the
+# strict tape then carries exactly the opposed attacker/defender dice - no wound, armour or injury
+# die, which is the printed "single automatic wound with no armour save".  A tie or a win (Strength 4
+# against the hand-built Strength 3 opponent) takes one Wound, the losing branch takes none, and the
+# armed control with the same qualifying hits is offered no Bear Hug decision at all.  REVIEWED still
+# requires manual semantic review.
+# origin_id:
+#   rule/mordheim/channel-rats-mim/domnu--bear-hug/unimplemented.channel-rats-mim.domnu.bear-hug
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/channel-rats-mim/special-rules.yaml
+# source_fingerprint:
+#   78050035d57489bb57690c02e1fb569ddf27459c7172ff03083ddc96e2827f3a
+# source_sha256_at_generation:
+#   172af5d984aa411ff17433343c1bf1c59ed4d08c382f7bdbd128bbce66bbe4ba
+# Printed rule text:
+#   Wrestling and fist fighting are traditional Strigany sport. If the Domnu hits the same enemy warrior with both of his unarmed attacks in the same round of combat, the player may choose to make a single Bear Hug attack instead of resolving the attacks normally. Each player rolls a D6 and adds his warrior's Strength to the roll. If the Domnu's total is higher or the totals are equal, the opposing warrior takes a single automatic wound with no armour save allowed. If the enemy warrior's total is higher, the warrior has broken the Domnu's hold and suffers no damage from the attack.
+# Semantic contract (check analysis_status before treating as accepted):
+#   If the Domnu hits with both unarmed attacks in the same round he may replace them with one Bear Hug resolved by opposed D6+Strength; on a tie or win the enemy suffers an automatic wound with no armour save; observable: the opposed roll decides a single unsaveable wound.
+# effect_id:
+#   rule.bear-hug
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The duel already carries bear_hug on the trained bear and phases.resolve_bear_hug implements the opposed roll; the Domnu record is a duplicate of the same mechanic, so the first pending step is the construction data that binds this rule to rule.bear-hug, not new engine work. Surface reuse candidate: {"family":"M-BEAR-HUG","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#   
+#   [M2-offensive 2026-10-08] delivered. `PROFILE_RULE_EFFECTS[domnu--bear-hug]` compiles the marker the profile grant needs, and the pool offers the hug only for two unarmed (fist) hits; the new focused suite proves the unsaveable automatic wound, the exact opposed-roll dice/decision consumption, the STANDING condition left after it, the losing branch and an armed negative control. No residual.
+#
+# Clause: replaces-normal-attacks (scope: YES)
+# AUTHORED[replaces-normal-attacks]: the same first scenario is the evidence: the two qualifying
+# attacks are consumed and exactly one replacement resolves, with the tape holding only the opposed
+# roll, so the hug replaces the several unarmed attacks instead of adding to them.
+# origin_id:
+#   rule/mordheim/channel-rats-mim/domnu--bear-hug/unimplemented.channel-rats-mim.domnu.bear-hug
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/channel-rats-mim/special-rules.yaml
+# source_fingerprint:
+#   78050035d57489bb57690c02e1fb569ddf27459c7172ff03083ddc96e2827f3a
+# source_sha256_at_generation:
+#   172af5d984aa411ff17433343c1bf1c59ed4d08c382f7bdbd128bbce66bbe4ba
+# Printed rule text:
+#   Wrestling and fist fighting are traditional Strigany sport. If the Domnu hits the same enemy warrior with both of his unarmed attacks in the same round of combat, the player may choose to make a single Bear Hug attack instead of resolving the attacks normally. Each player rolls a D6 and adds his warrior's Strength to the roll. If the Domnu's total is higher or the totals are equal, the opposing warrior takes a single automatic wound with no armour save allowed. If the enemy warrior's total is higher, the warrior has broken the Domnu's hold and suffers no damage from the attack.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The hug replaces the several unarmed attacks rather than adding to them; observable: exactly one opposed roll in that round.
+# effect_id:
+#   (not recorded)
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Same optional-attack pattern as Death Blow; both are choices inside the attack sequence. Surface reuse candidate: {"family":"M-BEAR-HUG","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the delivered operator (witnessed by the
+# focused test tests/python/combat/modular/test_t13_domnu_bear_hug.py); no engine output was
+# consulted.  The bearer is the printed Domnu profile with its Strength and Initiative supplied as
+# fixture facts, and the opponent is a hand-built fighter in plate armour, which is what makes the
+# absence of any armour die part of the evidence.
+- audit_id: rule/mordheim/channel-rats-mim/domnu--bear-hug/unimplemented.channel-rats-mim.domnu.bear-hug
+  id: two-unarmed-hits-are-replaced-by-one-unsaveable-bear-hug-wound
+  covers: [bear-hug, replaces-normal-attacks]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: domnu
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 3, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.plate-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bear-hug, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.bear-hug.attacker, value: 3}
+    - {key: round.0.first.bear-hug.defender, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 5}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 5}
+    - {kind: decision, key: round.0.first.bear-hug, value: true}
+    - {kind: roll, key: round.0.first.bear-hug.attacker, sides: 6, value: 3}
+    - {kind: roll, key: round.0.first.bear-hug.defender, sides: 6, value: 3}
+
+# The losing branch: the enemy total is higher, so the hold is broken and no damage is dealt.  The
+# same tape shape proves the opposed roll is the whole resolution.
+- audit_id: rule/mordheim/channel-rats-mim/domnu--bear-hug/unimplemented.channel-rats-mim.domnu.bear-hug
+  id: losing-the-opposed-roll-deals-no-damage
+  covers: [bear-hug]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: domnu
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 3, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.bear-hug, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.bear-hug.attacker, value: 1}
+    - {key: round.0.first.bear-hug.defender, value: 5}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The armed control: the printed precondition is that both hits are unarmed, so the mace-armed Domnu
+# is offered no Bear Hug decision at all and its two ordinary hits resolve.  StrictDecisions holds no
+# scripted answer, so a request that should not happen fails the case.
+- audit_id: rule/mordheim/channel-rats-mim/domnu--bear-hug/unimplemented.channel-rats-mim.domnu.bear-hug
+  id: an-armed-domnu-is-never-offered-the-bear-hug
+  covers: [bear-hug]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: domnu
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 3, wounds: 3, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.first.attack.1.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: false, attacks.1.wounded: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

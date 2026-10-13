@@ -1,0 +1,141 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-rousing-sermon/mechanic.rousing-sermon
+# scaffold_fingerprint: 4bce79491bc09094bb36b086990c35e6ae4c991388dc2ce57bb8404a89801ae6
+# authoring_status: AUTHORED
+# authoring_progress: the admitted self-attack-bonus clause carries two authored scenarios derived
+# from the printed rule and the recorded contract (the declared sermon and the declined one).  The
+# printed friendly-group-emission clause is scope NO and contributes no test.  REVIEWED still requires
+# manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: self-attack-bonus (scope: YES)
+# AUTHORED[self-attack-bonus]: 2 scenarios cover the printed self consequence: the declaration
+# taken at the start of the Warrior Priest's own turn gives him one extra attack for that combat
+# phase (the tape carries attack indices 0 and 1 for the bearer and index 2 for the enemy, so a
+# missing or extra attack changes which die the engine asks for) and scopes the once-per-duel
+# resource as spent; declining the declaration leaves the printed single attack pool and scopes no
+# resource.  The band origin's printed stanza is the same self-only sentence the canonical operator
+# records, and the Warrior Priest identity itself is not modelled by the duel vocabulary, so the
+# bearer here is a fixture carrying the canonical operator through its grant list, exactly as the
+# mechanic origin's own case does.  The "must not also use prayers that turn" exception has no
+# counterpart in this vocabulary and is recorded, not asserted.  REVIEWED still requires manual
+# semantic review.
+# origin_id:
+#   rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-rousing-sermon/mechanic.rousing-sermon
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/protectorate-of-sigmar-lotd3/special-rules.yaml
+# source_fingerprint:
+#   5b42dc7f80156c193aac822117d069f04bdb0c1beaaed8ccf3f076ed19dea7b1
+# source_sha256_at_generation:
+#   06d57ecdbee0d0cfffc39a30d09ff61277a030d7fb09fae549f7fe1c0ef73898
+# Printed rule text:
+#   Only the Warrior Priest may have this skill. The Warrior Priest bellows his prayers to Sigmar, beseeching his protector to lend he and his men the strength to forge onwards. A Rousing Sermon must be declared at the beginning of a player's turn. The Warrior Priest and all friendly models within 6 inches gain +1 attack during that Hand to Hand combat phase. There may only be one Rousing Sermon per game.
+# Semantic contract (check analysis_status before treating as accepted):
+#   At the start of its own turn this warrior may declare the sermon: it gains +1 Attack for that combat phase, once per duel. Observable: exactly one self-only attack bonus is available and the declaration is optional.
+# effect_id:
+#   mechanic.rousing-sermon
+# relation:
+#   equivalent
+# parameters:
+#   {"attacks_bonus":1}
+# conditions:
+#   {"trigger":"start of this warrior's own turn","resolution":"optional declaration before its combat phase","consequence":"+1 Attack for that combat phase","recipient":"this warrior","duration":"that combat phase","stacking":"once per duel","exceptions":"must not also use prayers that turn"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Self-only sermon: rounds.resolve_round spends the once-per-duel 'rousing-sermon' resource and adds +1 attack for the active player's phase. Surface reuse candidate: {"family":"mechanic.rousing-sermon","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare trigger, current bearer, activation, timing, state duration and reset rules. Keep damage backlash and interrupted continuation; exclude producer movement/group counting or campaign progression.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: friendly-group-emission (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-rousing-sermon/mechanic.rousing-sermon
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/protectorate-of-sigmar-lotd3/special-rules.yaml
+# source_fingerprint:
+#   5b42dc7f80156c193aac822117d069f04bdb0c1beaaed8ccf3f076ed19dea7b1
+# source_sha256_at_generation:
+#   06d57ecdbee0d0cfffc39a30d09ff61277a030d7fb09fae549f7fe1c0ef73898
+# Printed rule text:
+#   all friendly models within 6 inches gain +1 attack during that Hand to Hand combat phase
+# Semantic contract (check analysis_status before treating as accepted):
+#   (not recorded)
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Emission to other friendly models is group/range mechanics, permanently outside the isolated 1v1 duel; separated from the admitted self consequence, no consumer assigned.
+
+# --- Authored scenarios ---
+# The Warrior Priest declares the sermon at the start of his own turn: his attack count
+# becomes two, and both the aggregate resource and the round-scoped key are recorded as
+# spent, which is what makes the declaration once per duel.
+- audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-rousing-sermon/mechanic.rousing-sermon
+  id: the-declared-sermon-adds-one-attack-and-spends-the-once-per-duel-resource
+  covers: [self-attack-bonus]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.rousing-sermon]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.rousing-sermon, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.resources_spent: ['round.0.rousing-sermon', 'rousing-sermon'],
+        attacks.0.damage: 1, attacks.1.hit: False, attacks.2.hit: False,
+        state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The declaration is optional: declining it leaves the printed single attack, scopes
+# no resource, and the enemy's blow becomes the second outcome of the round.
+- audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-rousing-sermon/mechanic.rousing-sermon
+  id: the-declined-sermon-leaves-one-attack-and-no-spent-resource
+  covers: [self-attack-bonus]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.rousing-sermon]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.rousing-sermon, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.resources_spent: [], attacks.0.damage: 1, attacks.1.hit: True,
+        state.first.wounds: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

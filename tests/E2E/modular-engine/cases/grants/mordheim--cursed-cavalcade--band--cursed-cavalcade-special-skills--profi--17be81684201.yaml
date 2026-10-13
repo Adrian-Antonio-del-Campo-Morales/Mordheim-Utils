@@ -1,0 +1,64 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills/profile.skill-access
+# scaffold_fingerprint: 43ffdb0e9863158f5aaee15f198ebce0f3b47a36db62232894ce8c47f58810f9
+# authoring_status: PARTIAL
+# authoring_progress: the printed closure of the special table is covered by an authored refusal;
+#   the admission half is marked PARTIAL below with its concrete blocker.  PARTIAL is authoring and
+#   semantic contrast only; execution_status stays UNEXECUTED and no functional result exists.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [B] the closure of the printed table is authored as one refusal.  The admission half
+#   is not representable from the band artefact: the binding declares {"category":"special"} with no
+#   members, so the recipient's resolved special list names no published member and the shared route
+#   answers the informational pending-list case (skill_pending_special_list) for every special skill
+#   it checks; the compile then surfaces the same access refusal.  Naming a member would require
+#   inventing a canonical skill id the KB does not carry.  Recorded, not fabricated.
+# origin_id:
+#   rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills/profile.skill-access
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/cursed-cavalcade/special-rules.yaml
+# source_fingerprint:
+#   893ff812a3cd842bb02e4d306cfe7a927025f3c0c1791b401f712c01b3b9149f
+# source_sha256_at_generation:
+#   15a4f9a2b9c55c6ef8e50bfc55b1af9a2418c12db0c4da71d80ed3b88e7264f2
+# Printed rule text:
+#   Cursed Cavalcade Heroes can use the list of skills below instead of the standard list.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Special skill-list access: the Cursed Cavalcade Heroes may use the band's special skills instead of the standard list.
+# effect_id:
+#   profile.skill-access
+# relation:
+#   equivalent
+# parameters:
+#   {"category":"special"}
+# conditions:
+#   {"recipient":"cursed-cavalcade heroes"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Declared as the special category; each listed skill is a separate printed effect. Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded semantic contract; no engine output was consulted.
+
+- audit_id: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills/profile.skill-access
+  id: a-special-skill-outside-the-printed-table-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: cursed-cavalcade
+      profile_id: aristocrat
+      skill_ids: [skill.monster-slayer]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to cursed-cavalcade/aristocrat: ['skill.monster-slayer']"

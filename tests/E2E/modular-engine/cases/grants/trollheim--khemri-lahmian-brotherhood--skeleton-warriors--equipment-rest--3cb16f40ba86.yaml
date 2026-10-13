@@ -1,0 +1,97 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-lahmian-brotherhood/skeleton-warriors--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: 7991d09202dbe0b6c81265fcf55ca7f35dd9042f819cff0df725660eae544349
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the printed reservation of the Snake Whip to the Lahmian Vampire and Blood Sister is evidenced
+#   in both directions.  CHALLENGE RESULT: the previous note is wrong on the facts.  The KB DOES declare the
+#   binding - bands/trollheim/khemri-lahmian-brotherhood/special-rules.yaml, id
+#   skeleton-warriors--equipment-restrictions, runtime grant: profile, implemented: 'YES', effect
+#   profile.equipment-restrictions, parameters forbids: [snake_whip] - and `snake_whip` is the canonical catalogue
+#   item id (catalog/items/trollheim.yaml).  What decides the observable is the band's own list row:
+#   equipment-access.yaml gives snake_whip applies_to.profile_ids [lahmian-vampire, blood-sister] in both the
+#   foreign and the native Undead list, and the shared stage honours that selector - profileEquipmentItems filters
+#   list rows through entryReachesProfile, and equipmentIssue tests the resulting offered set before its forbids
+#   loop (packages/python/roster-construction/mordheim_construction/_eligibility.js) - so this recipient's build
+#   that slots the Whip is refused with the stage's own access diagnostic (code equipment_not_permitted, a hard
+#   issue: it is not one of the informational codes).  The second scenario is a printed holder of the Whip, whose
+#   build is admitted at construction, which is the positive half of the same printed reservation.  Consumer: the
+#   shared eligibility stage.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/khemri-lahmian-brotherhood/skeleton-warriors--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-lahmian-brotherhood/special-rules.yaml
+# source_fingerprint:
+#   8bef66e82667bebd503c822664c7c6eb374d7ad06d485fdb1409023447bfa6d3
+# source_sha256_at_generation:
+#   b916cfbc1207fa7a28fd5b0c3cbced9ab169559d0f51326fcf084c55213dd7b8
+# Printed rule text:
+#   Use only the Undead Equipment List assigned by the selected Foreign or Native background. May not select the Snake Whip.
+# Semantic contract (check analysis_status before treating as accepted):
+#   List scoping plus prohibition: Skeleton Warriors use the background-assigned Undead list and may not take the Snake Whip.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["snake_whip"]}
+# conditions:
+#   {"recipient":"skeleton-warriors","background":"selected"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Same clause, different recipient. Surface reuse candidate: {"family":"907","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; no admitted clause of this
+# origin is left pending.  REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/skeleton-warriors--equipment-restrictions/profile.equipment-restrictions
+  id: skeleton-warriors-may-not-slot-the-snake-whip
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: skeleton-warriors
+      owned_item_ids: [snake_whip]
+  expect_error: '"snake_whip" is not on any equipment list of khemri-lahmian-brotherhood/skeleton-warriors.'
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/skeleton-warriors--equipment-restrictions/profile.equipment-restrictions
+  id: the-printed-holder-of-the-snake-whip-is-admitted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: blood-sister
+      main_weapon_id: weapon.mace
+      owned_item_ids: [snake_whip]
+    second:
+      collection: trollheim
+      band_id: khemri-lahmian-brotherhood
+      profile_id: skeleton-warriors
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

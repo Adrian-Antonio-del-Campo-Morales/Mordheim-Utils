@@ -1,0 +1,75 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/gunnery-school-of-nuln/band--proud-to-a-fault/compiler.proud-to-a-fault
+# scaffold_fingerprint: 8612dd9414628347ae80c4fe5d7b56e6dbf0bff7351c02a5dc1d4a1876ba0670
+# authoring_status: PARTIAL
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [C] no scenario is authored, and the recorded blocker is stated precisely here.  The
+# construction stage of the shared eligibility module
+# (packages/python/roster-construction/mordheim_construction/_eligibility.js) publishes one message per
+# implemented prohibition and none is bound to compiler.proud-to-a-fault: an exhaustive scan of its
+# diagnostics finds "${token}" is forbidden for <band>/<profile> and the concrete prohibition messages
+# (armour, missile weapons, blackpowder weapons, heavy armour, lance, helmet, poisons, drugs, Dwarf-made
+# equipment, Chaos armour, powder-s-expensive, haughty, saurus-skill-prohibitions, no-blackpowder-weapons,
+# no-missile-weapons, no-arcane-lore, disciple-of-sigmar, swabbie-rabble-loadout).  The printed parameter
+# {"forbids":["non-blackpowder-ranged"]} names a category rather than a token the shared stage matches, so no
+# refusal fragment for a duel build exists to quote and inventing one is not admissible.  The earlier wording
+# "and a non-blackpowder ranged item in the executable catalogue" is corrected: the catalogue does carry
+# non-blackpowder ranged items (bow, crossbow, short_bow and others in
+# sources/knowledge/catalog/items/weapons-ranged.yaml) - what is absent is one on this band's own lists.  The
+# band-own lists in sources/knowledge/bands/mordheim/gunnery-school-of-nuln/equipment-access.yaml (the
+# Gunnery School list and the Marksman list) offer only blackpowder ranged items (pistol,
+# double_barrelled_pistol, duelling_pistol, double_barrelled_duelling_pistol, handgun,
+# double_barrelled_handgun, repeater_pistol, blunderbuss, hochland_long_rifle, repeater_handgun,
+# hand_held_mortar, superior_blackpowder); pigeon_bombs is an out-of-scope catalogue row rather than a ranged
+# weapon, so the prohibited category has no reachable input on the band's lists either.  The printed
+# exemption for Hired Swords and Dramatis Personae is a roster identity the duel does not carry, and the
+# accepted semantic spec (tests/specs/semantic/grants/remaining-restrictions.yaml, case nuln-proud-to-a-fault)
+# records the origin's only accepted observable as a construction-tag presence,
+# `context.tag: compiler.proud-to-a-fault`; the duel runner exposes no observation channel for
+# CompiledFighter.construction_tags (its checkpoints are initial/rounds/final/events and attack outcomes).
+# Pending datum: the activation binding plus an item-token mapping for the printed category, and either a
+# non-blackpowder ranged item on one of the band's own lists or an observation channel for the compiled tag.
+# REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/gunnery-school-of-nuln/band--proud-to-a-fault/compiler.proud-to-a-fault
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/gunnery-school-of-nuln/special-rules.yaml
+# source_fingerprint:
+#   1bc7c9a799724fc1b8aefe5b2e91247d60cc2bb4cbed3a70c0652fe57904f721
+# source_sha256_at_generation:
+#   98b8b3ebee70f5c4fce3633904b6e50c7803c1b939984c1f55d0bfd6f27491f1
+# Printed rule text:
+#   Members of the Gunnery School warband may never use non-black-powder ranged weapons; the restriction does not apply to Hired Swords or Dramatis Personae.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Compiled band prohibition with an exemption: the Gunnery School members may not use non-black-powder ranged weapons, while Hired Swords and Dramatis Personae are exempt.
+# effect_id:
+#   compiler.proud-to-a-fault
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["non-blackpowder-ranged"]}
+# conditions:
+#   {"recipient":"gunnery-school members","exempt":["hired swords","dramatis personae"]}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Declared as compiler.proud-to-a-fault and implemented; the exemption follows from the rule applying to the band's own members only.
+
+# authoring_progress: 0 authored scenario(s) in this file; authored clauses []; clauses still
+# pending or unrepresentable in this file: ['whole']. REVIEWED requires manual semantic review and
+# execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+[]  # No scenario is declared yet; the pending requirement is named above.

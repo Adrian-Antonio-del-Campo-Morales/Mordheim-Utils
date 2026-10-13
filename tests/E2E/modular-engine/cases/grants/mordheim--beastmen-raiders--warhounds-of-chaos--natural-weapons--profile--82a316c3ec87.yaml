@@ -1,0 +1,99 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/beastmen-raiders/warhounds-of-chaos--natural-weapons/profile.natural-attacks
+# scaffold_fingerprint: f3e0cb575fb4b7a0dcb8ba293d52eb9e5be81ce774858d02fa6a3b21338b5c5c
+# authoring_status: AUTHORED
+# authoring_progress: the admitted natural-attacks clause carries two authored scenarios derived
+# from the printed sentence, the printed Warhound profile and the recorded contract: the printed
+# hound attacks at its printed Strength, and the identical attack declared through the ordinary
+# Fist contraction misses the same Toughness with the same die, which is the printed "without any
+# penalties".  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the printed "can fight without any penalties": the printed
+# Warhound resolves its attack at its printed Strength 4 (a four wounds Toughness 4), while the
+# control bearer attacking with the Fist contraction at the same nominal Strength 4 misses the same
+# Toughness with the same die, so the hound keeps its printed Attacks and takes no Fist Strength
+# penalty.  The unrarmoured opponent contributes no attacks, and neither bearer carries armour, so
+# the only dice are the attacker's hit and wound.  The control uses the Fist contraction as the
+# printed unarmed alternative because the hound profile itself cannot be built without its natural
+# attacks.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/beastmen-raiders/warhounds-of-chaos--natural-weapons/profile.natural-attacks
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/beastmen-raiders/special-rules.yaml
+# source_fingerprint:
+#   87709cb9c1fef2e54f753385a62788e8f467bfbc92870ffd09bb368bbcf583c5
+# source_sha256_at_generation:
+#   246c28766a6fc502a70a5cc2b89712a36e62bf3385e838fc7503203831861f5e
+# Printed rule text:
+#   Chaos Hounds have no weapons, but can fight without any penalties.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Profile rule: the Warhound fights with natural attacks, keeping its printed Attacks and taking no Fist Strength penalty.
+# effect_id:
+#   profile.natural-attacks
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipient":"warhounds-of-chaos","keeps_profile_attacks":true}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Compiler falls back to weapon.natural-attacks for an unequippable creature; the explicit binding makes it declarative. Surface reuse candidate: {"family":"W-NATURAL","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Separate intrinsic attacks, equipment selection, active use, ownership and an explicitly supported unarmed waiver. No weapons/armour text alone does not grant a waived penalty or extra attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the printed profile; no engine output was consulted.
+
+- audit_id: rule/mordheim/beastmen-raiders/warhounds-of-chaos--natural-weapons/profile.natural-attacks
+  id: the-warhound-attacks-at-its-printed-strength
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: beastmen-raiders
+      profile_id: warhounds-of-chaos
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 3, initiative: 1, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same nominal Strength 4 through the ordinary Fist contraction, where the
+# printed penalty applies, so the identical wound die misses the same Toughness.
+- audit_id: rule/mordheim/beastmen-raiders/warhounds-of-chaos--natural-weapons/profile.natural-attacks
+  id: the-fist-contraction-misses-with-the-same-die
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 4, strength: 4, toughness: 3, wounds: 1, initiative: 3, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 4, wounds: 3, initiative: 1, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

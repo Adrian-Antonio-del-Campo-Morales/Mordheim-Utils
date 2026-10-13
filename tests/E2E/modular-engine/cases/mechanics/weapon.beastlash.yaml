@@ -1,0 +1,378 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.beastlash
+# scaffold_fingerprint: 68d1a43ba732ee364b2ea3c8aa44ffe3b7849dc582572a18a8ac3d97b440cf35
+# authoring_status: AUTHORED
+# authoring_progress: all four admitted clauses carry authored scenarios: the base profile's Strength as user -1, the animal-only Fear test (with its non-animal control), the refused parry (with the control that the same defender's parry is live), and the Whipcrack bonus, its cap and its charged strike-first timing. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: beastbane-fear (scope: YES)
+# AUTHORED[beastbane-fear]: 2 scenarios show the charged animal taking its Fear test and the same charge against a non-animal requiring none.
+# origin_id:
+#   mechanic/weapon.beastlash
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   531cb69def1615c6e9d5181409f61ad1f6b59ee3ce26380d06823e8330473f82
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   The Beastmaster wielding a Beastlash causes Fear in animals, any animal charged or wishing to charge a Beastmaster with one of these weapons must first take a Fear test.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A Beastlash bearer causes Fear against animal opponents only, and an animal that charges or is charged must take a Fear test. Closure: against an opponent carrying species.animal tags the bearer counts as Fear-causing and the animal resolves the ordinary Fear test; against non-animals it grants nothing.
+# effect_id:
+#   weapon.beastlash
+# relation:
+#   equivalent
+# parameters:
+#   {"fear_targets": "animals", "scope": "bearer"}
+# conditions:
+#   {"opponent": "species.animal"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   causes_fear implements the Beastbane Fear directly: it returns true when the enemy carries species.animal and any attacking weapon carries the weapon.beastlash tag, and its comment states that Beastbane belongs to a wielded weapon and affects animals only. The weapon-scoped, animal-only variant therefore already exists, and the earlier behaviour-gap note read only mechanic.causes-fear and missed the weapon-tag branch. The identity is the existing weapon.beastlash profile rather than a proposed new one. Surface reuse candidate: {"family":"W-weapon.beastlash","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare only the current admitted facet, preserving weapon-specific overrides, optional attack replacement, parry and save eligibility, and per-phase reroll resources. Do not inherit the combined parent parameters or introduce capture, shooting, exploration or excluded recipient consequences.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: cannot-be-parried (scope: YES)
+# AUTHORED[cannot-be-parried]: 2 scenarios show the refused parry against the lash and the live parry of the same defender against an ordinary weapon.
+# origin_id:
+#   mechanic/weapon.beastlash
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   531cb69def1615c6e9d5181409f61ad1f6b59ee3ce26380d06823e8330473f82
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Cannot be parried.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A Beastlash attack cannot be parried by sword or buckler. Closure: the defender attempt is refused for this weapon.
+# effect_id:
+#   weapon.beastlash
+# relation:
+#   equivalent
+# parameters:
+#   {"cannot_be_parried": true}
+# conditions:
+#   {"trigger": "parry"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   cannot_be_parried is carried by the contract and consumed by resolve_parry through ParryContext. The printed Cat O Nine Tails entry prints the same wording, so the shared flag is appropriate for that item origin. Surface reuse candidate: {"family":"W-weapon.beastlash","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare only the current admitted facet, preserving weapon-specific overrides, optional attack replacement, parry and save eligibility, and per-phase reroll resources. Do not inherit the combined parent parameters or introduce capture, shooting, exploration or excluded recipient consequences.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: whipcrack (scope: YES)
+# AUTHORED[whipcrack]: 3 scenarios cover the bonus attack, the two-whip cap and the strike-first timing of the bonus while its bearer is charged.
+# origin_id:
+#   mechanic/weapon.beastlash
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   531cb69def1615c6e9d5181409f61ad1f6b59ee3ce26380d06823e8330473f82
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Whipcrack grants one bonus attack when charging or charged; only that bonus strikes first when charged, and two whips do not double it.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A whip-tagged weapon grants exactly one bonus attack in the round it charges or is charged; when charged that attack strikes first, and carrying two whips never doubles the bonus. Closure: the whip pool gains one attack, the bonus attack resolves at strike-first priority when charged, and a second whip contributes only the ordinary additional-hand attack.
+# effect_id:
+#   weapon.beastlash
+# relation:
+#   related
+# parameters:
+#   {"bonus_attacks": 1, "cap": 1, "condition": ["charging", "charged"], "strikes_first_when_charged": true}
+# conditions:
+#   {"first_round": true}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   whipcrack_weapon() accepts the steel-whip, beastlash, pirate-scourge and serpent-whip tags and apply_round_weapon_attack_modifiers adds a single point of attacks in the first round when charging or charged. Because the bonus is a pool-level +1 it is naturally capped at one for two whips. Recorded as related rather than equivalent because the whipcrack clause is a shared family behaviour keyed by tag, not an effect of the Beastlash profile alone. Surface reuse candidate: {"family":"W-weapon.beastlash","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare only the current admitted facet, preserving weapon-specific overrides, optional attack replacement, parry and save eligibility, and per-phase reroll resources. Do not inherit the combined parent parameters or introduce capture, shooting, exploration or excluded recipient consequences.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios show the base profile subtracting one point of Strength: a 4 that wounds with a plain mace fails with the lash, and the lash still wounds on the 5 it needs.
+# origin_id:
+#   mechanic/weapon.beastlash
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   531cb69def1615c6e9d5181409f61ad1f6b59ee3ce26380d06823e8330473f82
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Range: Close Combat Strength: As user -1
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Beastlash's own close-combat profile at Strength as user -1 is the weapon's base attack strength; the other printed parts of the same entry are classified as its own clauses (rows 775 to 777). Printed clause: Range: Close Combat Strength: As user -1
+# effect_id:
+#   weapon.beastlash
+# relation:
+#   equivalent
+# parameters:
+#   {"strength_bonus": -1}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. Strength -1 matches the printed item entry. The operator also grants cannot_be_parried and the whipcrack family, which the printed item text does not state; those parts are recorded separately. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"matched","review_status":"reviewed","scope_reason":"The Beastlash's own close-combat profile at Strength as user -1 is the weapon's base attack strength; the other printed parts of the same entry are classified as its own clauses (rows 775 to 777).","notes":"The row is narrowed to the base profile so the aggregated whole-rule row does not duplicate the separate cannot-be-parried, Beastbane and Whipcrack clauses of the same origin.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Beastlash attacks resolve at the wielder Strength -1. Closure: the compiled profile subtracts one point of Strength while the whip tag is present.","effect_id":"weapon.beastlash","relation":"equivalent","parameters":"{\"strength_bonus\": -1}","conditions":"{\"application\": \"attack\", \"stacking\": \"stack\", \"trigger\": \"attack\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/contracts.py::effect_index\", \"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/phases.py::build_attacks\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_attack_strength\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_armour_context\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"A02e-whip-weapons","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/roster-construction/mordheim_construction/contracts.py::effect_index\", \"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/phases.py::build_attacks\"]"},"inherited_clause_text":"Range: Close Combat Strength: As user -1 Special Rules Beastbane: The Beastmaster wielding a Beastlash causes Fear in animals, any animal charged or wishing to charge a Beastmaster with one of these weapons must first take a Fear test as mentioned in the psychology section of the Mordheim rules. Cannot be parried. Whipcrack grants one bonus attack when charging or charged; only that bonus strikes first when charged, and two whips do not double it.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"W-weapon.beastlash","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare only the current admitted facet, preserving weapon-specific overrides, optional attack replacement, parry and save eligibility, and per-phase reroll resources. Do not inherit the combined parent parameters or introduce capture, shooting, exploration or excluded recipient consequences.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/weapon.beastlash - Beastbane Fear against animals, an attack that
+# cannot be parried, and Whipcrack.
+#
+# Expectations come from the printed rule and the admitted clauses
+# `beastbane-fear`, `cannot-be-parried` and `whipcrack`, never from engine output.
+# The Fear test is a two-dice Leadership test, so both faces are scripted.  The
+# lash is a whip, so its bearer's pool gains one attack in the round it charges or
+# is charged; when it is charged that bonus alone resolves at the strike-first
+# tier and is recorded as its own attack label.
+# The Beastlash bearer causes Fear in an animal, so the charged animal must first take its two-dice Fear test; the 3 it rolls is under its Leadership 8, so the test passes and the round continues.
+
+- audit_id: mechanic/weapon.beastlash
+  id: beastlash-fear-test-is-required-of-an-animal-that-is-charged
+  covers: [beastbane-fear]
+  fighters:
+    first:
+      main_weapon_id: weapon.beastlash
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {normal_animal: True}
+      characteristics: &d-animal-ld8 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 8}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 2}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.fear.charged.0, sides: 6, value: 2}
+    - {kind: roll, key: round.0.second.fear.charged.1, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# The same charge against a warrior who is not an animal requires no Fear test at all: the strict tape would fail on the unexpected Fear die.
+
+- audit_id: mechanic/weapon.beastlash
+  id: beastlash-fear-grants-nothing-against-a-non-animal
+  covers: [beastbane-fear]
+  fighters:
+    first:
+      main_weapon_id: weapon.beastlash
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 8}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# A sword-armed defender is never offered a parry against the lash: no parry die is scripted and the strict tape proves none was requested.
+
+- audit_id: mechanic/weapon.beastlash
+  id: beastlash-cannot-be-parried-by-a-sword
+  covers: [cannot-be-parried]
+  fighters:
+    first:
+      main_weapon_id: weapon.beastlash
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Control: the same defender's sword parry is live against an ordinary weapon, so the refusal in the previous scenario is the lash's own property and not a dead parry.
+
+- audit_id: mechanic/weapon.beastlash
+  id: a-plain-weapon-may-still-be-parried-by-the-same-defender
+  covers: [cannot-be-parried]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The charging bearer resolves its one base attack plus exactly one Whipcrack attack.
+
+- audit_id: mechanic/weapon.beastlash
+  id: beastlash-whipcrack-grants-one-bonus-attack-when-charging
+  covers: [whipcrack]
+  fighters:
+    first:
+      main_weapon_id: weapon.beastlash
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# Two lashes are one base attack, the ordinary second-hand attack and one Whipcrack attack: three dice, never four.
+
+- audit_id: mechanic/weapon.beastlash
+  id: beastlash-two-whips-still-grant-only-one-whipcrack-bonus
+  covers: [whipcrack]
+  fighters:
+    first:
+      main_weapon_id: weapon.beastlash
+      off_hand_id: weapon.beastlash
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.2.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# Charged, the bearer gains the bonus attack and that bonus alone strikes first: it resolves before the charging enemy and before the bearer's own ordinary attack, which keeps its ordinary Initiative tier.
+
+- audit_id: mechanic/weapon.beastlash
+  id: beastlash-whipcrack-bonus-strikes-first-when-its-bearer-is-charged
+  covers: [whipcrack]
+  fighters:
+    first:
+      main_weapon_id: weapon.beastlash
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &a-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.whipcrack.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.whipcrack.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+
+# The base profile prints Strength as user -1, so a Strength 3 bearer attacks at
+# Strength 2 and needs a 5 to wound Toughness 3 where a Strength 3 mace needs a 4.
+
+- audit_id: mechanic/weapon.beastlash
+  id: beastlash-base-profile-strikes-at-user-strength-minus-one
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.beastlash
+      characteristics: &whole-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &whole-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &whole-still {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control: the same wound face of 4 does wound from a Strength 3 mace, so the
+# failure above is the lash's own Strength -1 and not a dead wound step.  The
+# lash still reaches Toughness 3 on the 5 it needs.
+
+- audit_id: mechanic/weapon.beastlash
+  id: beastlash-base-profile-is-one-point-below-a-plain-mace
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *whole-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *whole-ws3-s3-t3-w2-i2
+  duel_context: *whole-still
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/weapon.beastlash
+  id: beastlash-base-profile-still-wounds-toughness-three-on-five
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.beastlash
+      characteristics: *whole-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *whole-ws3-s3-t3-w2-i2
+  duel_context: *whole-still
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

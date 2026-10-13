@@ -1,0 +1,109 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.yari-two-handed
+# scaffold_fingerprint: 31cfb73f3b202044b9a3293e255e98de9aa9637d0acf644e791a7a4f341f2bed
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries 4 authored scenarios
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenarios cover the printed strike-first priority, the parry
+#   and the two-handed occupancy.
+# origin_id:
+#   mechanic/weapon.yari-two-handed
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   e7c825c72aac974bdea224e901a33f44f6209885dcab7ab502d74ad79dbb32b6
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Two-handed weapon that strikes first and may parry.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Two-handed yari strikes first and may parry. Closure: priority 1, two-handed and one parry attempt.
+# effect_id:
+#   weapon.yari-two-handed
+# relation:
+#   equivalent
+# parameters:
+#   {"parry": true, "priority": 1, "two_handed": true}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts.  Surface reuse candidate: {"family":"W-weapon.yari-two-handed","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/weapon.yari-two-handed - strike first, parry, two hands.
+#
+# Expectations come from the printed rule and the admitted clause, never from
+# engine output.  The admitted contract prints no turn scope for the priority, so
+# the scenarios assert the first-round consequence only; the printed turn limit
+# of sibling weapons is not inherited by their labels.
+# Neither fighter charges, so only the printed strike-first priority can lift the
+# lower-Initiative bearer above the defender in the ordered tape.
+- audit_id: mechanic/weapon.yari-two-handed
+  id: yari-two-handed-strikes-first-with-a-lower-initiative
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.yari-two-handed
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# The bearer's own parry attempt blocks the hit that landed on a 4.
+- audit_id: mechanic/weapon.yari-two-handed
+  id: yari-two-handed-parries-a-higher-roll
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.yari-two-handed
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: mechanic/weapon.yari-two-handed
+  id: yari-two-handed-occupies-both-hands-so-an-off-hand-weapon-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.yari-two-handed
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "main weapon occupies both hands"
+

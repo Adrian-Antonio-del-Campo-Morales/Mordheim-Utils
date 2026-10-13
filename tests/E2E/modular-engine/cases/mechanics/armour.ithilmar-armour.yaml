@@ -1,0 +1,134 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/armour.ithilmar-armour
+# scaffold_fingerprint: 4fb23429b506ab37ad88fe816e10c2d1adfe962ae204d789d669535c1698f279
+# authoring_status: AUTHORED
+# authoring_progress: the admitted save clause carries two authored boundary
+#   scenarios; the excluded Movement clause stays excluded. REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: five-plus-basic-save (scope: YES)
+# AUTHORED[five-plus-basic-save]: 2 scenarios cover the 5+ save holding at the
+#   threshold and failing one face below it. Pending semantic review.
+# origin_id:
+#   mechanic/armour.ithilmar-armour
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   4c5fd93c161d2b5f2529f001dcad3b52b6682f46d87c69101b9da78be8ee34af
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Save: 5+ Special Rules Movement Penalty: Ithilmar armour gives the wearer a 5+ basic save, and does not slow him down if he is also armed with a shield.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Ithilmar armour gives the wearer a 5+ basic save; observable: an incoming wound is saved on a 5 before Strength modifiers.
+# effect_id:
+#   armour.ithilmar-armour
+# relation:
+#   equivalent
+# parameters:
+#   {"base_save":5}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#    Surface reuse candidate: {"family":"A-ITHILMAR","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Confirm the printed saving value, equipment slot, combinability, save stage and exceptions. Intrinsic kit, armour floor and helmet reaction are distinct; movement/ownership lifecycle clauses are not new duel behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: no-penalty-with-a-shield (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   mechanic/armour.ithilmar-armour
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   4c5fd93c161d2b5f2529f001dcad3b52b6682f46d87c69101b9da78be8ee34af
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Save: 5+ Special Rules Movement Penalty: Ithilmar armour gives the wearer a 5+ basic save, and does not slow him down if he is also armed with a shield.
+# Semantic contract (check analysis_status before treating as accepted):
+#   It does not slow the wearer down with a shield; observable: no Movement penalty with a shield.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Movement is outside the duel scope.
+
+# --- Authored scenarios ---
+# mechanic/armour.ithilmar-armour — the 5+ basic save and its threshold boundary.
+#
+# Expectations come from the printed rule and the accepted clause
+# `five-plus-basic-save` of docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv,
+# never from engine output: ithilmar armour saves an incoming close-combat wound
+# on a 5 before Strength modifiers.  An unmodified Strength 3 attacker applies
+# no save modifier, so the boundary is exactly 5: the five holds, the four
+# fails.  The excluded Movement clause has no duel-time observable here.
+#
+# The first scenario declares the shared profiles as YAML anchors; the sibling
+# aliases them and keeps its own armour face and expectation.
+
+- audit_id: mechanic/armour.ithilmar-armour
+  id: ithilmar-armour-save-holds-on-five
+  covers: [five-plus-basic-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &attacker-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.ithilmar-armour
+      characteristics: &defender-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: the four is not a 5+, so the wound is
+# taken and the defender drops a wound.  No other armour face is scripted.
+
+- audit_id: mechanic/armour.ithilmar-armour
+  id: ithilmar-armour-save-fails-on-four
+  covers: [five-plus-basic-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *attacker-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.ithilmar-armour
+      characteristics: *defender-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

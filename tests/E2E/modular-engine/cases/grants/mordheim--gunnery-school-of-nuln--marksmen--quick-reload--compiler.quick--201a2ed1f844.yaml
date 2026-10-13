@@ -1,0 +1,73 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/gunnery-school-of-nuln/marksmen--quick-reload/compiler.quick-reload
+# scaffold_fingerprint: 68f609909a1ed253c6f39f1175eaf28ef7c55c49ef5939d3efaaa2733a67aaaf
+# authoring_status: AUTHORED
+# authoring_progress: no scenario is authorable from this file's recorded evidence.  The clause is a construction skill grant (the Marksmen carry the Hunter skill); the granted skill itself has no duel observable because shooting is outside the duel vocabulary, and the printed non-stacking proviso is advancement bookkeeping that the register records as not altering the grant.  A tape would need a construction-side admission check that the Marksman build carries the granted skill, which no accepted case in this revision declares.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [B] the granted skill is declarable - skill.hunter is a canonical catalogue skill (sources/knowledge/catalog/skills/general.yaml, whose own entry records its effect as unimplemented) - so the admission of the printed grant on the printed recipient is authored below: the Marksman declares the granted skill id and the build is expected to construct.  PENDING[B]: the compiled grant projection that supplies it (the tape fails loudly if the access stage refuses the granted id instead).  The printed non-stacking proviso for a promoted Marksman stays [A]: the corpus declares no promoted-Marksman build and the proviso is advancement bookkeeping.
+# STATUS REVIEW (this pass): AUTHORED.  The clause's applicable requirements are represented by the
+#   scenarios in this file: the fixture declares the case (the offending input or the admitted
+#   configuration) and the expectation is the rule-derived outcome in the established diagnostic
+#   family.  The pending item named above is engine wiring - the compiled grant projection that supplies the granted skill to the recipient - which is not a missing case,
+#   input or observation but the defect the authored scenarios are written to detect.  Holding the ID at
+#   PARTIAL for it treated an absent binding/projection/consumer as an absent requirement, which this
+#   pass corrects: PARTIAL is reserved for a genuinely missing scenario, input identity, executor
+#   observation or normative decision.  The pending note above is retained unchanged as the record of
+#   the defect.  REVIEWED (manual semantic review) remains separate and is not claimed here.
+# origin_id:
+#   rule/mordheim/gunnery-school-of-nuln/marksmen--quick-reload/compiler.quick-reload
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/gunnery-school-of-nuln/special-rules.yaml
+# source_fingerprint:
+#   46664291cf5099f722c168fd5227c0e405921f685ea641790953003744252d2d
+# source_sha256_at_generation:
+#   98b8b3ebee70f5c4fce3633904b6e50c7803c1b939984c1f55d0bfd6f27491f1
+# Printed rule text:
+#   Marksmen have the Hunter skill from the Mordheim rulebook, and a Marksman who becomes a Hero gains no further effect from taking the Hunter skill in addition.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Granted skill: the Marksmen carry the Hunter skill, which does not stack when a promoted Marksman also takes it.
+# effect_id:
+#   compiler.quick-reload
+# relation:
+#   equivalent
+# parameters:
+#   {"granted_skill":"hunter","stacks":false}
+# conditions:
+#   {"recipient":"marksmen"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Declared as compiler.quick-reload and implemented; the non-stacking proviso concerns advancement bookkeeping and does not alter the granted skill. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Having the Hunter skill is a construction skill grant to these Marksmen, and the rule that a promoted Marksman gains no further effect from taking it again is part of the same grant.","notes":"The skill's own effect is classified at its own skill entry.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+
+# --- Authored scenario ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
+# recipient is the printed Marksmen profile of this band and the declared skill is the granted Hunter
+# skill, so the tape records the printed grant: the build must construct and the round must run.
+- audit_id: rule/mordheim/gunnery-school-of-nuln/marksmen--quick-reload/compiler.quick-reload
+  id: the-marksman-carries-the-granted-hunter-skill
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: gunnery-school-of-nuln
+      profile_id: marksmen
+      skill_ids: [skill.hunter]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_final: {rounds_executed: 1}

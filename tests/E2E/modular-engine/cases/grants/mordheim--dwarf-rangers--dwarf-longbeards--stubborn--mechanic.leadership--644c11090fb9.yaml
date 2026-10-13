@@ -1,0 +1,123 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-rangers/dwarf-longbeards--stubborn/mechanic.leadership-reroll
+# scaffold_fingerprint: 78b6c4c23b4c0f7c7e7939aae003dec9461f4386dc87cd84aa232fdc495d7f9c
+# authoring_status: AUTHORED
+# authoring_progress: the admitted leadership-reroll clause carries three authored scenarios derived from the printed rule and the recorded contract of the shared optional Leadership reroll.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: leadership-reroll (scope: YES)
+# AUTHORED[leadership-reroll]: 3 scenarios cover the single optional reroll succeeding, the accepted second failure with no third attempt (the printed "never reroll a reroll"), and the declined offer.  The register records this band origin as the shared optional-reroll facet whose printed "never reroll a reroll" is enforced by reusing the same threshold once, so the tapes read the canonical operator through the fighter's grant list exactly as the mechanic origin's own case does; the Longbeard's own printed sentence is the recipient condition this file records.
+# origin_id:
+#   rule/mordheim/dwarf-rangers/dwarf-longbeards--stubborn/mechanic.leadership-reroll
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dwarf-rangers/special-rules.yaml
+# source_fingerprint:
+#   088482628dde09acbe0a4662e1f071c7503a87dd03e91995d65450b59c42ce97
+# source_sha256_at_generation:
+#   d777a264de4362ae1b1ae198d5635b010629d1b82186950a5d4a360591eaf6d5
+# Printed rule text:
+#   Dwarf Longbeards have seen just about everything in their long careers and they know it. They are used to fighting by themselves against impossible odds and it hasn’t killed them yet. On top of all this they are just generally more set in their ways than other Dwarfs and they’re not about to let a bunch of weedy goblins drive them off! A Dwarf Longbeard may reroll any failed Leadership test he is required to take. Remember that you can never reroll a reroll, so the result of this second roll must always be accepted.
+# Semantic contract (check analysis_status before treating as accepted):
+#   May reroll any failed individual Leadership test once and accept the second result; a roll may never be rerolled twice. Observable: exactly one reroll is offered per failed Leadership test.
+# effect_id:
+#   mechanic.leadership-reroll
+# relation:
+#   equivalent
+# parameters:
+#   {"max_rerolls_per_roll":1}
+# conditions:
+#   {"trigger":"failed individual Leadership test","resolution":"optional reroll","consequence":"second result accepted","recipient":"this warrior","duration":"per failure","stacking":"one reroll; never reroll a reroll"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Optional Leadership reroll (mechanic.leadership-reroll). Printed 'never reroll a reroll' is enforced by resolve_local_leadership reusing the same threshold once. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"leadership-reroll","audit_group":"EQ-mechanic.leadership-reroll","verified_facet":"leadership/optional-reroll","relationship":"shared_facet","boundary":"Optional failed individual Leadership reroll. Hound requires the supplied Priest within 12 inches; Songster also supplies +1 Leadership. Sharing the dice helper does not erase either provider condition.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# The failed Fear test offers exactly one reroll; the declared choice takes it, the
+# second pair of ones passes and the charge survives.  Only one reroll decision is
+# declared, and an additional request would be refused by the fixture.
+- audit_id: rule/mordheim/dwarf-rangers/dwarf-longbeards--stubborn/mechanic.leadership-reroll
+  id: one-optional-reroll-turns-the-failure-around
+  covers: [leadership-reroll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.leadership-reroll]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.fear.charge.reroll, value: true}
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+    - {key: round.0.first.fear.charge.reroll.0, value: 1}
+    - {key: round.0.first.fear.charge.reroll.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first_charged: True, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The second result is accepted: the rerolled sixes fail as well, no third attempt is
+# offered and the charge is cancelled without any attack.
+- audit_id: rule/mordheim/dwarf-rangers/dwarf-longbeards--stubborn/mechanic.leadership-reroll
+  id: the-reroll-is-accepted-even-when-it-fails
+  covers: [leadership-reroll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.leadership-reroll]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.fear.charge.reroll, value: true}
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+    - {key: round.0.first.fear.charge.reroll.0, value: 6}
+    - {key: round.0.first.fear.charge.reroll.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+# The offer is optional: declining it consumes no die and the failure stands.
+- audit_id: rule/mordheim/dwarf-rangers/dwarf-longbeards--stubborn/mechanic.leadership-reroll
+  id: declining-the-offer-keeps-the-first-failure
+  covers: [leadership-reroll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.leadership-reroll]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.fear.charge.reroll, value: false}
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

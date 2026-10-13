@@ -35,6 +35,21 @@ from mordheim_core.models import CompiledFighter
 from mordheim_core.models import EffectSet
 
 
+def _trip_eligible(attacker: CompiledFighter, attacker_state: FighterState,
+                   weapon: EffectSet) -> bool:
+    """The Trip trick replaces a wound roll of attacks the bearer directs.
+
+    The trip state lives on FighterState (it is set per combat turn by
+    resolve_round when the Confound-and-Confuse chooser accepts the trip
+    slot), never on the compiled profile, which never changes between
+    rounds; read it there.
+    """
+    return (phases.has_tag(attacker.global_effects, "mechanic.confound-and-confuse")
+        and attacker_state.trip_trick_active
+        and "jester.trip" not in attacker_state.resources_spent
+        and not phases.has_tag(weapon, "effect.wraith-touch"))
+
+
 def resolve_reference_attack(attacker, defender, attacker_state, defender_state, weapon, dice, **options):
     """Resolve an attack; Rapier Barrage requires no established wound, even saved."""
     trance_target = defender_state.entranced
@@ -90,6 +105,7 @@ def _resolve_reference_attack_once(
     natural_hit_six: bool | None = None,
     defences_resolved: bool = False,
     ethereal_resolved: bool = False,
+    marks_resolved: bool = False,
     defences_only: bool = False,
     parry_allowed: bool = True,
     decisions: DecisionPolicy | None = None,
@@ -119,7 +135,8 @@ def _resolve_reference_attack_once(
             injury_modifier=effect.injury_modifier - 1,
         )
     strength, armour_strength = _attack_strength(
-        attacker, defender, attacker_state, weapon, effect, first_round, charging
+        attacker, defender, attacker_state, weapon, effect, first_round, charging,
+        melee_attack=melee_attack,
     )
     hit_context = prepare_hit_context(
         attacker, defender, attacker_state, defender_state, weapon, effect,
@@ -184,6 +201,16 @@ def _resolve_reference_attack_once(
             and dice.roll(RollRequest(f"{key}.ethereal")) >= 4):
         return AttackOutcome(attacker_state, defender_state, hit=True, hit_roll=hit.roll,
             hit_target=hit.target, saved=True, trace=trace)
+    # Printed Marks of Ranald clause: the Priest ducks past any hit on an
+    # unmodifiable 6+, regardless of Strength or source including magical
+    # attacks, on a roll made before critical hit effects are determined.  Like
+    # the ethereal save it intercepts the hit here, so the ability never also
+    # resolves later as a ward save.
+    if (not defences_resolved and not marks_resolved
+            and phases.has_tag(defender.global_effects, "mechanic.marks-of-ranald")
+            and dice.roll(RollRequest(f"{key}.marks-of-ranald")) >= 6):
+        return AttackOutcome(attacker_state, defender_state, hit=True, hit_roll=hit.roll,
+            hit_target=hit.target, saved=True, trace=trace)
     killing_blow = natural_hit_six and phases.has_tag(effect, "mechanic.killing-blow")
     if killing_blow:
         effect = replace(effect, cannot_be_parried=True)
@@ -242,7 +269,7 @@ def _resolve_reference_attack_once(
             phases.WoundResult(0, 0, True, False), phases.CriticalResult(), dice,
             key=extra_key, first_round=first_round, charging=charging,
             helpless_at_start=helpless_at_start, decisions=decisions,
-            trace=(Phase.WOUND,), single_wound=True,
+            trace=(Phase.WOUND,), single_wound=True, melee_attack=melee_attack,
         )
         from mordheim_combat.modular.aftermath import _react_to_wound
         extra = _react_to_wound(attacker, defender, extra, dice, extra_key)
@@ -304,6 +331,7 @@ def _resolve_reference_attack_once(
     wound_context = prepare_wound_context(
         attacker, defender, attacker_state, defender_state, weapon, effect,
         hit_roll=hit.roll, first_round=first_round, charging=charging, key=f"{key}.wound",
+        melee_attack=melee_attack,
     )
     if killing_blow and not (phases.has_tag(effect, "poison.black-lotus") and not poison_blocked):
         # No To Wound die is rolled, so no natural wound six or critical is invented.
@@ -318,6 +346,22 @@ def _resolve_reference_attack_once(
         and "luck" not in attacker_state.resources_spent
         and not effect.reroll_wounds
     )
+    # Trip (The Dark Jester / Confound and Confuse) is the round's chosen
+    # alternative for exactly one attack: after a single successful hit the
+    # bearer may give up that attack's wound roll and instead trip the
+    # opponent, whose D6 of 2+ counts him Knocked Down.  The choice and the
+    # trip roll are resolved BEFORE the wound step, so no wound die is
+    # consumed and a printed wound reroll (Luck, Wound Valour) is never
+    # spent on a replaced roll; a 1 leaves the opponent standing and the
+    # attack simply ends.
+    if (melee_attack and _trip_eligible(attacker, attacker_state, weapon) and decisions is not None
+            and defender_state.condition == Condition.STANDING
+            and decisions.choose(f"{key}.trip.hit", wound_context)):
+        attacker_state = attacker_state.spend("jester.trip")
+        if dice.roll(RollRequest(f"{key}.trip-roll")) >= 2:
+            defender_state = replace(defender_state, condition=Condition.KNOCKED_DOWN)
+        return AttackOutcome(attacker_state, defender_state, hit=True,
+            hit_roll=hit.roll, hit_target=hit.target, trace=trace)
     wound = phases.resolve_wound(wound_context, dice)
     if luck_for_wound and wound.rerolled:
         attacker_state = attacker_state.spend("luck")
@@ -354,6 +398,7 @@ def _resolve_reference_attack_once(
         attacker, defender, attacker_state, defender_state, weapon, effect,
         wound, critical, dice, key=key, first_round=first_round, charging=charging,
         helpless_at_start=helpless_at_start, decisions=decisions, trace=trace,
+        melee_attack=melee_attack,
     )
 
 
@@ -364,7 +409,7 @@ def _resolve_wound_damage(
     critical: phases.CriticalResult, dice: DiceSource, *, key: str,
     first_round: bool, charging: bool, helpless_at_start: bool,
     decisions: DecisionPolicy | None, trace: tuple[Phase, ...],
-    single_wound: bool = False,
+    single_wound: bool = False, melee_attack: bool = True,
 ) -> AttackOutcome:
     """Shared saves, damage and injury for an already established wound."""
     poison_blocked = defender.global_effects.poison_immunity or phases.has_tag(
@@ -372,6 +417,7 @@ def _resolve_wound_damage(
     armour_context = prepare_armour_context(
         attacker, defender, attacker_state, defender_state, weapon, effect,
         first_round=first_round, charging=charging, key=f"{key}.armour",
+        melee_attack=melee_attack,
     )
     armour = phases.resolve_armour(replace(armour_context,
         ignore_armour=armour_context.ignore_armour or critical.ignore_armour), dice)
@@ -396,7 +442,8 @@ def _resolve_wound_damage(
     if armour.saved:
         return AttackOutcome(attacker_state, defender_state, True, wounded=True, saved=True, critical=wound.critical, trace=trace)
     special = phases.resolve_special_save(prepare_special_save_context(
-        defender, effect, key=f"{key}.special",
+        defender, effect, key=f"{key}.special", defender_state=defender_state,
+        melee_attack=melee_attack,
     ), dice)
     trace += (Phase.SPECIAL_SAVE,)
     if special.saved:
@@ -418,6 +465,17 @@ def _resolve_wound_damage(
             defender_state,
             initiative_penalty=defender_state.initiative_penalty + damage,
         )
+    if phases.has_tag(defender.global_effects, 'mechanic.hillman-lycanthrope') and not defender_state.hillman_wolf:
+        # One attempt for each lost Wound; a transformation replaces injury
+        # resolution and uses the source's distinct W2 wolf profile.
+        for lost in range(damage):
+            if dice.roll(RollRequest(f'{key}.lycanthrope.{lost}')) >= 4:
+                defender_state = replace(defender_state, hillman_wolf=True,
+                    wounds=2, condition=Condition.STANDING, weapon_skill=4,
+                    strength=4, toughness=4, initiative=5, attacks=2,
+                    parries_remaining=0)
+                return AttackOutcome(attacker_state, defender_state, True,
+                    wounded=True, damage=damage, critical=wound.critical, trace=trace)
     if remaining > 0:
         defender_state = replace(defender_state, wounds=remaining)
         return AttackOutcome(attacker_state, defender_state, True, wounded=True, damage=damage, critical=wound.critical, trace=trace)
@@ -426,7 +484,17 @@ def _resolve_wound_damage(
             attacker_state, replace(defender_state, wounds=remaining, condition=Condition.OUT),
             True, wounded=True, damage=damage, critical=wound.critical, trace=trace,
         )
-    injury_context = _injury_context(defender, effect, key, defender_state)
+    # Backstabber's Injury half: +1 on Injury rolls during the first round of
+    # the combat the unseen charge opened; the opponent recovers afterwards.
+    injury_context = _injury_context(
+        defender, effect, key, defender_state,
+        injury_bonus=int(melee_attack and first_round and charging
+            and phases.has_tag(attacker.global_effects, "skill.backstabber")
+            and phases.has_tag(attacker.global_effects, "condition.unseen-charge")),
+    )
+    if (phases.has_tag(defender.global_effects, 'mechanic.hillman-lycanthrope')
+            and not defender_state.hillman_wolf):
+        injury_context = replace(injury_context, modifier=injury_context.modifier - 1)
     if wound.critical:
         injury_context = replace(
             injury_context,
@@ -463,6 +531,9 @@ def _resolve_wound_damage(
     condition = phases.resolve_stun_reaction(phases.StunReactionContext(
         condition, defender.global_effects.thick_skull, helmet_save, key
     ), dice).condition
+    if (melee_attack and condition == Condition.STUNNED
+            and phases.has_tag(attacker.global_effects, 'mechanic.needle-and-thread')):
+        defender_state = replace(defender_state, mouth_sewn=True)
     defender_state = replace(
         defender_state, wounds=remaining, condition=max(defender_state.condition, condition),
         frenzy=defender_state.frenzy and condition == Condition.STANDING,

@@ -1,0 +1,122 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-tomb-guardians/tomb-lord--flammable/trait.flammable
+# scaffold_fingerprint: b68c3d9708f898dab7d7bffe45d17bf8c11c6f27697ae5adf00e868cfc698a4a
+# authoring_status: AUTHORED
+# authoring_progress: the admitted fire-doubles-wounds clause carries 3 authored scenarios derived from
+#   the printed rule and the recorded contract: the fire attack takes two Wounds from the same Wound fixture
+#   the identical mace blow takes one from, and the same fire attack against a hand-built non-flammable
+#   bearer also takes only one, so the doubling is attached to the printed recipient and to the fire attack
+#   rather than to the bearer or the weapon alone.  The resolved damage of one unsaved Wound is read as the
+#   normal one Wound the printed sentence doubles.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: fire-doubles-wounds (scope: YES)
+# AUTHORED[fire-doubles-wounds]: 3 scenarios cover the printed doubling.  The bearer is the printed Tomb
+#   Lord of this band and carries the trait itself; the fire attack is the admitted attack.fire producer
+#   (brazier iron) declared with its ignition die below the threshold, exactly as the sibling regeneration
+#   case declares it, so the tape holds only the attack dice.  Six Wounds are supplied as the bearer's
+#   fixture so the difference between two Wounds and one is visible, and the record's own note that the two
+#   printings differ in trigger wording (hit versus wound) is why the fire scenario asserts the damage of an
+#   attack that already wounded.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/khemri-tomb-guardians/tomb-lord--flammable/trait.flammable
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-tomb-guardians/special-rules.yaml
+# source_fingerprint:
+#   37c9189856209111aae0236acbac1d3f67a071674bae98be05eb3a00f9916a42
+# source_sha256_at_generation:
+#   a9c8df6aaba67eeae09b5dee369da75a30c41cfc563e893c57ef2a764afbfc0f
+# Printed rule text:
+#   A fire-based attack that wounds the Tomb Lord causes double the normal number of Wounds.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A fire-based attack that hits (and, in the Khemri printing, wounds) the Tomb Lord causes double the normal number of Wounds; observable: damage is doubled for fire attacks.
+# effect_id:
+#   trait.flammable
+# relation:
+#   parameterized_variant
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Two printings differ in trigger wording (hit versus wound); the engine doubles the resolved damage of a fire attack, which matches the wound-level reading and can overstate the hit-level one. Recorded as the same effect with the two texts kept apart. Surface reuse candidate: {"family":"trait.flammable","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the entire printed chart or reaction, received versus inflicted injury, initial condition, exceptions and timing. Reroll, ignore-result roll, wound multiplication and ignition threshold are different effects; do not copy a generic chart or combine them by name.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the admitted fire and mace weapons; no
+# engine output was consulted.  Weapon Skill 10 and Strength 8 on the hand-built striker fix the hit and
+# wound thresholds, and five is below a natural six so no critical die is requested.
+
+- audit_id: rule/trollheim/khemri-tomb-guardians/tomb-lord--flammable/trait.flammable
+  id: a-fire-attack-wounds-the-bearer-twice-over
+  covers: [fire-doubles-wounds]
+  fighters:
+    first:
+      main_weapon_id: weapon.brazier-iron
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-lord
+  initial_state: {second: {wounds: 6, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.ignition, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.damage: 2, state.second.wounds: 4}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-tomb-guardians/tomb-lord--flammable/trait.flammable
+  id: the-same-unsaved-wound-from-an-ordinary-weapon-is-not-doubled
+  covers: [fire-doubles-wounds]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: khemri-tomb-guardians
+      profile_id: tomb-lord
+  initial_state: {second: {wounds: 6, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 5}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-tomb-guardians/tomb-lord--flammable/trait.flammable
+  id: the-same-fire-attack-against-a-non-flammable-warrior-is-not-doubled
+  covers: [fire-doubles-wounds]
+  fighters:
+    first:
+      main_weapon_id: weapon.brazier-iron
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 6, initiative: 1, attacks: 0}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.ignition, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 5}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

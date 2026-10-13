@@ -1,0 +1,95 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/rule.squishy
+# scaffold_fingerprint: 1cdf40949b4f44ba0048a8375d85e05eff275e4998819a639a28518505e8cb74
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: squishy-overrides-no-pain (scope: YES)
+# AUTHORED[squishy-overrides-no-pain]: 2 scenarios roll the same Stunned injury
+#   result against a bearer of No Pain, with and without Squishy, and observe
+#   the standing Stun against the downgrade.
+# origin_id:
+#   mechanic/rule.squishy
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   0975fd51b3e272138234b09268c1f11d02b899628ebf71688634f290aad896c1
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Squishy overrides No Pain; stunned injury results remain stunned.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Squishy overrides No Pain, so stunned injury results remain stunned; observable: the bearer stays Stunned despite a No Pain rule.
+# effect_id:
+#   rule.squishy
+# relation:
+#   equivalent
+# parameters:
+#   {"overrides":"skill.ignore-pain"}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed as a suppression of the ignore-pain flag in the injury context, which is the shared operator behind The Bloated (G078); the squad also refuses the optimized engines and falls back to the reference path.
+
+# --- Authored scenarios ---
+# The bearer carries No Pain, which would otherwise turn a Stunned injury result
+# into Knocked Down.  Squishy suppresses that flag, so the printed Stunned result
+# stands and the bearer's own attack is still scheduled by the round, which is why
+# its declared miss is part of the tape.
+- audit_id: mechanic/rule.squishy
+  id: no-pain-cannot-quiet-the-stun-under-squishy
+  covers: [squishy-overrides-no-pain]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.ignore-pain, rule.squishy]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.condition: STUNNED, state.second.wounds: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The identical duel and tape without Squishy: No Pain acts on the same Stunned
+# result and downgrades it, which isolates the printed override to Squishy.
+- audit_id: mechanic/rule.squishy
+  id: no-pain-alone-still-quiets-the-same-stun
+  covers: [squishy-overrides-no-pain]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.ignore-pain]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.condition: KNOCKED_DOWN, state.second.wounds: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

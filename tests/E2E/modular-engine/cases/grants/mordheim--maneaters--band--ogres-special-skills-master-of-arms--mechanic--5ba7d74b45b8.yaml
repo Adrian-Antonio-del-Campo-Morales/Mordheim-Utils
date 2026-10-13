@@ -1,0 +1,69 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/maneaters/band--ogres-special-skills-master-of-arms/mechanic.master-of-arms
+# scaffold_fingerprint: 2176d1e3f3077c3f651a50635e6ae3dd4ffd4d21c4f196c76d7ec42706a7a79e
+# authoring_status: PARTIAL
+# authoring_progress: 1 of the two faces of the printed loadout relaxation is authored.  The
+#   refusal half is evidenced: a fighter offered a main weapon that occupies both hands without the
+#   binding present is rejected with the shared "main weapon occupies both hands" diagnostic, which
+#   is the restriction the printed rule relaxes.  The admission half (one Difficult to Use weapon
+#   together with an ordinary hand weapon) stays pending because the record does not establish how the
+#   compiler contract is activated for a supplied build: the record itself notes that the binding id
+#   is compiler.master-of-arms while the candidate operator was mechanic.master-of-arms, and no band
+#   rule id is recorded as carrying it, so no build can be shown to hold the contract.  Named pending
+#   requirement: the surface that installs compiler.master-of-arms on a legal ogre build, after which
+#   the admission scenario is the same build with the two-handed main weapon and an ordinary hand
+#   weapon in the other hand.  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [B] 1 authored scenario declares the restriction the printed relaxation removes - the
+#   two-handed main weapon is refused with the shared diagnostic - and the admission half is pending
+#   on the unnamed activation surface recorded above.  The printed "but not two Difficult to Use
+#   weapons" half cannot be authored before the positive half has a build.
+# origin_id:
+#   rule/mordheim/maneaters/band--ogres-special-skills-master-of-arms/mechanic.master-of-arms
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/maneaters/special-rules.yaml
+# source_fingerprint:
+#   2dbd76611307fb2d34408bc360c33535bdfdd21a2afcd58b7c672231ac04cb3e
+# source_sha256_at_generation:
+#   3a08e324408189c522ac15ffd4ef1ebf9f6762f1a8e9ab7608ad27662721e804
+# Printed rule text:
+#   He may now wield a Difficult to Use weapon and a hand weapon at the same time, but not two Difficult to Use weapons.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Loadout relaxation: the Ogre may field one Difficult to Use weapon together with a hand weapon, but never two Difficult to Use weapons.
+# effect_id:
+#   compiler.master-of-arms
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipient":"ogre","allowed_combination":"one difficult-to-use plus one hand weapon"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The binding id is compiler.master-of-arms although the candidate operator was mechanic.master-of-arms; the contract present is the compiler one. Surface reuse candidate: {"family":"C-DIFFICULT","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Keep one Difficult-to-Use weapon plus an ordinary hand weapon distinct from ignoring every Difficult-to-Use restriction. Weapons Training expands allowed identities; it does not imply the same waiver.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the shared construction diagnostic; no engine output was
+# consulted.  The refusal is the restriction the printed rule relaxes: without the contract a main
+# weapon that occupies both hands is rejected, which is what the authored half witnesses here.
+- audit_id: rule/mordheim/maneaters/band--ogres-special-skills-master-of-arms/mechanic.master-of-arms
+  id: a-two-handed-main-weapon-is-refused-without-the-contract
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      characteristics: {weapon_skill: 3, strength: 4, toughness: 4, wounds: 2, initiative: 3, attacks: 2}
+  expect_error: main weapon occupies both hands

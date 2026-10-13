@@ -1,0 +1,120 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/amazons-lustria/band--amazon-special-skills-skink-hunter/mechanic.strike-first-vs-skinks-first-round
+# scaffold_fingerprint: 7f2ddd8ea66d947afb2645900d6f3943656fd4ec7fc56a2be2918be31e65f7c3
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED. The Skink identity is supplied the way the corpus supplies an enemy identity elsewhere, by building the opponent from the band and profile that print it.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover the printed first-round priority against a Skink
+#   opponent whatever the charge direction, its absence against an opponent outside the
+#   printed identity, and the same Skink charger acting first without the skill.
+# origin_id:
+#   rule/mordheim/amazons-lustria/band--amazon-special-skills-skink-hunter/mechanic.strike-first-vs-skinks-first-round
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/amazons-lustria/special-rules.yaml
+# source_fingerprint:
+#   43b93863cef749411074e3b0f0d9e221af11703e8edda1c5632ba8192bc0f7b4
+# source_sha256_at_generation:
+#   d28bfbb2e7601a679cb5acc6d70f7aa00ef9c953d7f1acfe2a7775e6fa40f281
+# Printed rule text:
+#   Through her exploits the Amazon has proven herself a master when it comes to hunting Lizardmen, particularly Skinks. An Amazon with this skill will always strike first in the first round of combat against Skink models no matter who charged.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Amazon always strikes first in the first round of combat against Skink models no matter who charged. Closure: against a Skink the first round is resolved before the opponent whatever the charge direction.
+# effect_id:
+#   mechanic.strike-first-vs-skinks-first-round
+# relation:
+#   equivalent
+# parameters:
+#   {"opponent": "Skinks", "priority": 20, "round_scope": "first"}
+# conditions:
+#   {"opponent": "species.skink", "recipient": "Amazon"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared first-round Skink priority; the printed "no matter who charged" is satisfied because the priority term is set independently of the charge flag. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"M-FIRST-SKINKS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The band origin grants the shared first-round Skink priority, which is set
+# independently of the charge flag, so the printed "no matter who charged" is the
+# observation: the dice are requested in the order the round resolves them.
+- audit_id: rule/mordheim/amazons-lustria/band--amazon-special-skills-skink-hunter/mechanic.strike-first-vs-skinks-first-round
+  id: the-amazon-acts-before-a-charging-skink
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.strike-first-vs-skinks-first-round]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: lizardmen
+      profile_id: skink-braves
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# The control for the identity: an opponent outside the printed Skink targets charges
+# and therefore resolves first, so the reversal above is not a general priority.
+- audit_id: rule/mordheim/amazons-lustria/band--amazon-special-skills-skink-hunter/mechanic.strike-first-vs-skinks-first-round
+  id: an-opponent-outside-the-printed-identity-charges-first
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.strike-first-vs-skinks-first-round]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+# Without the skill the same charging Skink resolves first, which isolates the printed
+# priority to the skill rather than to the profiles.
+- audit_id: rule/mordheim/amazons-lustria/band--amazon-special-skills-skink-hunter/mechanic.strike-first-vs-skinks-first-round
+  id: without-the-skill-the-charging-skink-acts-first
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: lizardmen
+      profile_id: skink-braves
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}

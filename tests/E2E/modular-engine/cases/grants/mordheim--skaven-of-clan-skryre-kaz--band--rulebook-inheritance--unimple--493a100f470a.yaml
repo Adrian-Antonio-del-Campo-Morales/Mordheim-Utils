@@ -1,0 +1,66 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-of-clan-skryre-kaz/band--rulebook-inheritance/unimplemented.skaven-of-clan-skryre-kaz.band.rulebook-inheritance
+# scaffold_fingerprint: b878c18b4c212a930f3511362871e694a306230d9a7c3c6773a7f2a0b7853cfe
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is derived for the admitted whole clause, and the reason is a
+#   missing input rather than missing authoring work.  The printed sentence grants the rulebook
+#   Skaven weapons and special skills while denying the Art of Silent Death, which its own contract
+#   records as construction legality; the corpus route for such a rule is a construction refusal
+#   whose declared fragment is a verbatim part of the message the construction module emits for the
+#   denied skill.  This origin, however, names no recipient: the record has no effect_id, no consumer
+#   and empty conditions, and the printed recipient is the band's "Skaven Heroes" as a class.  A
+#   fixture would therefore have to name a hero profile id and a resolved rulebook skill list this
+#   origin does not declare; naming either from guesswork would misreport the origin.  REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED; no behavioral
+#   result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [E] excluded by the register's own accepted scope disposition ("An equivalent printed
+# stanza for Clan Skryre: the access grants and the named exclusion are construction and campaign state, so
+# no duel operator is required and none exists"), whose inherited contract closes as "unmodelled while
+# equipment access and skill-list access are construction and campaign concerns".  [B] is not available
+# either: the printed recipient is the band's "Skaven Heroes" as a class with no effect_id, no consumer
+# and empty conditions, so a fixture would have to invent the recipient profile id and the resolved
+# rulebook list.  Closing review keeps PARTIAL with this citation; the narrower datum is recorded below.
+#   Pending requirement named exactly: this origin's recipients (the band's Skaven
+#   Heroes) must resolve to concrete profile ids, and the band's rulebook skill list must resolve as
+#   an access set, so that a construction refusal on the printed denial of skill.art-of-silent-death
+#   can be declared with its verbatim message fragment and an admission can be declared for a
+#   printed allowed rulebook skill.  Without those two resolutions the fixture would assert an
+#   invented recipient or an invented allowance.
+# origin_id:
+#   rule/mordheim/skaven-of-clan-skryre-kaz/band--rulebook-inheritance/unimplemented.skaven-of-clan-skryre-kaz.band.rulebook-inheritance
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/skaven-of-clan-skryre-kaz/special-rules.yaml
+# source_fingerprint:
+#   6f6ed0679dccc164d517289d9d0c28f877c8fed184eee0576be944974956d0ab
+# source_sha256_at_generation:
+#   7f167561c1970e30bf775c90ac1117ebf52de0fdcdfda860d4aa009fd722cd61
+# Printed rule text:
+#   Skaven Clan Skryre may use the Skaven weapons as detailed in the rulebook. Skaven Heroes may use any of the Skaven Special Skills in the rulebook except for the Art of Silent Death.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Granting Clan Skryre the rulebook Skaven weapons and special skills while refusing Art of Silent Death is a printed access rule with a named denial, which is construction legality. Printed clause: Skaven Clan Skryre may use the Skaven weapons as detailed in the rulebook. Skaven Heroes may use any of the Skaven Special Skills in the rulebook except for the Art of Silent Death.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   An equivalent printed stanza for Clan Skryre: the access grants and the named exclusion are construction and campaign state, so no duel operator is required and none exists. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"matched","review_status":"reviewed","scope_reason":"Granting Clan Skryre the rulebook Skaven weapons and special skills while refusing Art of Silent Death is a printed access rule with a named denial, which is construction legality.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Clan Skryre may use the rulebook Skaven weapons and Skaven Heroes may use any of the rulebook Skaven special skills except the Art of Silent Death. Closure: unmodelled while equipment access and skill-list access are construction and campaign concerns.","effect_id":"","relation":"equivalent","parameters":"{}","conditions":"{\"subsystem\": \"skill and equipment access\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07d-excluded-band-rules","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Skaven Clan Skryre may use the Skaven weapons as detailed in the rulebook. Skaven Heroes may use any of the Skaven Special Skills in the rulebook except for the Art of Silent Death.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."} Surface reuse candidate: {"family":"907","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

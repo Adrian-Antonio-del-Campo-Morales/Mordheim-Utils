@@ -113,15 +113,15 @@ rules:
     profile_ids:
     - big-boss
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-savage-goblins.big-boss.second-in-command
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: red-teeth--frenzy
   runtime:
     scope: 'YES'
@@ -216,15 +216,15 @@ rules:
     profile_ids:
     - zomblins
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-savage-goblins.zomblins.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: zomblins--immune-to-psychology
   name: Immune to Psychology
   effect: Zomblins are immune to Psychology and never leave close combat because of Psychology.
@@ -242,15 +242,15 @@ rules:
     profile_ids:
     - zomblins
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-savage-goblins.zomblins.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: zomblins--immune-to-poison
   runtime:
     scope: 'YES'
@@ -392,15 +392,15 @@ rules:
     profile_ids:
     - zomblintua
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-savage-goblins.zomblintua.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: zomblintua--immune-to-psychology
   name: Immune to Psychology
   effect: Zomblintua is immune to Psychology and never leaves close combat because of Psychology.
@@ -418,15 +418,15 @@ rules:
     profile_ids:
     - zomblintua
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-savage-goblins.zomblintua.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: zomblintua--immune-to-poison
   runtime:
     scope: 'YES'
@@ -681,15 +681,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: band
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-savage-goblins.band.fear-of-pointy-ears
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.fear-of-elves
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-of-elves
 - id: band--animosity
   name: Animosity
   effect: >-

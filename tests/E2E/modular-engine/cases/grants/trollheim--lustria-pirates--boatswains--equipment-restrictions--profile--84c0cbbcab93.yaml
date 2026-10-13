@@ -1,0 +1,95 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-pirates/boatswains--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: 2c02fbd56d319cea98d2ff17ec81f2ac54fdb17c844eeaa84c4548e1cf155d2e
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios evidence both declared item tokens on the construction route the record names. 'scourge' and 'pirate_flag' are the catalogue's own carried item ids (sources/knowledge/catalog/items/trollheim.yaml), so the bound profile.equipment-restrictions binding this band declares (grant: profile, implemented YES) reaches each through the shared eligibility stage: a Boatswain build carrying either entry is refused with '"scourge" is forbidden for lustria-pirates/boatswains.' or '"pirate_flag" is forbidden for lustria-pirates/boatswains.' verbatim, and the identical build without them is accepted at construction. The third printed sentence (the starting Rope and Hook may not be sold) is the campaign clause the register excludes and is not asserted. REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/lustria-pirates/boatswains--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-pirates/special-rules.yaml
+# source_fingerprint:
+#   58b87f75e86f4f409f22ebcfc997cee47e76745961eacec991fa2e8db7f005ae
+# source_sha256_at_generation:
+#   f93f6698f586a558e4681de07b60202970b5eb60350a4caa9c9e4e4d4d1931d3
+# Printed rule text:
+#   The starting Rope and Hook may never be sold or discarded. May not select the Scourge; it is Heroes only. May not carry the Pirate Flag.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Prohibition plus fixed kit: Boatswains may not take the Scourge or the Pirate Flag and their Rope and Hook may not be sold.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["scourge","pirate_flag"]}
+# conditions:
+#   {"recipient":"boatswains","fixed_item":"rope and hook"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   List-valued forbids; the no-sale clause is campaign.
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Each banned entry is supplied as carried gear; the message is the shared stage's template
+# `"${token}" is forbidden for ${band}/${profile}.` with this origin's tokens and recipient.
+
+- audit_id: rule/trollheim/lustria-pirates/boatswains--equipment-restrictions/profile.equipment-restrictions
+  id: boatswains-with-the-scourge-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-pirates
+      profile_id: boatswains
+      owned_item_ids: [scourge]
+  expect_error: '"scourge" is forbidden for lustria-pirates/boatswains.'
+
+- audit_id: rule/trollheim/lustria-pirates/boatswains--equipment-restrictions/profile.equipment-restrictions
+  id: boatswains-with-the-pirate-flag-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-pirates
+      profile_id: boatswains
+      owned_item_ids: [pirate_flag]
+  expect_error: '"pirate_flag" is forbidden for lustria-pirates/boatswains.'
+
+- audit_id: rule/trollheim/lustria-pirates/boatswains--equipment-restrictions/profile.equipment-restrictions
+  id: boatswains-without-the-banned-entries-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-pirates
+      profile_id: boatswains
+    second:
+      collection: trollheim
+      band_id: lustria-pirates
+      profile_id: boatswains
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

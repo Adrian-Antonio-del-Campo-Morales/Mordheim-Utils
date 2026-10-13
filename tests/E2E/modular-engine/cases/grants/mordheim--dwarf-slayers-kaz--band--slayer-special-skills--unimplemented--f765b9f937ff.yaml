@@ -1,0 +1,55 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-slayers-kaz/band--slayer-special-skills/unimplemented.dwarf-slayers-kaz.band.slayer-special-skills
+# scaffold_fingerprint: faae10abcc0551c4566c03d10128ceb05c664711b880772de2f898b700452b07
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is authorable from this file's recorded evidence.  The printed skill table is a legal-construction access grant (effect_id not recorded, relation unresolved), so a tape needs the resolved profile ids for the ranks it names (Giant Slayer, Troll Slayer, Dwarf Rememberer, Human Rememberer) and the access set each printed column resolves to; neither is recorded for this origin, and the named Slayer Special Skills are cited from a Town Cryer list rather than from an admitted catalogue.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [E] pending the resolved profile ids of the four printed ranks plus the access set of each printed column (Combat/Strength/Special/Slayer and the Rememberer columns), and an admitted catalogue identity for the Town Cryer 6 Slayer Special Skills list.  The accepted shape once those exist is the sibling band file's: a band/profile build plus the shared `skills are not available to <band>/<profile>: ['<id>']` refusal, with an admission for a skill the resolved tables admit.
+#   Source check (verified): the origin row `band--slayer-special-skills` in
+#   sources/knowledge/bands/mordheim/dwarf-slayers-kaz/special-rules.yaml records `scope: LATER`,
+#   `implemented: 'NO'`, `grant: band`, a null binding and the placeholder
+#   `unimplemented.dwarf-slayers-kaz.band.slayer-special-skills`, whose own reason states that the
+#   Slayer skill column and the Slayer Special Skills list live in Town Crier 6 (or Best of Town
+#   Crier) rather than in this document.  The deferral is therefore recorded by the source itself,
+#   not inferred here, and the missing access data cannot be recovered from this origin.  Category [E]:
+#   the register's own scope review records this clause as excluded by an accepted decision (it assigns
+#   which skill lists a fighter may advance through, while the skills themselves are analysed at their
+#   own origins and the printed Slayer Special Skills list is published in Town Cryer 6 rather than in
+#   the admitted catalogue), so no duel tape is owed for it here.
+# origin_id:
+#   rule/mordheim/dwarf-slayers-kaz/band--slayer-special-skills/unimplemented.dwarf-slayers-kaz.band.slayer-special-skills
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dwarf-slayers-kaz/special-rules.yaml
+# source_fingerprint:
+#   7a090134678bf5542c9aeb566b06b71e3898c80336b0b3fc6b7f0221aa9481a2
+# source_sha256_at_generation:
+#   b489daeeedb7e64649fa6ec4f6c427c304692c4ca986965f9fb0057ded5ac4dd
+# Printed rule text:
+#   The Dwarf Skill Table of the warband includes a dedicated Slayer column: Giant Slayer and Troll Slayer have access to Combat, Strength, Special and Slayer skills; a Dwarf Rememberer to Combat, Shooting, Academic and Special; a Human Rememberer to Combat, Shooting, Academic and Speed. Slayer heroes may also use the Slayer Special Skills as listed in Town Crier 6 (or Best of Town Crier).
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Slayer column of the band skill table granting each rank access to named skill lists, including the Slayer Special Skills, is a printed skill-access restriction on legal construction. Printed clause: The Dwarf Skill Table of the warband includes a dedicated Slayer column: Giant Slayer and Troll Slayer have access to Combat, Strength, Special and Slayer skills; a Dwarf Rememberer to Combat, Shooting, Academic and Special; a Human Rememberer to Combat, Shooting, Academic and Speed. Slayer heroes may also use the Slayer Special Skills as listed in Town Crier 6 (or Best of Town Crier).
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Excluded by scope: this assigns which skill lists a fighter may advance through; the skills themselves are analysed from their own origins. The printed columns and the Town Crier reference are preserved here. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"matched","review_status":"reviewed","scope_reason":"The Slayer column of the band skill table granting each rank access to named skill lists, including the Slayer Special Skills, is a printed skill-access restriction on legal construction.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The band skill table adds a dedicated Slayer column giving named fighters access to Combat, Strength, Special and Slayer skill lists. Closure: unmodelled while skill-list access and advancement stay in the campaign layer.","effect_id":"","relation":"equivalent","parameters":"{}","conditions":"{\"subsystem\": \"advancement / skill access\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07d-excluded-band-rules","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"The Dwarf Skill Table of the warband includes a dedicated Slayer column: Giant Slayer and Troll Slayer have access to Combat, Strength, Special and Slayer skills; a Dwarf Rememberer to Combat, Shooting, Academic and Special; a Human Rememberer to Combat, Shooting, Academic and Speed. Slayer heroes may also use the Slayer Special Skills as listed in Town Crier 6 (or Best of Town Crier).","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."} Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

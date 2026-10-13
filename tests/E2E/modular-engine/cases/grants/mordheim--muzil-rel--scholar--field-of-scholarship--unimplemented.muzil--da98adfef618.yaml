@@ -1,0 +1,115 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/muzil-rel/scholar--field-of-scholarship/unimplemented.muzil-rel.scholar.field-of-scholarship
+# scaffold_fingerprint: 1ae9cf793bfb8478ddcd6b023462024c7ea87cee0a3be534a12245bd5ba95b2b
+# authoring_status: PARTIAL
+# authoring_progress: the two admitted clauses converted below cannot be authored: both carry an unresolved
+#   relation, an empty consumer and a register note that places the printed benefits in campaign scope
+#   ("Exploration, post-battle Serious Injuries and a campaign-win condition; campaign scope").  Any further
+#   clauses of this file keep their own recorded markers.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: field-of-scholarship--scope--injury-reroll (scope: YES)
+# PARTIAL[field-of-scholarship--scope--injury-reroll]: [C] no scenario is authorable.  The printed clause is
+#   the "Physiology injury reroll", whose recorded effect_id is not recorded, whose relation is unresolved and
+#   whose consumer list is empty; the register note records that the benefit belongs to exploration and to
+#   post-battle Serious Injuries.  The missing datum is the operator and supplied route for that reroll (which
+#   injury table it re-takes and when), none of which the duel runner models: the duel's injury chart has no
+#   post-battle persistence, so a tape would have to invent the rule.
+# origin_id:
+#   rule/mordheim/muzil-rel/scholar--field-of-scholarship/unimplemented.muzil-rel.scholar.field-of-scholarship
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/muzil-rel/special-rules.yaml
+# source_fingerprint:
+#   3d0a606b6f823abd4d57d95ed2d1847f5e5a32e33e5434c56c722470327ecdc4
+# source_sha256_at_generation:
+#   4dfbf7eb59384f26a18957fd1a8b52d7b0889f7abcca50a28a7ee3ca62061e9c
+# Printed rule text:
+#   Physiology injury reroll
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Physiology reroll of an injury result is an admitted individual injury consequence of this duelist. Printed clause: Physiology injury reroll
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Exploration, post-battle Serious Injuries and a campaign-win condition; campaign scope. Scope review integration: {"clause_id":"field-of-scholarship","review_clause_id":"injury-reroll","source_state":"unverified","review_status":"reviewed","scope_reason":"The Physiology reroll of an injury result is an admitted individual injury consequence of this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Cartography exploration bonus, Physiology injury reroll, Poetry leader Leadership","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: field-of-scholarship--scope--leader-leadership (scope: YES)
+# PARTIAL[field-of-scholarship--scope--leader-leadership]: [C] no scenario is authorable.  The printed clause is
+#   the "Poetry leader Leadership" benefit; like its sibling it carries no recorded effect id, an unresolved
+#   relation and an empty consumer, and the same register note holds it in campaign scope.  The missing datum
+#   is the supplied leader value and the route that applies it to the Poetry trait, neither of which exists in
+#   the construction or leadership layers today.
+# origin_id:
+#   rule/mordheim/muzil-rel/scholar--field-of-scholarship/unimplemented.muzil-rel.scholar.field-of-scholarship
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/muzil-rel/special-rules.yaml
+# source_fingerprint:
+#   3d0a606b6f823abd4d57d95ed2d1847f5e5a32e33e5434c56c722470327ecdc4
+# source_sha256_at_generation:
+#   4dfbf7eb59384f26a18957fd1a8b52d7b0889f7abcca50a28a7ee3ca62061e9c
+# Printed rule text:
+#   Poetry leader Leadership
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Poetry Leadership supplied to the leader is the supplied leader condition the ruling admits. Printed clause: Poetry leader Leadership
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Exploration, post-battle Serious Injuries and a campaign-win condition; campaign scope. Scope review integration: {"clause_id":"field-of-scholarship","review_clause_id":"leader-leadership","source_state":"unverified","review_status":"reviewed","scope_reason":"The Poetry Leadership supplied to the leader is the supplied leader condition the ruling admits.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Cartography exploration bonus, Physiology injury reroll, Poetry leader Leadership","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: field-of-scholarship--scope--exploration (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/muzil-rel/scholar--field-of-scholarship/unimplemented.muzil-rel.scholar.field-of-scholarship
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/muzil-rel/special-rules.yaml
+# source_fingerprint:
+#   3d0a606b6f823abd4d57d95ed2d1847f5e5a32e33e5434c56c722470327ecdc4
+# source_sha256_at_generation:
+#   4dfbf7eb59384f26a18957fd1a8b52d7b0889f7abcca50a28a7ee3ca62061e9c
+# Printed rule text:
+#   Cartography exploration bonus
+# Semantic contract (check analysis_status before treating as accepted):
+#   A Cartography exploration bonus is campaign exploration content, excluded from the duel. Printed clause: Cartography exploration bonus
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Exploration, post-battle Serious Injuries and a campaign-win condition; campaign scope. Scope review integration: {"clause_id":"field-of-scholarship","review_clause_id":"exploration","source_state":"unverified","review_status":"reviewed","scope_reason":"A Cartography exploration bonus is campaign exploration content, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Cartography exploration bonus, Physiology injury reroll, Poetry leader Leadership","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

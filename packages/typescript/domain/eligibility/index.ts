@@ -444,10 +444,18 @@ export interface HirelingKitEntry {
   readonly material_id?: string;
   readonly quantity: { readonly kind: string; readonly value?: number };
 }
+/** One printed option of a `choices` group: a fixed bundle, or the printed
+ * "choose N items from this list" form, which expands to every legal pick. */
+export interface HirelingKitOption {
+  readonly items?: readonly HirelingKitEntry[];
+  readonly choose_items?: number;
+  readonly from_item_ids?: readonly string[];
+  readonly repetition_allowed?: boolean;
+}
 export interface HirelingEquipment {
   readonly fixed_items?: readonly HirelingKitEntry[];
   readonly optional_items?: readonly HirelingKitEntry[];
-  readonly choices?: readonly { readonly choose: number; readonly options: readonly { readonly items: readonly HirelingKitEntry[] }[] }[];
+  readonly choices?: readonly { readonly choose: number; readonly options: readonly HirelingKitOption[] }[];
   readonly unique_equipment?: readonly { readonly id: string; readonly rules?: readonly string[] }[];
 }
 export interface EditorialRule {
@@ -550,8 +558,10 @@ export function resolveHirelingKit(equipment: HirelingEquipment, build: BuildFac
   for (const item of unique) {
     if (!item.id || !item.rules?.length || !item.rules.every(id => {
       const matching = rules.filter(rule => rule.id === id);
-      return matching.length === 1 && matching[0]!.runtime?.scope === "NO"
-        && matching[0]!.runtime?.implemented === "NO" && !matching[0]!.bindings?.length;
+      return matching.length === 1 && (
+        matching[0]!.runtime?.scope === "NO" && matching[0]!.runtime?.implemented === "NO" && !matching[0]!.bindings?.length
+        || matching[0]!.runtime?.implemented === "YES" && matching[0]!.bindings?.some(binding =>
+          binding.id in catalogue.mechanics));
     })) throw new Error("hireling unique equipment needs a canonical combat mapping");
   }
   const expand = (entries: readonly HirelingKitEntry[]): string[] => entries.flatMap(entry => {
@@ -560,10 +570,20 @@ export function resolveHirelingKit(equipment: HirelingEquipment, build: BuildFac
       throw new Error(`unsupported hireling kit quantity: ${entry.item_id}`);
     return Array.from({ length: count }, () => entry.item_id);
   });
+  /** Every ordered pick of `count` ids, with or without repetition. */
+  const picks = (ids: readonly string[], count: number, repetition: boolean): string[][] => {
+    if (!ids.length || !Number.isInteger(count) || count < 1) throw new Error("unsupported hireling equipment choice");
+    const build = (prefix: readonly string[]): string[][] => prefix.length === count ? [[...prefix]]
+      : ids.filter(id => repetition || !prefix.includes(id)).flatMap(id => build([...prefix, id]));
+    return build([]);
+  };
   let kits = [[...expand(equipment.fixed_items ?? []), ...unique.map(item => item.id)]];
   for (const group of equipment.choices ?? []) {
     if (group.choose !== 1 || !group.options.length) throw new Error("unsupported hireling equipment choice");
-    kits = kits.flatMap(kit => group.options.map(option => [...kit, ...expand(option.items)]));
+    kits = kits.flatMap(kit => group.options.flatMap(option =>
+      option.items ? [[...kit, ...expand(option.items)]]
+        : picks(option.from_item_ids ?? [], option.choose_items ?? 0, option.repetition_allowed === true)
+            .map(pick => [...kit, ...pick])));
   }
   for (const entry of equipment.optional_items ?? []) {
     const addition = expand([entry]);
@@ -579,8 +599,9 @@ export function resolveHirelingKit(equipment: HirelingEquipment, build: BuildFac
   const owned = build.owned_item_ids;
   const matched = kits.find(kit => {
     if (owned != null && signature(kit) !== signature(owned)) return false;
-    const entries = [...(equipment.fixed_items ?? []), ...(equipment.optional_items ?? []),
-      ...(equipment.choices ?? []).flatMap(group => group.options.flatMap(option => option.items))];
+    const chosen = (equipment.choices ?? []).flatMap(group => group.options.flatMap(option =>
+      option.items ?? (option.from_item_ids ?? []).map(item_id => ({ item_id, quantity: { kind: "fixed", value: 1 } }))));
+    const entries = [...(equipment.fixed_items ?? []), ...(equipment.optional_items ?? []), ...chosen];
     const mechanic = (id: string) => entries.find(entry => entry.item_id === id)?.mechanic_id ?? catalogue.mappings[id] ?? id;
     for (const [id, material] of [[build.main_weapon_id, build.main_material_id], [build.off_hand_id, build.off_material_id]]) {
       if (!id || neutral.has(id)) {
@@ -591,7 +612,10 @@ export function resolveHirelingKit(equipment: HirelingEquipment, build: BuildFac
       if (material !== "material.normal" && material !== printed) return false;
     }
     const remaining = kit.map(mechanic);
+    const weaponMaster = rules.some(rule => rule.runtime?.implemented === "YES"
+      && rule.bindings?.some(binding => binding.id === "compiler.weapon-knowledge"));
     for (const id of active) {
+      if (weaponMaster && (id.startsWith("weapon.") || ['poison.black-lotus', 'poison.black-venom'].includes(id))) continue;
       const position = remaining.indexOf(catalogue.mappings[id] ?? id);
       if (position < 0) return false;
       remaining.splice(position, 1);
@@ -1531,8 +1555,11 @@ export function profileFactsProjection(args: {
   // anything. `null` stays reserved for a caller that could not supply the
   // canonical catalogue (custom and free-build contexts), where the module
   // genuinely cannot resolve the profile's offers.
+  const weaponKnowledge = applicableRules(pack, profile).some(rule => rule.runtime?.implemented === 'YES'
+    && rule.bindings?.some(binding => binding.id === 'compiler.weapon-knowledge'));
   const access = args.catalogue
-    ? Array.from(new Set([...profileEquipmentItems(pack, profile), ...profileEquipment(pack, profile, args.catalogue)]))
+    ? Array.from(new Set([...profileEquipmentItems(pack, profile), ...profileEquipment(pack, profile, args.catalogue),
+        ...(weaponKnowledge ? Object.keys(args.catalogue.mechanics).filter(id => id.startsWith('weapon.')) : [])]))
       .sort().map((item_id) => ({ item_id }))
     : null;
   const declaredSkills = Array.from(new Set([...(profile.skill_access ?? []), ...skillLists.map((list) => list.category)]));

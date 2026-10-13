@@ -1,0 +1,137 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-pygmies/silent-walker--ethereal/trait.ward-save
+# scaffold_fingerprint: e6f19c9026fea5180fd478197a40a91b43dc834aa945c2e80d5452b3011ea760
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: five-plus-ward-against-mundane (scope: YES)
+# AUTHORED[five-plus-ward-against-mundane]: 1 scenario evidences the printed special save on a
+#   mundane attack: after the wound lands and no armour save exists for the bearer, the declared
+#   special save of five ignores it.  The die is the evidence, because a build without the ward
+#   would not request it at all.
+# origin_id:
+#   rule/trollheim/lustria-pygmies/silent-walker--ethereal/trait.ward-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-pygmies/special-rules.yaml
+# source_fingerprint:
+#   95d18902485dd0db8bb31ffc6ac1c2105421babe3e1f261968f41e48efd253a2
+# source_sha256_at_generation:
+#   e63de02a4ae3f4eb8301513c9e2094f04d624416ce40b1a63b84aaa9a18e8fb7
+# Printed rule text:
+#   The Silent Walker has a 5+ special save against mundane attacks. This save is negated by magical attacks.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A 5+ special save against mundane attacks, negated by magical attacks; observable: a 5+ special save after armour, never rolled against a magical attack.
+# effect_id:
+#   trait.ward-save
+# relation:
+#   equivalent
+# parameters:
+#   {"save":5}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#    Surface reuse candidate: {"family":"T-WARD","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: negated-by-magic (scope: YES)
+# AUTHORED[negated-by-magic]: 1 scenario evidences the printed negation: the identical attack
+#   marked magical (trait_overrides magical_attacks) resolves with no special save die at all,
+#   so the committed wound stands.  Together the pair isolates the mundane-only qualification.
+# origin_id:
+#   rule/trollheim/lustria-pygmies/silent-walker--ethereal/trait.ward-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-pygmies/special-rules.yaml
+# source_fingerprint:
+#   95d18902485dd0db8bb31ffc6ac1c2105421babe3e1f261968f41e48efd253a2
+# source_sha256_at_generation:
+#   e63de02a4ae3f4eb8301513c9e2094f04d624416ce40b1a63b84aaa9a18e8fb7
+# Printed rule text:
+#   The Silent Walker has a 5+ special save against mundane attacks. This save is negated by magical attacks.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Magical attacks negate the save; observable: the ward is skipped for magical attacks.
+# effect_id:
+#   trait.ward-save-mundane-only
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed as the mundane-only flag, which blocks the ward when the incoming attack carries the magic tag. Surface reuse candidate: {"family":"T-WARD","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses
+#   ['five-plus-ward-against-mundane', 'negated-by-magic']; clauses still pending or
+#   unrepresentable in this file: [].  REVIEWED requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule ("The Silent Walker has a 5+ special save against mundane
+# attacks.  This save is negated by magical attacks") and the recorded contracts (trait.ward-save
+# save 5, trait.ward-save-mundane-only blocked by the magic tag).  The bearer is the printed
+# profile, which carries the rule as its own, so no rule is selected in the fixture; the
+# attacker is hand-built with a Strength that fixes the wound target against the printed
+# Toughness 2, and the bearer wears no armour, so the special save is the only save after the
+# wound.  The bearer's own attacks are suppressed so the tape is the attacker's chain alone; a
+# build whose ward or mundane-only flag is missing fails on the declared or undeclared die.
+
+- audit_id: rule/trollheim/lustria-pygmies/silent-walker--ethereal/trait.ward-save
+  id: the-mundane-attack-is-saved-on-five
+  covers: [five-plus-ward-against-mundane]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: lustria-pygmies
+      profile_id: silent-walker
+      main_weapon_id: weapon.mace
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-pygmies/silent-walker--ethereal/trait.ward-save
+  id: a-magical-attack-rolls-no-special-save
+  covers: [negated-by-magic]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+      trait_overrides: {magical_attacks: true}
+    second:
+      collection: trollheim
+      band_id: lustria-pygmies
+      profile_id: silent-walker
+      main_weapon_id: weapon.mace
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

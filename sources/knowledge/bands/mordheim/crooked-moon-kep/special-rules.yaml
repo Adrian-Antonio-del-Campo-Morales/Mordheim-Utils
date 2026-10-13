@@ -296,16 +296,17 @@ rules:
     - fanatics
 - id: fanatics--looney
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.crooked-moon-kep.fanatics.looney
-      scope: LATER
-      binding: null
-      reason: >-
-        Frenzy is a psychology mechanic; verify against trait.frenzy semantics for band-wide frenzy
-        at the equivalence review.
+    - id: trait.frenzy
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.frenzy
+        parameters:
+          value: true
   name: Looney
   effect: >-
     Due to the effect of the mushrooms he is subject to frenzy. He must also test for permanent

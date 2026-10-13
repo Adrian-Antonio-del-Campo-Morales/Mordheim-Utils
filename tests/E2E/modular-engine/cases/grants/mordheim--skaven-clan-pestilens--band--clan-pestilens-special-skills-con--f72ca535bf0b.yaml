@@ -1,0 +1,176 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious
+# scaffold_fingerprint: cd5ed6d0781b5524764b2cf17f1eaeffcfa188283cc1c33a95c5d741dfc78a88
+# authoring_status: AUTHORED
+# authoring_progress: the two admitted clauses carry 4 authored scenarios derived from the printed rule
+# and the recorded contract: the reaction after a close-combat injury that takes this hero out of action
+# (the attacker's Toughness test failing on the printed always-fails six, and the same test passing),
+# and the printed Rotten Body prerequisite as the selection refusal plus its accepted pairing.  The
+# register records that this origin's runtime binding is still missing while the canonical
+# trait.contagious branch lives in the aftermath seam, so the reaction scenarios supply the printed
+# individual state as an explicit fact (the reuse the register instructs) and the tape is the canonical
+# reaction's.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: contagious-reaction (scope: YES)
+# AUTHORED[contagious-reaction]: 2 scenarios take the printed reaction onto the real attack route: the
+# bearer is a fixture that supplies the printed Contagious state, the attacker's swing wounds it and the
+# injury die takes it Out of Action, and the attacker then faces the printed Toughness test - the always
+# failing six inflicts the printed automatic wound, and a one passes and leaves the attacker untouched.
+# The bearer contributes no attacks, so the swing that triggers the reaction is the whole tape.  REVIEWED
+# still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/skaven-clan-pestilens/special-rules.yaml
+# source_fingerprint:
+#   a8a6853ef5d701ae65a83d54c1c61665294e5581c70294de1b35d13405bde9f2
+# source_sha256_at_generation:
+#   fd4ce1ba1a0a29841e324a3b43cdb0d680015e9d6574e092673f0667381e46c3
+# Printed rule text:
+#   Requires Rotten Body. A model that inflicts the close-combat injury which takes this Hero Out of Action must take a Toughness test. If the D6 result is higher than its Toughness it suffers one automatic Wound; a 6 always causes a Wound. Undead and Possessed are immune to this test.
+# Semantic contract (check analysis_status before treating as accepted):
+#   After a close-combat injury actually takes this Hero out of action, the attacker tests Toughness; failure inflicts one automatic wound, with natural 6 always failing. Undead/Possessed attackers are exempt. Observable: one reaction after an established out-of-action result, with rescue/interruption already considered.
+# effect_id:
+#   trait.contagious
+# relation:
+#   equivalent
+# parameters:
+#   {"value":true,"toughness_gated":true,"auto_wound_on":6,"immune":["undead","possessed"]}
+# conditions:
+#   {"trigger":"resolved close-combat injury takes the bearer out of action","recipient":"the attacker that caused it","stacking":"one reaction per resolved injury","exceptions":"Undead/Possessed immunity; natural 6 fails; an out-of-action rescue can remove the trigger"}
+# dependencies:
+#   ["band--clan-pestilens-special-skills-rotten-body"]
+# Register notes (context only, not behavioral authority):
+#   The trait.contagious branch already exists in _react_to_wound, with a canonical binding in the Trollheim Clan Pestilens rule and a semantic spec. The Mordheim origin is still null-bound. Connect that origin; do not propose another reactive operator. The spec is inspected, not executed in this correction. Selectively verified equivalence: {"review_file":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"contagious-reaction","verified_family":"trait.contagious","verified_peer_keys":[{"origin_id":"rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious","clause_id":"contagious-reaction"},{"origin_id":"rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious","clause_id":"contagious-reaction"}],"sharing_boundary":"Same reaction after an established close-combat Out result: attacker Toughness test, natural 6 fails, one automatic wound, Undead/Possessed exempt. Preserve aftermath._react_to_wound and any existing connection/prerequisite gap.","evidence":"inspection","limit":"Only this closed selection was checked. No acceptance of the entire review, KB activation, implementation closure or execution evidence."}
+#
+# Clause: contagious-rotten-body-prerequisite (scope: YES)
+# AUTHORED[contagious-rotten-body-prerequisite]: 2 scenarios cover the printed prerequisite as the
+# construction consequence it is recorded as: the Contagious row selected without Rotten Body is refused
+# with the verbatim diagnostic the shared construction module emits, and the same selection carrying both
+# rows is accepted and runs.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/skaven-clan-pestilens/special-rules.yaml
+# source_fingerprint:
+#   a8a6853ef5d701ae65a83d54c1c61665294e5581c70294de1b35d13405bde9f2
+# source_sha256_at_generation:
+#   fd4ce1ba1a0a29841e324a3b43cdb0d680015e9d6574e092673f0667381e46c3
+# Printed rule text:
+#   Requires Rotten Body.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Selecting Contagious without Rotten Body is refused; a legal selection must carry the required rule.
+# effect_id:
+#   (not recorded)
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"construction/skill selection","recipient":"Contagious bearer","requires":"band--clan-pestilens-special-skills-rotten-body"}
+# dependencies:
+#   ["band--clan-pestilens-special-skills-rotten-body"]
+# Register notes (context only, not behavioral authority):
+#   The shared loadoutRestriction already contains this exact prerequisite. Its presence does not implement the separately missing runtime connection; retain the selection gate when connecting the existing trait.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The bearer is
+# a hand-built fixture whose physical characteristics are fixture facts and whose printed Contagious state
+# is supplied as an explicit fact, which is the reuse the register instructs for the canonical aftermath
+# reaction; the attacker is a hand-built fixture too, and the wounded bearer contributes no attacks of its
+# own.  The injury face of 5 is the printed Out of Action band, the toughness test's six always fails, and
+# no natural six is declared on any wound roll so no critical die enters the tape.
+
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious
+  id: the-always-failing-six-wounds-the-attacker
+  covers: [contagious-reaction]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 2, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {contagious: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.contagious, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT, state.first.wounds: 1, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious
+  id: a-passed-toughness-test-leaves-the-attacker-untouched
+  covers: [contagious-reaction]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 2, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {contagious: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+    - {key: round.0.first.attack.0.contagious, value: 1}
+  expect_rounds:
+    0: {state.second.condition: OUT, state.first.wounds: 2, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious
+  id: contagious-without-rotten-body-is-refused
+  covers: [contagious-rotten-body-prerequisite]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      special_rule_ids: [band--clan-pestilens-special-skills-contagious]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_error: Contagious requires Rotten Body
+
+- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious
+  id: the-same-selection-with-rotten-body-is-accepted
+  covers: [contagious-rotten-body-prerequisite]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      special_rule_ids: [band--clan-pestilens-special-skills-contagious, band--clan-pestilens-special-skills-rotten-body]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

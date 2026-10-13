@@ -1,0 +1,124 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/night-goblins-web/band--mad-cap-masters/unimplemented.night-goblins-web.band.mad-cap-masters
+# scaffold_fingerprint: 8f75678c3b2679332fed91451885a515f0c3a1823510536567e85f4c8401a8ce
+# authoring_status: AUTHORED
+# authoring_progress: the admitted mad-cap-masters clause carries 2 authored scenario(s) for the
+#   family model derived from the printed rule and the recorded semantic contract: while the Mad
+#   Caps' Frenzy holds, the strict tape holds no Stupidity die and the bearer strikes normally, and
+#   once the Frenzy is lost to a knock-down the ordinary Stupidity test applies again and fails.  The
+#   printed composition is supplied through the canonical condition this record's own note names, the
+#   Fungus Brew's Loony result (condition.fungus-brew-loony: Frenzy plus Stupidity), because the band
+#   record grants no state of its own.  PENDING GAP (not a scenario gap): the band record carries no
+#   activated binding (runtime scope LATER, implemented 'NO', binding null), so the clause's printed
+#   consequence is exercised through that shared contract rather than through a band grant.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED; no
+#   behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: mad-cap-masters (scope: YES)
+# AUTHORED[mad-cap-masters]: [B] 2 authored scenario(s) cover the printed face of the clause: the
+#   mad-capped bearer rolls no Stupidity die while its Frenzy holds and strikes with the doubled pool
+#   of its single printed attack, and once the Frenzy is lost to a knock-down the Stupidity applies
+#   normally again and fails its own-turn test.  The Stupidity the clause qualifies is supplied as the
+#   admitted canonical condition.fungus-brew-loony fact (Frenzy plus Stupidity), which the record's
+#   own note names; the band record itself carries no activated binding.
+# origin_id:
+#   rule/mordheim/night-goblins-web/band--mad-cap-masters/unimplemented.night-goblins-web.band.mad-cap-masters
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/night-goblins-web/special-rules.yaml
+# source_fingerprint:
+#   b4466a7a71df01a98a7e995881c0e9ed3054b995ef4aedbeb6b23b5f625cee0f
+# source_sha256_at_generation:
+#   0500d0ab2286f4ceb5f0d8954b7b3d4c70326fd53a46a3b3a3e4db85821a24d6
+# Printed rule text:
+#   A Night Goblin suffering Stupidity from Mad Cap Mushroom overuse may ignore that Stupidity while currently under the effects of more Mad Caps. If the model loses Frenzy because it is Knocked Down or Stunned, the Stupidity applies normally again.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A Night Goblin suffering Stupidity from Mad Cap overuse ignores that Stupidity while currently under more Mad Caps; once Frenzy is lost to being Knocked Down or Stunned the Stupidity applies again. Observable: the Stupidity test is skipped only while the frenzy flag is set.
+# effect_id:
+#   mechanic.stupidity
+# relation:
+#   parameterized_variant
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"the start-of-turn Stupidity test","exception":"skipped while the frenzy flag is set"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   psychology.resolve_stupidity already returns passed when current.frenzy is set, and the frenzy flag is cleared when the warrior is not standing; this variant is therefore already satisfied by the existing consumer. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Surface reuse candidate: {"family":"mechanic.stupidity","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact supplied/rolled state, trigger, frequency, duration, termination and attack-count contribution. Permanent and conditional Frenzy, +1 Attack and doubling are different. Do not implement group creation, movement or campaign tables merely to supply an individual state.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Family model (Fungus Brew composition): the bearer is the band's printed Night Goblin Fanatics
+# profile, so all its printed physical characteristics and its printed Leadership 5 stay in place and
+# the doubled pool of its single printed attack is what the tape shows while the Frenzy holds.  The
+# Stupidity this clause qualifies is supplied through the canonical component condition
+# condition.fungus-brew-loony (Frenzy plus Stupidity), which is the supplier the record's own note
+# names for the printed composition; no band grant is activated for this record, so the scenarios
+# exercise the shared contracts the clause's printed consequence is carried by.  The opponent is a
+# hand-built fixture, and the knock-down face uses the printed damage reaction: a wounding attack that
+# takes the W1 bearer to zero wounds rolls on the injury chart, and the printed 1 knocks it down and
+# clears the Frenzy.
+
+# Under the Mad Caps the printed composition holds the Frenzy, so no Stupidity die is asked for and
+# the bearer strikes with its doubled pool.
+- audit_id: rule/mordheim/night-goblins-web/band--mad-cap-masters/unimplemented.night-goblins-web.band.mad-cap-masters
+  id: the-mad-capped-bearer-rolls-no-stupidity-die-while-its-frenzy-holds
+  covers: [mad-cap-masters]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: night-goblins-web
+      profile_id: night-goblin-fanatics
+      condition_ids: [condition.fungus-brew-loony]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: true, state.first.stupidity_failed: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The knock-down takes the Frenzy away in the round it happens, and in the bearer's next own turn the
+# Stupidity the clause prints applies normally again: the two sixes fail it and its attacks are barred.
+- audit_id: rule/mordheim/night-goblins-web/band--mad-cap-masters/unimplemented.night-goblins-web.band.mad-cap-masters
+  id: once-the-frenzy-is-lost-to-a-knockdown-the-stupidity-applies-again
+  covers: [mad-cap-masters]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: night-goblins-web
+      profile_id: night-goblin-fanatics
+      condition_ids: [condition.fungus-brew-loony]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 3
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.injury.0, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.2.first.stupidity.0, value: 6}
+    - {key: round.2.first.stupidity.1, value: 6}
+    - {key: round.2.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: false, state.first.condition: KNOCKED_DOWN, state.first.stupidity_failed: false}
+    1: {state.first.condition: KNOCKED_DOWN}
+    2: {state.first.stupidity_failed: true, state.first.condition: STANDING}
+  expect_final: {rounds_executed: 3, termination_reason: horizon}

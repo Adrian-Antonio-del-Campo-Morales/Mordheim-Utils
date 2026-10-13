@@ -1,0 +1,131 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/halflings-mic/halfling-elder--crude-belch/skill.crude-belch-halfling
+# scaffold_fingerprint: 3cdfa3b5954ed6f02978ae6d40a6ad3898c291951c6c4ad59c59e5bed3494ec7
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries 3 authored scenarios for the printed belch: the
+# failed base-contact Leadership test that costs the enemy its first attack while the rest of the pool
+# still resolves, the passed test that leaves the pool alone, and the single-attack enemy whose only
+# attack is lost.  REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover the printed first-round belch on all enemies in base contact:
+# the bearer declares it (decision round.0.first.crude-belch), the enemy fails its Leadership test on
+# two sixes and its first attack is lost while its second attack still resolves, a passed test leaves
+# both attacks, and an enemy with a single Attack loses that whole pool, which is the printed "even
+# their only attack".  The fixed fixture declares the canonical skill.crude-belch-halfling operator the
+# band's sentence repeats; the halfling-only recipient is the printed one.  REVIEWED still requires
+# manual semantic review.
+# origin_id:
+#   rule/mordheim/halflings-mic/halfling-elder--crude-belch/skill.crude-belch-halfling
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/halflings-mic/special-rules.yaml
+# source_fingerprint:
+#   ba7f0ec103975543d359a1e13ed71130c8ce13bf92044bfb800ef2e8970f45ea
+# source_sha256_at_generation:
+#   6e5209f5300de15e551d1447b5f372f17f8ddb47011ad6e057e99349ffbadfa5
+# Printed rule text:
+#   Having eaten a meal or six, this halfling may release a withering belch to distract his enemies. During the first round of hand to hand combat the halfling can release his noxious fumes upon all enemies within base contact. All enemies effected must take a leadership test. If the leadership test is failed then the putrid odor has severely affected the warrior's fighting ability and he must miss his first attack (regardless of whether he has only one attack or not).
+# Semantic contract (check analysis_status before treating as accepted):
+#   In the first round of hand-to-hand combat the halfling may release his fumes on all enemies in base contact; those that fail a Leadership test must miss their first attack, whether they have one attack or more. Closure: a failed test removes exactly the first attack of the round.
+# effect_id:
+#   skill.crude-belch-halfling
+# relation:
+#   equivalent
+# parameters:
+#   {"consequence": "first attack lost on failure", "frequency": "first melee round", "test": "Leadership"}
+# conditions:
+#   {"range": "base contact", "recipient": "Halfling"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared halfling crude-belch operator; the printed "even their only attack" wording is the timed first-attack loss the resolver applies, and the halfling-only scope is the printed recipient.  The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"source-specific-crude-belch","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Keep the Halfling lost-attack clause distinct from the Ogre condition imposing -1 To Hit after a failed Leadership test. Compare duration, test timing and exact consequence; do not substitute attack loss for a hit penalty.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The halfling declares the belch in the first round and the enemy fails the Leadership test on two
+# sixes against its own 7.  The enemy strikes with two Attacks, but the lost first attack consumes no
+# die at all: the tape carries only the second attack die.
+- audit_id: rule/mordheim/halflings-mic/halfling-elder--crude-belch/skill.crude-belch-halfling
+  id: a-failed-test-costs-the-enemy-its-first-attack
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.crude-belch-halfling]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch, value: true}
+  rolls:
+    - {key: round.0.first.crude-belch.leadership.0, value: 6}
+    - {key: round.0.first.crude-belch.leadership.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The passed test changes nothing: the enemy's own 7 holds on two ones, so both of its attacks are
+# resolved and the first one lands on the declared hit and wound faces.
+- audit_id: rule/mordheim/halflings-mic/halfling-elder--crude-belch/skill.crude-belch-halfling
+  id: a-passed-test-leaves-the-attack-pool-alone
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.crude-belch-halfling]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch, value: true}
+  rolls:
+    - {key: round.0.first.crude-belch.leadership.0, value: 1}
+    - {key: round.0.first.crude-belch.leadership.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.1.hit: true, attacks.2.hit: false, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed "even their only attack": the enemy has a single Attack, and its loss is still the
+# whole pool, so the round carries no die for it at all.
+- audit_id: rule/mordheim/halflings-mic/halfling-elder--crude-belch/skill.crude-belch-halfling
+  id: even-an-only-attack-is-lost
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.crude-belch-halfling]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch, value: true}
+  rolls:
+    - {key: round.0.first.crude-belch.leadership.0, value: 6}
+    - {key: round.0.first.crude-belch.leadership.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

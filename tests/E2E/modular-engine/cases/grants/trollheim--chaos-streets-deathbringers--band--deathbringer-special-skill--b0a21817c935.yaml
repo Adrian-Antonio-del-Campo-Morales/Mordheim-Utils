@@ -1,0 +1,182 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-art-of-unarmed-combat/skill.art-of-silent-death
+# scaffold_fingerprint: 8c30bc8846a1e8c4a8113638bfa39bbf6908a5be839e94f82206a09943ca23ef
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted whole clause carries six authored scenarios derived from
+# the printed sentence, the recorded contract and the authored mechanic origin of the same skill,
+# whose three consequences are resolved one at a time with the same configuration without the skill
+# as the control.  REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 6 scenarios cover the three printed consequences of the clause: the critical
+# threshold of five with a bare attack and the same five staying ordinary without the skill, the
+# extra attack the unarmed pool gains and the single attack the same fists carry without it, and the
+# paired fighting-claw pool carrying one further attack than the fist pool (three against two
+# attacks).  The bearer is a hand-built fixture that carries the band's printed rule as the canonical
+# skill the shared operator consumes.
+# origin_id:
+#   rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-art-of-unarmed-combat/skill.art-of-silent-death
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-deathbringers/special-rules.yaml
+# source_fingerprint:
+#   4fe0228194927daf14b8a852087f9eb4bbfb810c9213201b1f18e0d336f89388
+# source_sha256_at_generation:
+#   a1e85e663a8232b4d2114c2431b7a400db58e753da037a543ef2a0307f5d1cbf
+# Printed rule text:
+#   The Hero may fight with bare claws without penalty and counts as using two close-combat weapons, gaining +1 Attack. In close combat, it scores a critical hit on a 'to wound' roll of 5-6 instead of only 6. When combined with Eshin Fighting Claws, this grants +2 Attacks instead of +1.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Hero fights with bare claws without penalty, counts as using two close-combat weapons and gains +1 Attack, scores a critical hit on a To Wound roll of 5-6, and with Eshin Fighting Claws gains +2 Attacks instead of +1. Closure: the unarmed pool carries the printed attack, the critical threshold is 5 and the claw combination adds the second attack.
+# effect_id:
+#   skill.art-of-silent-death
+# relation:
+#   related
+# parameters:
+#   {"attacks_bonus": 1, "bonus_with_fighting_claws": 2, "critical_threshold": 5, "unarmed_penalties": false}
+# conditions:
+#   {"recipient": "Deathbringer"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin of the shared art-of-silent-death operator under the local name Art of Unarmed Combat; the unarmed and critical parts are delivered by the shared consumers. The printed "combined with Eshin Fighting Claws grants +2 Attacks instead of +1" is delivered by the composition: build_attacks adds the single skill attack for fists and for fighting claws, and the paired fighting-claw profile supplies the further attack through extra_weapon_attack, so the claw pool ends one attack higher than the fist pool. The earlier note that called this a claw-specific behaviour gap read only the +1 branch and ignored the paired contribution. Surface reuse candidate: {"family":"skill.art-of-silent-death","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract, never from engine output.  Each
+# consequence is paired with the same configuration without the skill, because the printed claim is
+# an improvement over the ordinary rule and only that pair isolates it.  Every attack is scripted as
+# a miss except where the clause under test needs the wound or critical face.
+# Critical threshold: with the skill a To Wound five is a critical wound.
+- audit_id: rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-art-of-unarmed-combat/skill.art-of-silent-death
+  id: a-five-is-a-critical-with-the-deathbringer-rule
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.art-of-silent-death]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.critical, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: True, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same five without the skill: the ordinary threshold of six applies and the wound is not a
+# critical.
+- audit_id: rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-art-of-unarmed-combat/skill.art-of-silent-death
+  id: a-five-without-the-rule-is-an-ordinary-wound
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: False, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Bare claws count as two close-combat weapons: the fist pool carries the printed extra attack.
+- audit_id: rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-art-of-unarmed-combat/skill.art-of-silent-death
+  id: the-bare-claws-gain-an-attack
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      skill_ids: [skill.art-of-silent-death]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, attacks.2.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same bare claws without the rule keep the single attack.
+- audit_id: rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-art-of-unarmed-combat/skill.art-of-silent-death
+  id: the-bare-claws-without-the-rule-keep-one-attack
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Combined with Eshin Fighting Claws the rule contributes two attacks instead of one, so the paired
+# claw profile ends one attack above the fist pool.
+- audit_id: rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-art-of-unarmed-combat/skill.art-of-silent-death
+  id: the-fighting-claws-add-the-second-bonus-attack
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.fighting-claws
+      skill_ids: [skill.art-of-silent-death]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, attacks.2.hit: False, attacks.3.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/trollheim/chaos-streets-deathbringers/band--deathbringer-special-skills-art-of-unarmed-combat/skill.art-of-silent-death
+  id: the-fighting-claws-without-the-rule-carry-two-attacks
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.fighting-claws
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, attacks.2.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

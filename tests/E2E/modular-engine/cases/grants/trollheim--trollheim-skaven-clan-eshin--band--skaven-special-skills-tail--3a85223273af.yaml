@@ -1,0 +1,166 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
+# scaffold_fingerprint: ea8175b38b0354245b57fe6ec273f07f8a64e8111eb9681bfe5c562a62529245
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 5 scenarios take the printed sentence onto the real attack route of the shared
+#   operator, whose construct is the extra hand the construction layer reserves for this rule and for
+#   the Extra Arm mutation: a tail dagger adds one attack to the pool, a tail shield takes the bearer's
+#   worn light armour one step better (the five that would wound the bare armour saves on the tail
+#   shield), and each is paired with the same configuration without the rule - one as the ordinary
+#   single-attack pool, the other as the construction refusal an extra hand without Tail Fighting
+#   receives.  The tape shape is the authored Mordheim copy of this shared operator
+#   (tests/E2E/modular-engine/cases/grants/mordheim--skaven-clan-eshin--band--skaven-special-skills-tail-fighting--728da2598a8b.yaml),
+#   which the register records as the same contract with no other objects allowed; this band origin
+#   repeats the canonical clause and adds no second runtime contribution.  The attackers are
+#   hand-built fixtures whose Weapon Skill, Strength, Toughness and Initiative are fixture facts.
+#   REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/trollheim-skaven-clan-eshin/special-rules.yaml
+# source_fingerprint:
+#   be190369e7befa9d7b94237c551aece466985c83ea2027922ab61fe61a27064d
+# source_sha256_at_generation:
+#   0b8f3e36212aa657d6c772d1c42016e03495c8d67e019f5c4053657d4e43057c
+# Printed rule text:
+#   The Skaven may wield a Dagger, Shield or Sword with his tail. A weapon grants one additional attack; a Shield grants +1 armour save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Granted attack or defence: Tail Fighting allows a Dagger/Sword on the tail for one extra attack or a Shield for +1 save.
+# effect_id:
+#   special-rule.band--skaven-special-skills-tail-fighting
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipients":"skaven heroes","allowed":["dagger","shield","sword"],"weapon_attacks":1,"shield_save":1}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   No other objects are allowed; the contract is empty and the contributions are delivered by the loadout.
+# authoring_progress: 5 authored scenario(s) in this file; authored clauses ['whole']; clauses
+#   still pending: [].  The refusal diagnostic is the construction layer's own message
+#   ("an extra hand requires Extra Arm or Tail Fighting"), which the authored Mordheim copy of this
+#   shared operator declares verbatim.  REVIEWED requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The tail is
+# built as the extra hand the eligibility layer admits only for this rule (or the Extra Arm mutation),
+# and the printed "a weapon grants one additional attack with that weapon; a shield grants +1 armour
+# save" is read as the pool carrying one further attack and the worn save improving by one step.  The
+# wound face stays below a natural six so no critical die is part of this evidence.
+
+- audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
+  id: a-tail-weapon-adds-the-printed-attack
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      extra_hand_id: weapon.dagger
+      special_rule_ids: [band--skaven-special-skills-tail-fighting]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
+  id: the-same-weapon-pair-without-the-rule-carries-one-attack
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
+  id: an-extra-hand-without-the-rule-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.sword
+      extra_hand_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_error: an extra hand requires Extra Arm or Tail Fighting
+
+- audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
+  id: a-tail-shield-improves-the-worn-save-by-one-step
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      armour_id: armour.light-armour
+      extra_hand_id: defence.shield
+      special_rule_ids: [band--skaven-special-skills-tail-fighting]
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/trollheim-skaven-clan-eshin/band--skaven-special-skills-tail-fighting/special-rule.band--skaven-special-skills-tail-fighting
+  id: the-same-worn-armour-without-the-tail-shield-keeps-its-own-save
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

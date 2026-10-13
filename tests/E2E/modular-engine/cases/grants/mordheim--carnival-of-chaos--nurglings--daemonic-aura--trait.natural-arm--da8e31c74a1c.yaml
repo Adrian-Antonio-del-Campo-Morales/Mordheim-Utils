@@ -1,0 +1,254 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.natural-armour-save
+# scaffold_fingerprint: 3077be0d54cdc5047c45452983a638199e83088a185ef327208bee1337b4cd8b
+# authoring_status: AUTHORED
+# authoring_progress: every admitted clause of this ID carries authored scenarios derived from the
+# printed rule and the printed profile, including the offensive half of the same sentence.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED;
+# no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: five-plus-save (scope: YES)
+# AUTHORED[five-plus-save]: 3 scenarios show the printed save in the armour phase: the mace's
+#   Strength 3 face leaves the printed threshold unmodified, so a die at the threshold is saved
+#   and a die one face below it is not.  The clauses the file also admits are evidenced by their own scenario.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# The negation clause is evidenced by a magical attacker: no save face is
+# requested and the wound is taken.
+# origin_id:
+#   rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.natural-armour-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/carnival-of-chaos/special-rules.yaml
+# source_fingerprint:
+#   901b7842878fb16e728798f267a62acb7889cbfe96012318af3519ee76db6903
+# source_sha256_at_generation:
+#   ea10f24ff3b1bb4a16d31e0550eb4b011c294a424bd719a00bfba5e72e42a217
+# Printed rule text:
+#   Due to the magical, intangible nature of Daemons they have a special Armour save of 5+. This is modified by the Strength of the attack as normal and is completely negated by magic weapons and spells. Nurglings’ attacks are also considered as magical.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Daemons have a special armour save of 5+, modified by the Strength of the attack as normal; observable: the save is reduced by high Strength like ordinary armour.
+# effect_id:
+#   trait.natural-armour-save
+# relation:
+#   equivalent
+# parameters:
+#   {"save":5}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   natural_armour_save 5 enters armour_target and receives the ordinary Strength modifier. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: magic-negation (scope: YES)
+# AUTHORED[magic-negation]: 1 scenario declares a magical attack, so the strict tape is offered no
+#   daemonic save face at all and the wound is taken.
+# origin_id:
+#   rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.natural-armour-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/carnival-of-chaos/special-rules.yaml
+# source_fingerprint:
+#   901b7842878fb16e728798f267a62acb7889cbfe96012318af3519ee76db6903
+# source_sha256_at_generation:
+#   ea10f24ff3b1bb4a16d31e0550eb4b011c294a424bd719a00bfba5e72e42a217
+# Printed rule text:
+#   Due to the magical, intangible nature of Daemons they have a special Armour save of 5+. This is modified by the Strength of the attack as normal and is completely negated by magic weapons and spells. Nurglings’ attacks are also considered as magical.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The save is completely negated by magic weapons and spells; observable: an attack.magical attack ignores the daemonic save.
+# effect_id:
+#   trait.natural-armour-negated-by-magic
+# relation:
+#   parameterized_variant
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   natural_armour_negated_by_magic removes the natural component when the incoming attack is magical; the armour component still applies. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: magical-attacks (scope: YES)
+# AUTHORED[magical-attacks]: 2 scenarios take the offensive half onto the real attack route - the
+#   bearer's own attack passes an opponent's 4+ Ethereal save with no save face requested, while an
+#   identical non-magical fixture is discarded by that same save.
+# origin_id:
+#   rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.natural-armour-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/carnival-of-chaos/special-rules.yaml
+# source_fingerprint:
+#   901b7842878fb16e728798f267a62acb7889cbfe96012318af3519ee76db6903
+# source_sha256_at_generation:
+#   ea10f24ff3b1bb4a16d31e0550eb4b011c294a424bd719a00bfba5e72e42a217
+# Printed rule text:
+#   Due to the magical, intangible nature of Daemons they have a special Armour save of 5+. This is modified by the Strength of the attack as normal and is completely negated by magic weapons and spells. Nurglings’ attacks are also considered as magical.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The bearer's attacks are also considered magical; observable: its attacks carry attack.magical.
+# effect_id:
+#   trait.magical-attacks
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Offensive half of the sentence, and it is a registered effect: implemented-canonical-families.yaml binds trait.magical-attacks exactly to carnival-of-chaos/nurglings--daemonic-aura and carnival-of-chaos/plague-bearers--daemonic-aura, compiled from the magical_attacks contract field to the tag attack.magical. The prior effect id here (trait.natural-armour-negated-by-magic) named the defensive half by mistake.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profile; no engine output was consulted.
+# The bearer is the profile that prints the save and starts the duel at two wounds, so an
+# unsaved wound leaves it standing and no injury roll is needed.  The attacker's Weapon Skill
+# 10, Initiative 10 and Strength 3 are hand-built fixture facts, not profile values: Strength 3
+# leaves the printed save unmodified and the higher Initiative with no charge declared lets the
+# attacker strike first, so the bearer declares no attack of its own and the tape holds only the
+# attacker's own dice.
+
+- audit_id: rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.natural-armour-save
+  id: the-printed-save-holds-at-its-threshold
+  covers: [five-plus-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.natural-armour-save
+  id: one-face-below-the-printed-save-is-a-wound
+  covers: [five-plus-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.natural-armour-save
+  id: a-magical-attack-negates-the-printed-save
+  covers: [magic-negation]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {magical_attacks: true}
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: carnival-of-chaos, profile_id: nurglings}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The offensive half of the same printed sentence: the bearer's attacks are also considered
+# magical.  The supplied holder is a Cairn Wraith, whose own admitted grant discards a hit on 4+
+# before the wound roll; a magical attack never rolls that save, so the strict tape below carries
+# no ethereal face at all, while the non-magical control with the same dice is discarded by it and
+# the last scenario keeps the save's own threshold boundary.  The bearer fights with its printed
+# claw profile because the record grants no equipment list; Weapon Skill and Initiative are
+# hand-built fixture facts and the holder starts at two wounds so an unsaved wound leaves it
+# standing.
+- audit_id: rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.natural-armour-save
+  id: the-nurglings-attack-passes-the-ethereal-save
+  covers: [magical-attacks]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 2, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: cairn-wraith
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.natural-armour-save
+  id: a-non-magical-attack-is-discarded-by-the-ethereal-save
+  covers: [magical-attacks]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 2, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: cairn-wraith
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.ethereal, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.natural-armour-save
+  id: the-ethereal-save-is-offered-one-face-below-four
+  covers: [magical-attacks]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 2, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: cairn-wraith
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.ethereal, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

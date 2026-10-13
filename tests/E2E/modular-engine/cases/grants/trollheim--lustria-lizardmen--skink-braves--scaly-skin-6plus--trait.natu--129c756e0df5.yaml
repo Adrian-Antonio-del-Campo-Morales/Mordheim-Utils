@@ -1,0 +1,189 @@
+﻿# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-lizardmen/skink-braves--scaly-skin-6plus/trait.natural-armour-stacks
+# scaffold_fingerprint: 037be0c9740ad2d067d3e1f2ac1e46ea67ec55b2fd4c3590043242bc9055560c
+# authoring_status: AUTHORED
+# authoring_progress: every admitted clause of this ID is represented by an authored
+#   scenario and contrasted with the printed rule, the recorded semantic contract and
+#   the band package. REVIEWED is authoring and semantic contrast only;
+#   execution_status stays UNEXECUTED and no functional result exists.  The band rule's
+#   Hardened Leather term is outside this identity's admitted clause and is recorded as the
+#   boundary note below; the band-level identity carries it as its own PARTIAL clause.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: six-plus-scaly-skin (scope: YES)
+# AUTHORED[six-plus-scaly-skin]: 6 scenarios cover the printed 6+ Scaly Skin save on the real
+#   attack route (saved on 6, wounded on 5), its per-profile value against another Lizardman of
+#   the band that keeps its own save, the 6+ Strength floor, and the combination with light
+#   armour, which the profile's own equipment list does offer.
+# Boundary of this ID's admitted clause: the band's printed Scaly Skin rule also excepts
+#   Hardened Leather ("Scaly Skin may be combined with other armour, except Hardened Leather
+#   provides no additional bonus", bands/trollheim/lustria-lizardmen/special-rules.yaml,
+#   Scaly Skin, p.53).  That term is not an admitted clause of this identity - the register
+#   admits `stacks-with-armour-but-not-hardened-leather` under the kroxigor identities
+#   rule/trollheim/lustria-lizardmen/kroxigor--scaly-skin-4plus/trait.natural-armour-save,
+#   -stacks and -worst-save, and under the band-level identity - so no scenario is authored
+#   or claimed for it here.  A skink-braves wearing armour.toughened-leathers is a build the
+#   printed lists refuse (its equipment list offers no hardened or toughened leather, and the
+#   Trading Post's common toughened_leathers entry is a post-battle acquisition, not a printed
+#   access list the executor resolves), so that fixture is not declarable.  The kroxigor
+#   identities author the checkable half of the term - the printed armour prohibition, as a
+#   construction refusal - and record the leather's own save-cancellation as unrepresented
+#   there.  The admitted clause of this ID is the printed 5+ Scaly Skin save, fully
+#   authored below.
+# origin_id:
+#   rule/trollheim/lustria-lizardmen/skink-braves--scaly-skin-6plus/trait.natural-armour-stacks
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-lizardmen/special-rules.yaml
+# source_fingerprint:
+#   b53d2bd4b8eb4f98c7bc7c0c40e85eabe1a41a69a349a45ba112e24b57b01572
+# source_sha256_at_generation:
+#   aa12f442b9a4a249944f0a02f32858b5b84d237a8d1ccc33a9d1105a00982fc0
+# Printed rule text:
+#   Skink Braves have a natural 6+ Scaly Skin save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Skink Braves, Great Crested Skinks and the Skink Priest have a natural 6+ Scaly Skin save that stacks with other armour except Hardened Leather and cannot be reduced beyond 6+ by Strength; observable: a 6+ natural save in the armour phase.
+# effect_id:
+#   trait.natural-armour-save
+# relation:
+#   equivalent
+# parameters:
+#   {"save":6}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Three profiles print the same rule with the same value; the stacks and cap halves are the band-level clause at G214. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded semantic contract of each clause
+# and the band package; no engine output was consulted.  The duel is uncharged
+# (`charging: []`) and the attacker holds the higher Initiative, so the only
+# Strength modifier reaching the defender's save is the attacker's own Strength
+# and the attacker's pool always resolves first.  A recipient that survives the
+# incoming attack still strikes back, so its own attack is scripted as a miss.
+
+- audit_id: rule/trollheim/lustria-lizardmen/skink-braves--scaly-skin-6plus/trait.natural-armour-stacks
+  id: the-skink-braves-saves-on-6-or-better
+  covers: [six-plus-scaly-skin]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-braves, main_weapon_id: weapon.stone-axe}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/skink-braves--scaly-skin-6plus/trait.natural-armour-stacks
+  id: the-skink-braves-is-wounded-below-6
+  covers: [six-plus-scaly-skin]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-braves, main_weapon_id: weapon.stone-axe}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/skink-braves--scaly-skin-6plus/trait.natural-armour-stacks
+  id: the-kroxigor-saves-on-its-own-4
+  covers: [six-plus-scaly-skin]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: kroxigor, main_weapon_id: weapon.halberd}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.2.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/skink-braves--scaly-skin-6plus/trait.natural-armour-stacks
+  id: a-strength-six-attacker-still-leaves-the-skink-braves-save-on-six
+  covers: [six-plus-scaly-skin]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-braves, main_weapon_id: weapon.stone-axe}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/skink-braves--scaly-skin-6plus/trait.natural-armour-stacks
+  id: a-strength-six-attacker-beats-the-skink-braves-save-on-five
+  covers: [six-plus-scaly-skin]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 6, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-braves, main_weapon_id: weapon.stone-axe}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/skink-braves--scaly-skin-6plus/trait.natural-armour-stacks
+  id: light-armour-improves-the-skink-braves-save
+  covers: [six-plus-scaly-skin]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 7, attacks: 1}
+    second: {collection: trollheim, band_id: lustria-lizardmen, profile_id: skink-braves, main_weapon_id: weapon.stone-axe, armour_id: armour.light-armour}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

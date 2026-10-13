@@ -1,0 +1,106 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/druchii-mic/witch-elves--maibd-poison/unimplemented.druchii-mic.witch-elves.maibd-poison
+# scaffold_fingerprint: bc2287f89ecb1d1992603be337007b85a65735596a2b0affd358ff1fae07b743
+# authoring_status: PARTIAL
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole--scope--witch-elves-only (scope: YES)
+# PARTIAL[whole--scope--witch-elves-only]: [E] not asserted. the admitted facet is a bearer restriction on legal construction - Black Lotus bought through this rule may only be used by Witch Elves - while the poison's in-duel behaviour is analysed at its own mechanic origin. the record carries no effect id, its consumer is empty and its implementation_work is none, and the register states the whole purchase clause is excluded by scope while only this bearer restriction is admitted. The shared eligibility stage would answer with its equipment-refusal template, but the diagnostic names the restricted item and the record does not establish either a binding that carries the restriction for druchii-mic/witch-elves or the restricted item identity to substitute into that template; deriving them would be inventing data. Missing: the KB binding for this bearer restriction plus the restricted item id for the Witch Elves recipient. Nothing in the record's own sources, its register note or the authored corpus supplies them. Source check (verified): the origin row `witch-elves--maibd-poison` in sources/knowledge/bands/mordheim/druchii-mic/special-rules.yaml (line 327 onward) carries `scope: LATER`, `implemented: 'NO'`, `grant: profile`, a null binding and the placeholder `unimplemented.druchii-mic.witch-elves.maibd-poison`, with the recorded reason "Deferred subsystem: equipment-purchase pricing/availability and poison use are roster-construction mechanics outside the duel scope."  So the missing binding is not an oversight: the source itself defers this row as a roster/campaign mechanic, and the printed sentence is a purchase-and-ownership provision (Black Lotus as a Common item at 5 gc, usable only by Witch Elves, only in the next battle, not tradable), which is why no duel tape can carry it. REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/druchii-mic/witch-elves--maibd-poison/unimplemented.druchii-mic.witch-elves.maibd-poison
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/druchii-mic/special-rules.yaml
+# source_fingerprint:
+#   f81bcf75bb8d9a27de73537ff5f5de217bbbfe9f3ca946f0c5002e7f6ef6b9ef
+# source_sha256_at_generation:
+#   11d6f002ba8d0940a01ca59db39fa129b536f71613f157ebdf0f18c00a5c2949
+# Printed rule text:
+#   However, Black Lotus, purchased in such a way, may only be used by Witch Elves.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The printed rule that Black Lotus purchased this way may only be used by Witch Elves is a bearer restriction on legal construction. Printed clause: However, Black Lotus, purchased in such a way, may only be used by Witch Elves.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Excluded by scope: it changes the price and availability of a poison rather than a combat term. The in-combat behaviour of Black Lotus itself is analysed under its own mechanic origin, so the poison clause is not dropped, only the purchase clause. Scope review integration: {"clause_id":"whole","review_clause_id":"witch-elves-only","source_state":"matched","review_status":"reviewed","scope_reason":"The printed rule that Black Lotus purchased this way may only be used by Witch Elves is a bearer restriction on legal construction.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"A warband containing Witch Elves may buy Black Lotus as a common item at 5 gc per dose, usable only by Witch Elves and only in the next battle. Closure: unmodelled while purchase price, rarity and bearer restriction belong to the acquisition and eligibility layers.","effect_id":"","relation":"equivalent","parameters":"{}","conditions":"{\"subsystem\": \"campaign acquisition\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07d-excluded-band-rules","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Witch Elves often anoint their weapons in various poisons, for both martial and religious purposes. They are able to prepare their poisons and they know where to get needed ingredients. As a result, a warband, containing Witch Elves, may purchase Black Lotus as Common item for reduced price of 5 gc per dose. However, Black Lotus, purchased in such a way, may only be used by Witch Elves. The poison must be used in the next battle and cannot be sold or traded to other warbands.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: whole--scope--acquisition-discount (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/druchii-mic/witch-elves--maibd-poison/unimplemented.druchii-mic.witch-elves.maibd-poison
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/druchii-mic/special-rules.yaml
+# source_fingerprint:
+#   f81bcf75bb8d9a27de73537ff5f5de217bbbfe9f3ca946f0c5002e7f6ef6b9ef
+# source_sha256_at_generation:
+#   11d6f002ba8d0940a01ca59db39fa129b536f71613f157ebdf0f18c00a5c2949
+# Printed rule text:
+#   As a result, a warband, containing Witch Elves, may purchase Black Lotus as Common item for reduced price of 5 gc per dose.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Buying Black Lotus as a common item at a reduced price is a discount and acquisition condition, which neither grants nor removes eligibility to use the item. Printed clause: As a result, a warband, containing Witch Elves, may purchase Black Lotus as Common item for reduced price of 5 gc per dose.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Excluded by scope: it changes the price and availability of a poison rather than a combat term. The in-combat behaviour of Black Lotus itself is analysed under its own mechanic origin, so the poison clause is not dropped, only the purchase clause. Scope review integration: {"clause_id":"whole","review_clause_id":"acquisition-discount","source_state":"matched","review_status":"reviewed","scope_reason":"Buying Black Lotus as a common item at a reduced price is a discount and acquisition condition, which neither grants nor removes eligibility to use the item.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"A warband containing Witch Elves may buy Black Lotus as a common item at 5 gc per dose, usable only by Witch Elves and only in the next battle. Closure: unmodelled while purchase price, rarity and bearer restriction belong to the acquisition and eligibility layers.","effect_id":"","relation":"equivalent","parameters":"{}","conditions":"{\"subsystem\": \"campaign acquisition\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07d-excluded-band-rules","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Witch Elves often anoint their weapons in various poisons, for both martial and religious purposes. They are able to prepare their poisons and they know where to get needed ingredients. As a result, a warband, containing Witch Elves, may purchase Black Lotus as Common item for reduced price of 5 gc per dose. However, Black Lotus, purchased in such a way, may only be used by Witch Elves. The poison must be used in the next battle and cannot be sold or traded to other warbands.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: whole--scope--next-battle-and-trade (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/druchii-mic/witch-elves--maibd-poison/unimplemented.druchii-mic.witch-elves.maibd-poison
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/druchii-mic/special-rules.yaml
+# source_fingerprint:
+#   f81bcf75bb8d9a27de73537ff5f5de217bbbfe9f3ca946f0c5002e7f6ef6b9ef
+# source_sha256_at_generation:
+#   11d6f002ba8d0940a01ca59db39fa129b536f71613f157ebdf0f18c00a5c2949
+# Printed rule text:
+#   The poison must be used in the next battle and cannot be sold or traded to other warbands.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The requirements that the poison be used in the next battle and not be sold or traded are item lifecycle between battles, excluded from the duel. Printed clause: The poison must be used in the next battle and cannot be sold or traded to other warbands.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Excluded by scope: it changes the price and availability of a poison rather than a combat term. The in-combat behaviour of Black Lotus itself is analysed under its own mechanic origin, so the poison clause is not dropped, only the purchase clause. Scope review integration: {"clause_id":"whole","review_clause_id":"next-battle-and-trade","source_state":"matched","review_status":"reviewed","scope_reason":"The requirements that the poison be used in the next battle and not be sold or traded are item lifecycle between battles, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"A warband containing Witch Elves may buy Black Lotus as a common item at 5 gc per dose, usable only by Witch Elves and only in the next battle. Closure: unmodelled while purchase price, rarity and bearer restriction belong to the acquisition and eligibility layers.","effect_id":"","relation":"equivalent","parameters":"{}","conditions":"{\"subsystem\": \"campaign acquisition\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07d-excluded-band-rules","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Witch Elves often anoint their weapons in various poisons, for both martial and religious purposes. They are able to prepare their poisons and they know where to get needed ingredients. As a result, a warband, containing Witch Elves, may purchase Black Lotus as Common item for reduced price of 5 gc per dose. However, Black Lotus, purchased in such a way, may only be used by Witch Elves. The poison must be used in the next battle and cannot be sold or traded to other warbands.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# authoring_progress: the admitted whole--scope--witch-elves-only clause carries no scenario and stays
+#   pending with the missing binding and restricted-item identity named in its clause note; the scope-NO
+#   sibling clauses (acquisition-discount and the register blocks after it) are retained unchanged.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+
+[]  # Empty scenario list: this file contributes no test or coverage.

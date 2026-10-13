@@ -69,15 +69,15 @@ rules:
     profile_ids:
     - wulfen
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-norse.wulfen.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: wulfen--immune-to-psychology
   name: Immune to Psychology
   effect: The Wulfen is immune to Psychology.
@@ -93,15 +93,15 @@ rules:
     profile_ids:
     - wulfen
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-norse.wulfen.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: wulfen--hardened-hide
   runtime:
     scope: 'YES'
@@ -307,15 +307,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: selectable
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-norse.band.norse-special-skills-battle-tongue
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
 - id: band--norse-special-skills-barbarian-courage
   kind: warband_skill
   name: Barbarian Courage

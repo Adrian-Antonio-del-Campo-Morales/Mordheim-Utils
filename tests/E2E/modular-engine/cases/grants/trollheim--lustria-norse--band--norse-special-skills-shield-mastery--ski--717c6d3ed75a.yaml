@@ -1,0 +1,112 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-norse/band--norse-special-skills-shield-mastery/skill.shield-mastery
+# scaffold_fingerprint: c3f353c1287d43837f7cc532b38bec63681d66cb836f2ecc610ef90b75ab0d9b
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: shield-parries-and-keeps-its-bonus (scope: YES)
+# AUTHORED[shield-parries-and-keeps-its-bonus]: 2 scenarios evidence both printed halves at once:
+#   the shield bearer's parry is a real attempt (the declared five blocks the blow), and in the
+#   second tape, where that parry fails, the shield's own armour point still stands, so light
+#   armour and shield together save on a declared five.  The parry comes from the skill and the
+#   save from the ordinary shield composition, so neither replaces the other.
+# origin_id:
+#   rule/trollheim/lustria-norse/band--norse-special-skills-shield-mastery/skill.shield-mastery
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-norse/special-rules.yaml
+# source_fingerprint:
+#   bed5369958566dbbc36dbc663aa735cf74e2ceefb249bf2f141bb875d2f87895
+# source_sha256_at_generation:
+#   2169503ad73c22ef6c1963548f1513409b01717d9bda95a580b5dd430f90851e
+# Printed rule text:
+#   The Hero may parry with a Shield as if it were a Buckler while still receiving the Shield's normal armour-save bonus.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Hero may parry with a Shield as if it were a Buckler while still receiving the Shield's normal armour-save bonus; observable: a parry attempt from the shield and the shield's +1 save at the same time.
+# effect_id:
+#   skill.shield-mastery
+# relation:
+#   equivalent
+# parameters:
+#   {"shield_parry":true,"keeps_shield_save":true}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Same skill as the Norse Explorers printing (G117) in another supplement; the parry comes from the skill and the save from the ordinary shield composition, so both halves are consumed without either replacing the other. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"shield-parries-and-keeps-its-bonus","audit_group":"EQ-skill.shield-mastery","verified_facet":"skill.shield-mastery","relationship":"shared_facet","boundary":"Shield parry and normal armour benefit coexist; do not replace the shield with a buckler or grant another attempt.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses
+#   ['shield-parries-and-keeps-its-bonus']; clauses still pending or unrepresentable in this
+#   file: [].  REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule ("The Hero may parry with a Shield as if it were a Buckler while
+# still receiving the Shield's normal armour-save bonus") and the recorded contract
+# (shield_parry true, keeps_shield_save true), whose verified reuse guidance keeps the parry and
+# the ordinary armour benefit as coexisting halves.  The bearer is a printed Hero of the band
+# holding the shield with the skill selected and light armour worn; the attacker is hand-built.
+# In the first tape the parry die is declared above the To Hit roll and blocks the blow, which is
+# the parry half; in the second the parry dies below it, and the armour die is then declared at
+# the composed five (light armour's six less the shield's point), which is the save half.
+
+- audit_id: rule/trollheim/lustria-norse/band--norse-special-skills-shield-mastery/skill.shield-mastery
+  id: the-shield-parries-as-a-buckler
+  covers: [shield-parries-and-keeps-its-bonus]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: lustria-norse
+      profile_id: jarl
+      special_rule_ids: [band--norse-special-skills-shield-mastery]
+      armour_id: armour.light-armour
+      off_hand_id: defence.shield
+      main_weapon_id: weapon.mace
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-norse/band--norse-special-skills-shield-mastery/skill.shield-mastery
+  id: the-shield-keeps-its-armour-point-when-the-parry-fails
+  covers: [shield-parries-and-keeps-its-bonus]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: lustria-norse
+      profile_id: jarl
+      special_rule_ids: [band--norse-special-skills-shield-mastery]
+      armour_id: armour.light-armour
+      off_hand_id: defence.shield
+      main_weapon_id: weapon.mace
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.saved: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

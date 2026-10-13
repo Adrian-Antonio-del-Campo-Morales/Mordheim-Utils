@@ -157,15 +157,15 @@ rules:
     profile_ids:
     - beloved
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.khemri-lahmian-brotherhood.beloved.accustomed-to-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.accustomed-to-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.accustomed-to-fear
 - id: blood-sister--accustomed-to-fear
   name: Accustomed to Fear
   effect: The Blood Sister is immune to Fear caused by Vampires, Skeletons and Spirits.
@@ -181,15 +181,15 @@ rules:
     profile_ids:
     - blood-sister
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.khemri-lahmian-brotherhood.blood-sister.accustomed-to-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.accustomed-to-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.accustomed-to-fear
 - id: blood-sister--semi-vampire
   name: Semi-Vampire
   effect: >-
@@ -237,15 +237,15 @@ rules:
     profile_ids:
     - lackeys
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.khemri-lahmian-brotherhood.lackeys.accustomed-to-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.accustomed-to-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.accustomed-to-fear
 - id: lackeys--devoted-to-the-vampire
   name: Devoted to the Vampire
   effect: >-
@@ -322,15 +322,15 @@ rules:
     profile_ids:
     - skeleton-warriors
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.khemri-lahmian-brotherhood.skeleton-warriors.undead
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.undead
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.undead
   rule_ref: shared-rule.undead
 - id: blood-slaves--accustomed-to-fear
   name: Accustomed to Fear
@@ -347,15 +347,15 @@ rules:
     profile_ids:
     - blood-slaves
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.khemri-lahmian-brotherhood.blood-slaves.accustomed-to-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.accustomed-to-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.accustomed-to-fear
 - id: black-hounds--fear
   name: Fear
   effect: Black Hounds cause Fear.
@@ -371,15 +371,15 @@ rules:
     profile_ids:
     - black-hounds
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.khemri-lahmian-brotherhood.black-hounds.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: black-hounds--animal
   name: Animal
   effect: Black Hounds are animals and never gain Experience.
@@ -557,15 +557,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: band
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.khemri-lahmian-brotherhood.band.cause-fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.cause-fear-2
 - id: band--immune-to-psychology
   name: Immune to Psychology
@@ -582,15 +582,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: band
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.khemri-lahmian-brotherhood.band.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   rule_ref: shared-rule.immune-to-psychology-4
 - id: band--no-pain
   runtime:
@@ -819,15 +819,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: selectable
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.khemri-lahmian-brotherhood.band.lahmian-special-skills-hypnotize
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.lahmian-hypnotize
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.lahmian-hypnotize
 - id: band--lahmian-special-skills-vampire-reflexes
   kind: warband_skill
   runtime:

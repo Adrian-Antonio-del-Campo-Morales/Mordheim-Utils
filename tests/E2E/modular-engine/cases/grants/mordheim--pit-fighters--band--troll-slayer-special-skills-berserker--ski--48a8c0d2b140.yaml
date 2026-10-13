@@ -1,0 +1,141 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/pit-fighters/band--troll-slayer-special-skills-berserker/skill.berserker
+# scaffold_fingerprint: e36849f380fb2ceabba5a7c113de333050b641cf81f9b407b71e36d47d485e78
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries four authored scenarios derived from the
+# printed stanza, the recorded contract and the admitted berserker grants specification: the
+# charging turn still hits on a roll of 3 where the uncharged turn does not, the same roll misses
+# without the band grant, and this origin's printed exclusivity is asserted as the refusal of a
+# build that also carries this band's Ferocious Charge grant.  REVIEWED still requires manual
+# semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenarios read both printed terms on the printed recipient.  The bearer is
+# this band's Slayer profile (WS4, A1) credited with band--troll-slayer-special-skills-berserker,
+# and the opponent is the WS4 boundary the grants specification names, so a declared hit of 3
+# succeeds while charging and fails after the same bearer fights without a charge; removing the
+# grant makes the same charging roll of 3 miss.  The printed exclusivity of the same stanza is a
+# construction rule delivered by the compiler binding this origin carries: the fourth scenario
+# credits one build with both this band's Berserker and Ferocious Charge grants and expects the
+# refusal "Berserker may not be combined with Ferocious Charge" (the refusal fragment recorded by
+# editorial-berserker.yaml), so a compiled fighter never holds both and the +1 is always applied
+# under the printed exclusion.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/pit-fighters/band--troll-slayer-special-skills-berserker/skill.berserker
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/pit-fighters/special-rules.yaml
+# source_fingerprint:
+#   563d9920b5674a17f633555a37cdf5938174f7061d5d59c45836f6a178a62e6e
+# source_sha256_at_generation:
+#   4b743a427096d672a1bf5a53fad379b4e5c09d9e585ec2bf06eabd86e7123015
+# Printed rule text:
+#   The Slayer may add +1 to his close combat to hit rolls during the turn which he charges (may not be used with Ferocious Charge).
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Slayer may add +1 to his close-combat To Hit rolls during the turn in which he charges and may not use it with Ferocious Charge. Closure: the +1 applies on the charging turn and never together with the doubling.
+# effect_id:
+#   skill.berserker
+# relation:
+#   equivalent
+# parameters:
+#   {"exclusive_with":"skill.ferocious-charge","hit_modifier":1,"trigger":"charging turn","charge_hit_modifier":1}
+# conditions:
+#   {"recipient": "Troll Slayer", "trigger": "charge"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin of the shared berserker operator for the Troll Slayer. The charging-turn +1 to hit is delivered by contexts.prepare_hit_context, and this origin declares the compiler.berserker-incompatible-with-ferocious-charge binding that carries the printed Ferocious Charge exclusivity (also registered in contracts.COMPILER_CONTRACTS and pinned to pit-fighters/band--troll-slayer-special-skills-berserker in implemented-canonical-families.yaml). The shared eligibility loadout restriction enforces it against skill.ferocious-charge, so this recipient receives the bonus and its exclusion together and owes no behaviour step. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.berserker","verified_facet":"skill.berserker","relationship":"shared_facet","boundary":"Share the charging-turn melee hit bonus. Preserve each printed Ferocious Charge incompatibility; neither the bonus nor incompatibility follows from the name Berserker alone.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed stanza, the recorded contract and the admitted berserker grants
+# specification; no engine output was consulted.  The bearer is the printed Slayer profile of
+# this band (WS4, BS3, S3, T4, W1, I2, A1) credited with this band's Slayer-skill rule through
+# special_rule_ids, so the case reads the band grant rather than a bare tag.  The hand-built
+# opponent (WS4, S3, T3, W3, I1) is the boundary the specification names, and its own strike is
+# a declared natural 1, so only the hit step of the bearer's single attack is in question.
+
+- audit_id: rule/mordheim/pit-fighters/band--troll-slayer-special-skills-berserker/skill.berserker
+  id: the-charging-turn-hits-on-three
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+      special_rule_ids: [band--troll-slayer-special-skills-berserker]
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/pit-fighters/band--troll-slayer-special-skills-berserker/skill.berserker
+  id: the-uncharged-turn-does-not-hit-on-three
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+      special_rule_ids: [band--troll-slayer-special-skills-berserker]
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/pit-fighters/band--troll-slayer-special-skills-berserker/skill.berserker
+  id: without-the-grant-the-charging-three-misses
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/pit-fighters/band--troll-slayer-special-skills-berserker/skill.berserker
+  id: the-slayer-may-not-hold-it-with-ferocious-charge
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: pit-fighters
+      profile_id: dwarf-troll-slayer
+      special_rule_ids: [band--troll-slayer-special-skills-berserker, band--troll-slayer-special-skills-ferocious-charge]
+  expect_error: Berserker may not be combined with Ferocious Charge

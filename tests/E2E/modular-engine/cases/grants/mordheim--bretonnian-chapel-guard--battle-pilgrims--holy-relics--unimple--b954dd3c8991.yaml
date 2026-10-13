@@ -1,0 +1,124 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/bretonnian-chapel-guard/battle-pilgrims--holy-relics/unimplemented.bretonnian-chapel-guard.battle-pilgrims.holy-relics
+# scaffold_fingerprint: 683cb9ffa0f0e872144ee4f1a6e9984074b4edd0ac36233a3c9a9d84f6244c7f
+# authoring_status: PARTIAL
+# authoring_progress: the admitted holy-relic-frenzy clause carries 2 authored scenarios: a Battle
+#   Pilgrim that owns the Holy Relic enters the duel with its frenzy flag set and therefore strikes
+#   twice, and the same bearer takes no ordinary Fear test for a charge it receives.  PENDING GAP (not a
+#   scenario gap): the equipment grant itself is not yet connected, so the relic-bearing Pilgrim may
+#   reach the duel without Frenzy; the co-printed Frenzy-suppresses-Hatred face needs a Hatred build
+#   whose kindred-hatred source this ID does not name, and the co-printed henchman group split is a
+#   separate, excluded construction clause.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: holy-relic-frenzy (scope: YES)
+# PARTIAL[holy-relic-frenzy]: [CLOSING-REVIEW [B]] 2 scenario(s) cover the admitted relic-granted Frenzy and its Fear
+#   consequence.  The named gaps are the unrecorded equipment binding of the relic to trait.frenzy and
+#   the unnamed Hatred source the suppression face would need.
+# origin_id:
+#   rule/mordheim/bretonnian-chapel-guard/battle-pilgrims--holy-relics/unimplemented.bretonnian-chapel-guard.battle-pilgrims.holy-relics
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/bretonnian-chapel-guard/special-rules.yaml
+# source_fingerprint:
+#   bd092f3b78803aa79d417cbf42b08fb043c83745bb0ff02b9f6285c895f69bac
+# source_sha256_at_generation:
+#   9139664c4fa318c014e7f07bca71391533c1eaecdc6d1a19f66e2126ed5826f5
+# Printed rule text:
+#   If a Battle Pilgrim owns a Holy Relic, he gains the ability Frenzy (when frenzied, he is immune to Hatred).
+# Semantic contract (check analysis_status before treating as accepted):
+#   A Battle Pilgrim given a Holy Relic gains Frenzy, and while frenzied is immune to Hatred. Observable: the frenzy flag is set for that warrior at duel start and the Hatred reroll is suppressed.
+# effect_id:
+#   trait.frenzy
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"the Pilgrim owns a Holy Relic","recipient":"this warrior"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Equipment-granted Frenzy on an individual recipient. The frenzy flag and the frenzy-suppresses-Hatred behaviour already exist in state/contexts; the missing step is the KB binding of the relic. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Surface reuse candidate: {"family":"trait.frenzy","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact supplied/rolled state, trigger, frequency, duration, termination and attack-count contribution. Permanent and conditional Frenzy, +1 Attack and doubling are different. Do not implement group creation, movement or campaign tables merely to supply an individual state.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: holy-relic-group-split (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/bretonnian-chapel-guard/battle-pilgrims--holy-relics/unimplemented.bretonnian-chapel-guard.battle-pilgrims.holy-relics
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/bretonnian-chapel-guard/special-rules.yaml
+# source_fingerprint:
+#   bd092f3b78803aa79d417cbf42b08fb043c83745bb0ff02b9f6285c895f69bac
+# source_sha256_at_generation:
+#   9139664c4fa318c014e7f07bca71391533c1eaecdc6d1a19f66e2126ed5826f5
+# Printed rule text:
+#   a Pilgrim with a relic breaks off and forms its own individual henchman group
+# Semantic contract (check analysis_status before treating as accepted):
+#   (not recorded)
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Henchman group composition is roster bookkeeping; construction scope. Scope review integration: {"clause_id":"holy-relic-group-split","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"A Pilgrim breaking off into its own henchman group is a warband composition rule, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/bretonnian-chapel-guard/battle-pilgrims--holy-relics/unimplemented.bretonnian-chapel-guard.battle-pilgrims.holy-relics
+  id: the-pilgrim-owning-the-holy-relic-strikes-twice
+  covers: [holy-relic-frenzy]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: bretonnian-chapel-guard, profile_id: battle-pilgrims, owned_item_ids: [holy_relic_pilgrim_only], main_weapon_id: weapon.mace}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/bretonnian-chapel-guard/battle-pilgrims--holy-relics/unimplemented.bretonnian-chapel-guard.battle-pilgrims.holy-relics
+  id: the-pilgrim-owning-the-holy-relic-takes-no-fear-test-for-the-charge-it-receives
+  covers: [holy-relic-frenzy]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: bretonnian-chapel-guard, profile_id: battle-pilgrims, owned_item_ids: [holy_relic_pilgrim_only], main_weapon_id: weapon.mace}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, state.second.fear_hit_sixes: false, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

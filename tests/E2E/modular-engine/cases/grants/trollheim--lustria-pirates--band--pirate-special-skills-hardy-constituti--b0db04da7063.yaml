@@ -1,0 +1,168 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution
+# scaffold_fingerprint: 1406eb2ba11447e6327352b37a6611eecb5edc730608b23bb5caef22f6106fac
+# authoring_status: REVIEWED
+# authoring_progress: every admitted clause of this ID is represented by an authored
+#   scenario and contrasted with the printed rule, the recorded semantic contract and
+#   the band package. REVIEWED is authoring and semantic contrast only;
+#   execution_status stays UNEXECUTED and no functional result exists.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: critical-ignored-on-five (scope: YES)
+# AUTHORED[critical-ignored-on-five]: 4 scenarios cover the 5+ that drops the critical
+#   and keeps the normal wound resolving, the 4 that resolves the critical, the
+#   unselected contrast and the refusal of an ineligible profile.
+# origin_id:
+#   rule/trollheim/lustria-pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-pirates/special-rules.yaml
+# source_fingerprint:
+#   7f98645346de1eb00eb9123d69d169bcabd8e64162f1fb84383caf8018cf8f33
+# source_sha256_at_generation:
+#   f93f6698f586a558e4681de07b60202970b5eb60350a4caa9c9e4e4d4d1931d3
+# Printed rule text:
+#   When the Hero suffers a critical hit, roll D6. On 5+ the critical effect is ignored and the wound is resolved normally; on a failure, resolve the critical hit normally.
+# Semantic contract (check analysis_status before treating as accepted):
+#   When the Hero suffers a critical hit a 5+ ignores the critical and the wound is resolved normally, while a failure resolves it as a critical; observable: the critical's armour-ignoring and injury bonus are dropped on a 5+.
+# effect_id:
+#   skill.hardy-constitution
+# relation:
+#   equivalent
+# parameters:
+#   {"ignore_critical_on":5,"normal_wound_remains":true}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Same skill as the Sartosa pirates printing (G123). The consumer on the reference attack path rolls when the wound is critical and clears the critical flag on a 5+. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"critical-ignored-on-five","audit_group":"EQ-skill.hardy-constitution","verified_facet":"skill.hardy-constitution","relationship":"shared_facet","boundary":"On 5+ remove the critical effect but resolve the normal wound; not a save that cancels the hit or wound.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+#
+# --- Migrated authored scenarios ---
+# Source: cases/grants/warband-grants.yaml
+# One-time migration authorized by the operator; see plan.md.  These
+# scenarios were authored from the rule text and the accepted rulings, not
+# from engine output.  Migrating them does not certify their interpretation
+# or complete coverage of the identity.
+# rule/... grants — a closed batch of warband grants exercised end to end.
+#
+# Each identity here is a printed warband grant (a `rule/<collection>/<band>/
+# <rule>/<binding>` record of docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv).
+# The scenarios take the real route: band and profile from the built warrior,
+# the grant selected through `special_rule_ids`, the shared construction and
+# compilation that bind it, the modular resolution that consumes it, and an
+# observation of the consequence.  No `effect_id` is injected anywhere, and a
+# scenario never lists the granted mechanic as a direct `skill_ids` entry.
+#
+# Recipients are taken from the band package: the profile that the grant's
+# eligibility admits gains the consequence, another profile of the same band is
+# refused with the binding's own diagnostic, and an unselected build of the same
+# recipient shows the consequence absent.  Sharing one binding does not admit
+# other origins, so each identity keeps its own scenarios and clauses.
+#
+# The batch is deliberately closed and small: priority, injury-chart, reroll,
+# critical-ignition, parry-exclusion and characteristic grants, one identity
+# each.  Expanding it needs another reviewed batch, not a wider query.
+
+# The Khemri Lahmian Vampire's Lost Innocence grants strike first.  Both duels
+# below are uncharged, so the only priority tier in play is the grant itself.
+#
+
+- audit_id: rule/trollheim/lustria-pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution
+  id: the-recipient-ignores-a-critical-on-five
+  covers: [critical-ignored-on-five]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &plain-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: lustria-pirates
+      profile_id: pirate-captain
+      special_rule_ids: [band--pirate-special-skills-hardy-constitution]
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.hardy-constitution, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 0,
+        state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution
+  id: the-recipient-takes-the-critical-on-four
+  covers: [critical-ignored-on-five]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *plain-attacker
+    second:
+      collection: trollheim
+      band_id: lustria-pirates
+      profile_id: pirate-captain
+      special_rule_ids: [band--pirate-special-skills-hardy-constitution]
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.hardy-constitution, value: 4}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+    - {key: round.0.first.attack.0.injury.1, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 2, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution
+  id: the-unselected-recipient-always-takes-the-critical
+  covers: [critical-ignored-on-five]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *plain-attacker
+    second:
+      collection: trollheim
+      band_id: lustria-pirates
+      profile_id: pirate-captain
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+    - {key: round.0.first.attack.0.injury.1, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 2, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-pirates/band--pirate-special-skills-hardy-constitution/skill.hardy-constitution
+  id: a-profile-outside-the-eligibility-is-refused
+  covers: [critical-ignored-on-five]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-pirates
+      profile_id: crew
+      special_rule_ids: [band--pirate-special-skills-hardy-constitution]
+      main_weapon_id: weapon.dagger
+  expect_error: "special rule is not available to lustria-pirates/crew"
+
+# Unpredictable: the recipient declares one of its attacks, and only that attack
+# is beyond the defender's parry.  The declaration is an explicit decision, and
+# the undeclared sibling shows the same attack parried.

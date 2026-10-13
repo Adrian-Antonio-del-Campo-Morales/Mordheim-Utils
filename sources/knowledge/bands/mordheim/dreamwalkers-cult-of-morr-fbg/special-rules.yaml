@@ -587,15 +587,15 @@ rules:
   kind: warband_skill
 - id: band--special-skill-inured-to-horror
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: selectable
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.special-skill.inured-to-horror
-      scope: LATER
-      binding: null
-      reason: >-
-        Psychology subsystem (fear immunity, All Alone): not covered by the current engine scope.
+    - id: mechanic.fear-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-immunity
   name: Inured to Horror
   effect: >-
     Only the true faithful followers of Morr know and accept death and become inured to horror. The

@@ -1,0 +1,107 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/pit-fighters/band--pit-fighter-skill-body-slam/mechanic.body-slam
+# scaffold_fingerprint: 1a9e6ae9c04a5639d1640eda56d7c96f325e61b4f1fbc990be66e80851068a1a
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the printed
+# rule and the recorded contract: the declared charge replacement hits on the raised target and wounds
+# on the raised Strength, and declining it keeps the ordinary pool.  The printed 5+ critical threshold
+# and the excluded weapon/skill modifiers stay unasserted for the reasons the mechanic origin's own case
+# records (the critical's consequence belongs to the core critical table's clause, and showing an
+# ignored modifier needs a modifier-bearing weapon whose own clause would be imported).  REVIEWED still
+# requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios evidence the printed charge replacement on the duel route:
+# the accepted declaration resolves one attack whose raised To Hit target turns a declared three into a
+# hit an equal Weapon Skill would otherwise miss, and whose raised Strength wounds Toughness 3 on the
+# declared three where the plain profile needs a four; declining the option leaves the ordinary pool,
+# where the same three misses (the tape then declares no wound die at all).  The recorded register reads
+# this printed text as repeating the canonical body-slam clause without adding a term ("the band origin
+# creates no second runtime contribution"), so the scenarios read the canonical operator through the
+# fighter's grant list, exactly as the mechanic origin's own case does.  REVIEWED still requires manual
+# semantic review.
+# origin_id:
+#   rule/mordheim/pit-fighters/band--pit-fighter-skill-body-slam/mechanic.body-slam
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/pit-fighters/special-rules.yaml
+# source_fingerprint:
+#   ea64fa7ac2e681818576652def732fdb187ca5c1eb3611be617d356198c6820d
+# source_sha256_at_generation:
+#   4b743a427096d672a1bf5a53fad379b4e5c09d9e585ec2bf06eabd86e7123015
+# Printed rule text:
+#   Instead of a normal charge attack sequence, the warrior may make one Body Slam attack at +1 Strength and +1 to hit, with no weapon bonuses or abilities; it scores a critical hit on 5+.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Instead of a normal charge attack sequence the warrior may make one Body Slam attack at +1 Strength and +1 to hit with no weapon bonuses or abilities, scoring a critical hit on 5+. Closure: the charge pool is replaced by one attack at +1 Strength, +1 to hit and a critical threshold of 5, with no weapon or skill modifier merged into it.
+# effect_id:
+#   mechanic.body-slam
+# relation:
+#   equivalent
+# parameters:
+#   {"attack_count": 1, "critical_threshold": 5, "hit_modifier": 1, "ignores": ["weapon bonuses", "abilities"], "strength_bonus": 1}
+# conditions:
+#   {"recipient": "Pit Fighter", "trigger": "charge"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared body-slam operator; the printed "no weapon bonuses or abilities" is realised by the slam profile replacing the equipped weapon and by the global effects not merging into it. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"mechanic.body-slam","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# declaration is the printed option and the raised targets are the observable.
+- audit_id: rule/mordheim/pit-fighters/band--pit-fighter-skill-body-slam/mechanic.body-slam
+  id: the-declared-slam-hits-on-the-raised-target-and-wounds-on-the-raised-strength
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.body-slam]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.body-slam, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 3, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Declining the printed option keeps the ordinary charge attack, whose equal-Weapon-Skill target of four
+# turns the same declared three into a miss, so no wound die is requested.
+- audit_id: rule/mordheim/pit-fighters/band--pit-fighter-skill-body-slam/mechanic.body-slam
+  id: declining-keeps-the-ordinary-charge-attack
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.body-slam]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.body-slam, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

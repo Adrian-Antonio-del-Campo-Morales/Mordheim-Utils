@@ -1,0 +1,87 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.axe-expert
+# scaffold_fingerprint: b39e9d71b06c53debf6d5df7cf0251f07fa14d865f2bab3b4daca98c7fd8fb48
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios show a failed hit roll
+#   taken again (charging with an axe) and the same roll standing without the skill.
+# origin_id:
+#   mechanic/skill.axe-expert
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   467206add8409051f227600b3d7995e4d969d4c15463651384879ea8f1ff2b29
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Re-rolls missed axe attacks when charging.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The fighter re-rolls missed axe attacks when charging. Closure: when charging with an axe or dwarf axe, failed To Hit rolls are re-rolled in the first round.
+# effect_id:
+#   skill.axe-expert
+# relation:
+#   equivalent
+# parameters:
+#   {"reroll_hits": "missed axe attacks", "trigger": "charging"}
+# conditions:
+#   {"first_round": true, "trigger": "charge", "weapon": ["weapon.axe", "weapon.dwarf-axe"]}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   _hit_reroll raises the reroll for charging and first_round with an axe or dwarf-axe tag, refusing the reroll for any other weapon of the same fighter. Surface reuse candidate: {"family":"skill.axe-expert","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare actual weapon identity, charge/first-round condition, natural versus modified Strength, failed versus all-roll reroll and critical eligibility. Keep weapon-independent restrictions and special attacks outside an unsupported shared benefit.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+
+- audit_id: mechanic/skill.axe-expert
+  id: the-charging-axe-rerolls-a-missed-hit
+  covers: [whole]
+  fighters:
+    first:
+      skill_ids: [skill.axe-expert]
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/skill.axe-expert
+  id: the-same-roll-stands-without-the-skill
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

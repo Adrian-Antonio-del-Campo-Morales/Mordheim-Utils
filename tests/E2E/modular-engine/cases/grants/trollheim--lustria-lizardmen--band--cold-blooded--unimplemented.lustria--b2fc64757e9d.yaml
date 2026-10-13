@@ -1,0 +1,194 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-lizardmen/band--cold-blooded/unimplemented.lustria-lizardmen.band.cold-blooded
+# scaffold_fingerprint: 24de73665a82016671df9002950d2a759a554b7289f40e912e3f5a809808d1c9
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: cold-blooded--scope--psychology-test (scope: YES)
+# AUTHORED[cold-blooded--scope--psychology-test]: 3 scenarios evidence the printed dice rule:
+#   a charged Fear test of the band's bearer consumes three dice and keeps the two lowest
+#   (the declared six is discarded, so a 6+6+1 test passes an unmodified Leadership 7 that
+#   the two-dice sum of 12 could never pass), a non-Psychology Leadership test of the same
+#   bearer keeps only the two dice the printed exclusion leaves it, and an ordinary warrior
+#   with the same Leadership under the same charge has no third die at all.  The tape is the
+#   evidence: a build that does not take the third die fails the scenario on the undeclared
+#   roll.  The register records this origin's wiring as a pending connection, so the
+#   expectation is written from the printed rule and the recorded contract.
+# origin_id:
+#   rule/trollheim/lustria-lizardmen/band--cold-blooded/unimplemented.lustria-lizardmen.band.cold-blooded
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-lizardmen/special-rules.yaml
+# source_fingerprint:
+#   c4f1558a9c62ea93dbc48ea22e6f33cf223b12ddcaa1521be15229c7a3dc9827
+# source_sha256_at_generation:
+#   aa12f442b9a4a249944f0a02f32858b5b84d237a8d1ccc33a9d1105a00982fc0
+# Printed rule text:
+#   any other Psychology test, roll 3D6 and keep the two lowest results
+# Semantic contract (check analysis_status before treating as accepted):
+#   Rolling three dice and keeping the two lowest for any Psychology test is an admitted individual test consequence; the Rout halves belong to their own excluded content. Printed clause: any other Psychology test, roll 3D6 and keep the two lowest results
+# effect_id:
+#   mechanic.cold-blooded-psychology
+# relation:
+#   related
+# parameters:
+#   {"roll_3_keep_lowest_2":true}
+# conditions:
+#   {"trigger":"individual Psychology test only","exceptions":"No benefit on non-Psychology Leadership; group Rout tests are excluded."}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   resolve_local_leadership passes discard_highest for psychology-qualified cold-blooded tests to resolve_leadership. This is not the all-Leadership variant. The separately excluded Rout/leader clauses are unchanged; only the canonical individual connection is pending. Scope review integration: {"clause_id":"cold-blooded","review_clause_id":"psychology-test","source_state":"matched","review_status":"reviewed","scope_reason":"Rolling three dice and keeping the two lowest for any Psychology test is an admitted individual test consequence; the Rout halves belong to their own excluded content.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"For any Psychology test the warband rolls 3D6 and keeps the two lowest results. Observable: an individual Psychology test rolls three dice and keeps the lowest two.","effect_id":"mechanic.cold-blooded-psychology","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"an individual Psychology test\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\",\"packages/python/combat-engine/mordheim_combat/phases.py::resolve_leadership\"]","implementation_work":"connection","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\",\"packages/python/combat-engine/mordheim_combat/phases.py::resolve_leadership\"]"},"inherited_clause_text":"When taking a Rout test or any other Psychology test, roll 3D6 and keep the two lowest results. The warband may never use the Leadership of a Saurus or Kroxigor when taking a Rout test.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Selectively verified equivalence: {"review_file":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"cold-blooded","verified_family":"mechanic.cold-blooded-psychology","verified_peer_keys":[{"origin_id":"rule/mordheim/lizardmen-lus/band--cold-blooded/mechanic.cold-blooded-psychology","clause_id":"cold-blooded-psychology"},{"origin_id":"rule/mordheim/lizardmen/band--cold-blooded/mechanic.cold-blooded-psychology","clause_id":"cold-blooded-psychology"},{"origin_id":"mechanic/mechanic.cold-blooded-psychology","clause_id":"cold-blooded-psychology"},{"origin_id":"source/catalog/rules/conditions.yaml/condition.cold-blooded/unclassified","clause_id":"cold-blooded-psychology"},{"origin_id":"source/catalog/hirelings/hired-swords/grade-1b.yaml/hireling.hired-sword.chameleon-skink.rule.cold-blooded/unclassified","clause_id":"cold-blooded"},{"origin_id":"rule/trollheim/lustria-lizardmen/band--cold-blooded/unimplemented.lustria-lizardmen.band.cold-blooded","clause_id":"cold-blooded--scope--psychology-test"}],"sharing_boundary":"Same 3D6 keep-lowest-two convention for individual Psychology only. Rout remains excluded and non-Psychology Leadership does not gain this benefit.","evidence":"inspection","limit":"Only this closed selection was checked. No acceptance of the entire review, KB activation, implementation closure or execution evidence."}
+#
+# Clause: cold-blooded--scope--rout-test (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/trollheim/lustria-lizardmen/band--cold-blooded/unimplemented.lustria-lizardmen.band.cold-blooded
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-lizardmen/special-rules.yaml
+# source_fingerprint:
+#   c4f1558a9c62ea93dbc48ea22e6f33cf223b12ddcaa1521be15229c7a3dc9827
+# source_sha256_at_generation:
+#   aa12f442b9a4a249944f0a02f32858b5b84d237a8d1ccc33a9d1105a00982fc0
+# Printed rule text:
+#   When taking a Rout test
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Rout test halves, and the restriction on whose Leadership may be used for them, are the excluded group rout procedure. Printed clause: When taking a Rout test
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   resolve_local_leadership passes discard_highest for psychology-qualified cold-blooded tests to resolve_leadership. This is not the all-Leadership variant. The separately excluded Rout/leader clauses are unchanged; only the canonical individual connection is pending. Scope review integration: {"clause_id":"cold-blooded","review_clause_id":"rout-test","source_state":"matched","review_status":"reviewed","scope_reason":"The Rout test halves, and the restriction on whose Leadership may be used for them, are the excluded group rout procedure.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"For any Psychology test the warband rolls 3D6 and keeps the two lowest results. Observable: an individual Psychology test rolls three dice and keeps the lowest two.","effect_id":"mechanic.cold-blooded-psychology","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"an individual Psychology test\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\",\"packages/python/combat-engine/mordheim_combat/phases.py::resolve_leadership\"]","implementation_work":"connection","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/leadership.py::resolve_local_leadership\",\"packages/python/combat-engine/mordheim_combat/phases.py::resolve_leadership\"]"},"inherited_clause_text":"When taking a Rout test or any other Psychology test, roll 3D6 and keep the two lowest results. The warband may never use the Leadership of a Saurus or Kroxigor when taking a Rout test.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: cold-blooded-rout (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/trollheim/lustria-lizardmen/band--cold-blooded/unimplemented.lustria-lizardmen.band.cold-blooded
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-lizardmen/special-rules.yaml
+# source_fingerprint:
+#   c4f1558a9c62ea93dbc48ea22e6f33cf223b12ddcaa1521be15229c7a3dc9827
+# source_sha256_at_generation:
+#   aa12f442b9a4a249944f0a02f32858b5b84d237a8d1ccc33a9d1105a00982fc0
+# Printed rule text:
+#   when taking a Rout test, roll 3D6 keep the two lowest; and the warband may never use a Saurus or Kroxigor Leadership for a Rout test
+# Semantic contract (check analysis_status before treating as accepted):
+#   (not recorded)
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Rout tests and leader identity for Rout are excluded group mechanics. Scope review integration: {"clause_id":"cold-blooded-rout","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The Rout-test dice rule and the restriction on whose Leadership may be used for a Rout test are the excluded group rout procedure.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses
+#   ['cold-blooded--scope--psychology-test']; clauses still pending or unrepresentable in
+#   this file: [].  REVIEWED requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed rule ("When taking a Rout test or any other Psychology test, roll
+# 3D6 and keep the two lowest results") and its recorded contract (individual Psychology
+# tests only; the Rout halves are separate excluded content).  The band rule applies to the
+# whole band, so a printed member of the band stands for the recipient and carries its own
+# printed Leadership.  The fear-causing opponent is the hand-built fixture the sibling
+# mechanics case uses, so the Fear test is the individual Psychology test the clause names;
+# the fire test is the printed non-Psychology Leadership test, and the unmarked warrior of
+# the same Leadership is the absence control.  Reviewers: the register records the connection
+# from this band rule to mechanic.cold-blooded-psychology as pending implementation work, so
+# these expectations fail until that connection exists.
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--cold-blooded/unimplemented.lustria-lizardmen.band.cold-blooded
+  id: a-psychology-test-of-the-band-keeps-the-lowest-two-of-three-dice
+  covers: [cold-blooded--scope--psychology-test]
+  fighters:
+    first:
+      main_weapon_id: weapon.stone-axe
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+      main_weapon_id: weapon.stone-axe
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.2, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: False, state.second.wounds: 1, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--cold-blooded/unimplemented.lustria-lizardmen.band.cold-blooded
+  id: a-non-psychology-leadership-test-keeps-only-two-dice
+  covers: [cold-blooded--scope--psychology-test]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-lizardmen
+      profile_id: skink-priest
+      skill_ids: [mechanic.fears-fire]
+      main_weapon_id: weapon.stone-axe
+    second:
+      main_weapon_id: weapon.brazier-iron
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: False, state.failed_charges: [first], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+- audit_id: rule/trollheim/lustria-lizardmen/band--cold-blooded/unimplemented.lustria-lizardmen.band.cold-blooded
+  id: the-same-fear-test-without-the-band-rule-rolls-two-dice-and-fails
+  covers: [cold-blooded--scope--psychology-test]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

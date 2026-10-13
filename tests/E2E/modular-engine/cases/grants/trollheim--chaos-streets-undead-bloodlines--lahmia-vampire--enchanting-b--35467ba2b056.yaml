@@ -1,0 +1,139 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-undead-bloodlines/lahmia-vampire--enchanting-beauty/unimplemented.chaos-streets-undead-bloodlines.lahmia-vampire.enchanting-beauty
+# scaffold_fingerprint: 606525a764781c7eb37f222287931c3035499ec263010dcd946b75fae5dc3d11
+# authoring_status: AUTHORED
+# authoring_progress: the admitted enchanting-beauty clause carries 3 authored scenarios derived from the
+#   printed sentence and the modular consumer.  The blocker recorded here previously was FALSE and is
+#   corrected: the modifier IS applied - rounds.py's opponent-supplied Leadership step adds the tag
+#   condition.enchanting-beauty to a contacting enemy that is neither Undead nor Daemon, and
+#   modular/leadership.py consumes it as value = max(0, value - 1) on the Leadership the tested, contacting
+#   model actually rolls with (whether it rolls its own value or borrows a supplied leader's) - and the
+#   control-family witness builds the same rule from this band's own profile row.  Scenario 1 fails a
+#   contacting enemy's Stupidity test only because of that printed -1; scenario 2 runs the identical dice
+#   without the rule and the same total passes, which is what isolates the penalty; scenario 3 supplies the
+#   printed Undead exemption.  The bearer is the fixture carrying the canonical tag, because the band row
+#   only names and binds the profile's own rule.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: enchanting-beauty (scope: YES)
+# AUTHORED[enchanting-beauty]: 3 scenarios cover the printed passive penalty on the contacting enemy's own
+#   Leadership tests.  The register's "no consumer applies a Leadership modifier" was not correct: the
+#   modifier is applied in two consumed steps (rounds.py adds condition.enchanting-beauty to a contacting
+#   enemy that is neither nature.undead nor nature.daemon; leadership.py subtracts the one point, floored at
+#   zero, from the value that model tests with).  Scenario 1 declares a contacting enemy with Stupidity whose
+#   two dice total seven against its printed seven: that total passes unaided, so the failure recorded at
+#   state.second.stupidity_failed is the printed -1 at work.  Scenario 2 removes the rule and the identical
+#   total passes, which isolates it.  Scenario 3 tags the tested enemy nature.undead, the printed exemption,
+#   and the identical total passes again.  The register's own warning is respected: nothing here copies the
+#   Tomb Banshee Ghostly Howl (-D6 for Fear within six inches).  The charge test is deliberately not used,
+#   because the printed clause demands base contact and the charge is resolved before contact exists; the
+#   test exercised is one taken once contact is established.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/chaos-streets-undead-bloodlines/lahmia-vampire--enchanting-beauty/unimplemented.chaos-streets-undead-bloodlines.lahmia-vampire.enchanting-beauty
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-undead-bloodlines/special-rules.yaml
+# source_fingerprint:
+#   25ae34a5a18d46b3b250b9a1fce250a9d90e59d62f7170ff0e2b4e6e0c0bb115
+# source_sha256_at_generation:
+#   aaa7750bfbf16797ddd93878e0cd88fd550a10fdd09818c2cdb767f9356d47d2
+# Printed rule text:
+#   Any living enemy in base contact with the Lahmia Vampire suffers -1 Leadership. This has no effect on Undead or Daemons.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A charm-style effect: an opposing warrior must pass a Leadership test or is barred from attacking this warrior that round. Observable: a failed test blocks the opponent's attacks this round.
+# effect_id:
+#   (not recorded)
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"start of the combat phase against a supplied eligible opponent","resolution":"opponent Leadership test","recipient":"the opposing warrior","exceptions":"Undead, daemons/possessed and Psychology-immune models are unaffected"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Charm/control effect in the family of rounds.resolve_round's entranced branch, but the specific target qualification and the effect on the charm source differ (some are once-per-turn, some use the target's own Leadership only); a new branch is needed. The exact source-specific parameters are noted in the origin text and are not fully captured by an existing branch. Surface review warning: Do not copy Tomb Banshee Ghostly Howl (-D6 Leadership for Fear within 6 inches) into Enchanting Beauty: the printed latter is -1 Leadership to a living contacting enemy, excluding Undead and Daemons.
+
+# --- Authored scenarios ---
+# The printed -1 on the contacting living enemy: its own two dice total seven, which passes against its
+# printed seven unaided, so the failure recorded here is the penalty itself.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/lahmia-vampire--enchanting-beauty/unimplemented.chaos-streets-undead-bloodlines.lahmia-vampire.enchanting-beauty
+  id: the-printed-penalty-turns-a-passing-total-into-a-failure
+  covers: [enchanting-beauty]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.enchanting-beauty]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.stupidity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.stupidity.0, value: 3}
+    - {key: round.0.second.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.stupidity_failed: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: without the bearer's rule the identical total of seven is a pass, so the failure above is
+# attributable to the printed penalty and to nothing else.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/lahmia-vampire--enchanting-beauty/unimplemented.chaos-streets-undead-bloodlines.lahmia-vampire.enchanting-beauty
+  id: the-same-total-passes-without-the-rule
+  covers: [enchanting-beauty]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.stupidity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.stupidity.0, value: 3}
+    - {key: round.0.second.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.stupidity_failed: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption: "This has no effect on Undead or Daemons", so an Undead contacting enemy is not
+# penalised and the same total of seven passes.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/lahmia-vampire--enchanting-beauty/unimplemented.chaos-streets-undead-bloodlines.lahmia-vampire.enchanting-beauty
+  id: an-undead-contacting-enemy-keeps-its-printed-leadership
+  covers: [enchanting-beauty]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.enchanting-beauty]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [nature.undead, mechanic.stupidity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.stupidity.0, value: 3}
+    - {key: round.0.second.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.stupidity_failed: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

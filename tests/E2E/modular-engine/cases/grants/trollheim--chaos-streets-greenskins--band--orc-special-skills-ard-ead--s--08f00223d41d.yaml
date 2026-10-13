@@ -1,0 +1,174 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-ard-ead/skill.thick-skull
+# scaffold_fingerprint: 2bdd4478e298d956c8b4baf4e9161f63ffb5d062d84b035d722beb79ba92eb31
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries four authored scenarios derived from the
+# printed rule and the printed profile: this bearer's own 3+ stun save converts a Stunned injury
+# result on its threshold face and leaves it on one face below, the printed helmet raises that same
+# save to 2+, and a 1 on the raised save leaves the Stunned result standing with no helmet die in
+# the tape, so the strict tape itself shows the helmet's ordinary reaction never ran.  REVIEWED
+# still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenario(s) cover the clause: the printed 3+ save converts a Stunned result
+# on 3 and leaves it on 2; the helmet raises the same save to 2, and a failure on 1 leaves the
+# bearer Stunned with the helmet's own reaction absent from the tape.  The Chaos Streets greenskin
+# Word 'Ard Ead binds the same operator as the dwarf Thick Skull records.
+# origin_id:
+#   rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-ard-ead/skill.thick-skull
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-greenskins/special-rules.yaml
+# source_fingerprint:
+#   588aead1708ea17a59fa10cf6f253ddc7c64cacff5aba771a2c4a7b86870db26
+# source_sha256_at_generation:
+#   1b19dcf625dc2c081e181903a0b5187e723a29d16860685568c19f6e1b964ef4
+# Printed rule text:
+#   This warrior has a 3+ save on a D6 to avoid being Stunned. If the save is successful, treat the Stunned result as Knocked Down instead. If the warrior is also wearing a helmet, this save is 2+ instead of 3+; this replaces the helmet's normal special rule.
+# Semantic contract (check analysis_status before treating as accepted):
+#   3+ on a D6 to convert Stunned into Knocked Down; with a helmet 2+, replacing the helmet rule; observable: the bearer converts a stunned result on the stated threshold and only one conversion die is rolled.
+# effect_id:
+#   skill.thick-skull
+# relation:
+#   equivalent
+# parameters:
+#   {"stun_save":3,"with_helmet":2,"replaces_helmet_rule":true}
+# conditions:
+#   {"trigger":"resolved Stunned injury result only","recipient":"this bearer"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   One shared operator for greenskin and dwarf Word of the same printed rule; the dwarf records print 'Thick Skull' and the greenskin 'Ard Ead, both binding skill.thick-skull. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Chaos Streets greenskins' 'Ard Ead copy; the stun save and helmet variant are individual injury effects.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Selectively verified equivalence: {"review_file":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","verified_family":"skill.thick-skull","verified_peer_keys":[{"origin_id":"rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-thick-skull/skill.thick-skull","clause_id":"thick-skull-save"},{"origin_id":"rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-thick-skull/skill.thick-skull","clause_id":"helmet-improves-to-two"},{"origin_id":"rule/mordheim/black-orcs/band--black-orc-special-skills-ard-ead/skill.thick-skull","clause_id":"whole"},{"origin_id":"rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-thick-skull/skill.thick-skull","clause_id":"whole"},{"origin_id":"rule/mordheim/dwarf-rangers/band--dwarf-special-skills-thick-skull/skill.thick-skull","clause_id":"whole"},{"origin_id":"rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull/skill.thick-skull","clause_id":"whole"},{"origin_id":"rule/mordheim/orc-mob/band--orc-special-skills-ard-ead/skill.thick-skull","clause_id":"whole"},{"origin_id":"rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull/skill.thick-skull","clause_id":"whole"},{"origin_id":"rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-ard-ead/skill.thick-skull","clause_id":"whole"},{"origin_id":"source/catalog/rules/special-rules.yaml/shared-rule.thick-skull/unclassified","clause_id":"whole"},{"origin_id":"rule/mordheim/sons-of-hashut/band--chaos-dwarfs-special-skills-thick-skull/skill.thick-skull","clause_id":"stun-to-knocked-down-on-three"},{"origin_id":"rule/mordheim/sons-of-hashut/band--chaos-dwarfs-special-skills-thick-skull/skill.thick-skull","clause_id":"helmet-improves-to-two-and-replaces"},{"origin_id":"rule/catalog/warband/skill.thick-skull/unclassified","clause_id":"stun-to-knocked-down-on-three"},{"origin_id":"rule/catalog/warband/skill.thick-skull/unclassified","clause_id":"helmet-improves-to-two-and-replaces"},{"origin_id":"mechanic/skill.thick-skull","clause_id":"stun-to-knocked-down-on-three"},{"origin_id":"mechanic/skill.thick-skull","clause_id":"helmet-improves-to-two-and-replaces"}],"sharing_boundary":"One Stunned-to-Knocked-Down conversion at 3+, improved to 2+ by a helmet instead of a second helmet roll. Split rows retain only their own threshold/replacement facet; not an alternate Injury chart.","evidence":"inspection","limit":"Only this closed selection was checked. No acceptance of the entire review, KB activation, implementation closure or execution evidence."}
+
+# --- Authored scenarios ---
+# Family model ('Ard Ead stun save, Chaos Streets printing): the bearer is the printed recipient of
+# this band record, built from its own band and profile and selecting the band rule row named in the
+# audit id, so the granted effect is what the scenario exercises.  Its physical characteristics are
+# supplied as fixture facts (WS3 S3 T3 W1 I2 A1) so the dice thresholds and the strike order are
+# fixed, while its printed Leadership stays in place; the bearer's own attack pool is declared empty
+# because a Stunned or Knocked Down bearer contributes no attack of its own.  Every expectation is
+# read from the printed rule (3+ save, Stunned becomes Knocked Down, helmet improves the save to 2+
+# instead of the helmet's own rule) and the recorded parameters, never from engine output; the roll
+# tape is derived statically and stays unexecuted.
+
+# The bearer's printed 3+ save is taken on the injury chart's Stunned result and the three is the
+# threshold face itself, so the Stunned outcome is converted to Knocked Down.
+- audit_id: rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-ard-ead/skill.thick-skull
+  id: the-printed-three-converts-the-stun
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: orc-boss
+      special_rule_ids: [band--orc-special-skills-ard-ead]
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+    - {key: round.0.first.attack.0.thick-skull, value: 3}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed threshold: the save fails and the Stunned result stands.
+- audit_id: rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-ard-ead/skill.thick-skull
+  id: one-face-below-the-printed-threshold-stays-stunned
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: orc-boss
+      special_rule_ids: [band--orc-special-skills-ard-ead]
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+    - {key: round.0.first.attack.0.thick-skull, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed helmet sentence: the same save becomes 2+, so the die that failed above now converts.
+- audit_id: rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-ard-ead/skill.thick-skull
+  id: the-helmet-raises-the-save-to-two
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: orc-boss
+      special_rule_ids: [band--orc-special-skills-ard-ead]
+      main_weapon_id: weapon.axe
+      defence_ids: [defence.helmet]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+    - {key: round.0.first.attack.0.thick-skull, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The replacing half of the printed helmet sentence: a helmeted bearer whose raised save fails on 1
+# stays Stunned, and the strict tape holds no helmet reaction die at all, so the helmet's own rule
+# is not resolved as well as this save.
+- audit_id: rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-ard-ead/skill.thick-skull
+  id: the-helmet-reaction-is-replaced-not-added
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: trollheim
+      band_id: chaos-streets-greenskins
+      profile_id: orc-boss
+      special_rule_ids: [band--orc-special-skills-ard-ead]
+      main_weapon_id: weapon.axe
+      defence_ids: [defence.helmet]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+    - {key: round.0.first.attack.0.thick-skull, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

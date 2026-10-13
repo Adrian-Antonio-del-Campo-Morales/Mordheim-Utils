@@ -1,0 +1,94 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.regeneration-blocked-by-blessed
+# scaffold_fingerprint: df9dd0a1dbf69df4d8dc47cee5edace5c5548a4b438b4737c4883c376ea8c0da
+# authoring_status: PARTIAL
+# authoring_progress: the admitted clause is PARTIAL. Two scenarios evidence the boundary the contract actually implements: the same blocked-by-blessed flag leaves an ordinary attack's Regeneration roll fully intact (taken and then either good or bad). The printed core, a blessed attack preventing that roll, has no admitted build source for the attack.blessed tag (see the clause note below). REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: blessed-attacks-block-regeneration (scope: YES)
+# PARTIAL[blessed-attacks-block-regeneration]: the flag the clause needs is representable; the attack it must meet is not. The defender's flag is supplied exactly as the printed clause states it, through the combat trait regeneration_blocked_by_blessed (compiler.py:559, contracts.py:63), and the executor's consumer is the blocking term of prepare_special_save_context (contexts.py:408-414): with the flag set and attack.blessed on the incoming effect the Regeneration die is never requested. No admitted build source grants attack.blessed, so no corpus configuration can produce that incoming effect: a case-insensitive search of the whole repository finds the tag only as data for the consumer (phases.py/vectorized) and as a direct benchmark injection in the combat-lab CLI (apps/combat-lab/mordheim_combat_lab/cli/scenarios.py:401, first_attack_tags=('attack.blessed',), asserted in tests/python/cli/test_benchmarking.py:101), while the corpus builds every effect through the compiler from catalogue ids this repository does not contain for that tag. What IS authorable, and is authored below, is the boundary the same code path draws: the flag alone does not touch an unblessed attack, whose Regeneration die is requested and resolves normally. Missing datum: a selectable catalogue source of attack.blessed (or a supplied-input route for effect tags) so the blocked branch can be configured.
+# origin_id:
+#   mechanic/skill.regeneration-blocked-by-blessed
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   43eb3ea2adc5b8646051486f424c9349c5d2eab0cce7bf1898b8a284d95d5491
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Blessed attacks prevent the warrior's Regeneration roll.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Blessed attacks prevent the warrior's regeneration roll; observable: no regeneration roll against a blessed attack.
+# effect_id:
+#   skill.regeneration-blocked-by-blessed
+# relation:
+#   equivalent
+# parameters:
+#   {"blocked_by":"attack.blessed"}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed as the blocked flag on the special save, which is combined with the fire blocking where the source declares both.
+
+# --- Authored scenarios ---
+# The boundary of the printed rule, from the blocker's own flag: the defender carries the
+# regeneration trait together with the blocked-by-blessed flag, and the ordinary mace blow
+# is not a blessed attack.  The Regeneration die is therefore requested as usual and the
+# declared four on a 4+ special save takes the wound back.  The save is reached after the
+# armour step (none is carried) and before any damage is applied, so the defender keeps
+# both Wounds, and its own declared To Hit one misses.
+- audit_id: mechanic/skill.regeneration-blocked-by-blessed
+  id: the-blocked-flag-leaves-an-unblessed-attack-s-regeneration-intact
+  covers: [blessed-attacks-block-regeneration]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {regeneration_save: 4, regeneration_blocked_by_blessed: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.regeneration, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.saved: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same flag and the same unblessed attack with a failing Regeneration die: the die is
+# still the one that decides, so the wound stands and the defender drops to one Wound.
+- audit_id: mechanic/skill.regeneration-blocked-by-blessed
+  id: the-same-flag-still-lets-a-failed-regeneration-die-stand
+  covers: [blessed-attacks-block-regeneration]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {regeneration_save: 4, regeneration_blocked_by_blessed: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.regeneration, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

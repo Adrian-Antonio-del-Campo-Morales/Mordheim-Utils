@@ -101,6 +101,10 @@ default backend.
    the coordinator owns the maintained semantic CSV, shared states and
    reservations unless ownership is explicitly delegated. Generated audit CSVs
    are snapshots, not the place to store durable interpretation.
+   Re-read the complete live register immediately before updating it; never
+   rebuild it from HEAD or an assignment subset. Validate conservation of all
+   historical keys before replacing the file, refuse concurrent input changes,
+   and preserve unassigned rows. The current baseline is 4,556 clauses.
 
 Scripts may serialize explicit decisions and check format, coverage, hashes
 or references. **Do not use scripts, keyword classifiers, bulk helpers or

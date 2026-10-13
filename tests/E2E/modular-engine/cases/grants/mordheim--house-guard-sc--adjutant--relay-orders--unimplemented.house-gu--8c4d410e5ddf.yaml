@@ -1,0 +1,44 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/house-guard-sc/adjutant--relay-orders/unimplemented.house-guard-sc.adjutant.relay-orders
+# scaffold_fingerprint: 00bb1bfe9be698d66885395fbbd11c81ed40183513bb746cf85779b77c873ed2
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is authorable from this file's recorded evidence.  The clause is a parameterised variant of the leader-radius operator whose declared condition needs TWO supplied providers at once - the leader whose Leadership is borrowed and the Adjutant whose six-inch radius relays it - while every accepted case in this family supplies exactly one nearby provider (the wizened-halfling and leader-six cases).  A tape written on one provider would assert a relay it cannot distinguish from the direct borrow.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: relay-orders (scope: YES)
+# PARTIAL[relay-orders]: [B] pending an accepted duel-context shape for a relayed borrow - a supplied leader plus a supplied Adjutant within the printed six inches, with the recipient standing at the distance the relay (not the leader) covers.  The printed Battle Tongue upgrade to twelve inches is a second supplied distance on the same variant and needs the same shape; until it exists, asserting the borrow would not distinguish the relay from a direct leader radius.
+# origin_id:
+#   rule/mordheim/house-guard-sc/adjutant--relay-orders/unimplemented.house-guard-sc.adjutant.relay-orders
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/house-guard-sc/special-rules.yaml
+# source_fingerprint:
+#   49e8745d107cf724b84e382025a264234dc78c92f070ac2ea11ca5695d8fa569
+# source_sha256_at_generation:
+#   e5c69a07198d5bbedc9d98c4d0518cf6e5b4a9992ece3ae1141d2c96a0564fbd
+# Printed rule text:
+#   As long as the Adjutant is able to use his leader's Leadership, any warrior within 6 inches of the Adjutant may use the leader's Leadership instead of his own. The Adjutant may take the Battle Tongue skill to increase his range to 12 inches.
+# Semantic contract (check analysis_status before treating as accepted):
+#   As long as the Adjutant can use his leader's Leadership, warriors within 6 inches of the Adjutant may use the leader's Leadership. Observable: a supplied relay extends the leader borrow.
+# effect_id:
+#   mechanic.leader-six
+# relation:
+#   parameterized_variant
+# parameters:
+#   {"relay":"Adjutant"}
+# conditions:
+#   {"trigger":"a supplied leader and a supplied Adjutant within 6 inches"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Two-hop Leadership relay; the consumer only does a single hop, so the relay needs a new branch.
+
+[]  # Empty scenario list: this file contributes no test or coverage.

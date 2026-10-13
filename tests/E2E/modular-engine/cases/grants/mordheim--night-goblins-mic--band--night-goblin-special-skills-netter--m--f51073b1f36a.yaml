@@ -1,0 +1,118 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/night-goblins-mic/band--night-goblin-special-skills-netter/mechanic.netter
+# scaffold_fingerprint: 6084bb4767537df68bf9a2f0c0ebc54c7eaec46af441507bab226130803d5712
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed
+# rule, this band's own binding (special-rules.yaml id band--night-goblin-special-skills-netter) and
+# the shared operator in cases/mechanics/mechanic.netter.yaml: the printed success branch, in which a
+# declared net charge hits, the target fails its Strength escape test, counts as knocked down and is
+# hit automatically with a wound roll still required, and the control, in which the same charge
+# without the band rule asks for no net die at all.  The scope-NO failed-charge movement sentence stays
+# outside the duel.  REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the declared net charge of this band's Netter.  In the success
+# branch the net's own Ballistic Skill die of 4 hits (the admitted Night Goblin profile supplies BS 3,
+# so the net's target is 4+), the target fails the printed Strength escape test on a 4 against its
+# Strength 3, and the target then counts as Knocked Down and is hit automatically: no To Hit die is
+# requested and the wound is still rolled, which is the printed "must still roll to wound just as with
+# a knocked down enemy".  The control repeats the identical charge on the same profile build without
+# the band netter rule and the tape carries no net die, so the net step is the rule's own.  The
+# printed recovery phase (the netted warrior cuts itself free, does nothing else and strikes last) is
+# the ordinary knocked-down/stood-up handling that the clause itself cites.  REVIEWED still requires
+# manual semantic review.
+# origin_id:
+#   rule/mordheim/night-goblins-mic/band--night-goblin-special-skills-netter/mechanic.netter
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/night-goblins-mic/special-rules.yaml
+# source_fingerprint:
+#   0b83a4d5fc97aeb4ed210327b39faf514563dc80fd825485fd7150a6a006da8f
+# source_sha256_at_generation:
+#   a843f725241c4688886b4341de6bcc67ef0d34cf7ef776b2affacf24bcfe7387
+# Printed rule text:
+#   The goblin is adept at using a net to disable his enemies. They learn their skill hunting wild cave squigs in the depths of the mountains. The technique he has mastered is 'chuck and charge'. The goblin may declare that he is making a net charge. He throws the net at a target in the same way as described in the Mordheim rulebook. If he hits and the target fails to escape the net then target counts as knocked down and the goblin completes his charge. If he misses or the target escapes then the goblin makes a failed charge. If the failed charge would take him into base contact then stop him 1" away. A warrior who is caught in a net will be automatically hit in combat. The goblin must still roll to wound just as with a knocked down enemy. In the warrior's next recovery phase, unless he is stunned or out of action he will cut himself out of the net but cannot do anything else and will go last in combat just as if he had stood up from being knocked down.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The goblin may declare a net charge: on a hit and a failed escape the target counts as knocked down and is hit automatically in combat with a normal wound roll, and in his next recovery phase he cuts himself free, cannot do anything else and goes last as if he had stood up. Closure: a netted target is knocked down and automatically hit, and its recovery phase is spent freeing itself with the strikes-last penalty.
+# effect_id:
+#   mechanic.netter
+# relation:
+#   equivalent
+# parameters:
+#   {"consequence": "target knocked down", "escape_test": "Strength", "hit": "ballistic skill", "recovery": "cuts free next recovery phase, strikes last"}
+# conditions:
+#   {"recipient": "Night Goblin"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared netter operator. The failed-charge movement sentence of the same printed text (stopping 1 inch short) is analysed with the mechanic origin and stays excluded as movement. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"mechanic.netter","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare target identities, psychology/animal exceptions, test dice, phase, failure consequence and duration. Charge refusal, inability to attack and loss of one attack are distinct; Crude Belch may remove the only attack. Keep supplied individual consequences separate from group emission.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, this band's printed binding and the shared netter operator; no engine
+# output was consulted.  The netter fixture is the printed Night Goblin profile that carries the rule,
+# with its own characteristics declared except Ballistic Skill, which the profile supplies.
+- audit_id: rule/mordheim/night-goblins-mic/band--night-goblin-special-skills-netter/mechanic.netter
+  id: a-hit-net-knocks-the-target-down-and-the-charge-strikes-home
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: night-goblins-mic
+      profile_id: night-goblins
+      special_rule_ids: [band--night-goblin-special-skills-netter]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.netter.hit, value: 4}
+    - {key: round.0.first.netter.escape, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+  expect_rounds:
+    0: {attacks.0.knocked_down_target: true, attacks.0.wounded: true, state.second.condition: KNOCKED_DOWN,
+        state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.netter.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.netter.escape, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 6}
+- audit_id: rule/mordheim/night-goblins-mic/band--night-goblin-special-skills-netter/mechanic.netter
+  id: without-the-band-netter-rule-the-charge-asks-for-no-net-die
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: night-goblins-mic
+      profile_id: night-goblins
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.knocked_down_target: false, state.second.condition: STANDING,
+        state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}

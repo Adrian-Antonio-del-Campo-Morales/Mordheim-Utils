@@ -1,0 +1,169 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons
+# scaffold_fingerprint: 5daf7a4fdfdbe142ef943e21082ac969c020281263676a2c1d010725b47b9f31
+# authoring_status: AUTHORED
+# authoring_progress: 4 authored scenario(s) in this file; the admitted whole clause carries the printed
+#   recipients, the printed items and the printed bound, all read from the sources and not from the current
+#   implementation.  RECIPIENTS: the printed sentence is "Trackers only", and the recorded contract's
+#   condition is {"recipient":"trackers","max_missile_weapons":5,"control":2}; the boundary is therefore the
+#   band's own hero ranks, and the refusal half builds big-boss (a printed hero of the same band that is not
+#   a Tracker) selecting the rule.  ITEMS: the band's own hero equipment list
+#   (bands/trollheim/lustria-savage-goblins/equipment-access.yaml, savage-goblin-hero-equipment-list)
+#   offers dagger, club, sword, spear, halberd, great_weapon, short_bow, bolas, javelin, shrunken_head,
+#   blowpipe, shield and light_armour for a Tracker; of those, the shared missile reading counts
+#   short_bow (catalogue row: kind ranged-weapon, tag bow) and javelin (catalogue row: kind ranged-weapon,
+#   tag thrown) because itemIsMissile() counts kind ranged-weapon and any of the bow/crossbow/blackpowder/
+#   thrown tags.  bolas is a catalogue out-of-scope row with no ranged kind or tag and shrunken_head/blowpipe
+#   are recorded out-of-scope/trollheim equipment, so none of them is counted.  BOUND: five, taken from the
+#   printed clause ("up to five missile weapons instead of the usual two") and from the register's
+#   max_missile_weapons:5, not from compiler.py; the ordinary control of two is what the clause replaces
+#   ("the usual two", register control:2).
+#   FRONTIER AND CONTROL: five counted units are admitted, six are refused, and the same three-unit kit is
+#   refused for the same profile without the ability, which is the printed "usual two" the clause enlarges.
+#   All three faces are declared through the possession channel (FighterBuild.owned_item_ids) that the clause
+#   governs, and the refusals are declared as expect_error over the shared excess-weapons refusal contract of
+#   _eligibility.js::equipmentSetIssues (the same message family the snotlings shoota-teams file asserts:
+#   "${band}/${profile} carries ${counted} missile weapons; the printed clause allows ${maximum}" plus
+#   " besides ..." only when the bound exempts items, which this one does not).
+#   ENGINE DEFECT THE REFUSALS DETECT (recorded, not hidden, and not a reason to withhold the scenarios):
+#   1. the rule's own binding carries no parameters at all
+#      (sources/knowledge/bands/trollheim/lustria-savage-goblins/special-rules.yaml, rule
+#      band--savage-goblin-special-skills-master-of-throwing-weapons: `binding: {kind: compiler,
+#      id: compiler.master-of-throwing-weapons}` with no `parameters`), so the printed five never reaches
+#      `max_missile_weapons`;
+#   2. `profileFactsProjection` reads `binding.parameters["max_missile_weapons"]` only inside its
+#      `binding.id === "profile.equipment-restrictions"` branch, so a bound published on a compiler-contract
+#      binding could not be projected even if it were declared;
+#   3. the ordinary baseline of two is published nowhere: `bandEquipmentLimits` reads band-grant rules only
+#      (this rule's grant is `selectable`) and no KB row carries a baseline `max_missile_weapons: 2`, so the
+#      usual two exists today only as `CompiledFighter.missile_weapon_limit`'s default.
+#   Consequence: the accepted routing of this origin (compiler.py::compile_fighter and
+#   contracts.py::COMPILER_CONTRACTS) sets CompiledFighter.missile_weapon_limit to 5 or 2, and no
+#   construction-stage diagnostic for the possession bound is produced.  The value is nevertheless decided by
+#   the rule, the violating inputs are declarable through owned_item_ids, and the refusal diagnostic family is
+#   established, so the boundary is authored as the behaviour the finished engine must show; it is not
+#   rewritten as "unobservable".  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the printed allowance has three reachable faces and all three are authored.  (1) The
+#   recipient face: selecting the rule is admitted for a Tracker (the printed recipient) and refused for
+#   big-boss, the band's own hero that is not one, which the shared stage answers with
+#   `special rule is not available to <band>/<profile>: <rule id>` from specialRuleRestriction's recipients
+#   stage over rule.eligibility = [trackers].  (2) The possession face: a Tracker carrying five counted
+#   missile weapons is admitted at construction, which is the printed five, and one carrying six is refused as
+#   an excess over that same printed bound.  (3) The ordinary control: the same profile without the ability
+#   carrying three counted missile weapons is refused, which is the printed "usual two" the clause replaces,
+#   so the admission of five is shown to be an enlargement rather than a vacuous allowance.  The kit channel
+#   (FighterBuild.owned_item_ids) is the possession route the clause governs: possession and the active
+#   loadout are distinct, and a carried bound is not observable from the hand slots.  The three engine gaps
+#   that keep the refusals from firing today are named in authoring_progress; they are the defect these
+#   scenarios are written to detect, not a reason to drop the requirement.
+# origin_id:
+#   rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-savage-goblins/special-rules.yaml
+# source_fingerprint:
+#   327414888edf4bbfac2064ae2359d03eade85cb74a2f0c533338b8c97e9804e4
+# source_sha256_at_generation:
+#   84746d9c2e37bfd46fb68ab1b459a9ab5317d55037c20eb6197fbd206ca12c00
+# Printed rule text:
+#   Trackers only. The Hero may carry up to five missile weapons instead of the usual two.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Possession bound: a Tracker may carry up to five missile weapons instead of the usual two.
+# effect_id:
+#   compiler.master-of-throwing-weapons
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipient":"trackers","max_missile_weapons":5,"control":2}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The compiled value five replaces the ordinary control two.
+
+# --- Authored scenarios ---
+# Derived from the printed clause, the recorded contract and the band's own profile and equipment-list
+# rows; no engine output was consulted.  Both fighters declare zero attacks in the admission scenario,
+# so the observation is the acceptance itself and no shooting consequence is asserted.
+
+- audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons
+  id: the-tracker-is-admitted-with-five-carried-missile-weapons
+  covers: [whole]
+  # The printed allowance is the required behaviour: a Tracker carrying five missile weapons is
+  # admitted at construction (the ordinary control of two would refuse the third unit).  Every carried
+  # id is on the profile's own hero equipment list, and the carried channel is where a possession bound
+  # is read.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      special_rule_ids: [band--savage-goblin-special-skills-master-of-throwing-weapons]
+      owned_item_ids: [short_bow, short_bow, short_bow, javelin, javelin]
+    second:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      owned_item_ids: [short_bow]
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_initial: {first.attacks: 0, second.attacks: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons
+  id: a-tracker-carrying-six-missile-weapons-exceeds-the-printed-five
+  covers: [whole]
+  # One counted unit above the printed allowance.  The shared excess-weapons refusal for a
+  # profile-scoped possession bound is "${band}/${profile} carries ${n} missile weapons; the printed
+  # clause allows ${maximum}." and this bound exempts no item, so the message ends at the bound.  Both
+  # carried ids are on the Tracker's own list (short_bow and javelin), so no earlier offered-set
+  # refusal can stand in for this one.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      special_rule_ids: [band--savage-goblin-special-skills-master-of-throwing-weapons]
+      owned_item_ids: [short_bow, short_bow, short_bow, javelin, javelin, javelin]
+  expect_error: "lustria-savage-goblins/trackers carries 6 missile weapons; the printed clause allows 5."
+
+- audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons
+  id: a-tracker-without-the-ability-is-refused-at-three-missile-weapons
+  covers: [whole]
+  # The ordinary control the printed clause enlarges: the same profile, the same carried units and no
+  # ability selected, so the "usual two" applies and the third counted unit exceeds it.  This is the
+  # boundary the clause's own sentence fixes ("instead of the usual two", register control:2).
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: trackers
+      owned_item_ids: [short_bow, short_bow, javelin]
+  expect_error: "lustria-savage-goblins/trackers carries 3 missile weapons; the printed clause allows 2."
+
+- audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-master-of-throwing-weapons/mechanic.master-of-throwing-weapons
+  id: a-hero-of-the-band-that-is-not-a-tracker-may-not-take-the-allowance
+  covers: [whole]
+  # "Trackers only" is the printed narrowing: the same band's Big Boss is not a recipient of the rule,
+  # so selecting it is refused before any possession question is asked.
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-savage-goblins
+      profile_id: big-boss
+      special_rule_ids: [band--savage-goblin-special-skills-master-of-throwing-weapons]
+  expect_error: "special rule is not available to lustria-savage-goblins/big-boss: band--savage-goblin-special-skills-master-of-throwing-weapons"

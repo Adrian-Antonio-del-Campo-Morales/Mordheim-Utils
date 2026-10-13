@@ -1,0 +1,122 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/general/skill.jump-up/skill.jump-up
+# scaffold_fingerprint: d1b89a40ac9cd464b1fc4da77993fc80e68236141aeedb6e7daf4296eba61cca
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: ignores-knocked-down-results (scope: YES)
+# AUTHORED[ignores-knocked-down-results]: 1 scenario shows the ignored
+#   Knocked Down result leaving the warrior standing.
+# origin_id:
+#   rule/catalog/general/skill.jump-up/unclassified
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/skills/general.yaml
+# source_fingerprint:
+#   8c43b5f586528d4b3696ba76fb12b09581a247214f5b035bfdc294dbb63aa87a
+# source_sha256_at_generation:
+#   16b13d23ef1660c8a2c3edd4647a196146bdf006873e80e98d4d110b8bd2510c
+# Printed rule text:
+#   Ignores knocked-down Injury results, except those caused by No Pain or a successful helmet save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Knocked-down injury results are ignored, except those caused by No Pain or a successful helmet save; observable: the fighter stands up immediately after such an injury.
+# effect_id:
+#   skill.jump-up
+# relation:
+#   equivalent
+# parameters:
+#   {"ignores_knocked_down":true}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed as the jump-up flag, which returns the fighter to standing only when the knocked-down result did not come from No Pain; the helmet exception noted in the print is not reachable through this flag, because a helmet converts Stunned into Knocked Down, which this skill then cancels. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"ignores-knocked-down-results","audit_group":"EQ-skill.jump-up","verified_facet":"jump-up/knocked-down","relationship":"shared_facet","boundary":"Ordinary Knocked Down only. Keep No Pain and successful helmet conversion exceptions; not immunity to Stunned or a rescue from Out of Action.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+#
+# Clause: not-after-no-pain (scope: YES)
+# AUTHORED[not-after-no-pain]: 1 scenario shows the printed exclusion: a
+#   Knocked Down caused by No Pain is not ignored.
+# origin_id:
+#   rule/catalog/general/skill.jump-up/unclassified
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/skills/general.yaml
+# source_fingerprint:
+#   8c43b5f586528d4b3696ba76fb12b09581a247214f5b035bfdc294dbb63aa87a
+# source_sha256_at_generation:
+#   16b13d23ef1660c8a2c3edd4647a196146bdf006873e80e98d4d110b8bd2510c
+# Printed rule text:
+#   Ignores knocked-down Injury results, except those caused by No Pain or a successful helmet save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A knocked-down result produced by the No Pain conversion is not ignored; observable: the bearer stays knocked down in that case.
+# effect_id:
+#   skill.jump-up
+# relation:
+#   equivalent
+# parameters:
+#   {"excluded_cause":"no-pain"}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#    Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"not-after-no-pain","audit_group":"EQ-skill.jump-up","verified_facet":"jump-up/no-pain-exception","relationship":"shared_facet","boundary":"Exception facet only; a No Pain conversion stays Knocked Down. The successful helmet exception remains part of the printed full rule.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# The canonical general-skill wording is the text every band projection quotes,
+# so both admitted clauses are evidenced on the shared operator: the ignored
+# ordinary Knocked Down and the printed No Pain exclusion.
+# The printed one-two band is Knocked Down, and this skill ignores that result: the
+# warrior is still standing and the ordinary chart face never lands.
+- audit_id: rule/catalog/general/skill.jump-up/skill.jump-up
+  id: a-knocked-down-result-leaves-him-standing
+  covers: [ignores-knocked-down-results]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.jump-up]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# No Pain turns the printed Stunned into Knocked Down, and the source excludes exactly
+# that cause: the warrior is left Knocked Down even though he carries the skill.
+- audit_id: rule/catalog/general/skill.jump-up/skill.jump-up
+  id: no-pain-s-knock-down-is-not-ignored
+  covers: [not-after-no-pain]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.jump-up, skill.ignore-pain]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

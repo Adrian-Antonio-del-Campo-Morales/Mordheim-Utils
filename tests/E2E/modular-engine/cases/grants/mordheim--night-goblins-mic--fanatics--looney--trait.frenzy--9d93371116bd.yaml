@@ -1,0 +1,181 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/night-goblins-mic/fanatics--looney/trait.frenzy
+# scaffold_fingerprint: 686650a721b187d0329a344f27ce927b67cf23f9eab7df736511751f6cf122ce
+# authoring_status: AUTHORED
+# authoring_progress: the admitted frenzy clause carries 4 authored scenarios for the family model derived
+#   from the printed rule and the recorded semantic contract: doubled attacks while frenzied, the
+#   ordinary Fear test of a received charge skipped, the Stupidity test auto-passed, and Frenzy lost to
+#   the injury that knocks the bearer down.  The co-printed after-battle damage test is a separate,
+#   excluded clause and is not asserted.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: frenzy (scope: YES)
+# AUTHORED[frenzy]: 4 scenario(s) cover the clause: the doubled attack count the round's dice consume,
+#   the skipped round.0 fear dice of a received charge, the auto-passed Head Injury Stupidity test, and
+#   the frenzy flag the knock-down injury clears, which the later round does not regrant when the
+#   bearer stands up.  The compulsory spatial charge, a parry prohibition and the Animosity subsystem
+#   are not asserted.
+# origin_id:
+#   rule/mordheim/night-goblins-mic/fanatics--looney/trait.frenzy
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/night-goblins-mic/special-rules.yaml
+# source_fingerprint:
+#   a27c1fcbeb73c08555b27e78aff344cf9289d5014e664e3c6830449989b16e05
+# source_sha256_at_generation:
+#   a843f725241c4688886b4341de6bcc67ef0d34cf7ef776b2affacf24bcfe7387
+# Printed rule text:
+#   Due to the effect of the Mushrooms he is subject to frenzy.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The mushrooms making this warrior subject to frenzy is an admitted lasting individual psychology state; the after-battle damage test belongs to its own separated clause. Printed clause: Due to the effect of the Mushrooms he is subject to frenzy.
+# effect_id:
+#   trait.frenzy
+# relation:
+#   equivalent
+# parameters:
+#   {"value":true}
+# conditions:
+#   {"trigger":"duel start and while standing","resolution":"state.initialize_fighter sets the frenzy flag; the attack pool doubles it","consequence":"doubled attacks, fear skipped, stupidity auto-passed, must charge","recipient":"this warrior","duration":"whole duel while standing","stacking":"not cumulative","exceptions":"suppressed on a Psychology-immune warrior unless an express source exception (Slayer condition) applies; frenzy suppresses kindred hatred"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Frenzy clause of a compound record (mushroom-induced). Printed text also forces a post-battle permanent-damage test, recorded separately. Scope review integration: {"clause_id":"frenzy","review_clause_id":"frenzy","source_state":"matched","review_status":"reviewed","scope_reason":"The mushrooms making this warrior subject to frenzy is an admitted lasting individual psychology state; the after-battle damage test belongs to its own separated clause.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Frenzy: this warrior doubles its Attacks, is immune to Psychology (skips Fear and automatically passes Stupidity) and must charge when able; it may not parry. Observable: attacks = twice the profile value and no fear or stupidity test resolves for this warrior.","effect_id":"trait.frenzy","relation":"equivalent","parameters":"{\"value\":true}","conditions":"{\"trigger\":\"duel start and while standing\",\"resolution\":\"state.initialize_fighter sets the frenzy flag; the attack pool doubles it\",\"consequence\":\"doubled attacks, fear skipped, stupidity auto-passed, must charge\",\"recipient\":\"this warrior\",\"duration\":\"whole duel while standing\",\"stacking\":\"not cumulative\",\"exceptions\":\"suppressed on a Psychology-immune warrior unless an express source exception (Slayer condition) applies; frenzy suppresses kindred hatred\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/state.py::initialize_fighter\",\"packages/python/combat-engine/mordheim_combat/modular/psychology.py::resolve_stupidity\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"C05-frenzy","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/state.py::initialize_fighter\"]"},"inherited_clause_text":"Due to the effect of the Mushrooms he is subject to frenzy. He must also test for permanent damage after the battle as described in the rulebook.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"trait.frenzy","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact supplied/rolled state, trigger, frequency, duration, termination and attack-count contribution. Permanent and conditional Frenzy, +1 Attack and doubling are different. Do not implement group creation, movement or campaign tables merely to supply an individual state.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: after-battle-damage (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/night-goblins-mic/fanatics--looney/trait.frenzy
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/night-goblins-mic/special-rules.yaml
+# source_fingerprint:
+#   a27c1fcbeb73c08555b27e78aff344cf9289d5014e664e3c6830449989b16e05
+# source_sha256_at_generation:
+#   a843f725241c4688886b4341de6bcc67ef0d34cf7ef776b2affacf24bcfe7387
+# Printed rule text:
+#   He must also test for permanent damage after the battle as described in the rulebook
+# Semantic contract (check analysis_status before treating as accepted):
+#   (not recorded)
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Post-battle Serious Injuries test is campaign resolution, permanently outside the duel; no consumer assigned.
+
+# --- Authored scenarios ---
+# Family model (Frenzy granted by the Looney's mushrooms): the bearer is Frenzied from
+# duel start (doubled attacks, psychology exemption), takes no Fear test for the charge
+# it receives, and loses Frenzy when an injury knocks it down; standing up does not
+# regrant it.  Attack order follows core/combat-order: a charge and any strike-first
+# effect share the top tier before ordinary Initiative, resolved within the tier by
+# Initiative, and a warrior that stood up strikes last in that turn only.  This profile's
+# printed starting skill Always Strikes First is a strike-first effect, so the bearer
+# shares the top tier with the charger and its higher Initiative resolves first; the same
+# ability overrides the standing-up penalty in round 1.  The band's printed Animosity rule
+# is implemented, so the bearer tests on its own turn and a 3 passes the printed 1-fails band.
+
+- audit_id: rule/mordheim/night-goblins-mic/fanatics--looney/trait.frenzy
+  id: a-frenzied-looney-strikes-twice-with-its-single-profile-attack
+  covers: [frenzy]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: night-goblins-mic, profile_id: fanatics}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/night-goblins-mic/fanatics--looney/trait.frenzy
+  id: a-frenzied-looney-takes-no-fear-test-for-the-charge-it-receives
+  covers: [frenzy]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: night-goblins-mic, profile_id: fanatics}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: true, state.second.fear_hit_sixes: false, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/night-goblins-mic/fanatics--looney/trait.frenzy
+  id: a-frenzied-looney-auto-passes-the-head-injury-stupidity-test
+  covers: [frenzy]
+  fighters:
+    first: {collection: mordheim, band_id: night-goblins-mic, profile_id: fanatics}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  initial_state:
+    first: {attacks: 1, resources_spent: [disability.6]}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.animosity, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: true, state.first.stupidity_failed: false, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/night-goblins-mic/fanatics--looney/trait.frenzy
+  id: the-injury-that-knocks-the-looney-down-ends-its-frenzy-and-standing-does-not-regrant-it
+  covers: [frenzy]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: night-goblins-mic, profile_id: fanatics}
+  initial_state:
+    second: {attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+    - {key: round.1.second.animosity, value: 3}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.frenzy: false, state.second.condition: KNOCKED_DOWN}
+    1: {state.second.frenzy: false, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

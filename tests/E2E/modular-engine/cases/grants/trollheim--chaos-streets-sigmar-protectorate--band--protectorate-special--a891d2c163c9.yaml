@@ -1,0 +1,143 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-rousing-sermon/skill.inspiring-sermon
+# scaffold_fingerprint: 1b33bc106a36a35f3cfb1c2df5de30d930b182df7db681ebd6ba0cf7190088cf
+# authoring_status: AUTHORED
+# authoring_progress: the admitted self-attack-bonus clause carries 2 authored scenarios derived from the
+#   printed stanza, the recorded contract and the canonical operator's own case: the declared sermon gives
+#   the bearer one extra attack for that combat phase and scopes the once-per-duel resource as spent, and
+#   the declined declaration leaves the printed single pool and scopes nothing.  The decision key and the
+#   resource name were resolved from cases/mechanics/mechanic.rousing-sermon.yaml and the accepted sibling
+#   origin of the same band rule, not invented.  The printed friendly-group-emission clause is scope NO and
+#   contributes no test.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: self-attack-bonus (scope: YES)
+# AUTHORED[self-attack-bonus]: 2 scenarios cover the printed self consequence: the declaration taken at
+#   the start of the bearer's own turn gives him one extra attack for that combat phase (the tape carries
+#   attack indices 0 and 1 for the bearer and index 2 for the enemy, so a missing or extra attack changes
+#   which die the engine asks for) and scopes the once-per-duel resource round.0.rousing-sermon beside the
+#   aggregate rousing-sermon as spent; declining the declaration leaves the printed single attack pool and
+#   scopes no resource.  The band rule declares effect skill.inspiring-sermon whose consumer is
+#   rounds.resolve_round, and the Warrior Priest identity is not modelled by the duel vocabulary, so the
+#   bearer is a fixture carrying the canonical operator through its grant list, exactly as the sibling
+#   origin of this same band rule does.  The printed "may not use Prayers that turn" exception has no
+#   counterpart in this vocabulary and is recorded, not asserted.
+# origin_id:
+#   rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-rousing-sermon/skill.inspiring-sermon
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-sigmar-protectorate/special-rules.yaml
+# source_fingerprint:
+#   713692b659761942b27dfd8501a0049400d15641e64bf3416f4f2ca06fb97413
+# source_sha256_at_generation:
+#   eae243a24e97fc69a1d9a9142cd4476f7ab937993cc2060ec782e79150397a1a
+# Printed rule text:
+#   At the start of the Protectorate player's turn, the Warrior Priest may declare a Rousing Sermon. He may not use Prayers that turn. The effect is automatic:
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Warrior Priest's own +1 Attack for the turn is an admitted individual attack consequence, and the bar on using Prayers that turn is a casting restriction inside the same clause. Printed clause: At the start of the Protectorate player's turn, the Warrior Priest may declare a Rousing Sermon. He may not use Prayers that turn. The effect is automatic:
+# effect_id:
+#   mechanic.rousing-sermon
+# relation:
+#   equivalent
+# parameters:
+#   {"attacks_bonus":1}
+# conditions:
+#   {"trigger":"start of this warrior's own turn","resolution":"optional declaration before its combat phase","consequence":"+1 Attack for that combat phase","recipient":"this warrior","duration":"that combat phase","stacking":"once per duel","exceptions":"must not also use prayers that turn"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Self-only sermon: rounds.resolve_round spends the once-per-duel 'rousing-sermon' resource and adds +1 attack for the active player's phase. Scope review integration: {"clause_id":"self-attack-bonus","review_clause_id":"self-attack-bonus","source_state":"matched","review_status":"reviewed","scope_reason":"The Warrior Priest's own +1 Attack for the turn is an admitted individual attack consequence, and the bar on using Prayers that turn is a casting restriction inside the same clause.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"At the start of its own turn this warrior may declare the sermon: it gains +1 Attack for that combat phase, once per duel. Observable: exactly one self-only attack bonus is available and the declaration is optional.","effect_id":"mechanic.rousing-sermon","relation":"equivalent","parameters":"{\"attacks_bonus\":1}","conditions":"{\"trigger\":\"start of this warrior's own turn\",\"resolution\":\"optional declaration before its combat phase\",\"consequence\":\"+1 Attack for that combat phase\",\"recipient\":\"this warrior\",\"duration\":\"that combat phase\",\"stacking\":\"once per duel\",\"exceptions\":\"must not also use prayers that turn\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"C15-sermons","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round\"]"},"inherited_clause_text":"Warrior Priest only. At the start of the Protectorate player's turn, the Warrior Priest may declare a Rousing Sermon. He may not use Prayers that turn. The effect is automatic: the Warrior Priest and all friendly models within 6\" gain +1 Attack for that turn.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"mechanic.rousing-sermon","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare trigger, current bearer, activation, timing, state duration and reset rules. Keep damage backlash and interrupted continuation; exclude producer movement/group counting or campaign progression.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: friendly-group-emission (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-rousing-sermon/skill.inspiring-sermon
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-sigmar-protectorate/special-rules.yaml
+# source_fingerprint:
+#   713692b659761942b27dfd8501a0049400d15641e64bf3416f4f2ca06fb97413
+# source_sha256_at_generation:
+#   eae243a24e97fc69a1d9a9142cd4476f7ab937993cc2060ec782e79150397a1a
+# Printed rule text:
+#   all friendly models within 6 inches gain +1 attack during that Hand to Hand combat phase
+# Semantic contract (check analysis_status before treating as accepted):
+#   (not recorded)
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Emission to other friendly models is group/range mechanics, permanently outside the isolated 1v1 duel; separated from the admitted self consequence, no consumer assigned. Scope review integration: {"clause_id":"friendly-group-emission","review_clause_id":"friendly-group-emission","source_state":"unverified","review_status":"reviewed","scope_reason":"Granting +1 Attack to all friendly models within 6 inches is support to other fighters, outside a two-duelist simulator.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+
+# --- Authored scenarios ---
+# Derived from the printed stanza, the recorded contract and the canonical operator; no engine output was
+# consulted.  Delivery mirrors the accepted sibling origin of the same band rule: the fixture carries the
+# canonical operator, since the printed Warrior Priest identity is not modelled by this vocabulary.
+# Declaration key and resource name: cases/mechanics/mechanic.rousing-sermon.yaml.
+- audit_id: rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-rousing-sermon/skill.inspiring-sermon
+  id: the-declared-sermon-adds-one-attack-and-spends-the-once-per-duel-resource
+  covers: [self-attack-bonus]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.rousing-sermon]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.rousing-sermon, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.resources_spent: ['round.0.rousing-sermon', 'rousing-sermon'],
+        attacks.0.damage: 1, attacks.1.hit: False, attacks.2.hit: False,
+        state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-rousing-sermon/skill.inspiring-sermon
+  id: the-declined-sermon-leaves-one-attack-and-no-spent-resource
+  covers: [self-attack-bonus]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.rousing-sermon]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.rousing-sermon, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.resources_spent: [], attacks.0.damage: 1, attacks.1.hit: True,
+        state.first.wounds: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

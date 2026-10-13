@@ -1,0 +1,131 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.wraith-touch
+# scaffold_fingerprint: b007c55408a41e6c4afd0f39c65bd89a5d300ec8b807b5a899da3bc53990f479
+# authoring_status: PARTIAL
+# authoring_progress: the single admitted clause is PARTIAL. Three scenarios evidence
+#   the declared replacement pool of one unarmed attack that wounds automatically, the
+#   normal attacks kept when the declaration is declined, and the no-effect rule against
+#   an Undead defender. The Liche heal and the unarmed-rules sentence are not authored
+#   (see the clause note below). REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: 3 scenarios cover the replacement pool, its refusal and the
+#   Undead prohibition. Two printed parts have no scenario here. (a) The Liche heal:
+#   the heal is gated on the Liche identity (`restless-dead:liche` in the executor's
+#   wound branch), which this vocabulary can supply only as a band/profile pair; no
+#   admitted configuration in this directory establishes the Liche's own starting
+#   wounds, its supplied kit or its skill supply, so the missing datum is an admitted
+#   Liche configuration with a lost wound to regain. (b) "all rules that apply to
+#   unarmed attacks apply to the Wraith Touch": against an ordinary defender the
+#   automatic wound skips the To Wound step, so the unarmed Strength penalty has no
+#   observable consequence, and the missing datum is a defender against which that
+#   step is resolved at all.
+# origin_id:
+#   mechanic/mechanic.wraith-touch
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   058f9558217d78261a276576483e1b668ac1b44f7e9bca62bf3575747392ece6
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   The hero may make a Wraith Touch attack instead of their normal attacks in close combat. The hero making a Wraith Touch makes a single unarmed attack, if it hits, it wounds automatically, all rules that apply to unarmed attacks apply to the Wraith Touch. If a Liche uses this skill and wounds, then he may regain one lost wound. This may not take the hero beyond his starting total. Necromancers do not regain wounds with this skill. This skill has no effect on the Possessed or Undead.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Instead of their normal attacks the hero may make a single unarmed Wraith Touch attack that wounds automatically, with all unarmed rules applying; a Liche that wounds regains one lost wound without exceeding his starting total, Necromancers do not, and the skill has no effect on the Possessed or Undead. Closure: the replacement pool is one unarmed attack that wounds automatically against eligible defenders, the Liche heal is capped at the starting total and an Undead or Possessed defender takes the ordinary attack instead.
+# effect_id:
+#   mechanic.wraith-touch
+# relation:
+#   equivalent
+# parameters:
+#   {"attacks": 1, "family": "undead/necromantic", "hit_effect": "wounds automatically", "immune_targets": ["Possessed", "Undead"], "regain": "one wound (Liche only)", "scope": "instead of normal attacks", "weapon": "unarmed"}
+# conditions:
+#   {"replaces_pool": true, "target_scope": ["nature.undead", "nature.possessed"], "trigger": "declaration"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   select_attack_replacement offers the wraith-touch replacement, build_attacks clamps the pool to one, _resolve_attack_pool and prepare_wound_context grant the automatic wound only against non-undead, non-possessed defenders and the Liche heal is the wraith-touch branch of the wound damage resolution. The replacement is refused on the optimized ports (port limit, not a semantic gap). Surface reuse candidate: {"family":"mechanic.wraith-touch","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed target, recipient and exact individual restriction. Keep healing, attack replacement and prohibitions separate; Shallya healing is not self-healing or opponent healing. Do not synthesize independent friendly animals.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The bearer has two Attacks and declares the Wraith Touch, so the pool is replaced by a
+# single unarmed attack: the declared tape carries no second attack die, and the hit
+# needs no To Wound die because the wound is automatic against this defender.
+- audit_id: mechanic/mechanic.wraith-touch
+  id: the-declared-wraith-touch-replaces-the-attack-pool
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.wraith-touch]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.wraith-touch, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Declining the declaration keeps the ordinary pool: both profile attacks are resolved,
+# and the tape carries the second attack die the replacement never requests.
+- audit_id: mechanic/mechanic.wraith-touch
+  id: declining-the-declaration-keeps-the-normal-attacks
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.wraith-touch]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.wraith-touch, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed prohibition: against an Undead defender the declaration is still offered
+# and still replaces the pool, but the attack has no effect at all.  No die is consumed
+# by it, and the defender keeps every wound.
+- audit_id: mechanic/mechanic.wraith-touch
+  id: an-undead-defender-takes-no-wraith-touch-effect
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.wraith-touch]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.wraith-touch, value: true}
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

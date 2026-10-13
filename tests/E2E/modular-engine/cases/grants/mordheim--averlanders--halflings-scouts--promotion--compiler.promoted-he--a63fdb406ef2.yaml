@@ -1,0 +1,109 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/averlanders/halflings-scouts--promotion/compiler.promoted-hero-no-strength-access
+# scaffold_fingerprint: d9339e44d766f3c076a9b86935f4b18d54dbddb99b109ff5cc3faeb7da7f01f2
+# authoring_status: AUTHORED
+# authoring_progress: the admitted construction restriction carries 3 authored scenarios.  The two
+#   datums the earlier note called unresolved do exist: the rule's own recipient is the band profile
+#   halflings-scouts (the rule halflings-scouts--promotion declares applies_to.profile_ids
+#   [halflings-scouts] in sources/knowledge/bands/mordheim/averlanders/special-rules.yaml), and the
+#   promoted two-list choice is declared through the skill-list variants the contract reads
+#   (`b.variant_ids` filtered on the skill-list. prefix).  REVIEWED still requires manual semantic review
+#   and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios evidence the printed restriction as construction refusals on the
+#   printed recipient averlanders/halflings-scouts.  Declaring the denied Strength list is refused with
+#   "Strength skill list is forbidden for averlanders/halflings-scouts" and declaring three selections
+#   is refused with "a promoted Hero may choose at most two skill lists" (the same contract's second
+#   branch), while a single non-Strength selection is accepted at construction and runs.  Both messages
+#   are the contract's own branches: `if (promoted.includes("strength")) return "Strength skill list is
+#   forbidden for ${who}"; if (promoted.length > 2) return "a promoted Hero may choose at most two skill
+#   lists";` with `promoted = b.variant_ids.filter((id) => id.startsWith("skill-list.")).map((id) =>
+#   id.slice(11))`.  Consumer: the shared eligibility stage
+#   (packages/python/roster-construction/mordheim_construction/_eligibility.js, profileSelections).
+#   Recorded interpretation kept: the prohibition applies to the promoted profile only, and the
+#   non-promoted Captain is not asserted here.
+# origin_id:
+#   rule/mordheim/averlanders/halflings-scouts--promotion/compiler.promoted-hero-no-strength-access
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/averlanders/special-rules.yaml
+# source_fingerprint:
+#   3dfbbf441c0aef4d5ebf97a9e720c7378a83fbeb3ba8dba8d12011401902b293
+# source_sha256_at_generation:
+#   5757f93d966e58087350ac588da0a29a2d6ff725da1d528d1d7736c908cc98bf
+# Printed rule text:
+#   A Halfling that is promoted to hero may not choose Strength skills as one of his two skill lists.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Permission restriction: the promoted Halfling Scout may not select the Strength category among its two promoted skill lists; an ordinary non-Strength choice remains legal.
+# effect_id:
+#   compiler.promoted-hero-no-strength-access
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipient":"promoted-halfling-scout","denied_categories":["strength"]}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Recorded interpretation confirms the Captain does not inherit the prohibition; the compiler contract applies it to the promoted profile only. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The bar on choosing Strength skills for a promoted Halfling is a legal-construction restriction on this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The promoted hero's two skill-list selections are declared as the skill-list.* variants the contract
+# reads; the refusal message is the contract branch verbatim.
+- audit_id: rule/mordheim/averlanders/halflings-scouts--promotion/compiler.promoted-hero-no-strength-access
+  id: promoted-halfling-scout-choosing-the-strength-list-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: averlanders
+      profile_id: halflings-scouts
+      variant_ids: [skill-list.strength]
+  expect_error: Strength skill list is forbidden for averlanders/halflings-scouts
+
+- audit_id: rule/mordheim/averlanders/halflings-scouts--promotion/compiler.promoted-hero-no-strength-access
+  id: promoted-halfling-scout-choosing-three-lists-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: averlanders
+      profile_id: halflings-scouts
+      variant_ids: [skill-list.combat, skill-list.academic, skill-list.speed]
+  expect_error: a promoted Hero may choose at most two skill lists
+
+- audit_id: rule/mordheim/averlanders/halflings-scouts--promotion/compiler.promoted-hero-no-strength-access
+  id: promoted-halfling-scout-choosing-an-ordinary-list-is-accepted-at-construction
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: averlanders
+      profile_id: halflings-scouts
+      variant_ids: [skill-list.combat]
+    second:
+      collection: mordheim
+      band_id: averlanders
+      profile_id: halflings-scouts
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

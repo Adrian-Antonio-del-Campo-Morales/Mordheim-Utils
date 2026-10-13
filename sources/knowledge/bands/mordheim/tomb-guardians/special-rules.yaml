@@ -151,15 +151,15 @@ rules:
     profile_ids:
     - acolytes
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.tomb-guardians.acolytes.undead
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.undead
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.undead
 - id: skeleton-warriors--undead
   name: Undead
   source:

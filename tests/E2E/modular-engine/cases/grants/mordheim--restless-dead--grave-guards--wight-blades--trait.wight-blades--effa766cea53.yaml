@@ -1,0 +1,105 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/restless-dead/grave-guards--wight-blades/trait.wight-blades
+# scaffold_fingerprint: a646b696a5ba3dbe0c7cde790912038e44e79cf617e4af076398c003698b1c02
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the
+# printed rule and the recorded contract - the natural six to hit that still wounds on a declared
+# failed To Wound roll, and the ordinary hit with the same failed To Wound roll that wounds nothing.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the closure the recorded contract states - a natural six to hit
+# always produces a wound and a failed To Wound roll cannot cancel it.  In the trigger the bearer's
+# declared six to hit stands against a declared To Wound roll of two, which is below the printed
+# Toughness 3 target, and the defender still loses a wound; in the control the same declared To Wound
+# roll of two follows an ordinary hit of four and wounds nothing, so the wound in the trigger can
+# only come from the printed six.  The bearer is a hand-built Grave Guard fixture with the printed
+# heavy armour and hand weapon, and the defender's Toughness 3 and wounds are fixture facts.  The
+# printed sentence allowing the To Wound roll to determine a critical hit is recorded, not asserted:
+# a critical hit asks for the critical-table die whose outcome belongs to the core critical-hits
+# cases, and the automatic-wound half is what this clause's closure names.  REVIEWED still requires
+# manual semantic review.
+# origin_id:
+#   rule/mordheim/restless-dead/grave-guards--wight-blades/trait.wight-blades
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/restless-dead/special-rules.yaml
+# source_fingerprint:
+#   96b7a02657cdd7535405b87bc84e62c7c9fde126df5183d38c3a7a6c87db0f4a
+# source_sha256_at_generation:
+#   29d551a56fea2c5f7cd8ec4fce6b4177868c8bbc332c10ee852eb7ad2bef0ee0
+# Printed rule text:
+#   Grave Guards carry weapons laden with evil magic. All close combat 'to hit' rolls of a 6 will automatically wound. You may roll 'to wound' as normal to determine if it is a 'critical hit', but even a failed 'to wound' roll will still cause a wound if a 6 was rolled first 'to hit'.
+# Semantic contract (check analysis_status before treating as accepted):
+#   All close-combat To Hit rolls of a 6 wound automatically; the To Wound roll may still be made to determine a critical hit, and even a failed To Wound roll still causes a wound when a 6 was rolled to hit. Closure: a natural six to hit always produces a wound, the wound roll decides only whether it is critical, and a failed wound roll cannot cancel it.
+# effect_id:
+#   trait.wight-blades
+# relation:
+#   equivalent
+# parameters:
+#   {"critical_roll": "allowed", "effect": "automatic wound", "failed_wound_still_wounds": true, "trigger": "natural six to hit"}
+# conditions:
+#   {"recipient": "Grave Guard", "trigger": "natural six to hit"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The wight-blades branch of the wound preparation keeps the natural six as an automatic wound and allows the wound roll to decide the critical, with the failure still wounding (the shared failure_still_wounds flag used with wight blades). The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"trait.wight-blades","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare current admitted facet, weapon/size/recipient conditions and usage limit. A supplied Rememberer benefit does not introduce a third combatant; target Toughness and Large identity need their own source condition. Keep specific attack and critical guards.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The natural six to hit is the printed trigger: the declared To Wound roll of two would
+# normally fail against Toughness 3, but the six has already made the wound automatic, so
+# the defender loses a wound and the injury table is reached as usual.
+- audit_id: rule/mordheim/restless-dead/grave-guards--wight-blades/trait.wight-blades
+  id: a-natural-six-to-hit-wounds-even-when-the-wound-roll-fails
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [trait.wight-blades]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 2,
+        state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The control: the identical failed To Wound roll of two follows an ordinary hit of four, so
+# the printed six is the only thing that can make the difference, and no wound is caused.
+- audit_id: rule/mordheim/restless-dead/grave-guards--wight-blades/trait.wight-blades
+  id: the-same-failed-wound-roll-after-an-ordinary-hit-wounds-nothing
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [trait.wight-blades]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+  expect_rounds:
+    0: {attacks.0.wounded: False, state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

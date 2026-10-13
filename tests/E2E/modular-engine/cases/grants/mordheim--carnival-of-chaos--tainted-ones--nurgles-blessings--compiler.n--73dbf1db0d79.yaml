@@ -1,0 +1,55 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/carnival-of-chaos/tainted-ones--nurgles-blessings/compiler.nurgle-s-blessings
+# scaffold_fingerprint: afe55212297a4667489ef26a4163d90efb57df8aba5c86b04c74e9e48adcd18f
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where the printed selection it requires is absent is refused with "Tainted Ones require at least one Blessing of Nurgle", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).  Remaining unrepresentable tokens of this clause: the accepted control build for this clause needs the band's own printed selection ids (the contract refuses their absence), which are not resolved by this model.
+# origin_id:
+#   rule/mordheim/carnival-of-chaos/tainted-ones--nurgles-blessings/compiler.nurgle-s-blessings
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/carnival-of-chaos/special-rules.yaml
+# source_fingerprint:
+#   2710adbdb12971fddd04f181ac9e3ab46b4e29c173494a11deb5de008bc17992
+# source_sha256_at_generation:
+#   ea10f24ff3b1bb4a16d31e0550eb4b011c294a424bd719a00bfba5e72e42a217
+# Printed rule text:
+#   Tainted Ones must start the game with one or more Blessings of Nurgle.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Mandatory recruitment selection: a Tainted One must be recruited with at least one Blessing of Nurgle.
+# effect_id:
+#   compiler.nurgle-s-blessings
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipient":"tainted-ones","minimum_blessings":1}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Declared and implemented; the counterpart of the optional-mutation ruling for the Possessed.
+# authoring_progress: 1 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/carnival-of-chaos/tainted-ones--nurgles-blessings/compiler.nurgle-s-blessings
+  id: tainted-ones-with-compiler-nurgle-s-blessings-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: tainted-ones
+  expect_error: Tainted Ones require at least one Blessing of Nurgle

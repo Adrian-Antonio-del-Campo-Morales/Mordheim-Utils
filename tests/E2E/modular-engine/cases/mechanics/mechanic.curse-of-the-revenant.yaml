@@ -1,0 +1,148 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.curse-of-the-revenant
+# scaffold_fingerprint: db12a3b40595af0e0308bdb31ab35a18b2b548e7f46e2bf8f1e964955659272d
+# authoring_status: PARTIAL
+# authoring_progress: the recovery clause carries three authored scenarios; the Great Thirster prerequisite and the printed fire independence are unobserved for the concrete reasons recorded in the two clause notes. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: requires-great-thirster (scope: YES)
+# PARTIAL[requires-great-thirster]: no scenario is authorable for this clause. The printed "Requires Great Thirster" is an eligibility coupling in the knowledge grant data, not a duel outcome: the executor contract for mechanic.curse-of-the-revenant declares a single passive effect-set carrying one tag (execution.yaml), and modular/aftermath._revenant_recovery tests only that recovery tag, so nothing in the duel pipeline can distinguish a compiled fighter that carries Great Thirster from one that does not. The missing datum is the grant/eligibility record that would refuse or admit the pairing; the runner compiles skill_ids directly and the round vocabulary exposes no eligibility field. Unresolved conflict kept, not decided here: the register note reads the prerequisite as a data grant and records it as work=data ("the first unresolved step is the data grant"), while the recorded semantic contract states the closure as a compile-time coupling ("no figure is compiled with mechanic.curse-of-the-revenant unless the same figure carries mechanic.great-thirster"). Both readings are retained; the authored scenarios supply Great Thirster alongside the recovery tag so that neither reading is pre-empted.
+# origin_id:
+#   mechanic/mechanic.curse-of-the-revenant
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   e0a3cc6ebdacc0610e06d7be43e276770857d2feb2021fa092c18db10d76472a
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Requires Great Thirster.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The recovery operator may only be granted to a fighter that also carries Great Thirster. Closure: no figure is compiled with mechanic.curse-of-the-revenant unless the same figure carries mechanic.great-thirster.
+# effect_id:
+#   mechanic.great-thirster
+# relation:
+#   related
+# parameters:
+#   {"prerequisite": "mechanic.great-thirster"}
+# conditions:
+#   {"subsystem": "knowledge data / eligibility"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The prerequisite lives in the KB grant data, not in the operator: _revenant_recovery only tests for the recovery tag itself. Within block A the coupling could not be verified from the compiled data, so the first unresolved step is the data grant (recorded as work=data, not as a missing connection). Surface reuse candidate: {"family":"mechanic.great-thirster","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare trigger, current bearer, activation, timing, state duration and reset rules. Keep damage backlash and interrupted continuation; exclude producer movement/group counting or campaign progression.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: 3 scenarios evidence the printed recovery: a five at the bearer's own turn start restores exactly one lost wound, a four leaves the wound lost, and no attempt is made while the bearer is at his wound maximum (the roll is absent from the tape because the operator returns before spending the attempt). The third printed part, "unaffected by fire", is NOT represented: the runner vocabulary exposes no supplied fire-wounded state for this bearer and no fire-recovery key, so no tape can show the attempt surviving fire. The missing datum is a supplied fire condition (or the fire-recovery request key) for the bearer. The recorded contract marks the same facet blocked_by_fire=false and leaves it unexercised.
+# origin_id:
+#   mechanic/mechanic.curse-of-the-revenant
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   e0a3cc6ebdacc0610e06d7be43e276770857d2feb2021fa092c18db10d76472a
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   At own-turn start recover at most one lost wound on 5+, unaffected by fire. Requires Great Thirster.
+# Semantic contract (check analysis_status before treating as accepted):
+#   At the start of his own turn the bearer recovers at most one lost wound on a 5+, and the attempt is unaffected by fire. Closure: one 5+ attempt per own turn restores exactly one wound and cannot exceed the starting total.
+# effect_id:
+#   mechanic.curse-of-the-revenant
+# relation:
+#   equivalent
+# parameters:
+#   {"blocked_by_fire":false,"frequency":"own turn start","recovery":"5+","requires":"mechanic.great-thirster","wounds":1,"recover_on":5,"max_per_turn":1}
+# conditions:
+#   {"frequency": "once per turn", "trigger": "own turn start"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   _revenant_recovery is one 5+ attempt per key, restores exactly one wound, respects the monstrous wound maximum and is independent of the fire-recovery branch. Relation kept "related" only because the printed "Requires Great Thirster" prerequisite is an eligibility/data coupling that nothing inside A verifies. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-mechanic.curse-of-the-revenant","verified_facet":"mechanic.curse-of-the-revenant","relationship":"shared_facet","boundary":"User ruling: start of the bearer own turn, at most one lost Wound, including fire wounds. Great Thirster prerequisite remains; never share the generic Regeneration damage-cancellation stage.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# mechanic/mechanic.curse-of-the-revenant — every expectation below comes from the
+# printed rule (at own-turn start recover at most one lost wound on 5+, unaffected
+# by fire; requires Great Thirster) and the recorded contract, never from engine
+# output.  The bearer carries the recovery tag and, because the printed rule
+# requires it, Great Thirster as well; the attempt is taken at the start of the
+# bearer's own turn and restores at most one wound.
+- audit_id: mechanic/mechanic.curse-of-the-revenant
+  id: a-five-restores-one-lost-wound-at-the-own-turn-start
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.curse-of-the-revenant, mechanic.great-thirster]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    first: {wounds: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.revenant, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The contrast: the same lost wound and the same round with a four, so the wound
+# stays lost and one 5+ attempt has been taken for the turn.
+- audit_id: mechanic/mechanic.curse-of-the-revenant
+  id: a-four-leaves-the-lost-wound-unrecovered
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.curse-of-the-revenant, mechanic.great-thirster]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    first: {wounds: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.revenant, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed maximum: at the starting wound total there is no lost wound to
+# recover and no attempt is taken, so the recovery die is absent from the tape.
+- audit_id: mechanic/mechanic.curse-of-the-revenant
+  id: no-attempt-is-made-at-the-wound-maximum
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.curse-of-the-revenant, mechanic.great-thirster]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -95,6 +95,13 @@ def _fighter_plan(fighter: CompiledFighter, tag_indices: dict[str, int]) -> Figh
 
 def require_optimized_support(first: CompiledFighter, second: CompiledFighter) -> None:
     """Refuse modular-only choices before an optimized engine can omit them."""
+    if any(set(effect.tags) & {"mechanic.confound-and-confuse", "mechanic.dodge-sidestepper",
+            "mechanic.babbling-banter", "mechanic.mantle-of-crows", "skill.backstabber",
+            "mechanic.needle-and-thread", "mechanic.hillman-lycanthrope",
+            "mechanic.ghostly-howl",
+            "rule.thin-flesh", "rule.slay-large-creature"}
+            for fighter in (first, second) for effect in _effects(fighter)):
+        raise ValueError("M5 batch.D currently requires the modular engine; optimized ports are pending")
     if any(fighter.vomit_attack is not None for fighter in (first, second)):
         raise ValueError("optional Vomit Attack currently requires the modular engine; optimized ports are pending")
     if any("trait.spectral-touch" in effect.tags

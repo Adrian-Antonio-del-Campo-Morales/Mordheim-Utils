@@ -1,0 +1,115 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/battle-monks-of-cathay/raging-peasants--mob/unimplemented.battle-monks-of-cathay.raging-peasants.mob
+# scaffold_fingerprint: 0f1d4dc83e5c6d6d27af9b4a22cf347673123a5123d755c7b3bf0c08fa9b4681
+# authoring_status: PARTIAL
+# authoring_progress: neither admitted clause has an authored scenario: the per-ally Leadership bonus has no consumer (leadership.resolve_local_leadership applies only the Brood Mentality stupidity bonus, and the ally count is the excluded producer the register note refuses to simulate), and the leader-rule denial is a group rule whose beneficiary and radius belong to the warband, not to a duelist.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: individual-leadership-bonus (scope: YES)
+# PARTIAL[individual-leadership-bonus]: [CLOSING-REVIEW [C]] no scenario is derivable yet. The admitted
+#   individual consequence is a Leadership bonus supplied per allied Peasant within 3
+#   inches, and the missing representation is that supplied per-ally fact: the consumer
+#   named by the record reads only the stupidity bonus, so a Leadership test cannot be
+#   shown to be modified. The producer (counting allies) stays excluded by design.
+#   Consumer check (verified against the code): modular/leadership.py::_supplied_provider lists only
+#   the printed supplied-provider contracts (mechanic.leader-six/leader-four/leader-twelve,
+#   mechanic.slave-driver, mechanic.relay-orders, mechanic.songster, gated on the provider's own band
+#   tag) and resolve_local_leadership accepts supplied values only through
+#   fighter.stupidity_leadership and fighter.stupidity_leadership_bonus; the per-ally Peasant bonus
+#   is therefore not readable by the consumer, and its group recipient cannot be supplied either.
+# origin_id:
+#   rule/mordheim/battle-monks-of-cathay/raging-peasants--mob/unimplemented.battle-monks-of-cathay.raging-peasants.mob
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/battle-monks-of-cathay/special-rules.yaml
+# source_fingerprint:
+#   e4055e281dbdb51472d3d691cd1a534f56a91f6ca63e113e65f7a6a7d26df2ae
+# source_sha256_at_generation:
+#   65e9f82a2212d3ba8786f77258b0aaf254d75b70d3261ea045fe2592c5608853
+# Printed rule text:
+#   A Peasant gets +1 Ld for each other allied Peasant model within 3 inches.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Admitted individual consequence: the Peasant's own Leadership may be raised by a supplied per-ally bonus (one per admitted allied Peasant within 3 inches) before an individual Leadership test.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {"leadership_bonus_per_allied_peasant": 1, "ally_range_inches": 3}
+# conditions:
+#   {"trigger": "an individual Leadership test by the Peasant", "input": "a supplied per-ally bonus fact", "producer": "the excluded ally count, not simulated"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The individual bonus is admitted without simulating its producer. leadership.resolve_local_leadership only applies stupidity_leadership_bonus (Brood Mentality), so a generic supplied per-ally Leadership bonus is not connected yet; the clause is not left as none.
+#
+# Clause: no-leader-benefit (scope: YES)
+# PARTIAL[no-leader-benefit]: [CLOSING-REVIEW [E]] no scenario is derivable yet. The printed denial is a
+#   group rule (the Peasant does not benefit from the leader rule), and the duel
+#   vocabulary supplies no leader aura to deny; the missing representation is the
+#   group Leadership source the denial removes, which the same excluded producer covers.
+# origin_id:
+#   rule/mordheim/battle-monks-of-cathay/raging-peasants--mob/unimplemented.battle-monks-of-cathay.raging-peasants.mob
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/battle-monks-of-cathay/special-rules.yaml
+# source_fingerprint:
+#   e4055e281dbdb51472d3d691cd1a534f56a91f6ca63e113e65f7a6a7d26df2ae
+# source_sha256_at_generation:
+#   65e9f82a2212d3ba8786f77258b0aaf254d75b70d3261ea045fe2592c5608853
+# Printed rule text:
+#   Due to their rage, they do not benefit from the leader rule.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Individual prohibition: a Raging Peasant may not adopt a nearby leader's Leadership (the leader rule); only its own Leadership applies.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {"prohibition": "cannot borrow a leader's Leadership", "duration": "whenever the Mob rule applies"}
+# dependencies:
+#   ["mechanic.leader-six"]
+# Register notes (context only, not behavioral authority):
+#   A real individual prohibition rather than a group interaction. leadership.resolve_local_leadership performs the mechanic.leader-six borrow but has no honouring tag for a peasant-level no-leader-benefit condition, so the connection stays pending and no new operator is proposed. Surface reuse candidate: {"family":"mechanic.leader-six","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: ally-count-producer (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/battle-monks-of-cathay/raging-peasants--mob/unimplemented.battle-monks-of-cathay.raging-peasants.mob
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/battle-monks-of-cathay/special-rules.yaml
+# source_fingerprint:
+#   e4055e281dbdb51472d3d691cd1a534f56a91f6ca63e113e65f7a6a7d26df2ae
+# source_sha256_at_generation:
+#   65e9f82a2212d3ba8786f77258b0aaf254d75b70d3261ea045fe2592c5608853
+# Printed rule text:
+#   A Peasant gets +1 Ld for each other allied Peasant model within 3 inches.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Excluded producer: the per-model count of other allied Peasants within 3 inches is multi-model geometry that the 1v1 duel does not simulate.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The ally count is the excluded producer, not the whole rule: the individual Leadership bonus and the no-leader-benefit prohibition are separate admitted clauses of the same printed record. Coordinator disposition: this printed clause has a resolved 1v1 exclusion; it is not queued for implementation or a future scope decision. Source metadata reconciliation is separate from duel behaviour.
+
+[]  # Empty scenario list: this file contributes no test or coverage.

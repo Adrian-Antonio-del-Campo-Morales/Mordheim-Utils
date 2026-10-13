@@ -1,0 +1,163 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.vomit-attack
+# scaffold_fingerprint: f5bf51fca78d4bd4db5b8e49450ee6f6e94fff92daa25a202ee86756fc179b32
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry authored scenarios built through the real Troll route (band black-orcs, profile troll, the selectable ability troll--vomit-attack). The bearer's automatic Stupidity Leadership phase is modelled as part of the scenario, so the round's deception tape is supplied; the -1 Attack pool clamp, the automatic Strength 5 hit, the ignored armour save, the refused parry and the declined-pool contrast are all evidenced
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: optional-declaration (scope: YES)
+# AUTHORED[optional-declaration]: 2 scenarios evidence the per-phase declaration. Declaring
+#   the replacement (decision round.0.first.vomit-attack true) leaves exactly the single
+#   automatic vomit attack; declining it (false) leaves the ordinary three natural attacks,
+#   shown by the ordered event tape.
+# origin_id:
+#   mechanic/weapon.vomit-attack
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   9e7be455123cd9f496af5365f7c323618bd6b054535de5751853e634ec99eb7d
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Instead of his normal attacks, a Troll can regurgitate its highly corrosive digestive juices on an unfortunate hand-to-hand combat opponent.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The replacement is optional per close-combat phase: the Troll either makes its normal attacks or the single vomit attack. Closure: declining the replacement leaves the ordinary pool intact.
+# effect_id:
+#   weapon.vomit-attack
+# relation:
+#   equivalent
+# parameters:
+#   {"optional": true}
+# conditions:
+#   {"trigger": "declaration"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The DecisionPolicy choose() call for the vomit-attack key is the declaration gate; the optional choice is structured (deliberately refused on optimized entries until the L19/L20 ports, which is a port-scope limit, not a semantic gap). Scope review integration: {"clause_id":"optional-declaration","review_clause_id":"optional-declaration","source_state":"unverified","review_status":"reviewed","scope_reason":"Declaring the vomit attack instead of the model's normal attacks is a duel-time choice of that fighter, so the optional declaration clause belongs to the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"W-weapon.vomit-attack","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare only the current admitted facet, preserving weapon-specific overrides, optional attack replacement, parry and save eligibility, and per-phase reroll resources. Do not inherit the combined parent parameters or introduce capture, shooting, exploration or excluded recipient consequences.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 1 scenario evidences the replacement's own consequences on a bearer
+#   wearing plate armour and carrying a sword: automatic hit (no To Hit die), fixed
+#   Strength 5, no armour die at all and no parry die.
+# origin_id:
+#   mechanic/weapon.vomit-attack
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   9e7be455123cd9f496af5365f7c323618bd6b054535de5751853e634ec99eb7d
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   One automatic Strength 5 hit that ignores armour saves; replaces the model's normal attacks.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Instead of its normal attacks a Troll may make one close-combat attack that hits automatically at Strength 5, ignores armour saves and cannot be parried. Closure: replacing the pool yields exactly one automatic Strength 5 hit with no armour or parry step.
+# effect_id:
+#   weapon.vomit-attack
+# relation:
+#   equivalent
+# parameters:
+#   {"automatic_hit": true, "cannot_be_parried": true, "fixed_strength": 5, "ignore_armour": true}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The L02 optional Vomit Attack milestone: compile_fighter exposes it as a separate vomit_attack EffectSet and select_attack_replacement offers the whole-pool replacement, with build_attacks clamping the pool to one attack. One identity serves the six Troll origins printing the same clause; no second runtime contribution. Surface reuse candidate: {"family":"W-weapon.vomit-attack","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare only the current admitted facet, preserving weapon-specific overrides, optional attack replacement, parry and save eligibility, and per-phase reroll resources. Do not inherit the combined parent parameters or introduce capture, shooting, exploration or excluded recipient consequences.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/weapon.vomit-attack - the optional whole-pool replacement.
+#
+# The replacement is only exposed on a bearer that carries the selectable ability
+# `troll--vomit-attack` (band black-orcs, profile troll).  That bearer is a Troll
+# whose automatic profile rules make the round a deception round: `troll--stupidity`
+# adds `mechanic.stupidity`, so the active participant must pass a two-dice
+# Leadership test before any attack (keys `round.0.first.stupidity.0` and `.1`,
+# passing on a sum no greater than Leadership 4), and `troll--regeneration` and
+# `troll--fear` are carried but stay idle because the Troll is neither wounded nor
+# charged.  The declaration itself is the decision `round.0.first.vomit-attack`.
+#
+# The replacement yields exactly one attack, an automatic hit at Strength 5, no
+# To Hit die, no armour die (even against plate armour) and no parry die (even
+# against a sword).  The Troll acts last (Initiative 1), so the defender's own
+# attack is the first entry of the round.
+- audit_id: mechanic/weapon.vomit-attack
+  id: the-declared-replacement-is-one-automatic-strength-five-hit-ignoring-armour-and-parry
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: troll
+      special_rule_ids: [troll--vomit-attack]
+    second:
+      main_weapon_id: weapon.sword
+      armour_id: armour.plate-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.vomit-attack, value: true}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 1}
+    - {key: round.0.first.stupidity.1, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.1.hit: true, attacks.1.saved: false, attacks.1.parried: false,
+        attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.stupidity.0, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.stupidity.1, sides: 6, value: 1}
+    - {kind: decision, key: round.0.first.vomit-attack, value: true}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 3}
+
+# Declining the replacement leaves the ordinary pool of three natural attacks (the
+# profile's Attacks 3), each rolling its own To Hit die: four hit dice in the round
+# against the single wound die of the declared variant.
+- audit_id: mechanic/weapon.vomit-attack
+  id: declining-the-replacement-leaves-the-ordinary-attack-pool
+  covers: [optional-declaration]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: troll
+      special_rule_ids: [troll--vomit-attack]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.vomit-attack, value: false}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 1}
+    - {key: round.0.first.stupidity.1, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit: false, state.first.wounds: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.stupidity.0, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.stupidity.1, sides: 6, value: 1}
+    - {kind: decision, key: round.0.first.vomit-attack, value: false}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.2.hit, sides: 6, value: 1}

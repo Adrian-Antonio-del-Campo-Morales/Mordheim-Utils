@@ -1,0 +1,104 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/lustrian-reavers/estalian-warhound--beastmaster-leadership/unimplemented.lustrian-reavers.estalian-warhound.beastmaster-leadership
+# scaffold_fingerprint: 984f61cd61523d8f415881277865646419f64b3852415a983a13b20ae47725d4
+# authoring_status: AUTHORED
+# authoring_progress: the admitted handler-leadership clause carries 2 authored scenarios for the two
+#   faces of the supplied value: the Beastmaster's Leadership is the one tested (the Warhound's own
+#   value would fail the same eight) and, with no handler value supplied, the animal's own Leadership
+#   is tested and the charge is cancelled.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: handler-leadership (scope: YES)
+# AUTHORED[handler-leadership]: 2 scenarios cover the printed "If within 6 inches of the Reaver
+#   Beastmaster, the Warhound may use the Beastmaster's Leadership": with the handler value supplied
+#   (trait fact stupidity_leadership) the individual test is taken against 8 and passes on a declared
+#   four plus four, so the charge and the attack stand; without a supplied value the animal's own
+#   Leadership 3 is tested and the same eight fails, which cancels the charge.  The printed 6-inch
+#   eligibility of the handler and the bar on ordinary leader borrowing are caller-supplied facts the
+#   engine does not model (the shared case records the same gap), so they are not asserted here.
+#   REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/lustrian-reavers/estalian-warhound--beastmaster-leadership/unimplemented.lustrian-reavers.estalian-warhound.beastmaster-leadership
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/lustrian-reavers/special-rules.yaml
+# source_fingerprint:
+#   1308f7128619d89aa38f387354f919f6d31b00e8849523edc6b5667bcbe86321
+# source_sha256_at_generation:
+#   bfc14e3b78e040942b46067af600bd06b9a98f1eca32f0e8b0e7c154cfaeae1e
+# Printed rule text:
+#   If within 6 inches of the Reaver Beastmaster, the Warhound may use the Beastmaster's Leadership.
+# Semantic contract (check analysis_status before treating as accepted):
+#   This animal may use the supplied handler's Leadership within the source range, and not the warband leader's. Observable: the test uses the handler's value.
+# effect_id:
+#   mechanic.handler-leadership
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"an animal Leadership test","exceptions":"no ordinary leader borrowing"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Handler-only Leadership for an animal profile. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Surface reuse candidate: {"family":"mechanic.handler-leadership","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, this band's own printed sentence and the shared handler-leadership
+# contract the sibling Barbary Monkey origin authors; no engine output was consulted.  The animal's
+# own Leadership 3 would fail a total of eight, but the supplied handler value 8 is the one tested,
+# so the charge and the attacks stand.
+- audit_id: rule/mordheim/lustrian-reavers/estalian-warhound--beastmaster-leadership/unimplemented.lustrian-reavers.estalian-warhound.beastmaster-leadership
+  id: the-supplied-beastmaster-value-is-the-one-tested
+  covers: [handler-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.handler-leadership]
+      trait_overrides: {stupidity: true, stupidity_leadership: 8}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# With no handler value supplied the same eight is tested against the animal's own Leadership 3 and
+# fails, so the charge is cancelled and no attack is resolved.
+- audit_id: rule/mordheim/lustrian-reavers/estalian-warhound--beastmaster-leadership/unimplemented.lustrian-reavers.estalian-warhound.beastmaster-leadership
+  id: without-a-handler-value-the-own-leadership-is-tested
+  covers: [handler-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.handler-leadership]
+      trait_overrides: {stupidity: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: True, state.first_charged: False, state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

@@ -75,15 +75,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: band
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-sons-of-nagarythe.band.hate-dark-elves
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.hatred-dark-elves
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-dark-elves
 - id: band--excellent-sight
   name: Excellent Sight
   effect: All Elves in the warband spot Hidden enemies at twice the normal distance.

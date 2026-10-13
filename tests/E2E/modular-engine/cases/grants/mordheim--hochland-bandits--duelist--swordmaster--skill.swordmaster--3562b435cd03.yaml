@@ -1,0 +1,91 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/hochland-bandits/duelist--swordmaster/skill.swordmaster
+# scaffold_fingerprint: 5e32016cef798b0728408e08547fe5aa4b70a26eea622c6098678bd26364baf7
+# authoring_status: AUTHORED
+# authoring_progress: the admitted match-the-to-hit-roll clause carries two authored scenarios derived from the printed rule and the recorded contract of the shared swordmaster operator.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: match-the-to-hit-roll (scope: YES)
+# AUTHORED[match-the-to-hit-roll]: 2 scenarios cover the printed equality - with the skill a parry die equal to the declared To Hit four blocks the blow, and the identical configuration, tape and die without the skill leave the blow standing so the wound and its damage follow.  The register records two records of one skill (a profile grant and the shared mechanic definition) with no second contribution, so the tape reads the canonical operator through the fighter's grant list exactly as the mechanic origin's own case does; the parry source the printed clause requires is carried by the defender's sword through the executor's parry capacity.
+# origin_id:
+#   rule/mordheim/hochland-bandits/duelist--swordmaster/skill.swordmaster
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/hochland-bandits/special-rules.yaml
+# source_fingerprint:
+#   4092a743d7637ee6dce93ab1493df438b5263ba06366f8e2e9ebe814c495b012
+# source_sha256_at_generation:
+#   e80580351ee7aed6e7dbcce8c779a6f55a4c6aa44dd0c6e37798cbdf3d703072
+# Printed rule text:
+#   In order to remain alive, a Duelist picks up swordfighting techniques that few others master. The Duelist successfully parries an enemy blow on a roll equal to or over the roll to hit, not just over the roll as with normal parries. Obviously a Duelist must first be armed with a weapon or armour that allows him to Parry in order to use this rule.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Duelist parries on a roll equal to or over the to-hit roll and must first be armed with a weapon or armour that allows parrying; observable: an equal roll blocks while a fighter with no parry source gets no attempt at all.
+# effect_id:
+#   skill.swordmaster
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Two records of one skill: a profile grant and the shared mechanic definition; no second contribution. The parry-source requirement follows from the parry capacity rather than from a separate check. Surface reuse candidate: {"family":"skill.swordmaster","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The printed equality: the declared To Hit four lands on the defender's Weapon Skill 3,
+# and the defender's parry die of the same four blocks it because the skill allows a parry
+# on a roll equal to or over the To Hit roll.  The blow is therefore parried, the defender
+# keeps both Wounds, and its own declared To Hit one misses.
+- audit_id: rule/mordheim/hochland-bandits/duelist--swordmaster/skill.swordmaster
+  id: the-equal-parry-roll-blocks-the-blow
+  covers: [match-the-to-hit-roll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      skill_ids: [skill.swordmaster]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The control: the same sword-armed defender, the same declared To Hit four and the same
+# parry die of four, but without the skill.  A normal parry must beat the To Hit roll, so
+# the attempt fails, the blow stands and its declared wound face lands.
+- audit_id: rule/mordheim/hochland-bandits/duelist--swordmaster/skill.swordmaster
+  id: without-the-skill-the-same-parry-die-only-matches-and-fails
+  covers: [match-the-to-hit-roll]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

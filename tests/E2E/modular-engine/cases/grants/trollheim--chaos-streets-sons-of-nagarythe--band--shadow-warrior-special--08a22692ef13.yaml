@@ -1,0 +1,147 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-sons-of-nagarythe/band--shadow-warrior-special-skills-elven-agility/skill.elven-agility
+# scaffold_fingerprint: f11200d2dfe1ca1b590961af904edcf25ad3c264a71e56d07120f3a2a17059f4
+# authoring_status: AUTHORED
+# authoring_progress: the admitted six-plus-avoidance clause carries four authored scenarios
+# derived from the printed stanza, the recorded contract and the admitted elven-agility
+# semantic specifications: the 6+ avoidance holds on its own face and not one below it, Step
+# Aside replaces it with a single 4+ save, and a warrior without the tag is not offered the
+# save.  The printed stanza grants the skill to this band's Shadow Warrior heroes
+# (shadow-master, shadow-walker, shadow-weaver per the elven-agility grants specification);
+# the fixture carries the canonical skill.elven-agility tag.  REVIEWED still requires manual
+# semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: six-plus-avoidance (scope: YES)
+# AUTHORED[six-plus-avoidance]: 4 scenarios read the accepted observable.  A close-combat
+# attack whose hit and wound steps cannot fail is discarded on a special save of 6 and is not
+# discarded on 5, fixing the avoidance to its printed face; with Step Aside held as well it is
+# discarded on 4 and exactly one save die is consumed, so the printed improvement replaces the
+# weaker save rather than adding a roll; and with no tag at all the attack reaches the bearer
+# with no save request, which the strict tape enforces.  REVIEWED still requires manual semantic
+# review.
+# origin_id:
+#   rule/trollheim/chaos-streets-sons-of-nagarythe/band--shadow-warrior-special-skills-elven-agility/skill.elven-agility
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-sons-of-nagarythe/special-rules.yaml
+# source_fingerprint:
+#   f809b0373e4dc0eb06e4e09bbd12a88d5408b5a72760838053b78424fc6fd98f
+# source_sha256_at_generation:
+#   bc9eb19701836609e1aa204e03217f815538897f72e4c92c92bcfd73fc4b1e1e
+# Printed rule text:
+#   The Elf avoids close-combat and missile attacks on a 6+. If he also has Dodge or Step Aside, the corresponding save improves to 4+ for the attack type covered by that skill.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Elf avoids close-combat and missile attacks on a 6, improving to 4+ for the attack type covered by Dodge or Step Aside; observable: the better of the two saves applies.
+# effect_id:
+#   skill.elven-agility
+# relation:
+#   equivalent
+# parameters:
+#   {"improved":4,"ward_save":6,"melee_avoidance_save":6,"with_step_aside_save":4}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#    Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"six-plus-avoidance","audit_group":"EQ-SK-ELVEN-AGILITY","verified_facet":"elven-agility/melee","relationship":"shared_facet","boundary":"Share only admitted melee avoidance and its Step Aside upgrade. Dodge/ranged consequences remain excluded; the 4+ replaces the corresponding 6+, not an additional roll.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the admitted elven-agility
+# semantic specifications; no engine output was consulted.  The hand-built assailant's hit of 4
+# and wound of 2 cannot fail against the Toughness-3 bearer, so the only undecided step is the
+# special save, and the strict tape fails the case if an extra or an absent save is requested.
+
+- audit_id: rule/trollheim/chaos-streets-sons-of-nagarythe/band--shadow-warrior-special-skills-elven-agility/skill.elven-agility
+  id: the-avoidance-holds-on-six
+  covers: [six-plus-avoidance]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      skill_ids: [skill.elven-agility]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/chaos-streets-sons-of-nagarythe/band--shadow-warrior-special-skills-elven-agility/skill.elven-agility
+  id: one-face-below-the-avoidance-is-not-enough
+  covers: [six-plus-avoidance]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      skill_ids: [skill.elven-agility]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/chaos-streets-sons-of-nagarythe/band--shadow-warrior-special-skills-elven-agility/skill.elven-agility
+  id: step-aside-replaces-the-save-with-one-four-plus
+  covers: [six-plus-avoidance]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      skill_ids: [skill.elven-agility, skill.step-aside]
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/chaos-streets-sons-of-nagarythe/band--shadow-warrior-special-skills-elven-agility/skill.elven-agility
+  id: without-the-rule-no-save-is-requested
+  covers: [six-plus-avoidance]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

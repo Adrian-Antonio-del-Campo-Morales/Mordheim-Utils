@@ -1,0 +1,360 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.hellblade
+# scaffold_fingerprint: 412ed0b72598d5e6ded22e7f58dd046e96db7b69f68ee765ec23fd088e935cd0
+# authoring_status: AUTHORED
+# authoring_progress: all four admitted clauses carry authored scenarios: the material refusal, the profile with Soulseeking and its Undead exception, Deadly with its wound-target exception, and the three loadout refusals. The two excluded clauses need no scenario. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: material-prohibition (scope: YES)
+# AUTHORED[material-prohibition]: 1 refusal declares the printed prohibition on a Gromril, Ithilmar or similar mortal metal.
+# origin_id:
+#   mechanic/weapon.hellblade
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   7277c1dc7d9df83f93d1af176a9b0aa4e3a7844caec2ef5e2346e98d6f944f19
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Magical: all attacks from a Hellblade count as Magical; a Hellblade cannot be made of Gromril, Ithilmar or similar mortal metals.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A Hellblade may not be combined with a material upgrade. Closure: a Hellblade with Gromril/Ithilmar material is refused by construction instead of compiling both profiles.
+# effect_id:
+#   weapon.hellblade
+# relation:
+#   related
+# parameters:
+#   {"forbidden_materials": ["material.gromril", "material.ithilmar"]}
+# conditions:
+#   {"subsystem": "construction/loadout"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The construction path is the shared loadout/selection validation; the A family did not verify that a Hellblade+material combination is actually refused, so the eligibility projection of the printed prohibition is the first unresolved step. The magical-attack half is delivered by the attack.magical tag.
+#   
+#   [M2-offensive 2026-10-08] delivered. Gromril and Ithilmar Hellblades are refused (`Hellblade cannot be made of mortal special metals`) while the plain weapon compiles; the existing hellblade test carries the negative control. No residual.
+#
+# Clause: whole--scope--combat-profile-and-soulseeking (scope: YES)
+# AUTHORED[whole--scope--combat-profile-and-soulseeking]: 3 scenarios cover the +1 Strength, the +1 To Hit and the printed Undead or Demon exception.
+# origin_id:
+#   mechanic/weapon.hellblade
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   7277c1dc7d9df83f93d1af176a9b0aa4e3a7844caec2ef5e2346e98d6f944f19
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Range: Close Combat; Strength: As user +1; Special Rules: Soulseeking, Two-handed, Deadly, Magical. Soulseeking: all attacks made with a Hellblade are at +1 To Hit; this does not work on Undead or Demon models.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Hellblade's close-combat profile at Strength +1 with the Soulseeking +1 to hit and its undead/daemon exception are admitted attack and to-hit consequences of that bearer. Printed clause: Range: Close Combat; Strength: As user +1; Special Rules: Soulseeking, Two-handed, Deadly, Magical. Soulseeking: all attacks made with a Hellblade are at +1 To Hit; this does not work on Undead or Demon models.
+# effect_id:
+#   weapon.hellblade
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. The Soulseeking +1 to hit with the undead/daemon exclusion is in prepare_hit_context; Deadly uses the critical threshold branch that requires the wound target to be 4 or better; Magical is the attack.magical tag consumed by the armour and ward logic. The printed "cannot be made of Gromril/Ithilmar" is a material-combination clause for construction data. Scope review integration: {"clause_id":"whole","review_clause_id":"combat-profile-and-soulseeking","source_state":"matched","review_status":"reviewed","scope_reason":"The Hellblade's close-combat profile at Strength +1 with the Soulseeking +1 to hit and its undead/daemon exception are admitted attack and to-hit consequences of that bearer.","notes":"The intervening sentence 'A rare blade charged with the power of Khorne himself.' is flavour with no admitted functional consequence and gets no row; the two-handed, deadly, magical and cost parts of the same entry are classified in the sibling children and row 811.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Magical, two-handed Strength +1 blade that gives +1 to hit unless the target is Undead or Daemon, criticals on 5-6 when the wound target is 4 or better, and cannot be combined with shield, buckler or a second weapon. Closure: all four printed parts are delivered and the magical tag is present.","effect_id":"weapon.hellblade","relation":"equivalent","parameters":"{\"strength_bonus\": 1, \"tags\": [\"weapon.hellblade\", \"attack.magical\"], \"two_handed\": true}","conditions":"{\"application\": \"attack\", \"stacking\": \"stack\", \"trigger\": \"attack\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/contracts.py::effect_index\", \"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/phases.py::build_attacks\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_attack_strength\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_hit_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_wound_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_armour_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_injury_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_parry_context\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"A02a-melee-weapon-profiles","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/roster-construction/mordheim_construction/contracts.py::effect_index\", \"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/phases.py::build_attacks\"]"},"inherited_clause_text":"Cost 35 gc, Availability Rare 8. A rare blade charged with the power of Khorne himself. Range: Close Combat; Strength: As user +1; Special Rules: Soulseeking, Two-handed, Deadly, Magical. Soulseeking: all attacks made with a Hellblade are at +1 To Hit; this does not work on Undead or Demon models. Two-handed: a model armed with a Hellblade may not use a shield, buckler or additional weapon in close combat; if the model has a shield he still gets a +1 bonus to his armour save against shooting. Deadly: a Hellblade causes critical hits on rolls of 5 or 6; this rule does not apply if the warrior requires 5s or higher to wound. Magical: all attacks from a Hellblade count as Magical; a Hellblade cannot be made of Gromril, Ithilmar or similar mortal metals.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."}
+#
+# Clause: whole--scope--deadly (scope: YES)
+# AUTHORED[whole--scope--deadly]: 2 scenarios cover the 5-or-6 critical band and the printed exception when 5s are needed to wound.
+# origin_id:
+#   mechanic/weapon.hellblade
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   7277c1dc7d9df83f93d1af176a9b0aa4e3a7844caec2ef5e2346e98d6f944f19
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Deadly: a Hellblade causes critical hits on rolls of 5 or 6; this rule does not apply if the warrior requires 5s or higher to wound.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Critical hits on rolls of 5 or 6 with the exception when the warrior needs 5s or higher to wound are admitted critical-hit consequences. Printed clause: Deadly: a Hellblade causes critical hits on rolls of 5 or 6; this rule does not apply if the warrior requires 5s or higher to wound.
+# effect_id:
+#   weapon.hellblade
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. The Soulseeking +1 to hit with the undead/daemon exclusion is in prepare_hit_context; Deadly uses the critical threshold branch that requires the wound target to be 4 or better; Magical is the attack.magical tag consumed by the armour and ward logic. The printed "cannot be made of Gromril/Ithilmar" is a material-combination clause for construction data. Scope review integration: {"clause_id":"whole","review_clause_id":"deadly","source_state":"matched","review_status":"reviewed","scope_reason":"Critical hits on rolls of 5 or 6 with the exception when the warrior needs 5s or higher to wound are admitted critical-hit consequences.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Magical, two-handed Strength +1 blade that gives +1 to hit unless the target is Undead or Daemon, criticals on 5-6 when the wound target is 4 or better, and cannot be combined with shield, buckler or a second weapon. Closure: all four printed parts are delivered and the magical tag is present.","effect_id":"weapon.hellblade","relation":"equivalent","parameters":"{\"strength_bonus\": 1, \"tags\": [\"weapon.hellblade\", \"attack.magical\"], \"two_handed\": true}","conditions":"{\"application\": \"attack\", \"stacking\": \"stack\", \"trigger\": \"attack\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/contracts.py::effect_index\", \"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/phases.py::build_attacks\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_attack_strength\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_hit_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_wound_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_armour_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_injury_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_parry_context\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"A02a-melee-weapon-profiles","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/roster-construction/mordheim_construction/contracts.py::effect_index\", \"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/phases.py::build_attacks\"]"},"inherited_clause_text":"Cost 35 gc, Availability Rare 8. A rare blade charged with the power of Khorne himself. Range: Close Combat; Strength: As user +1; Special Rules: Soulseeking, Two-handed, Deadly, Magical. Soulseeking: all attacks made with a Hellblade are at +1 To Hit; this does not work on Undead or Demon models. Two-handed: a model armed with a Hellblade may not use a shield, buckler or additional weapon in close combat; if the model has a shield he still gets a +1 bonus to his armour save against shooting. Deadly: a Hellblade causes critical hits on rolls of 5 or 6; this rule does not apply if the warrior requires 5s or higher to wound. Magical: all attacks from a Hellblade count as Magical; a Hellblade cannot be made of Gromril, Ithilmar or similar mortal metals.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."}
+#
+# Clause: whole--scope--two-handed-loadout (scope: YES)
+# AUTHORED[whole--scope--two-handed-loadout]: 3 refusals declare the printed prohibition on a shield, a buckler or an additional weapon.
+# origin_id:
+#   mechanic/weapon.hellblade
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   7277c1dc7d9df83f93d1af176a9b0aa4e3a7844caec2ef5e2346e98d6f944f19
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Two-handed: a model armed with a Hellblade may not use a shield, buckler or additional weapon in close combat
+# Semantic contract (check analysis_status before treating as accepted):
+#   The printed refusal of a shield, buckler or additional weapon in close combat with a Hellblade is a loadout restriction deciding legal construction. Printed clause: Two-handed: a model armed with a Hellblade may not use a shield, buckler or additional weapon in close combat
+# effect_id:
+#   weapon.hellblade
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. The Soulseeking +1 to hit with the undead/daemon exclusion is in prepare_hit_context; Deadly uses the critical threshold branch that requires the wound target to be 4 or better; Magical is the attack.magical tag consumed by the armour and ward logic. The printed "cannot be made of Gromril/Ithilmar" is a material-combination clause for construction data. Scope review integration: {"clause_id":"whole","review_clause_id":"two-handed-loadout","source_state":"matched","review_status":"reviewed","scope_reason":"The printed refusal of a shield, buckler or additional weapon in close combat with a Hellblade is a loadout restriction deciding legal construction.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Magical, two-handed Strength +1 blade that gives +1 to hit unless the target is Undead or Daemon, criticals on 5-6 when the wound target is 4 or better, and cannot be combined with shield, buckler or a second weapon. Closure: all four printed parts are delivered and the magical tag is present.","effect_id":"weapon.hellblade","relation":"equivalent","parameters":"{\"strength_bonus\": 1, \"tags\": [\"weapon.hellblade\", \"attack.magical\"], \"two_handed\": true}","conditions":"{\"application\": \"attack\", \"stacking\": \"stack\", \"trigger\": \"attack\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/contracts.py::effect_index\", \"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/phases.py::build_attacks\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_attack_strength\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_hit_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_wound_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_armour_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_injury_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_parry_context\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"A02a-melee-weapon-profiles","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/roster-construction/mordheim_construction/contracts.py::effect_index\", \"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/phases.py::build_attacks\"]"},"inherited_clause_text":"Cost 35 gc, Availability Rare 8. A rare blade charged with the power of Khorne himself. Range: Close Combat; Strength: As user +1; Special Rules: Soulseeking, Two-handed, Deadly, Magical. Soulseeking: all attacks made with a Hellblade are at +1 To Hit; this does not work on Undead or Demon models. Two-handed: a model armed with a Hellblade may not use a shield, buckler or additional weapon in close combat; if the model has a shield he still gets a +1 bonus to his armour save against shooting. Deadly: a Hellblade causes critical hits on rolls of 5 or 6; this rule does not apply if the warrior requires 5s or higher to wound. Magical: all attacks from a Hellblade count as Magical; a Hellblade cannot be made of Gromril, Ithilmar or similar mortal metals.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."}
+#
+# Clause: whole--scope--price-and-rarity (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   mechanic/weapon.hellblade
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   7277c1dc7d9df83f93d1af176a9b0aa4e3a7844caec2ef5e2346e98d6f944f19
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Cost 35 gc, Availability Rare 8.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The cost and availability of the blade are acquisition data, which the duel excludes. Printed clause: Cost 35 gc, Availability Rare 8.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. The Soulseeking +1 to hit with the undead/daemon exclusion is in prepare_hit_context; Deadly uses the critical threshold branch that requires the wound target to be 4 or better; Magical is the attack.magical tag consumed by the armour and ward logic. The printed "cannot be made of Gromril/Ithilmar" is a material-combination clause for construction data. Scope review integration: {"clause_id":"whole","review_clause_id":"price-and-rarity","source_state":"matched","review_status":"reviewed","scope_reason":"The cost and availability of the blade are acquisition data, which the duel excludes.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Magical, two-handed Strength +1 blade that gives +1 to hit unless the target is Undead or Daemon, criticals on 5-6 when the wound target is 4 or better, and cannot be combined with shield, buckler or a second weapon. Closure: all four printed parts are delivered and the magical tag is present.","effect_id":"weapon.hellblade","relation":"equivalent","parameters":"{\"strength_bonus\": 1, \"tags\": [\"weapon.hellblade\", \"attack.magical\"], \"two_handed\": true}","conditions":"{\"application\": \"attack\", \"stacking\": \"stack\", \"trigger\": \"attack\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/contracts.py::effect_index\", \"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/phases.py::build_attacks\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_attack_strength\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_hit_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_wound_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_armour_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_injury_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_parry_context\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"A02a-melee-weapon-profiles","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/roster-construction/mordheim_construction/contracts.py::effect_index\", \"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/phases.py::build_attacks\"]"},"inherited_clause_text":"Cost 35 gc, Availability Rare 8. A rare blade charged with the power of Khorne himself. Range: Close Combat; Strength: As user +1; Special Rules: Soulseeking, Two-handed, Deadly, Magical. Soulseeking: all attacks made with a Hellblade are at +1 To Hit; this does not work on Undead or Demon models. Two-handed: a model armed with a Hellblade may not use a shield, buckler or additional weapon in close combat; if the model has a shield he still gets a +1 bonus to his armour save against shooting. Deadly: a Hellblade causes critical hits on rolls of 5 or 6; this rule does not apply if the warrior requires 5s or higher to wound. Magical: all attacks from a Hellblade count as Magical; a Hellblade cannot be made of Gromril, Ithilmar or similar mortal metals.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: whole--scope--ranged-shield-bonus (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   mechanic/weapon.hellblade
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   7277c1dc7d9df83f93d1af176a9b0aa4e3a7844caec2ef5e2346e98d6f944f19
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   if the model has a shield he still gets a +1 bonus to his armour save against shooting
+# Semantic contract (check analysis_status before treating as accepted):
+#   The +1 armour save with a shield applies against shooting only, and shooting resolution and targeting are excluded from the duel. Printed clause: if the model has a shield he still gets a +1 bonus to his armour save against shooting
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts. The Soulseeking +1 to hit with the undead/daemon exclusion is in prepare_hit_context; Deadly uses the critical threshold branch that requires the wound target to be 4 or better; Magical is the attack.magical tag consumed by the armour and ward logic. The printed "cannot be made of Gromril/Ithilmar" is a material-combination clause for construction data. Scope review integration: {"clause_id":"whole","review_clause_id":"ranged-shield-bonus","source_state":"matched","review_status":"reviewed","scope_reason":"The +1 armour save with a shield applies against shooting only, and shooting resolution and targeting are excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Magical, two-handed Strength +1 blade that gives +1 to hit unless the target is Undead or Daemon, criticals on 5-6 when the wound target is 4 or better, and cannot be combined with shield, buckler or a second weapon. Closure: all four printed parts are delivered and the magical tag is present.","effect_id":"weapon.hellblade","relation":"equivalent","parameters":"{\"strength_bonus\": 1, \"tags\": [\"weapon.hellblade\", \"attack.magical\"], \"two_handed\": true}","conditions":"{\"application\": \"attack\", \"stacking\": \"stack\", \"trigger\": \"attack\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/contracts.py::effect_index\", \"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/phases.py::build_attacks\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_attack_strength\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_hit_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_wound_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_armour_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_injury_context\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_parry_context\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"A02a-melee-weapon-profiles","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/roster-construction/mordheim_construction/contracts.py::effect_index\", \"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/phases.py::build_attacks\"]"},"inherited_clause_text":"Cost 35 gc, Availability Rare 8. A rare blade charged with the power of Khorne himself. Range: Close Combat; Strength: As user +1; Special Rules: Soulseeking, Two-handed, Deadly, Magical. Soulseeking: all attacks made with a Hellblade are at +1 To Hit; this does not work on Undead or Demon models. Two-handed: a model armed with a Hellblade may not use a shield, buckler or additional weapon in close combat; if the model has a shield he still gets a +1 bonus to his armour save against shooting. Deadly: a Hellblade causes critical hits on rolls of 5 or 6; this rule does not apply if the warrior requires 5s or higher to wound. Magical: all attacks from a Hellblade count as Magical; a Hellblade cannot be made of Gromril, Ithilmar or similar mortal metals.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# mechanic/weapon.hellblade - Strength +1, Soulseeking +1 To Hit, Deadly critical
+# hits on 5-6, two-handed, magical, and no mortal special metal.
+#
+# Expectations come from the printed rule and the admitted clauses, never from
+# engine output.  The Undead exception is declared through the model's own
+# undead/possessed fact, which is how the roster declares that identity.
+# Strength +1 moves the wound target against Toughness 3 to 3+.
+
+- audit_id: mechanic/weapon.hellblade
+  id: hellblade-wounds-at-the-boosted-strength
+  covers: [whole--scope--combat-profile-and-soulseeking]
+  fighters:
+    first:
+      main_weapon_id: weapon.hellblade
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# An equal Weapon Skill would need a 4; Soulseeking's printed +1 To Hit moves the target to a 3, and the 3 hits.
+
+- audit_id: mechanic/weapon.hellblade
+  id: hellblade-hits-on-a-three-because-of-soulseeking
+  covers: [whole--scope--combat-profile-and-soulseeking]
+  fighters:
+    first:
+      main_weapon_id: weapon.hellblade
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.hit_target: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed exception: Soulseeking does not work on Undead or Demon models, so the same 3 that hits a living opponent misses and the recorded target stays the ordinary 4.
+
+- audit_id: mechanic/weapon.hellblade
+  id: soulseeking-grants-nothing-against-the-undead
+  covers: [whole--scope--combat-profile-and-soulseeking]
+  fighters:
+    first:
+      main_weapon_id: weapon.hellblade
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {undead_or_possessed: True}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.0.hit_target: 4}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Deadly turns a wound roll of 5 into a critical hit, which the extra critical-table die and the doubled damage prove.
+
+- audit_id: mechanic/weapon.hellblade
+  id: deadly-makes-a-five-a-critical-wound
+  covers: [whole--scope--deadly]
+  fighters:
+    first:
+      main_weapon_id: weapon.hellblade
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w3-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: True, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed exception: a warrior who needs 5s or higher to wound gains nothing from Deadly, so the wound roll of 5 is an ordinary wound and no critical die is requested.
+
+- audit_id: mechanic/weapon.hellblade
+  id: deadly-does-not-apply-when-five-is-needed-to-wound
+  covers: [whole--scope--deadly]
+  fighters:
+    first:
+      main_weapon_id: weapon.hellblade
+      characteristics: {weapon_skill: 3, strength: 2, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t4-w2-i2 {weapon_skill: 3, strength: 3, toughness: 4, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed prohibition on Gromril, Ithilmar or similar mortal metals is declared as a refusal.
+
+- audit_id: mechanic/weapon.hellblade
+  id: hellblade-is-refused-with-a-special-metal
+  covers: [material-prohibition]
+  fighters:
+    first:
+      main_weapon_id: weapon.hellblade
+      main_material_id: material.gromril
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "Hellblade cannot be made of mortal special metals"
+# The printed prohibition on an additional weapon is declared as a refusal.
+
+- audit_id: mechanic/weapon.hellblade
+  id: hellblade-is-refused-with-an-additional-weapon
+  covers: [whole--scope--two-handed-loadout]
+  fighters:
+    first:
+      main_weapon_id: weapon.hellblade
+      off_hand_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "main weapon occupies both hands"
+# The printed prohibition on a shield is declared as a refusal.
+
+- audit_id: mechanic/weapon.hellblade
+  id: hellblade-is-refused-with-a-shield
+  covers: [whole--scope--two-handed-loadout]
+  fighters:
+    first:
+      main_weapon_id: weapon.hellblade
+      off_hand_id: defence.shield
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "main weapon occupies both hands"
+# The printed prohibition on a buckler is declared as a refusal.
+
+- audit_id: mechanic/weapon.hellblade
+  id: hellblade-is-refused-with-a-buckler
+  covers: [whole--scope--two-handed-loadout]
+  fighters:
+    first:
+      main_weapon_id: weapon.hellblade
+      off_hand_id: defence.buckler
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "main weapon occupies both hands"
+

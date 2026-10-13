@@ -1,0 +1,129 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/clan-angrund-kep/band--slayer-special-skills-berserker/skill.berserker
+# scaffold_fingerprint: 8ee957c3798487133496551d7313eb6624dd6ff5f3e1c6c42375f41c9fa80350
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries three authored scenarios derived from the
+# printed stanza, the recorded contract and the admitted berserker grants specification
+# (tests/specs/semantic/grants/editorial-berserker.yaml): the charging turn still hits on a
+# roll of 3 where the uncharged turn does not, and the same roll misses when the band grant is
+# absent.  The printed stanza of this origin does not carry the Ferocious Charge exclusivity
+# that other origins print, so that face is not asserted here (the register note records it as
+# undecided for this origin).  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios read the charging-turn bonus on the printed recipient.  The
+# bearer is this band's Slayer profile (WS4, A1) credited with
+# band--slayer-special-skills-berserker, and the opponent is the WS4 boundary the grants
+# specification names, so a declared hit of 3 succeeds while charging and fails after the same
+# bearer fights without a charge; removing the grant makes the same charging roll of 3 miss,
+# which fixes the +1 to the band grant rather than to the charge alone.  REVIEWED still requires
+# manual semantic review.
+# origin_id:
+#   rule/mordheim/clan-angrund-kep/band--slayer-special-skills-berserker/skill.berserker
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/clan-angrund-kep/special-rules.yaml
+# source_fingerprint:
+#   6329b96235f68f253e8873c62f9dd014482569be3c396b6522ac3d667fedf869
+# source_sha256_at_generation:
+#   a3d8b4bc4ca8c9711e279023946768eb1625c405d02961534d01facf6b146b09
+# Printed rule text:
+#   The Slayer may add +1 to his 'close combat to hit' rolls during the turn in which he charges.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Slayer may add +1 to his close-combat To Hit rolls during the turn in which he charges. Closure: a charging turn carries one extra point to hit and later rounds do not.
+# effect_id:
+#   skill.berserker
+# relation:
+#   equivalent
+# parameters:
+#   {"hit_modifier":1,"trigger":"charging turn","charge_hit_modifier":1}
+# conditions:
+#   {"recipient": "Slayer"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared berserker operator. This printed stanza does not carry the Ferocious Charge exclusivity that some other origin texts print, so only the +1 to hit term is decided here. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.berserker","verified_facet":"skill.berserker","relationship":"shared_facet","boundary":"Share the charging-turn melee hit bonus. Preserve each printed Ferocious Charge incompatibility; neither the bonus nor incompatibility follows from the name Berserker alone.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed stanza, the recorded contract and the admitted berserker grants
+# specification; no engine output was consulted.  The bearer is the printed Slayer profile of
+# this band (WS4, BS3, S3, T4, W1, I2, A1) credited with this band's Slayer-skill rule through
+# special_rule_ids, so the case reads the band grant rather than a bare tag.  The hand-built
+# opponent (WS4, S3, T3, W3, I1) is the boundary the specification names, and its own strike is
+# a declared natural 1, so only the hit step of the bearer's single attack is in question.
+
+- audit_id: rule/mordheim/clan-angrund-kep/band--slayer-special-skills-berserker/skill.berserker
+  id: the-charging-turn-hits-on-three
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-troll-slayers
+      special_rule_ids: [band--slayer-special-skills-berserker]
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/clan-angrund-kep/band--slayer-special-skills-berserker/skill.berserker
+  id: the-uncharged-turn-does-not-hit-on-three
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-troll-slayers
+      special_rule_ids: [band--slayer-special-skills-berserker]
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/clan-angrund-kep/band--slayer-special-skills-berserker/skill.berserker
+  id: without-the-grant-the-charging-three-misses
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: clan-angrund-kep
+      profile_id: dwarf-troll-slayers
+      main_weapon_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

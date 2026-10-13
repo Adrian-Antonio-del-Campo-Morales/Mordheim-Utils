@@ -122,15 +122,15 @@ rules:
     - bulls
 - id: sabretusks--trained
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.maneaters.sabretusks.trained
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.handler-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.handler-leadership
   name: Trained
   effect: >-
     Sabretusks may only be included if the warband includes a Mountain Guide. They may use the

@@ -1,6 +1,46 @@
 schema_version: 2
 ruleset: mordheim
 conditions:
+- id: condition.unseen-charge
+  name: Unseen Charge
+  name_i18n: {es: Carga sin Visibilidad}
+  effect: >-
+    The bearer charges a reachable opponent it cannot see; supplied individual fact, without map or
+    visibility simulation.
+  effect_i18n: {es: 'El portador carga a un enemigo alcanzable que no ve; hecho individual aportado, sin simular mapa ni visibilidad.'}
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Imperial Assassin / Backstabber
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.unseen-charge
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.unseen-charge}
+- id: condition.large-target
+  name: Large Target
+  name_i18n: {es: Objetivo Grande}
+  effect: >-
+    This model is explicitly Large; size is supplied rather than inferred from its species or
+    Wounds.
+  effect_i18n: {es: Este modelo es explícitamente Grande; el tamaño se aporta y no se infiere de su especie ni Heridas.}
+  source_refs:
+  - manual: mordheimer.net
+    printed_page: 0
+    section: Halfling Knight / Slay Large Creature
+    url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: none
+    effects:
+    - id: condition.large-target
+      scope: 'YES'
+      binding: {kind: mechanic, id: condition.large-target}
 - id: campaign.condition.frenzy
   name: Frenzy
   effect: The warrior suffers from frenzy from now on.
@@ -242,7 +282,9 @@ conditions:
         id: mechanic.psychology-immunity
 - id: condition.cold-blooded
   name: Cold-Blooded
-  effect: Cold-Blooded uses the lowest two of three dice. Lizardmen apply it to Psychology and Rout tests; Fimir apply it to Leadership tests. Warband Rout resolution is outside Combat Lab's 1v1 scope.
+  effect: >-
+    Cold-Blooded uses the lowest two of three dice. Lizardmen apply it to Psychology and Rout tests;
+    Fimir apply it to Leadership tests. Warband Rout resolution is outside Combat Lab's 1v1 scope.
   effect_i18n:
     es: >-
       Sangre Fría usa los dos dados más bajos de tres. Los Hombres Lagarto la aplican en chequeos

@@ -1,0 +1,116 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-spines/trait.spines
+# scaffold_fingerprint: 37bee8199762a71beecf82e0a098ccb3396f3ea793e48b791c3ec7652deff554
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole--scope--spines']; clauses still pending or unrepresentable in this file: [].  The tape key the earlier note called missing is the round-start handler's own composition (packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round passing `round.{round_index}.first.spines` / `.second.spines` into packages/python/combat-engine/mordheim_combat/modular/aftermath.py::_spines, whose automatic hit then reads `<key>.wound`), which the authored Mordheim copy of the same shared trait already exercises (tests/E2E/modular-engine/cases/grants/mordheim--cult-of-the-possessed--band--mutations-spines--trait.spines--6cea7551d294.yaml).  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole--scope--spines (scope: YES)
+# AUTHORED[whole--scope--spines]: 2 scenarios evidence the printed automatic hit on the real round route. At the start of the close-combat phase the bearer deals one automatic Strength 1 hit with criticals disabled to the contacting opponent while both attack pools declare misses, so the wound taken can only come from the trait; the identical phase on the identical fixture without the trait leaves every wound in place.
+# origin_id:
+#   rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-spines/trait.spines
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/trollheim-cult-of-the-possessed/special-rules.yaml
+# source_fingerprint:
+#   c0ebe34285b06355f9727c27d45d03895d7903e5bc5339fa4e839d22f13e479e
+# source_sha256_at_generation:
+#   3f3cf34fc9139fe856d2d8fdf26aef5a8f7f4ec5301f7a9accdfaab17c697bc9
+# Printed rule text:
+#   At the start of each close-combat phase, every model in base contact with the bearer suffers one automatic Strength 1 hit. These hits never cause critical hits.
+# Semantic contract (check analysis_status before treating as accepted):
+#   An automatic Strength 1 hit without criticals on every model in base contact at the start of each close-combat phase is an admitted damage consequence, which in a duel is the opposing fighter. Printed clause: At the start of each close-combat phase, every model in base contact with the bearer suffers one automatic Strength 1 hit. These hits never cause critical hits.
+# effect_id:
+#   trait.spines
+# relation:
+#   related
+# parameters:
+#   {"automatic_hits":1,"fixed_strength":1,"no_critical":true}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared spines trait, delivered by the round-start spines handler with criticals disabled. The printed 35 gc cost is acquisition data. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Scope review integration: {"clause_id":"whole","review_clause_id":"spines","source_state":"matched","review_status":"reviewed","scope_reason":"An automatic Strength 1 hit without criticals on every model in base contact at the start of each close-combat phase is an admitted damage consequence, which in a duel is the opposing fighter.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"At the start of each close-combat phase every model in base contact with the bearer suffers one automatic Strength 1 hit and these hits never cause critical hits. Closure: each round one automatic S1 no-critical hit is dealt to the engaged opponent.","effect_id":"trait.spines","relation":"equivalent","parameters":"{\"frequency\": \"start of each close-combat phase\", \"hit\": \"S1 automatic\", \"no_critical\": true}","conditions":"{\"recipient\": \"Mutant\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/aftermath.py::_react_to_wound\", \"packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07c-natural-and-mutation-traits","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/aftermath.py::_react_to_wound\", \"packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round\"]"},"inherited_clause_text":"At the start of each close-combat phase, every model in base contact with the bearer suffers one automatic Strength 1 hit. These hits never cause critical hits. Cost: 35 gc.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-trait.spines","verified_facet":"trait.spines","relationship":"shared_facet","boundary":"Automatic contacting-opponent hit at each close-combat phase start, not per wound or a model-counted group effect.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+#
+# Clause: whole--scope--cost (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-spines/trait.spines
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/trollheim-cult-of-the-possessed/special-rules.yaml
+# source_fingerprint:
+#   c0ebe34285b06355f9727c27d45d03895d7903e5bc5339fa4e839d22f13e479e
+# source_sha256_at_generation:
+#   3f3cf34fc9139fe856d2d8fdf26aef5a8f7f4ec5301f7a9accdfaab17c697bc9
+# Printed rule text:
+#   Cost: 35 gc.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The 35 gc cost of the mutation is acquisition data excluded from the duel. Printed clause: Cost: 35 gc.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared spines trait, delivered by the round-start spines handler with criticals disabled. The printed 35 gc cost is acquisition data. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Scope review integration: {"clause_id":"whole","review_clause_id":"cost","source_state":"matched","review_status":"reviewed","scope_reason":"The 35 gc cost of the mutation is acquisition data excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"At the start of each close-combat phase every model in base contact with the bearer suffers one automatic Strength 1 hit and these hits never cause critical hits. Closure: each round one automatic S1 no-critical hit is dealt to the engaged opponent.","effect_id":"trait.spines","relation":"equivalent","parameters":"{\"frequency\": \"start of each close-combat phase\", \"hit\": \"S1 automatic\", \"no_critical\": true}","conditions":"{\"recipient\": \"Mutant\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/aftermath.py::_react_to_wound\", \"packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07c-natural-and-mutation-traits","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/aftermath.py::_react_to_wound\", \"packages/python/combat-engine/mordheim_combat/modular/rounds.py::resolve_round\"]"},"inherited_clause_text":"At the start of each close-combat phase, every model in base contact with the bearer suffers one automatic Strength 1 hit. These hits never cause critical hits. Cost: 35 gc.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# The band origin repeats the canonical clause of the shared trait without adding a term, so the tape
+# is the shared operator's own route: the automatic hit is read at `round.<n>.<side>.spines` and the
+# printed "never cause critical hits" is respected by keeping both attack pools on a declared miss.
+
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-spines/trait.spines
+  id: the-automatic-spines-hit-lands-on-the-contacting-opponent
+  covers: [whole--scope--spines]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {spines: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.spines.wound, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1, state.first.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-spines/trait.spines
+  id: without-the-trait-the-same-phase-holds-no-automatic-hit
+  covers: [whole--scope--spines]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

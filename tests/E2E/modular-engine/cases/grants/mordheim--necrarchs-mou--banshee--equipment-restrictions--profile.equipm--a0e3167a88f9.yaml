@@ -1,0 +1,81 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/necrarchs-mou/banshee--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: 6b55656b4f71550f12d1c369451a2ebf9f9d026491df05cf596119bb314740d3
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying weapon.sword in main_weapon_id is refused with ""equipment" is forbidden for necrarchs-mou/banshee.", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# origin_id:
+#   rule/mordheim/necrarchs-mou/banshee--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/necrarchs-mou/special-rules.yaml
+# source_fingerprint:
+#   a001cc155b8585c2702ed9fed2bf520393065f1bd9b278aed0791879e2c9768e
+# source_sha256_at_generation:
+#   cab42606cd375933da360bd4b85c1b6e5b50fe7e8ef8b19fdf19504b642ea54c
+# Printed rule text:
+#   Banshees never carry any equipment, as they cannot hold them.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Prohibition: Banshees may carry no equipment at all.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["equipment"]}
+# conditions:
+#   {"recipient":"banshees"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   List-valued equipment token; the consumer vocabulary must interpret it as the whole equipment set. Surface reuse candidate: {"family":"903","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Separate intrinsic attacks, equipment selection, active use, ownership and an explicitly supported unarmed waiver. No weapons/armour text alone does not grant a waived penalty or extra attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/necrarchs-mou/banshee--equipment-restrictions/profile.equipment-restrictions
+  id: banshee-with-equipment-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: banshee
+      main_weapon_id: weapon.sword
+  expect_error: '"equipment" is forbidden for necrarchs-mou/banshee.'
+
+- audit_id: rule/mordheim/necrarchs-mou/banshee--equipment-restrictions/profile.equipment-restrictions
+  id: banshee-without-equipment-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: banshee
+    second:
+      collection: mordheim
+      band_id: necrarchs-mou
+      profile_id: banshee
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

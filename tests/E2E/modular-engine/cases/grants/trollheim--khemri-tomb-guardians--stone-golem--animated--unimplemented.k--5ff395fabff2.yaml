@@ -1,0 +1,44 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-tomb-guardians/stone-golem--animated/unimplemented.khemri-tomb-guardians.stone-golem.animated
+# scaffold_fingerprint: a92e780677ffbf3c7769b569b9e3527650c606f6b09aa5829908fa17ffee506f
+# authoring_status: PARTIAL
+# authoring_progress: the admitted animated clause was reviewed and no scenario is authorable.  The printed sentence is a classification ("is an animated being and is not Undead") whose consequence is which admitted rule set applies to the duelist; the register records no effect_id, an unresolved relation and no implementation consumer, and the duel vocabulary has no key that would exhibit the classification itself.  The adjacent consequences of the classification are separate origins with their own files (stone-golem--fear, --immune-to-psychology, --immune-to-poison).  The missing datum is a consumer that reads the animated classification.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: animated (scope: YES)
+# PARTIAL[animated]: [C] no scenario is authorable for this clause.  The printed classification is a scope disposition: the recorded contract has no effect_id and no consumer, and no observation in the duel vocabulary distinguishes an animated non-Undead duelist from any other, so any scenario would decide an unrecorded question.  Pending: a consumer that reads the animated classification.
+# origin_id:
+#   rule/trollheim/khemri-tomb-guardians/stone-golem--animated/unimplemented.khemri-tomb-guardians.stone-golem.animated
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-tomb-guardians/special-rules.yaml
+# source_fingerprint:
+#   027d47b412c93d1c8c64946b4881da41d9466f18be091a69b1a15a3d8d49c08d
+# source_sha256_at_generation:
+#   a9c8df6aaba67eeae09b5dee369da75a30c41cfc563e893c57ef2a764afbfc0f
+# Printed rule text:
+#   The Stone Golem is an animated being and is not Undead.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The classification that the Stone Golem is animated and not Undead decides which admitted rule sets apply to this duelist. Printed clause: The Stone Golem is an animated being and is not Undead.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Map/movement, deployment, water/weather or mount mechanics are permanent 1v1 exclusions; the clause is recorded explicitly and no implementation consumer is assigned. Scope review integration: {"clause_id":"animated","review_clause_id":"whole","source_state":"matched","review_status":"reviewed","scope_reason":"The classification that the Stone Golem is animated and not Undead decides which admitted rule sets apply to this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"The Stone Golem is an animated being and is not Undead.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

@@ -158,15 +158,15 @@ rules:
     - estalian-warhound
 - id: estalian-warhound--beastmaster-leadership
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustrian-reavers.estalian-warhound.beastmaster-leadership
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.handler-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.handler-leadership
   name: Beastmaster Leadership
   effect: >-
     If within 6 inches of the Reaver Beastmaster, the Warhound may use the Beastmaster's Leadership.
@@ -249,15 +249,15 @@ rules:
     - barbary-monkey
 - id: barbary-monkey--beastmaster-leadership
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustrian-reavers.barbary-monkey.beastmaster-leadership
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.handler-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.handler-leadership
   name: Beastmaster Leadership
   effect: >-
     If within 6 inches of the Reaver Beastmaster, the Monkey may use the Beastmaster's Leadership.

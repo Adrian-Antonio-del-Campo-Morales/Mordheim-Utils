@@ -1,0 +1,115 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.tough-as-steel
+# scaffold_fingerprint: fdfba4e63380cf8d33070e2042e5a7caec4aeba4735b4423d46ab8e5c6f8e2fd
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries 3 authored scenarios derived from the printed rule and the recorded contract; the follow-up warning recorded against the vectorized port is preserved below, not resolved. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: out-of-action-only-on-six (scope: YES)
+# AUTHORED[out-of-action-only-on-six]: 3 scenarios cover the same injury total of five leaving the bearer Stunned instead of Out of Action, the same total taking an unskilled bearer out, and a total of six still taking the bearer out.
+# source-vs-port conflict (preserved, not resolved): the register warns that the vectorized port consumes this skill as Hard to Kill (which would leave the bearer Stunned on a three as well) while the reference modular path consumes it as True Grit with its own band. These scenarios follow the reference path named by the recorded contract (out_of_action_threshold 6, stunned_from 4); the two ports disagree and the choice of governing port is a coordinator decision.
+# origin_id:
+#   mechanic/skill.tough-as-steel
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   25a64c0c5033125ea9a2651f89cd09851b797e7ae441dae4c20110aae1a11575
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Only goes Out of Action on a 6 on the Injury table.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Only goes out of action on a 6 on the Injury table; observable: an injury total of 4 or 5 leaves the bearer Stunned and only a 6 takes him out of action.
+# effect_id:
+#   skill.tough-as-steel
+# relation:
+#   equivalent
+# parameters:
+#   {"out_of_action_threshold":6,"stunned_from":4}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Shared-register row of True Grit (G162). Warning recorded for follow-up: the vectorized port treats this skill as Hard to Kill, which would leave a bearer Stunned on a 3 as well; the reference path consumes it as True Grit, and the two ports disagree.
+
+# --- Authored scenarios ---
+# mechanic/skill.tough-as-steel - authored from the printed "only goes Out of
+# Action on a 6 on the Injury table" clause and the recorded contract, never from
+# engine output.  The opponent is given one wound and no protection, so a single
+# ordinary wound of one takes him to zero and the round resolves exactly one
+# injury die; the injury total is that die because a plain mace wound adds no
+# injury modifier and only a critical adds the table's bonus, which these
+# scenarios do not use.  The bearer is left Stunned or Out of Action by all three
+# injuries, so the bearer strikes back in none of them and no scenario declares
+# his own attack roll.
+- audit_id: mechanic/skill.tough-as-steel
+  id: an-injury-total-of-five-stuns-instead-of-removing-the-bearer
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &tas-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.tough-as-steel]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: &tas-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/skill.tough-as-steel
+  id: the-same-total-takes-an-ordinary-bearer-out-of-action
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *tas-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: *tas-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: mechanic/skill.tough-as-steel
+  id: a-total-of-six-still-removes-the-bearer
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *tas-attacker
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.tough-as-steel]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: *tas-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

@@ -1,0 +1,65 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/amazons-lustria/band--amazon-special-skills/profile.skill-access
+# scaffold_fingerprint: 06eb1ae1cb68ad0c4bf58351c24599ba0200cf335ed2488df6baab08d8c2c12a
+# authoring_status: PARTIAL
+# authoring_progress: the printed closure of the special table is covered by an authored refusal;
+#   the admission half is marked PARTIAL below with its concrete blocker.  PARTIAL is authoring and
+#   semantic contrast only; execution_status stays UNEXECUTED and no functional result exists.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [B] the closure of the printed table is authored as one refusal.  The admission half
+#   is not representable from the band artefact: the binding declares
+#   {"category":"special"} with no members, so the recipient's resolved special list carries no
+#   published member id and the shared route answers the informational pending-list case
+#   (skill_pending_special_list) for every special skill it checks; the compile then surfaces the
+#   same access refusal.  Naming a member would require inventing a canonical skill id the KB does
+#   not carry.  Recorded, not fabricated.
+# origin_id:
+#   rule/mordheim/amazons-lustria/band--amazon-special-skills/profile.skill-access
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/amazons-lustria/special-rules.yaml
+# source_fingerprint:
+#   7b64d3888104e86d90fbff8a36c47ae0b277f5f059bae46156e1fb1830ed05fb
+# source_sha256_at_generation:
+#   d28bfbb2e7601a679cb5acc6d70f7aa00ef9c953d7f1acfe2a7775e6fa40f281
+# Printed rule text:
+#   Amazon Heroines may use the following skill table instead of any of the standard skill tables available to them.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Permission: an Amazon Hero may replace its standard skill lists with the band special table; the members are published by the band profile table and are individually selectable.
+# effect_id:
+#   profile.skill-access
+# relation:
+#   equivalent
+# parameters:
+#   {"category":"special"}
+# conditions:
+#   {"grant":"profile","list_source":"band special skill table"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The binding declares the category only; the concrete members come from the L05 published table. Henchman controls receive no special access. Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded semantic contract; no engine output was consulted.
+
+- audit_id: rule/mordheim/amazons-lustria/band--amazon-special-skills/profile.skill-access
+  id: a-special-skill-outside-the-printed-table-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: amazons-lustria
+      profile_id: serpent-priestess
+      skill_ids: [skill.monster-slayer]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to amazons-lustria/serpent-priestess: ['skill.monster-slayer']"

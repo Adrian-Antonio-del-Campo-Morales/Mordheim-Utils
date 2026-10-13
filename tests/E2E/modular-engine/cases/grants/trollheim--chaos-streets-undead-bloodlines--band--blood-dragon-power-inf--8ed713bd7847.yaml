@@ -1,0 +1,137 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-infallible/skill.infallible
+# scaffold_fingerprint: ccd9c441b56265f1da43507a940cd17a4781ccaeeef847c656d4f2e768cd4672
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 3 authored scenarios for the family model
+#   derived from the printed rule and the recorded semantic contract: the Blood Dragon Vampire that
+#   charges takes its missed To-Hit roll again in that turn, a turn in which nobody charged offers no
+#   reroll and the miss stands, and a band model the source does not name for this power rerolls
+#   nothing.  The source grants this power selectable and names blood-dragon-vampire as its only
+#   recipient, so the scenario states the chosen power explicitly on its printed recipient.  REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED; no behavioral result is
+#   claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenario(s) cover the clause: the charging Blood Dragon Vampire rerolls its missed
+#   hit in that turn, the same miss stands in a turn with no charge, and a band model outside the
+#   printed recipient list receives no reroll.  The reuse boundary recorded on this member is respected:
+#   this is the charge-turn hit reroll only, not Infinite Hatred's all-round reroll.
+# origin_id:
+#   rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-infallible/skill.infallible
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-undead-bloodlines/special-rules.yaml
+# source_fingerprint:
+#   42fac049170b9e35ef5b90f9c67274e18980d10a4d7ec2b0b7f38db8c1ff0fe0
+# source_sha256_at_generation:
+#   aaa7750bfbf16797ddd93878e0cd88fd550a10fdd09818c2cdb767f9356d47d2
+# Printed rule text:
+#   The Vampire may re-roll failed To Hit rolls during the turn in which it charges.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Vampire may re-roll failed To Hit rolls during the turn in which it charges. Closure: the charging turn grants the hit reroll.
+# effect_id:
+#   skill.infallible
+# relation:
+#   equivalent
+# parameters:
+#   {"reroll_hits":true,"trigger":"charging turn","charge_hit_reroll":"failed"}
+# conditions:
+#   {"recipient": "Blood Dragon Vampire"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared infallible operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.infallible","verified_facet":"skill.infallible","relationship":"shared_facet","boundary":"Charge-turn hit reroll only; not all-round Infinite Hatred or failed wound rerolls.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Family model (charge-turn missed-hit reroll, skill.infallible), taken from the printed rule, the
+# recorded contract and the accepted model of cases/mechanics/skill.infallible.yaml.  The bearer is the
+# band's printed Blood Dragon Vampire, built from its band profile so this record's own band power is
+# what the scenario exercises; the source declares that power selectable and names blood-dragon-vampire
+# as its only recipient, so the scenario states the chosen power explicitly.  Its physical
+# characteristics are supplied as fixture facts (WS3 S3 T3 W2 I5 A1) so the dice thresholds and the
+# strike order are fixed, and its printed Leadership stays in place.  The opponent is a hand-built
+# fixture with one attack.  A miss (a natural 2 against WS3) is taken again on a 4+ and wounds on a 4+,
+# so the reroll is what the tape shows; where the trigger is absent, or the power is not carried, the
+# strict tape holds no reroll key and the miss stands.
+
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-infallible/skill.infallible
+  id: the-charging-vampire-rerolls-a-missed-hit
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+      special_rule_ids: [band--blood-dragon-power-infallible]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed trigger is the turn in which the bearer charges: with nobody charging there is no reroll,
+# and the bearer still strikes first on its higher Initiative.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-infallible/skill.infallible
+  id: a-turn-without-a-charge-carries-no-reroll
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
+      special_rule_ids: [band--blood-dragon-power-infallible]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A band model the source does not name for this power receives no reroll, however it charges.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--blood-dragon-power-infallible/skill.infallible
+  id: a-band-mate-outside-the-printed-recipients-receives-no-reroll
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: necromancer
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

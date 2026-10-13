@@ -1,0 +1,108 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/warband/skill.sweep/skill.sweep
+# scaffold_fingerprint: a9d450e96a6f7ebd7e7d2bc40d9ac626748e541f24b412406c5a2ed48e6b55f5
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover the replaced pool of a double-handed bearer, the
+#   automatic hit when the opponent fails the Initiative test, no hit at all when the
+#   test is passed, and a one-handed bearer left with his ordinary attacks.
+# origin_id:
+#   rule/catalog/warband/skill.sweep/unclassified
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/skills/warband.yaml
+# source_fingerprint:
+#   e613a3c3285f2d0f3af56aaac75eb50b5718b9cbe118fbc853ad34060447275f
+# source_sha256_at_generation:
+#   cbce88f8e195c72b1767c88af362131455b99435c0ffb53e58b55b7306161198
+# Printed rule text:
+#   With a double-handed weapon, replaces all attacks with one automatic hit if the opponent fails an Initiative test.
+# Semantic contract (check analysis_status before treating as accepted):
+#   With a double-handed weapon the fighter replaces all attacks with one automatic hit if the opponent fails an Initiative test. Closure: the pool is one attack that hits without a To Hit roll and only when the Initiative test fails.
+# effect_id:
+#   skill.sweep
+# relation:
+#   equivalent
+# parameters:
+#   {"attacks": 1, "hit": "automatic", "test": "Initiative", "weapon_scope": "double-handed weapon"}
+# conditions:
+#   {"source": "canonical warband skill list", "weapon_scope": "weapon.double-handed-weapon"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Canonical definition of the shared sweep operator, whose pool clamp and Initiative test are both consumed. The printed text repeats the canonical clause of the shared operator without adding a term, so the catalog origin creates no second runtime contribution. Surface reuse candidate: {"family":"skill.sweep","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The catalog warband skill list prints the canonical sweep wording. The opponent is
+# given Attacks 0 in the first two scenarios so the round resolves the bearer's pool
+# alone, and the absence of a second attack index is what evidences the printed
+# replacement of all attacks.
+- audit_id: rule/catalog/warband/skill.sweep/skill.sweep
+  id: a-failed-initiative-test-leaves-one-automatic-hit
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids: [skill.sweep]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 0}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.sweep, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: True, attacks.0.critical: False, attacks.0.damage: 1, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+- audit_id: rule/catalog/warband/skill.sweep/skill.sweep
+  id: a-passed-initiative-test-grants-no-hit-at-all
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids: [skill.sweep]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 6, attacks: 0}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.sweep, value: 5}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/catalog/warband/skill.sweep/skill.sweep
+  id: a-one-handed-bearer-keeps-his-ordinary-attacks
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.sweep]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

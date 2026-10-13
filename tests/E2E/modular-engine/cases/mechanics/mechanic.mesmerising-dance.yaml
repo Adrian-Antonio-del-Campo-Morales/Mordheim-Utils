@@ -1,0 +1,138 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.mesmerising-dance
+# scaffold_fingerprint: b678a5f032aa8416ee051cfc4b15c5e19a84fc18671a0ae101e51ddac496baa9
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenarios cover the failed Leadership test that blocks the target's attacks while leaving it standing and defending, the passed test that leaves both pools intact, the recorded immunity that skips the test for an Undead target (the printed Lizardman half of the same gate term is not supplied by this vocabulary), and the absence of the gate without the dance.
+# origin_id:
+#   mechanic/mechanic.mesmerising-dance
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   eb2bbcd1907bbd5dfa1d7cb5f14e874d8f85df5050cc2fca554364fa48193fc1
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Some Amazon women develop their fighting motions into a graceful dance that can transfix their foes. Any model fighting in base contact with the Amazon must take a Leadership test at the start of each turn. If they fail they cannot attack that turn but may defend themselves. The dance however is useless against Lizardmen and undead who are immune to their charms.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Any model in base contact must take a Leadership test at the start of each turn; on a failure it cannot attack that turn but may defend itself, and the dance is useless against Lizardmen and undead. Closure: each round the engaged opponent tests Leadership and a failure blocks only its attacks, and a Lizardman, undead or charm-immune opponent skips the test entirely.
+# effect_id:
+#   mechanic.mesmerising-dance
+# relation:
+#   equivalent
+# parameters:
+#   {"failure": "cannot attack but may defend", "frequency": "start of each turn", "immune": ["Lizardmen", "undead"], "test": "Leadership"}
+# conditions:
+#   {"range": "base contact", "trigger": "round start"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   resolve_round runs the dance from a combat-start snapshot with a Leadership test; on failure the target is charm_attack_blocked (attacks blocked, defence kept) and the gate exempts nature.undead, species.lizardman and mechanic.charm-immunity. "Each turn" is realised per duel round, which in a duel is the same time unit. Surface reuse candidate: {"family":"mechanic.mesmerising-dance","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare target identities, psychology/animal exceptions, test dice, phase, failure consequence and duration. Charge refusal, inability to attack and loss of one attack are distinct; Crude Belch may remove the only attack. Keep supplied individual consequences separate from group emission.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The dancer forces the opposing warrior's Leadership test at the round start.  The two
+# declared sixes total twelve against Leadership 6 and fail it, so the target cannot
+# attack: its pool contributes no die at all, while the dancer's own attack resolves
+# normally and the target stays Standing (its defence is never removed).
+- audit_id: mechanic/mechanic.mesmerising-dance
+  id: a-failed-leadership-test-blocks-the-target-s-attacks
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.mesmerising-dance]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.mesmerising-dance.0, value: 6}
+    - {key: round.0.second.mesmerising-dance.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.charm_attack_blocked: true, state.second.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same test passed on a total of two: nothing is blocked, both pools are resolved
+# and each warrior asks for its own To Hit die.
+- audit_id: mechanic/mechanic.mesmerising-dance
+  id: a-passed-leadership-test-leaves-both-pools-intact
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.mesmerising-dance]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.mesmerising-dance.0, value: 1}
+    - {key: round.0.second.mesmerising-dance.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "Useless against ... undead": an Undead target skips the test entirely, which the
+# strict tape records by carrying no mesmerising-dance die at all, and keeps its own
+# attack.  The identity is supplied the way the corpus already supplies it elsewhere
+# (`trait_overrides: {creature_kind: undead}`).
+- audit_id: mechanic/mechanic.mesmerising-dance
+  id: an-undead-target-skips-the-dance-test
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.mesmerising-dance]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without the dance the identical configuration asks for no test and blocks nothing:
+# the gate belongs to the dance, not to the target's Leadership or to contact alone.
+- audit_id: mechanic/mechanic.mesmerising-dance
+  id: without-the-dance-no-test-is-requested
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

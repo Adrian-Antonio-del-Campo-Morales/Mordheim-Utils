@@ -1,0 +1,110 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/black-orcs/troll--vomit-attack/weapon.vomit-attack
+# scaffold_fingerprint: e0b0e39d18cfd78003711e20b1e3f13743dcdc926df46491ffc754fdf38d6dcc
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored scenarios derived from the printed
+# rule, the printed Troll profile and the recorded contract: the declared replacement is one
+# automatic Strength 5 hit that ignores armour, and declining it leaves the profile's three ordinary
+# attacks.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the printed "instead of his normal attacks" replacement: the
+# declared attack is one automatic Strength 5 hit with no To Hit die, no armour die even against
+# plate armour and no parry die, and the declined declaration leaves the profile's three ordinary
+# natural attacks each with its own To Hit die.  Bearer is the printed Troll profile of this origin,
+# whose automatic profile rules make the round begin with the mandatory two-dice Stupidity test
+# (keys round.0.first.stupidity.0/1, passing on a sum no greater than Leadership 4); its
+# regeneration and Fear rules stay idle because the Troll is neither wounded nor charged.  The
+# declaration is the decision round.0.first.vomit-attack.  REVIEWED still requires manual semantic
+# review.
+# origin_id:
+#   rule/mordheim/black-orcs/troll--vomit-attack/weapon.vomit-attack
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-orcs/special-rules.yaml
+# source_fingerprint:
+#   9c9b677811516080dd6e381f1b24d5d1c2809469e6adea600e11a3075f7c9a2c
+# source_sha256_at_generation:
+#   033545b947532c3193948d1c1e85930a8f543a3f8a55e89401e4000e4ace47c8
+# Printed rule text:
+#   Instead of his normal attacks, a Troll can regurgitate its highly corrosive digestive juices on an unfortunate hand-to-hand combat opponent. This is a single attack that automatically hits with a Strength of 5 and ignores armour saves.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Instead of his normal attacks a Troll may vomit on an opponent: one attack that hits automatically at Strength 5 and ignores armour saves. Closure: the replacement pool is one automatic Strength 5 hit that skips the armour step.
+# effect_id:
+#   weapon.vomit-attack
+# relation:
+#   equivalent
+# parameters:
+#   {"automatic_hit": true, "fixed_strength": 5, "ignore_armour": true, "replaces_pool": true}
+# conditions:
+#   {"recipient": "Troll", "replaces_pool": true}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared vomit-attack operator, whose contract carries the automatic Strength 5 armour-denying profile; the printed single-attack wording matches the pool clamp of that operator. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The troll's single automatic Strength 5 attack that ignores armour saves, replacing its normal attacks, is an admitted attack consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"W-weapon.vomit-attack","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare only the current admitted facet, preserving weapon-specific overrides, optional attack replacement, parry and save eligibility, and per-phase reroll resources. Do not inherit the combined parent parameters or introduce capture, shooting, exploration or excluded recipient consequences.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profile; no engine output was consulted.
+# The Troll acts last (Initiative 1), so the defender's own attack is the first entry of the round.
+
+- audit_id: rule/mordheim/black-orcs/troll--vomit-attack/weapon.vomit-attack
+  id: the-declared-replacement-is-one-automatic-strength-five-hit-ignoring-armour
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: troll
+      special_rule_ids: [troll--vomit-attack]
+    second:
+      main_weapon_id: weapon.sword
+      armour_id: armour.plate-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.vomit-attack, value: true}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 1}
+    - {key: round.0.first.stupidity.1, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 3}
+  expect_rounds:
+    0: {attacks.1.hit: True, attacks.1.saved: False, attacks.1.parried: False, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/black-orcs/troll--vomit-attack/weapon.vomit-attack
+  id: declining-the-replacement-leaves-the-ordinary-attack-pool
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: troll
+      special_rule_ids: [troll--vomit-attack]
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.vomit-attack, value: false}
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 1}
+    - {key: round.0.first.stupidity.1, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit: False, state.first.wounds: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,95 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/sons-of-hashut/blunderbuss-chaos-dwarfs--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: a95182967ff47aa4321034cc0627a1a9188656ca899ce048305a0d453d585acf
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed
+#   obligation and the recorded contract: a build of the recipient without the blunderbuss is refused with
+#   the shared stage's required-equipment template, and the same recipient carrying the canonical
+#   chaos_dwarf_blunderbuss item constructs and runs.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios.  The declared parameters {required_kinds: ['chaos_dwarf_blunderbuss']} reach
+#   profile.required_equipment (packages/python/roster-construction/mordheim_construction/_eligibility.js,
+#   profileFactsProjection), whose consumer equipmentSetIssues() emits
+#   `The equipment of ${band}/${profile} includes no ${kinds.join("/")}; the printed clause obliges acquiring
+#   one.` - the exact string this file asserts.  The obligation is a whole-set one (the source obliges the
+#   purchase, never attacking with that weapon), so the refusal names the recipient build with no item of any
+#   of those kinds, and the accepted control carries the item id the band's own equipment list publishes
+#   (bands/mordheim/sons-of-hashut/equipment-access.yaml: item_id chaos_dwarf_blunderbuss).
+# origin_id:
+#   rule/mordheim/sons-of-hashut/blunderbuss-chaos-dwarfs--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/sons-of-hashut/special-rules.yaml
+# source_fingerprint:
+#   4d0a07fbad9dfd0f071cef130c6b116c12f0396cf04229b52ab601ac0daeecc7
+# source_sha256_at_generation:
+#   8a3ed07934e595765c52e8cdfb97bb5b56e12bbc0714eae6fca1db6dc2af84dc
+# Printed rule text:
+#   Starting equipment for a Blunderbuss Chaos Dwarf must include a Chaos Dwarf Blunderbuss.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Acquisition obligation: a Blunderbuss Chaos Dwarf must include one Chaos Dwarf Blunderbuss in its starting kit.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"required_kinds":["chaos_dwarf_blunderbuss"]}
+# conditions:
+#   {"recipient":"blunderbuss-chaos-dwarfs"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The source obliges the purchase, never attacking with that weapon; the contract is a whole-set requirement, not an active-slot one. Surface reuse candidate: {"family":"907","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+# Derived from the printed obligation and the shared stage's template; no engine output was consulted.
+
+- audit_id: rule/mordheim/sons-of-hashut/blunderbuss-chaos-dwarfs--equipment-restrictions/profile.equipment-restrictions
+  id: a-blunderbuss-chaos-dwarf-without-the-blunderbuss-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      owned_item_ids: []
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: blunderbuss-chaos-dwarfs
+  expect_error: The equipment of sons-of-hashut/blunderbuss-chaos-dwarfs includes no chaos_dwarf_blunderbuss; the printed clause obliges acquiring one.
+
+- audit_id: rule/mordheim/sons-of-hashut/blunderbuss-chaos-dwarfs--equipment-restrictions/profile.equipment-restrictions
+  id: the-same-recipient-carrying-the-blunderbuss-is-accepted-at-construction
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: blunderbuss-chaos-dwarfs
+      main_weapon_id: weapon.mace
+      owned_item_ids: [chaos_dwarf_blunderbuss]
+    second:
+      collection: mordheim
+      band_id: sons-of-hashut
+      profile_id: blunderbuss-chaos-dwarfs
+      main_weapon_id: weapon.mace
+      owned_item_ids: [chaos_dwarf_blunderbuss]
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

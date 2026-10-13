@@ -144,15 +144,15 @@ rules:
     profile_ids:
     - rat-ogre
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.trollheim-skaven-clan-eshin.rat-ogre.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: rat-ogre--stupidity
   name: Stupidity
@@ -166,15 +166,15 @@ rules:
     profile_ids:
     - rat-ogre
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.trollheim-skaven-clan-eshin.rat-ogre.stupidity
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
   rule_ref: shared-rule.stupidity
 - id: rat-ogre--experience
   name: Experience

@@ -179,15 +179,15 @@ rules:
     profile_ids:
     - goblin-warriors
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-greenskins.goblin-warriors.fear-elves
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.fear-of-elves
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-of-elves
 - id: cave-squigs--squig-movement
   name: Movement
   effect: >-
@@ -314,15 +314,15 @@ rules:
     profile_ids:
     - troll
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-greenskins.troll.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: troll--stupidity
   name: Stupidity
@@ -336,15 +336,15 @@ rules:
     profile_ids:
     - troll
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-greenskins.troll.stupidity
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
   rule_ref: shared-rule.stupidity-2
 - id: troll--regeneration
   kind: profile_ability

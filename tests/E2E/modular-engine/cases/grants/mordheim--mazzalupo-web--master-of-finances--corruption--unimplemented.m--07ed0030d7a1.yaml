@@ -1,0 +1,114 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/mazzalupo-web/master-of-finances--corruption/unimplemented.mazzalupo-web.master-of-finances.corruption
+# scaffold_fingerprint: 35adbe0f12b369a27ee3691841b0bbb00d28c9a8db62138f1c64acb57e0b063f
+# authoring_status: PARTIAL
+# authoring_progress: neither admitted clause can be authored.  The recorded relation of both clauses is
+#   unresolved, no consumer is recorded, and the register note reads the printed ability as "out-of-game gold
+#   bribery with the opponent controller; not a duel-runtime effect".  The exact pending datum is named in each
+#   clause marker below.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: corruption--scope--attack-reroll (scope: YES)
+# PARTIAL[corruption--scope--attack-reroll]: [C] no scenario is authorable while the effect has no route.  The
+#   printed sentence ("pay 5 gc to make a hitting enemy reroll one successful attack") yields the clause the
+#   scope review admits, but its recorded effect_id is not recorded, its relation is unresolved and no
+#   consumer names the operator.  The missing datum is the forced-reroll operator itself (the enemy re-takes
+#   one successful attack and accepts the second result) plus the supplied route that applies it to the bearer
+#   of the corruption; the payment and the opponent-controller agreement stay outside the duel.
+# origin_id:
+#   rule/mordheim/mazzalupo-web/master-of-finances--corruption/unimplemented.mazzalupo-web.master-of-finances.corruption
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/mazzalupo-web/special-rules.yaml
+# source_fingerprint:
+#   67f59b1d6a1c82ad588e0429d24391ade630fbd36871d8c26a840235521a7d43
+# source_sha256_at_generation:
+#   5e807390d5e64386547f1fced687f85ae644c6c63bb77db10babc2531fb0d8ee
+# Printed rule text:
+#   make a hitting enemy reroll one successful attack
+# Semantic contract (check analysis_status before treating as accepted):
+#   Forcing a hitting enemy to reroll one successful attack is an admitted individual attack consequence between the two duellists. Printed clause: make a hitting enemy reroll one successful attack
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Out-of-game gold bribery with the opponent controller; not a duel-runtime effect. Scope review integration: {"clause_id":"corruption","review_clause_id":"attack-reroll","source_state":"unverified","review_status":"reviewed","scope_reason":"Forcing a hitting enemy to reroll one successful attack is an admitted individual attack consequence between the two duellists.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"pay 5 gc to make a hitting enemy reroll one successful attack; Psychology-immune models cannot be corrupted","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: corruption--scope--psychology-immunity-limit (scope: YES)
+# PARTIAL[corruption--scope--psychology-immunity-limit]: [C] the printed limit is a property of the corruption
+#   effect, not a duel observable of its own: it can only be evidenced once a corruption outcome is supplied
+#   to a fighter, and that supply route is the same one missing for the attack-reroll clause.  The pending
+#   datum is the supplied corruption state (or the eligibility check that refuses it for a Psychology-immune
+#   model); the immunity operators that exist today belong to other identities and are not this restriction.
+# origin_id:
+#   rule/mordheim/mazzalupo-web/master-of-finances--corruption/unimplemented.mazzalupo-web.master-of-finances.corruption
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/mazzalupo-web/special-rules.yaml
+# source_fingerprint:
+#   67f59b1d6a1c82ad588e0429d24391ade630fbd36871d8c26a840235521a7d43
+# source_sha256_at_generation:
+#   5e807390d5e64386547f1fced687f85ae644c6c63bb77db10babc2531fb0d8ee
+# Printed rule text:
+#   Psychology-immune models cannot be corrupted
+# Semantic contract (check analysis_status before treating as accepted):
+#   The limit that Psychology-immune models cannot be corrupted states the eligibility of the admitted effect and is recorded on its own text. Printed clause: Psychology-immune models cannot be corrupted
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Out-of-game gold bribery with the opponent controller; not a duel-runtime effect. Scope review integration: {"clause_id":"corruption","review_clause_id":"psychology-immunity-limit","source_state":"unverified","review_status":"reviewed","scope_reason":"The limit that Psychology-immune models cannot be corrupted states the eligibility of the admitted effect and is recorded on its own text.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"pay 5 gc to make a hitting enemy reroll one successful attack; Psychology-immune models cannot be corrupted","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: corruption--scope--corruption-cost (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/mazzalupo-web/master-of-finances--corruption/unimplemented.mazzalupo-web.master-of-finances.corruption
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/mazzalupo-web/special-rules.yaml
+# source_fingerprint:
+#   67f59b1d6a1c82ad588e0429d24391ade630fbd36871d8c26a840235521a7d43
+# source_sha256_at_generation:
+#   5e807390d5e64386547f1fced687f85ae644c6c63bb77db10babc2531fb0d8ee
+# Printed rule text:
+#   pay 5 gc to
+# Semantic contract (check analysis_status before treating as accepted):
+#   Paying gold crowns to use the ability is a price, and acquisition costs are excluded from the duel. Printed clause: pay 5 gc to
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Out-of-game gold bribery with the opponent controller; not a duel-runtime effect. Scope review integration: {"clause_id":"corruption","review_clause_id":"corruption-cost","source_state":"unverified","review_status":"reviewed","scope_reason":"Paying gold crowns to use the ability is a price, and acquisition costs are excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"pay 5 gc to make a hitting enemy reroll one successful attack; Psychology-immune models cannot be corrupted","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

@@ -1,0 +1,124 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-lahmian-brotherhood/lackeys--accustomed-to-fear/unimplemented.khemri-lahmian-brotherhood.lackeys.accustomed-to-fear
+# scaffold_fingerprint: 8a761a4ef371806ebd0d4f8d8fbd571d5b582654d58669d2a0bcf314ac234b9f
+# authoring_status: AUTHORED
+# authoring_progress: the admitted accustomed-to-fear clause carries 4 authored scenario(s) derived
+# from the printed rule, the recorded semantic contract and the printed profile; any remaining
+# face of the file stays recorded as pending below.  REVIEWED still requires manual semantic
+# review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: accustomed-to-fear (scope: YES)
+# AUTHORED[accustomed-to-fear]: the bearer lackeys is the declared recipient, built from its printed profile (W1 A1); the opponent is a hand-built fixture that declares its own facts.
+#   4 scenario(s) cover the clause: the printed exemption names a Skeleton among the three causer kinds, so that charger reaches the bearer without any Fear die; the printed exemption names a Spirit among the three causer kinds, so that charger reaches the bearer without any Fear die; the printed exemption names a Vampire among the three causer kinds, so that charger reaches the bearer without any Fear die; Fear from a fear-causer that is none of the printed three kinds is still tested, so the exemption is filtered rather than unconditional.
+#   Every strike is declared as a natural 1, so each round reports the Fear or Stupidity request under test and nothing else.
+#   REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/khemri-lahmian-brotherhood/lackeys--accustomed-to-fear/unimplemented.khemri-lahmian-brotherhood.lackeys.accustomed-to-fear
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-lahmian-brotherhood/special-rules.yaml
+# source_fingerprint:
+#   9685e06bb36ccbb11f9ed86e97897b1d531f52edec66594f2f9f9c42651cb2d6
+# source_sha256_at_generation:
+#   b916cfbc1207fa7a28fd5b0c3cbced9ab169559d0f51326fcf084c55213dd7b8
+# Printed rule text:
+#   Lackeys are immune to Fear caused by Vampires, Skeletons and Spirits.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Immune to Fear but only to Fear caused by Vampires, Skeletons and Spirits. Observable: no Fear test against a fear-causing enemy whose identity is a Vampire, Skeleton or Spirit, while Fear from any other fear-causing enemy is still tested.
+# effect_id:
+#   mechanic.fear-immunity
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"Fear test against a fear-causing enemy","recipient":"Lackeys","exception":"only Vampire, Skeleton and Spirit fear-causers are exempted"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Manually checked this origin against the whole resolve_fear path: ordinary mechanic.fear-immunity is unconditional and has no Vampire/Skeleton/Spirit filter. This requires filtered behavior and a canonical connection; adding the ordinary immunity binding alone would exempt unrelated enemies incorrectly. The cited functions are existing insertion seams, not an implemented filtered operator. Surface reuse candidate: {"family":"mechanic.fear-immunity","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/lackeys--accustomed-to-fear/unimplemented.khemri-lahmian-brotherhood.lackeys.accustomed-to-fear
+  id: no-fear-test-against-skeleton-causer
+  covers: [accustomed-to-fear]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true, undead_kind: skeleton}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: lackeys}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/lackeys--accustomed-to-fear/unimplemented.khemri-lahmian-brotherhood.lackeys.accustomed-to-fear
+  id: no-fear-test-against-spirit-causer
+  covers: [accustomed-to-fear]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true, undead_kind: spirit}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: lackeys}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/lackeys--accustomed-to-fear/unimplemented.khemri-lahmian-brotherhood.lackeys.accustomed-to-fear
+  id: no-fear-test-against-vampire-causer
+  covers: [accustomed-to-fear]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true, vampire: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: lackeys}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/lackeys--accustomed-to-fear/unimplemented.khemri-lahmian-brotherhood.lackeys.accustomed-to-fear
+  id: a-causer-outside-the-three-kinds-is-still-feared
+  covers: [accustomed-to-fear]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: khemri-lahmian-brotherhood, profile_id: lackeys}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

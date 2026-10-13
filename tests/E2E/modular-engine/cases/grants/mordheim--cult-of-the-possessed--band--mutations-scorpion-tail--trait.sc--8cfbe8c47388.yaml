@@ -1,0 +1,158 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+# scaffold_fingerprint: ec175693d5891452f16129ec2628f158e5fffa826e4046b7eb0024e4612f19cb
+# authoring_status: AUTHORED
+# authoring_progress: the admitted scorpion-tail clause carries 3 authored scenarios derived from the
+#   printed rule and the recorded contract: the separate Strength 5 tail attack wounds on its printed
+#   face, the same face is refused once the defender is immune to poison because the printed reduction
+#   makes the attack Strength 2, and a bearer without the tail resolves only its weapon.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole--scope--scorpion-tail (scope: YES)
+# AUTHORED[whole--scope--scorpion-tail]: 3 scenarios evidence the printed extra Strength 5 attack and
+#   its poison-immunity reduction.  The tail is a separate attack die beyond the weapon in the same
+#   phase, and the declared two is the Strength 5 face against the opposing Toughness 3: it takes a
+#   wound from an ordinary defender and is exactly the face the Strength 2 reduction cannot reach, so
+#   the poison-immune sibling keeps its wounds with the identical tape.  The printed 40 gold crowns cost
+#   is acquisition data outside the duel and is not asserted.  REVIEWED still requires manual semantic
+#   review.
+# origin_id:
+#   rule/mordheim/cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/cult-of-the-possessed/special-rules.yaml
+# source_fingerprint:
+#   41808620da94f2efdd405b78d9005349bda994bf331af7641f11c4af8e9f3235
+# source_sha256_at_generation:
+#   6e992ccfd48a6106eaaf66a5af08cf6eda3fc61a966227bcb975fb73cc2c3776
+# Printed rule text:
+#   The mutant has a long barbed tail with a venomed tip, allowing him to make an extra Strength 5 attack in each hand-to-hand combat phase. If the model hit by the tail is immune to poison, the Strength of the hit is reduced to 2.
+# Semantic contract (check analysis_status before treating as accepted):
+#   An extra Strength 5 attack each close-combat phase, reduced to Strength 2 against a poison-immune model, is an admitted attack consequence. Printed clause: The mutant has a long barbed tail with a venomed tip, allowing him to make an extra Strength 5 attack in each hand-to-hand combat phase. If the model hit by the tail is immune to poison, the Strength of the hit is reduced to 2.
+# effect_id:
+#   trait.scorpion-tail
+# relation:
+#   related
+# parameters:
+#   {"extra_attacks":1,"fixed_strength":5,"vs_poison_immune_strength":2}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The compiled extra attack carries fixed Strength 5 and the Strength computation replaces it with 2 when the defender is poison-immune, which is the printed reduction. The printed 40 gc cost is acquisition data. Scope review integration: {"clause_id":"whole","review_clause_id":"scorpion-tail","source_state":"matched","review_status":"reviewed","scope_reason":"An extra Strength 5 attack each close-combat phase, reduced to Strength 2 against a poison-immune model, is an admitted attack consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The mutant makes an extra Strength 5 attack in each close-combat phase, and against a model immune to poison the Strength of that hit is reduced to 2. Closure: the pooled extra attack is S5 normally and exactly S2 against a poison-immune defender.","effect_id":"trait.scorpion-tail","relation":"equivalent","parameters":"{\"extra_attack\": 1, \"fixed_strength\": 5, \"vs_poison_immune\": 2}","conditions":"{\"recipient\": \"Mutant\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_attack_strength\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07c-natural-and-mutation-traits","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_attack_strength\"]"},"inherited_clause_text":"The mutant has a long barbed tail with a venomed tip, allowing him to make an extra Strength 5 attack in each hand-to-hand combat phase. If the model hit by the tail is immune to poison, the Strength of the hit is reduced to 2. Cost: 40 gold crowns","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-trait.scorpion-tail","verified_facet":"trait.scorpion-tail","relationship":"shared_facet","boundary":"One separate tail attack per phase; poison immunity changes only that attack to Strength 2. Preserve the ordinary pool and exclude acquisition prices.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+#
+# Clause: whole--scope--cost (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/cult-of-the-possessed/special-rules.yaml
+# source_fingerprint:
+#   41808620da94f2efdd405b78d9005349bda994bf331af7641f11c4af8e9f3235
+# source_sha256_at_generation:
+#   6e992ccfd48a6106eaaf66a5af08cf6eda3fc61a966227bcb975fb73cc2c3776
+# Printed rule text:
+#   Cost: 40 gold crowns
+# Semantic contract (check analysis_status before treating as accepted):
+#   The 40 gold crown cost of the mutation is acquisition data excluded from the duel. Printed clause: Cost: 40 gold crowns
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The compiled extra attack carries fixed Strength 5 and the Strength computation replaces it with 2 when the defender is poison-immune, which is the printed reduction. The printed 40 gc cost is acquisition data. Scope review integration: {"clause_id":"whole","review_clause_id":"cost","source_state":"matched","review_status":"reviewed","scope_reason":"The 40 gold crown cost of the mutation is acquisition data excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The mutant makes an extra Strength 5 attack in each close-combat phase, and against a model immune to poison the Strength of that hit is reduced to 2. Closure: the pooled extra attack is S5 normally and exactly S2 against a poison-immune defender.","effect_id":"trait.scorpion-tail","relation":"equivalent","parameters":"{\"extra_attack\": 1, \"fixed_strength\": 5, \"vs_poison_immune\": 2}","conditions":"{\"recipient\": \"Mutant\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_attack_strength\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07c-natural-and-mutation-traits","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_attack_strength\"]"},"inherited_clause_text":"The mutant has a long barbed tail with a venomed tip, allowing him to make an extra Strength 5 attack in each hand-to-hand combat phase. If the model hit by the tail is immune to poison, the Strength of the hit is reduced to 2. Cost: 40 gold crowns","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# bearer is a hand-built fixture carrying the printed trait, because the clause is about the tail
+# attack rather than about one printed statline.  The victim is hand-built at Toughness 3 with three
+# wounds, so a single tail wound leaves it standing, and it contributes no attack of its own in the
+# first two scenarios.
+
+- audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+  id: the-tail-strikes-with-its-printed-strength-five
+  covers: [whole--scope--scorpion-tail]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {scorpion_tail: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exception: the same tail attack against a poison-immune defender is Strength 2, whose
+# target against the same Toughness 3 is five, so the identical declared two is refused and the
+# defender keeps every wound.
+- audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+  id: a-poison-immune-defender-reduces-the-tail-to-strength-two
+  covers: [whole--scope--scorpion-tail]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {scorpion_tail: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {poison_immunity: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same fixture without the printed trait resolves only its weapon, so the second
+# attack die of the tape is the mutation's own contribution.
+- audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+  id: without-the-tail-the-bearer-resolves-one-attack
+  covers: [whole--scope--scorpion-tail]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

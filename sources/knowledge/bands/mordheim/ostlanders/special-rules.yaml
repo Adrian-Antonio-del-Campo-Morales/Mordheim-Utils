@@ -96,15 +96,15 @@ rules:
     profile_ids:
     - ruffians
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.ostlanders.ruffians.drunk
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.automatic-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.automatic-leadership
 - id: ruffians--no-respect
   name: No Respect
   effect: Ruffians may never become the warband leader.

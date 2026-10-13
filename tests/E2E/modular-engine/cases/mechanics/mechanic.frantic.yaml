@@ -1,0 +1,154 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.frantic
+# scaffold_fingerprint: c7e45cc4d63235e5b7e42e524745d6e6c27a18fdeb41734988cca04b76e42683
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries four authored scenarios derived from the printed rule and the recorded contract: the frantic tier takes the opening attack from a charging and higher-Initiative opponent and from a strike-last weapon with lower Initiative, and each configuration keeps its control without the mechanic. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: frantic (scope: YES)
+# AUTHORED[frantic]: 4 scenarios evidence the printed top order: it reverses a charge with the higher Initiative, it overrides a strike-last weapon with the lower Initiative, and both configurations keep a control without the mechanic.
+# origin_id:
+#   mechanic/mechanic.frantic
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   d851badeaee4773fad948ff789fcbf5273aeb2f9dfdea0f94fe12e6fe50e3f43
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Strike before ordinary combatants regardless of weapon penalties or Initiative.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Strikes before ordinary combatants regardless of weapon penalties or Initiative. Observable: this warrior resolves its attacks first against a non-strike-first opponent.
+# effect_id:
+#   mechanic.frantic
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"close combat resolution order","recipient":"this warrior","duration":"whole duel"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   phases.resolve_priority gives mechanic.frantic the top strike-first priority, ignoring weapon penalties and ordinary Initiative. Surface reuse candidate: {"family":"mechanic.frantic","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+
+# --- Authored scenarios ---
+# The printed clause takes the top of the close-combat order "regardless of weapon
+# penalties or Initiative", so every scenario fixes a configuration in which the
+# ordinary order would send somebody else first, and reads the resulting order off
+# the declared roll tape.  The same configuration without the mechanic is the
+# control, exactly as the sibling always-strikes-first file does: only the state
+# fields are asserted there, because the attack list is indexed in resolution
+# order and the control is about who opened the round.
+#
+# Frantic against a charging opponent who also has the higher Initiative.  Without
+# the mechanic the charge alone gives that opponent the opening attack, so this
+# pair isolates the printed override of both the charge and the higher Initiative.
+- audit_id: mechanic/mechanic.frantic
+  id: the-frantic-tier-opens-the-round-against-a-charge-and-higher-initiative
+  covers: [frantic]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.frantic]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 4}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# The control: the identical duel without the mechanic, where the charge and the
+# higher Initiative decide the opening attack.
+- audit_id: mechanic/mechanic.frantic
+  id: without-the-mechanic-the-charger-opens-the-round
+  covers: [frantic]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed "penalties for weapons" facet: the frantic warrior carries a
+# strike-last weapon (the printed double-handed profile: two-handed, +2 Strength
+# and strikes last unless Strongman applies) and still has the higher Initiative,
+# so its ordinary priority is the penalty alone and the mace would open the round.
+# The pair below shows the frantic tier taking the opening attack anyway, and the
+# same wielder waiting behind a lower-Initiative mace without the mechanic.
+- audit_id: mechanic/mechanic.frantic
+  id: the-frantic-tier-overrides-a-strike-last-weapon
+  covers: [frantic]
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      skill_ids: [mechanic.frantic]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 6, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 4}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+- audit_id: mechanic/mechanic.frantic
+  id: without-the-mechanic-the-strike-last-bearer-still-waits
+  covers: [frantic]
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 6, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.1.damage: 1, state.first.wounds: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 4}

@@ -1,0 +1,93 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/cursed-cavalcade/fighting-ape--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: be92c45ddc1e58a893a5196bd98f7bcd942be0ccc292d903e6deae6704747e33
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying weapon.sword in main_weapon_id is refused with ""weapons" is forbidden for cursed-cavalcade/fighting-ape.", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# origin_id:
+#   rule/mordheim/cursed-cavalcade/fighting-ape--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/cursed-cavalcade/special-rules.yaml
+# source_fingerprint:
+#   8d32c4bc912cdeecd10762bcac6be608e3056c3b5530582f620c30579acb5100
+# source_sha256_at_generation:
+#   15a4f9a2b9c55c6ef8e50bfc55b1af9a2418c12db0c4da71d80ed3b88e7264f2
+# Printed rule text:
+#   A Fighting Ape never uses weapons or armour and does not need them to fight effectively.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Profile equipment prohibition plus intrinsic attack: the Fighting Ape takes neither weapons nor armour and fights effectively without them.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["weapons","armour"]}
+# conditions:
+#   {"recipient":"fighting-ape"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Declared by fighting-ape--equipment-restrictions with a real two-token forbids list. Surface reuse candidate: {"family":"903","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Separate intrinsic attacks, equipment selection, active use, ownership and an explicitly supported unarmed waiver. No weapons/armour text alone does not grant a waived penalty or extra attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/cursed-cavalcade/fighting-ape--equipment-restrictions/profile.equipment-restrictions
+  id: fighting-ape-with-weapons-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: cursed-cavalcade
+      profile_id: fighting-ape
+      main_weapon_id: weapon.sword
+  expect_error: '"weapons" is forbidden for cursed-cavalcade/fighting-ape.'
+
+- audit_id: rule/mordheim/cursed-cavalcade/fighting-ape--equipment-restrictions/profile.equipment-restrictions
+  id: fighting-ape-with-armour-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: cursed-cavalcade
+      profile_id: fighting-ape
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for cursed-cavalcade/fighting-ape
+
+- audit_id: rule/mordheim/cursed-cavalcade/fighting-ape--equipment-restrictions/profile.equipment-restrictions
+  id: fighting-ape-without-weapons-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: cursed-cavalcade
+      profile_id: fighting-ape
+    second:
+      collection: mordheim
+      band_id: cursed-cavalcade
+      profile_id: fighting-ape
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

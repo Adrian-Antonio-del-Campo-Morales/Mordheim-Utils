@@ -1,0 +1,135 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/warband/skill.unbeatable-warrior/skill.unbeatable-warrior
+# scaffold_fingerprint: aa42685cbab9f3a2ee69a3166e0f34b1b6b75b691949042c70ba2c022dd97950
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries three authored scenarios derived from the printed
+# rule and the recorded contract: two parrying weapons give the bearer two parry attempts in one
+# phase, the same two weapons without the skill leave one attempt, and the same flag's match-roll
+# parry is evidenced against a plain parry.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: two-parries-with-two-weapons (scope: YES)
+# AUTHORED[two-parries-with-two-weapons]: 3 scenario(s) cover the clause: two parrying weapons with
+# the skill block both attacks of the pool, the identical pair without the skill blocks only the first
+# because the capacity falls back to one, and the recorded match-roll gain lets an equal parry die
+# block where a plain parry needs to beat the hit.
+# origin_id:
+#   rule/catalog/warband/skill.unbeatable-warrior/unclassified
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/skills/warband.yaml
+# source_fingerprint:
+#   973bf86dedbe9db24efc0a846e699d51ad192f813f94149a70176c99ee0dede2
+# source_sha256_at_generation:
+#   cbce88f8e195c72b1767c88af362131455b99435c0ffb53e58b55b7306161198
+# Printed rule text:
+#   Improves parries and allows two parries with two Parry weapons.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Improves parries and allows two parries when two Parry weapons are held; observable: two parry attempts in a phase with two parrying weapons.
+# effect_id:
+#   skill.unbeatable-warrior
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed as the two-parry allowance in the parry capacity; the same flag also enables the match-roll parry, so a fighter with this skill blocks on an equal roll as well. Surface reuse candidate: {"family":"skill.unbeatable-warrior","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Family model (Unbeatable Warrior, catalogue row): the catalogue skill row is not bound to a band, so
+# the bearer is a hand-built fighter carrying the admitted skill identity, as the accepted
+# mechanic-level scaffold does.  Physical characteristics are supplied as fixture facts
+# (WS3 S3 T3 W2 I2 A1) so the dice thresholds and the strike order are fixed; the bearer holds two
+# parrying swords, which is the printed condition for the second attempt, and its own attack pool is
+# declared empty so the tape holds only the parry under test.  Every expectation is read from the
+# printed rule (improves parries and allows two parries with two Parry weapons) and the recorded
+# register note that the same flag also enables the match-roll parry, never from engine output; the
+# roll tape is derived statically and stays unexecuted.  The pool's two To-Hit rolls are declared
+# before the two parry attempts, following the family's authored tape convention.
+
+# The printed allowance: two parrying weapons and the skill grant two attempts, so both attacks of
+# the pool are blocked.
+- audit_id: rule/catalog/warband/skill.unbeatable-warrior/skill.unbeatable-warrior
+  id: two-parrying-weapons-give-two-parry-attempts
+  covers: [two-parries-with-two-weapons]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      skill_ids: [skill.unbeatable-warrior]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.first.attack.1.parry, value: 5}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.1.parried: true, state.second.parries_remaining: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same bearers and the same tape without the skill: the two weapons do not by themselves grant a
+# second attempt, so the first attack is blocked and the second is resolved.
+- audit_id: rule/catalog/warband/skill.unbeatable-warrior/skill.unbeatable-warrior
+  id: without-the-skill-only-the-first-attack-is-parried
+  covers: [two-parries-with-two-weapons]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.first.attack.1.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.1.parried: false, attacks.1.damage: 1, state.second.parries_remaining: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same flag's other recorded gain: the parry succeeds on an equal die, so the four blocks the
+# attack which the identical plain parry below lets through.
+- audit_id: rule/catalog/warband/skill.unbeatable-warrior/skill.unbeatable-warrior
+  id: the-same-flag-also-blocks-on-an-equal-roll
+  covers: [two-parries-with-two-weapons]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      skill_ids: [skill.unbeatable-warrior]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

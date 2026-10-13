@@ -1,0 +1,97 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.long-daggers
+# scaffold_fingerprint: ed4f9049aa272e5e42826573cd18dbf1d7d6f379d013fdc4107953023d88dbf2
+# authoring_status: PARTIAL
+# authoring_progress: the admitted clause is PARTIAL. Two scenarios evidence the paired extra attack and the parry; the retained dagger tag has no observation of its own and the executor consumers that read it are named in the clause note below. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: 2 scenarios evidence the paired extra attack and the parry. The retained `weapon.dagger` tag has no observation of its own, and the executor names its readers instead of a duel outcome: skill.knife-fighting adds +1 Weapon Skill and one injury modifier when the weapon carries the tag (modular/contexts.py:316, modular/contexts.py:243), dagger_master rerolls on the charge with it (modular/contexts.py:160), the paired-dagger save path tests the same tag set (modular/contexts.py:476) and equipment.RETAINED_DAGGER_TAGS keeps it on a transformed Bitten (modular/equipment.py:24). So this clause is PARTIAL not for a missing datum but because its observation belongs to those consumer clauses: the printed pair and parry are the halves this file owns.
+# origin_id:
+#   mechanic/weapon.long-daggers
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   6b8d9d7bef02dab7ae4610d6c30138469c8a6eb6d5277ac80bc51684d0e0fce5
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Uses normal Strength; the pair grants one additional Attack and can parry as a sword.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Paired daggers that grant the additional attack and may parry as a sword. Closure: paired attack plus a parry attempt with the dagger tag retained.
+# effect_id:
+#   weapon.long-daggers
+# relation:
+#   equivalent
+# parameters:
+#   {"paired": true, "parry": true, "tags": ["weapon.long-daggers", "weapon.dagger"]}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   One of the two L06 paired-weapon milestones; the dagger tag makes it interact with knife-fighting and the poison routes. Both printed clauses (pair, parry) are delivered by this operator. Surface reuse candidate: {"family":"W-weapon.long-daggers","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/weapon.long-daggers - paired daggers: one additional Attack and a
+# parry as a sword.
+#
+# Expectations come from the printed rule and the admitted clause `whole`, never
+# from engine output.
+# The ordered tape carries two attack dice for the paired daggers.
+
+- audit_id: mechanic/weapon.long-daggers
+  id: long-daggers-grant-one-additional-attack
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.long-daggers
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+# The pair may parry as a sword: the defender is offered the parry and a 5 blocks a hit landed on a 4.
+
+- audit_id: mechanic/weapon.long-daggers
+  id: long-daggers-parry-as-a-sword
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.long-daggers
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

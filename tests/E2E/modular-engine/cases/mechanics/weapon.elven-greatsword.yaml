@@ -1,0 +1,152 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.elven-greatsword
+# scaffold_fingerprint: 41f3c17ea4fe20517207c06974cf1e60d4749bed21b43e9c39d476fe64aec684
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries four authored scenarios for the +2 Strength boundary, the strike-last order and the parry plus one refusal for the two-handed occupancy. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenarios and 1 refusal cover the +2 Strength boundary, the strike-last tier, the parry and the two-handed occupancy.
+# origin_id:
+#   mechanic/weapon.elven-greatsword
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   f31cabbc3de0302620eb0cf74fe1aa6686c6afa8fbc728c813aa75fb3bb47af2
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Two-handed, +2 Strength, strikes last and may parry.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Two-handed Strength +2 greatsword that strikes last and may parry. Closure: all printed modifiers on the profile.
+# effect_id:
+#   weapon.elven-greatsword
+# relation:
+#   equivalent
+# parameters:
+#   {"parry": true, "priority": -1, "strength_bonus": 2, "two_handed": true}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts.  Surface reuse candidate: {"family":"W-weapon.elven-greatsword","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/weapon.elven-greatsword - two-handed, Strength +2, strikes last and
+# may parry.
+#
+# Expectations come from the printed rule and the admitted clause `whole`, never
+# from engine output.  Because the weapon strikes last, the bearer's attack is the
+# second index of every round.
+# Strength 5 against Toughness 3 wounds on 2+.
+
+- audit_id: mechanic/weapon.elven-greatsword
+  id: elven-greatsword-wounds-at-the-boosted-strength
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.elven-greatsword
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w1-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {attacks.1.damage: 1, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# One face below the boosted wound target.
+
+- audit_id: mechanic/weapon.elven-greatsword
+  id: elven-greatsword-does-not-wound-one-face-below
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.elven-greatsword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.1.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Neither fighter charges, so only the printed strike-last tier can send the ordinary weapon first.
+
+- audit_id: mechanic/weapon.elven-greatsword
+  id: elven-greatsword-strikes-after-an-ordinary-weapon
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.elven-greatsword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &a-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+# The greatsword may parry: a 5 blocks a hit landed on a 4.
+
+- audit_id: mechanic/weapon.elven-greatsword
+  id: elven-greatsword-parries-a-hit-that-beats-the-to-hit-roll
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.elven-greatsword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed two-handed occupancy is declared as a refusal.
+
+- audit_id: mechanic/weapon.elven-greatsword
+  id: elven-greatsword-occupies-both-hands-so-an-off-hand-weapon-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.elven-greatsword
+      off_hand_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "main weapon occupies both hands"
+

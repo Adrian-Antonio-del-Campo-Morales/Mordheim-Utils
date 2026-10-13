@@ -1,0 +1,143 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-dark-elves/cold-ones--stupidity/unimplemented.lustria-dark-elves.cold-ones.stupidity
+# scaffold_fingerprint: 58d82779196b041a7993965284f3335baf802856f9e5df3f56ab033fa98c1783
+# authoring_status: AUTHORED
+# authoring_progress: the admitted stupidity clause carries 3 authored scenarios for the family
+#   model derived from the printed rule, the recorded parameterized contract and the accepted
+#   handler-parent case: the supplied Beastmaster value 8 carries a test total of eight, the same
+#   total fails against the Cold One's own printed Leadership 4 when no handler value is supplied
+#   (so the charge is cancelled and no attack is resolved), and the recorded frenzy exemption asks
+#   for no stupidity die at all.  PENDING GAP (not a scenario gap): the printed clause's two
+#   further restrictions, the six-inch distance and the prohibition on any leader-derived value,
+#   have no adapter input that declares a live Beastmaster or a leader-derived source, so those two
+#   faces stay recorded and unauthored; the supplied handler value is the accepted model's stand-in
+#   for a Beastmaster within range.  The generated register note below still records this row as
+#   unbound while the band source now prints an implemented mechanic.handler-leadership binding.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED; no
+#   behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: stupidity (scope: YES)
+# AUTHORED[stupidity]: Documented difference (AUTHORED vs implementation): every representable face of the clause has a written scenario, so AUTHORED is the correct header; what stays pending is the motor side pending requirement is a genuine adapter-input absence [C]: the printed six-inch handler distance and the prohibition on a leader-derived value have no adapter input (the supplied handler value is the accepted stand-in); 3 authored scenario(s) cover every face this record's model can express:
+#   the supplied handler value carries a total of eight and the bearer keeps its charge and strike,
+#   the same eight fails against its own printed Leadership when no handler value is supplied, and
+#   the recorded frenzy exemption asks for no stupidity die at all.  The printed six-inch distance
+#   and the prohibition on a leader-derived value remain recorded, not authored.
+# origin_id:
+#   rule/trollheim/lustria-dark-elves/cold-ones--stupidity/unimplemented.lustria-dark-elves.cold-ones.stupidity
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-dark-elves/special-rules.yaml
+# source_fingerprint:
+#   c04a5c9f78d3b146c0f0baaa7fa06452b7771753b9d646db5500e40f838cbab5
+# source_sha256_at_generation:
+#   00d87d88f399d776fda8fb2a10d2efe24738e1874089cf0e5e9749e798f89039
+# Printed rule text:
+#   A Cold One may use the Beastmaster's own Leadership if it is within 6" of him. It may never use the warband leader's Leadership, directly or indirectly; if the Beastmaster is himself within the leader's 6" Leadership range, the Cold One may not benefit from that leader-derived value.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Stupidity using the Beastmaster's own Leadership when within 6 inches; never the warband leader's. Observable: the test uses the supplied handler's value.
+# effect_id:
+#   mechanic.stupidity
+# relation:
+#   parameterized_variant
+# parameters:
+#   {"leadership_source":"supplied handler's own value"}
+# conditions:
+#   {"trigger":"start of its own turn","exceptions":"handler-only Leadership"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Cold One Stupidity plus handler-only Leadership; the handler value must be supplied. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Surface reuse candidate: {"family":"mechanic.handler-leadership","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Family model (Stupidity for a handler-led animal): the bearer is the printed recipient, built from
+# its printed band profile, so the granted effect is what the scenario exercises.  Its physical
+# characteristics are supplied as fixture facts (WS3 S3 T3 W3 I2 A1) so the dice thresholds and the
+# strike order are fixed, while its printed Leadership 4 stays in place.  Following the accepted
+# handler-parent case, the stupidity state and the Beastmaster's printed Leadership 8 are supplied
+# as the two handler traits, which is what stands in for a Beastmaster within six inches; the test
+# is taken at the start of the bearer's own turn, which is why the bearer is the charging active
+# participant.  The bearer declares no weapon of its own, exactly as the accepted parent case does.
+
+- audit_id: rule/trollheim/lustria-dark-elves/cold-ones--stupidity/unimplemented.lustria-dark-elves.cold-ones.stupidity
+  id: the-supplied-beastmaster-value-is-the-one-tested
+  covers: [stupidity]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+      trait_overrides: {stupidity: true, stupidity_leadership: 8}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-dark-elves/cold-ones--stupidity/unimplemented.lustria-dark-elves.cold-ones.stupidity
+  id: without-a-supplied-handler-value-the-own-leadership-is-tested
+  covers: [stupidity]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+      trait_overrides: {stupidity: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+- audit_id: rule/trollheim/lustria-dark-elves/cold-ones--stupidity/unimplemented.lustria-dark-elves.cold-ones.stupidity
+  id: an-already-frenzied-bearer-rolls-no-stupidity-die
+  covers: [stupidity]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: cold-ones
+      trait_overrides: {stupidity: true, stupidity_leadership: 8}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  initial_state:
+    first: {frenzy: true}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 5}
+    - {key: round.0.first.attack.1.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, state.first.frenzy: true, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

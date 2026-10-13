@@ -76,15 +76,15 @@ rules:
     profile_ids:
     - ranger
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-sigmar-protectorate.ranger.animal-tamer
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.handler-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.handler-leadership
 - id: templar--devout
   name: Devout
   effect: >-
@@ -106,15 +106,15 @@ rules:
     profile_ids:
     - templar
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-sigmar-protectorate.templar.devout
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.hatred-chaotic-warband
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-chaotic-warband
 - id: protectorate-mastiff--animal
   name: Animal
   effect: Mastiffs are animals and never gain Experience.
@@ -252,15 +252,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: selectable
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-sigmar-protectorate.band.protectorate-special-skills-absolute-faith
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.fear-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-immunity
 - id: band--protectorate-special-skills-absolute-determination
   kind: warband_skill
   name: Absolute Determination

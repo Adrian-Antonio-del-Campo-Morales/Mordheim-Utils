@@ -1,0 +1,83 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/shallows-beasts-mim/swampers--herb-lore/unimplemented.shallows-beasts-mim.swampers.herb-lore
+# scaffold_fingerprint: d7145b57797d545cc3a49f1e83b4902fb0367874127dc9bf5d045cbfd38600c3
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is authorable for the admitted self-heal clause.  The recorded effect has
+# no effect_id and an unresolved relation, the record's own binding is the null placeholder
+# unimplemented.shallows-beasts-mim.swampers.herb-lore, and the recorded implementation_work is "product":
+# the printed sentence heals one wound at the start of the recovery phase, and the one-against-one runner has
+# no recovery-phase step and no operator that restores a wound to a standing fighter, so no tape can observe
+# the printed 4+ restoration.  The missing representation is exactly that step (or an operator keyed to it),
+# not a clarification.  REVIEWED still requires manual semantic review and execution_status stays
+# UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: heal-in-recovery-phase--scope--self-heal (scope: YES)
+# PARTIAL[heal-in-recovery-phase--scope--self-heal]: [C] not asserted.  Category C: the printed self-heal needs an operator
+# that restores a wound in a recovery phase ("On a roll of 4+ the model has 1 wound restored"); the KB row is
+# an unimplemented placeholder with a null binding, no effect_id, an unresolved relation and no consumer that
+# changes a wound in a 1v1 duel, so the missing datum is the recovery-phase healing step itself.
+# origin_id:
+#   rule/mordheim/shallows-beasts-mim/swampers--herb-lore/unimplemented.shallows-beasts-mim.swampers.herb-lore
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/shallows-beasts-mim/special-rules.yaml
+# source_fingerprint:
+#   30209fe4260cc9b313e7305c532a1ca70ae2bad012ee0ea2f6f1e8262be23526
+# source_sha256_at_generation:
+#   5d440a668d198dd7e2f1302ea6d09305979dddaff958872dfd8ca9be5108cf18
+# Printed rule text:
+#   but may use it to heal himself
+# Semantic contract (check analysis_status before treating as accepted):
+#   The printed ability lets the Swamper heal himself for one wound on a 4+ at the start of the recovery phase; that is duel-time recovery of one of the two combatants. Printed clause: but may use it to heal himself
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Duel-time recovery is within the study, but the KB record is an unimplemented placeholder and no recovery-phase healing operator exists for a bearer healing an adjacent model; needs implementation, not a clarification. A 1v1 duel gives the adjacent model. Scope review integration: {"clause_id":"heal-in-recovery-phase","review_clause_id":"self-heal","source_state":"matched","review_status":"reviewed","scope_reason":"The printed ability lets the Swamper heal himself for one wound on a 4+ at the start of the recovery phase; that is duel-time recovery of one of the two combatants.","notes":"text: On a roll of 4+ the model has 1 wound restored. ... but may use it to heal himself.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Any model in base contact may be healed at the start of the recovery phase: on 4+ one wound is restored, and the Swamper cannot move that turn; observable: a wound is restored in the duel recovery phase.","effect_id":"","relation":"related","parameters":"{}","conditions":"{}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_injury_context\",\"packages/python/combat-engine/mordheim_combat/phases.py::injury_condition\",\"packages/python/combat-engine/mordheim_combat/modular/attacks.py::_resolve_wound_damage\"]","implementation_work":"product","dependencies":"[]","implementation_batch":"B11-duel-recovery","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Out in the Cursed Marsh, Swamp-folk learn basic herb lore to cure simple injuries. Any model in base contact with the Swamper may be healed at the start of the recovery phase. On a roll of 4+ the model has 1 wound restored. The Swamper may not move in the same turn as he uses this skill, but may use it to heal himself.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: heal-in-recovery-phase--scope--ally-heal (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/shallows-beasts-mim/swampers--herb-lore/unimplemented.shallows-beasts-mim.swampers.herb-lore
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/shallows-beasts-mim/special-rules.yaml
+# source_fingerprint:
+#   30209fe4260cc9b313e7305c532a1ca70ae2bad012ee0ea2f6f1e8262be23526
+# source_sha256_at_generation:
+#   5d440a668d198dd7e2f1302ea6d09305979dddaff958872dfd8ca9be5108cf18
+# Printed rule text:
+#   Any model in base contact with the Swamper may be healed at the start of the recovery phase. On a roll of 4+ the model has 1 wound restored.
+# Semantic contract (check analysis_status before treating as accepted):
+#   In a 1v1 duel the only model in base contact is the opponent, and healing the adversary is rejected by the Shallya ruling; healing a third warrior is not part of the duel. Printed clause: Any model in base contact with the Swamper may be healed at the start of the recovery phase. On a roll of 4+ the model has 1 wound restored.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Duel-time recovery is within the study, but the KB record is an unimplemented placeholder and no recovery-phase healing operator exists for a bearer healing an adjacent model; needs implementation, not a clarification. A 1v1 duel gives the adjacent model. Scope review integration: {"clause_id":"heal-in-recovery-phase","review_clause_id":"ally-heal","source_state":"matched","review_status":"reviewed","scope_reason":"In a 1v1 duel the only model in base contact is the opponent, and healing the adversary is rejected by the Shallya ruling; healing a third warrior is not part of the duel.","notes":"text: Any model in base contact with the Swamper may be healed at the start of the recovery phase.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Any model in base contact may be healed at the start of the recovery phase: on 4+ one wound is restored, and the Swamper cannot move that turn; observable: a wound is restored in the duel recovery phase.","effect_id":"","relation":"related","parameters":"{}","conditions":"{}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_injury_context\",\"packages/python/combat-engine/mordheim_combat/phases.py::injury_condition\",\"packages/python/combat-engine/mordheim_combat/modular/attacks.py::_resolve_wound_damage\"]","implementation_work":"product","dependencies":"[]","implementation_batch":"B11-duel-recovery","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Out in the Cursed Marsh, Swamp-folk learn basic herb lore to cure simple injuries. Any model in base contact with the Swamper may be healed at the start of the recovery phase. On a roll of 4+ the model has 1 wound restored. The Swamper may not move in the same turn as he uses this skill, but may use it to heal himself.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: PARTIAL - the printed recovery-phase self-heal has no operator or binding.

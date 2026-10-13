@@ -1,0 +1,92 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.shifty
+# scaffold_fingerprint: a5f3e745f266c8028dc1a9b4470acc8be4a67eaaf175eae6f4716b2d58620886
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored scenarios derived from the printed rule and the recorded contract: the charged halfling's pool carries one further attack that is resolved before the charging opponent, and the same warrior carries neither with the skill removed. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the bonus attack the charged halfling gains, resolved at the strike-first tier before the charging opponent and before his own ordinary attacks, and the same configuration without the skill.
+# origin_id:
+#   mechanic/skill.shifty
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   79e1789c63d6d4bee1370cbddab5a8c4cf3890ae2be4af7836dd2694ba9fd0a1
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   The halfling gains a bonus attack when charged that strikes first.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The halfling gains a bonus attack when charged that strikes first. Closure: when charged, the halfling pool carries one more attack and that attack resolves at the strike-first tier.
+# effect_id:
+#   skill.shifty
+# relation:
+#   equivalent
+# parameters:
+#   {"attacks_bonus": 1, "priority": "strikes first", "trigger": "when charged"}
+# conditions:
+#   {"first_round": true, "trigger": "when charged"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   resolve_round detects the charged halfling and selects the shifty weapon, the extra attack joins the pool and the priority of that attack is resolved at the strike-first tier; require_optimized_support refuses the tag for optimized ports, which is a port limit rather than a semantic gap. Surface reuse candidate: {"family":"skill.shifty","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare modifier stage, applicable weapon, replacement versus added attacks, nominated hand/poison transport and resource lifetime. Preserve Shifty S1-S4 and pistol composition; A=2 on charge is not an unrestricted +1 Attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The admitted clause grants the halfling one bonus attack when he is charged,
+# and it strikes first.  In both scenarios the halfling is charged (the second
+# participant is the charger) and every attack is scripted as a miss, so the two
+# observable consequences are the pool size and the resolution order: the bonus
+# joins the pool as its own strike at the strike-first tier, which the declared
+# roll order records before the charger's attack and before the halfling's own
+# ordinary attacks.  Removing the skill leaves the same warrior with his
+# ordinary single attack, which the charging opponent strikes first against.
+- audit_id: mechanic/skill.shifty
+  id: shifty-charged-halfling-earns-a-strike-first-attack
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.shifty]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.shifty.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, attacks.2.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same warrior without the skill: one ordinary attack, taken after the
+# charger's attack, and no bonus strike at the strike-first tier.
+- audit_id: mechanic/skill.shifty
+  id: shifty-without-the-skill-keeps-one-attack
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -127,15 +127,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: band
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.khemri-nomads-of-araby.band.hate-undead
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.hatred-undead
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-undead
 - id: band--nomad-special-skills-sand-worm
   kind: warband_skill
   name: Sand Worm

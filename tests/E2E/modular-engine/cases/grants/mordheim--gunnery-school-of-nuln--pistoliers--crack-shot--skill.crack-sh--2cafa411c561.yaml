@@ -1,0 +1,111 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/gunnery-school-of-nuln/pistoliers--crack-shot/skill.crack-shot
+# scaffold_fingerprint: dd4c8f18d83cb20fa42a451c62443b2846ff2ea8548f81c4c1e4cead7e8c08d9
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries three authored scenarios derived from the printed rule and the recorded contract of the shared crack-shot operator.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover the printed first-round pistol reroll, the same reroll with a duelling pistol, and the refusal when the close-combat weapon is not a pistol.  The register records this band origin as repeating the canonical clause of the shared operator without adding a term ("the band origin creates no second runtime contribution"), so the tapes read the canonical operator through the fighter's grant list exactly as the mechanic origin's own case does, and the band's own Pistolier delivery is the printed sentence this file records.
+# origin_id:
+#   rule/mordheim/gunnery-school-of-nuln/pistoliers--crack-shot/skill.crack-shot
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/gunnery-school-of-nuln/special-rules.yaml
+# source_fingerprint:
+#   ad10fa40ff9eb68439ec7edcf2e02438476dccc0fedb6c494769382869893718
+# source_sha256_at_generation:
+#   98b8b3ebee70f5c4fce3633904b6e50c7803c1b939984c1f55d0bfd6f27491f1
+# Printed rule text:
+#   Experts with pistols in close quarters; they have an uncanny ability to turn what should have missed its target into a success. When using pistols in close combat, they may re-roll any missed to-hit rolls with the pistol in the first round of combat.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Pistoliers may re-roll any missed To Hit rolls with the pistol in the first round of close combat. Closure: a first-round close-combat pistol attack re-rolls its misses.
+# effect_id:
+#   skill.crack-shot
+# relation:
+#   equivalent
+# parameters:
+#   {"first_round": true, "reroll_hits": "missed pistol hits"}
+# conditions:
+#   {"recipient": "Pistolier", "weapon": "pistol"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared crack-shot operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.crack-shot","verified_facet":"skill.crack-shot","relationship":"shared_facet","boundary":"First-round missed pistol hit reroll, including its legal pistol variants; not later-round pistol shooting or a bonus attack.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Close-combat pistol attack in the first round of combat: the roll of two fails and
+# the reroll turns it into a hit that wounds.
+- audit_id: rule/mordheim/gunnery-school-of-nuln/pistoliers--crack-shot/skill.crack-shot
+  id: a-first-round-pistol-rerolls-its-failed-shot
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.pistol
+      skill_ids: [skill.crack-shot]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The duelling pistol is the second pistol in the accepted weapon scope and carries
+# its own +1 To Hit, so its failure is a roll of two against a target of three.
+- audit_id: rule/mordheim/gunnery-school-of-nuln/pistoliers--crack-shot/skill.crack-shot
+  id: a-duelling-pistol-also-rerolls-its-failed-shot
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.duelling-pistol
+      skill_ids: [skill.crack-shot]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The reroll is granted with pistols, so the same first-round close-combat miss with
+# another weapon stands.
+- audit_id: rule/mordheim/gunnery-school-of-nuln/pistoliers--crack-shot/skill.crack-shot
+  id: a-first-round-mace-miss-is-not-rerolled
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.crack-shot]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

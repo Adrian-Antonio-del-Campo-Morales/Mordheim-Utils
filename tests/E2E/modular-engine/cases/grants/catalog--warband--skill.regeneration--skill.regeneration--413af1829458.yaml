@@ -1,0 +1,108 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/catalog/warband/skill.regeneration/skill.regeneration
+# scaffold_fingerprint: 12b8017a6e778e338e87764a0fb1963a7bc279069eec8fb9949c0534188b6aef
+# authoring_status: AUTHORED
+# authoring_progress: the admitted four-plus-regeneration clause carries authored scenarios derived
+# from the printed sentence and the recorded contract.  This is the generic catalogue skill, so the
+# bearer acquires it the way a warband skill is acquired (the build's skill selection), and the
+# printed parameter regeneration_save 4 is what the clause itself declares.  A plain mace blow
+# requests the Regeneration die after the armour step and a 4 takes the wound back; one face below
+# it stands.  The fire and blessed exceptions are NOT exercised here on purpose: the register note
+# for this row states that the generic 4+ catalogue clause does not itself specify them, and each
+# band printing that adds one carries its own clause in its own file.  REVIEWED still requires
+# manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: four-plus-regeneration (scope: YES)
+# AUTHORED[four-plus-regeneration]: 2 scenarios carry the clause: the 4+ special save after armour
+#   ignores the wound and the bearer keeps both Wounds; one face below lets the wound through and
+#   the bearer drops to one Wound.
+# origin_id:
+#   rule/catalog/warband/skill.regeneration/unclassified
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/skills/warband.yaml
+# source_fingerprint:
+#   433579a9de45bfe25487e111271608302ea9da678b4164966a54a5d09c458762
+# source_sha256_at_generation:
+#   cbce88f8e195c72b1767c88af362131455b99435c0ffb53e58b55b7306161198
+# Printed rule text:
+#   Regenerates unsaved wounds on 4+.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Regenerates unsaved wounds on 4+; observable: a 4+ special save after armour.
+# effect_id:
+#   skill.regeneration
+# relation:
+#   equivalent
+# parameters:
+#   {"regeneration_save":4}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Shared-register row of the same skill as the Trolls (G012) and the Curse of the Reborn (G187). The Troll printing adds the fire exception, which is carried by the band clause. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"four-plus-regeneration","audit_group":"EQ-skill.regeneration","verified_facet":"regeneration/4-plus","relationship":"shared_facet","boundary":"Unsaved-wound cancellation, not lost-Wound restoration or post-battle injury immunity. Preserve fire/blessed exceptions only where printed or ruled; the generic 4+ catalog clause does not itself specify them.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
+# bearer selects the catalogue skill itself, which is how a warband skill reaches a warrior, and
+# starts the duel at two Wounds with no attacks of its own, so round 0 carries only the attacker's
+# dice.  The blow is an ordinary mace: at Weapon Skill 10 against Weapon Skill 3 it needs a 3, and
+# Strength 8 against Toughness 3 needs a 2, so the declared 5 and 5 both pass.  Five is deliberately
+# below a natural six, which would be a critical hit and demand a further critical die.  An
+# unarmoured bearer keeps the armour step and, with no ward, the special save is reached directly.
+#
+# The strict tape is part of the evidence: StrictDice rejects a roll the fixture never declared, so
+# the first scenario fails if the Regeneration die is not requested at all.
+
+- audit_id: rule/catalog/warband/skill.regeneration/skill.regeneration
+  id: the-four-plus-regeneration-save-ignores-the-wound
+  covers: [four-plus-regeneration]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      skill_ids: [skill.regeneration]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.special.regeneration, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.saved: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/catalog/warband/skill.regeneration/skill.regeneration
+  id: one-face-below-the-four-plus-does-not-regenerate
+  covers: [four-plus-regeneration]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      skill_ids: [skill.regeneration]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.special.regeneration, value: 3}
+  expect_rounds:
+    0: {attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

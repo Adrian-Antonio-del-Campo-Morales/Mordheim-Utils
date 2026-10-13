@@ -1,0 +1,189 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/defence.lucky-charm
+# scaffold_fingerprint: 4d2895dc75fc6f6d0f11f40b2d83e67fed7b1b23283d6871b7a434afd4135f92
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry migrated scenarios (3 + 1); REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: first-hit-discarded-on-four (scope: YES)
+# AUTHORED[first-hit-discarded-on-four]: 3 migrated scenarios show the first hit discarded on 4+, the failed 3 that still wounds, and the charm spent after its single attempt.
+# origin_id:
+#   mechanic/defence.lucky-charm
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   2fcbd494801e843d478ceed747e5f6d435cad148f14f85eb101f6f055d6c0b06
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Ignores the first successful hit on a 4+; consumed after the attempt.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The first time the bearer is hit in a battle he rolls a D6 and on a 4+ the hit is discarded with no damage; observable: one 4+ attempt on the first hit only.
+# effect_id:
+#   defence.lucky-charm
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed per hit: the charm is spent when the attempt is made, whatever the result, so a failed roll cannot be repeated and the second hit never rolls it. Surface review warning: Reject the 6+ repeatable-ward draft. The maintained mechanic is the first successful hit on 4+, not a save against each wound.
+#
+# Clause: two-charms-do-not-stack (scope: YES)
+# AUTHORED[two-charms-do-not-stack]: 1 migrated scenario shows two charms affording exactly one attempt.
+# origin_id:
+#   mechanic/defence.lucky-charm
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   2fcbd494801e843d478ceed747e5f6d435cad148f14f85eb101f6f055d6c0b06
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Ignores the first successful hit on a 4+; consumed after the attempt.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Owning two or more charms confers no extra benefit and only the first hit may be discarded; observable: the ability is used at most once per battle.
+# effect_id:
+#   defence.lucky-charm
+# relation:
+#   equivalent
+# parameters:
+#   {"stacking":"once"}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The compiled fighter carries a single boolean for the charm, so stacking is impossible by construction rather than by an extra check. Surface review warning: Reject the repeatable-ward draft. Preserve one shared consumed first-hit resource, not one resource per charm.
+#
+# --- Migrated authored scenarios ---
+# Source: cases/mechanics/defences.yaml
+# One-time migration authorized by the operator; see plan.md.  These
+# scenarios were authored from the rule text and the accepted rulings, not
+# from engine output.  Migrating them does not certify their interpretation
+# or complete coverage of the identity.
+# Pilot scenarios for admitted defence mechanics: an armour save threshold, a
+# shield's combined bonus and a once-per-battle resource.
+#
+# Expectations come from the accepted clauses of
+# docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv, never from engine output.
+# Each identity is exercised by more than one scenario, sharing the same
+# declarative contract with only the rolled faces and their outcomes changed.
+#
+# The first scenario declares the shared WS3/S3/T3 profiles and the mace duel
+# context as YAML anchors; siblings alias them and keep their own dice,
+# decisions and expectations.
+#
+
+- audit_id: mechanic/defence.lucky-charm
+  id: first-hit-discarded-on-four
+  covers: [first-hit-discarded-on-four]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.lucky-charm]
+      characteristics: &ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.lucky-charm, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.lucky_charm: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/defence.lucky-charm
+  id: charm-does-not-discard-on-three
+  covers: [first-hit-discarded-on-four]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.lucky-charm]
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.lucky-charm, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1, state.second.lucky_charm: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One charm, one hit discarded: only the first successful hit of the phase may
+# be discarded, so the second hit resolves with no charm die.
+
+- audit_id: mechanic/defence.lucky-charm
+  id: charm-is-consumed-after-one-hit
+  covers: [first-hit-discarded-on-four]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w2-i5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.lucky-charm]
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.lucky-charm, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.1.saved: false, state.second.wounds: 1,
+        state.second.lucky_charm: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Owning two charms is a supported configuration and confers no extra benefit:
+# the charm check is offered exactly once for the phase, and the failed attempt
+# spends it, so the second hit of the same phase is resolved with no charm die.
+
+- audit_id: mechanic/defence.lucky-charm
+  id: two-charms-afford-one-attempt
+  covers: [two-charms-do-not-stack]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w2-i5, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      defence_ids: [defence.lucky-charm, defence.lucky-charm]
+      characteristics: {<<: *ws3-s3-t3-w2-i2, wounds: 3}
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.lucky-charm, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.1.saved: false, state.second.wounds: 1,
+        state.second.lucky_charm: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

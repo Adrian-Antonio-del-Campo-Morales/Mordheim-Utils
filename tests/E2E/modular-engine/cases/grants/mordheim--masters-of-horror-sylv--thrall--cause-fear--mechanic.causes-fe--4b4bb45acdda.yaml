@@ -1,0 +1,100 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/masters-of-horror-sylv/thrall--cause-fear/mechanic.causes-fear
+# scaffold_fingerprint: a1149f052127495a1a9fe25b7c166d3d5e0911b026e00903412a5f0dd70346db
+# authoring_status: AUTHORED
+# authoring_progress: the admitted cause-fear clause carries two authored scenarios for the two faces of
+# the charged opponent's Leadership test (a failed test forces sixes to hit, a passed test fights
+# normally).  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED;
+# no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: cause-fear (scope: YES)
+# AUTHORED[cause-fear]: 2 scenarios cover the printed Fear consequence for the charged opponent: on a
+# failed Leadership test its hit roll of 4 - a roll that beats its ordinary target - wounds nothing, and
+# on a passed test the same roll wounds on its ordinary target.  The warrior charged by this causer is the
+# Fear-tested side; the fixture's Leadership 7, Weapon Skill 10 and Strength 8 are hand-built facts, not
+# profile values, and the causer contributes no attacks of its own so the only rolls are the Fear test and
+# the charged warrior's.  The cancelled voluntary charge, the one-test-per-pairing rule and the exemptions
+# (an opponent that causes Fear, is immune to Psychology or Fear, or is Frenzied) are not asserted here:
+# the cancelled charge is a flag consequence rather than a wound outcome and the exemptions need a second
+# bearer this file does not declare.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/masters-of-horror-sylv/thrall--cause-fear/mechanic.causes-fear
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/masters-of-horror-sylv/special-rules.yaml
+# source_fingerprint:
+#   683bfcc09bb50a23a7a36ede6782ca7d4eb600343c6a8d9aedd38462906e904c
+# source_sha256_at_generation:
+#   aa3a466c2d2cd487c57151b91ed10b743efa71fdc3ee7c0bbf78b192034ed272
+# Printed rule text:
+#   Vampires are terrifying Undead creatures and therefore cause Fear.
+# Semantic contract (check analysis_status before treating as accepted):
+#   This warrior causes Fear. Observable: in the initial round, an opposing warrior that volunteers a charge must first pass a Leadership test or the charge is cancelled; one that is charged must pass it or can hit only with sixes for that combat round.
+# effect_id:
+#   mechanic.causes-fear
+# relation:
+#   equivalent
+# parameters:
+#   {"value":true}
+# conditions:
+#   {"trigger":"initial round, the opponent charges or is charged by this warrior","resolution":"opponent Leadership test before a voluntary charge or after being charged","consequence":"cancelled voluntary charge, or sixes-to-hit for that combat round","recipient":"the opposing warrior","duration":"that combat round only","stacking":"one test per fighter pairing; no cumulative effect","exceptions":"skipped by an opponent that causes Fear, is immune to Psychology or Fear, or is Frenzied"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Canonical per-warrior Fear (mechanic.causes-fear). psychology.causes_fear declares the threat and psychology.resolve_fear resolves the round-0 test; the printed sentence is a band-specific synonym with no extra clause. Surface reuse candidate: {"family":"mechanic.causes-fear","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded cause-fear contract and the printed profile;
+# no engine output was consulted.  The causer charges, so the warrior it charged is the
+# Fear-tested warrior and its two Leadership dice are declared first against the fixture's
+# Leadership 7.  This scenario is about the Fear test alone, so the causer contributes no
+# attacks of its own (initial_state) and the only attack die is the charged warrior's own.
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/thrall--cause-fear/mechanic.causes-fear
+  id: a-charged-opponent-that-fails-its-fear-test-hits-only-with-sixes
+  covers: [cause-fear]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: masters-of-horror-sylv, profile_id: thrall}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 5}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/thrall--cause-fear/mechanic.causes-fear
+  id: a-charged-opponent-that-passes-its-fear-test-fights-normally
+  covers: [cause-fear]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: masters-of-horror-sylv, profile_id: thrall}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 3}
+    - {key: round.0.first.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

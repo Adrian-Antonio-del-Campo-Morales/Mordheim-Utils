@@ -1,0 +1,99 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/merchant-caravans/blackguards--strongman/skill.strongman
+# scaffold_fingerprint: e0a97a8a2ea2f23d88e6f0ff5a4ac2c4be8e248520bfd7e4cd67e5f8f9dc7f11
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries one authored scenario pair derived from the
+# printed rule and this band's own binding (special-rules.yaml id blackguards--strongman, grant
+# profile, effect skill.strongman): a two-handed weapon in the hands of the band's Blackguard stands in
+# the ordinary order of battle, and the identical duel without the band fighter keeps the printed
+# strike-last penalty.  The printed text repeats the canonical shared operator without adding a term,
+# so the band origin needs no further scenario; the broadsword scope is evidenced through the shared
+# mechanic in cases/mechanics/skill.strongman.yaml.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios show the printed removal of the strike-last penalty on the Blackguards
+# this band grants it to (merchant-caravans / blackguards, rule blackguards--strongman bound to
+# skill.strongman).  Neither fighter charges, so the order is the ordinary one: with the penalty
+# removed the two-handed weapon stands in the ordinary tier and its higher Initiative strikes first,
+# while the control, the identical duel in which the band fighter is replaced by a hand-built warrior
+# with the same characteristics and no skill, keeps the weapon's printed strike-last penalty.  REVIEWED
+# still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/merchant-caravans/blackguards--strongman/skill.strongman
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/merchant-caravans/special-rules.yaml
+# source_fingerprint:
+#   386c507a179bb738c4364f2cccd0c93aaa9b3ebb289b220dccc89d4f583a2d1d
+# source_sha256_at_generation:
+#   3e94435e726a517b88fb5cf2e080795752a4b654f3c75295c7c2acc50f567056
+# Printed rule text:
+#   Blackguards are capable of great feats of strength. They may use a double-handed weapon without the usual penalty of always striking last. Work out the order of battle as you would with other weapons.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Blackguards may use a double-handed weapon without the usual penalty of always striking last, working out the order of battle as with other weapons. Closure: the two-handed bearer stands in the ordinary order.
+# effect_id:
+#   skill.strongman
+# relation:
+#   equivalent
+# parameters:
+#   {"negates": "strikes last", "weapon_scope": ["weapon.double-handed-weapon", "weapon.broadsword"]}
+# conditions:
+#   {"recipient": "Blackguard"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared strongman operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.strongman","verified_facet":"skill.strongman","relationship":"shared_facet","boundary":"Share only removal of the applicable weapon Strike Last penalty; not universal Strike First or removal of standing-up penalties. Ulli is a compound profile and retains separate equipment, Unstoppable Charge and Combat Master clauses.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and this band's printed rule binding; no engine output was consulted.
+- audit_id: rule/mordheim/merchant-caravans/blackguards--strongman/skill.strongman
+  id: a-blackguards-two-handed-weapon-keeps-the-ordinary-order
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: merchant-caravans
+      profile_id: blackguards
+      main_weapon_id: weapon.double-handed-weapon
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/mordheim/merchant-caravans/blackguards--strongman/skill.strongman
+  id: without-the-strongman-the-same-weapon-strikes-last
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.double-handed-weapon
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: true, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

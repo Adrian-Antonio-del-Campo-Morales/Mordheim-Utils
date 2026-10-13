@@ -1,0 +1,192 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/fen-guard-mim/band--hard-to-kill/mechanic.fen-hard-to-kill
+# scaffold_fingerprint: f9ba029de530f54ac9530b2ad32c7d16909054616d3bcd1ab2e9eeacd31061c4
+# authoring_status: AUTHORED
+# authoring_progress: the two admitted clauses carry four authored scenarios derived from the printed
+#   rule and the printed band record: a five that the ordinary chart takes Out of Action leaves this
+#   bearer Stunned, the six still takes it out, the same five on an unmarked fixture is Out of Action so
+#   the wider band is attributable to the printed rule rather than to the fixture, and the printed fire
+#   exception is exercised with the brazier iron, whose fire tag restores the ordinary chart on that
+#   same five.  The bearer is the printed Dryads profile of the band and the band rule is supplied
+#   through its printed rule key, both read from the band source, not from the engine.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: fire-cancels-the-rule (scope: YES)
+# AUTHORED[fire-cancels-the-rule]: 1 scenario shows the fire-tagged brazier iron restoring the
+#   ordinary chart on the same five, so the bearer is taken out of action by it.
+# origin_id:
+#   rule/mordheim/fen-guard-mim/band--hard-to-kill/mechanic.fen-hard-to-kill
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/fen-guard-mim/special-rules.yaml
+# source_fingerprint:
+#   f98001a0e1dfc17db9ac6e01cde14849de0c821100c8612caf4f3b8db3d6dded
+# source_sha256_at_generation:
+#   47c3b126a549eca1cfca78e7eca5c0202cd37398d3adbc52d362dcbaeb7d582c
+# Printed rule text:
+#   Dryads and Spiteborn can only be taken out of action on a roll of 6 instead of 5-6 on the injury chart: treat 1-2 as knocked down, 3-5 as stunned and 6 as out of action. Fire attacks ignore this rule.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A fire attack ignores this rule; observable: against a fire attack the bearer uses the ordinary 5-6 out-of-action band.
+# effect_id:
+#   mechanic.fen-hard-to-kill
+# relation:
+#   equivalent
+# parameters:
+#   {"cancelled_by":"attack.fire"}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The fire exception is inside the clause and is consumed as an extra condition on the same flag, not as a separate rule. Surface reuse candidate: {"family":"mechanic.fen-hard-to-kill","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: out-of-action-only-on-six (scope: YES)
+# AUTHORED[out-of-action-only-on-six]: 3 scenario(s) evidence the printed chart band at its
+#   boundary (a five leaves the printed bearer Stunned), the six that still takes it out, and the
+#   ordinary chart on an unmarked fixture, so the wider band belongs to the printed rule.
+# origin_id:
+#   rule/mordheim/fen-guard-mim/band--hard-to-kill/mechanic.fen-hard-to-kill
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/fen-guard-mim/special-rules.yaml
+# source_fingerprint:
+#   f98001a0e1dfc17db9ac6e01cde14849de0c821100c8612caf4f3b8db3d6dded
+# source_sha256_at_generation:
+#   47c3b126a549eca1cfca78e7eca5c0202cd37398d3adbc52d362dcbaeb7d582c
+# Printed rule text:
+#   Dryads and Spiteborn can only be taken out of action on a roll of 6 instead of 5-6 on the injury chart: treat 1-2 as knocked down, 3-5 as stunned and 6 as out of action. Fire attacks ignore this rule.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Dryads and Spiteborn are taken out of action only on a 6; 1-2 knocked down, 3-5 stunned; observable: an injury total of 5 leaves the bearer Stunned.
+# effect_id:
+#   mechanic.fen-hard-to-kill
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed as the fen hard-to-kill flag, which raises the out-of-action threshold to 6 while the ordinary knocked-down and stunned bands stay in place. Surface reuse candidate: {"family":"mechanic.fen-hard-to-kill","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Family model (fen hard-to-kill): the bearer is the printed Dryads profile of this band and the
+# band rule is supplied through its printed rule key, so the granted chart is what the scenarios
+# exercise.  The fixture attacker is hand-built with the printed mace and fixed facts (Weapon Skill
+# 10, Strength 8, Initiative 10) and the bearer starts the duel at its printed single wound with no
+# attack pool, so the tape holds only the attacker's own dice and no injury roll is ambiguous.  The
+# wound face is four, below a natural six, so no critical die is requested.  Every expectation is
+# read from the printed rule and the recorded contract, never from engine output.
+
+# The printed chart takes 1-2 as knocked down and 3-5 as stunned, so a five that the ordinary chart
+# would take out leaves this bearer Stunned instead.
+- audit_id: rule/mordheim/fen-guard-mim/band--hard-to-kill/mechanic.fen-hard-to-kill
+  id: a-five-only-stuns-the-fen-bearer
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: dryads
+      special_rule_ids: [band--hard-to-kill]
+      main_weapon_id: weapon.mace
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The six is the one chart face that still takes the bearer out of action.
+- audit_id: rule/mordheim/fen-guard-mim/band--hard-to-kill/mechanic.fen-hard-to-kill
+  id: only-the-six-takes-the-fen-bearer-out
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: dryads
+      special_rule_ids: [band--hard-to-kill]
+      main_weapon_id: weapon.mace
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 6}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The non-regression control: the identical tape against an unmarked hand-built bearer is taken out
+# by the same five, which is the ordinary chart the printed rule replaces.
+- audit_id: rule/mordheim/fen-guard-mim/band--hard-to-kill/mechanic.fen-hard-to-kill
+  id: the-ordinary-chart-still-takes-an-unmarked-bearer-out-on-a-five
+  covers: [out-of-action-only-on-six]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 4, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+# The printed exception: the brazier iron prints the fire tag, so the same five takes the bearer of
+# the rule out of action.  Its own ignition die is declared below its threshold, which is why it is
+# part of the tape.
+- audit_id: rule/mordheim/fen-guard-mim/band--hard-to-kill/mechanic.fen-hard-to-kill
+  id: a-fire-attack-ignores-the-fen-rule
+  covers: [fire-cancels-the-rule]
+  fighters:
+    first:
+      main_weapon_id: weapon.brazier-iron
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: fen-guard-mim
+      profile_id: dryads
+      special_rule_ids: [band--hard-to-kill]
+      main_weapon_id: weapon.mace
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.ignition, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.second.condition: OUT, state.second.on_fire: False}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

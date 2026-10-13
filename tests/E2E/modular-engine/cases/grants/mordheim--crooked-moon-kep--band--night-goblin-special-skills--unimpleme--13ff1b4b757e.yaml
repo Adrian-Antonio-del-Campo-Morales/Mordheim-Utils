@@ -1,0 +1,207 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/crooked-moon-kep/band--night-goblin-special-skills/unimplemented.crooked-moon-kep.band.night-goblin-special-skills
+# scaffold_fingerprint: fd3622b1abc806f441d5924837cca92e7bb1945e3842394adbf06e2b58f3e49b
+# authoring_status: AUTHORED
+# authoring_progress: the admitted netter clause carries two authored scenarios derived from the
+# printed rule, this band's own binding (special-rules.yaml id band--night-goblin-special-skills) and
+# the shared operator in cases/mechanics/mechanic.netter.yaml: the printed success branch, in which a
+# declared net charge hits, the target fails its Strength escape test, counts as knocked down and is
+# hit automatically with the wound roll still required, and the control, in which the same charge
+# without the band rule asks for no net die at all.  The three scope-NO sentences of the compound list
+# (Ded Shooty, Infiltrate, Sneaky Git) stay outside the admitted clause scope.  REVIEWED still
+# requires manual semantic review and execution_status stays UNEXECUTED.
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: night-goblin-skills--scope--netter (scope: YES)
+# AUTHORED[night-goblin-skills--scope--netter]: 2 scenarios cover the declared net charge of this
+# band's Netter.  In the success branch the net's own Ballistic Skill die of 4 hits (the admitted
+# Night Goblin profile supplies BS 3, so the net's target is 4+), the target fails the printed
+# Strength escape test on a 4 against its Strength 3, and the target then counts as Knocked Down and
+# is hit automatically: no To Hit die is requested and the wound is still rolled, which is the printed
+# "the Goblin must still roll to wound as with a knocked down enemy".  The control repeats the
+# identical charge on the same profile build without the band netter rule and the tape carries no net
+# die, so the net step is the rule's own.  The printed failed-charge positioning and the recovery-phase
+# cut-out stay with the movement and stood-up handling the clause itself cites.  REVIEWED still
+# requires manual semantic review.
+# origin_id:
+#   rule/mordheim/crooked-moon-kep/band--night-goblin-special-skills/unimplemented.crooked-moon-kep.band.night-goblin-special-skills
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/crooked-moon-kep/special-rules.yaml
+# source_fingerprint:
+#   61196303eb5968a548f3280081ac108e039b8c7e34333fbc30118face9a5cd39
+# source_sha256_at_generation:
+#   b4c792c5bc3ab074e3780a036b5af795eae3bf1eb8b75035fc31d4764deec7d6
+# Printed rule text:
+#   Netter: a Night Goblin hunts Squigs in the depths of the mountains and has mastered the technique of the net and charge; the Goblin may declare that he is making a net charge, throwing the net at a target in the same way as described in the Mordheim rulebook; if he hits and the target fails to escape the net then the target counts as knocked down and the Goblin completes his charge
+# Semantic contract (check analysis_status before treating as accepted):
+#   The netter's net charge, the target counting as knocked down, the Goblin completing his charge, the automatic hits on a netted enemy and the recovery-phase cut-out are charge, state and attack consequences of one duelist. Printed clause: Netter: a Night Goblin hunts Squigs in the depths of the mountains and has mastered the technique of the net and charge; the Goblin may declare that he is making a net charge, throwing the net at a target in the same way as described in the Mordheim rulebook; if he hits and the target fails to escape the net then the target counts as knocked down and the Goblin completes his charge
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Compound night-goblin skill list; the duel already carries parts of them (netter handling, ranged modifiers) but the record is an unimplemented placeholder in the KB, so the admission decision needs a product call. Deployment, hidden and movement sentences are terrain/deployment exclusions in any case. Scope review integration: {"clause_id":"night-goblin-skills","review_clause_id":"netter","source_state":"matched","review_status":"reviewed","scope_reason":"The netter's net charge, the target counting as knocked down, the Goblin completing his charge, the automatic hits on a netted enemy and the recovery-phase cut-out are charge, state and attack consequences of one duelist.","notes":"The net is thrown as part of the charge declaration and produces no shooting profile; only the charge mechanic itself is reviewed here. No failed-charge positioning is admitted separately.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Ded Shooty (+6 inch range), Sneaky Git, Infiltrate, Netter: the net charge knocks the target down when it fails to escape and the target is automatically hit while netted; observable: the netted target is knocked down and hit automatically in combat.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B18-conditional-attacks","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Ded Shooty: the clever little git adds +6\" to the range of any missile weapons he uses (not including nets). Sneaky Git: the greenskin is sneaky so that he can move D6\" from a Night Goblin band member after all the other deployment is complete. Night Goblin Big Boss only. Infiltrate: as Skaven skill. Netter: a Night Goblin hunts Squigs in the depths of the mountains and has mastered the technique of the net and charge; the Goblin may declare that he is making a net charge, throwing the net at a target in the same way as described in the Mordheim rulebook; if he hits and the target fails to escape the net then the target counts as knocked down and the Goblin completes his charge; if he misses or the target escapes then the Goblin makes a failed charge (if the failed charge would take him into base contact then stop him 1\" away); a warrior caught in a net will be automatically hit in combat but the Goblin must still roll to wound as with a knocked down enemy; in the warrior's next recovery phase, unless stunned or out of action, he will cut himself out of the net but cannot do anything else and will count as lasting in combat as if he had stood up from being knocked down.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: night-goblin-skills--scope--ded-shooty (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/crooked-moon-kep/band--night-goblin-special-skills/unimplemented.crooked-moon-kep.band.night-goblin-special-skills
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/crooked-moon-kep/special-rules.yaml
+# source_fingerprint:
+#   61196303eb5968a548f3280081ac108e039b8c7e34333fbc30118face9a5cd39
+# source_sha256_at_generation:
+#   b4c792c5bc3ab074e3780a036b5af795eae3bf1eb8b75035fc31d4764deec7d6
+# Printed rule text:
+#   Ded Shooty: the clever little git adds +6" to the range of any missile weapons he uses (not including nets).
+# Semantic contract (check analysis_status before treating as accepted):
+#   Adding 6" to missile weapon range is a shooting-range rule; missile resolution is excluded. Printed clause: Ded Shooty: the clever little git adds +6" to the range of any missile weapons he uses (not including nets).
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Compound night-goblin skill list; the duel already carries parts of them (netter handling, ranged modifiers) but the record is an unimplemented placeholder in the KB, so the admission decision needs a product call. Deployment, hidden and movement sentences are terrain/deployment exclusions in any case. Scope review integration: {"clause_id":"night-goblin-skills","review_clause_id":"ded-shooty","source_state":"matched","review_status":"reviewed","scope_reason":"Adding 6\" to missile weapon range is a shooting-range rule; missile resolution is excluded.","notes":"text: Ded Shooty: the clever little git adds +6\" to the range of any missile weapons he uses (not including nets).","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Ded Shooty (+6 inch range), Sneaky Git, Infiltrate, Netter: the net charge knocks the target down when it fails to escape and the target is automatically hit while netted; observable: the netted target is knocked down and hit automatically in combat.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B18-conditional-attacks","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Ded Shooty: the clever little git adds +6\" to the range of any missile weapons he uses (not including nets). Sneaky Git: the greenskin is sneaky so that he can move D6\" from a Night Goblin band member after all the other deployment is complete. Night Goblin Big Boss only. Infiltrate: as Skaven skill. Netter: a Night Goblin hunts Squigs in the depths of the mountains and has mastered the technique of the net and charge; the Goblin may declare that he is making a net charge, throwing the net at a target in the same way as described in the Mordheim rulebook; if he hits and the target fails to escape the net then the target counts as knocked down and the Goblin completes his charge; if he misses or the target escapes then the Goblin makes a failed charge (if the failed charge would take him into base contact then stop him 1\" away); a warrior caught in a net will be automatically hit in combat but the Goblin must still roll to wound as with a knocked down enemy; in the warrior's next recovery phase, unless stunned or out of action, he will cut himself out of the net but cannot do anything else and will count as lasting in combat as if he had stood up from being knocked down.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: night-goblin-skills--scope--infiltrate (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/crooked-moon-kep/band--night-goblin-special-skills/unimplemented.crooked-moon-kep.band.night-goblin-special-skills
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/crooked-moon-kep/special-rules.yaml
+# source_fingerprint:
+#   61196303eb5968a548f3280081ac108e039b8c7e34333fbc30118face9a5cd39
+# source_sha256_at_generation:
+#   b4c792c5bc3ab074e3780a036b5af795eae3bf1eb8b75035fc31d4764deec7d6
+# Printed rule text:
+#   Infiltrate: as Skaven skill.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Infiltrate is a deployment/hidden-placement skill (as the Skaven skill); deployment and board position are excluded. Printed clause: Infiltrate: as Skaven skill.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Compound night-goblin skill list; the duel already carries parts of them (netter handling, ranged modifiers) but the record is an unimplemented placeholder in the KB, so the admission decision needs a product call. Deployment, hidden and movement sentences are terrain/deployment exclusions in any case. Scope review integration: {"clause_id":"night-goblin-skills","review_clause_id":"infiltrate","source_state":"matched","review_status":"reviewed","scope_reason":"Infiltrate is a deployment/hidden-placement skill (as the Skaven skill); deployment and board position are excluded.","notes":"text: Infiltrate: as Skaven skill.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Ded Shooty (+6 inch range), Sneaky Git, Infiltrate, Netter: the net charge knocks the target down when it fails to escape and the target is automatically hit while netted; observable: the netted target is knocked down and hit automatically in combat.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B18-conditional-attacks","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Ded Shooty: the clever little git adds +6\" to the range of any missile weapons he uses (not including nets). Sneaky Git: the greenskin is sneaky so that he can move D6\" from a Night Goblin band member after all the other deployment is complete. Night Goblin Big Boss only. Infiltrate: as Skaven skill. Netter: a Night Goblin hunts Squigs in the depths of the mountains and has mastered the technique of the net and charge; the Goblin may declare that he is making a net charge, throwing the net at a target in the same way as described in the Mordheim rulebook; if he hits and the target fails to escape the net then the target counts as knocked down and the Goblin completes his charge; if he misses or the target escapes then the Goblin makes a failed charge (if the failed charge would take him into base contact then stop him 1\" away); a warrior caught in a net will be automatically hit in combat but the Goblin must still roll to wound as with a knocked down enemy; in the warrior's next recovery phase, unless stunned or out of action, he will cut himself out of the net but cannot do anything else and will count as lasting in combat as if he had stood up from being knocked down.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+#
+# Clause: night-goblin-skills--scope--sneaky-git (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/crooked-moon-kep/band--night-goblin-special-skills/unimplemented.crooked-moon-kep.band.night-goblin-special-skills
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/crooked-moon-kep/special-rules.yaml
+# source_fingerprint:
+#   61196303eb5968a548f3280081ac108e039b8c7e34333fbc30118face9a5cd39
+# source_sha256_at_generation:
+#   b4c792c5bc3ab074e3780a036b5af795eae3bf1eb8b75035fc31d4764deec7d6
+# Printed rule text:
+#   Sneaky Git: the greenskin is sneaky so that he can move D6" from a Night Goblin band member after all the other deployment is complete. Night Goblin Big Boss only.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Moving D6" from a band member after deployment is pre-battle spatial deployment, outside a duel with no board movement. Printed clause: Sneaky Git: the greenskin is sneaky so that he can move D6" from a Night Goblin band member after all the other deployment is complete. Night Goblin Big Boss only.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Compound night-goblin skill list; the duel already carries parts of them (netter handling, ranged modifiers) but the record is an unimplemented placeholder in the KB, so the admission decision needs a product call. Deployment, hidden and movement sentences are terrain/deployment exclusions in any case. Scope review integration: {"clause_id":"night-goblin-skills","review_clause_id":"sneaky-git","source_state":"matched","review_status":"reviewed","scope_reason":"Moving D6\" from a band member after deployment is pre-battle spatial deployment, outside a duel with no board movement.","notes":"text: Sneaky Git: the greenskin is sneaky so that he can move D6\" from a Night Goblin band member after all the other deployment is complete. Night Goblin Big Boss only.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Ded Shooty (+6 inch range), Sneaky Git, Infiltrate, Netter: the net charge knocks the target down when it fails to escape and the target is automatically hit while netted; observable: the netted target is knocked down and hit automatically in combat.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B18-conditional-attacks","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Ded Shooty: the clever little git adds +6\" to the range of any missile weapons he uses (not including nets). Sneaky Git: the greenskin is sneaky so that he can move D6\" from a Night Goblin band member after all the other deployment is complete. Night Goblin Big Boss only. Infiltrate: as Skaven skill. Netter: a Night Goblin hunts Squigs in the depths of the mountains and has mastered the technique of the net and charge; the Goblin may declare that he is making a net charge, throwing the net at a target in the same way as described in the Mordheim rulebook; if he hits and the target fails to escape the net then the target counts as knocked down and the Goblin completes his charge; if he misses or the target escapes then the Goblin makes a failed charge (if the failed charge would take him into base contact then stop him 1\" away); a warrior caught in a net will be automatically hit in combat but the Goblin must still roll to wound as with a knocked down enemy; in the warrior's next recovery phase, unless stunned or out of action, he will cut himself out of the net but cannot do anything else and will count as lasting in combat as if he had stood up from being knocked down.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, this band's printed binding and the shared netter operator; no engine
+# output was consulted.  The netter fixture is the printed Night Goblin profile that carries the rule,
+# with its own characteristics declared except Ballistic Skill, which the profile supplies.
+- audit_id: rule/mordheim/crooked-moon-kep/band--night-goblin-special-skills/unimplemented.crooked-moon-kep.band.night-goblin-special-skills
+  id: a-hit-net-knocks-the-target-down-and-the-charge-strikes-home
+  covers: [night-goblin-skills--scope--netter]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: crooked-moon-kep
+      profile_id: night-goblins
+      special_rule_ids: [band--night-goblin-special-skills]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.netter.hit, value: 4}
+    - {key: round.0.first.netter.escape, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+  expect_rounds:
+    0: {attacks.0.knocked_down_target: true, attacks.0.wounded: true, state.second.condition: KNOCKED_DOWN,
+        state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.netter.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.netter.escape, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 6}
+
+# The control: the identical charge on the same profile build without the band netter rule, where no
+# net die is requested at all and the ordinary attack misses.
+- audit_id: rule/mordheim/crooked-moon-kep/band--night-goblin-special-skills/unimplemented.crooked-moon-kep.band.night-goblin-special-skills
+  id: without-the-band-netter-rule-the-charge-asks-for-no-net-die
+  covers: [night-goblin-skills--scope--netter]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: crooked-moon-kep
+      profile_id: night-goblins
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.knocked_down_target: false, state.second.condition: STANDING,
+        state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}

@@ -1,0 +1,85 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/black-orcs/band--black-orc-special-skills/profile.skill-access
+# scaffold_fingerprint: 51d935e8cbf6865baaa830c3712f7ad9502d06126bcada094e3388cbc551bdfd
+# authoring_status: AUTHORED
+# authoring_progress: both halves of the admitted clause carry an authored scenario: the Black Orc
+#   Boss that selects a printed table member is built and the duel runs, and a special skill outside
+#   the printed table is refused with the shared access diagnostic.  The member used for the
+#   admission is Thick Skull, the skill this band's own Ard Ead rule binds, not a guess.  REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the printed permission (Black Orc Heroes may use the band
+#   special skill list instead of the standard lists available to them).  The admission scenario
+#   builds the recipient with skill.thick-skull, the identity this band's own Ard Ead special-skill
+#   rule binds, and records that the duel ran unrefused; the closure scenario shows a special skill
+#   outside the printed table refused.  The binding declares only the category, so the remaining
+#   published members stay the KB's to enumerate.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/black-orcs/band--black-orc-special-skills/profile.skill-access
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-orcs/special-rules.yaml
+# source_fingerprint:
+#   59375ac796a7e03ce2d89e98841c6ee6127339df33dba5a6fb34b43ec469d28a
+# source_sha256_at_generation:
+#   033545b947532c3193948d1c1e85930a8f543a3f8a55e89401e4000e4ace47c8
+# Printed rule text:
+#   Black Orc Heroes may use the following Skill list instead of the standard skill lists available to them.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Permission: Black Orc Heroes may replace their standard skill lists with the band special table; members are individually selectable.
+# effect_id:
+#   profile.skill-access
+# relation:
+#   equivalent
+# parameters:
+#   {"category":"special"}
+# conditions:
+#   {"grant":"profile"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Members come from the published band table. Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded semantic contract and this band's own Ard Ead binding;
+# no engine output was consulted.  Both fighters are given zero attacks so the round resolves without
+# dice and the observation is about admission, not about the member's mechanics.
+
+- audit_id: rule/mordheim/black-orcs/band--black-orc-special-skills/profile.skill-access
+  id: a-printed-table-member-is-admitted-to-the-recipient
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: black-orc-boss
+      skill_ids: [skill.thick-skull]
+      main_weapon_id: weapon.axe
+    second:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_final: {rounds_executed: 1}
+
+- audit_id: rule/mordheim/black-orcs/band--black-orc-special-skills/profile.skill-access
+  id: a-special-skill-outside-the-printed-table-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: black-orc-boss
+      skill_ids: [skill.monster-slayer]
+  expect_error: "skills are not available to black-orcs/black-orc-boss: ['skill.monster-slayer']"

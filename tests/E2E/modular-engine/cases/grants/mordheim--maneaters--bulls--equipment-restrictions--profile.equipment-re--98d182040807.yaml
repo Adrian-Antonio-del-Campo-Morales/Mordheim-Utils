@@ -1,0 +1,81 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/maneaters/bulls--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: 52c2e9c6b1274ae27a531a8c323dd5a0654ba477198d85ffaf88500ed275e09d
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying weapon.dagger in main_weapon_id is refused with ""weapon.dagger" is forbidden for maneaters/bulls.", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# origin_id:
+#   rule/mordheim/maneaters/bulls--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/maneaters/special-rules.yaml
+# source_fingerprint:
+#   a6a5611bcbd270a7954fa38a3b40415047641a7f683d9180507268a7d0ed99df
+# source_sha256_at_generation:
+#   3a08e324408189c522ac15ffd4ef1ebf9f6762f1a8e9ab7608ad27662721e804
+# Printed rule text:
+#   Ogres do not receive free daggers and never fight with daggers in close combat.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Prohibition: Bulls get no free dagger and may not fight with a dagger in close combat.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["weapon.dagger"]}
+# conditions:
+#   {"recipient":"bulls"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Item-id-valued forbids (not a list). Surface reuse candidate: {"family":"CON-EQUIP-NO-FREE-DAGGER","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/maneaters/bulls--equipment-restrictions/profile.equipment-restrictions
+  id: bulls-with-weapon-dagger-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: bulls
+      main_weapon_id: weapon.dagger
+  expect_error: '"weapon.dagger" is forbidden for maneaters/bulls.'
+
+- audit_id: rule/mordheim/maneaters/bulls--equipment-restrictions/profile.equipment-restrictions
+  id: bulls-without-weapon-dagger-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: bulls
+    second:
+      collection: mordheim
+      band_id: maneaters
+      profile_id: bulls
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

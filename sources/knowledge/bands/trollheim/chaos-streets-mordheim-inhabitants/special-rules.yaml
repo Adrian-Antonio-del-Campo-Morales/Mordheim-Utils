@@ -43,15 +43,15 @@ rules:
     profile_ids:
     - prophet
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-mordheim-inhabitants.prophet.fanatic
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.automatic-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.automatic-leadership
 - id: prophet--orator
   name: Orator
   effect: >-
@@ -96,15 +96,15 @@ rules:
     profile_ids:
     - desolate-soul
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-mordheim-inhabitants.desolate-soul.fanatic
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.automatic-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.automatic-leadership
 - id: desolate-soul--death-wish
   name: Death Wish
   effect: >-

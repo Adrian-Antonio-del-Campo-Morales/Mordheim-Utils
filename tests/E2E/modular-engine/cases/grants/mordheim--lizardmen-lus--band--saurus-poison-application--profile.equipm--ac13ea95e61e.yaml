@@ -1,0 +1,103 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/lizardmen-lus/band--saurus-poison-application/profile.equipment-restrictions
+# scaffold_fingerprint: 3af69bf81f9a4c3c9717d90c2b40903f876031edf1ac97e15dd4a1fcaa9ed61b
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the two named diagnostics are established: the shared stage's poison-application reader
+# (`poisonApplicationIssue`, called for each [weapon slot, poison slot] pair in
+# packages/python/roster-construction/mordheim_construction/_eligibility.js) emits
+# `"<poison>" may only be applied to <kinds> by <band>/<profile>` whenever a governed poison sits on a
+# weapon of another kind, and this rule's own binding parameters are the governed set (poisons
+# poison.black-venom / poison.black-lotus, weapon_kinds close-combat-weapon, read from
+# sources/knowledge/bands/mordheim/lizardmen-lus/special-rules.yaml).  Three scenarios: the refusal on
+# both printed recipients when the coating sits outside a close-combat weapon, and the admitted coating
+# of a close-combat weapon, which frames the refusal.  The printed 'Trading does not change the
+# coating' proviso is a purchase-route clause and stays recorded, not asserted.  REVIEWED still
+# requires manual semantic review.
+# origin_id:
+#   rule/mordheim/lizardmen-lus/band--saurus-poison-application/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/lizardmen-lus/special-rules.yaml
+# source_fingerprint:
+#   6c226cbf4400fa0193d3245e413cfb23453f4674b65115ebdf85075a49a5cca5
+# source_sha256_at_generation:
+#   1f3734be0bdd364b1db4a6fdd021daf593fe0dd12043b32b3b8a69e9ddc633bf
+# Printed rule text:
+#   Saurus may apply Dark Venom and Black Lotus to close combat weapons.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Poison application permission: a Saurus may coat a close-combat weapon with Dark Venom or Black Lotus; the Trading procedure does not change the coating.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"poisons":["poison.black-venom","poison.black-lotus"],"weapon_kinds":["close-combat-weapon"]}
+# conditions:
+#   {"recipient":"saurus"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The recipient is the Saurus; only the poison/weapon-kind split is decided here. Rejected equivalence recommendation: Rejected Black Lotus behavior equivalence for this clause: it authorizes Saurus poison application to close-combat weapons. Keep this eligibility facet separate from poison hit/wound behavior.
+# authoring_progress: 3 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/lizardmen-lus/band--saurus-poison-application/profile.equipment-restrictions
+  id: saurus-braves-with-a-poison-outside-a-close-combat-weapon-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: lizardmen-lus
+      profile_id: saurus-braves
+      main_weapon_id: weapon.sword
+      off_hand_id: defence.shield
+      off_poison_id: poison.black-lotus
+  expect_error: '"poison.black-lotus" may only be applied to close-combat-weapon by lizardmen-lus/saurus-braves'
+
+- audit_id: rule/mordheim/lizardmen-lus/band--saurus-poison-application/profile.equipment-restrictions
+  id: saurus-totem-warriors-with-a-poison-outside-a-close-combat-weapon-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: lizardmen-lus
+      profile_id: saurus-totem-warriors
+      main_weapon_id: weapon.sword
+      off_hand_id: defence.shield
+      off_poison_id: poison.black-venom
+  expect_error: '"poison.black-venom" may only be applied to close-combat-weapon by lizardmen-lus/saurus-totem-warriors'
+
+- audit_id: rule/mordheim/lizardmen-lus/band--saurus-poison-application/profile.equipment-restrictions
+  id: saurus-braves-coating-a-close-combat-weapon-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: lizardmen-lus
+      profile_id: saurus-braves
+      main_weapon_id: weapon.sword
+      main_poison_id: poison.black-lotus
+    second:
+      collection: mordheim
+      band_id: lizardmen-lus
+      profile_id: saurus-braves
+      main_weapon_id: weapon.sword
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {first: {condition: OUT}}
+  expect_initial: {first.condition: OUT}
+  expect_final: {rounds_executed: 0, termination_reason: first_out}

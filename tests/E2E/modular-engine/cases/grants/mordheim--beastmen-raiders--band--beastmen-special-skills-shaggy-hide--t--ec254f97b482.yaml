@@ -1,0 +1,278 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
+# scaffold_fingerprint: 69f5e46ad2e2118fa9f20306d019d4b371ae4570d9a3b71ea0a91034f206819b
+# authoring_status: PARTIAL
+# authoring_progress: the printed save, its combination with worn armour and the duplicate-row
+#   clause all carry authored scenarios derived from the printed rule, its recorded contract and
+#   the band package.  One term of the combines-with-armour clause stays open and is recorded on
+#   the clause below instead of being dropped, because the source question is the rules owner's
+#   and the register itself leaves the row at needs_clarification.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: combines-with-armour (scope: YES)
+# AUTHORED[combines-with-armour]: 3 scenarios reach the 5+ the printed combination yields - the
+#   shield's +1 and worn light armour each take the hide one step better, and a four is a wound,
+#   so the composite is one step and not a second layer.
+# PARTIAL[combines-with-armour]: [CLOSING-REVIEW [B]] the admitted clause carries one term that is not observable, and it
+#   is recorded here instead of dropped.  The printed sentence says the hide "can be combined with
+#   other armour as normal", and the register's own note leaves the row at needs_clarification:
+#   compile_fighter cancels a Toughened Leathers contribution whenever natural_armour_stacks is set,
+#   which this source does not say.  The two candidate readings - (a) the hide combines with
+#   leather like any other armour printed, or (b) the single cancellation stays for every bearer of
+#   the flag - are a source question the register defers to the rules owner, so nothing is authored
+#   for a hide-over-Toughened-Leathers build: authoring either reading would claim a decision this
+#   file cannot make.  When the reading is fixed, one shielded/leathered recipient pair at Strength
+#   3 closes the clause.
+# origin_id:
+#   rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
+# analysis_status:
+#   needs_clarification
+# source_file:
+#   bands/mordheim/beastmen-raiders/special-rules.yaml
+# source_fingerprint:
+#   e1c201acd583236a6182a12ac92e5fc5d9b33bff6cee82f626a10f426d49ab0b
+# source_sha256_at_generation:
+#   246c28766a6fc502a70a5cc2b89712a36e62bf3385e838fc7503203831861f5e
+# Printed rule text:
+#   The Beastman’s massively shaggy hide acts as armour, deflecting sword strokes and protecting him from harm. The model gains a 6+ Armour Save that can be combined with other armour as normal.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Combines with other armour as normal; observable: hide plus a shield yields the shield bonus on top of the 6+.
+# effect_id:
+#   trait.natural-armour-stacks
+# relation:
+#   parameterized_variant
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   compiler.compile_fighter cancels a Toughened Leathers contribution whenever natural_armour_stacks is set, which this source does not say; alternatives: (a) hide combines with leather normally as printed, or (b) keep the single-cancellation rule for every natural save. Decision needed from the rules owner; a discriminating case is hide over Toughened Leathers.
+#   
+#   [M3-defences 2026-10-08] source question restated. The printed Shaggy Hide says the 6+ save combines with other armour as normal, but `compile_fighter` cancels a Toughened Leathers contribution whenever `natural_armour_stacks` is set, which this source does not say. Resolution: decide whether Shaggy Hide combines with leather normally (and only then remove or narrow the cancellation) instead of defaulting either way.
+#
+# Clause: six-plus-save (scope: YES)
+# AUTHORED[six-plus-save]: 3 scenarios take the printed 6+ on the real attack route - a six saves
+#   and a five is a wound - and the same dice from a Chieftain that did not select the skill are
+#   offered no armour die at all, so the save is the selected grant and not a band-wide one.
+# origin_id:
+#   rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/beastmen-raiders/special-rules.yaml
+# source_fingerprint:
+#   e1c201acd583236a6182a12ac92e5fc5d9b33bff6cee82f626a10f426d49ab0b
+# source_sha256_at_generation:
+#   246c28766a6fc502a70a5cc2b89712a36e62bf3385e838fc7503203831861f5e
+# Printed rule text:
+#   The Beastman’s massively shaggy hide acts as armour, deflecting sword strokes and protecting him from harm. The model gains a 6+ Armour Save that can be combined with other armour as normal.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Bearer has a 6+ armour save from its hide; observable: an incoming wound is saved on a natural 6 in the armour step.
+# effect_id:
+#   trait.natural-armour-save
+# relation:
+#   equivalent
+# parameters:
+#   {"save":6}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   natural_armour_save is composed into armour_target and modified by Strength like ordinary armour. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: stacks-per-hide (scope: YES)
+# AUTHORED[stacks-per-hide]: 1 scenario records the duplicate candidate's observable - with the
+#   hide and worn light armour a four is a wound - so the composite is exactly one step and the
+#   second candidate entry adds no further layer.
+# origin_id:
+#   rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/beastmen-raiders/special-rules.yaml
+# source_fingerprint:
+#   e1c201acd583236a6182a12ac92e5fc5d9b33bff6cee82f626a10f426d49ab0b
+# source_sha256_at_generation:
+#   246c28766a6fc502a70a5cc2b89712a36e62bf3385e838fc7503203831861f5e
+# Printed rule text:
+#   The Beastman’s massively shaggy hide acts as armour, deflecting sword strokes and protecting him from harm. The model gains a 6+ Armour Save that can be combined with other armour as normal.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The second candidate entry records the same clause as a separate combat trait; observable: one hide grants one 6+ save.
+# effect_id:
+#   trait.natural-armour-stacks
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Duplicate candidate for the same printed sentence; no additional runtime contribution. Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract of each clause and the band package; no
+# engine output was consulted.  The bearer is the band's Chieftain with the printed skill selected
+# (a warband skill of this band, so the grant belongs to the selection and not to the profile) and
+# the attacker is a hand-built fixture, whose Weapon Skill 10 and Initiative 10 are fixture facts.
+# The duel is uncharged and the bearer starts at two wounds and contributes no attacks of its own,
+# so the single incoming swing is the whole tape; the wound face stays below a natural six so no
+# critical die is part of this evidence.
+
+- audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
+  id: the-shaggy-hide-saves-on-six
+  covers: [six-plus-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      main_weapon_id: weapon.sword
+      special_rule_ids: [band--beastmen-special-skills-shaggy-hide]
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 6}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
+  id: one-face-below-the-hide-is-a-wound
+  covers: [six-plus-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      main_weapon_id: weapon.sword
+      special_rule_ids: [band--beastmen-special-skills-shaggy-hide]
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
+  id: a-chieftain-without-the-skill-is-offered-no-save
+  covers: [six-plus-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      main_weapon_id: weapon.sword
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
+  id: a-shield-takes-the-hide-to-five
+  covers: [combines-with-armour, stacks-per-hide]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      main_weapon_id: weapon.sword
+      off_hand_id: defence.shield
+      special_rule_ids: [band--beastmen-special-skills-shaggy-hide]
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
+  id: worn-light-armour-takes-the-hide-to-five
+  covers: [combines-with-armour, stacks-per-hide]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      main_weapon_id: weapon.sword
+      armour_id: armour.light-armour
+      special_rule_ids: [band--beastmen-special-skills-shaggy-hide]
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-save
+  id: a-four-does-not-save-with-the-hide-and-light-armour
+  covers: [stacks-per-hide]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: beastmen-raiders
+      profile_id: beastmen-chieftain
+      main_weapon_id: weapon.sword
+      armour_id: armour.light-armour
+      special_rule_ids: [band--beastmen-special-skills-shaggy-hide]
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.armour, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

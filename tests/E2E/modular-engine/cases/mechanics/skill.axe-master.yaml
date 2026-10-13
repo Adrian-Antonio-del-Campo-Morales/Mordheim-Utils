@@ -1,0 +1,90 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.axe-master
+# scaffold_fingerprint: 97a8f7d6ea124c130ffa64862330c8345239c1b5b9d7e10ff673044856ef97f5
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: parry-with-normal-axes (scope: YES)
+# AUTHORED[parry-with-normal-axes]: 2 scenarios cover the parry attempt a
+#   normal axe produces under the skill and its absence without it.
+# origin_id:
+#   mechanic/skill.axe-master
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   14b9b53cda36df3945c2486ee6eb9ea7cd1f52cde40dbd8c1805ed962aba540b
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   May parry with normal axes.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The warrior may parry with normal axes; observable: an axe without the Parry rule produces a parry attempt.
+# effect_id:
+#   skill.axe-master
+# relation:
+#   equivalent
+# parameters:
+#   {"parry_with":"axe"}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed in the parry capacity as one available parry when an axe or dwarf axe is held. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"parry-with-normal-axes","audit_group":"EQ-skill.axe-master","verified_facet":"skill.axe-master","relationship":"shared_facet","boundary":"Adds a parry option to normal axes; does not grant an extra attempt, equal-roll parry, or Dwarf Axe Master of Blades.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# A normal axe carries no Parry rule, so the declared parry die exists only because
+# the skill grants one; the roll of five beats the hit roll of four and the wound
+# roll is never reached.
+- audit_id: mechanic/skill.axe-master
+  id: an-axe-parries-under-the-skill
+  covers: [parry-with-normal-axes]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.axe
+      skill_ids: [skill.axe-master]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Without the skill no parry attempt is available and the hit proceeds to its wound
+# roll, which isolates the granted capacity to the skill.
+- audit_id: mechanic/skill.axe-master
+  id: the-same-axe-parries-nothing-without-the-skill
+  covers: [parry-with-normal-axes]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

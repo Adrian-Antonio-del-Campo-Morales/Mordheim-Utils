@@ -1,0 +1,96 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/preparation.crimson-shade
+# scaffold_fingerprint: 020a26cbe71d29ba256f713e9c50e12b5c5b8b35ecf936ff47553f85ed1f5939
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries 2 scenarios (the 1D3 Initiative with 3 and with 1, plus the +1 Strength wound); REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios show the rolled 1D3 Initiative entering the
+#   fighter state (3 then 1) and the +1 Strength wounding on a 3.
+# origin_id:
+#   mechanic/preparation.crimson-shade
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   50fc18a903845c19cd46fc5562b95112968e9241c43fc40487bc91f88b9fe8fb
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   +1 S and +1D3 I for the entire battle.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Crimson Shade grants +1 Strength and +1D3 Initiative for the entire battle. Closure: a duel fought under Crimson Shade raises attack Strength by one and Initiative by a rolled 1D3 for its whole duration.
+# effect_id:
+#   preparation.crimson-shade
+# relation:
+#   equivalent
+# parameters:
+#   {"duration": "entire battle", "initiative_bonus": "1D3", "strength_bonus": 1}
+# conditions:
+#   {"application": "fighter", "duration": "entire battle", "stacking": "stack", "trigger": "duel start"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Correction round: the former finding that no Initiative term exists for this preparation is withdrawn. compiler.compile_fighter applies the duel_start/fighter effect set, so the tag reaches every runtime; state.initialize_fighter rolls the single 1D3 into the fighter state, resolve_round passes the delta to resolve_priority as initiative_bonus = state.initiative - characteristics.initiative, and _combined_effect/_attack_strength apply strength_bonus 1 to every close-combat attack. The native engine carries the same roll through the _compile_fighter crimson_shade flag and the vectorized engine through _new_state plus effective_initiative. Both printed terms of this canonical clause are delivered for the whole duel. The Undead/Possessed immunity is printed only on the item origin and is recorded as pending work there.
+
+# --- Authored scenarios ---
+# mechanic/preparation.crimson-shade - authored from the printed rule and the
+# admitted clauses, never from engine output.  The preparation is supplied
+# on `preparation_ids`.
+# The +1D3 Initiative is rolled once at initialization under the key
+# `first.crimson-shade` (a D3) and raises the fighter's Initiative for the whole
+# battle; the +1 Strength raises the attack Strength to 4, so Toughness 3 is
+# wounded on a 3.
+- audit_id: mechanic/preparation.crimson-shade
+  id: crimson-shade-adds-one-strength-and-a-rolled-initiative-bonus
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.crimson-shade]
+      characteristics: &cs-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &cs-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &cs-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: first.crimson-shade, sides: 3, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.initiative: 8, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+
+- audit_id: mechanic/preparation.crimson-shade
+  id: the-lowest-initiative-face-adds-one
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.crimson-shade]
+      characteristics: *cs-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *cs-defender
+  duel_context: *cs-context
+  maximum_rounds: 1
+  rolls:
+    - {key: first.crimson-shade, sides: 3, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.initiative: 6, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

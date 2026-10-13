@@ -1,0 +1,68 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/pit-fighters/dwarf-troll-slayer--pit-fighter/trait.pit-fighter
+# scaffold_fingerprint: f14ebce560f919485bcfc2d1b55bf7a33c65906d9d2577932d82cc9b9fb1c680
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is derived for the admitted whole clause, and the reason is a
+#   real limit of the clause rather than missing authoring work: the record declares no effect_id,
+#   no duel clause and no consumer, and its own contract states that this printed sentence is a
+#   construction grant of the warband's Pit Fighter skill to this bearer, whose consequences are
+#   analysed at the skill's own origin.  There is therefore no duel-time observable this file could
+#   assert, and inventing one would misreport the record.  The pending requirement is exactly that
+#   the fighting-style selection be modelled in the construction layer, at which point this origin's
+#   evidence is the admission of the printed style for this bearer.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED; no
+#   behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [E] the printed grant carries no duel-time consequence that the corpus can observe.
+#   The record's contract is composition-only (the warrior has the warband's Pit Fighter skill and
+#   therefore a fighting style determining his equipment), it names no effect_id and assigns no
+#   consumer; the skill's own consequences are analysed at its own origin.  Evidence for this
+#   origin becomes available once the construction layer models the fighting-style selection, which
+#   is the named pending requirement, and the requirement itself is excluded by an accepted scope
+#   decision: the band's own record places the fighting-styles contract out of scope (recruitment
+#   packages, gold costs and later swapping need roster and campaign state), so category [E] applies
+#   and no duel tape is owed.  The printed wording stays preserved rather than converted into a
+#   silent default loadout.
+#   Challenge pass: the shared construction stages were re-read to test that blocker.  buildRestriction's
+#   boundEquipment branch and equipmentIssue/equipmentSetIssues both act on a selected loadout item or a
+#   carried kit, neither of which this printed sentence constrains, and specialRuleRestriction's recipient
+#   stage refuses a *different* profile rather than evidencing the bearer's own grant.  The only tape the
+#   clause could support is the admission of the printed bearer's build, which is the unconditioned state
+#   every case already has, so the blocker stands as recorded and no scenario is invented.
+# origin_id:
+#   rule/mordheim/pit-fighters/dwarf-troll-slayer--pit-fighter/trait.pit-fighter
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/pit-fighters/special-rules.yaml
+# source_fingerprint:
+#   fcbda1bb4306dfc763c145a4ffc0c5f3a82444e8b760317f3c79d14b25e08995
+# source_sha256_at_generation:
+#   4b743a427096d672a1bf5a53fad379b4e5c09d9e585ec2bf06eabd86e7123015
+# Printed rule text:
+#   This warrior has the warband's Pit Fighter skill.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The statement that the warrior has the warband's Pit Fighter skill is a construction grant of that skill to this bearer; the skill's own consequences are analysed at its own origin. Printed clause: This warrior has the warband's Pit Fighter skill.
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The clause assigns initial weapons and armour through a fighting style. The band rule itself records the fighting-styles contract as out of scope (initial recruitment packages, gold costs, later purchases and swapping need roster and campaign state), so no duel operator is required and no effect ID or consumer is claimed for this excluded clause. The printed wording is preserved here rather than converted into a silent default loadout. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"matched","review_status":"reviewed","scope_reason":"The statement that the warrior has the warband's Pit Fighter skill is a construction grant of that skill to this bearer; the skill's own consequences are analysed at its own origin.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"This warrior has the warband Pit Fighter skill: he must select one fighting style, which determines his initial weapons and armour. Closure: unmodelled while fighting-style selection and its equipment packages are recruitment and campaign state.","effect_id":"","relation":"equivalent","parameters":"{\"grant\": \"fighting styles\"}","conditions":"{\"subsystem\": \"construction / campaign\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A12-construction-contract-rules","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/pit-fighters/special-rules.yaml\"]"},"inherited_clause_text":"This warrior has the warband's Pit Fighter skill.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

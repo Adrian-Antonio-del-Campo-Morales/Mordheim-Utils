@@ -1,0 +1,56 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/nipponese-expedition-web/vim-to-mage--tenants-of-the-order/unimplemented.nipponese-expedition-web.vim-to-mage.tenants-of-the-order
+# scaffold_fingerprint: 60c58d514b4e4f4fe0777eb0953b996873de82568cda01dac13cf2ce0f029a4e
+# authoring_status: PARTIAL
+# authoring_progress: the admitted owned-equipment-ban clause cannot be authored: the effect is only
+#   proposed.owned-equipment-permission (unresolved relation), and the register states that an
+#   active_weapon_permits binding is insufficient because that contract deliberately permits ownership of other
+#   equipment, so the ownership-exception contract must be added at the shared decision layer first.  The exact
+#   pending datum is named in the clause marker below.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: owned-equipment-ban (scope: YES)
+# PARTIAL[owned-equipment-ban]: [C] no scenario is authorable while the ownership contract is missing.  The
+#   printed sentence ("With the exception of a walking staff (club) and a dagger the Vim-To Mage may never have
+#   any equipment") is admitted in scope and its contract asks to validate the whole carried set rather than the
+#   active hands, but the recorded note reads: "An active_weapon_permits binding is insufficient: that contract
+#   deliberately permits ownership of other equipment. Add the ownership exception contract at the shared
+#   decision layer; canonical data and both projections follow."  The missing datum is therefore that ownership
+#   contract plus the profile binding, after which the refusal (a carried club and dagger are accepted, any
+#   other owned item is refused with the module's message) can be declared.
+# origin_id:
+#   rule/mordheim/nipponese-expedition-web/vim-to-mage--tenants-of-the-order/unimplemented.nipponese-expedition-web.vim-to-mage.tenants-of-the-order
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/nipponese-expedition-web/special-rules.yaml
+# source_fingerprint:
+#   1b408bc59b24bc92e55dc05ba9db5241bcbaa22c982b3b0e0a3fda935d8df15c
+# source_sha256_at_generation:
+#   7d0593898b6ae8814ae3ddfc10dfc89c36a1df30b529997ff65b8c117f317541
+# Printed rule text:
+#   With the exception of a walking staff (club) and a dagger the Vim-To Mage may never have any equipment.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Vim-To Mage may own no equipment other than a club/walking staff and a dagger. Validate the whole carried set, not only the active hands.
+# effect_id:
+#   proposed.owned-equipment-permission
+# relation:
+#   related
+# parameters:
+#   {"permitted_owned_kinds":["club","dagger"]}
+# conditions:
+#   {"profile":"vim-to-mage","window":"construction"}
+# dependencies:
+#   ["profile.equipment-restrictions"]
+# Register notes (context only, not behavioral authority):
+#   An active_weapon_permits binding is insufficient: that contract deliberately permits ownership of other equipment. Add the ownership exception contract at the shared decision layer; canonical data and both projections follow. No caster behaviour is required. Scope review integration: {"clause_id":"owned-equipment-ban","review_clause_id":"owned-equipment-ban","source_state":"unverified","review_status":"reviewed","scope_reason":"Restricting the Mage to a walking staff and a dagger is an admitted construction restriction on this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

@@ -1,0 +1,191 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-slayers-kaz/slayers--no-armour-or-missile-weapons/profile.equipment-restrictions
+# scaffold_fingerprint: 8c7ad96c4c267000c8cd25ae9a1a0cdc1c5a2e6a2ebb8eee245d8b75ffeeb3c5
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying armour.heavy-armour in armour_id is refused with "armour is forbidden for dwarf-slayers-kaz/giant-slayer", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+# origin_id:
+#   rule/mordheim/dwarf-slayers-kaz/slayers--no-armour-or-missile-weapons/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dwarf-slayers-kaz/special-rules.yaml
+# source_fingerprint:
+#   0e9212f3ccbab259edd39071fefd73f970e8a96cbd28e73f873bc104986c4eda
+# source_sha256_at_generation:
+#   b489daeeedb7e64649fa6ec4f6c427c304692c4ca986965f9fb0057ded5ac4dd
+# Printed rule text:
+#   Slayers may never take armour or missile weapons; the Dwarf Warrior Equipment List prints the clause on its armour, shield, helmet and pistol rows, and each Slayer profile carries the same restriction.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Profile equipment prohibition with a list-side restatement: Slayers take no armour and no missile weapons, and the equipment list repeats the clause on the armour, shield, helmet and pistol rows.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["armour","ranged-weapons"]}
+# conditions:
+#   {"recipient":"slayers"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Declared by slayers--no-armour-or-missile-weapons; the list-row restatements are the per-entry side of the same clause and duplicate it rather than adding a new contribution. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The bars on armour and on missile weapons are construction restrictions on these Slayers.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"902","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the actual forbidden categories and recipients. Body-armour-only, all armour, missiles, blackpowder, drugs and poisons are distinct restrictions. Construction legality can affect a melee build even when shooting is excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 9 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/slayers--no-armour-or-missile-weapons/profile.equipment-restrictions
+  id: giant-slayer-with-armour-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: giant-slayer
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for dwarf-slayers-kaz/giant-slayer
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/slayers--no-armour-or-missile-weapons/profile.equipment-restrictions
+  id: giant-slayer-with-ranged-weapons-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: giant-slayer
+      main_weapon_id: weapon.pistol
+  expect_error: missile weapons are forbidden for dwarf-slayers-kaz/giant-slayer
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/slayers--no-armour-or-missile-weapons/profile.equipment-restrictions
+  id: giant-slayer-without-armour-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: giant-slayer
+    second:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: giant-slayer
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/slayers--no-armour-or-missile-weapons/profile.equipment-restrictions
+  id: troll-slayers-with-armour-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: troll-slayers
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for dwarf-slayers-kaz/troll-slayers
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/slayers--no-armour-or-missile-weapons/profile.equipment-restrictions
+  id: troll-slayers-with-ranged-weapons-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: troll-slayers
+      main_weapon_id: weapon.pistol
+  expect_error: missile weapons are forbidden for dwarf-slayers-kaz/troll-slayers
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/slayers--no-armour-or-missile-weapons/profile.equipment-restrictions
+  id: troll-slayers-without-armour-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: troll-slayers
+    second:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: troll-slayers
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/slayers--no-armour-or-missile-weapons/profile.equipment-restrictions
+  id: slayers-with-armour-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: slayers
+      armour_id: armour.heavy-armour
+  expect_error: armour is forbidden for dwarf-slayers-kaz/slayers
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/slayers--no-armour-or-missile-weapons/profile.equipment-restrictions
+  id: slayers-with-ranged-weapons-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: slayers
+      main_weapon_id: weapon.pistol
+  expect_error: missile weapons are forbidden for dwarf-slayers-kaz/slayers
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/slayers--no-armour-or-missile-weapons/profile.equipment-restrictions
+  id: slayers-without-armour-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: slayers
+    second:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: slayers
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

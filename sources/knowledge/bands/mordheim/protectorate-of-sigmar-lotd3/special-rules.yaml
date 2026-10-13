@@ -183,16 +183,15 @@ rules:
     - templar
 - id: huntsman--beastmaster
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.protectorate-of-sigmar-lotd3.huntsman.beastmaster
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: leadership use by animals and hostile-beast charge tests are
-        psychology/morale mechanics.
+    - id: mechanic.handler-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.handler-leadership
   name: Beastmaster
   effect: >-
     A Huntsman is naturally attuned to the earth and beasts around him. Any animal in the warband
@@ -298,14 +297,15 @@ rules:
 - id: band--special-skill-unshakeable-faith
   kind: warband_skill
   runtime:
-    scope: 'YES'
-    implemented: 'NO'
     grant: selectable
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.protectorate-of-sigmar-lotd3.band.unshakeable-faith
+    - id: mechanic.fear-immunity
       scope: 'YES'
-      binding: null
-      reason: 'Included individual duel effect, not implemented: Individual immunity to Fear; this canonical selectable grant remains unimplemented.'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-immunity
   name: Unshakeable Faith
   effect: >-
     Such is the faith of the warrior that there is little room for doubt or hesitation in his

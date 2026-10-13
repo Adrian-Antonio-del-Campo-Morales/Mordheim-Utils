@@ -46,15 +46,15 @@ rules:
     profile_ids:
     - witch-hunter-captain
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.trollheim-witch-hunters.witch-hunter-captain.burn-the-witch
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.burn-the-witch
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.burn-the-witch
 - id: witch-hunters--burn-the-witch
   name: Burn the Witch!
   effect: Witch Hunters are subject to Hatred against all models that can cast spells.
@@ -72,15 +72,15 @@ rules:
     profile_ids:
     - witch-hunters
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.trollheim-witch-hunters.witch-hunters.burn-the-witch
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.burn-the-witch
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.burn-the-witch
 - id: warrior-priest--prayers
   name: Prayers
   effect: >-
@@ -128,15 +128,15 @@ rules:
     profile_ids:
     - flagellants
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.trollheim-witch-hunters.flagellants.fanatical
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.automatic-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.automatic-leadership
 - id: war-hounds--animals
   name: Animals
   effect: War Hounds are animals and never gain Experience.

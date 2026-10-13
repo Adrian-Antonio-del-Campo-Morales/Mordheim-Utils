@@ -1,0 +1,96 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.witch-sword
+# scaffold_fingerprint: ca14e3a2f182ea69c1a3ff9274fb94df507ffc6ae1086ca430473e572e789107
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries 2 authored scenarios
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the first-round +1 Strength, its expiry in the
+#   following round and the parry.
+# origin_id:
+#   mechanic/weapon.witch-sword
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   f3c2160ae71c0aa6cef039e32f3c6437a64fa28facccca07f26751e7d83116a3
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   +1 Strength in the first round and may parry.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Witch sword adds +1 Strength in the first round and may parry. Closure: first-round S+1 and one parry attempt.
+# effect_id:
+#   weapon.witch-sword
+# relation:
+#   equivalent
+# parameters:
+#   {"first_round_strength_bonus": 1, "parry": true}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts.  Surface reuse candidate: {"family":"W-weapon.witch-sword","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/weapon.witch-sword - the first-round Strength bonus and the parry.
+#
+# Expectations come from the printed rule and the admitted clause, never from
+# engine output.  The second round of the first scenario is the discriminating
+# step: an unconditional bonus would have wounded on the same face there too.
+# The same wound face of 3 wounds Toughness 3 in the first round and misses in the
+# second, which is the printed first-round-only scope of the +1.
+- audit_id: mechanic/weapon.witch-sword
+  id: witch-sword-adds-one-strength-only-in-the-first-round
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.witch-sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 5}
+    - {key: round.1.first.attack.0.wound, value: 3}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+    1: {attacks.0.damage: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}
+# The witch sword's own parry attempt blocks the hit that landed on a 4.
+- audit_id: mechanic/weapon.witch-sword
+  id: witch-sword-parries-a-higher-roll
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.witch-sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

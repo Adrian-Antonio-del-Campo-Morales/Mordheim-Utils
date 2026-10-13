@@ -1,0 +1,58 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/nipponese-expedition-web/ashigaru--wall-of-steel/unimplemented.nipponese-expedition-web.ashigaru.wall-of-steel
+# scaffold_fingerprint: 8fe720e71ec80020b08d952ffe99c87fcfa11aee513bdf10f23d1cad99a00ec7
+# authoring_status: PARTIAL
+# authoring_progress: the admitted two-handed-spear-gains-parry clause cannot be authored: the origin is
+#   recorded as source_blocked and the file's own M3 note gives the reason and the resolution - the optional
+#   two-handed spear Parry contribution needs a loadout choice for wielding the spear two-handed, and the parry
+#   capacity reads per-weapon flags, so the effect cannot be wired without that product input.  The exact
+#   pending datum is named in the clause marker below.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: two-handed-spear-gains-parry (scope: YES)
+# PARTIAL[two-handed-spear-gains-parry]: [C] no scenario is authorable while the loadout choice is missing.  The
+#   printed sentence ("if wielding a spear you may choose to wield it two-handed, in which case the spear gains
+#   the parry special rule") is admitted in scope but the recorded effect is only
+#   proposed.mechanic.wall-of-steel with an unresolved relation, and the register note states: "No effect carries
+#   this grant for the origin, and the parry capacity reads per-weapon parry flags, so the printed option cannot
+#   be expressed without a new effect row plus a loadout choice for wielding the spear two-handed."  The missing
+#   data are that effect row and that declaration; with them the observable is a parry attempt from a spear
+#   that does not parry when wielded one-handed.
+# origin_id:
+#   rule/mordheim/nipponese-expedition-web/ashigaru--wall-of-steel/unimplemented.nipponese-expedition-web.ashigaru.wall-of-steel
+# analysis_status:
+#   source_blocked
+# source_file:
+#   bands/mordheim/nipponese-expedition-web/special-rules.yaml
+# source_fingerprint:
+#   e32f32761c9b5956a8605626a4cdbd0461f3aec39a52c7e97da7ee204f7b8fa1
+# source_sha256_at_generation:
+#   7d0593898b6ae8814ae3ddfc10dfc89c36a1df30b529997ff65b8c117f317541
+# Printed rule text:
+#   Even the most lowly of Ashigaru is a veteran of hours of drill, and because of this if wielding a spear you may choose to wield it two-handed, in which case the spear gains the parry special rule.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Wielding a spear two-handed gives the spear the Parry special rule; observable: that spear produces a parry attempt.
+# effect_id:
+#   proposed.mechanic.wall-of-steel
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   No effect carries this grant for the origin, and the parry capacity reads per-weapon parry flags, so the printed option cannot be expressed without a new effect row plus a loadout choice for wielding the spear two-handed.
+#   
+#   [M3-defences 2026-10-08] blocked with the source's own reason. `ashigaru--wall-of-steel` is scope YES but implemented NO because the optional two-handed spear Parry contribution needs a loadout choice for wielding the spear two-handed; the parry capacity reads per-weapon flags, so the effect cannot be wired without that product input. Resolution: add the two-handed loadout choice and flag the spear as parrying for that bearer.
+
+[]  # Empty scenario list: this file contributes no test or coverage.

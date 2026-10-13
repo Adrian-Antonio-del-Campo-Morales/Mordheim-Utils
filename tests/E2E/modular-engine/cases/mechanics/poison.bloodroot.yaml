@@ -1,0 +1,94 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/poison.bloodroot
+# scaffold_fingerprint: a898cb69c40bd68255c0363c0db7ed60ea6843ad9dfedfda03bea623a544162f
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries authored scenarios derived from the printed rule; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios contrast the doubled two-point wound with the
+#   ordinary one-point wound of the same hit.
+# origin_id:
+#   mechanic/poison.bloodroot
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   21ca03c42f7d06b07c064ff4182b01c36bb9a2b48898b3b6a2f9cfb460714ca4
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Doubles wounds caused.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The poison doubles the wounds caused. Closure: a Bloodroot wound inflicts two wounds, and combined with another multiple-wound effect the higher value is used instead of multiplying.
+# effect_id:
+#   poison.bloodroot
+# relation:
+#   equivalent
+# parameters:
+#   {"combination": "maximum, not product", "damage": 2}
+# conditions:
+#   {"trigger": "wound"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The contract carries damage 2 and the wound-damage resolution takes max(1, weapon_damage, critical.damage), which is the printed doubling read together with the shared core rule that a doubling is never multiplied by another multiple-wound source. Surface reuse candidate: {"family":"poison.bloodroot","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare this specific printed individual effect and active contract, keeping recipient, timing, exceptions and scope. Similar parameters do not establish whole-rule equivalence or a supplied third fighter.","candidate_parameters":{"wound_multiplier":2},"gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/poison.bloodroot - authored from the printed rule and the
+# admitted `whole` clause, never from engine output.
+# The coating doubles the wounds caused, so a single unsaved wound takes two
+# points of a three-wound profile.
+- audit_id: mechanic/poison.bloodroot
+  id: bloodroot-inflicts-two-wounds
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.bloodroot
+      characteristics: &br-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &br-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: &br-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# mechanic/poison.bloodroot - authored from the printed rule and the
+# admitted `whole` clause, never from engine output.
+# The coating doubles the wounds caused, so a single unsaved wound takes two
+# points of a three-wound profile.
+- audit_id: mechanic/poison.bloodroot
+  id: an-uncoated-mace-inflicts-one-wound
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *br-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *br-defender
+  duel_context: *br-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

@@ -34,7 +34,7 @@ def weapon_against_opponent(attacker: CompiledFighter, defender: CompiledFighter
 def _attack_strength(
     attacker: CompiledFighter, defender: CompiledFighter,
     state: FighterState, weapon: EffectSet, effect: EffectSet,
-    first_round: bool, charging: bool,
+    first_round: bool, charging: bool, *, melee_attack: bool = True,
 ) -> tuple[int, int]:
     strength = effect.fixed_strength or state.strength + effect.strength_bonus
     if phases.ignores_unarmed_penalties(effect) and phases.has_tag(weapon, "weapon.fist"):
@@ -56,6 +56,10 @@ def _attack_strength(
         mounted_only = any(phases.has_tag(weapon, tag) for tag in ("weapon.lance", "weapon.boar-spear"))
         if not mounted_only or attacker.mounted:
             strength += effect.charge_strength_bonus
+    if (melee_attack and first_round and charging
+            and has_tag(attacker.global_effects, "rule.slay-large-creature")
+            and has_tag(defender.global_effects, "size.large")):
+        strength += 1
     if (has_tag(defender.global_effects, "mechanic.foul-odour")
             and has_tag(effect, "attack.fire")):
         strength += 1
@@ -206,10 +210,11 @@ def _parry_context(
 
 
 def _injury_context(defender: CompiledFighter, effect: EffectSet, key: str,
-                    defender_state: FighterState | None = None) -> InjuryContext:
+                    defender_state: FighterState | None = None,
+                    injury_bonus: int = 0) -> InjuryContext:
     global_effects = defender.global_effects
     return InjuryContext(
-        modifier=effect.injury_modifier + int(
+        modifier=effect.injury_modifier + int(injury_bonus) + int(
             phases.has_tag(effect, "mechanic.blessing-of-morr")
             and phases.has_tag(global_effects, "nature.undead")
         ) + int(
@@ -255,6 +260,12 @@ def prepare_hit_context(
     if first_round and charging:
         ws += effect.charge_ws_bonus
     modifier = effect.hit_modifier + defender.global_effects.incoming_hit_modifier
+    if melee_attack:
+        modifier += int(first_round and charging
+            and has_tag(attacker.global_effects, "skill.backstabber")
+            and has_tag(attacker.global_effects, "condition.unseen-charge"))
+        modifier += int(attacker_state.banter_trick_active)
+        modifier -= int(defender_state.banter_trick_active)
     if melee_attack and has_tag(attacker.global_effects, "condition.guiding-dream-target"):
         if not has_tag(defender.global_effects, "fighter-kind.hero"):
             raise ValueError("Guiding Dream requires the nominated opposing model to be a Hero")
@@ -337,6 +348,7 @@ def _supplied_ward(effects: EffectSet) -> int:
 
 def prepare_special_save_context(
     defender: CompiledFighter, incoming: EffectSet, *, key: str = "special",
+    defender_state: FighterState | None = None, melee_attack: bool = True,
 ) -> SpecialSaveContext:
     if incoming.ignore_armour_except_shield_and_skills:
         # Printed Ladle clause: "The only saving throws allowed are from shields
@@ -359,6 +371,9 @@ def prepare_special_save_context(
         )
     ward = _supplied_ward(defender.global_effects)
     ward_blocked = defender.global_effects.ward_save_mundane_only and phases.has_tag(incoming, "attack.magical")
+    if melee_attack and defender_state is not None and defender_state.dodge_trick_active:
+        ward = 4 if ward_blocked else min(ward, 4)
+        ward_blocked = False
     # This source treats its listed metals as magical only for this save.
     # Do not change the incoming attack's magic status or other wards.
     if (phases.has_tag(defender.global_effects, "mechanic.ghost-pirate-ethereal")
@@ -390,8 +405,12 @@ def prepare_wound_context(
     attacker_state: FighterState, defender_state: FighterState,
     weapon: EffectSet, effect: EffectSet, *, hit_roll: int = 4,
     first_round: bool = False, charging: bool = False, key: str = "wound",
+    melee_attack: bool = True,
 ) -> WoundContext:
-    strength, _ = _attack_strength(attacker, defender, attacker_state, weapon, effect, first_round, charging)
+    strength, _ = _attack_strength(attacker, defender, attacker_state, weapon, effect, first_round, charging,
+        melee_attack=melee_attack)
+    toughness = max(1, defender_state.toughness - int(melee_attack
+        and has_tag(defender.global_effects, "rule.thin-flesh")))
     poison_blocked = defender.global_effects.poison_immunity or phases.has_tag(defender.global_effects, "poison_immune")
     automatic = (phases.has_tag(effect, "effect.automatic-wound")
         or has_tag(weapon, "effect.wraith-touch") and not any(
@@ -416,10 +435,10 @@ def prepare_wound_context(
         or phases.has_tag(effect, "skill.unarmed-critical-strikes") and phases.has_tag(weapon, "weapon.fist")
     ) else 6
     if (phases.has_tag(weapon, "weapon.hellblade")
-            and max(2, phases.wound_target(strength, defender_state.toughness, maximum) - modifier) <= 4):
+            and max(2, phases.wound_target(strength, toughness, maximum) - modifier) <= 4):
         critical_threshold = min(critical_threshold, 5)
     return WoundContext(
-        strength, defender_state.toughness, modifier, maximum_target=maximum,
+        strength, toughness, modifier, maximum_target=maximum,
         # Lotus already wounds: its optional critical attempt is not a failed
         # wound eligible for Dark Steel/Sure Strike rerolls.
         automatic=automatic, reroll=(effect.reroll_wounds or luck or (
@@ -440,9 +459,10 @@ def prepare_armour_context(
     attacker: CompiledFighter, defender: CompiledFighter,
     attacker_state: FighterState, defender_state: FighterState,
     weapon: EffectSet, effect: EffectSet, *, first_round: bool = False,
-    charging: bool = False, key: str = "armour",
+    charging: bool = False, key: str = "armour", melee_attack: bool = True,
 ) -> ArmourContext:
-    strength, armour_strength = _attack_strength(attacker, defender, attacker_state, weapon, effect, first_round, charging)
+    strength, armour_strength = _attack_strength(attacker, defender, attacker_state, weapon, effect, first_round, charging,
+        melee_attack=melee_attack)
     dagger_tags = ("weapon.dagger", "weapon.yambiya", "weapon.poisoned-daggers", "weapon.disease-dagger")
     daggers = (attacker.main_weapon, attacker.off_hand)
     dagger_pair = (

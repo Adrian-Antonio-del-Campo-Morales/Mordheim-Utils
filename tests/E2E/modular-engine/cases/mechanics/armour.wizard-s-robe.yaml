@@ -1,0 +1,158 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/armour.wizard-s-robe
+# scaffold_fingerprint: 248c3d29c79bd9285b8ad5e73e1a9acd6bd6bf9c830ed20b82e06ab7e6cbb579
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored boundary
+#   scenarios for the 6+ save; the combining prohibition is an unauthored
+#   loadout restriction recorded under the clause marker. The excluded
+#   spellcasting clause stays excluded. REVIEWED still requires manual semantic
+#   review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: six-plus-and-no-spellcasting-penalty--scope--six-plus-and-no-combining (scope: YES)
+# AUTHORED[six-plus-and-no-spellcasting-penalty--scope--six-plus-and-no-combining]:
+#   3 scenarios cover the 6+ save holding at the threshold, failing one face
+#   below it, and the printed "cannot combine with other armour except a
+#   helmet" prohibition as a construction refusal naming the shared diagnostic.
+#   Pending semantic review.
+# RUNNER-GAP: the declared `expect_error` contract is documented by corpus.py,
+#   test_cases.py and README but not yet implemented by `runner.check_case`,
+#   so the refusal scenario cannot execute until that contract is wired.
+# origin_id:
+#   mechanic/armour.wizard-s-robe
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   2090308af70b608e3b75741fedef60e407549ac2345ab16e7e0ff35faf08951b
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Grants a 6+ armour save, cannot combine with other armour except a helmet
+# Semantic contract (check analysis_status before treating as accepted):
+#   The robe's 6+ armour save and the printed combination limit (other armour except a helmet) are that bearer's armour defence and its legal loadout restriction. Printed clause: Grants a 6+ armour save, cannot combine with other armour except a helmet
+# effect_id:
+#   armour.wizard-s-robe
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The spellcasting sentence has no duel-time counterpart because casting is outside the duel runtime. Scope review integration: {"clause_id":"six-plus-and-no-spellcasting-penalty","review_clause_id":"six-plus-and-no-combining","source_state":"matched","review_status":"reviewed","scope_reason":"The robe's 6+ armour save and the printed combination limit (other armour except a helmet) are that bearer's armour defence and its legal loadout restriction.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The wizard's robe grants a 6+ armour save, cannot combine with other armour except a helmet, and does not prevent spellcasting; observable: a 6+ save and a rejected loadout with another armour piece.","effect_id":"armour.wizard-s-robe","relation":"equivalent","parameters":"{\"base_save\":6,\"combines_with\":[\"helmet\"]}","conditions":"{}","consumer":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\",\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_armour_context\",\"packages/python/combat-engine/mordheim_combat/phases.py::armour_target\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"B05-armour-equipment","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/phases.py::armour_target\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]"},"inherited_clause_text":"Grants a 6+ armour save, cannot combine with other armour except a helmet, and does not prevent spellcasting.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"A-COMPAT6","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","boundary":"Current child only; do not import excluded sibling or combined-parent behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: six-plus-and-no-spellcasting-penalty--scope--no-spellcasting-penalty (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   mechanic/armour.wizard-s-robe
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   2090308af70b608e3b75741fedef60e407549ac2345ab16e7e0ff35faf08951b
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   does not prevent spellcasting
+# Semantic contract (check analysis_status before treating as accepted):
+#   The remaining sentence is a permission about casting spells ('does not prevent spellcasting'); spell casting and its resolution are excluded producers, so the sentence has no admitted duel consequence. Printed clause: does not prevent spellcasting
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The spellcasting sentence has no duel-time counterpart because casting is outside the duel runtime. Scope review integration: {"clause_id":"six-plus-and-no-spellcasting-penalty","review_clause_id":"no-spellcasting-penalty","source_state":"matched","review_status":"reviewed","scope_reason":"The remaining sentence is a permission about casting spells ('does not prevent spellcasting'); spell casting and its resolution are excluded producers, so the sentence has no admitted duel consequence.","notes":"The clause is split so the admitted armour rule does not carry the excluded casting permission; the input clause_scope YES covered both halves.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The wizard's robe grants a 6+ armour save, cannot combine with other armour except a helmet, and does not prevent spellcasting; observable: a 6+ save and a rejected loadout with another armour piece.","effect_id":"armour.wizard-s-robe","relation":"equivalent","parameters":"{\"base_save\":6,\"combines_with\":[\"helmet\"]}","conditions":"{}","consumer":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\",\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::prepare_armour_context\",\"packages/python/combat-engine/mordheim_combat/phases.py::armour_target\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"B05-armour-equipment","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/phases.py::armour_target\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]"},"inherited_clause_text":"Grants a 6+ armour save, cannot combine with other armour except a helmet, and does not prevent spellcasting.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# mechanic/armour.wizard-s-robe — the 6+ save and its threshold boundary.
+#
+# Expectations come from the printed rule and the accepted clause
+# `six-plus-and-no-spellcasting-penalty--scope--six-plus-and-no-combining` of
+# docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv, never from engine output:
+# the robe saves an incoming close-combat wound on a 6 before Strength
+# modifiers.  An unmodified Strength 3 attacker applies no save modifier, so
+# the boundary is exactly 6: the six holds, the five fails.  The combining
+# restriction is not asserted here (see the clause marker).
+#
+# The first scenario declares the shared profiles as YAML anchors; the sibling
+# aliases them and keeps its own armour face and expectation.
+
+- audit_id: mechanic/armour.wizard-s-robe
+  id: wizard-s-robe-save-holds-on-six
+  covers: [six-plus-and-no-spellcasting-penalty--scope--six-plus-and-no-combining]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &attacker-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.wizard-s-robe
+      characteristics: &defender-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: the five is not a 6+, so the wound is
+# taken and the defender drops a wound.  No other armour face is scripted.
+
+- audit_id: mechanic/armour.wizard-s-robe
+  id: wizard-s-robe-save-fails-on-five
+  covers: [six-plus-and-no-spellcasting-penalty--scope--six-plus-and-no-combining]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *attacker-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.wizard-s-robe
+      characteristics: *defender-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The combining half is a loadout prohibition: the robe with a shield must be
+# refused at construction, and the declared expect_error contract requires the
+# refusal to name the authored reason.
+
+- audit_id: mechanic/armour.wizard-s-robe
+  id: wizard-s-robe-refuses-a-shield-loadout
+  covers: [six-plus-and-no-spellcasting-penalty--scope--six-plus-and-no-combining]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      armour_id: armour.wizard-s-robe
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  expect_error: "armour.wizard-s-robe cannot be combined with other armour except a helmet"

@@ -1,0 +1,54 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/ogre-hunting-party-web/ogre-hunter--dont-fight-with-eating-knives/unimplemented.ogre-hunting-party-web.ogre-hunter.dont-fight-with-eating-knives
+# scaffold_fingerprint: ca62523a1cc545e081a6166b934eae805891dcd04df985a3cb0d65e8aaf3c83c
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is derived for the admitted unarmed clause yet, for the concrete reason
+# recorded in its own note below.  REVIEWED still requires manual semantic review and execution_status
+# stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: unarmed-fighting-without-penalty (scope: YES)
+# PARTIAL[unarmed-fighting-without-penalty]: [C] no scenario is authorable for this clause as recorded.  Category C: the printed split (ignoring the -1 Strength while the enemy keeps its +1 armour save) needs an effect that drops only the Strength penalty, and the executor's unarmed flag also cancels the armour bonus, so no declaration expresses the printed pair.  The
+# printed rule has two halves - the Ogre ignores the -1 Strength penalty while the enemy still receives the
+# +1 armour save - and the record states that the engine's unarmed-without-penalties flag also cancels the
+# opponent's +1 armour save (the armour context removes the weapon's target bonus when the flag is set),
+# which contradicts this print, so wiring the flag as-is would implement the rule wrongly: "A separate
+# effect that only drops the -1 Strength is required."  The missing datum is that effect; once it exists
+# the observable is a bearer whose unarmed attacks wound at the printed Strength while the defender's
+# armour target bonus remains.  The printed alias "proposed.mechanic.eating-knives-unarmed" is a proposal,
+# not an accepted operator, so no tape is written against it.
+# origin_id:
+#   rule/mordheim/ogre-hunting-party-web/ogre-hunter--dont-fight-with-eating-knives/unimplemented.ogre-hunting-party-web.ogre-hunter.dont-fight-with-eating-knives
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/ogre-hunting-party-web/special-rules.yaml
+# source_fingerprint:
+#   f88103da49ed42639a2d6162dff3ad67371efbfdae36ab913267139f67161b81
+# source_sha256_at_generation:
+#   9a5e0f804e1ae1e6d5bf5840998104bc7e10fdd70f8f985cf96a7c96d3577662
+# Printed rule text:
+#   Ogres don't use daggers for fighting, just for eating. They don't carry them on the battlefield. If forced to, by losing a weapon or not carrying any weapon, they will fight unarmed. But since their physical strength the -1S penalty does not apply, but the +1 enemy armour save still does. They may make more than one unarmed attack, depending on their Attacks value. Note that you cannot combine this unarmed attack with another weapon, so it doesn't count as an additional attack like the dagger would. It can only be made if the ogre doesn't have any other weapons at his disposal.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Fighting unarmed the Ogre ignores the -1 Strength penalty while the opponent still receives the +1 armour save, and he may make as many unarmed attacks as his Attacks value.
+# effect_id:
+#   proposed.mechanic.eating-knives-unarmed
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   No binding exists for this origin. The engine has an unarmed-without-penalties flag, but it also cancels the opponent's +1 armour save (the armour context removes the weapon's target bonus when that flag is set), which contradicts this print; wiring the flag as-is would therefore implement the rule wrongly. A separate effect that only drops the -1 Strength is required.
+
+[]  # Empty scenario list: this file contributes no test or coverage.

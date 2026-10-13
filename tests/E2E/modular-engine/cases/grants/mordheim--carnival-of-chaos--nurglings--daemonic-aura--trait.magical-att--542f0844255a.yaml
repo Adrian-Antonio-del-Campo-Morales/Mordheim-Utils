@@ -1,0 +1,107 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.magical-attacks
+# scaffold_fingerprint: f5740f9f8a020250c59a3a91ecdc6a297e9fcf6d0f587938472d621d5cab3bd1
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries two authored scenarios derived from the
+# printed rule and the printed profile: the Nurglings' attacks are considered magical, so the
+# bearer's own attack passes an opponent's Ethereal save with no save face requested while an
+# identical non-magical fixture is discarded by it.  REVIEWED still requires manual semantic review
+# and execution_status stays UNEXECUTED.
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios take the printed offensive half onto the real attack route.  The
+# bearer is the printed Nurglings profile, whose grant compiles to the attack.magical tag; the
+# supplied holder is a Cairn Wraith, whose own admitted grant discards a hit on 4+ before the wound
+# roll, so the strict tape carries no ethereal face at all and the wound is taken.  The control
+# repeats the identical duel with a hand-built non-magical attacker and the same declared hit face,
+# where the ethereal save is offered and discards the blow.  The defensive half of the same sentence
+# (the 5+ daemonic save and its magic negation) belongs to the trait.natural-armour-save identity of
+# this origin and is evidenced there.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.magical-attacks
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/carnival-of-chaos/special-rules.yaml
+# source_fingerprint:
+#   6e090c1dee28d8ae96e4b740e391021116a6921ad504e0e8f861cc5f0a684328
+# source_sha256_at_generation:
+#   ea10f24ff3b1bb4a16d31e0550eb4b011c294a424bd719a00bfba5e72e42a217
+# Printed rule text:
+#   Due to the magical, intangible nature of Daemons they have a special Armour save of 5+. This is modified by the Strength of the attack as normal and is completely negated by magic weapons and spells. Nurglings’ attacks are also considered as magical.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A Daemon has a special armour save of 5+ modified by the Strength of the attack and completely negated by magic weapons and spells, and the Nurglings attacks count as magical. Closure: the daemonic bearer saves on 5+ against ordinary attacks and loses that save entirely against a magical attack.
+# effect_id:
+#   trait.magical-attacks
+# relation:
+#   related
+# parameters:
+#   {"armour_save": 5, "attacks": "magical", "negated_by_magic": true}
+# conditions:
+#   {"recipient": "Nurgling", "save": "5+ special armour"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The origin binds only trait.magical-attacks, which compiles to the attack.magical tag and is consumed by the attack-nature check; the printed 5+ special armour save (modified by Strength, negated by magic weapons and spells) has no parameter in this binding, so the save itself is not delivered here. The engine can represent both the save and natural_armour_negated_by_magic, so the first unresolved step is the data grant rather than the operator. Surface reuse candidate: {"family":"trait.magical-attacks","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare this specific printed individual effect and active contract, keeping recipient, timing, exceptions and scope. Similar parameters do not establish whole-rule equivalence or a supplied third fighter.","candidate_parameters":{"attacks_magical":true},"gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#   
+#   [M2-offensive 2026-10-08] delivered and now proven for this origin too: the Nurglings compile `attack.magical`, a 5+ natural save and `natural_armour_negated_by_magic`; the existing revision-specific test was extended to assert the Nurglings origin beside the Plague Bearers. No residual.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profile; no engine output was consulted.  The bearer
+# fights with its printed claw profile because the record grants no equipment list, and the holder
+# starts at two wounds so an unsaved wound leaves it standing and no injury roll follows.  Weapon
+# Skill and Initiative are hand-built fixture facts; the holder declares no attack of its own.
+- audit_id: rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.magical-attacks
+  id: the-nurglings-attack-passes-the-ethereal-save
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: nurglings
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 2, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: cairn-wraith
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical duel with a hand-built non-magical attacker and the same declared hit
+# face, where the Ethereal save is offered and discards the blow.
+- audit_id: rule/mordheim/carnival-of-chaos/nurglings--daemonic-aura/trait.magical-attacks
+  id: a-non-magical-attack-is-discarded-by-the-ethereal-save
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 2, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: call-of-the-night-haint-mim
+      profile_id: cairn-wraith
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.ethereal, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

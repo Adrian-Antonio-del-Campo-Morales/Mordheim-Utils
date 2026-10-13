@@ -1,0 +1,99 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-dark-elves/dark-prince--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: 10d448b0364bf188ae61276ed27e88f3a5fc8cc39e1a71c615338250afb6f720
+# authoring_status: PARTIAL
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [C] the pending half is an observation the executor contract does not fix: the Whip entry is
+# gated applies_to.profile_ids [beastmaster], so a build carrying it raises the earlier "is not on any
+# equipment list" summary instead of the token refusal, and which of the two strings fires is not
+# established - a tape asserting either would be choosing the observable rather than deriving it.
+# 2 scenarios (blackpowder half authored, Whip half pending).  CHALLENGED AND NARROWED: the
+#   binding the previous note called unestablished IS declared - special-rules.yaml carries
+#   `dark-prince--equipment-restrictions` (implemented YES, grant profile, applies_to profile_ids
+#   [dark-prince]) with parameters.forbids [beastmaster_whip], and the band row above it installs
+#   compiler.no-blackpowder-weapons with grant: band, so a pistol-carrying Dark Prince is refused with the shared
+#   blackpowder sentence and the accepted control constructs and runs.  Pending is only the Whip half: this
+#   band's equipment-access.yaml gates that list entry `applies_to.profile_ids: [beastmaster]`, so a Dark Prince
+#   carrying it reaches the earlier '"beastmaster_whip" is not on any equipment list of <band>/<profile>.'
+#   summary rather than the token refusal, and which of those two messages the build raises is the open datum.
+#   REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/lustria-dark-elves/dark-prince--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-dark-elves/special-rules.yaml
+# source_fingerprint:
+#   8ac2c119074a28cf2e47442171c91f5e11670c1cc315f003158f12d173578f0a
+# source_sha256_at_generation:
+#   00d87d88f399d776fda8fb2a10d2efe24738e1874089cf0e5e9749e798f89039
+# Printed rule text:
+#   May never use blackpowder weapons. May not select the Beastmaster's Whip.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Prohibition: the Dark Prince may not use blackpowder weapons or the Beastmaster's Whip.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["beastmaster_whip"]}
+# conditions:
+#   {"recipient":"dark-prince"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   New origin; the blackpowder ban is shared. Surface reuse candidate: {"family":"905","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the actual forbidden categories and recipients. Body-armour-only, all armour, missiles, blackpowder, drugs and poisons are distinct restrictions. Construction legality can affect a melee build even when shooting is excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 2 authored scenario(s) in this file; authored clause: the blackpowder half of 'whole' (a
+#   pistol-carrying Dark Prince refused with `blackpowder weapons are forbidden for lustria-dark-elves/dark-prince`
+#   from the band's own compiler.no-blackpowder-weapons row, plus the accepted-at-construction control).  Still
+#   pending in this clause: the Beastmaster's Whip bar, whose recorded forbids binding does exist but whose gated
+#   list entry decides between two stage messages - see the clause note.  REVIEWED requires manual semantic review
+#   and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/trollheim/lustria-dark-elves/dark-prince--equipment-restrictions/profile.equipment-restrictions
+  id: dark-prince-with-a-pistol-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-prince
+      main_weapon_id: weapon.pistol
+  expect_error: blackpowder weapons are forbidden for lustria-dark-elves/dark-prince
+
+- audit_id: rule/trollheim/lustria-dark-elves/dark-prince--equipment-restrictions/profile.equipment-restrictions
+  id: dark-prince-without-blackpowder-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-prince
+    second:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: corsairs
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    second:
+      condition: OUT
+  expect_initial:
+    second.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: second_out

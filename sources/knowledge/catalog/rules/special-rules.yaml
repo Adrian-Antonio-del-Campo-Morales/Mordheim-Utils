@@ -129,6 +129,16 @@ rules:
   effect_i18n:
     es: >-
       Este guerrero está sujeto a Odio contra todos los modelos capaces de lanzar hechizos.
+  runtime:
+    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    effects:
+    - id: mechanic.burn-the-witch
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.burn-the-witch
 - id: shared-rule.cause-fear-2
   name: Cause Fear
   name_i18n:
@@ -302,6 +312,16 @@ rules:
     es: >-
       Los Luchadores de Foso odian a los tratantes de esclavos y jamás venderán oponentes capturados
       a esclavistas.
+  runtime:
+    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    effects:
+    - id: skill.hatred
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hatred
 - id: shared-rule.goblin-limit
   name: Goblin Limit
   name_i18n:
@@ -665,6 +685,16 @@ rules:
   effect_i18n:
     es: >-
       El Ogro rata está sujeto a Estupidez a menos que haya un Héroe skaven a 6" de él.
+  runtime:
+    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    effects:
+    - id: mechanic.stupidity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.stupidity
 - id: shared-rule.stupidity-2
   name: Stupidity
   name_i18n:

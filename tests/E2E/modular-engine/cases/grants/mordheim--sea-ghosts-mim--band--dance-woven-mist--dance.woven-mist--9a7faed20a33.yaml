@@ -1,0 +1,118 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/sea-ghosts-mim/band--dance-woven-mist/dance.woven-mist
+# scaffold_fingerprint: b2450028de5245e469f87a918a6dfa9faa7d613029d59462217a4d25b4eab357
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios for the band's
+#   printed Woven Mist stanza: the performed dance trades one attack for the strike-first tier
+#   (the same fixture performing no dance keeps two attacks and loses the tier), derived from the
+#   printed rule and the recorded contract.  The band origin repeats the shared operator without
+#   adding a term (see the register note), so the two facets of the shared clause are the whole
+#   content of this origin; the printed recipient profiles are feast-master and minstrels
+#   (sources/knowledge/bands/mordheim/sea-ghosts-mim/special-rules.yaml, applies_to).  The scenarios
+#   supply the shared operator tag directly, exactly as the authored mechanic/dance.woven-mist case
+#   does, because that operator is the clause's substance.  REVIEWED still requires manual semantic
+#   review and execution_status stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios show the reduced pool and the strike-first tier when the dance is
+#   performed, and the ordinary two-attack pool without the tier when it is not.
+#   Not asserted here and recorded as the origin's remaining limit: a bearer built from the band's
+#   own recipient profile (feast-master or minstrels) instead of a fixture carrying the operator tag.
+#   The band grant is `selectable` over four dances, so such a build would also have to declare the
+#   choice among the sibling dance rules, a decision set the corpus does not declare for this origin;
+#   the operator itself is what the clause prints, and the register note confirms the band origin
+#   creates no second runtime contribution.
+# origin_id:
+#   rule/mordheim/sea-ghosts-mim/band--dance-woven-mist/dance.woven-mist
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/sea-ghosts-mim/special-rules.yaml
+# source_fingerprint:
+#   762007adab41f569421eff64f4a296235d5798e20ddb05956028712e117f5530
+# source_sha256_at_generation:
+#   9986f954e346336c4645b9043bcc8bf341b8038b2656828b17174032fd7d4597
+# Printed rule text:
+#   The sinuous movements of this Dance distract and confuse the enemy, allowing the Wardancer to strike before their foe can react. When performing this Dance, the warrior reduces his total attacks by one but always Strikes first in combat. If their opponent also Strikes first, resolve attacks in Initiative order.
+# Semantic contract (check analysis_status before treating as accepted):
+#   When performing this Dance the warrior reduces his total attacks by one but always strikes first; if the opponent also strikes first the attacks are resolved in Initiative order. Closure: one attack is removed, the dancer stands in the strike-first tier and simultaneous strike-first cases fall to the Initiative comparison.
+# effect_id:
+#   dance.woven-mist
+# relation:
+#   parameterized_variant
+# parameters:
+#   {"attacks_penalty": 1, "strikes_first": true, "tie_break": "Initiative order"}
+# conditions:
+#   {"recipient": "Wardancer", "selection": "one dance per phase"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared Woven Mist dance; the printed tie-break is the shared priority comparison, which orders by Initiative and only rolls on an exact tie. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"M-DANCE","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the band stanza's binding to the shared operator and the recorded
+# contract; no engine output was consulted.  The dance is selected for the combat phase through the
+# decision `round.<round>.<side>.dance.woven-mist`, exactly as the authored mechanic case for the
+# same operator does, and the strict tape consumes exactly the declared dice and decisions.
+
+- audit_id: rule/mordheim/sea-ghosts-mim/band--dance-woven-mist/dance.woven-mist
+  id: the-performed-dance-trades-one-attack-for-striking-first
+  covers: [whole]
+  fighters:
+    first:
+      skill_ids: [dance.woven-mist]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.dance.woven-mist, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: decision, key: round.0.first.dance.woven-mist, value: true}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The same bearer performing no dance keeps its two profile attacks and stands in the ordinary
+# Initiative tier, so the faster opponent resolves first - the printed trade of one attack for
+# striking first is the dance's own contribution.
+- audit_id: rule/mordheim/sea-ghosts-mim/band--dance-woven-mist/dance.woven-mist
+  id: declining-the-dance-keeps-two-attacks-and-loses-strike-first
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 2}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.1.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
+

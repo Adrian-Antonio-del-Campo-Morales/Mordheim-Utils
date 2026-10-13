@@ -1,0 +1,364 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: core/combat-parry
+# scaffold_fingerprint: 5625422dc6e72c7464b124e0b514543ace4168c8769c4017a9b9f64fee0bb353
+# authoring_status: REVIEWED
+# authoring_progress: every admitted clause below has requirement-complete
+#   scenarios contrasted against the printed rule text, the recorded semantic
+#   contracts and the design rulings. REVIEWED is authoring/semantic contrast
+#   only; execution_status stays UNEXECUTED and no functional result exists.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: parry-attempt (scope: YES)
+# AUTHORED[parry-attempt]: 7 scenarios cover the strict beat (higher roll) and
+#   the equal and lower rolls, the Strength edge on both sides of the double
+#   boundary, the unparryable natural six, and a buckler alone.
+# origin_id:
+#   core/combat-parry
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/rules/core-combat.yaml
+# source_fingerprint:
+#   71e7f7117dd484b375d99d2f0e5c0292485a64b2a8b741acf370fb609dad6f5d
+# source_sha256_at_generation:
+#   34be1fcd30769636050a73ffb1e035b7fe5937a7460493ea46d86edce20836c1
+# Printed rule text:
+#   A sword or buckler can parry one hit by beating the attacker's hit roll, provided the attacker's Strength is less than double the defender's. A natural 6 cannot be parried. Sword plus buckler rerolls a failed parry, but two swords do not grant two attempts (one attempt per phase regardless of the number of parrying weapons).
+# Semantic contract (check analysis_status before treating as accepted):
+#   A sword or buckler parries one hit by rolling higher than the attacker's hit roll, only when the attacker's Strength is less than double the defender's; a natural 6 cannot be parried; observable: such a hit is discarded before the wound roll.
+# effect_id:
+#   (not recorded)
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   resolve_parry applies available, cannot_be_parried, hit_roll != 6 unless can_parry_six, and strength < 2x defender strength. Surface reuse candidate: {"family":"CORE-PARRY","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare core timing, injury mapping, per-warrior/per-phase resources, modifier order and weapon allocation against the active contract. Keep variant charts, natural-die conditions and later transformations separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: reroll-and-capacity (scope: YES)
+# AUTHORED[reroll-and-capacity]: 4 scenarios cover sword-plus-buckler rerolling a
+#   failed parry, a failed reroll consuming the single attempt, two swords giving
+#   one attempt per phase, and the attempt being renewed in the next round.
+# origin_id:
+#   core/combat-parry
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/rules/core-combat.yaml
+# source_fingerprint:
+#   71e7f7117dd484b375d99d2f0e5c0292485a64b2a8b741acf370fb609dad6f5d
+# source_sha256_at_generation:
+#   34be1fcd30769636050a73ffb1e035b7fe5937a7460493ea46d86edce20836c1
+# Printed rule text:
+#   A sword or buckler can parry one hit by beating the attacker's hit roll, provided the attacker's Strength is less than double the defender's. A natural 6 cannot be parried. Sword plus buckler rerolls a failed parry, but two swords do not grant two attempts (one attempt per phase regardless of the number of parrying weapons).
+# Semantic contract (check analysis_status before treating as accepted):
+#   Sword plus buckler rerolls a failed parry, two swords give no second attempt; one attempt per phase regardless of parrying weapons; observable: the same phase never parries two hits without a two-parry skill.
+# effect_id:
+#   (not recorded)
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Reroll flags in modular/contexts._parry_context; attempt count in modular/state._parry_capacity. Surface reuse candidate: {"family":"CORE-PARRY-REROLL-CAP","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare core timing, injury mapping, per-warrior/per-phase resources, modifier order and weapon allocation against the active contract. Keep variant charts, natural-die conditions and later transformations separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# --- Migrated authored scenarios ---
+# Source: cases/core/parry.yaml
+# One-time migration authorized by the operator; see plan.md.  These
+# scenarios were authored from the rule text and the accepted rulings, not
+# from engine output.  Migrating them does not certify their interpretation
+# or complete coverage of the identity.
+# core/combat-parry — the parry attempt and its reroll/capacity limits.
+#
+# Expectations come from the accepted clauses of
+# docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv (identity
+# core/combat-parry, clauses parry-attempt / reroll-and-capacity), never from
+# engine output.  The clause requires a strict comparison (the parry roll must
+# beat the hit roll), an attacker Strength strictly below double the defender's,
+# an unparryable natural six, one reroll with sword and buckler and a single
+# attempt per phase however many parrying weapons are carried.
+#
+# The first scenario declares the shared profiles as YAML anchors.
+#
+
+- audit_id: core/combat-parry
+  id: sword-parries-one-hit
+  covers: [parry-attempt]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: &ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Beating the hit roll is strict: an equal roll does not parry, and the attack
+# continues into its wound roll.
+
+- audit_id: core/combat-parry
+  id: an-equal-roll-does-not-beat-the-hit
+  covers: [parry-attempt]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Strength limit is strict too: Strength 4 against the defender's Strength 3
+# is still below double and may be parried, no parry die at all is requested.
+
+- audit_id: core/combat-parry
+  id: strength-below-double-may-be-parried
+  covers: [parry-attempt]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w2-i5, strength: 4}
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Strength equal to double the defender's excludes the parry entirely: no parry
+# die is scripted and the strict tape would fail if one were requested.
+
+- audit_id: core/combat-parry
+  id: double-strength-cannot-be-parried
+  covers: [parry-attempt]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w2-i5, strength: 4}
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: {<<: *ws3-s3-t3-w2-i2, strength: 2}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A natural six cannot be parried, and with a single available attempt it closes
+# the parry window for the phase.
+
+- audit_id: core/combat-parry
+  id: a-natural-six-cannot-be-parried
+  covers: [parry-attempt]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, state.second.wounds: 1, state.second.parries_remaining: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A buckler alone parries; it does not improve armour and grants no reroll.
+
+- audit_id: core/combat-parry
+  id: a-buckler-alone-parries-one-hit
+  covers: [parry-attempt]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.buckler
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Sword plus buckler rerolls a failed parry: the first attempt rolls below the
+# hit roll and the reroll beats it.
+
+- audit_id: core/combat-parry
+  id: sword-and-buckler-reroll-a-failed-parry
+  covers: [reroll-and-capacity]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.sword
+      off_hand_id: defence.buckler
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.first.attack.0.parry.reroll, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Two swords still give one attempt per phase: the first hit is parried, the
+# second is not, because the phase's single attempt is already spent.
+
+- audit_id: core/combat-parry
+  id: two-swords-give-one-attempt-per-phase
+  covers: [reroll-and-capacity]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w2-i5, attacks: 2}
+    second:
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.1.parried: false,
+        state.second.wounds: 1, state.second.parries_remaining: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Beating the hit roll is strict in the other direction too: a parry roll below
+# the hit roll does not parry and the attack continues into its wound roll.
+- audit_id: core/combat-parry
+  id: a-parry-roll-below-the-hit-does-not-parry
+  covers: [parry-attempt]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The reroll is spent on the first failure: a failed parry and a failed reroll
+# consume the phase's single attempt, so the second hit is not offered a parry
+# die either (the strict tape would fail if one were requested).
+- audit_id: core/combat-parry
+  id: a-failed-parry-reroll-consumes-the-phase-attempt
+  covers: [reroll-and-capacity]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ws3-s3-t3-w2-i5, attacks: 2}
+    second:
+      main_weapon_id: weapon.sword
+      off_hand_id: defence.buckler
+      characteristics: {<<: *ws3-s3-t3-w2-i2, wounds: 3}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.first.attack.0.parry.reroll, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.1.parried: false,
+        state.second.wounds: 1, state.second.parries_remaining: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# "One attempt per phase" is renewed each phase: the same defender parries the
+# first hit of round one and again the first hit of round two.
+- audit_id: core/combat-parry
+  id: the-parry-attempt-is-renewed-in-the-next-round
+  covers: [reroll-and-capacity]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.sword
+      characteristics: *ws3-s3-t3-w2-i2
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.parry, value: 5}
+    - {key: round.1.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.wounds: 2}
+    1: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

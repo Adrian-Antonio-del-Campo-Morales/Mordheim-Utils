@@ -191,15 +191,15 @@ rules:
     - initiates
 - id: drunken-gang--drunk
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.horned-hunters.drunken-gang.drunk
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.automatic-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.automatic-leadership
   name: Drunk
   effect: The Drunken Gang automatically passes all Leadership-based tests it is required to take.
   source:

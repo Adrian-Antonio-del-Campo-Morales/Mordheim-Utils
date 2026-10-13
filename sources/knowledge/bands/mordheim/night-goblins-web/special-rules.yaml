@@ -69,15 +69,15 @@ rules:
     - boss
 - id: squig-herder--handle-animal-squig
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.night-goblins-web.squig-herder.handle-animal-squig
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.handler-leadership
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.handler-leadership
   name: Handle Animal - Squig
   effect: >-
     Any Cave Squig within 6" (12" with a Squig Prodder) of the herder can use their Leadership value
@@ -985,15 +985,15 @@ rules:
     band: true
 - id: band--fear-elves
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: band
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.night-goblins-web.band.fear-elves
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.fear-of-elves
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-of-elves
   name: Fear Elves
   effect: >-
     Night Goblins are subject to Fear of Elves. This affects Night Goblins only, not other models in

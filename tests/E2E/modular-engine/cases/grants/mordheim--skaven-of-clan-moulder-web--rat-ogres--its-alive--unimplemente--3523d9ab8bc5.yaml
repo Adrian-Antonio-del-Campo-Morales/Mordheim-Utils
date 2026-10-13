@@ -1,0 +1,84 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/skaven-of-clan-moulder-web/rat-ogres--its-alive/unimplemented.skaven-of-clan-moulder-web.rat-ogres.its-alive
+# scaffold_fingerprint: 1f2538737c88f0a3ed30f0a82c7363b01fd51fef196fa691157cd15bbc8cd24d
+# authoring_status: PARTIAL
+# authoring_progress: the admitted starting-mutation clause stays without scenarios for the concrete reason
+# recorded in its PARTIAL note below: the source's own runtime block is scope LATER with implemented NO and
+# a null binding, and the register records the purchase as a roster-construction/campaign mechanic, so the
+# required single mutation has no construction guard and no duel observable to assert.  The excluded
+# mutation-payment clause is retained for context.  execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: starting-mutation (scope: YES)
+# PARTIAL[starting-mutation]: [C] no scenario is authorable for this clause.  Category C: the required-choice guard is absent from the construction vocabulary (the runner compiles the supplied build and exposes no required-selection field), so the printed requirement has no input to be declared against.  The printed "When hired each Rat
+# Ogre must purchase a single Mutation" is a required construction choice, and the source's own runtime
+# block declares it scope LATER, implemented NO, with a null binding and the reason "mutation purchases are
+# roster-construction/campaign mechanics outside the duel scope"; the register adds that the shared
+# construction still needs the source-specific required-choice fact/guard.  The duel runner compiles the
+# supplied build and exposes no required-choice eligibility field, so the missing datum is that guard in
+# the construction layer, not an observable this file could declare; inventing a diagnostic string would
+# fabricate the refusal.
+# origin_id:
+#   rule/mordheim/skaven-of-clan-moulder-web/rat-ogres--its-alive/unimplemented.skaven-of-clan-moulder-web.rat-ogres.its-alive
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/skaven-of-clan-moulder-web/special-rules.yaml
+# source_fingerprint:
+#   83db9be29f500deb8fc46a69ddc2d98a354b38d40692810cff3b5f7079473c18
+# source_sha256_at_generation:
+#   4e0cb5eef885e921dca3a5273ee89a70bf4763db70b92324a0e7b55c1bb9fd60
+# Printed rule text:
+#   When hired each Rat Ogre must purchase a single Mutation from the list in the Mordheim Rulebook.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A newly constructed Moulder Rat Ogre must carry exactly one selected mutation from the printed Possessed list.
+# effect_id:
+#   proposed.required-starting-mutation
+# relation:
+#   related
+# parameters:
+#   {"required_count":1}
+# conditions:
+#   {"profile":"rat-ogres","window":"initial construction"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Reuse the actual Possessed mutation definitions individually; the shared construction still needs the source-specific required-choice fact/guard. Gold payment is excluded and selecting a mutation does not imply all its effects are implemented.
+#
+# Clause: mutation-payment (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/skaven-of-clan-moulder-web/rat-ogres--its-alive/unimplemented.skaven-of-clan-moulder-web.rat-ogres.its-alive
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/skaven-of-clan-moulder-web/special-rules.yaml
+# source_fingerprint:
+#   83db9be29f500deb8fc46a69ddc2d98a354b38d40692810cff3b5f7079473c18
+# source_sha256_at_generation:
+#   4e0cb5eef885e921dca3a5273ee89a70bf4763db70b92324a0e7b55c1bb9fd60
+# Printed rule text:
+#   The required mutation is purchased when the Rat Ogre is hired.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Recruitment and gold payment are excluded campaign operations.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The required selected mutation is retained by the separate construction clause. Scope review integration: {"clause_id":"mutation-payment","review_clause_id":"mutation-payment","source_state":"unverified","review_status":"reviewed","scope_reason":"Stating only that the required mutation is paid for when the Rat Ogre is hired is an acquisition timing with no separate duel consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

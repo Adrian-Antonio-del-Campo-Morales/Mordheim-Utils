@@ -1,0 +1,83 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/ogre-hunting-party-web/trappers--veteran-tracker/unimplemented.ogre-hunting-party-web.trappers.veteran-tracker
+# scaffold_fingerprint: 58dfcf6c45bc6f32f98c534fa925352e11a43afd6c479c4e6af095b0b6d3cd7d
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is derived for the admitted starting-skill-choice clause yet, for the
+# concrete reason recorded in its own note below.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: starting-skill-choice (scope: YES)
+# PARTIAL[starting-skill-choice]: [C] no scenario is authorable for this clause as recorded.  Category C: the four choice identities and the exactly-one guard are genuinely absent from the fixture's construction vocabulary, so neither the admission of a named choice nor the refusal of a second can be declared.  The printed
+# rule is an exactly-one choice among four printed skills at initial construction, and the record states
+# the missing pieces: "Canonical choice facts and a shared exactly-one guard are missing", with the
+# selected skill's own clauses kept as separate obligations and traps, deployment and scent detection
+# explicitly out of scope.  A scenario needs (a) the canonical identity of each of the four choices and
+# (b) the guard that refuses a second one; neither is recorded, so the observable - one of the four
+# admitted and a second refused - cannot be declared without inventing the choice identities.  The
+# scope-NO warband-wide maximum on Infiltration is roster composition and stays out of the duel, as its
+# own note says.
+# origin_id:
+#   rule/mordheim/ogre-hunting-party-web/trappers--veteran-tracker/unimplemented.ogre-hunting-party-web.trappers.veteran-tracker
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/ogre-hunting-party-web/special-rules.yaml
+# source_fingerprint:
+#   10d0a8648c7a2b2a2f8e6f48f0c95c89e3a9bb4bbf48e56c5f3a9754c8fb1da8
+# source_sha256_at_generation:
+#   9a5e0f804e1ae1e6d5bf5840998104bc7e10fdd70f8f985cf96a7c96d3577662
+# Printed rule text:
+#   A trapper starts with ONE of the following Special Skills: Infiltration (max 1), Set Traps, Netter, or Scent Hound.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A Gnoblar Trapper starts with exactly one of Infiltration, Set Traps, Netter or Scent Hound; preserve the chosen identity without simulating recruitment.
+# effect_id:
+#   proposed.starting-skill-choice
+# relation:
+#   independent
+# parameters:
+#   {"choices":["Infiltration","Set Traps","Netter","Scent Hound"],"required_count":1}
+# conditions:
+#   {"profile":"trappers","window":"initial construction"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Trappers are Gnoblars, so the printed Netter/Infiltration recipient matches. Canonical choice facts and a shared exactly-one guard are missing. The selected skill's own clauses remain separate obligations; do not implement traps, deployment or scent detection here.
+#
+# Clause: infiltration-warband-limit (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/ogre-hunting-party-web/trappers--veteran-tracker/unimplemented.ogre-hunting-party-web.trappers.veteran-tracker
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/ogre-hunting-party-web/special-rules.yaml
+# source_fingerprint:
+#   10d0a8648c7a2b2a2f8e6f48f0c95c89e3a9bb4bbf48e56c5f3a9754c8fb1da8
+# source_sha256_at_generation:
+#   9a5e0f804e1ae1e6d5bf5840998104bc7e10fdd70f8f985cf96a7c96d3577662
+# Printed rule text:
+#   At most one Trapper may start with Infiltration.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The warband-wide maximum is roster composition, not an individual duel effect.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Retains the printed max-one exception without requiring a group engine. Scope review integration: {"clause_id":"infiltration-warband-limit","review_clause_id":"infiltration-warband-limit","source_state":"unverified","review_status":"reviewed","scope_reason":"The limit on how many Trappers may start with Infiltration is a warband composition rule, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

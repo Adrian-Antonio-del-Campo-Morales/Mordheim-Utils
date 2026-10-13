@@ -1,0 +1,120 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+# scaffold_fingerprint: 8e06ad4883712167adabcc96e424e3d44a9ce1978637bc5f4fc4cd7591956ee0
+# authoring_status: PARTIAL
+# authoring_progress: the admitted whole--scope--scorpion-tail clause carries 2 authored scenarios derived from the printed sentence and the recorded contract (one extra attack each close-combat phase, fixed Strength 5, Strength 2 against a poison-immune defender).  The extra attack is evidenced by the pool carrying one attack die more than the same recipient without the mutation.  Pending: the printed poison-immunity strength reduction, because the tail attack's own wound key inside the pool is not recorded, so an assertion on its wound face could not be placed without inventing the index.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole--scope--scorpion-tail (scope: YES)
+# PARTIAL[whole--scope--scorpion-tail]: [C] 2 scenarios evidence the printed additional attack of each close-combat phase through the pool size, with the same recipient without the mutation as the contrast.  Pending: the poison-immunity branch (the tail attack is Strength 2 instead of 5), whose missing datum is the roll key of the tail attack inside the pool.
+# origin_id:
+#   rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/trollheim-cult-of-the-possessed/special-rules.yaml
+# source_fingerprint:
+#   7c050fbbc6fb35e0c5585326850784be0a428877ad65e28d7a2aaf11a23481aa
+# source_sha256_at_generation:
+#   3f3cf34fc9139fe856d2d8fdf26aef5a8f7f4ec5301f7a9accdfaab17c697bc9
+# Printed rule text:
+#   The model gains one additional Strength 5 attack in each close-combat phase. Against a model immune to poison, this attack is Strength 2 instead.
+# Semantic contract (check analysis_status before treating as accepted):
+#   One additional Strength 5 attack each close-combat phase, reduced to Strength 2 against a poison-immune model, is an admitted attack consequence. Printed clause: The model gains one additional Strength 5 attack in each close-combat phase. Against a model immune to poison, this attack is Strength 2 instead.
+# effect_id:
+#   trait.scorpion-tail
+# relation:
+#   related
+# parameters:
+#   {"extra_attacks":1,"fixed_strength":5,"vs_poison_immune_strength":2}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared scorpion-tail trait; the printed poison-immunity reduction is the defender immunity branch of the Strength computation. The printed 40 gc cost is acquisition data. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Scope review integration: {"clause_id":"whole","review_clause_id":"scorpion-tail","source_state":"matched","review_status":"reviewed","scope_reason":"One additional Strength 5 attack each close-combat phase, reduced to Strength 2 against a poison-immune model, is an admitted attack consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The model gains one additional Strength 5 attack in each close-combat phase, reduced to Strength 2 against a model immune to poison. Closure: the pooled extra attack is S5 normally and S2 against a poison-immune defender.","effect_id":"trait.scorpion-tail","relation":"equivalent","parameters":"{\"extra_attack\": 1, \"fixed_strength\": 5, \"vs_poison_immune\": 2}","conditions":"{\"recipient\": \"Mutant\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_attack_strength\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07c-natural-and-mutation-traits","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_attack_strength\"]"},"inherited_clause_text":"The model gains one additional Strength 5 attack in each close-combat phase. Against a model immune to poison, this attack is Strength 2 instead. Cost: 40 gc.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-trait.scorpion-tail","verified_facet":"trait.scorpion-tail","relationship":"shared_facet","boundary":"One separate tail attack per phase; poison immunity changes only that attack to Strength 2. Preserve the ordinary pool and exclude acquisition prices.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+#
+# Clause: whole--scope--cost (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/trollheim-cult-of-the-possessed/special-rules.yaml
+# source_fingerprint:
+#   7c050fbbc6fb35e0c5585326850784be0a428877ad65e28d7a2aaf11a23481aa
+# source_sha256_at_generation:
+#   3f3cf34fc9139fe856d2d8fdf26aef5a8f7f4ec5301f7a9accdfaab17c697bc9
+# Printed rule text:
+#   Cost: 40 gc.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The 40 gc cost of the mutation is acquisition data excluded from the duel. Printed clause: Cost: 40 gc.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared scorpion-tail trait; the printed poison-immunity reduction is the defender immunity branch of the Strength computation. The printed 40 gc cost is acquisition data. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Scope review integration: {"clause_id":"whole","review_clause_id":"cost","source_state":"matched","review_status":"reviewed","scope_reason":"The 40 gc cost of the mutation is acquisition data excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The model gains one additional Strength 5 attack in each close-combat phase, reduced to Strength 2 against a model immune to poison. Closure: the pooled extra attack is S5 normally and S2 against a poison-immune defender.","effect_id":"trait.scorpion-tail","relation":"equivalent","parameters":"{\"extra_attack\": 1, \"fixed_strength\": 5, \"vs_poison_immune\": 2}","conditions":"{\"recipient\": \"Mutant\"}","consumer":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_attack_strength\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07c-natural-and-mutation-traits","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\", \"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_attack_strength\"]"},"inherited_clause_text":"The model gains one additional Strength 5 attack in each close-combat phase. Against a model immune to poison, this attack is Strength 2 instead. Cost: 40 gc.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# "The model gains one additional Strength 5 attack in each close-combat phase": the printed
+# extra attack is evidenced by the pool carrying one attack die more than the same recipient
+# without the mutation; every attack is a miss so the pool is the only difference.
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+  id: the-tail-adds-an-attack-to-every-close-combat-phase
+  covers: [whole--scope--scorpion-tail]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids: [band--mutations-scorpion-tail]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &plain-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same recipient without the mutation keeps its printed single attack.
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutations-scorpion-tail/trait.scorpion-tail
+  id: without-the-mutation-the-bearer-keeps-one-attack
+  covers: [whole--scope--scorpion-tail]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *plain-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -1,0 +1,98 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.shield-strike
+# scaffold_fingerprint: a3bf3fcb6051645d6e0f7313d539c66da6a0d86ad9bae69640f932268f23dfd9
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries 2 authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the extra attack granted by the shield when the bearer's Strength 3 is used against Toughness 3, and the same attack taking the ordinary armour modifier against a worn suit.
+# origin_id:
+#   mechanic/skill.shield-strike
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   e44af93a563691a20647efd456755da7db9bd03a03459d8c6036b505825d8b6b
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Gains an additional attack at the user's Strength; armour is modified normally according to that Strength.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The fighter gains an additional attack at his own Strength, with armour modified normally according to that Strength. Closure: with a shield in the off hand the pool carries one further attack resolved at the bearer Strength with the ordinary armour modifier of that Strength.
+# effect_id:
+#   skill.shield-strike
+# relation:
+#   equivalent
+# parameters:
+#   {"armour": "modified normally", "attacks_bonus": 1, "strength": "user"}
+# conditions:
+#   {"trigger": "shield in the off hand"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   compile_fighter appends the extra attack tagged rule.shield-strike only when the off hand is a shield; the pool then resolves it with the ordinary strength and armour contexts, so the printed "armour is modified normally according to that Strength" is the shared armour computation rather than a second term. Surface reuse candidate: {"family":"skill.shield-strike","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare modifier stage, applicable weapon, replacement versus added attacks, nominated hand/poison transport and resource lifetime. Preserve Shifty S1-S4 and pistol composition; A=2 on charge is not an unrestricted +1 Attack.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/skill.shield-strike - authored from the printed "gains an additional
+# attack at the user's Strength; armour is modified normally according to that
+# Strength" clause and the recorded contract, never from engine output.
+# The compiler appends the extra attack after the main weapon, so the shield's
+# attack is the second weapon of the pool (attack index 1) and the main weapon's
+# is index 0; the bearer's one Attack is the mace, and the shield adds the second.
+- audit_id: mechanic/skill.shield-strike
+  id: the-shield-adds-a-second-attack-at-the-bearer-s-strength
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      skill_ids: [skill.shield-strike]
+      characteristics: &ss-bearer {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &ss-opponent {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: &ss-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.wounded: True, attacks.0.damage: 1, attacks.1.wounded: True, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/skill.shield-strike
+  id: the-extra-attack-takes-the-ordinary-armour-modifier
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      skill_ids: [skill.shield-strike]
+      characteristics: *ss-bearer
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: *ss-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 5}
+    - {key: round.0.first.attack.1.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, attacks.1.saved: True, attacks.1.wounded: True, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

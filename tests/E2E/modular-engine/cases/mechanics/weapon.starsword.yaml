@@ -1,0 +1,172 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.starsword
+# scaffold_fingerprint: 74c62cf323ce3ad6505876613bfaa7b2e5912b2e88f7ab93dd47d00c7e563617
+# authoring_status: AUTHORED
+# authoring_progress: the whole clause carries 4 authored scenarios; dodge-exception is unrepresentable and marked PARTIAL
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: dodge-exception (scope: YES)
+# PARTIAL[dodge-exception]: no scenario is authorable from this file. The printed
+#   exception names a Dodge save and the engine's special-save context carries only
+#   ward and regeneration faces, so neither the admitted clause nor its negation has
+#   an observation in the runner vocabulary. Missing datum: a Dodge-save field or an
+#   explicit decision that no Dodge save applies to this duel. Pending semantic review.
+# origin_id:
+#   mechanic/weapon.starsword
+# analysis_status:
+#   needs_clarification
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   132845c9408266c49089b09f0fb513fc091d97d20d7f0283db42b8e230d3eded
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   A Starsword ignores all armour saves except for ward and Dodge saves.
+# Semantic contract (check analysis_status before treating as accepted):
+#   If the mechanic reading governs, the armour denial must exempt a Dodge save; no Dodge save exists in the engine, so the exception cannot be evaluated. Closure requires either a Dodge-save representation or an explicit decision that no Dodge save applies in the duel.
+# effect_id:
+#   proposed.defence.dodge-save
+# relation:
+#   unresolved
+# parameters:
+#   {"exempt": ["ward", "dodge"]}
+# conditions:
+#   {"missing_mechanic": "dodge save"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   SpecialSaveContext carries ward_save and regeneration_save only; there is no dodge field, so the printed exception is unrepresentable today. Recorded as unresolved rather than as a missing connection.
+#   
+#   [M2-offensive 2026-10-08] verified unrepresentable. `SpecialSaveContext` carries ward and regeneration only; no Dodge save field exists anywhere in the engine, so the printed exception cannot be evaluated. Resolution: decide that no Dodge save applies in the duel, or add a Dodge representation in a defence-block assignment.
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenarios cover the printed +1 Strength on both faces, the
+#   armour denial against a worn suit and the parry.
+# origin_id:
+#   mechanic/weapon.starsword
+# analysis_status:
+#   needs_clarification
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   132845c9408266c49089b09f0fb513fc091d97d20d7f0283db42b8e230d3eded
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Range: Close Combat Strength: As user +1 Special Rules Parry: Can parry enemy blows Ignores Armour A Starsword ignores all armour saves except for ward and Dodge saves.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Strength +1 sword that may parry and ignores all armour saves except ward and Dodge saves. Closure: ignore_armour is set on the attack while ward saves still resolve.
+# effect_id:
+#   weapon.starsword
+# relation:
+#   equivalent
+# parameters:
+#   {"ignore_armour": true, "parry": true, "strength_bonus": 1}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Contradiction: the printed item entry (weapons-close-combat.yaml starsword) states only "As user +1 Parry", while the mechanic text adds "Ignores Armour: ignores all armour saves except for ward and Dodge saves" and the contract sets ignore_armour. The engine can express the ward exception but has no Dodge save field at all, so even the mechanic reading is only partially representable. Both readings are preserved; the coordinator must decide the governing text and how a Dodge save is represented.
+#   
+#   [M2-offensive 2026-10-08] engine side verified, source conflict open. `ignore_armour` is set on the attack and the armour stage alone is denied, while `resolve_special_save` still resolves ward and regeneration separately, so the printed closure holds for the mechanic record. The open item is which KB record governs: the item prose prints only '+1 Parry' while the mechanic prints 'Ignores Armour'. Coordinator decision, not an execution gap.
+
+# --- Authored scenarios ---
+# mechanic/weapon.starsword - the +1 Strength, the armour denial and the parry.
+#
+# Expectations come from the printed rule and the admitted `whole` clause, never
+# from engine output.  The source-vs-contract contradiction recorded in the header
+# (item entry printing only "as user +1 Parry") is preserved, not asserted: these
+# scenarios follow the mechanic reading whose clause is admitted.
+# The printed +1 makes the wielder Strength 4, so Toughness 3 is wounded on 3+;
+# the wielder's own Strength would have needed the 4 rolled in the next scenario.
+- audit_id: mechanic/weapon.starsword
+  id: starsword-adds-one-strength
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.starsword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# One face below the printed target, which rules out any larger hidden bonus.
+- audit_id: mechanic/weapon.starsword
+  id: starsword-does-not-wound-one-face-below
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.starsword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The worn 5+ suit never gets an armour die: the ordered tape jumps from the
+# wound roll straight to the opposing attack, and the wound is taken.
+- audit_id: mechanic/weapon.starsword
+  id: starsword-denies-a-worn-suit-its-save
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.starsword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# A parry must beat the to-hit roll, so a 5 blocks a hit that landed on a 4.
+- audit_id: mechanic/weapon.starsword
+  id: starsword-parries-a-higher-roll
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.starsword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

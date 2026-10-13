@@ -1,0 +1,92 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/high-elves-lus/band--skill-unerring-strike/skill.sure-strike
+# scaffold_fingerprint: ebdd22aee156614338e2b18b51319e684ba663ac65ae176f254e12a835c514a8
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries 2 authored scenarios for the printed re-roll of any
+# failed to-wound roll: the failed wound roll is taken again and the second result stands, while the
+# identical tape without the rule keeps the miss.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED; no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios cover the printed "may re-roll any failed to wound rolls": a declared
+# wound face of three fails against Toughness 3 and is taken again on the strict-dice key
+# <attack-key>.wound.reroll, whose four wounds; the identical configuration without the operator keeps
+# the failed roll and deals no damage.  The fixed fixture declares the canonical skill.sure-strike
+# operator that the band's printed sentence repeats; the register records the band origin as adding no
+# second runtime contribution.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/high-elves-lus/band--skill-unerring-strike/skill.sure-strike
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/high-elves-lus/special-rules.yaml
+# source_fingerprint:
+#   f3839ff35ab61f6aced86f45e51d6859445b21a3f41feb85676efe54aec08b50
+# source_sha256_at_generation:
+#   005f14ab943aa067f21d882588176c721642bebedde64f6681f528383615b7c3
+# Printed rule text:
+#   The Elf is an expert at delivering deadly accurate blows. He may re-roll any failed to wound rolls.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Elf may re-roll any failed To Wound rolls. Closure: a failed wound roll is taken again once.
+# effect_id:
+#   skill.sure-strike
+# relation:
+#   equivalent
+# parameters:
+#   {"reroll_wounds":true}
+# conditions:
+#   {"recipient": "Elf"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared sure-strike operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.sure-strike","verified_facet":"skill.sure-strike","relationship":"shared_facet","boundary":"Failed wound rolls only; accept the second roll and never reroll a reroll. Not an automatic hit target or a to-hit reroll.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/high-elves-lus/band--skill-unerring-strike/skill.sure-strike
+  id: a-failed-wound-roll-is-taken-again
+  covers: [whole]
+  fighters:
+    first:
+      skill_ids: [skill.sure-strike]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.wound.reroll, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/high-elves-lus/band--skill-unerring-strike/skill.sure-strike
+  id: the-same-roll-stands-without-the-skill
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

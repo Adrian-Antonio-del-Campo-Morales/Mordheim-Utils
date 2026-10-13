@@ -1,0 +1,87 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/savage-orcs-kaz/gobbo-boyz--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: 5cfa0282e1938a0a722f3c601155e438a001c1d7edd87ff9f73b42b38b5ec3cb
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed
+#   prohibition and the recorded contract: the bow-carrying build is refused at construction with the shared
+#   stage's own verbatim fragment, and the same recipient without the item constructs and runs.  REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED.
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios.  The declared token 'bow' is not an uninterpreted placeholder: "bow" is
+#   member of EQUIPMENT_TAG_VOCABULARY in packages/python/roster-construction/mordheim_construction/_eligibility.js,
+#   so it is an INTERPRETED_TOKEN and equipmentIssue() refuses the carrying item with its own template
+#   `"${token}" is forbidden for ${band}/${profile}.` - the exact string this file now asserts.  The item
+#   spelling follows the neighbouring bands' equipment-access rows, which publish bow-family items by their
+#   short id; the token check also matches the item id directly, so either spelling resolves.  Consumer: the
+#   shared eligibility stage reached by compile_fighter.
+# origin_id:
+#   rule/mordheim/savage-orcs-kaz/gobbo-boyz--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/savage-orcs-kaz/special-rules.yaml
+# source_fingerprint:
+#   020b78f039140474727757e262782415f83ed0405eb18f7c7c086774e3ee1669
+# source_sha256_at_generation:
+#   bc6ac8319f2dfb736ca859efc69989a891468f1c8a5229d65ee5a597da055049
+# Printed rule text:
+#   Savage Gobbos may not take the Bow.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Prohibition: Gobbo Boyz may not take a Bow.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["bow"]}
+# conditions:
+#   {"recipient":"gobbo-boyz"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   List-valued forbids. Surface reuse candidate: {"family":"901","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed recipient selectors, including promoted Heroes and selected variants. Share eligibility machinery, not a recipient set; culinary item names alone add no restriction.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# --- Authored scenarios ---
+# Derived from the printed prohibition and the shared stage's template; no engine output was consulted.
+
+- audit_id: rule/mordheim/savage-orcs-kaz/gobbo-boyz--equipment-restrictions/profile.equipment-restrictions
+  id: a-bow-carrying-gobbo-boy-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: savage-orcs-kaz
+      profile_id: gobbo-boyz
+      owned_item_ids: [bow]
+  expect_error: '"bow" is forbidden for savage-orcs-kaz/gobbo-boyz.'
+
+- audit_id: rule/mordheim/savage-orcs-kaz/gobbo-boyz--equipment-restrictions/profile.equipment-restrictions
+  id: the-same-recipient-without-a-bow-is-accepted-at-construction
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: savage-orcs-kaz
+      profile_id: gobbo-boyz
+    second:
+      collection: mordheim
+      band_id: savage-orcs-kaz
+      profile_id: gobbo-boyz
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

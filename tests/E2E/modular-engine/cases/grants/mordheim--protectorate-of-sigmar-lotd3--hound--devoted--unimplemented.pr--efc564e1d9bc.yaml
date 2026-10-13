@@ -1,0 +1,114 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/hound--devoted/unimplemented.protectorate-of-sigmar-lotd3.hound.devoted
+# scaffold_fingerprint: 2dd115da3085f58a4fb9ffb9edf844fa7a0568afb09aaf295f1e4af153be475c
+# authoring_status: PARTIAL
+# authoring_progress: the admitted devoted clause carries two authored scenarios for the printed
+# optional reroll of a failed individual Leadership check - taken and declined.  The printed provider
+# condition (the Warrior Priest supplied within 12 inches) stays pending: the effect's own record
+# states that the executor implements the canonical reroll while the supplied-provider projection and
+# the KB binding on this origin are the missing step, so no tape can show the distance.  REVIEWED
+# still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: devoted (scope: YES)
+# PARTIAL[devoted]: [C] 2 scenarios cover the printed reroll of one failed Leadership check: the
+# declared reroll turns the failure around (the second pair of ones passes, the charge survives and
+# the blow lands) and the declined offer keeps the first failure, so the charge is cancelled with no
+# attack resolved.  The Hound's Leadership 6 is a fixture fact and the Fear causer opposite it is a
+# hand-built fixture carrying the canonical operator, exactly as the mechanic origin's own case
+# structures it.  Pending: the printed provider condition.  The clause requires the reroll only
+# while the supplied Warrior Priest is within 12 inches, and the executor's own record states that
+# the canonical reroll is implemented while the supplied-provider projection and the KB binding on
+# this origin are the missing step, so a duel tape can evidence the reroll but not its distance or
+# its provider.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/protectorate-of-sigmar-lotd3/hound--devoted/unimplemented.protectorate-of-sigmar-lotd3.hound.devoted
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/protectorate-of-sigmar-lotd3/special-rules.yaml
+# source_fingerprint:
+#   9c4c633953ebbc1896ca5cbb7627db624491d10ffe72616d69d429444ee9efc8
+# source_sha256_at_generation:
+#   06d57ecdbee0d0cfffc39a30d09ff61277a030d7fb09fae549f7fe1c0ef73898
+# Printed rule text:
+#   Trained since pups, these Hounds are devoted beyond what a typical master could expect. A Hound may re-roll a failed Leadership check if within 12 inches of the Warrior Priest.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A Hound within 12 inches of the supplied Warrior Priest may reroll a failed Leadership check once. Observable: the reroll is offered only while the provider is within 12".
+# effect_id:
+#   mechanic.leadership-reroll
+# relation:
+#   parameterized_variant
+# parameters:
+#   {"max_rerolls_per_roll":1}
+# conditions:
+#   {"trigger":"a failed individual Leadership check","provider":"the supplied Warrior Priest within 12 inches"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   A provider-conditioned optional Leadership reroll. resolve_local_leadership already implements mechanic.leadership-reroll; the missing step is the KB binding and the supplied provider projection. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"devoted","audit_group":"EQ-mechanic.leadership-reroll","verified_facet":"leadership/optional-reroll","relationship":"shared_facet","boundary":"Optional failed individual Leadership reroll. Hound requires the supplied Priest within 12 inches; Songster also supplies +1 Leadership. Sharing the dice helper does not erase either provider condition.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# The failed Fear test of the charge offers exactly one reroll.  The declared choice takes
+# it, the second pair of ones passes against Leadership 6 and the charge survives; only one
+# reroll decision is declared, and an additional request would not be honoured by this
+# fixture.
+- audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/hound--devoted/unimplemented.protectorate-of-sigmar-lotd3.hound.devoted
+  id: the-offered-reroll-turns-the-failed-leadership-check-around
+  covers: [devoted]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.leadership-reroll]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.fear.charge.reroll, value: true}
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+    - {key: round.0.first.fear.charge.reroll.0, value: 1}
+    - {key: round.0.first.fear.charge.reroll.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first_charged: True, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The offer is optional: declining it consumes no die, the first failure stands and the
+# charge is cancelled without any attack.
+- audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/hound--devoted/unimplemented.protectorate-of-sigmar-lotd3.hound.devoted
+  id: declining-the-offer-keeps-the-first-failure
+  covers: [devoted]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.leadership-reroll]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.causes-fear]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.fear.charge.reroll, value: false}
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+

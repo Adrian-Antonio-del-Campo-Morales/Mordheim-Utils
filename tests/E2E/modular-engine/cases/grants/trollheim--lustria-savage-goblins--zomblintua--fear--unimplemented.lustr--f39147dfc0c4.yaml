@@ -1,0 +1,100 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-savage-goblins/zomblintua--fear/unimplemented.lustria-savage-goblins.zomblintua.fear
+# scaffold_fingerprint: 75b14eb8f33b7e5af745e831616e6d85b96d333fb488276ff91a55dd3f384f89
+# authoring_status: AUTHORED
+# authoring_progress: the admitted cause-fear clause carries two authored scenarios for
+# the two faces of the charged opponent's Leadership test.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED;
+# no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: cause-fear (scope: YES)
+# AUTHORED[cause-fear]: 2 scenarios cover the printed Fear consequence for the warrior charged by this
+# causer: on a failed Leadership test its hit roll of 4 - a roll that beats its ordinary target -
+# wounds nothing, and on a passed test the same roll wounds it.  The warrior charged by this
+# causer is the Fear-tested side; the fixture's Leadership 7, Weapon Skill 10 and Strength 8
+# are hand-built facts, not profile values, and the causer contributes no attacks of its own so
+# the only rolls are the Fear test and the charged warrior's.  The cancelled voluntary charge,
+# the one-test-per-pairing rule and the exemptions (an opponent that causes Fear, is immune to
+# Psychology or Fear, or is Frenzied) are not asserted here: the cancelled charge is a
+# charge-flag consequence rather than a wound outcome and the exemptions need a second bearer
+# this file does not declare.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/lustria-savage-goblins/zomblintua--fear/unimplemented.lustria-savage-goblins.zomblintua.fear
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-savage-goblins/special-rules.yaml
+# source_fingerprint:
+#   3ca9b26e0388c95bbac5b38cec56cd5f744947ccf25d0e9566b64e72e41725ae
+# source_sha256_at_generation:
+#   84746d9c2e37bfd46fb68ab1b459a9ab5317d55037c20eb6197fbd206ca12c00
+# Printed rule text:
+#   Zomblintua causes Fear.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Causes Fear: in the initial round an opposing warrior that charges or is charged by this warrior tests Leadership; a failed charge is cancelled and a failed reaction forces sixes to hit for the round. Observable: the Fear test appears only for a non-exempt opponent.
+# effect_id:
+#   mechanic.causes-fear
+# relation:
+#   equivalent
+# parameters:
+#   {"value":true}
+# conditions:
+#   {"trigger":"round 0, opponent charges or is charged","recipient":"the opposing warrior","duration":"that combat round","exceptions":"fear-causing / Psychology-immune / frenzied opponents"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The record's blanket reason is 'Deferred subsystem: psychology or mounts', but this printed clause is a canonical psychology effect the runtime already implements, so the clause is admitted and only the binding is missing. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Surface reuse candidate: {"family":"mechanic.causes-fear","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded cause-fear contract and the printed profile;
+# no engine output was consulted.  The causer charges, so the warrior it charged is the
+# Fear-tested warrior and its two Leadership dice are declared first against the fixture's
+# Leadership 7.  These scenarios are about the Fear test alone, so the causer contributes no
+# attacks of its own (initial_state) and the only attack die is the charged warrior's own.
+
+- audit_id: rule/trollheim/lustria-savage-goblins/zomblintua--fear/unimplemented.lustria-savage-goblins.zomblintua.fear
+  id: a-charged-opponent-that-fails-its-fear-test-hits-only-with-sixes
+  covers: [cause-fear]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 5}
+    - {key: round.0.first.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/lustria-savage-goblins/zomblintua--fear/unimplemented.lustria-savage-goblins.zomblintua.fear
+  id: a-charged-opponent-that-passes-its-fear-test-fights-normally
+  covers: [cause-fear]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 2, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: lustria-savage-goblins, profile_id: zomblintua}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [second], active_participant: second}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charged.0, value: 3}
+    - {key: round.0.first.fear.charged.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

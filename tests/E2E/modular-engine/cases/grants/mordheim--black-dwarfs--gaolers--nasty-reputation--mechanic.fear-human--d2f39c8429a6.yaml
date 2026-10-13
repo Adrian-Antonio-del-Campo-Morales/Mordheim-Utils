@@ -1,0 +1,96 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/black-dwarfs/gaolers--nasty-reputation/mechanic.fear-human
+# scaffold_fingerprint: da753a77e13441c85a9610be02e395900a1a64e534d27f4fb01f4f42981dac6c
+# authoring_status: AUTHORED
+# authoring_progress: the admitted fear-human clause carries two authored scenarios derived from the
+# printed rule and the recorded contract: the round-0 Leadership test a Human opponent owes when it
+# charges the bearer, and its absence for a non-Human opponent whose tape carries no Leadership die
+# and whose charge proceeds.  The bearer is a hand-built fixture carrying the canonical operator
+# through its grant list, because the band origin repeats the shared clause without adding a term.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: fear-human (scope: YES)
+# AUTHORED[fear-human]: 2 scenarios cover the Leadership test a Human opponent owes when it charges
+#   the bearer, and the charge that proceeds unchallenged against a non-Human opponent.
+# origin_id:
+#   rule/mordheim/black-dwarfs/gaolers--nasty-reputation/mechanic.fear-human
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/black-dwarfs/special-rules.yaml
+# source_fingerprint:
+#   b288c82a1926e1daeedf468c33c77101cbd87757ba64405bd913b3d69c794bde
+# source_sha256_at_generation:
+#   f082099d8b12a126a51b43f80512b706de93a2feac6a3a38c86346dcfacae25a
+# Printed rule text:
+#   Gaolers are known for their brutality. The dreaded sight of them and the very thought of being captured causes fear in Humans.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Causes Fear in Humans: a Human opponent charging or charged must test Leadership as for Fear. Observable: the round-0 Fear test appears only when the opponent carries species.human.
+# effect_id:
+#   mechanic.fear-human
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"round 0, a Human opponent charges or is charged","resolution":"opponent Leadership test","recipient":"Human opponents","duration":"that combat round","exceptions":"the opponent's species.human fact must be supplied"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   psychology.causes_fear returns True for mechanic.fear-human only against a species.human opponent. Surface reuse candidate: {"family":"mechanic.fear-human","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# printed recipient is the Human opponent, so the species fact is supplied on the opposing build.
+- audit_id: rule/mordheim/black-dwarfs/gaolers--nasty-reputation/mechanic.fear-human
+  id: a-human-opponent-owes-the-fear-test
+  covers: [fear-human]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: human}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-human]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 6}
+    - {key: round.0.first.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {attacks: [], state.first_charged: False, state.failed_charges: ['first'], state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+# The same charge by a Dwarf: the printed clause names Humans, so no Leadership die is
+# requested and the charge resolves normally.
+- audit_id: rule/mordheim/black-dwarfs/gaolers--nasty-reputation/mechanic.fear-human
+  id: a-non-human-opponent-is-not-afraid
+  covers: [fear-human]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {species: dwarf}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.fear-human]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first_charged: True, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

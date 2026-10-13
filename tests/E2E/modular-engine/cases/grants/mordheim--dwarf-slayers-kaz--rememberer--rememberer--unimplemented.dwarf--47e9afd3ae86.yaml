@@ -1,0 +1,73 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-slayers-kaz/rememberer--rememberer/unimplemented.dwarf-slayers-kaz.rememberer.rememberer
+# scaffold_fingerprint: 808f5c590f6e497b57a793f81c7422a25883828521abff5eb7b0b8560f667a79
+# authoring_status: PARTIAL
+# authoring_progress: no scenario is authorable from this file's recorded evidence.  The clause records effect_id `proposed.band-rememberer-reroll` (proposed, not admitted) with relation "related", so the once-per-game reroll of failed To Hit rolls for a Slayer Hero against a large creature supplied by an allied Rememberer within 6" has no consumer to read; the once-per-game resource key and the accepted large-creature marker are likewise unrecorded.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: duelist-reroll (scope: YES)
+# PARTIAL[duelist-reroll]: [C] pending promotion of the proposed operator to an accepted effect_id, the resource key that limits the reroll to one use per game and the accepted marker for the printed "large creature (such as a troll or ogre)" opponent gate.  The supplied Rememberer and its six-inch radius stay supplied facts; the tape would then be a single declared failed To Hit roll taken again, with the gate held constant.
+# origin_id:
+#   rule/mordheim/dwarf-slayers-kaz/rememberer--rememberer/unimplemented.dwarf-slayers-kaz.rememberer.rememberer
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dwarf-slayers-kaz/special-rules.yaml
+# source_fingerprint:
+#   293429400bacae2d8cdf6e40baedddabe599de7b990feff4620a772746063eb6
+# source_sha256_at_generation:
+#   b489daeeedb7e64649fa6ec4f6c427c304692c4ca986965f9fb0057ded5ac4dd
+# Printed rule text:
+#   The Rememberer's task is to record the doom of each of the slayers. When he is close by, the slayers will fight even harder to make their death more honourable. Once per game, any Slayer Hero fighting against a large creature (such as a troll or ogre) and within 6\" of the Rememberer, may re-roll any failed To Hit rolls once only.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Once per game a Slayer Hero fighting a large creature (such as a troll or ogre) and supplied by an allied Rememberer within 6" may re-roll failed To Hit rolls once only. Closure: with the supplied bonus a single failed To Hit roll is taken again, limited to one use per game and gated on the large-creature opponent, without simulating the Rememberer itself.
+# effect_id:
+#   proposed.band-rememberer-reroll
+# relation:
+#   related
+# parameters:
+#   {"opponent": "large creature (troll or ogre)", "reroll": "failed To Hit rolls, once", "supplied_by": "an allied Rememberer within 6in", "usage": "once per game"}
+# conditions:
+#   {"recipient": "Slayer Hero fighting a large creature", "supplied_by": "external Rememberer within 6in", "usage": "once per game"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The source band rule records runtime.scope YES / implemented NO with the reason "Included individual duel effect, not implemented: Supplied qualified Rememberer grants one battle reroll against a Large duel opponent" (sources/knowledge/bands/mordheim/dwarf-slayers-kaz/special-rules.yaml), so the individual consequence is admitted even though its producer (the Rememberer and the 6" proximity) is the excluded group arrangement. Reuse: the reroll mechanism exists as effect.reroll_hits consumed by _hit_reroll, and once-per- game bookkeeping exists through FighterState.resources_spent (used by luck, mark-of-the-old-ones and others). Missing: no "large creature" classification exists anywhere in the engine, and the source-specific resource and its projection to the recipient remain pending, so the first remaining step is data.
+#
+# Clause: group-emission (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/dwarf-slayers-kaz/rememberer--rememberer/unimplemented.dwarf-slayers-kaz.rememberer.rememberer
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dwarf-slayers-kaz/special-rules.yaml
+# source_fingerprint:
+#   293429400bacae2d8cdf6e40baedddabe599de7b990feff4620a772746063eb6
+# source_sha256_at_generation:
+#   b489daeeedb7e64649fa6ec4f6c427c304692c4ca986965f9fb0057ded5ac4dd
+# Printed rule text:
+#   And within 6" of the Rememberer
+# Semantic contract (check analysis_status before treating as accepted):
+#   The clause is only the within-six-inches proximity condition of the aura; the permanent ruling keeps commands and auras for their supplied effects on the duel and does not require a group emission, hearing or recipient subsystem. Printed clause: And within 6" of the Rememberer
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Recorded explicitly so the excluded producer is visible and the individual reroll is not discarded merely because its producer is external. Scope review integration: {"clause_id":"group-emission","review_clause_id":"group-emission","source_state":"unverified","review_status":"reviewed","scope_reason":"The clause is only the within-six-inches proximity condition of the aura; the permanent ruling keeps commands and auras for their supplied effects on the duel and does not require a group emission, hearing or recipient subsystem.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The 6\" proximity to the Rememberer and the third model it requires are the excluded group / third-combatant arrangement that emits the bonus; no duel producer is modelled and the reroll clause above is supplied out of band instead.","effect_id":"","relation":"independent","parameters":"{\"needs_third_model\": true, \"range\": \"6in\"}","conditions":"{\"subsystem\": \"groups / third combatants\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A18-excluded-and-later-clauses","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"And within 6\" of the Rememberer","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

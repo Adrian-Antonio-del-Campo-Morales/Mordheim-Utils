@@ -1,0 +1,120 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.spirit-knife
+# scaffold_fingerprint: e9d9968896ab90c4e161a91097b4ec3a6d597556f3c8a3ad6f6afae119c0dbae
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries three authored scenarios for the Spectral Touch still and the dagger save bonus. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover the Spectral Touch still on a natural six (with its own armour step) and the dagger profile's save bonus on both faces.
+# origin_id:
+#   mechanic/weapon.spirit-knife
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   161a1891076be94aa281840ffa43f20817a31a381d3bf6583e159ef0941429b8
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Uses normal Strength and grants +1 enemy armour save; a natural hit six inflicts one immediate additional wound, then the ordinary wound roll.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Dagger-profile weapon that grants +1 target armour save and whose natural hit 6 stills the victim for one immediate additional wound before the ordinary wound roll (Spectral Touch). Closure: a natural 6 adds one wound resolved without a fresh hit or poison trigger, then the ordinary wound roll proceeds.
+# effect_id:
+#   weapon.spirit-knife
+# relation:
+#   equivalent
+# parameters:
+#   {"tags": ["weapon.spirit-knife", "trait.spectral-touch", "weapon.dagger"], "target_armour_bonus": 1}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The dagger save bonus and the dagger tag are carried; the spectral-touch half is the trait.spectral-touch tag on the weapon, consumed by the natural-hit-six branch of _resolve_reference_attack_once (single extra wound, no second poison/critical trigger). The item text and the Q146 review agree. Surface reuse candidate: {"family":"W-weapon.spirit-knife","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/weapon.spirit-knife - dagger profile whose natural hit six stills the
+# victim for one immediate additional wound.
+#
+# Expectations come from the printed rule and the admitted clause `whole`, never
+# from engine output.  The still is resolved before the ordinary wound roll, so
+# its armour step is the first die after the hit in the tape.
+# A natural hit six stills the victim first: the printed extra wound is resolved immediately (its own armour die first, before the ordinary wound roll), and then the ordinary attack follows with its own save.
+
+- audit_id: mechanic/weapon.spirit-knife
+  id: spirit-knife-stills-on-a-natural-six-before-the-wound-roll
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.spirit-knife
+      characteristics: &a-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: &d-ws3-s3-t3-w3-i2-heavy {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.spectral-touch.armour, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: False, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The dagger profile's printed +1 to the enemy save turns a worn 5+ into a 4+, and the 4 now saves.
+
+- audit_id: mechanic/weapon.spirit-knife
+  id: spirit-knife-improves-a-worn-save-by-one
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.spirit-knife
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: &d-ws3-s3-t3-w2-i2-heavy {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: True, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# An unarmoured target is given the printed 6+ save, and the 5 fails it.
+
+- audit_id: mechanic/weapon.spirit-knife
+  id: spirit-knife-granted-save-fails-one-below
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.spirit-knife
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &d-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

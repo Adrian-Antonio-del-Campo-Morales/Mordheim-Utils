@@ -1,0 +1,65 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/tileans/band--remasen-officer-leadership/unimplemented.tileans.band.remasen-officer-leadership
+# scaffold_fingerprint: 078cd9e93804dddfa30d8ca30ef672fad41db18cb6719fe54263ed0cd9f6a31d
+# authoring_status: PARTIAL
+# authoring_progress: the admitted leadership-characteristic-bonus clause has no authored scenario because the
+#   executor has no datum to observe.  The record carries no effect id ("(not recorded)") and its own note is
+#   explicit that this is a profile-characteristic adjustment rather than a new runtime branch: "the duel must
+#   be given the corrected Leadership value", which means the raised value is an input the builder supplies and
+#   not something the duel resolves.  The band binds the rule as the unexecuted
+#   unimplemented.tileans.band.remasen-officer-leadership, so no compiled-fighter projection raises the printed
+#   Leadership and a tape that hand-supplies nine instead of eight is indistinguishable from one that supplies
+#   the printed value.  Pending: the compiler projection for the three printed recipients (Remas Captain,
+#   Champions and Youngbloods), after which the admission is the compiled Leadership one point above the printed
+#   value with the neighbouring Warriors profile as the control.  Additional evidence for the same gap, re-derived
+#   in the verification pass: the band's variant rule set excludes this row outright -
+#   tests/web/features/campaign/band-variants.test.ts asserts that the tileans variant's rules do not contain
+#   "band--remasen-officer-leadership" - so no recipient profile in that variant carries the identity under test,
+#   independently of the missing bonus projection.  REVIEWED still requires manual semantic
+#   review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: leadership-characteristic-bonus (scope: YES)
+# PARTIAL[leadership-characteristic-bonus]: [CLOSING-REVIEW [C]] no scenario is authorable against the current executor.  The
+#   missing datum is the binding that raises the recipient's supplied Leadership: the record itself reads the
+#   clause as "a flat +1 Leadership to the affected profile, applied at all times" with "no canonical effect id"
+#   for a bare bonus, and the band's own rule row is the unimplemented identity this file names.  Every
+#   candidate tape therefore fails to discriminate the printed rule from its absence, and a scenario that
+#   cannot fail is not evidence.  The two reuse-guidance boundaries the record keeps (three distinct recipient
+#   sets; not a leader aura and not an ally-supplied bonus) are why the Captain, Champions and Youngbloods rows
+#   must each be admitted separately once the projection exists.
+# origin_id:
+#   rule/mordheim/tileans/band--remasen-officer-leadership/unimplemented.tileans.band.remasen-officer-leadership
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/tileans/special-rules.yaml
+# source_fingerprint:
+#   e907f4ebc7fab2a848154c9e94e1b27b7f8c5a30e8729b73878d908677ca02c1
+# source_sha256_at_generation:
+#   608feb39fd31cc8234df20278d7ce5c9aeb15ce9d585fa0adfff1059361f82f6
+# Printed rule text:
+#   The Captain, Champions and Youngbloods in a Remasen warband have +1 Leadership at all times
+# Semantic contract (check analysis_status before treating as accepted):
+#   A flat +1 Leadership to the affected profile, applied at all times. Observable: the Leadership supplied to the duel is one point higher than the printed value.
+# effect_id:
+#   (not recorded)
+# relation:
+#   related
+# parameters:
+#   {"leadership_bonus":1}
+# conditions:
+#   {"trigger":"characteristic always applied","recipient":"Remas Captain, Champions and Youngbloods"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   A profile-characteristic adjustment, not a new runtime branch; the duel must be given the corrected Leadership value. No canonical effect id exists for a bare bonus. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"leadership-characteristic-bonus","audit_group":"EQ-mechanic.leadership-bonus","verified_facet":"mechanic.leadership-bonus","relationship":"shared_facet","boundary":"Share the compiled +1 Leadership characteristic, keeping the three distinct recipient sets. Not a leader aura or a bonus supplied by allies.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+[]  # Empty scenario list: this file contributes no test or coverage.

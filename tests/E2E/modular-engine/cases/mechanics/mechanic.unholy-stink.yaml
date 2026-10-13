@@ -1,0 +1,84 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.unholy-stink
+# scaffold_fingerprint: 06cae404b5c437804d0db81d2a83ca36360fb0cf7aa5247cd9e1c60c96310814
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: unholy-stink (scope: YES)
+# AUTHORED[unholy-stink]: 2 scenarios evidence the printed -1 To Hit for every enemy
+#   and the same face hitting without the rule.
+# origin_id:
+#   mechanic/mechanic.unholy-stink
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   b14bb7b76cf58ca1c3b0d49a2e3b4817f0725e27188a17c2fb9df574f8523f20
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   The Bog hunter is covered in a thick layer of dung, the smell is so distracting that all enemies are at -1 to hit the Bog hunter in close combat.
+# Semantic contract (check analysis_status before treating as accepted):
+#   All enemies suffer -1 To Hit against this warrior in close combat. Observable: the attacker's To-Hit target is one worse.
+# effect_id:
+#   mechanic.unholy-stink
+# relation:
+#   related
+# parameters:
+#   {"hit_modifier":-1}
+# conditions:
+#   {"trigger":"close combat","recipient":"all enemies","duration":"whole duel"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Cross-family To-Hit modifier (block A granularity). Surface reuse candidate: {"family":"mechanic.unholy-stink","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare penalty recipient, melee-only/first-round timing, species/fire exceptions and stacking. A hit penalty is not an armour modifier, and natural six handling remains part of the hit resolver.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+- audit_id: mechanic/mechanic.unholy-stink
+  id: every-enemy-needs-five-to-hit-the-bog-hunter
+  covers: [unholy-stink]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+      skill_ids: [mechanic.unholy-stink]
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: mechanic/mechanic.unholy-stink
+  id: the-same-face-hits-without-the-stench
+  covers: [unholy-stink]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

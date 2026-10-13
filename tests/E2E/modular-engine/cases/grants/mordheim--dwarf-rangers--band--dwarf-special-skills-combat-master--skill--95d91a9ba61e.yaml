@@ -1,0 +1,170 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-combat-master/skill.unbeatable-warrior
+# scaffold_fingerprint: fdfbd2872751624be0e3e36c2c03d7689d0be01129d3022df7c7d7b5410c6e5a
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries four authored scenarios derived from the
+# printed rule, the printed profile and the recorded contract: with a Parry weapon the bearer's parry
+# die equal to the opponent's highest To Hit roll blocks where the same die without the band rule does
+# not, and with two Parry weapons both attacks of the pool are blocked where a single Parry weapon
+# leaves the printed normal maximum of one.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 4 scenario(s) cover the clause: the printed equality of the parry and its absence
+# without the band rule, the second attempt two Parry weapons allow, and the normal maximum of one that
+# a single Parry weapon keeps.  This printing carries no Dwarf Axe reroll sentence, so no reroll
+# facet is asserted here.
+# origin_id:
+#   rule/mordheim/dwarf-rangers/band--dwarf-special-skills-combat-master/skill.unbeatable-warrior
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dwarf-rangers/special-rules.yaml
+# source_fingerprint:
+#   4818c0fcf3421aae5d58cc2ba32b86b12a47dd99f47a1de06fec0d5da3656e9d
+# source_sha256_at_generation:
+#   d777a264de4362ae1b1ae198d5635b010629d1b82186950a5d4a360591eaf6d5
+# Printed rule text:
+#   This Dwarf’s martial skills surpass those of an ormal warrior; he is used to fighting by himself against hordes of opponents and coming through unscathed. When using a weapon that has a Parry special rule, this hero parries successfully if he beats OR MATCHES his opponent’s highest ‘to hit’ roll, not just if he beats the roll. In addition, if this warrior is using two weapons that have the Parry special rule, he is allowed to parry two attacks (if his two dice match or beat the highest two attack dice against him) instead of the normal maximum of one.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Combat Master: with a Parry weapon the hero parries by equalling or beating the highest hit roll, and with two Parry weapons may parry two attacks; observable: an equal roll blocks and two attempts are allowed.
+# effect_id:
+#   skill.unbeatable-warrior
+# relation:
+#   parameterized_variant
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Same behaviour as Master of Blades without the Dwarf Axe reroll sentence; the engine consumes unbeatable-warrior for the equalling rule and the second attempt. Surface reuse candidate: {"family":"skill.unbeatable-warrior","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Family model (Combat Master, Dwarf Rangers printing): the bearer is the printed recipient of this
+# band record, built from its own band and profile and selecting the band row named in the audit id, so
+# the granted effect is what the scenario exercises.  Physical characteristics are supplied as fixture
+# facts (WS3 S3 T3 W2 I2 A1) so the dice thresholds and the strike order are fixed, while the printed
+# Leadership stays in place; the bearer's own attack pool is declared empty so the tape holds only the
+# parry under test.  Every expectation is read from the printed rule (parries when he beats OR MATCHES
+# the opponent's highest To Hit roll; two Parry weapons allow two attacks instead of the normal
+# maximum of one) and the recorded contract, never from engine output; the roll tape is derived
+# statically and stays unexecuted.  The printed rule of this printing has no Dwarf Axe reroll sentence,
+# so no scenario asserts a reroll and every tape holds only successful parry attempts.
+
+# The printed equality: a parry die equal to the declared To Hit four blocks the blow.
+- audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-combat-master/skill.unbeatable-warrior
+  id: an-equal-roll-matches-the-highest-to-hit
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-clansmen
+      special_rule_ids: [band--dwarf-special-skills-combat-master]
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: true, state.second.parries_remaining: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without the band rule the same die no longer matches: the plain parry must beat the roll, so the blow
+# is resolved and wounds.
+- audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-combat-master/skill.unbeatable-warrior
+  id: without-the-band-rule-an-equal-roll-does-not-match
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-clansmen
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: false, attacks.0.damage: 1, state.second.parries_remaining: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed second attempt: two Parry weapons block both attacks of the pool, each die matching or
+# beating its own To Hit roll.
+- audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-combat-master/skill.unbeatable-warrior
+  id: two-parry-weapons-give-two-attempts
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-clansmen
+      special_rule_ids: [band--dwarf-special-skills-combat-master]
+      main_weapon_id: weapon.sword
+      off_hand_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.first.attack.1.parry, value: 5}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.1.parried: true, state.second.parries_remaining: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed boundary "instead of the normal maximum of one": with a single Parry weapon the second
+# attack of the pool is resolved even though the hero carries this rule.
+- audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-combat-master/skill.unbeatable-warrior
+  id: one-parry-weapon-keeps-the-normal-maximum
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 2}
+    second:
+      collection: mordheim
+      band_id: dwarf-rangers
+      profile_id: dwarf-clansmen
+      special_rule_ids: [band--dwarf-special-skills-combat-master]
+      main_weapon_id: weapon.sword
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.first.attack.1.wound, value: 4}
+  expect_rounds:
+    0: {attacks.0.parried: true, attacks.1.parried: false, attacks.1.damage: 1, state.second.parries_remaining: 0, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

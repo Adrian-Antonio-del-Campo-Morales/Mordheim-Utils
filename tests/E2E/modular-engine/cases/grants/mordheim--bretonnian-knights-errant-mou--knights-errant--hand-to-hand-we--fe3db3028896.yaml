@@ -1,0 +1,101 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/bretonnian-knights-errant-mou/knights-errant--hand-to-hand-weapon/profile.equipment-restrictions
+# scaffold_fingerprint: 12fa8f6a22f08b8d584a1f6fc47bfbdbfaa8792d7cc297ac82bf2b8140bff5e1
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: both halves of the required-equipment clause are asserted, and the blocker this
+#   file recorded before ("the duel build never reaches equipmentSetIssues") is false.  The supplied
+#   kit does reach that stage: `compile_fighter` builds the configuration with
+#   `configuration_context(... possession=build.owned_item_ids, slots={...})` and then
+#   `construction_call("validateConstruction", build, facts)` inside the block guarded by
+#   `build.owned_item_ids is not None` (packages/python/roster-construction/mordheim_construction/
+#   compiler.py), and docs/reference/eligibility.md states that an explicit tuple - including an
+#   empty one - invokes that shared final validation during compilation.  The band declares the
+#   binding with `grant: profile`, `implemented: 'YES'`,
+#   `required_kinds: [close-combat-weapon]`, `required_excludes: [weapon.dagger]`
+#   (sources/knowledge/bands/mordheim/bretonnian-knights-errant-mou/special-rules.yaml, rule
+#   knights-errant--hand-to-hand-weapon), and the first scenario's kit is the printed unacceptable
+#   dagger alone, so the stage raises the equipmentSetIssues template verbatim -
+#   `The equipment of bretonnian-knights-errant-mou/knights-errant includes no close-combat-weapon;
+#   the printed clause obliges acquiring one.`  The second scenario owns a sword beside the dagger and
+#   compiles and resolves: the printed purchase obligation is satisfied by any hand-to-hand weapon
+#   other than the simple dagger, which is exactly what required_excludes expresses.  REVIEWED still
+#   requires manual semantic review.
+# origin_id:
+#   rule/mordheim/bretonnian-knights-errant-mou/knights-errant--hand-to-hand-weapon/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/bretonnian-knights-errant-mou/special-rules.yaml
+# source_fingerprint:
+#   5e3d15335bef07694545833e5f666a777928065f0901bfa8de0f480e84d2e3fe
+# source_sha256_at_generation:
+#   63416082c4f9013f2f7c610efdc48b31411f49012ac9021720507057372848f6
+# Printed rule text:
+#   A Knight Errant must buy a weapon from the hand-to-hand combat list; a simple dagger is not acceptable.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Required equipment clause: the Knight Errant must own at least one close-combat weapon other than a dagger.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"required_kinds":["close-combat-weapon"],"required_excludes":["weapon.dagger"]}
+# conditions:
+#   {"recipient":"knights-errant"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Declared by knights-errant--hand-to-hand-weapon; the purchase obligation is what the recorded parameters express, not the weapon used in a given round. Surface reuse candidate: {"family":"CON-EQUIP-REQUIRED","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/mordheim/bretonnian-knights-errant-mou/knights-errant--hand-to-hand-weapon/profile.equipment-restrictions
+  id: knights-errant-owning-only-the-dagger-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-knights-errant-mou
+      profile_id: knights-errant
+      main_weapon_id: weapon.dagger
+      owned_item_ids: [weapon.dagger]
+  expect_error: The equipment of bretonnian-knights-errant-mou/knights-errant includes no close-combat-weapon; the printed clause obliges acquiring one.
+
+- audit_id: rule/mordheim/bretonnian-knights-errant-mou/knights-errant--hand-to-hand-weapon/profile.equipment-restrictions
+  id: knights-errant-owning-a-sword-passes-the-printed-obligation
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-knights-errant-mou
+      profile_id: knights-errant
+      main_weapon_id: weapon.sword
+      owned_item_ids: [sword]
+    second:
+      collection: mordheim
+      band_id: bretonnian-knights-errant-mou
+      profile_id: knights-errant
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

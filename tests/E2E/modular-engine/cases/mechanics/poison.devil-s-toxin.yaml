@@ -1,0 +1,97 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/poison.devil-s-toxin
+# scaffold_fingerprint: 82f1f0c870d5519441354174470385e8b3d77bfa774c94b7f561b0129e1ef002
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries authored scenarios derived from the printed rule; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios show the failed wound die taken again (a 4 that
+#   succeeds) and the second roll of 6 that still cannot be a critical.
+# origin_id:
+#   mechanic/poison.devil-s-toxin
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   9c2081fce41afc3ebf920b86ad4215b4d39f23cf9da55397880952dbebb66c2c
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Re-rolls failed wound rolls; the re-roll cannot cause a critical hit.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Failed wound rolls are re-rolled and the re-roll cannot cause a critical hit. Closure: a failed To Wound roll is taken again once and a successful re-roll counts as an ordinary wound whatever the die shows.
+# effect_id:
+#   poison.devil-s-toxin
+# relation:
+#   equivalent
+# parameters:
+#   {"critical_on_reroll": false, "reroll_wounds": true}
+# conditions:
+#   {"trigger": "failed wound roll"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The contract carries reroll_wounds, and the critical operator receives critical_on_reroll=False for this poison, which is the printed exclusion of a critical from the second roll.
+
+# --- Authored scenarios ---
+# mechanic/poison.devil-s-toxin - authored from the printed rule and the
+# admitted `whole` clause, never from engine output.
+# The re-roll repeats the same target; the second result is accepted whatever it
+# shows and can never set the critical.
+- audit_id: mechanic/poison.devil-s-toxin
+  id: a-failed-wound-roll-is-taken-again
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.devil-s-toxin
+      characteristics: &dt-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &dt-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &dt-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.wound.reroll, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# mechanic/poison.devil-s-toxin - authored from the printed rule and the
+# admitted `whole` clause, never from engine output.
+# The re-roll repeats the same target; the second result is accepted whatever it
+# shows and can never set the critical.
+- audit_id: mechanic/poison.devil-s-toxin
+  id: the-second-roll-of-six-cannot-be-a-critical
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.devil-s-toxin
+      characteristics: *dt-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *dt-defender
+  duel_context: *dt-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.first.attack.0.wound.reroll, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

@@ -1,0 +1,156 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-vampire-reflexes/skill.vampire-reflexes
+# scaffold_fingerprint: 217038bf04696ccc030480156222fd5b489e50a9098d01054c2831dadf59ce38
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses now carry authored scenarios mirroring the canonical
+#   cases/mechanics/skill.vampire-reflexes.yaml tape and its accepted catalog twin
+#   (catalog--warband--skill.vampire-reflexes--skill.vampire-reflexes--0d66efd871b0.yaml): the unmodifiable
+#   6+ save holds at its threshold and fails on a face below it, and the same save holds on a four when Step
+#   Aside is held alongside it.  The improved threshold is declared through the fixture's own ward trait, so
+#   the residual is engine-side and is recorded as Documented difference (AUTHORED vs implementation): every representable face of the clause has a written scenario, so AUTHORED is the correct header; what stays pending is the motor side [B] - see the clause body below for the unconnected binding.  REVIEWED still requires
+#   manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: combines-with-step-aside-to-four (scope: YES)
+# AUTHORED[combines-with-step-aside-to-four]: 1 scenario takes the printed improvement to 4+ onto the
+#   bearer: with skill.step-aside held alongside the rule the special ward is declared at four, blocks the
+#   wound and leaves the bearer standing, exactly as the accepted catalog twin of this same skill does.
+#   Documented difference (AUTHORED vs implementation): every representable face of the clause has a written scenario, so AUTHORED is the correct header; what stays pending is the motor side [B]: the engine-side lowering of the ward to four when the band row and Step Aside are both
+#   present: the improvement is declared here as the fixture's own ward trait, so this file evidences the
+#   printed outcome, not the combination logic that produces it.
+# origin_id:
+#   rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-vampire-reflexes/skill.vampire-reflexes
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-lahmian-brotherhood/special-rules.yaml
+# source_fingerprint:
+#   670488b79287703c03c39661363eaad3e143a1b7c22e8cb74f16f008bdba7c4b
+# source_sha256_at_generation:
+#   b916cfbc1207fa7a28fd5b0c3cbced9ab169559d0f51326fcf084c55213dd7b8
+# Printed rule text:
+#   The Vampire has an unmodifiable 6+ save against any Wound. If an attack causes multiple Wounds, make this save before multiplying the Wounds. This ability may be combined with Step Aside or Dodge to improve the save to 4+.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Combined with Step Aside or Dodge the save improves to 4+; observable: a 4+ special save when both are present.
+# effect_id:
+#   skill.vampire-reflexes
+# relation:
+#   equivalent
+# parameters:
+#   {"improved":4}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed by lowering the ward to 4 when Step Aside and this skill are both present, one point better than the ordinary Step Aside improvement. Surface reuse candidate: {"family":"T-WARD","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: six-plus-unmodifiable-save (scope: YES)
+# AUTHORED[six-plus-unmodifiable-save]: 2 scenarios take the printed unmodifiable 6+ save against any
+#   Wound onto the bearer: a declared six stops the wound (saved, no damage, the bearer keeps its Wounds) and
+#   a five does not, both read at the attack's own special-save key after the wound.  REVIEWED still requires
+#   manual semantic review.
+# origin_id:
+#   rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-vampire-reflexes/skill.vampire-reflexes
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-lahmian-brotherhood/special-rules.yaml
+# source_fingerprint:
+#   670488b79287703c03c39661363eaad3e143a1b7c22e8cb74f16f008bdba7c4b
+# source_sha256_at_generation:
+#   b916cfbc1207fa7a28fd5b0c3cbced9ab169559d0f51326fcf084c55213dd7b8
+# Printed rule text:
+#   The Vampire has an unmodifiable 6+ save against any Wound. If an attack causes multiple Wounds, make this save before multiplying the Wounds. This ability may be combined with Step Aside or Dodge to improve the save to 4+.
+# Semantic contract (check analysis_status before treating as accepted):
+#   An unmodifiable 6+ save against any Wound, made before multiple Wounds are multiplied; observable: a 6+ special save after armour.
+# effect_id:
+#   skill.vampire-reflexes
+# relation:
+#   equivalent
+# parameters:
+#   {"ward_save":6}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#    Surface reuse candidate: {"family":"T-WARD","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the accepted catalog twin of the same skill; no
+# engine output was consulted.  The bearer is a hand-built fixture carrying the printed rule, the attacker
+# is the fixture whose mace the save faces, and the save is read at the attack's own special-save key.
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-vampire-reflexes/skill.vampire-reflexes
+  id: the-six-plus-save-holds-at-the-threshold
+  covers: [six-plus-unmodifiable-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.vampire-reflexes]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: True, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-vampire-reflexes/skill.vampire-reflexes
+  id: a-face-below-the-six-plus-save-fails
+  covers: [six-plus-unmodifiable-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.vampire-reflexes]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-lahmian-brotherhood/band--lahmian-special-skills-vampire-reflexes/skill.vampire-reflexes
+  id: step-aside-improves-the-save-to-four
+  covers: [combines-with-step-aside-to-four]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.vampire-reflexes, skill.step-aside]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.special.ward, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: True, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

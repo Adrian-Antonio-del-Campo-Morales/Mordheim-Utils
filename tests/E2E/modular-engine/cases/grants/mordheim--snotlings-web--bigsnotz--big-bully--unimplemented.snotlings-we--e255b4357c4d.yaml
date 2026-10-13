@@ -1,0 +1,108 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/snotlings-web/bigsnotz--big-bully/unimplemented.snotlings-web.special.big-bully
+# scaffold_fingerprint: c05c1e115728cbfdfe379c3e03b2e71d7a0d4d60c8abc158df895bc87f8d91c2
+# authoring_status: PARTIAL
+# authoring_progress: the admitted whole clause now carries 2 authored scenarios for its printed
+# incompatibility term (the refusal of a BigSnot that also carries Frustratingly Tiny, and the accepted
+# control that carries Big Bully alone), derived from the printed sentence and the shared eligibility stage.
+# The blocker recorded here previously was FALSE and is corrected: packages/python/roster-construction/
+# mordheim_construction/_eligibility.js::specialRuleRestriction carries the literal refusal
+# `Frustratingly Tiny cannot be combined with Big Bully` for exactly this pair of rule ids, and the E2E
+# runner reaches that stage through the same construction path the sibling refusals in this directory use.
+# The remaining two printed consequences - the immediate grant of one Strength skill and the once-only
+# limit - are advancement couplings with no duel observation and stay pending below.  execution_status
+# stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [E] the two remaining printed consequences are excluded by accepted scope rather than
+# unwritten: (a) the immediate grant of ONE Strength skill is a skill-selection/advancement coupling whose
+# only recorded enforcement lives in the advancement layer, and (b) the once-only limit on this skill is
+# likewise advancement scope with no construction field in the corpus vocabulary - both are the campaign
+# progression concerns the register excludes from the 1v1 duel.  The incompatible-pair refusal
+# (Frustratingly Tiny cannot be combined with Big Bully) IS authored below.  The printed term "Cannot be combined with the skill 'Frustratingly Tiny'" is now
+# evidenced (2 scenarios); the other two printed consequences stay pending with their exact missing
+# representation.  Evidence: _eligibility.js::specialRuleRestriction returns the literal string
+# "Frustratingly Tiny cannot be combined with Big Bully" when either rule of the printed pair is declared
+# together with the other, and the KB row bigsnotz--big-bully is applicable to the bigsnotz profile, so a
+# band build of that profile declaring both ids is refused while the same build declaring Big Bully alone
+# constructs and fights.  Still pending: (a) the printed immediate grant of ONE Strength skill - a
+# skill-selection/advancement coupling whose only recorded enforcement is the advancement layer, and no
+# duel observation exists for it; (b) the printed once-only limit on this skill - likewise advancement
+# scope with no construction field in the corpus vocabulary.  Neither is asserted from an unobservable
+# reading.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/snotlings-web/bigsnotz--big-bully/unimplemented.snotlings-web.special.big-bully
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/snotlings-web/special-rules.yaml
+# source_fingerprint:
+#   77d8e5ba1741a2b75c2dd5b9310eae6cadb26616ebcecb95911a0577c9203bf6
+# source_sha256_at_generation:
+#   7dc940a3784763fc2a3788f764bbbebc42aa05d316da3cf38a6a037564a7415b
+# Printed rule text:
+#   (BigSnotz only) The BigSnot is immensely big and strong, especially by Snotling standards. The BigSnot immediately learns ONE Strength Skill. A BigSnot may only take this skill once each. Cannot be combined with the skill "Frustratingly Tiny".
+# Semantic contract (check analysis_status before treating as accepted):
+#   The BigSnot's immediate grant of one Strength skill, the once-only limit, the BigSnotz recipient and the printed incompatibility with Frustratingly Tiny are all construction and legal-combination consequences of that bearer. Printed clause: (BigSnotz only) The BigSnot is immensely big and strong, especially by Snotling standards. The BigSnot immediately learns ONE Strength Skill. A BigSnot may only take this skill once each. Cannot be combined with the skill "Frustratingly Tiny".
+# effect_id:
+#   (not recorded)
+# relation:
+#   unresolved
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Excluded by scope: the clause selects an advancement skill and constrains its combination; the Strength skills themselves are analysed from their own origins. The printed once-only and incompatibility terms are preserved here rather than silently applied. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"matched","review_status":"reviewed","scope_reason":"The BigSnot's immediate grant of one Strength skill, the once-only limit, the BigSnotz recipient and the printed incompatibility with Frustratingly Tiny are all construction and legal-combination consequences of that bearer.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The BigSnot immediately learns one Strength skill, may only take this skill once and cannot combine it with the Frustratingly Tiny skill. Closure: unmodelled while skill selection and advancement stay in the campaign layer.","effect_id":"","relation":"equivalent","parameters":"{}","conditions":"{\"subsystem\": \"advancement / skill access\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A07d-excluded-band-rules","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"(BigSnotz only) The BigSnot is immensely big and strong, especially by Snotling standards. The BigSnot immediately learns ONE Strength Skill. A BigSnot may only take this skill once each. Cannot be combined with the skill \"Frustratingly Tiny\".","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."} Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The printed incompatibility, asserted through the shared eligibility stage's own literal refusal
+# for this pair of rule ids.
+- audit_id: rule/mordheim/snotlings-web/bigsnotz--big-bully/unimplemented.snotlings-web.special.big-bully
+  id: a-bigsnot-carrying-both-printed-skills-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      special_rule_ids: [bigsnotz--big-bully, bullied-goblin--frustratingly-tiny]
+  expect_error: Frustratingly Tiny cannot be combined with Big Bully
+
+# Accepted control: the same printed bearer with Big Bully alone constructs and fights, so the
+# refusal above belongs to the printed pairing and not to the rule itself.
+- audit_id: rule/mordheim/snotlings-web/bigsnotz--big-bully/unimplemented.snotlings-web.special.big-bully
+  id: the-bigsnot-with-big-bully-alone-constructs-and-fights
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: bigsnotz
+      special_rule_ids: [bigsnotz--big-bully]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 2, strength: 2, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 5}
+    second:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: snotling-mobs
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 2, strength: 2, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 5}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

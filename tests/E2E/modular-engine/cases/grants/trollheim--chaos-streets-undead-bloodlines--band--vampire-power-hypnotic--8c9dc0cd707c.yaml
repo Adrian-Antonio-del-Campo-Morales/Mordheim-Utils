@@ -1,0 +1,130 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--vampire-power-hypnotic-gaze/unimplemented.band-vampire-power-hypnotic-gaze
+# scaffold_fingerprint: 84bf30ee105807f82644f84315765bcc45695672c7385b200956febb83ba0993
+# authoring_status: AUTHORED
+# authoring_progress: the admitted hypnotic-gaze clause carries 3 authored scenarios derived from the printed
+#   sentence and the modular consumer.  The blocker recorded here previously was FALSE and is corrected: the
+#   consumer exists - packages/python/combat-engine/mordheim_combat/modular/rounds.py declares
+#   ControlPower("mechanic.hypnotic-gaze", ("mechanic.psychology-immunity",), "hypnotic-gaze",
+#   own_value_only=True, auto_hit=True) in CONTROL_POWERS, resolve_round runs it once per round at the key
+#   round.<round>.<label>.hypnotic-gaze (its Leadership test rolls .0 and .1), the tested opponent is the
+#   duel opponent, and packages/python/.../tests/python/combat/modular/test_t13_control_family.py already
+#   witnesses the same consumer (bar plus automatic hits, and the Psychology-immune exemption).  The tapes
+#   derive the opponent's own Leadership (own_value_only) and assert the bar, the automatic hit, the
+#   Psychology-immune exemption and the absence of the gate without the power.  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: hypnotic-gaze (scope: YES)
+# AUTHORED[hypnotic-gaze]: 3 scenarios cover the printed charm.  The register's "new branch is needed" was
+#   not correct for this source: the CONTROL_POWERS table implements exactly this idiom (own-value-only test,
+#   the target barred, attacks against it automatic, Psychology-immune models spared), and the key is
+#   round.<round>.<label>.hypnotic-gaze.  Scenario 1 declares a failed two-die Leadership test against the
+#   target's own printed value and shows the target barred, its attack absent and the gazer's attack hitting
+#   without a To Hit die (the armour/To Wound dice are the only dice the tape carries).  Scenario 2 supplies
+#   the printed Psychology exemption and shows the target untouched and its own attack resolved normally.
+#   Scenario 3 is the negative control: without the power the identical configuration asks for no test at
+#   all.  The band row itself only names and binds this power, so the bearer is the fixture carrying the
+#   canonical tag and no second runtime term is claimed.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/chaos-streets-undead-bloodlines/band--vampire-power-hypnotic-gaze/unimplemented.band-vampire-power-hypnotic-gaze
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-undead-bloodlines/special-rules.yaml
+# source_fingerprint:
+#   14e1d7bf01e89e59ee6e25b546a0d6a299bee3b7af82ddc71ddfa7a2e13c7e34
+# source_sha256_at_generation:
+#   aaa7750bfbf16797ddd93878e0cd88fd550a10fdd09818c2cdb767f9356d47d2
+# Printed rule text:
+#   Once per turn, one enemy in base contact must pass a Leadership test using its own Leadership, not the leader's. If it fails, it may not attack that turn and all attacks against it hit automatically. Models immune to Psychology are unaffected.
+# Semantic contract (check analysis_status before treating as accepted):
+#   A charm-style effect: an opposing warrior must pass a Leadership test or is barred from attacking this warrior that round. Observable: a failed test blocks the opponent's attacks this round.
+# effect_id:
+#   (not recorded)
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"start of the combat phase against a supplied eligible opponent","resolution":"opponent Leadership test","recipient":"the opposing warrior","exceptions":"Undead, daemons/possessed and Psychology-immune models are unaffected"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Charm/control effect in the family of rounds.resolve_round's entranced branch, but the specific target qualification and the effect on the charm source differ (some are once-per-turn, some use the target's own Leadership only); a new branch is needed. The exact source-specific parameters are noted in the origin text and are not fully captured by an existing branch. Surface reuse candidate: {"family":"opponent-leadership-charge-or-contact-gates","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Distinct source variants: a charge gate, inability to attack, automatic hits, +1 To Hit and opponent control are not equivalent. Compare target sex/species, Psychology immunity, who tests, test frequency and exact failure consequence. The Sea Singer contract cannot supply values for Lahmia or Charismatic.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The gazer bars the target for the round and every attack against the barred target hits
+# automatically, so the gazer's own attack asks for no To Hit die: the only attack die declared
+# is its To Wound roll, which fails and leaves the target unharmed and Standing.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--vampire-power-hypnotic-gaze/unimplemented.band-vampire-power-hypnotic-gaze
+  id: a-failed-gaze-test-bars-the-target-and-makes-attacks-hit-automatically
+  covers: [hypnotic-gaze]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hypnotic-gaze]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.hypnotic-gaze.0, value: 6}
+    - {key: round.0.second.hypnotic-gaze.1, value: 6}
+    - {key: round.0.first.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, state.second.charm_attack_blocked: true, state.second.charm_auto_hit: true, state.second.condition: STANDING, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed exemption: "Models immune to Psychology are unaffected", so the target asks for
+# no gaze die at all - the strict tape carries none - and its own attack is resolved normally.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--vampire-power-hypnotic-gaze/unimplemented.band-vampire-power-hypnotic-gaze
+  id: a-psychology-immune-target-skips-the-gaze
+  covers: [hypnotic-gaze]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.hypnotic-gaze]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.psychology-immunity]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Negative control: the gate belongs to the power, not to contact alone.  Without the tag the
+# identical configuration requests no Leadership test and blocks nothing.
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/band--vampire-power-hypnotic-gaze/unimplemented.band-vampire-power-hypnotic-gaze
+  id: without-the-gaze-no-test-is-requested
+  covers: [hypnotic-gaze]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.charm_attack_blocked: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

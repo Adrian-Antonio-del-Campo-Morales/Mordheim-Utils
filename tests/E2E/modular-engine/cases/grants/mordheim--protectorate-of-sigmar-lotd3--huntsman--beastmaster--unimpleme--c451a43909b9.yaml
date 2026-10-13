@@ -1,0 +1,107 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/huntsman--beastmaster/unimplemented.protectorate-of-sigmar-lotd3.huntsman.beastmaster
+# scaffold_fingerprint: f67327abb584e73d29206643b1300b0a227cb6128f54649fb0fdc2c7d0f9bd8d
+# authoring_status: AUTHORED
+# authoring_progress: the admitted handler-leadership clause carries two authored scenarios derived
+# from the printed rule and the recorded contract: the supplied handler value is the one tested, and
+# without a supplied value the animal's own Leadership is tested instead.  The printed 6-inch
+# eligibility of the Huntsman and the prohibition on ordinary leader borrowing are caller-supplied
+# facts the executor does not model (the canonical effect's own record documents that gap), so they
+# are recorded here rather than asserted.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: handler-leadership (scope: YES)
+# AUTHORED[handler-leadership]: 2 scenarios cover the printed substitution: with the Huntsman's own
+# value supplied the animal tests 8 against it and the charge and its attack stand, while without a
+# supplied value the same 8 is tested against the animal's own Leadership 3 and fails, so the charge
+# is cancelled and no attack is resolved.  The animal's own Leadership 3 is a fixture fact and the
+# supplied handler value 8 is the supplied projection the effect's record names
+# (leadership.resolve_local_leadership reads `stupidity_leadership` and blocks leader borrowing for
+# handler-only warriors).  The printed 6-inch range of the Huntsman and the second printed sentence
+# (a hostile beast must pass a Leadership test to charge the Huntsman) are not asserted: the range is
+# a caller-supplied fact the executor does not model, and the charge-denial sentence is a separate
+# consequence with no consumer in this vocabulary.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/protectorate-of-sigmar-lotd3/huntsman--beastmaster/unimplemented.protectorate-of-sigmar-lotd3.huntsman.beastmaster
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/protectorate-of-sigmar-lotd3/special-rules.yaml
+# source_fingerprint:
+#   7f267078385ff963aedf5ec7048065a288c7e926384db81004607b58591438aa
+# source_sha256_at_generation:
+#   06d57ecdbee0d0cfffc39a30d09ff61277a030d7fb09fae549f7fe1c0ef73898
+# Printed rule text:
+#   A Huntsman is naturally attuned to the earth and beasts around him. Any animal in the warband may use the Huntsman Leadership characteristic if it is within 6 inches of him. Any hostile beast must make a successful Ld Test to charge the Huntsman.
+# Semantic contract (check analysis_status before treating as accepted):
+#   This animal may use the supplied handler's Leadership within the source range, and not the warband leader's. Observable: the test uses the handler's value.
+# effect_id:
+#   mechanic.handler-leadership
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"an animal Leadership test","exceptions":"no ordinary leader borrowing"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Handler-only Leadership for an animal profile. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Surface reuse candidate: {"family":"mechanic.handler-leadership","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The animal's own printed Leadership 3 would fail a total of eight, but the supplied
+# handler value 8 is the one tested, so the charge and its attack stand.
+- audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/huntsman--beastmaster/unimplemented.protectorate-of-sigmar-lotd3.huntsman.beastmaster
+  id: the-supplied-handler-value-is-the-one-tested
+  covers: [handler-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.handler-leadership]
+      trait_overrides: {stupidity: true, stupidity_leadership: 8}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Without a handler value supplied the same eight is tested against the animal's own
+# Leadership 3 and fails, so the charge is cancelled and no attack is resolved.
+- audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/huntsman--beastmaster/unimplemented.protectorate-of-sigmar-lotd3.huntsman.beastmaster
+  id: without-a-handler-value-the-own-leadership-is-tested
+  covers: [handler-leadership]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.handler-leadership]
+      trait_overrides: {stupidity: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 3}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: True, state.first_charged: False, state.engaged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+

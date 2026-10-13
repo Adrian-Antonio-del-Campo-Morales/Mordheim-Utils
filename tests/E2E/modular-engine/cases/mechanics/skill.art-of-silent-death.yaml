@@ -1,0 +1,240 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.art-of-silent-death
+# scaffold_fingerprint: 08516db5a36b7db4581e4763a304a950b440e0078253049da010f4bb10e7538c
+# authoring_status: AUTHORED
+# authoring_progress: the three admitted clauses carry authored scenarios derived from the printed rule and the recorded contract, each paired with the same configuration without the skill; the fighting-claws clause is evidenced by the pool size the paired profile adds on top of the skill's own attack. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: critical-5-6 (scope: YES)
+# AUTHORED[critical-5-6]: 2 scenarios cover a To Wound five scoring a critical with the skill (two points of damage) and the same five staying an ordinary wound without it.
+# origin_id:
+#   mechanic/skill.art-of-silent-death
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   970dbf1364fcb48081c4ee077f99048238383440f25124cc7dc1ca5dcd7c86b5
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   In close combat, it scores a critical hit on a 'to wound' roll of 5-6 instead of only 6.
+# Semantic contract (check analysis_status before treating as accepted):
+#   In close combat a To Wound roll of 5 or 6 is a critical wound instead of only 6. Closure: the wound context sets the critical threshold to 5 while the bearer has the skill tag, and the ordinary target < 6 guard still applies.
+# effect_id:
+#   skill.art-of-silent-death
+# relation:
+#   equivalent
+# parameters:
+#   {"critical_threshold": 5}
+# conditions:
+#   {"trigger": "close combat"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   prepare_wound_context lowers the threshold to 5 whenever the skill tag is present. Unlike the adjacent unarmed-critical-strikes term, which additionally requires weapon.fist, the art-of-silent-death term carries no fist/claw guard, so the improvement reaches any close-combat weapon. That matches the printed "in close combat" wording, and the fist-only guard that belongs to the separate skill is not claimed here. Surface reuse candidate: {"family":"skill.art-of-silent-death","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: fighting-claws-second-attack (scope: YES)
+# AUTHORED[fighting-claws-second-attack]: 2 scenarios cover the paired Fighting Claws pool carrying three attacks with the skill and two with the same claws alone.
+# origin_id:
+#   mechanic/skill.art-of-silent-death
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   970dbf1364fcb48081c4ee077f99048238383440f25124cc7dc1ca5dcd7c86b5
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   When combined with Eshin Fighting Claws, this grants +2 Attacks instead of +1.
+# Semantic contract (check analysis_status before treating as accepted):
+#   With Eshin Fighting Claws the skill contributes two attacks rather than one. Closure: the pool built with fighting claws carries one further attack than the same pool built with fists.
+# effect_id:
+#   skill.art-of-silent-death
+# relation:
+#   related
+# parameters:
+#   {"attacks_bonus": 2, "weapon_scope": ["weapon.fighting-claws"]}
+# conditions:
+#   {"weapon_scope": ["weapon.fighting-claws"]}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The claw closing condition is met. build_attacks adds the same single skill attack for fists and for fighting claws, and the paired fighting-claw profile supplies the further attack through extra_weapon_attack, so the claw pool ends one attack higher. An isolated probe with Attacks 1 gave two fist attacks and three claw attacks (controls one and two), one further with claws. The earlier note that called this a claw-specific behaviour gap read only the +1 branch and ignored the paired contribution. Surface reuse candidate: {"family":"skill.art-of-silent-death","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: unarmed-penalty-and-extra-attack (scope: YES)
+# AUTHORED[unarmed-penalty-and-extra-attack]: 2 scenarios cover a bare fist carrying two attacks with the skill and the single clamped attack the same fist carries without it.
+# origin_id:
+#   mechanic/skill.art-of-silent-death
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   970dbf1364fcb48081c4ee077f99048238383440f25124cc7dc1ca5dcd7c86b5
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   The Hero may fight with bare claws without penalty and counts as using two close-combat weapons, gaining +1 Attack. In close combat, it scores a critical hit on a 'to wound' roll of 5-6 instead of only 6. When combined with Eshin Fighting Claws, this grants +2 Attacks instead of +1.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Hero may fight with bare claws or feet without penalty and counts as using two close-combat weapons, gaining +1 Attack. Closure: with a fist or fighting claws as the main weapon the unarmed penalty is waived and the pool carries one extra attack.
+# effect_id:
+#   skill.art-of-silent-death
+# relation:
+#   equivalent
+# parameters:
+#   {"attacks_bonus": 1, "counts_as": "two close-combat weapons", "unarmed_penalties": false}
+# conditions:
+#   {"trigger": "fighting unarmed", "weapon_scope": ["weapon.fist", "weapon.fighting-claws"]}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Split from the former aggregate whole row so the three independently resolved consequences stand alone. ignores_unarmed_penalties lists the skill tag and build_attacks adds +1 when the main weapon is a fist or fighting claws, so the unarmed penalty waiver and the extra attack are delivered for both profiles. Surface reuse candidate: {"family":"skill.art-of-silent-death","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the individual clause and current active contract. Distinguish dance choices; parry enablement, equality, rerolls and extra attempts; and fists/claws count or critical facets. Sharing preparation/state machinery is not sharing the entire combined rule.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# The three admitted clauses are resolved one at a time, each with the same
+# configuration repeated without the skill as its control, because the printed
+# sentence claims an improvement over the ordinary rule and the improvement is
+# only observable against that ordinary rule.  The engine's contribution of the
+# skill in an attack pool is one further attack plus a lower critical threshold,
+# and the paired property of the Fighting Claws profile is what the second
+# clause adds on top of it; the counts below are derived from the printed
+# "+1 Attack"/"+2 Attacks instead of +1" and from the claw profile's printed
+# "gets an additional attack".
+#
+# Clause critical-5-6: with the skill a To Wound five is a critical wound.
+- audit_id: mechanic/skill.art-of-silent-death
+  id: art-of-silent-death-a-five-is-a-critical
+  covers: [critical-5-6]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.art-of-silent-death]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.critical, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: True, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same five against the same profile without the skill: the ordinary
+# threshold of six applies, so the wound is not a critical.
+- audit_id: mechanic/skill.art-of-silent-death
+  id: art-of-silent-death-a-five-without-the-skill
+  covers: [critical-5-6]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: False, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Clause unarmed-penalty-and-extra-attack: bare fists carry the extra attack.
+# Every attack is scripted as a miss so the pool size is the only difference;
+# the third and fourth outcomes belong to the defender's single attack.
+- audit_id: mechanic/skill.art-of-silent-death
+  id: art-of-silent-death-bare-fists-gain-an-attack
+  covers: [unarmed-penalty-and-extra-attack]
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      skill_ids: [skill.art-of-silent-death]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, attacks.2.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same fist without the skill keeps one attack.
+- audit_id: mechanic/skill.art-of-silent-death
+  id: art-of-silent-death-bare-fists-without-the-skill
+  covers: [unarmed-penalty-and-extra-attack]
+  fighters:
+    first:
+      main_weapon_id: weapon.fist
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Clause fighting-claws-second-attack: the paired claw profile supplies one
+# further attack, so with the skill the pool carries three and alone two.  The
+# extra outcome asserted here is the defender's own single attack.
+- audit_id: mechanic/skill.art-of-silent-death
+  id: art-of-silent-death-fighting-claws-gain-a-second-bonus-attack
+  covers: [fighting-claws-second-attack]
+  fighters:
+    first:
+      main_weapon_id: weapon.fighting-claws
+      skill_ids: [skill.art-of-silent-death]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.2.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, attacks.2.hit: False, attacks.3.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: mechanic/skill.art-of-silent-death
+  id: art-of-silent-death-fighting-claws-without-the-skill
+  covers: [fighting-claws-second-attack]
+  fighters:
+    first:
+      main_weapon_id: weapon.fighting-claws
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, attacks.2.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

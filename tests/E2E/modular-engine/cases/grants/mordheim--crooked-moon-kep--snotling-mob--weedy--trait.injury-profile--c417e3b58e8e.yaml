@@ -1,0 +1,101 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/crooked-moon-kep/snotling-mob--weedy/trait.injury-profile
+# scaffold_fingerprint: 8303a424f91c95c41db81dbe58d317c91cd0ecc197ddf24772d38c6e6c2ff74e
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries authored scenarios derived from the printed
+# sentence, the recorded contract (injury profile 1) and the printed profile.  The bearer is the
+# profile build mordheim/crooked-moon-kep/snotling-mob, which prints Weedy; it starts at one Wound
+# and contributes no attacks, so a single unsaved wound reaches the injury table and the die is the
+# only thing that decides the condition.  A 2 stuns it and a 4 takes it out; on the normal table the
+# same two faces would knock it down and merely stun it, so the pair isolates the printed ladder.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios show the printed ladder face by face: a 2 leaves the bearer Stunned
+#   and a 4 takes it Out of Action, where the normal table would have knocked it down and stunned it.
+# origin_id:
+#   rule/mordheim/crooked-moon-kep/snotling-mob--weedy/trait.injury-profile
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/crooked-moon-kep/special-rules.yaml
+# source_fingerprint:
+#   25dc80e2d8dd0ddfafb43de0034060d473d0d93f31eedabb38ac56b71b9303cc
+# source_sha256_at_generation:
+#   b4c792c5bc3ab074e3780a036b5af795eae3bf1eb8b75035fc31d4764deec7d6
+# Printed rule text:
+#   Snotlings are not the most robust of creatures. If wounded they will be knocked down on a 1, stunned on a 2-3 and go out of action on a 4-6.
+# Semantic contract (check analysis_status before treating as accepted):
+#   When wounded the Snotling is knocked down on a 1, stunned on 2-3 and out of action on 4-6; observable: an injury total of 4 ends the fighter and 2 stuns it.
+# effect_id:
+#   trait.injury-profile
+# relation:
+#   equivalent
+# parameters:
+#   {"profile":1}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   injury_condition profile 1 branch (out at 4+, stunned at 2-3) matches the printed ladder exactly. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Weedy re-maps the bearer's injury ladder (knocked down on 1, stunned 2-3, out 4-6): individual injury consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"T-INJURY-PROFILE","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the entire printed chart or reaction, received versus inflicted injury, initial condition, exceptions and timing. Reroll, ignore-result roll, wound multiplication and ignition threshold are different effects; do not copy a generic chart or combine them by name.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed sentence, the recorded contract and the printed profile; no engine output
+# was consulted.  The bearer prints the rule, starts the duel at one Wound and contributes no attacks
+# of its own (initial_state), so round 0 carries only the attacker's dice and the wound that lands is
+# the one that reaches the injury table.  The blow is an ordinary mace: at Weapon Skill 10 against
+# Weapon Skill 2 it needs a 3, and Strength 8 against Toughness 2 needs a 2, so the declared 5 and 5
+# both pass.  Five is deliberately below a natural six, which would be a critical hit and add a
+# further critical die and an injury modifier.  An unarmoured bearer keeps the armour step and, with
+# no ward, the wound goes straight to damage; a single point of damage at one Wound leaves the
+# injury die as the only undeclared input, so the strict tape also proves no further die is consumed.
+
+- audit_id: rule/mordheim/crooked-moon-kep/snotling-mob--weedy/trait.injury-profile
+  id: a-two-on-the-printed-ladder-stuns-the-bearer
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: crooked-moon-kep, profile_id: snotling-mob}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {attacks.0.wounded: True, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed 4-6 band: the same bearer is taken Out of Action where the normal table would only
+# have stunned it.
+
+- audit_id: rule/mordheim/crooked-moon-kep/snotling-mob--weedy/trait.injury-profile
+  id: a-four-on-the-printed-ladder-takes-the-bearer-out
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 8, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: mordheim, band_id: crooked-moon-kep, profile_id: snotling-mob}
+  initial_state: {second: {wounds: 1, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+  expect_rounds:
+    0: {attacks.0.wounded: True, state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}

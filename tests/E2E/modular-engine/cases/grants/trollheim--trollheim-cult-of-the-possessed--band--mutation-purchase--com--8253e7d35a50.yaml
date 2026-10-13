@@ -1,0 +1,89 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutation-purchase/compiler.mutation-purchase-at-recruitment
+# scaffold_fingerprint: f65ab4dbf9c39bcdbb23e16d0c073cc859bb1b54e0f758c6a730bf80b4fe56c1
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: [].  The diagnostic the earlier note called missing is the shared stage's own `initialChoices` template for this contract (packages/python/roster-construction/mordheim_construction/_eligibility.js: `mutations are available only to Mutants and the Possessed: ${band}/${profile}`), so the printed recipients are evidenced without inventing a message.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios evidence the printed recipient bound on the construction route the record names. A build of a line the printed sentence does not name (brethren) that carries a mutation row is refused with the shared stage's diagnostic `mutations are available only to Mutants and the Possessed: trollheim-cult-of-the-possessed/brethren`, while the printed recipient (mutants) carrying the same mutation row is accepted at construction - the negative control that keeps the message attributable to the recipient bound rather than to the mutation itself. The campaign timing of the purchase (later additions, costs) stays excluded as the register records.
+# origin_id:
+#   rule/trollheim/trollheim-cult-of-the-possessed/band--mutation-purchase/compiler.mutation-purchase-at-recruitment
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/trollheim-cult-of-the-possessed/special-rules.yaml
+# source_fingerprint:
+#   5216cd832746114899685a1a30ce99f7c3487f49d92469070e29e028055e5ab6
+# source_sha256_at_generation:
+#   3f3cf34fc9139fe856d2d8fdf26aef5a8f7f4ec5301f7a9accdfaab17c697bc9
+# Printed rule text:
+#   Mutations may be purchased for a Mutant or The Possessed only when that model is recruited.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Recruitment timing: mutations may be bought only at recruitment for a Mutant or Possessed; costs and later history are campaign.
+# effect_id:
+#   compiler.mutation-purchase-at-recruitment
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"recipients":["mutants","possessed"],"timing":"recruitment"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The profile-specific one-or-two limit for initial Possessed recruitment is a separate origin.
+
+# --- Authored scenarios ---
+# The mutation row is the same in both tapes, so the recipient identity is the only difference; the
+# refusal fragment is the shared stage's own template for this contract, quoted with this origin's
+# recipient.
+
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutation-purchase/compiler.mutation-purchase-at-recruitment
+  id: a-line-outside-the-printed-recipients-cannot-carry-a-mutation
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: brethren
+      special_rule_ids:
+      - band--mutations-extra-arm
+  expect_error: 'mutations are available only to Mutants and the Possessed: trollheim-cult-of-the-possessed/brethren'
+
+- audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutation-purchase/compiler.mutation-purchase-at-recruitment
+  id: a-mutant-with-the-same-mutation-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-extra-arm
+    second:
+      collection: trollheim
+      band_id: trollheim-cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids:
+      - band--mutations-extra-arm
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

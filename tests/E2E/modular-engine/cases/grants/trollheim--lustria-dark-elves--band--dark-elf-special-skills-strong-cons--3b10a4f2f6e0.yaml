@@ -1,0 +1,88 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/lustria-dark-elves/band--dark-elf-special-skills-strong-constitution/profile.skill-access
+# scaffold_fingerprint: 728337cb8f76ab6a985d76dedf8534b1ac6be7f2b7557aef9aef92f85dfb9728
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored scenarios in contrast: the Dark
+#   Prince that selects the Strong Constitution grant adds the Strength list and may take a Strength
+#   skill, while the same warrior without the grant is refused.  The printed Sorceress exclusion and
+#   the two-bearer cap are named as pending below.  REVIEWED still requires manual semantic review
+#   and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios contrast the selected grant with its absence.  The admission
+#   scenario builds the recipient with `special_rule_ids`
+#   [band--dark-elf-special-skills-strong-constitution] and skill.mighty-blow, the canonical
+#   Strength skill, and records that the duel ran unrefused; the control scenario builds the same
+#   warrior with the same Strength skill and no grant, and the shared access route refuses it.  The
+#   printed Sorceress exclusion is not represented: the excluded profile id is not asserted here.
+#   REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/trollheim/lustria-dark-elves/band--dark-elf-special-skills-strong-constitution/profile.skill-access
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/lustria-dark-elves/special-rules.yaml
+# source_fingerprint:
+#   765160ec875f85c3c806d5e99b7d965f19039184598881fe4e58fd5f83b8cf3b
+# source_sha256_at_generation:
+#   00d87d88f399d776fda8fb2a10d2efe24738e1874089cf0e5e9749e798f89039
+# Printed rule text:
+#   The Hero gains access to Strength skills. A Dark Elf Sorceress may never take this skill.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Access grant with recipient exclusion: the eligible Lustria Dark Elf Hero adds the Strength list; the Sorceress may never take it and the bearer count is capped at two.
+# effect_id:
+#   profile.skill-access
+# relation:
+#   equivalent
+# parameters:
+#   {"category":"strength"}
+# conditions:
+#   {"recipients":"lustria dark elf heroes","excluded":["dark-elf-sorceress"],"roster_max":2}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Strength access is added to the existing lists; the roster maximum is outside the scoped effect. Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded semantic contract and the dark-prince profile's own
+# printed lists (combat, shooting, academic, speed, special: Strength is absent without the grant);
+# no engine output was consulted.  Both fighters are given zero attacks so the round resolves
+# without dice and the observation is about access, not about the skill's mechanics.
+
+- audit_id: rule/trollheim/lustria-dark-elves/band--dark-elf-special-skills-strong-constitution/profile.skill-access
+  id: the-selected-grant-admits-a-strength-skill
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-prince
+      special_rule_ids: [band--dark-elf-special-skills-strong-constitution]
+      skill_ids: [skill.mighty-blow]
+      main_weapon_id: weapon.axe
+    second:
+      main_weapon_id: weapon.axe
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_final: {rounds_executed: 1}
+
+- audit_id: rule/trollheim/lustria-dark-elves/band--dark-elf-special-skills-strong-constitution/profile.skill-access
+  id: the-same-strength-skill-is-refused-without-the-grant
+  covers: [whole]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-prince
+      skill_ids: [skill.mighty-blow]
+  expect_error: "skills are not available to lustria-dark-elves/dark-prince: ['skill.mighty-blow']"

@@ -381,6 +381,16 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   name_i18n:
     es: Insensible
+  runtime:
+    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    effects:
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: hireling.dramatis.veskit.rule.no-pain
   name: No Pain
   effect: >-

@@ -1,0 +1,114 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/brood-of-ghurash-the-sc/band--skill-titanic-strength/mechanic.titanic-strength
+# scaffold_fingerprint: 7a45711578cf413e646249058239065f27ea02e910f16e28a7fc04b9b155b74a
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries three authored scenarios derived from the
+# printed rule and the recorded contract: the Strength test a hit that fails to wound forces on the
+# defender, the Knocked Down condition a failed test leaves and the Standing result of a passed one,
+# and the same failed wound requesting no test without the rule.  The bearer carries the canonical
+# operator through its grant list, because the band origin repeats the shared clause without adding a
+# term.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios cover the Strength test after a hit that fails to wound, its failed
+#   and passed outcomes, and the absence of any test without the rule.
+# origin_id:
+#   rule/mordheim/brood-of-ghurash-the-sc/band--skill-titanic-strength/mechanic.titanic-strength
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/brood-of-ghurash-the-sc/special-rules.yaml
+# source_fingerprint:
+#   9206a887fa521dde005439bef16a75e7ca42d66ce0f5273f3b3ad8019dd68ca1
+# source_sha256_at_generation:
+#   41c485dcc41ab3fcf67b8f40302bf7b129a2e080e509fc4ae37c4d77ea6cd6ea
+# Printed rule text:
+#   The hero is titanic in size and muscle mass. Whenever this Brood member hits an enemy warrior, but fails to wound, the hit model must pass a Strength test to avoid getting knocked down.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Whenever this Brood member hits an enemy but fails to wound, the hit model must pass a Strength test or be knocked down. Closure: a failed wound roll after a hit forces a Strength test and a failure leaves the target knocked down.
+# effect_id:
+#   mechanic.titanic-strength
+# relation:
+#   equivalent
+# parameters:
+#   {"failure": "knocked down", "test": "Strength", "trigger": "hit that fails to wound"}
+# conditions:
+#   {"recipient": "Brood member"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared titanic-strength operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Surface reuse candidate: {"family":"mechanic.titanic-strength","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# bearer strikes last in the round, so the failed wound and everything it triggers close the round.
+- audit_id: rule/mordheim/brood-of-ghurash-the-sc/band--skill-titanic-strength/mechanic.titanic-strength
+  id: a-failed-strength-test-knocks-the-defender-down
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.titanic-strength]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.titanic-strength, value: 6}
+  expect_rounds:
+    0: {state.first.condition: KNOCKED_DOWN, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/mordheim/brood-of-ghurash-the-sc/band--skill-titanic-strength/mechanic.titanic-strength
+  id: a-passed-strength-test-leaves-the-defender-standing
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.titanic-strength]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.titanic-strength, value: 3}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/mordheim/brood-of-ghurash-the-sc/band--skill-titanic-strength/mechanic.titanic-strength
+  id: without-the-rule-the-failed-wound-tests-nothing
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.first.wounds: 2, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

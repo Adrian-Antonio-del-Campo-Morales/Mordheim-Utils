@@ -237,15 +237,15 @@ rules:
     - blackguards
 - id: band--merchant-leadership
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: band
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.merchant-caravans.band.merchant-leadership
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Merchant
   effect: >-
     The Merchant is the warband leader and warriors within 6" may use his Leadership for Leadership

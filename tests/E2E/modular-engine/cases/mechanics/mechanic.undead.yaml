@@ -1,0 +1,126 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/mechanic.undead
+# scaffold_fingerprint: bd3a7378e6ebb9c1539c300a5404336e431e3a7faa672ca52419e99fda8057f4
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios derived from the printed rule and the recorded composite contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: undead (scope: YES)
+# AUTHORED[undead]: 3 scenarios evidence the composite as a whole: it causes Fear, so a charging opponent must test and can lose the charge; the same charge without the composite needs no test; and the bearer's own Psychology immunity removes the Fear test the bearer would otherwise take against a Fear-causing opponent. The ignore-pain, poison and nature facets are the same composite expansion read by other operators and are not restated per facet.
+# origin_id:
+#   mechanic/mechanic.undead
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   a67fdc9c4927e22c4b532e80ff1f438fa66b55d55b08dd68a63d7153903365e0
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Skeletons are undead and follow all rules for the Undead.
+# Semantic contract (check analysis_status before treating as accepted):
+#   This warrior is Undead: it causes Fear, is immune to Psychology, ignores Pain and Poison, and follows all rules for the Undead. Observable: the composite grants nature.undead, causes-fear, psychology-immunity, ignore-pain and poison-immunity together.
+# effect_id:
+#   mechanic.undead
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {"trigger":"duel start","resolution":"composite effect expansion","recipient":"this warrior","duration":"whole duel","exceptions":"a source that expressly exempts a bloodline overrides the composite for that profile"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Umbrella clause resolved to the composite mechanic.undead (execution.yaml), which expands to the Fear and Psychology-immunity C clauses plus the ignore-pain and poison clauses owned by block B; not duplicated as separate rows here. Surface reuse candidate: {"family":"mechanic.undead","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare each immunity or automatic-pass clause separately. Psychology immunity is not automatic success on every Leadership test. Preserve ordinary Hatred/Frenzy suppression and the explicit Strigoi exception; excluded running, experience and group tests remain excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/mechanic.undead — every expectation below comes from the printed rule
+# (Skeletons are undead and follow all rules for the Undead) and the component
+# tags the recorded contract expands the composite into, never from engine
+# output.  The two faces that a duel can observe are the Fear it causes in the
+# opponent and the Psychology immunity it grants: the first is seen as a
+# required and failed Fear test for the charging enemy, the second as the
+# bearer's own absent Fear test.
+- audit_id: mechanic/mechanic.undead
+  id: the-composite-causes-fear-in-a-charging-opponent
+  covers: [undead]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.undead]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 6}
+    - {key: round.0.second.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {state.engaged: False, state.failed_charges: ['second'], state.second_charged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The contrast: without the composite nothing about this duel is frightening, so
+# the charge stands with no Fear die at all and the round resolves normally.
+- audit_id: mechanic/mechanic.undead
+  id: without-the-composite-the-same-charge-needs-no-fear-test
+  covers: [undead]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.engaged: True, state.second_charged: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+
+# The Psychology immunity inside the composite: the bearer charges a Fear-causing
+# opponent and takes no Fear test of his own, while the Fear-causing opponent is
+# the one that tests.  Immunity is not an automatic pass, so no die is requested
+# for the bearer at all.
+- audit_id: mechanic/mechanic.undead
+  id: the-composite-leaves-the-bearer-without-a-fear-test
+  covers: [undead]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.undead]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.engaged: True, state.first.fear_hit_sixes: False, state.first_charged: True}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.fear.charged.0, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.fear.charged.1, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}

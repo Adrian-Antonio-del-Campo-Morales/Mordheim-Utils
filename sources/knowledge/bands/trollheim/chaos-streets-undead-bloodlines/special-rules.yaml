@@ -40,15 +40,15 @@ rules:
     profile_ids:
     - von-carstein-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.von-carstein-vampire.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: von-carstein-vampire--immune-to-psychology
   name: Immune to Psychology
@@ -62,15 +62,15 @@ rules:
     profile_ids:
     - von-carstein-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.von-carstein-vampire.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   rule_ref: shared-rule.immune-to-psychology
 - id: von-carstein-vampire--immune-to-poison
   runtime:
@@ -157,15 +157,15 @@ rules:
     profile_ids:
     - lahmia-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.lahmia-vampire.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: lahmia-vampire--immune-to-psychology
   name: Immune to Psychology
@@ -179,15 +179,15 @@ rules:
     profile_ids:
     - lahmia-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.lahmia-vampire.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   rule_ref: shared-rule.immune-to-psychology
 - id: lahmia-vampire--immune-to-poison
   runtime:
@@ -254,15 +254,15 @@ rules:
     profile_ids:
     - lahmia-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.lahmia-vampire.enchanting-beauty
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.enchanting-beauty
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.enchanting-beauty
 - id: blood-dragon-vampire--leader
   name: Leader
   effect: >-
@@ -302,15 +302,15 @@ rules:
     profile_ids:
     - blood-dragon-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.blood-dragon-vampire.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: blood-dragon-vampire--immune-to-psychology
   name: Immune to Psychology
@@ -324,15 +324,15 @@ rules:
     profile_ids:
     - blood-dragon-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.blood-dragon-vampire.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   rule_ref: shared-rule.immune-to-psychology
 - id: blood-dragon-vampire--immune-to-poison
   runtime:
@@ -503,15 +503,15 @@ rules:
     profile_ids:
     - necrarch-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.necrarch-vampire.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: necrarch-vampire--immune-to-psychology
   name: Immune to Psychology
@@ -525,15 +525,15 @@ rules:
     profile_ids:
     - necrarch-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.necrarch-vampire.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   rule_ref: shared-rule.immune-to-psychology
 - id: necrarch-vampire--immune-to-poison
   runtime:
@@ -674,15 +674,15 @@ rules:
     profile_ids:
     - strigoi-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.strigoi-vampire.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: strigoi-vampire--immune-to-psychology
   name: Immune to Psychology
@@ -696,15 +696,15 @@ rules:
     profile_ids:
     - strigoi-vampire
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.strigoi-vampire.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   rule_ref: shared-rule.immune-to-psychology
 - id: strigoi-vampire--immune-to-poison
   runtime:
@@ -839,15 +839,15 @@ rules:
     profile_ids:
     - carrion-ghoul
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.carrion-ghoul.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: zombie--may-not-run
   name: May Not Run
   source:
@@ -882,15 +882,15 @@ rules:
     profile_ids:
     - zombie
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.zombie.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: zombie--immune-to-psychology
   name: Immune to Psychology
@@ -904,15 +904,15 @@ rules:
     profile_ids:
     - zombie
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.zombie.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   rule_ref: shared-rule.immune-to-psychology
 - id: zombie--immune-to-poison
   runtime:
@@ -994,15 +994,15 @@ rules:
     profile_ids:
     - ghoul
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.ghoul.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: dire-wolf--charge
   name: Charge
@@ -1064,15 +1064,15 @@ rules:
     profile_ids:
     - dire-wolf
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.dire-wolf.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
   rule_ref: shared-rule.fear
 - id: dire-wolf--immune-to-psychology
   name: Immune to Psychology
@@ -1086,15 +1086,15 @@ rules:
     profile_ids:
     - dire-wolf
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.dire-wolf.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
   rule_ref: shared-rule.immune-to-psychology
 - id: dire-wolf--immune-to-poison
   runtime:
@@ -1203,15 +1203,15 @@ rules:
     profile_ids:
     - vampire-bat
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.vampire-bat.fear
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.causes-fear
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.causes-fear
 - id: vampire-bat--immune-to-psychology
   name: Immune to Psychology
   effect: Vampire Bats are immune to Psychology and never leave combat because of Psychology.
@@ -1229,15 +1229,15 @@ rules:
     profile_ids:
     - vampire-bat
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.chaos-streets-undead-bloodlines.vampire-bat.immune-to-psychology
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
 - id: vampire-bat--immune-to-poison
   runtime:
     scope: 'YES'
@@ -1409,15 +1409,15 @@ rules:
 - id: band--vampire-power-hypnotic-gaze
   kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: selectable
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.band-vampire-power-hypnotic-gaze
-      scope: LATER
-      binding: null
-      reason: >-
-        requires Leadership and psychology
+    - id: mechanic.hypnotic-gaze
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hypnotic-gaze
   name: Hypnotic Gaze
   effect: >-
     Once per turn, one enemy in base contact must pass a Leadership test using its own Leadership,
@@ -1443,15 +1443,15 @@ rules:
 - id: band--von-carstein-power-dark-majesty
   kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: selectable
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.band-von-carstein-power-dark-majesty
-      scope: LATER
-      binding: null
-      reason: >-
-        affects warband Leadership range
+    - id: mechanic.leader-six
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-six
   name: Dark Majesty
   effect: >-
     Increase the Vampire's Leader range by 6" (from 6" to 12"). While the Vampire remains on the
@@ -1780,15 +1780,15 @@ rules:
 - id: band--lahmia-power-deceive
   kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: selectable
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.band-lahmia-power-deceive
-      scope: LATER
-      binding: null
-      reason: >-
-        requires Leadership and psychology
+    - id: mechanic.lahmia-deceive
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.lahmia-deceive
   name: Deceive
   effect: >-
     Once per turn, one enemy in base contact must pass a Leadership test using its own Leadership.
@@ -1813,15 +1813,15 @@ rules:
 - id: band--lahmia-power-seduction
   kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: selectable
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.band-lahmia-power-seduction
-      scope: LATER
-      binding: null
-      reason: >-
-        requires Leadership and psychology
+    - id: mechanic.lahmia-seduction
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.lahmia-seduction
   name: Seduction
   effect: >-
     During each Vampire turn, one male enemy in base contact must test against its own Leadership.

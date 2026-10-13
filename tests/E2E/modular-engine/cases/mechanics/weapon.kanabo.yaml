@@ -1,0 +1,105 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/weapon.kanabo
+# scaffold_fingerprint: fdae115d67ac51a4f2adc681dc1c77e0e9d9032bbcbd114878655c0b09cbe65a
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored wound-chart scenarios and one
+#   authored refusal. REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenarios evidence the printed Strength bonus at the
+#   wound target and one face below it, plus the printed two-handed
+#   occupancy as a refused loadout. Pending semantic review.
+# origin_id:
+#   mechanic/weapon.kanabo
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   919c9566942d66356085a914d05f5275655446c8cd828231c2090b5cf9716882
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Adds +1 Strength, uses two hands and has Concussion.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Two-handed, Strength +1 bludgeon whose Injury result 2-4 is Stunned. Closure: all three printed modifiers on the profile.
+# effect_id:
+#   weapon.kanabo
+# relation:
+#   equivalent
+# parameters:
+#   {"concussion": true, "strength_bonus": 1, "two_handed": true}
+# conditions:
+#   {"application": "attack", "stacking": "stack", "trigger": "attack"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Printed profile equals the contract parameters; the compiled attack EffectSet is consumed by build_attacks and the hit/wound/armour/injury contexts.  Surface reuse candidate: {"family":"W-weapon.kanabo","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the printed local weapon mode and parameters with the active contract. Confirm hand use, effective Strength, save/critical/parry modifiers, natural-die trigger, temporary states and end conditions. Reuse the base only; retain extra properties and construction recipients.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# weapon.kanabo - A kanabo adds +1 Strength, uses two hands and has Concussion.
+# A kanabo adds +1 Strength, uses two hands and has Concussion. Against Toughness 3 the bonus moves the wound target to 3+.
+
+- audit_id: mechanic/weapon.kanabo
+  id: kanabo-wounds-at-the-boosted-strength
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.kanabo
+      characteristics: &atk-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &dfn-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# One face below the boosted wound target.
+
+- audit_id: mechanic/weapon.kanabo
+  id: kanabo-does-not-wound-one-face-below
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.kanabo
+      characteristics: *atk-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *dfn-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/weapon.kanabo
+  id: kanabo-occupies-both-hands-so-an-off-hand-weapon-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.kanabo
+      off_hand_id: weapon.dagger
+    second:
+      main_weapon_id: weapon.mace
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "main weapon occupies both hands"
+

@@ -1,0 +1,163 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-arkhar/mechanic.mark-of-arkhar
+# scaffold_fingerprint: a4ebf90076e8774abc070364a4ef72c2f8732e67ecda427928fdb6d60b07c88d
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted frenzy clause carries 3 authored scenarios derived from the
+#   printed rule, the recorded contract and the accepted construction test
+#   tests/python/combat/modular/test_local_modifier_variants.py::test_arkhar_is_a_selected_leader_mark_not_a_bandwide_grant
+#   (the mark is selected on the printed marauder-chieftain and refused for champions): the marked
+#   Chieftain is Frenzied and doubles his printed A1 into two blows, the same Chieftain without the
+#   mark keeps one attack, and the mark selected on a non-recipient is refused with the shared
+#   diagnostic.  The band row's own binding is mechanic.mark-of-arkhar (special-rules.yaml line 778),
+#   and the register records that the band origin adds no second runtime contribution.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole--scope--frenzy (scope: YES)
+# AUTHORED[whole--scope--frenzy]: 3 scenarios cover the printed consequence.  The bearer is the band's
+#   own printed marauder-chieftain (WS5 S4 T4 W1 I5 A1 Ld8), whose selectable mark binds
+#   mechanic.mark-of-arkhar; the engine then grants the frenzy flag (state.<side>.frenzy in the round
+#   snapshot) and doubles the printed A1, so the declared tape names both of his blows and the
+#   opponent's single answer as the third outcome.  The control repeats the identical dice on the same
+#   Chieftain without the mark, and the refusal case selects the mark on champions, which the source
+#   does not list as a recipient (applies_to.profile_ids: [marauder-chieftain]).
+# origin_id:
+#   rule/mordheim/marauders-of-chaos/band--mark-of-arkhar/mechanic.mark-of-arkhar
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/marauders-of-chaos/special-rules.yaml
+# source_fingerprint:
+#   515c40da3fd3d5759a513e2ccbabeca0e8f82dd6ecc54300e53900d2c77efc29
+# source_sha256_at_generation:
+#   501a50b0b257497d4817e6d76326eb3504f13f454c12a57d3e72077681bbe574
+# Printed rule text:
+#   A marked leader is subject to Frenzy
+# Semantic contract (check analysis_status before treating as accepted):
+#   Being subject to Frenzy is an admitted lasting individual psychology state of this marked leader. Printed clause: A marked leader is subject to Frenzy
+# effect_id:
+#   mechanic.mark-of-arkhar
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Spell targeting is excluded; Frenzy and the spell-save constant are the admitted duel facts, and the Bloodfather progression/Strength access stays campaign. Scope review integration: {"clause_id":"whole","review_clause_id":"frenzy","source_state":"matched","review_status":"reviewed","scope_reason":"Being subject to Frenzy is an admitted lasting individual psychology state of this marked leader.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Mark effect: a leader bearing the Mark of Arkhar is subject to Frenzy and gains a 4+ spell-save; the Bloodfather branch grants campaign/advance-based characteristic gains.","effect_id":"mechanic.mark-of-arkhar","relation":"equivalent","parameters":"{}","conditions":"{\"recipient\":\"marked leader\",\"frenzy\":true,\"spell_save\":4}","consumer":"[\"apps/combat-lab/mordheim_combat_lab/verification/consumers.py::MODULAR_TAG_CONSUMERS\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.marks","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/marauders-of-chaos/special-rules.yaml\"]"},"inherited_clause_text":"A marked leader is subject to Frenzy and spells targeting him fail on 4+.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"mechanic.mark-of-arkhar","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare each admitted current clause only. Keep charge gate, hit penalty, state, impact modification and supplied beneficiary separate. Spell, ranged/BS, third-fighter and group-emission clauses remain excluded; do not copy combined parent parameters.","boundary":"Current child only; do not import excluded sibling or combined-parent behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: whole--scope--spell-resistance (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/marauders-of-chaos/band--mark-of-arkhar/mechanic.mark-of-arkhar
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/marauders-of-chaos/special-rules.yaml
+# source_fingerprint:
+#   515c40da3fd3d5759a513e2ccbabeca0e8f82dd6ecc54300e53900d2c77efc29
+# source_sha256_at_generation:
+#   501a50b0b257497d4817e6d76326eb3504f13f454c12a57d3e72077681bbe574
+# Printed rule text:
+#   spells targeting him fail on 4+.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Spells failing on a 4+ concerns the excluded casting subsystem and adds no admitted duel consequence. Printed clause: spells targeting him fail on 4+.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Spell targeting is excluded; Frenzy and the spell-save constant are the admitted duel facts, and the Bloodfather progression/Strength access stays campaign. Scope review integration: {"clause_id":"whole","review_clause_id":"spell-resistance","source_state":"matched","review_status":"reviewed","scope_reason":"Spells failing on a 4+ concerns the excluded casting subsystem and adds no admitted duel consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Mark effect: a leader bearing the Mark of Arkhar is subject to Frenzy and gains a 4+ spell-save; the Bloodfather branch grants campaign/advance-based characteristic gains.","effect_id":"mechanic.mark-of-arkhar","relation":"equivalent","parameters":"{}","conditions":"{\"recipient\":\"marked leader\",\"frenzy\":true,\"spell_save\":4}","consumer":"[\"apps/combat-lab/mordheim_combat_lab/verification/consumers.py::MODULAR_TAG_CONSUMERS\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.marks","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/marauders-of-chaos/special-rules.yaml\"]"},"inherited_clause_text":"A marked leader is subject to Frenzy and spells targeting him fail on 4+.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule, the recorded contract and the accepted test; no engine output was
+# consulted.  The mark is a selected leader grant, so the printed Chieftain is the bearer.
+
+- audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-arkhar/mechanic.mark-of-arkhar
+  id: the-marked-chieftain-is-frenzied-and-doubles-his-printed-attack
+  covers:
+  - whole--scope--frenzy
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: marauder-chieftain
+      special_rule_ids: [band--mark-of-arkhar]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 5, strength: 4, toughness: 4, wounds: 1, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: True, attacks.0.damage: 1, attacks.1.hit: False,
+        attacks.2.hit: False, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same band, the same dice and no mark, so the Chieftain is not Frenzied and makes
+# exactly the single attack his profile prints.
+
+- audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-arkhar/mechanic.mark-of-arkhar
+  id: without-the-mark-the-chieftain-keeps-his-single-attack
+  covers:
+  - whole--scope--frenzy
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: marauder-chieftain
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 5, strength: 4, toughness: 4, wounds: 1, initiative: 5, attacks: 1, leadership: 8}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: False, attacks.0.damage: 1, attacks.1.hit: False,
+        state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The mark is printed for a leader only: the source's applies_to lists marauder-chieftain and the
+# shared stage answers a selection on champions with its own diagnostic, quoted verbatim from
+# packages/python/roster-construction/mordheim_construction/_eligibility.js (the template
+# `special rule is not available to <band>/<profile>: <rule id>`) with this band and profile.
+
+- audit_id: rule/mordheim/marauders-of-chaos/band--mark-of-arkhar/mechanic.mark-of-arkhar
+  id: the-mark-is-refused-for-a-non-recipient-profile
+  covers:
+  - whole--scope--frenzy
+  fighters:
+    first:
+      collection: mordheim
+      band_id: marauders-of-chaos
+      profile_id: champions
+      special_rule_ids: [band--mark-of-arkhar]
+    second:
+      main_weapon_id: weapon.mace
+  expect_error: "special rule is not available to marauders-of-chaos/champions"

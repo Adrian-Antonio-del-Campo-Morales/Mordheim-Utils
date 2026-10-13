@@ -1,0 +1,81 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/chaos-streets-undead-bloodlines/lahmia-vampire--equipment-restrictions/profile.equipment-restrictions
+# scaffold_fingerprint: 371e91980c0e398f8295b134a56c46a10041643236393774b7697876bb987465
+# authoring_status: AUTHORED
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: the declared prohibition is evidenced as a construction refusal: the recipient build where carrying armour.heavy-armour in armour_id is refused with ""armour.heavy-armour" is forbidden for chaos-streets-undead-bloodlines/lahmia-vampire.", and the same recipient without the item is accepted at construction. One refusal is declared per printed recipient of the rule. Consumer: the shared eligibility stage (packages/python/roster-construction/mordheim_construction/_eligibility.js).  Remaining unrepresentable tokens of this clause: the declared token 'two-handed-weapons' is interpreted only through the item's `hands` field, which the installed catalogue projection does not carry, so no refusal fires for it.
+# origin_id:
+#   rule/trollheim/chaos-streets-undead-bloodlines/lahmia-vampire--equipment-restrictions/profile.equipment-restrictions
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/chaos-streets-undead-bloodlines/special-rules.yaml
+# source_fingerprint:
+#   4d015cbe7dedaadc403b216a9402a6c68abf944edefe29468cf356348ebe2405
+# source_sha256_at_generation:
+#   aaa7750bfbf16797ddd93878e0cd88fd550a10fdd09818c2cdb767f9356d47d2
+# Printed rule text:
+#   May not use heavy armour, polearms or great weapons.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Prohibition: the Lahmia Vampire may not take heavy armour, polearms or great (two-handed) weapons.
+# effect_id:
+#   profile.equipment-restrictions
+# relation:
+#   equivalent
+# parameters:
+#   {"forbids":["armour.heavy-armour","two-handed-weapons"]}
+# conditions:
+#   {"recipient":"lahmia-vampire"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   List-valued forbids; the token vocabulary must cover polearms/great weapons. Surface reuse candidate: {"family":"CON-FORBID-CATEGORY","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare the actual forbidden categories and recipients. Body-armour-only, all armour, missiles, blackpowder, drugs and poisons are distinct restrictions. Construction legality can affect a melee build even when shooting is excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+# authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+
+# --- Authored scenarios ---
+
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/lahmia-vampire--equipment-restrictions/profile.equipment-restrictions
+  id: lahmia-vampire-with-armour-heavy-armour-is-refused
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+      armour_id: armour.heavy-armour
+  expect_error: '"armour.heavy-armour" is forbidden for chaos-streets-undead-bloodlines/lahmia-vampire.'
+
+- audit_id: rule/trollheim/chaos-streets-undead-bloodlines/lahmia-vampire--equipment-restrictions/profile.equipment-restrictions
+  id: lahmia-vampire-without-armour-heavy-armour-is-accepted-at-construction
+  covers:
+  - whole
+  fighters:
+    first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+    second:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: lahmia-vampire
+  duel_context:
+    charging: []
+    active_participant: first
+  initial_state:
+    first:
+      condition: OUT
+  expect_initial:
+    first.condition: OUT
+  expect_final:
+    rounds_executed: 0
+    termination_reason: first_out

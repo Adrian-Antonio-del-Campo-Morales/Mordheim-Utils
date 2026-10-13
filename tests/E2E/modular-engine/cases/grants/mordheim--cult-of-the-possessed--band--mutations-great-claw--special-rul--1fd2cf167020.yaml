@@ -1,0 +1,107 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-great-claw/special-rule.band--mutations-great-claw
+# scaffold_fingerprint: 0e244411d1e372d9430a751203c9489e0921fd6e18188f18819f2ebafd83f715
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 2 authored scenarios derived from the printed
+#   rule and the recorded contract: the printed recipient with the mutation selected strikes one attack
+#   beyond what its weapon supplies, and an unmutated recipient of the same band keeps the single weapon
+#   die.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios evidence the printed extra attack: the band's Mutant with the great-claw
+#   row selected resolves two attack dice where its weapon supplies one, and the band's Possessed without
+#   any mutation, which the standing ruling lets start that way, resolves one.  The printed +1 Strength of
+#   the claw is carried by the recorded contract and is not separately asserted: both attacks of the
+#   scenario strike the same hand-built Toughness, so no discriminating wound face isolates the bonus.
+#   REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/cult-of-the-possessed/band--mutations-great-claw/special-rule.band--mutations-great-claw
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/cult-of-the-possessed/special-rules.yaml
+# source_fingerprint:
+#   4b51101a695c3562f292b9252efbecb3ac8cb0a3caf7f5f8ccbca886c57d9410
+# source_sha256_at_generation:
+#   6e992ccfd48a6106eaaf66a5af08cf6eda3fc61a966227bcb975fb73cc2c3776
+# Printed rule text:
+#   One of the mutant's arms ends in a great, crab-like claw. He may carry no weapons in this arm but gains an extra attack in hand-to-hand combat with a +1 Strength bonus.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Mutation consequence: the Great Claw grants an extra attack at +1 Strength and may carry no weapon.
+# effect_id:
+#   special-rule.band--mutations-great-claw
+# relation:
+#   equivalent
+# parameters:
+#   {"attack_bonus":1,"strength_bonus":1}
+# conditions:
+#   {"recipient":"mutant"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Declared and implemented; the attack resolution itself belongs to the attacks family.
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The
+# recipient is the band's printed Mutant with the mutation row selected, which also satisfies the
+# band's mandatory-mutation clause with the same selection.  The victim is hand-built with Toughness 2
+# and three wounds and contributes no attacks, so the extra attack's declared two lands and no injury
+# roll intervenes.
+
+- audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-great-claw/special-rule.band--mutations-great-claw
+  id: the-great-claw-grants-one-attack-beyond-the-weapon
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: mutants
+      special_rule_ids: [band--mutations-great-claw]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The non-regression control: the same band's Possessed warrior, which the recorded ruling lets start
+# with no mutation at all, resolves exactly the one attack its weapon supplies.
+- audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-great-claw/special-rule.band--mutations-great-claw
+  id: an-unmutated-recipient-of-the-band-resolves-one-attack
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: cult-of-the-possessed
+      profile_id: the-possessed
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.natural-attacks
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 2, wounds: 3, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

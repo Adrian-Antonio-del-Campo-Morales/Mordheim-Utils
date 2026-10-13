@@ -137,15 +137,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: band
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.lustria-tileans.band.miragliano-hatred-skaven
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.hatred-skaven
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-skaven
 - id: band--remas-dark-elf-rout
   name: Remas — Defiance Against Dark Elves
   effect: >-

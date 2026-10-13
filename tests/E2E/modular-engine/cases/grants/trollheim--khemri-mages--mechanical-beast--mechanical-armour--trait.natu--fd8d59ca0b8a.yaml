@@ -1,0 +1,95 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/trollheim/khemri-mages/mechanical-beast--mechanical-armour/trait.natural-armour-save
+# scaffold_fingerprint: 2c2336519f7e53220b7a65b7a4339aa07c54dc2518bf8e6eafec9c2a2cf985fd
+# authoring_status: AUTHORED
+# authoring_progress: the admitted five-plus-armour-save clause carries 2 authored scenarios derived from
+# the printed rule and the printed profile.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED;
+# no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: five-plus-armour-save (scope: YES)
+# AUTHORED[five-plus-armour-save]: 2 scenarios show the printed save in the armour phase: the mace's
+#   Strength 3 face leaves the printed threshold unmodified, so a die at the threshold is saved
+#   and a die one face below it is not.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# origin_id:
+#   rule/trollheim/khemri-mages/mechanical-beast--mechanical-armour/trait.natural-armour-save
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/trollheim/khemri-mages/special-rules.yaml
+# source_fingerprint:
+#   c69b98945c8d9e16951c987f4a8f14f4bc5ed20cb3e62be829620f9e30996f46
+# source_sha256_at_generation:
+#   685c10336f3b0f32695650cc471e319c32f421962835c77d18b08a451a999128
+# Printed rule text:
+#   Mechanical Beasts have a 5+ armour save.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Mechanical Beasts have a 5+ armour save; observable: an incoming wound is saved on a natural 5.
+# effect_id:
+#   trait.natural-armour-save
+# relation:
+#   equivalent
+# parameters:
+#   {"save":5}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#    Surface reuse candidate: {"family":"T-NAT-ARM","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the printed profile; no engine output was consulted.
+# The bearer is the profile that prints the save and starts the duel at two wounds, so an
+# unsaved wound leaves it standing and no injury roll is needed.  The attacker's Weapon Skill
+# 10, Initiative 10 and Strength 3 are hand-built fixture facts, not profile values: Strength 3
+# leaves the printed save unmodified and the higher Initiative with no charge declared lets the
+# attacker strike first, so the bearer declares no attack of its own and the tape holds only the
+# attacker's own dice.
+
+- audit_id: rule/trollheim/khemri-mages/mechanical-beast--mechanical-armour/trait.natural-armour-save
+  id: the-printed-save-holds-at-its-threshold
+  covers: [five-plus-armour-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: trollheim, band_id: khemri-mages, profile_id: mechanical-beast}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.armour, value: 5}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/trollheim/khemri-mages/mechanical-beast--mechanical-armour/trait.natural-armour-save
+  id: one-face-below-the-printed-save-is-a-wound
+  covers: [five-plus-armour-save]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second: {collection: trollheim, band_id: khemri-mages, profile_id: mechanical-beast}
+  initial_state: {second: {wounds: 2, attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+    - {key: round.0.first.attack.0.armour, value: 4}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

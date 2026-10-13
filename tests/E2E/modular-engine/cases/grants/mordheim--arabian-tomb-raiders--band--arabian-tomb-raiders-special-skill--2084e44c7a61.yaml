@@ -1,0 +1,64 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/arabian-tomb-raiders/band--arabian-tomb-raiders-special-skills/profile.skill-access
+# scaffold_fingerprint: 98a84c406d43422844c1a831664e00158ecab2e8a8f90038e49c8093f67e066f
+# authoring_status: PARTIAL
+# authoring_progress: the printed closure of the special table is covered by an authored refusal;
+#   the admission half is marked PARTIAL below with its concrete blocker.  PARTIAL is authoring and
+#   semantic contrast only; execution_status stays UNEXECUTED and no functional result exists.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# PARTIAL[whole]: [B] the closure of the printed table is authored as one refusal.  The admission half
+#   is not representable from the band artefact: the binding declares {"category":"special"} with no
+#   members, so the recipient's resolved special list names no published member and the shared route
+#   answers the informational pending-list case (skill_pending_special_list) for every special skill
+#   it checks; the compile then surfaces the same access refusal.  Naming a member would require
+#   inventing a canonical skill id the KB does not carry.  Recorded, not fabricated.
+# origin_id:
+#   rule/mordheim/arabian-tomb-raiders/band--arabian-tomb-raiders-special-skills/profile.skill-access
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/arabian-tomb-raiders/special-rules.yaml
+# source_fingerprint:
+#   c995ff29e49e15ccd17abba1e1625eaf58001b524dac6e87c38311fdc6acfc51
+# source_sha256_at_generation:
+#   0ea5ed1a2831503604d64be87abbe3615f60bf5ad077e3f6624e876d947a9f08
+# Printed rule text:
+#   Arab Heroes may use the following skill table instead of any of the standard skill tables available to them.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Permission: an Arab Hero may replace its standard skill lists with the band special table; members are individually selectable.
+# effect_id:
+#   profile.skill-access
+# relation:
+#   equivalent
+# parameters:
+#   {"category":"special"}
+# conditions:
+#   {"grant":"profile"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Binding declares the category only; members come from the published band table. Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded semantic contract; no engine output was consulted.
+
+- audit_id: rule/mordheim/arabian-tomb-raiders/band--arabian-tomb-raiders-special-skills/profile.skill-access
+  id: a-special-skill-outside-the-printed-table-is-refused
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: arabian-tomb-raiders
+      profile_id: sheikh
+      skill_ids: [skill.monster-slayer]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to arabian-tomb-raiders/sheikh: ['skill.monster-slayer']"

@@ -261,15 +261,15 @@ rules:
     - looters
 - id: blackhearts--hardened
   runtime:
-    scope: LATER
-    implemented: 'NO'
     grant: profile
+    scope: 'YES'
+    implemented: 'YES'
     effects:
-    - id: unimplemented.hochland-bandits.blackhearts.hardened
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.fear-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.fear-immunity
   name: Hardened
   effect: >-
     Blackhearts are not as put off by the evils of the world when they come across them… in fact

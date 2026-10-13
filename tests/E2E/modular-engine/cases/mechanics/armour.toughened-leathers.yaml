@@ -1,0 +1,158 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/armour.toughened-leathers
+# scaffold_fingerprint: e0e1fe0ce3c1da28b32930e6abfa6d0a0d42b8d13458dc82c4d3272991694194
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries two authored boundary
+#   scenarios for the 6+ save; the compatibility prohibition is an unauthored
+#   loadout restriction recorded under the clause marker. The excluded sellback
+#   clause stays excluded. REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: six-plus-and-compatibility (scope: YES)
+# AUTHORED[six-plus-and-compatibility]: 3 scenarios cover the 6+ save holding
+#   at the threshold, failing one face below it, and the printed compatibility
+#   prohibition as a construction refusal naming the shared diagnostic. The
+#   helmet/buckler permission of the same clause is a permitted loadout, not a
+#   separate duel effect. Pending semantic review.
+# RUNNER-GAP: the declared `expect_error` contract is documented by corpus.py,
+#   test_cases.py and README but not yet implemented by `runner.check_case`,
+#   so the refusal scenario cannot execute until that contract is wired.
+# origin_id:
+#   mechanic/armour.toughened-leathers
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   3f369d8b490ce786f953bc5b8161389a2f8f10a2b9f0ded40d562a11f345664c
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Save: 6+ Special Rules Compatibility: Toughened leathers cannot be combined with the effects of any other armour except a helmet or buckler (so not a shield). Sellback Toughened leathers cannot be sold back at the Trading Posts;
+# Semantic contract (check analysis_status before treating as accepted):
+#   Toughened Leathers give a 6+ save and cannot be combined with any other armour except a helmet or buckler; observable: a 6+ save and a rejected loadout when another armour piece is present.
+# effect_id:
+#   armour.toughened-leathers
+# relation:
+#   parameterized_variant
+# parameters:
+#   {"base_save":6,"combines_with":["helmet","buckler"]}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The equipment-list row carries only a source citation (Wahapedia) instead of the rule text; the definition was recovered from the bound armour mechanic row, which is the same item and states the save and the compatibility. Both records contribute once. Surface reuse candidate: {"family":"A-COMPAT6","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact threshold, armour versus special save, Strength/magic/blessed modification, combination/replacement, per-profile recipients and save stage. Equal thresholds do not establish equivalence; 3+ Ethereal is not 4+, and daemonic armour need not be unmodifiable.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: no-sellback (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   mechanic/armour.toughened-leathers
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   3f369d8b490ce786f953bc5b8161389a2f8f10a2b9f0ded40d562a11f345664c
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Save: 6+ Special Rules Compatibility: Toughened leathers cannot be combined with the effects of any other armour except a helmet or buckler (so not a shield). Sellback Toughened leathers cannot be sold back at the Trading Posts;
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Trading Post sellback restriction is campaign acquisition, not a duel rule. Printed clause: Save: 6+ Special Rules Compatibility: Toughened leathers cannot be combined with the effects of any other armour except a helmet or buckler (so not a shield). Sellback Toughened leathers cannot be sold back at the Trading Posts;
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Trading Post bookkeeping between battles. Scope review integration: {"clause_id":"no-sellback","review_clause_id":"no-sellback","source_state":"matched","review_status":"reviewed","scope_reason":"The Trading Post sellback restriction is campaign acquisition, not a duel rule.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Toughened leathers cannot be sold back at the Trading Post; observable: the sale step.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B20-trading-post-and-tables","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"Save: 6+ Special Rules Compatibility: Toughened leathers cannot be combined with the effects of any other armour except a helmet or buckler (so not a shield). Sellback Toughened leathers cannot be sold back at the Trading Posts;","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# mechanic/armour.toughened-leathers — the 6+ save and its threshold boundary.
+#
+# Expectations come from the printed rule and the accepted clause
+# `six-plus-and-compatibility` of
+# docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv, never from engine output:
+# toughened leathers save an incoming close-combat wound on a 6 before Strength
+# modifiers.  An unmodified Strength 3 attacker applies no save modifier, so
+# the boundary is exactly 6: the six holds, the five fails.  The compatibility
+# restriction is not asserted here (see the clause marker).
+#
+# The first scenario declares the shared profiles as YAML anchors; the sibling
+# aliases them and keeps its own armour face and expectation.
+
+- audit_id: mechanic/armour.toughened-leathers
+  id: toughened-leathers-save-holds-on-six
+  covers: [six-plus-and-compatibility]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: &attacker-ws3-s3-t3-w2-i5 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.toughened-leathers
+      characteristics: &defender-ws3-s3-t3-w2-i2 {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &charging-first {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One face below the printed target: the five is not a 6+, so the wound is
+# taken and the defender drops a wound.  No other armour face is scripted.
+
+- audit_id: mechanic/armour.toughened-leathers
+  id: toughened-leathers-save-fails-on-five
+  covers: [six-plus-and-compatibility]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *attacker-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.toughened-leathers
+      characteristics: *defender-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The compatibility half is a loadout prohibition: toughened leathers with a
+# shield must be refused at construction, and the declared expect_error
+# contract requires the refusal to name the authored reason.
+
+- audit_id: mechanic/armour.toughened-leathers
+  id: toughened-leathers-refuse-a-shield-loadout
+  covers: [six-plus-and-compatibility]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      armour_id: armour.toughened-leathers
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  expect_error: "toughened leathers cannot be combined with a shield"

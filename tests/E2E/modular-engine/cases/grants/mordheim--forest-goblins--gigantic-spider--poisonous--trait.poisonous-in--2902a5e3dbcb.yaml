@@ -1,0 +1,130 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/forest-goblins/gigantic-spider--poisonous/trait.poisonous-injury
+# scaffold_fingerprint: 391398b0c0f2b5c7c12d75b9280ae0e83bc7d06d54b6c10b3488c023fbff0b74
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries three authored scenarios derived from the
+#   printed rule and the printed profile: the spider's poisonous maw maps an injury total of two to
+#   Stunned where the ordinary chart knocks down, its band bottom still knocks down on one, and the
+#   ordinary chart applied to the identical tape knocks down on the same two, so the band belongs to
+#   the printed rule.  The attacker is the printed Gigantic Spider profile of the band, read from the
+#   band source, not from the engine; the victim is a hand-built enemy at a single wound.  REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 3 scenario(s) cover the printed poisonous band: a two Stuns where the ordinary
+#   chart knocks down, a one still knocks down, and the same two on the ordinary chart knocks down,
+#   which isolates the band to the printed rule.
+# origin_id:
+#   rule/mordheim/forest-goblins/gigantic-spider--poisonous/trait.poisonous-injury
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/forest-goblins/special-rules.yaml
+# source_fingerprint:
+#   1026199d331ace1c4fb4e068ded8ca83786f3e4306608876c8f832b523be34b7
+# source_sha256_at_generation:
+#   6f0e760d901e5f77a4871142d97060d16b1a9d0e774056f41d8635b34b7486f4
+# Printed rule text:
+#   The Gigantic Spider's maw drips with vile poisons. When it wounds an enemy and a roll is made on the injury table, 1: knocked down, 2-4: stunned, and 5-6: Out of Action.
+# Semantic contract (check analysis_status before treating as accepted):
+#   When the spider wounds an enemy the injury table reads 1 knocked down, 2-4 stunned and 5-6 out of action. Closure: the same poisonous injury band applies.
+# effect_id:
+#   trait.poisonous-injury
+# relation:
+#   equivalent
+# parameters:
+#   {"injury_band": {"1": "knocked down", "2-4": "stunned", "5-6": "out of action"}}
+# conditions:
+#   {"recipient": "Gigantic Spider"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Second band origin of the same printed stanza on the same trait identity; it adds the second band recipient set only, so it creates no second runtime contribution. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-trait.poisonous-injury","verified_facet":"trait.poisonous-injury","relationship":"shared_facet","boundary":"Changes injuries inflicted by the spider, not injuries received; target poison immunity is handled by the injury projection. Keep the 1/2-4/5-6 chart.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Family model (trait.poisonous-injury): the poisoned injury band is a property of the wounding
+# spider, so the attacker is the printed Gigantic Spider profile of this band and the injured enemy
+# is the hand-built second fighter at one wound with no attack pool of its own.  The spider strikes
+# first on the printed Initiative, its attack count is fixed to one so the tape holds a single
+# attack, and the wound face is four, below a natural six, so no critical die is requested.  Every
+# expectation is read from the printed rule and the recorded contract, never from engine output.
+
+# The printed band reads 1 knocked down, 2-4 stunned, 5-6 out of action, so a two Stuns where the
+# ordinary chart would knock the wounded enemy down.
+- audit_id: rule/mordheim/forest-goblins/gigantic-spider--poisonous/trait.poisonous-injury
+  id: the-poisonous-band-stuns-on-the-two
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: forest-goblins
+      profile_id: gigantic-spider
+      characteristics: {weapon_skill: 3, strength: 5, toughness: 5, wounds: 3, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The band bottom is unchanged: a one is still Knocked Down.
+- audit_id: rule/mordheim/forest-goblins/gigantic-spider--poisonous/trait.poisonous-injury
+  id: the-poisonous-band-knocks-down-on-the-one
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: forest-goblins
+      profile_id: gigantic-spider
+      characteristics: {weapon_skill: 3, strength: 5, toughness: 5, wounds: 3, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the identical tape against the ordinary chart knocks the enemy down on the same two,
+# so the Stunned result above is attributable to the printed poisonous maw.
+- audit_id: rule/mordheim/forest-goblins/gigantic-spider--poisonous/trait.poisonous-injury
+  id: the-ordinary-chart-knocks-down-on-the-same-two
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 10, strength: 5, toughness: 3, wounds: 3, initiative: 10, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {state.second.wounds: 0, state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

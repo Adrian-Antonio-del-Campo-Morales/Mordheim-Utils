@@ -2,7 +2,7 @@
 from __future__ import annotations
 from mordheim_combat import phases
 
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from mordheim_combat.modular.aftermath import _black_hunger
 from mordheim_combat.modular.aftermath import _revenant_recovery
 from mordheim_combat.modular.aftermath import _characteristic_test
@@ -39,6 +39,85 @@ from mordheim_core.models import EffectSet
 SHADOW_DANCES = (
     "whirling-death", "storm-of-blades", "the-shadows-coil", "woven-mist",
 )
+
+# The two Lahmia Vampire powers that open the combat phase with a Leadership
+# test on a supplied in-contact enemy: (tag, printed exclusions, key, own value).
+# Deceive prints "using its own Leadership" and its failure bars only attacks
+# against the Lahmia Vampire; Hypnotize prints no value qualifier and its
+# failure bars the target's attacks and makes its assailants hit on +1.
+LAHMIA_POWERS = (
+    ("mechanic.lahmia-deceive",
+     ("nature.undead", "nature.daemon", "mechanic.psychology-immunity"),
+     "deceive", True),
+    ("mechanic.lahmian-hypnotize",
+     ("mechanic.psychology-immunity",),
+     "hypnotize", False),
+)
+
+
+# The printed own-turn animosity contracts that suppress the bearer's attacks for
+# turn: the ordinary Goblin squabble (a 1) and the Fungus Brew's Rowdy result
+# (1-2), which shares the consumer and widens only the printed band.
+ANIMOSITY_SOURCES = ("mechanic.goblin-squabble", "mechanic.fungus-rowdy")
+
+# The Dark Jester's printed per-round trick slots.  Confound and Confuse is one
+# printed choice with three distinct consequences (the Sidestepper dodge, the
+# Babbling Banter modifier pair, the Trip wound replacement), so each round one
+# of the three may be active and the choice is supplied by the application, not
+# simulated: no round ever activates two tricks of the same rule.
+JESTER_TRICK_STATES = ("dodge_trick_active", "banter_trick_active", "trip_trick_active")
+
+
+@dataclass(frozen=True, slots=True)
+class ControlPower:
+    """One printed Vampire power that spends a Leadership test to bar a foe.
+
+    ``own_test`` is the Khemrian Seduction's opening test of the Vampire
+    herself, ``own_turn_only`` the Lahmia Seduction's "during each Vampire
+    turn", ``male_only`` its printed male recipient, ``persistent`` the lasting
+    control the two Seduction copies establish (kept on the victim's spent
+    resources, ended by the printed Recovery-phase regain test and by the
+    printed attack) and ``auto_hit`` Hypnotic Gaze's "all attacks against it hit
+    automatically".
+    """
+
+    tag: str
+    exclusions: tuple[str, ...]
+    name: str
+    own_value_only: bool = False
+    auto_hit: bool = False
+    own_turn_only: bool = False
+    own_test: bool = False
+    male_only: bool = False
+    persistent: bool = False
+
+
+# Hypnotic Gaze and the two Seduction copies.  Each is read from its own printed
+# origin, so each carries exactly the exclusions and qualifiers that clause
+# prints and never a broader shared list.
+CONTROL_POWERS = (
+    ControlPower("mechanic.hypnotic-gaze", ("mechanic.psychology-immunity",),
+                 "hypnotic-gaze", own_value_only=True, auto_hit=True),
+    ControlPower("mechanic.lahmia-seduction",
+                 ("mechanic.psychology-immunity", "nature.undead", "nature.daemon",
+                  "mechanic.stupidity"),
+                 "lahmia-seduction", own_value_only=True, own_turn_only=True,
+                 male_only=True, persistent=True),
+    ControlPower("mechanic.lahmian-seduction", ("mechanic.psychology-immunity",),
+                 "lahmian-seduction", own_value_only=True, own_test=True,
+                 persistent=True),
+)
+
+# The lasting control of the two Seduction copies lives on the victim's spent
+# resources: it must outlive the phase that established it, and the resource
+# also names its printed release, because the Khemrian copy ends on any attack
+# by the Vampire while the Lahmia copy ends only on one that hits.
+SEDUCTION_RESOURCES = ("seduction.controlled.lahmia", "seduction.controlled.lahmian")
+CONTROL_RESOURCES = {
+    "mechanic.lahmia-seduction": "seduction.controlled.lahmia",
+    "mechanic.lahmian-seduction": "seduction.controlled.lahmian",
+}
+LAHMIA_SEDUCTION_RESOURCE = "seduction.controlled.lahmia"
 
 
 def select_shadow_dance(fighter, current, decisions, *, key):
@@ -114,8 +193,92 @@ def resolve_round(
             second = fighter
     first, second = (apply_opponent_leadership(first, second, state),
                      apply_opponent_leadership(second, first, state))
+    # Transform belongs to the bearer's own turn and is read before the round's
+    # equipment is projected, because entering the form discards equipment in
+    # that same turn.  The roll happens whether or not blows are exchanged; only
+    # a Transformed bearer in combat is exempt, and the form outlives the turn
+    # that rolled it.
+    for is_first in (True, False):
+        fighter = first if is_first else second
+        if not has_tag(fighter.global_effects, "mechanic.bitten-transform"):
+            continue
+        current = state.first if is_first else state.second
+        label = "first" if is_first else "second"
+        # Madness prints "Stupidity this turn", so the failure it caused is
+        # bounded by the turn that rolled it: the result is dropped here, and
+        # with it the one Stupidity failure that the result of 1 caused, so a
+        # Madness never bars a later phase.
+        madness_this_turn = bool(getattr(current, "bitten_result", 0) == 1)
+        current = replace(current, bitten_result=0,
+            stupidity_failed=current.stupidity_failed and not madness_this_turn)
+        if is_first == state.first_player_turn and not (current.transformed and state.engaged):
+            roll = dice.roll(RollRequest(f"round.{state.round_index}.{label}.bitten"))
+            if roll == 1:
+                # Reverting is a result of 1, not an injury: the discarded form
+                # stays gone and the equipment it cast off is not recovered.
+                current = replace(current, bitten_result=1, transformed=False)
+            elif roll == 6:
+                current = replace(current, bitten_result=6, transformed=True)
+            else:
+                current = replace(current, bitten_result=roll)
+        # A Transformed Bitten keeps the Frenzy the form prints; the form is lost
+        # only to the printed result of 1.
+        current = replace(current, frenzy=fighter.global_effects.frenzy or current.transformed)
+        if current.transformed:
+            # "suffer no penalties for fighting unarmed" is the penalty-removal
+            # the attack pool already consumes; it lasts exactly as long as the
+            # form does and never forces the fists on a retained dagger.
+            fighter = replace(fighter, global_effects=replace(fighter.global_effects,
+                tags=(*fighter.global_effects.tags, "rule.unarmed-without-penalties")))
+        state = replace(state, **{"first" if is_first else "second": current})
+        if is_first:
+            first = fighter
+        else:
+            second = fighter
+    # Lunatics (Lustria Pygmies) is a rolled own-turn state, not a passive
+    # trait: at the start of each of its turns the bearer rolls the printed D6,
+    # where 1-3 gains Frenzy and 4-6 gains Stupidity.  The two grants last as
+    # their own printed rules do, so they are carried on the state: the Frenzy
+    # ends when the warrior is Knocked Down or Stunned and the Stupidity keeps
+    # applying for the rest of the duel.  Because the grant is this same printed
+    # profile's own consequence it is set directly and is never suppressed by its
+    # printed Immunity to Psychology; while the Frenzy holds, the shared Frenzy
+    # exemption skips the Stupidity test and, once it is lost, the Stupidity
+    # applies normally again.
+    for is_first in (True, False):
+        fighter = first if is_first else second
+        if not has_tag(fighter.global_effects, "mechanic.lunatics"):
+            continue
+        label = "first" if is_first else "second"
+        current = state.first if is_first else state.second
+        if is_first == state.first_player_turn:
+            roll = dice.roll(RollRequest(f"round.{state.round_index}.{label}.lunatics"))
+            current = replace(current, lunatic_result=roll,
+                frenzy=current.frenzy or roll <= 3,
+                lunatic_stupidity=current.lunatic_stupidity or roll >= 4)
+        state = replace(state, **{label: current})
     if not state.engaged:
         return CombatRoundResult(state, ())
+    # The Dark Jester's Confound and Confuse: the printed chooser names one
+    # trick per combat turn, so each of the three printed tricks is offered and
+    # the first accepted selection lights exactly its own slot.  The shared
+    # selection condition ("one trick per round") is the trick record's own
+    # fact, supplied by the trick rules themselves, never a simulated
+    # subsystem; a bearer that accepts no offer keeps every slot dark.
+    for is_first in (True, False):
+        fighter = first if is_first else second
+        if not has_tag(fighter.global_effects, "mechanic.confound-and-confuse"):
+            continue
+        label = "first" if is_first else "second"
+        current = state.first if is_first else state.second
+        accepted = []
+        for slot in JESTER_TRICK_STATES:
+            if decisions.choose(f"round.{state.round_index}.{label}.jester-trick.{slot}", fighter):
+                accepted.append(slot)
+                break
+        current = replace(current, resources_spent=current.resources_spent - {"jester.trip"},
+            **{slot: slot in accepted for slot in JESTER_TRICK_STATES})
+        state = replace(state, **{label: current})
     first_state = replace(state.first, fear_hit_sixes=False)
     second_state = replace(state.second, fear_hit_sixes=False)
     original_first, original_second = first, second
@@ -180,13 +343,49 @@ def resolve_round(
                 first = fighter
             else:
                 second = fighter
+        # Madness is a this-turn Stupidity, granted to the bearer of the result
+        # and to no other Psychology consequence.
+        if bool(getattr(current, "bitten_result", 0) == 1):
+            fighter = replace(fighter, global_effects=replace(fighter.global_effects,
+                tags=(*fighter.global_effects.tags, "mechanic.stupidity")))
+            if is_first:
+                first = fighter
+            else:
+                second = fighter
+    # Devoted to the Vampire re-reads the supplied condition of the Lahmian
+    # Vampire its recipient follows every combat phase.  Its Frenzy is therefore
+    # the only Frenzy that ends by itself: when she stands up, and when her
+    # killer dies.  It is never confused with a permanent or rolled Frenzy.
+    for is_first in (True, False):
+        fighter = first if is_first else second
+        if not has_tag(fighter.global_effects, "mechanic.devoted-to-the-vampire"):
+            continue
+        current = first_state if is_first else second_state
+        killer = second_state if is_first else first_state
+        avenging = (has_tag(fighter.global_effects, "condition.devoted-vampire-killed")
+                    and killer.condition != Condition.OUT)
+        caused = avenging or has_tag(fighter.global_effects, "condition.devoted-vampire-down")
+        if caused:
+            current = replace(current, frenzy=True, devoted_frenzy=True)
+        elif current.devoted_frenzy:
+            current = replace(current, frenzy=fighter.global_effects.frenzy, devoted_frenzy=False)
+        if avenging:
+            fighter = replace(fighter, global_effects=replace(fighter.global_effects,
+                tags=(*fighter.global_effects.tags, "condition.devoted-killer-hatred")))
+        if is_first:
+            first, first_state = fighter, current
+        else:
+            second, second_state = fighter, current
     for is_first, fighter in ((True, first), (False, second)):
         current = first_state if is_first else second_state
         failed = False
         if (is_first == state.first_player_turn and current.condition == Condition.STANDING
-                and has_tag(fighter.global_effects, "mechanic.goblin-squabble")):
+                and any(has_tag(fighter.global_effects, tag) for tag in ANIMOSITY_SOURCES)):
             label = "first" if is_first else "second"
-            failed = dice.roll(RollRequest(f"round.{state.round_index}.{label}.animosity")) == 1
+            # The Fungus Brew's Rowdy result widens the printed own-turn band to
+            # 1-2; the ordinary goblin squabble still fails on a 1 only.
+            threshold = 2 if has_tag(fighter.global_effects, "mechanic.fungus-rowdy") else 1
+            failed = dice.roll(RollRequest(f"round.{state.round_index}.{label}.animosity")) <= threshold
         current = replace(current, animosity_failed=failed)
         if is_first:
             first_state = current
@@ -305,6 +504,158 @@ def resolve_round(
             first_state = current
         else:
             second_state = current
+    # The Lahmia powers act once per turn, which one combat phase satisfies; the
+    # duel has a single opponent, so the printed "may attack another model in
+    # base contact" remainder has no second target to name and is recorded
+    # rather than simulated.
+    hypnotized = [False, False]
+    for power, exclusions, name, own_only in LAHMIA_POWERS:
+        for target_first in (False, True):
+            owner = second if target_first else first
+            target = first if target_first else second
+            if not has_tag(owner.global_effects, power):
+                continue
+            current = first_state if target_first else second_state
+            owner_state = second_state if target_first else first_state
+            label = "first" if target_first else "second"
+            if (owner_state.condition != Condition.STANDING or owner_state.stupidity_failed
+                    or current.condition != Condition.STANDING):
+                continue
+            if any(has_tag(target.global_effects, tag) for tag in exclusions):
+                continue
+            if not decisions.choose(f"round.{state.round_index}.{label}.{name}", target):
+                continue
+            if own_only:
+                passed, current = resolve_local_leadership(target,
+                    replace(state, first=current if target_first else first_state,
+                        second=second_state if target_first else current), dice, decisions,
+                    f"round.{state.round_index}.{label}.{name}", first=target_first,
+                    psychology=True, return_state=True, own_value_only=True, opponent=owner)
+            else:
+                passed, current = resolve_local_leadership(target,
+                    replace(state, first=current if target_first else first_state,
+                        second=second_state if target_first else current), dice, decisions,
+                    f"round.{state.round_index}.{label}.{name}", first=target_first,
+                    psychology=True, return_state=True)
+            if not passed:
+                current = replace(current, charm_attack_blocked=True)
+                if power == "mechanic.lahmian-hypnotize":
+                    # Index 0 is the first participant: the target is first
+                    # exactly when it was tested as such.
+                    hypnotized[0 if target_first else 1] = True
+            # The test's own consumption (a carried relic, a first-failure
+            # reroll) must persist on the success path too, so the returned state
+            # is stored whether the power passed or failed.
+            if target_first:
+                first_state = current
+            else:
+                second_state = current
+
+    def _store(target_is_first, updated):
+        """Store one participant's updated state beside its sibling."""
+        return ((updated, second_state) if target_is_first
+                else (first_state, updated))
+
+    # Hypnotic Gaze and the two Seduction copies.  The gaze bars the target for
+    # the phase and makes every attack against it hit automatically; each
+    # Seduction establishes a lasting control that the victim's own Recovery
+    # phase may end and that the printed attack releases (see the release below
+    # the attack resolution).
+    for power in CONTROL_POWERS:
+        for target_first in (False, True):
+            owner = second if target_first else first
+            target = first if target_first else second
+            if not has_tag(owner.global_effects, power.tag):
+                continue
+            current = first_state if target_first else second_state
+            owner_state = second_state if target_first else first_state
+            label = "first" if target_first else "second"
+            key = f"round.{state.round_index}.{label}.{power.name}"
+            controlled = bool(current.resources_spent.intersection(SEDUCTION_RESOURCES))
+            if any(has_tag(target.global_effects, tag) for tag in power.exclusions):
+                # The printed exemption also ends a control this clause could not
+                # have established on such a model.
+                if controlled:
+                    current = replace(current, resources_spent=(
+                        current.resources_spent - set(SEDUCTION_RESOURCES)))
+                first_state, second_state = _store(target_first, current)
+                continue
+            if controlled:
+                if (state.first_player_turn == target_first
+                        and current.condition == Condition.STANDING
+                        and decisions.choose(f"{key}.regain-control", target)):
+                    # Printed Recovery phase: the warrior's own turn offers its
+                    # owner the Leadership test that throws the control off.
+                    passed, current = resolve_local_leadership(target,
+                        replace(state, first=current if target_first else first_state,
+                            second=second_state if target_first else current),
+                        dice, decisions, f"{key}.regain-control", first=target_first,
+                        opponent=owner, return_state=True)
+                    if passed:
+                        current = replace(current, resources_spent=(
+                            current.resources_spent - set(SEDUCTION_RESOURCES)))
+                        controlled = False
+                if controlled:
+                    # A controlled warrior strikes nobody while the control
+                    # holds; the printed bar is re-derived here because the charm
+                    # flag is reset with each phase.
+                    current = replace(current, charm_attack_blocked=True)
+            if (owner_state.condition != Condition.STANDING or owner_state.stupidity_failed
+                    or current.condition != Condition.STANDING
+                    or controlled
+                    or (power.own_turn_only
+                        and state.first_player_turn != (not target_first))):
+                first_state, second_state = _store(target_first, current)
+                continue
+            if power.male_only:
+                # Printed "one male enemy": the fact is supplied, never inferred
+                # from the profile or the warband.
+                if not any(has_tag(target.global_effects, tag)
+                           for tag in ("sex.male", "sex.female")):
+                    raise ValueError(
+                        "Lahmia Seduction requires the opponent's explicit male/female fact")
+                if not has_tag(target.global_effects, "sex.male"):
+                    first_state, second_state = _store(target_first, current)
+                    continue
+            if power.own_test:
+                # The Khemrian copy prints the Vampire's own Leadership test
+                # before her choice, so a failure leaves the victim alone.
+                owner_label = "first" if not target_first else "second"
+                passed, owner_state = resolve_local_leadership(owner,
+                    replace(state, first=current if target_first else owner_state,
+                        second=owner_state if target_first else current),
+                    dice, decisions,
+                    f"round.{state.round_index}.{owner_label}.{power.name}.own-test",
+                    first=not target_first, opponent=target, return_state=True)
+                first_state, second_state = (
+                    (first_state, owner_state) if target_first
+                    else (owner_state, second_state))
+                if not passed:
+                    continue
+            if not decisions.choose(key, target):
+                continue
+            passed, current = resolve_local_leadership(target,
+                replace(state, first=current if target_first else first_state,
+                    second=second_state if target_first else current), dice, decisions,
+                key, first=target_first, psychology=True,
+                opponent=owner, return_state=True)
+            if not passed:
+                current = replace(current, charm_attack_blocked=True,
+                    charm_auto_hit=current.charm_auto_hit or power.auto_hit)
+                if power.persistent:
+                    current = replace(current, resources_spent=(
+                        current.resources_spent | {CONTROL_RESOURCES[power.tag]}))
+            first_state, second_state = _store(target_first, current)
+    for index, target in enumerate((first, second)):
+        if hypnotized[index]:
+            # Every attack directed against the hypnotized model gains +1 To Hit
+            # for the rest of that turn.
+            tagged = replace(target.global_effects,
+                tags=(*target.global_effects.tags, "condition.hypnotized"))
+            if index:
+                second = replace(second, global_effects=tagged)
+            else:
+                first = replace(first, global_effects=tagged)
     first_charged, second_charged = state.initial_charge_flags
     first_charging = first_round and first_charged
     second_charging = first_round and second_charged
@@ -336,7 +687,7 @@ def resolve_round(
         count = (dice.roll(RollRequest(f"round.0.{label}.impact-count")) + 1) // 2 if charging else 1
         morning_star = (has_tag(owner.global_effects, "wheelo.fitting.morning-star")
                         and "wheelo.first-impact" not in own.resources_spent)
-        own = replace(own, resources_spent=(*own.resources_spent, "wheelo.first-impact"))
+        own = replace(own, resources_spent=own.resources_spent | {"wheelo.first-impact"})
         collision = replace(owner, global_effects=EffectSet())
         weapon = EffectSet(fixed_strength=5 if morning_star else 4, automatic_hit=True,
             cannot_be_parried=True,
@@ -356,6 +707,37 @@ def resolve_round(
             first_state, second_state = own, other
         else:
             second_state, first_state = own, other
+    # Mantle of Crows (the Crow Master) opens each combat phase: every enemy in
+    # base contact - in this 1v1 duel, the single opponent - suffers one
+    # automatic Strength 2 hit before any blows are struck, with no to-hit
+    # roll. This is a hand-to-hand hit, so contact defences and Thin Flesh
+    # apply, but the isolated attacker contributes no personal weapon effects.
+    for owner, target, target_first in ((first, second, False), (second, first, True)):
+        own = second_state if target_first else first_state
+        other = first_state if target_first else second_state
+        if not (has_tag(owner.global_effects, "mechanic.mantle-of-crows")
+                and own.active and other.active):
+            continue
+        crows = EffectSet(
+            tags=("mechanic.mantle-of-crows",),
+            fixed_strength=2, automatic_hit=True, cannot_be_parried=True,
+        )
+        label = "first" if target_first else "second"
+        attack_key = f"round.{state.round_index}.{label}.mantle-of-crows"
+        # Fixed-strength crows are not the bearer's weapon blows: no personal
+        # poison, hit, damage or Strength contribution is inherited.
+        crow_attacker = replace(owner, global_effects=EffectSet())
+        result = resolve_reference_attack(crow_attacker, target, own, other, crows, dice,
+            key=attack_key)
+        from mordheim_combat.modular.aftermath import _react_to_wound
+        result = _react_to_wound(owner, target, result, dice, attack_key)
+        if target_first:
+            second_state = result.attacker
+            first_state = result.defender
+        else:
+            first_state = result.attacker
+            second_state = result.defender
+        outcomes.append(result)
     # Resolve both Spines attacks from one snapshot.  A simultaneous mutation
     # still retaliates when the opposing Spines hit takes it out of action.
     before_first, before_second = first_state, second_state
@@ -592,8 +974,22 @@ def resolve_round(
         last_attacks.reverse()
     events.extend(last_attacks)
     already_attacked = {True: False, False: False}
+    # Seduction's printed release reads the round's own attacks: while a control
+    # holds, its victim cannot strike, so the attack that can end it is the
+    # Vampire's (see the release below the attack resolution).
+    control_attacked = {True: False, False: False}
+    control_hits = {True: False, False: False}
     for event_index, (attacker, defender, is_first, count, _, label) in enumerate(events):
         current = first_state if is_first else second_state
+        if current.hillman_wolf:
+            source = original_first if is_first else original_second
+            attacker = equipment_for_state(source, current, first_round=first_round)
+            count = current.attacks
+            defender = second if is_first else first
+        opposing = second_state if is_first else first_state
+        if opposing.hillman_wolf:
+            defender = equipment_for_state(original_second if is_first else original_first,
+                opposing, first_round=first_round)
         initial = before_first if is_first else before_second
         if (label in ('first', 'second') and (first_shifty if is_first else second_shifty)
                 and current.broken_hands != initial.broken_hands):
@@ -636,6 +1032,9 @@ def resolve_round(
         if resolved:
             if is_first: first_misses = False
             else: second_misses = False
+            control_attacked[is_first] = True
+            control_hits[is_first] = control_hits[is_first] or any(
+                outcome.hit for outcome in resolved)
         already_attacked[is_first] = already_attacked[is_first] or bool(resolved)
         outcomes.extend(resolved)
         first_state = _force_of_will(first, first_state, dice, f"round.{state.round_index}.first.force.after-attack")
@@ -651,6 +1050,22 @@ def resolve_round(
     second_state = _force_of_will(
         second, second_state, dice, f"round.{state.round_index}.second.force.after-black-hunger"
     )
+    # Seduction's printed release.  The Khemrian copy ends the control when the
+    # Vampire attacks her victim at all; the Lahmia copy only when an attack
+    # hits.  A control that was not attacked survives into the next phase, where
+    # the victim's own Recovery-phase test may still throw it off.
+    for target_first in (True, False):
+        current = first_state if target_first else second_state
+        held = current.resources_spent.intersection(SEDUCTION_RESOURCES)
+        if not held or not control_attacked[not target_first]:
+            continue
+        if control_hits[not target_first] or LAHMIA_SEDUCTION_RESOURCE not in held:
+            current = replace(current, resources_spent=(
+                current.resources_spent - set(SEDUCTION_RESOURCES)))
+            if target_first:
+                first_state = current
+            else:
+                second_state = current
     trace = tuple(dict.fromkeys((
         *(state.trace if state.round_index == 0 else ()), Phase.PRIORITY, Phase.ATTACKS,
         *(phase for outcome in outcomes for phase in outcome.trace), Phase.AFTERMATH,
@@ -665,13 +1080,25 @@ def resolve_round(
 def apply_opponent_leadership(
     fighter: CompiledFighter, opponent: CompiledFighter, state: DuelState,
 ) -> CompiledFighter:
-    """Questing Vow qualifies all local Leadership tests against a Fear-causer."""
-    if (has_tag(fighter.global_effects, "mechanic.questing-vow")
+    """Apply the Leadership facts an opponent supplies to this fighter.
+
+    Questing Vow qualifies all local Leadership tests against a Fear-causer, and
+    Enchanting Beauty drops the Leadership of a *living* contacting enemy.  The
+    printed clause exempts Undead and Daemons and names nothing else, so a
+    Possessed, Chaos-mutated or otherwise non-living-typed mortal is still
+    affected; only those two natures keep the source's exemption.
+    """
+    effect = fighter.global_effects
+    if (has_tag(opponent.global_effects, "mechanic.enchanting-beauty")
+            and not any(has_tag(effect, tag) for tag in ("nature.undead", "nature.daemon"))):
+        effect = replace(effect, tags=(*effect.tags, "condition.enchanting-beauty"))
+    if (has_tag(effect, "mechanic.questing-vow")
             and (state.engaged or any(state.initial_charge_flags))
             and causes_fear(opponent, fighter)):
-        return replace(fighter, global_effects=replace(fighter.global_effects,
-            tags=(*fighter.global_effects.tags, "mechanic.leadership-reroll")))
-    return fighter
+        effect = replace(effect, tags=(*effect.tags, "mechanic.leadership-reroll"))
+    if effect is fighter.global_effects:
+        return fighter
+    return replace(fighter, global_effects=effect)
 
 
 def select_shifty_weapon(

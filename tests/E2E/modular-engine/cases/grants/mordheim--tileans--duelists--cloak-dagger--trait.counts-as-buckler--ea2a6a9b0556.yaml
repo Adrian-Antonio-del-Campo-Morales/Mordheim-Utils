@@ -1,0 +1,132 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/tileans/duelists--cloak-dagger/trait.counts-as-buckler
+# scaffold_fingerprint: cb2d205ed34066ede8e0de15d2f06f3ed46deb4ccc908f8931c8a3849d7507ed
+# authoring_status: AUTHORED
+# authoring_progress: the admitted counts-as-buckler clause carries 3 authored scenarios derived from
+#   the printed rule, the recorded contract and the accepted editorial specification
+#   tests/specs/semantic/grants/editorial-charge-and-buckler.yaml (tilean-cloak-as-buckler): the cloak
+#   parries an eligible hit when the parry die beats the To Hit roll, an equal die does not parry, and the
+#   neighbouring band profile without the cloak is offered no parry die at all.  REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: counts-as-buckler (scope: YES)
+# AUTHORED[counts-as-buckler]: 3 scenarios read the printed parry the cloak grants its bearer.  The bearer
+#   is built from the printed Duelists profile of this band, whose own rule binding supplies the flag; the
+#   attacker is hand-built so the tape holds only the attack and parry dice.  Scenario 1 blocks the hit on
+#   a parry die strictly above the To Hit roll, scenario 2 holds the strict-greater boundary (an equal die
+#   does not block and the wound resolves), and scenario 3 replaces the bearer with the neighbouring Tilea
+#   Warriors profile under the same dice, where no parry die is requested at all, so the flag is attached to
+#   the printed recipient and not to the band, the weapon or the fixture.  REVIEWED still requires manual
+#   semantic review.
+# origin_id:
+#   rule/mordheim/tileans/duelists--cloak-dagger/trait.counts-as-buckler
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/tileans/special-rules.yaml
+# source_fingerprint:
+#   d31b1983fc19cbafd771c2012a05e0048bff47ab6932afb665af4122d690b144
+# source_sha256_at_generation:
+#   608feb39fd31cc8234df20278d7ce5c9aeb15ce9d585fa0adfff1059361f82f6
+# Printed rule text:
+#   A Duellist counts as using a buckler in close combat because of the defensive use of the cloak.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Duellist counts as using a buckler in close combat; observable: he has a parry attempt per phase like a buckler.
+# effect_id:
+#   trait.counts-as-buckler
+# relation:
+#   equivalent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Consumed as a parry flag on the compiled fighter, which feeds the parry capacity; the cloak occupies no hand. Surface reuse candidate: {"family":"trait.counts-as-buckler","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare current admitted facet, weapon/size/recipient conditions and usage limit. A supplied Rememberer benefit does not introduce a third combatant; target Toughness and Large identity need their own source condition. Keep specific attack and critical guards.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+
+# --- Authored scenarios ---
+# The bearer of the cloak is the band's own Duelists profile; its characteristics are fixture facts so the
+# tape carries only the dice under test.  All hits are natural ones (misses) except the strike under test.
+
+- audit_id: rule/mordheim/tileans/duelists--cloak-dagger/trait.counts-as-buckler
+  id: the-cloak-parries-a-hit-that-beats-the-to-hit-roll
+  covers: [counts-as-buckler]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: tileans
+      profile_id: duelists
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The strict boundary of the accepted specification: the cloak parry must beat the To Hit roll, so an
+# equal four does not block and the attack resolves its wound.
+
+- audit_id: rule/mordheim/tileans/duelists--cloak-dagger/trait.counts-as-buckler
+  id: an-equal-parry-die-does-not-block-the-hit
+  covers: [counts-as-buckler]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: tileans
+      profile_id: duelists
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The grant control: the same band, the same dice and the same fixture, but the neighbouring Warriors
+# profile that does not print the cloak.  No parry die is requested at all, which the strict tape proves.
+
+- audit_id: rule/mordheim/tileans/duelists--cloak-dagger/trait.counts-as-buckler
+  id: a-profile-without-the-cloak-is-offered-no-parry
+  covers: [counts-as-buckler]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: tileans
+      profile_id: warriors
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

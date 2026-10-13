@@ -1,0 +1,137 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/dwarf-slayer-cult-web/rememberer--not-a-slayer/unimplemented.dwarf-slayer-cult-web.rememberer.not-a-slayer
+# scaffold_fingerprint: 80078b1409bd6f5aeef11b836eee6426682606fd9f1ee5f911f21cdccfa253cc
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry an authored refusal: a Slayer-only skill is refused
+#   to the Rememberer, and the band's Slayer package rule is refused when the Rememberer selects it.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: no-slayer-skill-access (scope: YES)
+# AUTHORED[no-slayer-skill-access]: 1 scenario shows a Slayer-only table skill (Monster Slayer, the
+#   Slayer special skill of this band's own Slayer tables) refused to the Rememberer with the shared
+#   access diagnostic.  The clause is single-faceted: the printed sentence is a bar, so no separate
+#   acceptance scenario exists for it.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/dwarf-slayer-cult-web/rememberer--not-a-slayer/unimplemented.dwarf-slayer-cult-web.rememberer.not-a-slayer
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dwarf-slayer-cult-web/special-rules.yaml
+# source_fingerprint:
+#   2abae0edda78d5f3e2f1daa83bc4c215a05ec349275a3ea58c23f15063619a23
+# source_sha256_at_generation:
+#   5741154887f133f41cec8162486b44b80de030f38b220b8b26341b252b347e90
+# Printed rule text:
+#   A Rememberer may not learn Slayer-only skills.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Configured Rememberer skill access must exclude Slayer-only table entries.
+# effect_id:
+#   profile.skill-access
+# relation:
+#   related
+# parameters:
+#   {}
+# conditions:
+#   {"profile":"rememberer","excluded_table":"Slayer-only"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Acquisition is not simulated; validating a supplied skill choice is construction. Keep the recipient prohibition when named inherited skill tables are connected. Scope review integration: {"clause_id":"no-slayer-skill-access","review_clause_id":"no-slayer-skill-access","source_state":"unverified","review_status":"reviewed","scope_reason":"The bar on learning Slayer-only skills is a construction restriction on this Rememberer.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+#
+# Clause: not-a-slayer (scope: YES)
+# AUTHORED[not-a-slayer]: 1 scenario selects the band's Slayer package rule on the Rememberer and
+#   expects the special-rule route to refuse it (`special rule is not available to
+#   <band>/<profile>`), which is how the printed "the Slayer rules do not apply" is evidenced: the
+#   Scaffold's own note records that band--slayer omits this profile, so the refusal is the printed
+#   scope and not an engine accident.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/dwarf-slayer-cult-web/rememberer--not-a-slayer/unimplemented.dwarf-slayer-cult-web.rememberer.not-a-slayer
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dwarf-slayer-cult-web/special-rules.yaml
+# source_fingerprint:
+#   2abae0edda78d5f3e2f1daa83bc4c215a05ec349275a3ea58c23f15063619a23
+# source_sha256_at_generation:
+#   5741154887f133f41cec8162486b44b80de030f38b220b8b26341b252b347e90
+# Printed rule text:
+#   The Rememberer is not a Slayer and the Slayer rules do not apply.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Do not grant the Slayer Psychology/equipment package to a Rememberer merely because he belongs to this warband.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {"profile":"rememberer","excluded_package":"band--slayer"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   The current band--slayer applies_to.profile_ids explicitly omits Rememberer. This exemption is individually meaningful and correctly represented, not campaign-excluded. Scope review integration: {"clause_id":"not-a-slayer","review_clause_id":"not-a-slayer","source_state":"unverified","review_status":"reviewed","scope_reason":"Stating that the Slayer rules do not apply to this profile defines which construction and behaviour rules govern the Rememberer in the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
+#
+# Clause: no-leader (scope: NO)
+# Outside the admitted clause scope; retained for context, not a test TODO.
+# origin_id:
+#   rule/mordheim/dwarf-slayer-cult-web/rememberer--not-a-slayer/unimplemented.dwarf-slayer-cult-web.rememberer.not-a-slayer
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/dwarf-slayer-cult-web/special-rules.yaml
+# source_fingerprint:
+#   2abae0edda78d5f3e2f1daa83bc4c215a05ec349275a3ea58c23f15063619a23
+# source_sha256_at_generation:
+#   5741154887f133f41cec8162486b44b80de030f38b220b8b26341b252b347e90
+# Printed rule text:
+#   A Rememberer may never be the warband Leader.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Whether this model may ever become the warband Leader is a roster and leader-selection rule, excluded from the duel. Printed clause: A Rememberer may never be the warband Leader.
+# effect_id:
+#   (not recorded)
+# relation:
+#   independent
+# parameters:
+#   {}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Record the recipient prohibition without introducing campaign succession or group Rout tests. Scope review integration: {"clause_id":"no-leader","review_clause_id":"no-leader","source_state":"unverified","review_status":"reviewed","scope_reason":"Whether this model may ever become the warband Leader is a roster and leader-selection rule, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The Rememberer cannot receive the Leader role/ability in a supplied canonical construction.","effect_id":"proposed.leader-grant-prohibition","relation":"independent","parameters":"{}","conditions":"{\"profile\":\"rememberer\"}","consumer":"[\"packages/typescript/domain/eligibility/index.ts::applicableRules\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]","implementation_work":"data","dependencies":"[]","implementation_batch":"D-leader-recipients","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/dwarf-slayer-cult-web/special-rules.yaml\",\"packages/python/combat-engine/mordheim_combat/modular/leadership.py\"]"},"inherited_clause_text":"A Rememberer may never be the warband Leader.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule text and the recorded semantic contract; no engine output was
+# consulted.
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/rememberer--not-a-slayer/unimplemented.dwarf-slayer-cult-web.rememberer.not-a-slayer
+  id: the-rememberer-may-not-learn-a-slayer-only-skill
+  covers: [no-slayer-skill-access]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: rememberer
+      skill_ids: [skill.monster-slayer]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to dwarf-slayer-cult-web/rememberer: ['skill.monster-slayer']"
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/rememberer--not-a-slayer/unimplemented.dwarf-slayer-cult-web.rememberer.not-a-slayer
+  id: the-slayer-package-does-not-apply-to-the-rememberer
+  covers: [not-a-slayer]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayer-cult-web
+      profile_id: rememberer
+      special_rule_ids: [band--slayer]
+      main_weapon_id: weapon.mace
+  expect_error: "special rule is not available to dwarf-slayer-cult-web/rememberer"

@@ -1,0 +1,89 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.head-crusher
+# scaffold_fingerprint: 2ea0cfbeaecdbd0ec49c12e44400d3b6f383dd36ba1f344712792291bc8b10e4
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios show a Knocked Down result caused by the bearer
+#   upgraded to Stunned and the same result left Knocked Down without it.
+# origin_id:
+#   mechanic/skill.head-crusher
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   327667052edbec9e2c7676537e6bd69df88838d55a34cac7ab5040700ac90b83
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Knocked Down results caused by the warrior become Stunned.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Knocked Down results caused by the warrior become Stunned. Closure: an injury result that would leave the opponent Knocked Down is upgraded to Stunned when it was caused by the bearer.
+# effect_id:
+#   skill.head-crusher
+# relation:
+#   equivalent
+# parameters:
+#   {"knocked_down_becomes":"stunned","scope":"results caused by the fighter"}
+# conditions:
+#   {"trigger": "injury result"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   _injury_context passes head_crusher into the injury condition, which upgrades the knocked-down band to stunned; the flag is attached to the attacking effect, so only results caused by that fighter are upgraded. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.head-crusher","verified_facet":"skill.head-crusher","relationship":"shared_facet","boundary":"Transforms injuries inflicted in melee, not injuries received by the bearer; ordinary target injury defenses and their timing remain relevant.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+
+- audit_id: mechanic/skill.head-crusher
+  id: a-knocked-down-result-becomes-stunned
+  covers: [whole]
+  fighters:
+    first:
+      skill_ids: [skill.head-crusher]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: mechanic/skill.head-crusher
+  id: without-the-skill-the-result-knocks-down
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

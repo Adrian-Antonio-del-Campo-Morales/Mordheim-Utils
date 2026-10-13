@@ -1,0 +1,103 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/orc-mob/band--orc-special-skills-eadbasher/skill.head-crusher
+# scaffold_fingerprint: 7709039c3e6b7dc5a3b552401f0a5151415efd8549a4ffd2be22262bb51d7f6e
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries one authored scenario pair derived from the
+# printed rule and this band's own binding (special-rules.yaml id band--orc-special-skills-eadbasher,
+# a selectable warband skill, effect skill.head-crusher): a Knocked Down result the Orc causes in
+# hand-to-hand is upgraded to Stunned, and the identical duel without the band skill leaves it Knocked
+# Down.  The printed text repeats the canonical shared operator without adding a term, so the band
+# origin needs no further scenario.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios show the printed upgrade of an injury result the Orc causes in
+# hand-to-hand (orc-mob / the 'Eadbasher warband skill bound to skill.head-crusher, selected by the
+# fixture on the admitted Orc Boyz profile).  In the trigger the bearer's mace hits (4 against equal
+# Weapon Skill), wounds (4 against equal Toughness) and the injury die of 2 is the table's Knocked Down
+# result, which the skill upgrades to Stunned; the control repeats the identical duel without the band
+# skill and the same die leaves the opponent Knocked Down.  The Orc Boyz animosity rule is recorded
+# out of scope, so no squabble die is declared.  REVIEWED still requires manual semantic review.
+# origin_id:
+#   rule/mordheim/orc-mob/band--orc-special-skills-eadbasher/skill.head-crusher
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/orc-mob/special-rules.yaml
+# source_fingerprint:
+#   5d684e7bd92471af8406ec0cdb023aae1af2f76495fb4e57b367c6cbae22c8f1
+# source_sha256_at_generation:
+#   16228e2465fa736100bded52e10a19f16cd4ee634392baacb634ba1d5a5ff3e2
+# Printed rule text:
+#   Orcs have massive physical strength and some of them even learn to aim their blows at the heads of their opponents, with obvious results. Any knocked down results which the Orc causes in hand-to-hand count as stunned results instead.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Any knocked-down result the Orc causes in close combat counts as stunned. Closure: knock-down results caused by that fighter are upgraded to stunned.
+# effect_id:
+#   skill.head-crusher
+# relation:
+#   equivalent
+# parameters:
+#   {"knocked_down_becomes":"stunned","scope":"results caused by the fighter"}
+# conditions:
+#   {"recipient": "Orc"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Band origin for the shared head-crusher operator. The printed text repeats the canonical clause of the shared operator without adding a term, so the band origin creates no second runtime contribution. Scope review integration: {"clause_id":"whole","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Knocked down results caused in hand-to-hand counting as stunned is an admitted injury-state consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"whole","audit_group":"EQ-skill.head-crusher","verified_facet":"skill.head-crusher","relationship":"shared_facet","boundary":"Transforms injuries inflicted in melee, not injuries received by the bearer; ordinary target injury defenses and their timing remain relevant.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# Derived from the printed rule and this band's printed rule binding; no engine output was consulted.
+# Both fighters miss with value 1 in the tape's own turn where no injury is involved: only the bearer's
+# attack reaches the injury table.
+- audit_id: rule/mordheim/orc-mob/band--orc-special-skills-eadbasher/skill.head-crusher
+  id: a-knocked-down-result-caused-by-the-eadbasher-becomes-stunned
+  covers: [whole]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: orc-mob
+      profile_id: orc-boyz
+      special_rule_ids: [band--orc-special-skills-eadbasher]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+- audit_id: rule/mordheim/orc-mob/band--orc-special-skills-eadbasher/skill.head-crusher
+  id: without-the-eadbasher-the-same-result-knocks-down
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+  expect_rounds:
+    0: {state.second.condition: KNOCKED_DOWN}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

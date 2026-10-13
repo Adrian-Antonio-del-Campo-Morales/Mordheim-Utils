@@ -1,0 +1,95 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/poison.nightshade
+# scaffold_fingerprint: d8309c5696d5609a90f82946e791e3cd9fd0ac3664ff5a21232deb12aaa98e46
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries authored scenarios derived from the printed rule; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: whole (scope: YES)
+# AUTHORED[whole]: 2 scenarios show one unsaved wound lowering the target
+#   Initiative by one and the printed minimum of 1 holding.
+# origin_id:
+#   mechanic/poison.nightshade
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   0f1194dc9accceb24823dd6be2431dad8f5259a8679a0a548d4a499401d4f65e
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Each unsaved wound reduces the opponent’s Initiative by 1, to a minimum of 1.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Each unsaved wound reduces the opponent Initiative by 1, to a minimum of 1. Closure: every wound that is not saved lowers the target Initiative by one and the printed minimum of 1 is respected.
+# effect_id:
+#   poison.nightshade
+# relation:
+#   equivalent
+# parameters:
+#   {"floor": 1, "initiative_penalty": "-1 per unsaved wound"}
+# conditions:
+#   {"stacking": "cumulative", "trigger": "unsaved wound"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   _resolve_wound_damage applies one point of nightshade Initiative penalty per point of damage that passes the saves, and resolve_priority subtracts the accumulated penalty after flooring the Initiative, which preserves the printed minimum of 1.
+
+# --- Authored scenarios ---
+# mechanic/poison.nightshade - authored from the printed rule and the
+# admitted `whole` clause, never from engine output.
+# One point of damage that passes the saves lowers the target's Initiative by one;
+# the accumulated penalty respects the printed floor of 1.
+- audit_id: mechanic/poison.nightshade
+  id: an-unsaved-wound-lowers-initiative-by-one
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: &ns-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &ns-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: &ns-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.initiative: 4}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# mechanic/poison.nightshade - authored from the printed rule and the
+# admitted `whole` clause, never from engine output.
+# One point of damage that passes the saves lowers the target's Initiative by one;
+# the accumulated penalty respects the printed floor of 1.
+- audit_id: mechanic/poison.nightshade
+  id: the-initiative-floor-of-one-holds
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      main_poison_id: poison.nightshade
+      characteristics: *ns-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {<<: *ns-defender, initiative: 1}
+  duel_context: *ns-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.initiative: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

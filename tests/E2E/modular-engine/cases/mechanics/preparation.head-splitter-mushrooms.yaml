@@ -1,0 +1,91 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/preparation.head-splitter-mushrooms
+# scaffold_fingerprint: 456412c9314f295b84419f9c0568121f5c09c4024cfcce5c5f7d8e965f8bf6ba
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted clause carries 2 scenarios (the doubled pool and the unprepared contrast); REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: frenzy (scope: YES)
+# AUTHORED[frenzy]: 2 scenarios contrast the doubled attack pool of the
+#   prepared bearer with the single attack of the same fighter without it.
+# origin_id:
+#   mechanic/preparation.head-splitter-mushrooms
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   101a099eeb8fb4a1f1aa5f441d7eb70fab36bba53b4b46d8dfa3b5912f754f88
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   Frenzy; also allows the use of a Ball and Chain.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Grants Frenzy for the duel (also unlocking the Ball and Chain). Observable: the attack pool doubles and fear is skipped.
+# effect_id:
+#   trait.frenzy
+# relation:
+#   equivalent
+# parameters:
+#   {"value":true}
+# conditions:
+#   {"trigger":"duel start","recipient":"this warrior"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Preparation grants frenzy:true at duel_start via the matching execution entry. Surface reuse candidate: {"family":"trait.frenzy","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact supplied/rolled state, trigger, frequency, duration, termination and attack-count contribution. Permanent and conditional Frenzy, +1 Attack and doubling are different. Do not implement group creation, movement or campaign tables merely to supply an individual state.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# mechanic/preparation.head-splitter-mushrooms - authored from the printed rule and the
+# admitted clauses, never from engine output.  The preparation is supplied
+# on `preparation_ids`.
+# The preparation grants Frenzy for the duel at its start, so the ordinary
+# attack pool is doubled before the attacks resolve.
+- audit_id: mechanic/preparation.head-splitter-mushrooms
+  id: the-preparation-doubles-the-attack-pool
+  covers: [frenzy]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      preparation_ids: [preparation.head-splitter-mushrooms]
+      characteristics: &prep-attacker {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: &prep-defender {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &prep-context {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Control: the same fighter without the preparation keeps its one profile attack.
+- audit_id: mechanic/preparation.head-splitter-mushrooms
+  id: the-unprepared-fighter-keeps-one-attack
+  covers: [frenzy]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *prep-attacker
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *prep-defender
+  duel_context: *prep-context
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

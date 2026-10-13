@@ -1,0 +1,96 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: mechanic/skill.shield-mastery
+# scaffold_fingerprint: 281519d1bc2b290362206e9e471aedb9815bf1eee7856bbb5c65ce071500dd64
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clauses carry authored scenarios derived from the printed rule and the recorded contract; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: shield-parries-and-keeps-its-bonus (scope: YES)
+# AUTHORED[shield-parries-and-keeps-its-bonus]: 2 scenarios
+#   show the shield parrying like a buckler and still adding
+#   its armour-save point once the parry fails.
+# origin_id:
+#   mechanic/skill.shield-mastery
+# analysis_status:
+#   reviewed
+# source_file:
+#   catalog/mechanics/close-combat.yaml
+# source_fingerprint:
+#   944c59a2784238d64692f1e29b42b376a5a928cebc23a16f21865d1024fbb55b
+# source_sha256_at_generation:
+#   add7e6405c042d0340b4a41bb19c9c9e307d31afb287bf7517aa87a6d80d9c2d
+# Printed rule text:
+#   The Hero may parry with a Shield as if it were a Buckler while still receiving the Shield's normal armour-save bonus.
+# Semantic contract (check analysis_status before treating as accepted):
+#   The Hero may parry with a Shield as if it were a Buckler while still receiving the Shield's normal armour-save bonus; observable: a parry attempt from the shield and the shield's +1 save at the same time.
+# effect_id:
+#   skill.shield-mastery
+# relation:
+#   equivalent
+# parameters:
+#   {"shield_parry":true,"keeps_shield_save":true}
+# conditions:
+#   {}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Same skill as the Norse Explorers printing (G117) in another supplement; the parry comes from the skill and the save from the ordinary shield composition, so both halves are consumed without either replacing the other. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"shield-parries-and-keeps-its-bonus","audit_group":"EQ-skill.shield-mastery","verified_facet":"skill.shield-mastery","relationship":"shared_facet","boundary":"Shield parry and normal armour benefit coexist; do not replace the shield with a buckler or grant another attempt.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
+
+# --- Authored scenarios ---
+# # The shield is not a parrying weapon of its own, and the skill makes it parry as the
+# # printed buckler: the five beats the four and the wound is never rolled.
+- audit_id: mechanic/skill.shield-mastery
+  id: the-shield-parries-as-a-buckler
+  covers: [shield-parries-and-keeps-its-bonus]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      skill_ids: [skill.shield-mastery]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# # The failed parry does not cost the shield: worn light armour saves on 6+ and the shield
+# # improves it to 5+, so the five keeps the wound off.
+- audit_id: mechanic/skill.shield-mastery
+  id: the-shield-keeps-its-armour-bonus
+  covers: [shield-parries-and-keeps-its-bonus]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      armour_id: armour.light-armour
+      skill_ids: [skill.shield-mastery]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.parry, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.parried: False, attacks.0.saved: True, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

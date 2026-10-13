@@ -1,0 +1,140 @@
+# E2E authoring scaffold; generated comments, manually authored scenarios.
+# audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/band--virtue-of-noble-disdain/mechanic.noble-disdain
+# scaffold_fingerprint: 6a7a1309bdbdb50b691e50ea44b718179ddd47705d3fc59480f67b9de4dd828a
+# authoring_status: AUTHORED
+# authoring_progress: the admitted hatred clause carries 3 authored scenarios for the family model
+#   derived from the printed rule and the recorded semantic contract: the declared Virtue delivers the
+#   printed first-round reroll against a shooting-armed opponent, the same miss stands against an
+#   opponent carrying no shooting weapon, and a Knight of the same band that did not take the Virtue
+#   receives no reroll.  The co-printed sentence about contempt for enemies who hide behind weapons of
+#   dishonour states the same Hatred and adds no term, so it carries no separate scenario.  The source
+#   declares this Virtue selectable over the whole band, so every scenario states the chosen Virtue
+#   explicitly.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED;
+#   no behavioral result is claimed.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
+#
+# Derive inputs and expectations from rule text and accepted rulings.
+# Do not derive them from the engine or execute combat during authoring.
+# REVIEWED requires semantic review; covers labels alone are insufficient.
+# Preserve audit_id and scaffold_fingerprint when filling this file.
+# Governing rulings: docs/decisions/design-rulings.md
+# Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
+#
+# Clause: hatred (scope: YES)
+# AUTHORED[hatred]: 3 scenario(s) cover the clause: the declared Virtue grants the first-round reroll
+#   against a shooting-armed opponent, the same miss stands against an opponent that carries no shooting
+#   weapon, and a band-mate that did not take the Virtue receives no reroll.
+# origin_id:
+#   rule/mordheim/knights-of-the-bitter-moors-mim/band--virtue-of-noble-disdain/mechanic.noble-disdain
+# analysis_status:
+#   reviewed
+# source_file:
+#   bands/mordheim/knights-of-the-bitter-moors-mim/special-rules.yaml
+# source_fingerprint:
+#   2a069d9cfec2f3d1d80d269328c7cdb1b2040796da6d6b702c536f2dc25cbaa3
+# source_sha256_at_generation:
+#   b2262194983563f4a2aa0c85a7906cf546ecebff868afb1c74bc6d806c059839
+# Printed rule text:
+#   The Knight has nothing but contempt for enemies who hide behind the weapons of dishonour. The Knight is subject to Hatred of all enemies armed with shooting weapons.
+# Semantic contract (check analysis_status before treating as accepted):
+#   Subject to Hatred: while fighting a qualifying enemy, this warrior may reroll missed To-Hit rolls in the first round of that close combat only. Observable: a first-round melee reroll is offered only when the opponent matches the hated identity and this warrior is not Psychology-immune. Hated identity: enemies armed with shooting weapons.
+# effect_id:
+#   mechanic.noble-disdain
+# relation:
+#   equivalent
+# parameters:
+#   {"enemy_identity":"condition.ranged-armed"}
+# conditions:
+#   {"trigger":"first round of a close combat against a qualifying enemy","resolution":"contexts._hit_reroll adds a reroll when the enemy identity tag matches","consequence":"missed To-Hit rolls may be rerolled once that round","recipient":"this warrior, against the matching enemy","duration":"first combat round only","stacking":"one reroll per attack; never rerolled twice","exceptions":"suppressed for a Psychology-immune warrior and for a frenzied kindred-hatred source; requires the opponent's explicit identity tag"}
+# dependencies:
+#   []
+# Register notes (context only, not behavioral authority):
+#   Filtered Hatred bound to mechanic.noble-disdain; contexts._hit_reroll matches the enemy identity tag, enforces first-round timing and the Psychology-immunity suppression. Enemy identity must be supplied explicitly. Surface reuse candidate: {"family":"M-HATRED-TARGET","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Possible shared first-round hit-reroll consumer only. Resolve each printed hated target and the ordinary Psychology/Frenzy gates; do not inherit the audit Orc/Goblin effect ID for every target or the Strigoi immunity exception.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
+
+# --- Authored scenarios ---
+# Family model (filtered Hatred of enemies armed with shooting weapons, mechanic.noble-disdain), taken
+# from the printed rule, the recorded contract and the accepted model of
+# cases/mechanics/mechanic.noble-disdain.yaml.  The bearer is the band's printed Questing Knight, built
+# from its band profile so the record's own Virtue is what the scenario exercises; the source declares
+# that Virtue selectable over the whole band, so the scenario names the chosen Virtue explicitly.  Its
+# physical characteristics are supplied as fixture facts (WS3 S3 T3 W2 I5 A1) so the dice thresholds
+# and the strike order are fixed, and its printed Leadership stays in place.  The opponent is a
+# hand-built fixture whose carried bow supplies the printed shooting-weapon identity, with one attack.
+# A miss (a natural 2 against WS3) is taken again on a 4+ and wounds on a 4+, so the reroll is what the
+# tape shows; the absence cases carry no bow and no Virtue, so the strict tape holds no reroll key and
+# the miss stands.
+
+# The carried bow supplies the printed shooting-weapon identity.
+- audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/band--virtue-of-noble-disdain/mechanic.noble-disdain
+  id: a-shooting-armed-opponent-is-hated
+  covers: [hatred]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: knights-of-the-bitter-moors-mim
+      profile_id: questing-knight
+      special_rule_ids: [band--virtue-of-noble-disdain]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      owned_item_ids: [bow]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Without a shooting weapon the opponent carries no hated identity, so no reroll is offered.
+- audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/band--virtue-of-noble-disdain/mechanic.noble-disdain
+  id: an-opponent-without-a-shooting-weapon-is-not-hated
+  covers: [hatred]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: knights-of-the-bitter-moors-mim
+      profile_id: questing-knight
+      special_rule_ids: [band--virtue-of-noble-disdain]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A band-mate that did not take the Virtue carries no Hatred, however its opponent is armed.
+- audit_id: rule/mordheim/knights-of-the-bitter-moors-mim/band--virtue-of-noble-disdain/mechanic.noble-disdain
+  id: a-knight-without-the-virtue-receives-no-reroll
+  covers: [hatred]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: knights-of-the-bitter-moors-mim
+      profile_id: knights-errant
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      owned_item_ids: [bow]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
