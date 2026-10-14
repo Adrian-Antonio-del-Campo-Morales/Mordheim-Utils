@@ -36,8 +36,8 @@ class SkeletonGenerationTests(unittest.TestCase):
 
     def row(self, identity, clause, scope):
         row = {field: "" for field in generator.REQUIRED_FIELDS + generator.CONTEXT_FIELDS}
-        row.update(current_id=identity, origin_id=identity, clause_id=clause,
-                   clause_scope=scope, source_file="rule.yaml", analysis_status="reviewed",
+        row.update(id=identity, clause_id=clause,
+                   clause_scope=scope, source_file="rule.yaml", pending="{}", verification='["inspection"]',
                    source_fingerprint=hashlib.sha256(self.source.read_bytes()).hexdigest(),
                    clause_text="Printed rule.\nA second line.", semantic_contract="Independent contract.")
         return row
@@ -68,6 +68,22 @@ class SkeletonGenerationTests(unittest.TestCase):
         self.assertIn(str(self.register.resolve()), text)
         self.assertTrue(all(yaml.safe_load(path.read_text(encoding="utf-8")) == []
                             for path in self.output.rglob("*.yaml")))
+
+    def test_empty_identity_is_rejected(self):
+        self.rows[0]["id"] = ""
+        self.write_register()
+        with self.assertRaisesRegex(ValueError, "empty identity"):
+            self.generate()
+        self.assertFalse(self.output.exists())
+
+    def test_combined_tracking_keeps_blockers_review_and_execution_references(self):
+        self.rows[0]["pending"] = '{"work":"connection","review":"source_blocked","requires":["source paragraph"]}'
+        self.rows[0]["verification"] = '["inspection","source.pdf#page=12"]'
+        self.write_register()
+        self.generate()
+        text = self.path().read_text(encoding="utf-8")
+        self.assertIn(self.rows[0]["pending"], text)
+        self.assertIn(self.rows[0]["verification"], text)
 
     def test_regeneration_preserves_authored_scenarios_byte_for_byte(self):
         self.generate()

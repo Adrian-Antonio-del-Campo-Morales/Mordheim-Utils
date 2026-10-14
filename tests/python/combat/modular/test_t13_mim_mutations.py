@@ -4,6 +4,7 @@ from dataclasses import replace
 import pytest
 
 from mordheim_combat.modular.contexts import OwnedRollDice, _attack_strength, _combined_effect, weapon_against_opponent
+from mordheim_combat.modular.pools import electrical_touch_weapon
 from mordheim_combat.modular.mutations import apply_brand, fighter_for_mutations, select_mutation_tail
 from mordheim_combat.modular.state import initialize_fighter
 from mordheim_combat.phases import has_tag, Condition
@@ -267,3 +268,56 @@ def test_external_chart_facets_do_not_create_attacks_saves_or_campaign_results(c
     assert view.extra_attacks == human.extra_attacks
     assert view.global_effects == human.global_effects
     assert current.condition == Condition.STANDING
+
+
+def plated():
+    return compile_fighter(FighterBuild('mordheim', Characteristics(3,3,3,3,4,2,movement=5,leadership=7),
+        main_weapon_id='weapon.sword',armour_id='armour.plate-armour',defence_ids=('defence.helmet',)))
+
+
+@pytest.mark.parametrize('roll',[25,41,65])
+def test_a_worn_metal_armour_keeps_its_identity_through_equipment_rewriting_mutations(chart,roll):
+    """The printed electrical-strength clause reads the armour actually worn.
+
+    Great Claw, the Extra Arm and Beweaponed Extremities all move physical
+    objects between the fighter's hands.  The plate mail is still worn
+    afterwards, so the metal-armour identity the compiler derived from it must
+    survive the inventory rebuild instead of being withdrawn with the
+    re-projection - and the printed Strength 5 against metal armour keeps
+    answering for it.
+    """
+    plate = plated()
+    assert 'condition.metal-armour' in plate.global_effects.tags
+    current = brand(plate,initial(plate),chart[roll],[('limb',1)] if roll == 65 else ())
+    view = fighter_for_mutations(plate,current)
+    assert 'condition.metal-armour' in view.global_effects.tags
+    assert electrical_touch_weapon(view).fixed_strength == 5
+    assert view.armour_save == plate.armour_save
+
+
+def test_the_metal_armour_identity_leaves_with_the_armour_burning_body_destroys(chart):
+    plate = plated()
+    current = brand(plate,initial(plate),chart[61])
+    assert all(item.slot is None for item in current.mutation_equipment)
+    view = fighter_for_mutations(plate,current)
+    assert 'condition.metal-armour' not in view.global_effects.tags
+    assert electrical_touch_weapon(view).fixed_strength == 3
+    assert view.armour_save == 7
+
+
+def test_the_supplied_metal_armour_fact_follows_the_worn_metal_defences(chart,human):
+    # ``metal_armour`` is a supplied fact about the fighter's worn kit, so the
+    # identity lasts while any of that kit is worn and leaves with the last of
+    # it - never the other way round.
+    assert 'condition.metal-armour' not in human.global_effects.tags
+    fact = compile_fighter(FighterBuild('mordheim', human.characteristics,
+        main_weapon_id='weapon.sword',off_hand_id='defence.shield',
+        armour_id='armour.light-armour',trait_overrides={'metal_armour':True}))
+    assert 'condition.metal-armour' in fact.global_effects.tags
+    kept = fighter_for_mutations(fact,brand(fact,initial(fact),chart[25]))
+    assert 'condition.metal-armour' in kept.global_effects.tags
+    gone = fighter_for_mutations(fact,brand(fact,initial(fact),chart[61]))
+    assert 'condition.metal-armour' not in gone.global_effects.tags
+    # Negative control: the ordinary light-armoured fighter never gains it.
+    plain = fighter_for_mutations(human,brand(human,initial(human),chart[25]))
+    assert 'condition.metal-armour' not in plain.global_effects.tags

@@ -18,10 +18,10 @@ KNOWLEDGE_ROOT = ROOT / "sources/knowledge"
 CASES = Path(__file__).parent / "cases"
 FOLDERS = {"core": "core", "mechanic": "mechanics", "rule": "grants"}
 REQUIRED_FIELDS = (
-    "current_id", "origin_id", "clause_id", "clause_scope", "clause_text",
-    "semantic_contract", "analysis_status", "source_file", "source_fingerprint",
+    "id", "clause_id", "clause_scope", "clause_text",
+    "semantic_contract", "pending", "source_file", "source_fingerprint",
 )
-CONTEXT_FIELDS = ("effect_id", "relation", "parameters", "conditions", "dependencies", "notes")
+CONTEXT_FIELDS = ("effect_id", "relation", "parameters", "conditions", "verification", "notes")
 
 
 def read_definitions(register: Path) -> dict[str, list[dict[str, str]]]:
@@ -36,20 +36,20 @@ def read_definitions(register: Path) -> dict[str, list[dict[str, str]]]:
             if any(raw[field] is None for field in REQUIRED_FIELDS):
                 raise ValueError(f"{register}:{number}: incomplete row")
             row = {field: raw.get(field) or "" for field in REQUIRED_FIELDS + CONTEXT_FIELDS}
-            if not row["current_id"] or not row["clause_id"]:
+            if not row["id"] or not row["clause_id"]:
                 raise ValueError(f"{register}:{number}: empty identity or clause")
             if any("\n" in row[field] or "\r" in row[field]
-                   for field in ("current_id", "origin_id", "clause_id")):
+                   for field in ("id", "clause_id")):
                 raise ValueError(f"{register}:{number}: multiline identity or clause")
             rows.append(row)
     admitted = {
-        row["current_id"] for row in rows
-        if row["clause_scope"] == "YES" and row["current_id"].startswith(tuple(f"{kind}/" for kind in FOLDERS))
+        row["id"] for row in rows
+        if row["clause_scope"] == "YES" and row["id"].startswith(tuple(f"{kind}/" for kind in FOLDERS))
     }
     definitions = {identity: [] for identity in sorted(admitted)}
     seen = set()
     for row in rows:
-        identity = row["current_id"]
+        identity = row["id"]
         if identity not in definitions:
             continue
         key = (identity, row["clause_id"])
@@ -126,14 +126,14 @@ def render(identity, clauses, hashes, register: Path = REGISTER) -> str:
             lines.append(f"# TODO[{row['clause_id']}]: Review the rule and author all required scenarios.")
         else:
             lines.append("# Outside the admitted clause scope; retained for context, not a test TODO.")
-        for field in ("origin_id", "analysis_status", "source_file", "source_fingerprint"):
+        for field in ("id", "pending", "source_file", "source_fingerprint"):
             _comment(lines, field, row[field])
         current = hashes[row["source_file"]]
         _comment(lines, "source_sha256_at_generation", current)
         if current == "MISSING":
             lines.append("# TODO[source-review]: The registered source file is missing.")
         _comment(lines, "Printed rule text", row["clause_text"])
-        _comment(lines, "Semantic contract (check analysis_status before treating as accepted)",
+        _comment(lines, "Semantic contract (check pending.review before treating as accepted)",
                  row["semantic_contract"])
         for field in CONTEXT_FIELDS:
             _comment(lines, "Register notes (context only, not behavioral authority)"

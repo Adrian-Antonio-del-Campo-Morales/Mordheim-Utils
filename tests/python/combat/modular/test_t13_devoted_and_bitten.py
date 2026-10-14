@@ -297,6 +297,40 @@ def test_the_bitten_madness_never_tests_another_model():
 
 # --- The Bitten: cast-off equipment and unarmed penalties -----------------
 
+def test_transforming_retires_the_wound_a_discarded_item_folded_into_the_profile():
+    """Armour is physical: the extra Wound it grants goes with it.
+
+    The Rune of Fortitude armour prints an extra Wound that construction folds
+    into the profile.  Casting the armour off takes that Wound with it, so the
+    Wound total and the recovery maximum follow the surviving equipment; a
+    retained dagger, which carries no such bonus, changes neither.
+    """
+    armed = bare(wounds=3, armour='armour.attlas-plate-mail')
+    assert armed.characteristics.wounds == 4
+    # Negative control: while it is worn, the extra Wound stands.
+    assert equipment_for_state(armed, FighterState(wounds=4),
+        first_round=True).characteristics.wounds == 4
+    stripped = equipment_for_state(armed, FighterState(wounds=4, transformed=True),
+        first_round=True)
+    assert stripped.characteristics.wounds == 3
+    dagger = bare(wounds=3, weapon='weapon.dagger', armour='armour.attlas-plate-mail')
+    kept = equipment_for_state(dagger, FighterState(wounds=4, transformed=True), first_round=True)
+    assert 'weapon.dagger' in kept.main_weapon.tags and kept.characteristics.wounds == 3
+
+
+def test_the_round_holds_the_current_wounds_within_the_surviving_maximum():
+    bearer = bare(wounds=3, armour='armour.attlas-plate-mail')
+    foe = bare()
+    opening = duel(bearer, foe)
+    state = replace(opening, first=replace(opening.first, wounds=4, equipment_cast_off=True))
+    dice = KeyedDice({**misses(0, 'first', 1), **misses(0, 'second', 1)})
+    choices = StrictDecisions([])
+    result = resolve_round(bearer, foe, state, dice, choices)
+    dice.finish(); choices.finish()
+    # The armour is gone, so the fighter cannot hold its fourth Wound.
+    assert result.state.first.wounds == 3
+
+
 def test_transforming_casts_off_everything_except_a_dagger():
     armed = bare(weapon="weapon.sword", off_hand_id="defence.shield", armour="armour.light-armour")
     assert armed.armour_save < 7 and armed.off_hand is not None

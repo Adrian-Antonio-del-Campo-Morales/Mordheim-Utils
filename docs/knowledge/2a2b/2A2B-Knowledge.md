@@ -1,24 +1,17 @@
 # 2A/2B — Consolidated knowledge
 
-Consolidated reference for the 2A/2B integration initiative (Combat Lab and
-Warband Manager). It replaces the former `README.md` and the whole
-`tasks/` development-plan tree, which were removed on 2026-10-08.
+Permanent scope, clarification decisions and follow-up references for the
+2A/2B integration initiative (Combat Lab and Warband Manager).
 
-What this document preserves from those sources:
+The active implementation plan is
+[Remaining modular engine work](REMAINING_MODULAR_ENGINE_WORK.md).
+The maintained clause-level work queue is
+[T13-semantic-analysis.csv](tasks/T13-semantic-analysis.csv).
+Neither a plan nor a CSV disposition certifies engine behaviour.
 
-- the governing **scope and product boundary**;
-- the **permanent design rulings** (indexed; their authoritative text lives in
-  [design rulings](../../decisions/design-rulings.md));
-- the **clarification decisions** for the F074 residual equipment origins;
-- the **current progress and remaining work** (T13–T15), including the
-  excluded items and the native-port stop line;
-- the **open follow-up findings** index;
-- the **artifacts intentionally kept** in this directory.
-
-Development history, per-lot deliveries, review dossiers, dispatch inputs and
-raw analysis CSVs are no longer stored here. Their full text remains in Git
-history; the identifiers below (`T13-*`, `F0xx`, `L01–L23`, `Q0xx`) are the
-stable keys to look them up.
+Historical dispatches, intermediate reviews and delivery logs are available in
+Git history. They are not additional work queues. Retained operational artifacts
+are listed in section 7.
 
 ## 1. Purpose and scope of the initiative
 
@@ -32,11 +25,11 @@ stable keys to look them up.
 - Out of scope for that execution: building deployment, hiding, shooting or
   battle-magic **resolution** systems. Their rules are preserved in full with
   explicit limitations; they are not marked as implemented.
-- The application keeps reading exclusively from `sources/knowledge`; staging
-  and ingestion tooling are retained until the separate
-  [staging retirement plan](staging-retirement-plan.md) is executed. That guide
-  defines external-agent reconciliation, ownership and retirement criteria;
-  it does not launch agents or declare retirement complete.
+- Applications read exclusively from the consolidated `sources/knowledge`.
+  The still-versioned `sources/2A`, `sources/2B` and their exclusive ingestion
+  tools are legacy material awaiting removal; their presence does not imply
+  another consolidation phase. Preserve any unresolved source contradictions
+  listed in [final integration problems](2A2B-final-integration-problems.md).
 
 Phase history (all accepted before this consolidation): preparation T01–T05,
 KB integration T06–T08 (phase 1), Warband Manager Web T09–T12 (phase 2).
@@ -138,76 +131,19 @@ if a clarification must be re-validated.
 
 ## 5. Current progress and remaining work (T13–T15)
 
-Status as of 2026-10-06. T13 modular implementation is **partial**.
+Use [Remaining modular engine work](REMAINING_MODULAR_ENGINE_WORK.md) for the
+execution sequence and [the semantic CSV](tasks/T13-semantic-analysis.csv) for
+individual pending clauses. Do not reuse historical delivery counts or profile
+availability claims as the current implementation state.
 
-| Workstream | Status | Remaining work |
-| --- | --- | --- |
-| Shared construction baseline | Implemented | Reuse for residual item/profile projections; no repeat centralization. |
-| Modal engine / L02–L17 | In progress | Remaining individual effects, target filters, keeper/mount contributions and source-blocked clauses. |
-| Canonical hirelings / L16 | Partial | 23 usable base hired swords plus Aldred/Armen; Snorri needs a supplied drinking result. Strigani missing stats and optional Marks remain. |
-| Product workflows / L18 | Partial | Complete affected editor, configuration, analyses and CLI workflows. |
-| NumPy port / L19 | Not started for new families | Port applicable completed modular families and verify actual execution. |
-| Native port / L20 | Not started for new families | Port applicable completed families and verify the built native engine. |
-| Final reconciliation / L01, L21 | Pending closure | Origin/scope/source-pin/reference reconciliation and remaining gate repairs. |
-| Independent certification / T14 (L22) | Pending | Semantic, parity and coverage checks against the completed applicable engines. |
-| Integral closure / T15 (L23) | Pending | Final product/integral checks, review and local phase commit after T14. |
+T13 modular implementation remains incomplete. Complete admitted consequences,
+canonical access and necessary product inputs together. NumPy/native ports
+(L19/L20), independent certification (T14/L22) and integral closure (T15/L23)
+remain separate work; the active modular assignment does not authorize them.
 
-Delivered modular milestones among the T13 lots: canonical Vomit Attack (L02),
-canonical Spectral Touch (L03), canonical Shifty (L04), canonical choices and
-grants (L05), and partial weapons/hirelings families (L06/L16).
-
-On 2026-10-08, the repaired A implementation patch was integrated from the
-isolated checkout into the main working tree, including Cleaver, Ladle save
-provenance, Unpredictable and Tentacle nomination, and the accompanying weapon
-and extra-attack families. All 33 non-documentation patch files match the
-repaired delivery; the A-owned staging mirror deltas were also applied. Focused
-validation passed 58 delivery tests and 4 affected existing cases. This does
-not certify optimized ports or close T13; the retired A partial was not restored.
-
-### Exact native-profile blockers (hired swords)
-
-- No normalized base hired-sword profile remains blocked by an intrinsic rule.
-- Mercy and Healing Hands are excluded support (no self-healing; healing the
-  opponent rejected); source prose remains intact.
-- Optional Marks remain pending for Morr, Myrmidia (Oracle), Ranald and Solkan.
-  Eagle Friend is selectable and repeatable; the composite Marks of Myrmidia
-  entry remains pending for Oracle.
-- Manann's water/Aquatic Marks and Taal's contact-breaking Enlivened Flora are
-  excluded; Taal's Tranquil Fauna is implemented.
-- Strigani Seer Necromancer still lacks canonical stats; recover source data
-  without anonymous substitutes.
-- Only uniquely resolved `scope: NO` / `implemented: NO` item rules without
-  executable bindings qualify for owned-only projection.
-
-### Stop and resume criteria
-
-- Resume remaining individual effects in their L06–L17 owners from L16's
-  canonical route. Group compatible effects and finish bindings, compilation,
-  behavior and necessary inputs together.
-- **Stop before the NumPy/native implementation boundary (L19/L20).** Ports have
-  not started and require separate authorization.
-- Excluded, not deferred: group Rout, All Alone, independent third combatants,
-  map/terrain/weather, shooting/casting, and voluntary escape / unresolved
-  endings.
-- `knights_helm` is a user-declared source erratum: retain F063's data/reference
-  cleanup, not a new helmet mechanic.
-- User rulings Q037/Q128/Q013/F005 are implemented and are not awaiting another
-  answer.
-
-### Executable lot list (dispatch numbers, not tracker IDs)
-
-L01 gate repair (F057) · L02 Vomit Attack (delivered) · L03 Spectral Touch
-(delivered) · L04 Shifty (delivered) · L05 canonical choices/grants (delivered)
-· L06 weapons/hits/wounds/poisons/parries (in progress) · L07 saves/injuries/
-healing/regeneration · L08 attack allocation/priority/melee pistols · L09
-reactions/resources/special actions · L10 Leadership test contract · L11
-Fear/Hatred/Frenzy/Stupidity/immunities · L12 supplied external conditions and
-leaders · L13 Animosity/goading/random preparation · L14 charges and combat
-contact · L15 supplied Mazzalupo command effects · L16 canonical hired swords and
-Dramatis Personae (partial) · L17 composite duelist profiles · L18 duel-context
-product workflows · L19 NumPy family batch · L20 Native family batch · L21 final
-integration and canonical coverage · L22 independent certification (T14) · L23
-integral gate and local phase closure (T15).
+The durable interpretation of former lot identifiers and findings remains in
+Git history and the index below. Permanent user rulings are authoritative in
+[design-rulings.md](../../decisions/design-rulings.md).
 
 ## 6. Open follow-up findings
 
@@ -229,38 +165,26 @@ facts; conditional Fear sources) · `F067` (Domnu Bear Hug third attack) · `F06
 
 ## 7. Artifacts intentionally kept in this directory
 
-These are consumed by maintained tests or tools and were **not** removed:
+- [Remaining modular engine work](REMAINING_MODULAR_ENGINE_WORK.md): active
+  implementation plan and completion criteria.
+- [Semantic analysis](tasks/T13-semantic-analysis.csv): maintained clause-level
+  queue, contracts, provenance and evidence.
+  Each row is identified by (`id`, `clause_id`), using the current rule ID;
+  historical IDs remain in Git. The historical `implementation_batch` column
+  is omitted. Tracking uses two JSON fields:
+  `pending` contains `work`, `review` and `requires` only when they differ from
+  defaults (`none`, `reviewed`, `[]`); `verification` is an array starting with
+  `inspection`, `executed` or `none`, followed by the evidence references.
+  Notes retain specific constraints rather than serialized historical reviews. The pre-compaction history is
+  available at commit `cee529cd`.
+- [Obligations](tasks/T13-obligations.csv): input to the construction matrices
+  and `verification/audit_export.py`.
+- [Source scope review](tasks/T13-audit-scope-review.csv): input to
+  `verification/audit_export.py` and the source-review guide.
+- [Final integration problems](2A2B-final-integration-problems.md): source
+  contradictions and modelling gaps with exact identities and closing criteria.
 
-- [`tasks/T13-obligations.csv`](tasks/T13-obligations.csv) — read by
-  `tests/python/construction/test_t13_hireling_command_matrix.py`,
-  `tests/python/construction/test_t13_selectable_equipment_matrix.py` and
-  `apps/combat-lab/mordheim_combat_lab/verification/audit_export.py`.
-- [`tasks/T13-audit-scope-review.csv`](tasks/T13-audit-scope-review.csv) — read
-  by `apps/combat-lab/mordheim_combat_lab/verification/audit_export.py`.
-- [`tasks/T13-semantic-analysis.csv`](tasks/T13-semantic-analysis.csv) — the
-  accepted-clause reference kept at the user's request (2026-10-08). No planned
-  effect in T13 is certified by it alone.
-
-Untracked, in-progress research outputs were preserved to avoid discarding
-uncommitted work (their former dispatch inputs were removed with the plan tree):
-
-- `tasks/T13-semantic-analysis-dispatch/C-results.csv`
-- `tasks/T13-semantic-analysis-dispatch/D-results.csv`
-- `tasks/T13-semantic-equivalence-independent-review.csv`
-- `tasks/T13-semantic-scope-independent-review.csv`
-
-## 8. What was removed
-
-Everything else that lived under `docs/knowledge/2a2b/`: the former `README.md`
-(checklist and reservation tables) and the whole `tasks/` tree — per-lot T01–T15
-documents, T13 delivery/review dossiers (Shifty, Spectral Touch, coverage,
-schema, reference citations, shared eligibility, etc.), the semantic-analysis and
-reconciliation dispatch inputs/manifests/summaries, and the large derived
-analysis CSVs (`T13-obligations` siblings, `T13-effect-routing.yaml`,
-`T13-modular-residuals.csv`, and the reconciliation result sets). Their full text
-remains in Git history under the pre-consolidation commit.
-
-> `build/audit/effect-routing/*` (untracked scratch) reads the removed
-> `T13-effect-routing.yaml`, `T13-clarifications.yaml` and the reconciliation
-> dispatch directory. Those scratch scripts are now inert and are not part of
-> any maintained test or CI workflow.
+The superseded modular implementation plan, scratch assignment, C/D delivery
+CSVs and independent scope/equivalence review CSVs have been removed. Their
+historical content remains in Git; the maintained semantic CSV is not rebuilt
+from those older snapshots.

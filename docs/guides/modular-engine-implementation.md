@@ -118,15 +118,15 @@ another semantic schema or a parallel implementation-status register.
 
 | Existing fields | Information that must remain usable by a porting agent |
 | --- | --- |
-| `origin_id`, `current_id`, `clause_id`, source provenance | Exact origins covered, successor links and printed clauses; retain all compound remainders and exclusions. Preserve the assignment's input fingerprint, and identify the implementation revision separately in retained evidence. Do not silently replace the analysis baseline after a KB edit. |
+| `id`, `clause_id`, source provenance | Current rule identities and printed clauses; historical identities remain in Git. Retain all compound remainders and exclusions. Preserve the assignment's input fingerprint, and identify the implementation revision separately in retained evidence. Do not silently replace the analysis baseline after a KB edit. |
 | `semantic_contract`, `parameters`, `conditions` | Backend-independent trigger, order/timing, consequence/formula, recipient, duration, stacking, limits and exceptions. Include player choices and what observable outcome distinguishes this contract from its variants. |
 | `effect_id`, `relation`, `consumer` | Reused effect identity, exact equivalence/variant boundaries and concrete existing consumers. Put proposed future consumers in notes; do not cite an invented symbol as existing. |
-| `dependencies`, `implementation_batch`, `notes` | Only real prerequisites; additional pending layers; relevant representation constraints such as per-hit versus per-pool state, save provenance, resource ownership or decision order. Note concrete port risks without designing speculative infrastructure. |
-| `implementation_work`, `analysis_status`, `evidence`, `evidence_refs` | Independent interpretation, work and evidence states. Identify the modular boundary and any remaining product/data gap. Reference the small reusable cases actually run and their examined revision. |
+| `pending.requires`, `notes` | Only real prerequisites; additional pending layers; relevant representation constraints such as per-hit versus per-pool state, save provenance, resource ownership or decision order. Note concrete port risks without designing speculative infrastructure. |
+| `pending`, `verification` | Independent interpretation, work and evidence states. Identify the modular boundary and any remaining product/data gap. Reference the small reusable cases actually run and their examined revision. |
 
 Keep the final contract coherent: replace superseded conclusions rather than
 appending a contradictory “spec settles this” sentence.
-`implementation_work: none` does not certify every backend; record **optimized ports pending** for
+`pending.work: none` (the default) does not certify every backend; record **optimized ports pending** for
 new modular behavior. Inspection, declared metadata and executed evidence
 remain distinct. Source fingerprints are provenance, not a certificate.
 

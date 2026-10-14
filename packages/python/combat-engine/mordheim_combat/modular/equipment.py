@@ -19,6 +19,31 @@ def whipcrack_weapon(fighter: CompiledFighter) -> EffectSet | None:
     return None
 
 
+def _without_discarded_bonuses(characteristics, items, kept_slots):
+    """Retire the numeric bonuses of the equipment a transformation casts off.
+
+    A bonus an item folded into the compiled profile - Att'la's Plate Mail's
+    extra Wound - lasts exactly as long as the item is worn, so the discarded
+    items' bonuses leave the profile and the current Wounds follow the reduced
+    maximum.
+    """
+    bonuses = {}
+    for item in items:
+        if item.slot is None or item.slot in kept_slots:
+            continue
+        for stat, amount in item.stat_bonuses:
+            bonuses[stat] = bonuses.get(stat, 0) + amount
+    if not bonuses:
+        return characteristics
+    values = {}
+    for stat, amount in bonuses.items():
+        current = getattr(characteristics, stat)
+        if current is None:
+            continue
+        values[stat] = max(1, current - amount) if stat == 'wounds' else max(0, current - amount)
+    return replace(characteristics, **values)
+
+
 def equipment_for_state(fighter: CompiledFighter, state: FighterState, *, first_round: bool) -> CompiledFighter:
     if state.transformed or state.equipment_cast_off:
         dagger_tags = ('weapon.dagger', 'weapon.yambiya', 'weapon.poisoned-daggers', 'weapon.disease-dagger')
@@ -29,6 +54,8 @@ def equipment_for_state(fighter: CompiledFighter, state: FighterState, *, first_
                 and any(has_tag(weapon, tag) for tag in dagger_tags)),
             (fighter.unarmed_weapon, fighter.unarmed_weapon, 'unarmed'))
         main, clean, slot = retained
+        # Only the item this branch keeps keeps its folded-in bonuses.
+        kept_slots = set() if slot == 'unarmed' else {slot}
         retained_extra = None
         retained_extra_clean = None
         if slot == 'unarmed':
@@ -38,6 +65,7 @@ def equipment_for_state(fighter: CompiledFighter, state: FighterState, *, first_
                 and item.slot not in state.broken_hands
                 and any(has_tag(item.effect, tag) for tag in dagger_tags)), None)
             if item is not None:
+                kept_slots.add(item.slot)
                 tags = (f'mutation.hand.{item.slot}', 'mutation.carried-weapon',
                         *(('rule.prehensile-tail',) if item.slot == 'tail' else ()))
                 retained_extra = replace(item.effect, tags=(*item.effect.tags, *tags))
@@ -51,6 +79,8 @@ def equipment_for_state(fighter: CompiledFighter, state: FighterState, *, first_
             effect = replace(effect, tags=(*effect.tags, 'rule.unarmed-without-penalties'))
         fighter = replace(fighter, main_weapon=main, off_hand=None, off_hand_attacks=False,
             main_weapon_without_poison=clean, off_hand_without_poison=None,
+            characteristics=_without_discarded_bonuses(
+                fighter.characteristics, fighter.mutation_equipment, kept_slots),
             main_hand_slot=slot, armour_save=max(1, 7-effect.armour_save_bonus), helmet_save=7,
             shield_and_skill_effects=fighter.skill_effects_only, global_effects=effect,
             extra_attacks=(*tuple(attack for attack in fighter.extra_attacks
@@ -65,6 +95,8 @@ def equipment_for_state(fighter: CompiledFighter, state: FighterState, *, first_
         # reversion or equipment recovery is printed.
         return replace(fighter, main_weapon=natural, off_hand=None, off_hand_attacks=False,
             main_weapon_without_poison=natural, off_hand_without_poison=None,
+            characteristics=_without_discarded_bonuses(
+                fighter.characteristics, fighter.mutation_equipment, frozenset()),
             armour_save=7, helmet_save=7, natural_armour_save=7,
             shield_and_skill_effects=EffectSet(),
             global_effects=replace(fighter.global_effects, parry=False,

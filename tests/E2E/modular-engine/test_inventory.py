@@ -48,7 +48,7 @@ def read_register():
     declared: dict[str, set[str]] = {}
     admitted: dict[str, set[str]] = {}
     for row in rows:
-        current = row["current_id"]
+        current = row["id"]
         declared.setdefault(current, set()).add(row["clause_id"])
         if row["clause_scope"] == IN_SCOPE and current.startswith(ADMITTED_PREFIXES):
             admitted.setdefault(current, set()).add(row["clause_id"])

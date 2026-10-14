@@ -44,6 +44,21 @@ CHARACTERISTIC_BONUS_KEYS = (
 #: known base value, so only a zero bonus can be applied.
 OPTIONAL_CHARACTERISTIC_BONUS_KEYS = ("movement", "leadership")
 
+#: Worn armour that makes its bearer a metal-clad target for the printed
+#: Electrical Touch clause.  The identity belongs to the physical item so that a
+#: later mutation which re-evaluates the inventory keeps it while the item is
+#: still worn and withdraws it when the item is gone.
+METAL_ARMOUR_IDS = frozenset({
+    "armour.heavy-armour", "armour.gromril-armour", "armour.ithilmar-armour",
+    "armour.plate-armour", "armour.chaos-armour", "armour.attlas-plate-mail",
+})
+#: The worn defences the ``metal_armour`` supplied fact names when the fighter's
+#: own armour is the metal one.
+METAL_DEFENCE_IDS = frozenset({
+    "defence.shield", "defence.buckler", "defence.kite-shield",
+    "defence.helmet", "defence.cooking-pot-helmet",
+})
+
 
 def _prepared_mutation_options(ruleset, effects, root):
     """Resolve the source's explicit D66 data into immutable duel inputs."""
@@ -67,7 +82,8 @@ def _prepared_mutation_options(ruleset, effects, root):
     return tuple(prepared)
 
 
-def _mutation_equipment(build, profile, kit, main_id, main, off, mechanics, effects, root):
+def _mutation_equipment(build, profile, kit, main_id, main, off, mechanics, effects, root,
+                        *, metal_worn=False):
     """Keep physical copies and their active positions; never grant availability."""
     from mordheim_knowledge.loader import load_items, load_simulation_mappings
     item_kinds = {row["id"]: row.get("kind") for row in load_items(build.ruleset, root)}
@@ -113,6 +129,8 @@ def _mutation_equipment(build, profile, kit, main_id, main, off, mechanics, effe
                 effect = merge_effects(effect, EffectSet(tags=("material.gromril",)))
             elif mid == "armour.ithilmar-armour":
                 effect = merge_effects(effect, EffectSet(tags=("material.ithilmar",)))
+        if mid in METAL_ARMOUR_IDS or (metal_worn and mid in METAL_DEFENCE_IDS):
+            effect = merge_effects(effect, EffectSet(tags=("condition.metal-armour",)))
         return effect
     if main_id not in {"weapon.fist", "weapon.natural-attacks"}:
         item_ids = [main_id, build.main_material_id]
@@ -543,10 +561,7 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         or build.extra_hand_id in {"defence.shield", "defence.buckler"}
     ):
         raise ValueError("metal_armour requires an actual worn armour, helmet, shield or buckler")
-    if traits.get("metal_armour") or build.armour_id in {
-        "armour.heavy-armour", "armour.gromril-armour", "armour.ithilmar-armour",
-        "armour.plate-armour", "armour.chaos-armour", "armour.attlas-plate-mail",
-    }:
+    if traits.get("metal_armour") or build.armour_id in METAL_ARMOUR_IDS:
         global_effects = merge_effects(global_effects, EffectSet(tags=("condition.metal-armour",)))
     global_effects_without_equipment = apply_execution_effects(
         EffectSet(), innate_ids, effects, "passive", "fighter")
@@ -1010,7 +1025,8 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         raise ValueError("Stupidity Leadership bonus requires Brood Mentality")
     mutation_options = (_prepared_mutation_options(build.ruleset, effects, root)
                         if "mechanic.solkan-inquisitor" in global_effects.tags else ())
-    mutation_equipment = _mutation_equipment(build, profile, kit, main_weapon_id, main_effect, off_effect, mechanics, effects, root)
+    mutation_equipment = _mutation_equipment(build, profile, kit, main_weapon_id, main_effect, off_effect,
+        mechanics, effects, root, metal_worn=bool(traits.get("metal_armour")))
     compiled = CompiledFighter(f"{build.band_id or 'custom'}:{build.profile_id or 'custom'}",characteristics,main_effect,off_effect,global_effects,max(1,armour_save),4 if "defence.helmet" in build.defence_ids else 5 if "defence.cooking-pot-helmet" in build.defence_ids else 7,natural_armour_save,bool(build.off_hand_id and build.off_hand_id.startswith("weapon.")),bool(traits.get("natural_armour_unmodified",False)),int(traits.get("injury_profile") or 0),random_characteristics,natural_armour_worst_save=int(traits.get("natural_armour_worst_save") or 7),extra_attacks=tuple(extra_attacks),missile_weapon_limit=missile_weapon_limit,ballistic_skill=ballistic_skill,construction_tags=construction_tags,main_weapon_without_poison=main_without_poison,off_hand_without_poison=off_without_poison,mounted=build.mounted,unarmed_weapon=(replace(effects["weapon.fist"].effect, strength_bonus=0) if "mechanic.ogre-unarmed" in global_effects.tags else effects["weapon.fist"].effect),vomit_attack=vomit_attack, shield_and_skill_effects=shield_and_skill_effects, stupidity_leadership=traits.get("stupidity_leadership"), stupidity_leadership_bonus=traits.get("stupidity_leadership_bonus", 0), animal_handler_leadership=handler_value, skill_effects_only=skill_effects_only, global_effects_without_equipment=global_effects_without_equipment, mutation_options=mutation_options, mutation_equipment=mutation_equipment, natural_armour_stacks=bool(traits.get("natural_armour_stacks", False)))
     from mordheim_construction.runes import apply_item_modifiers
     return apply_item_modifiers(compiled, (*automatic_profile_bindings, *selected_profile_bindings), effects, traits)

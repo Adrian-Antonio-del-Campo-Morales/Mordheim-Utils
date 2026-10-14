@@ -226,6 +226,13 @@ def require_characteristics(fighter, state, dice, key, needed, decisions=None):
         resources_spent=state.resources_spent | owned.state.resources_spent)
 
 
+def maximum_wounds(fighter: CompiledFighter) -> int:
+    """The Wound total the compiled fighter may hold at once."""
+    return (fighter.characteristics.wounds
+            + int(phases.has_tag(fighter.global_effects, "skill.monstrous"))
+            + int(phases.has_tag(fighter.global_effects, "condition.petru-fortitude")))
+
+
 def initialize_fighter(fighter: CompiledFighter, dice: DiceSource, key: str,
                        decisions: DecisionPolicy | None = None) -> FighterState:
     from mordheim_combat.modular.contexts import OwnedRollDice
@@ -267,8 +274,7 @@ def initialize_fighter(fighter: CompiledFighter, dice: DiceSource, key: str,
     nominated = phases.has_tag(fighter.global_effects, "condition.guiding-dream-target")
     if nominated and guiding_dream in (4, 5):
         values["S"] += 1
-    wounds = fighter.characteristics.wounds + int(phases.has_tag(fighter.global_effects, "skill.monstrous"))
-    wounds += int(phases.has_tag(fighter.global_effects, "condition.petru-fortitude"))
+    wounds = maximum_wounds(fighter)
     return FighterState(
         wounds=wounds,
         netted=phases.has_tag(fighter.global_effects, "condition.netted"),

@@ -10,7 +10,7 @@ from mordheim_combat.modular.aftermath import _fire_recovery
 from mordheim_combat.modular.aftermath import _force_of_will
 from mordheim_combat.modular.aftermath import _spines
 from mordheim_combat.modular.aftermath import _start_round_state
-from mordheim_combat.modular.state import _refresh_random_characteristics, require_characteristics
+from mordheim_combat.modular.state import _refresh_random_characteristics, maximum_wounds, require_characteristics
 from mordheim_combat.modular.pools import _resolve_attack_pool, electrical_touch_weapon
 from mordheim_combat.modular.leadership import resolve_local_leadership
 from mordheim_combat.modular.psychology import causes_fear, resolve_fear, resolve_stupidity
@@ -458,6 +458,10 @@ def resolve_round(
         )
     first = equipment_for_state(first, first_state, first_round=first_round)
     second = equipment_for_state(second, second_state, first_round=first_round)
+    # Equipment that is gone takes its numeric bonuses with it, so a Wound an
+    # item folded into the profile cannot exceed the surviving maximum.
+    first_state = replace(first_state, wounds=min(first_state.wounds, maximum_wounds(first)))
+    second_state = replace(second_state, wounds=min(second_state.wounds, maximum_wounds(second)))
     for owner_first, fighter in ((True, first), (False, second)):
         current = first_state if owner_first else second_state
         if current.equipment_cast_off:
