@@ -1269,16 +1269,15 @@ rules:
     - shaman
 - id: bullied-goblin--achilles-heel
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: profile
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
-    - id: unimplemented.snotlings-web.special.achilles-heel
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: critical-hit and armour-save-piercing modifiers are outside the current
-        engine scope.
+    - id: mechanic.achilles-heel
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.achilles-heel
   name: Achilles' Heel
   effect: >-
     Your Snotling always causes Critical Hits on rolls of 6 (when wounding) regardless of opponent's
@@ -1302,6 +1301,7 @@ rules:
     - bigsnotz
     - scouts
     - shaman
+  kind: warband_skill
 - id: scouts--worm
   runtime:
     scope: 'NO'
@@ -1499,16 +1499,16 @@ rules:
     - wheelo
 - id: band--pointy-stick
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
-    grant: band
+    grant: none
     effects:
-    - id: unimplemented.snotlings-web.item.pointy-stick
-      scope: LATER
+    - id: pointy-stick-dagger-alias
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: a modifier that grants the defender an armour save against a specific
-        weapon is outside the current engine scope.
+      reason: The list names Dagger/Pointy Stick and its printed armour modifier is the existing weapon.dagger
+        contract. This descriptive item entry grants no passive bonus to other weapons; canonical list
+        mapping supplies the dagger.
   name: Pointy Stick
   effect: >-
     1st free/2 gc, Common. The Snotlings' dagger - the equipment lists print their rows as

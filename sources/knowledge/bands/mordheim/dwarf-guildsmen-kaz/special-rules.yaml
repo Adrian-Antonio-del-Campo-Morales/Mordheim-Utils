@@ -2,14 +2,29 @@ schema_version: 2
 band_id: dwarf-guildsmen-kaz
 rules:
 - id: band--town-crier-6-inheritance
+  kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
     - id: unimplemented.dwarf-guildsmen-kaz.band.town-crier-6-inheritance
-      scope: LATER
-      binding: null
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
+    - id: inherited.dwarf-guildsmen-kaz.band.town-crier-6-inheritance.hard-head
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.concussion-immune
+        parameters:
+          value: true
+    - id: inherited.dwarf-guildsmen-kaz.band.town-crier-6-inheritance.hatred-orcs-goblins
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-orcs-goblins
       reason: >-
         Deferred cross-reference: inherits special rules, equipment lists, Dwarf Axe usage and
         Dwarf special skills from Town Crier 6 (or Best of Town Crier), except Incomparable

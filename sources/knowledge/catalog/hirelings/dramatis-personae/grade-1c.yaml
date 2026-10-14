@@ -10,7 +10,7 @@ profiles:
   name: Belandysh, Condemned Champion of Chen
   name_i18n:
     es: Belandysh, Campeón Condenado de Chen
-  normalization_status: out_of_scope
+  normalization_status: normalized
   warband_rating:
     kind: fixed
     value: 130
@@ -25,10 +25,14 @@ profiles:
       name: Broadsword of Damnation
       name_i18n:
         es: Espada Ancha de la Condenación
+      rules:
+      - hireling.dramatis.belandysh-condemned-champion-of-chen.item.broadsword-of-damnation.rule.combat
     - id: hireling.dramatis.belandysh-condemned-champion-of-chen.item.chaos-armour
       name: Chaos Armour
       name_i18n:
         es: Armadura del Caos
+      rules:
+      - hireling.dramatis.belandysh-condemned-champion-of-chen.item.chaos-armour.rule.combat
   skill_access: []
   starting_skill_ids:
   - skill.fearsome
@@ -59,12 +63,22 @@ profiles:
           id: mechanic.automatic-leadership
   - id: hireling.dramatis.belandysh-condemned-champion-of-chen.rule.inconsistency
     name: Inconsistency
-    effect: Variable characteristics are rerolled when required by source.
+    effect: His variable attributes are determined whenever needed, once every turn.
     effect_i18n:
       es: >-
         Las características variables se vuelven a tirar cuando la fuente lo requiere.
     name_i18n:
       es: Incoherencia
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.inconsistency
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.inconsistency
   - id: hireling.dramatis.belandysh-condemned-champion-of-chen.rule.regeneration
     name: Regeneration
     effect: Regenerates wounds on source 4+ except fire/fire magic.
@@ -73,6 +87,25 @@ profiles:
         Regenera heridas con un 4+ de la fuente, excepto contra fuego/magia de fuego.
     name_i18n:
       es: Regeneración
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: trait.regeneration-save
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.regeneration-save
+          parameters:
+            value: 4
+      - id: trait.regeneration-blocked-by-fire
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.regeneration-blocked-by-fire
+          parameters:
+            value: true
   - id: hireling.dramatis.belandysh-condemned-champion-of-chen.rule.tol-agath
     name: Tol'Agath
     effect: Uses a mutated mount with source rules.
@@ -81,6 +114,15 @@ profiles:
         Usa una montura mutada con las reglas de la fuente.
     name_i18n:
       es: Tol'Agath
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.dramatis.belandysh-condemned-champion-of-chen.tol-agath.non-duel
+        scope: 'NO'
+        binding: null
+        reason: TolAgath mount and independent mount state are excluded.
   - id: hireling.dramatis.belandysh-condemned-champion-of-chen.rule.wrath-of-tchar
     name: Wrath of Tchar
     effect: Can be permanently lost from campaign under source condition.
@@ -89,6 +131,49 @@ profiles:
         Puede perderse permanentemente de la campaña bajo la condición de la fuente.
     name_i18n:
       es: Ira de Tchar
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.dramatis.belandysh-condemned-champion-of-chen.wrath-of-tchar.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Post-battle loss, weapon pickup and campaign re-hiring are excluded.
+  - id: hireling.dramatis.belandysh-condemned-champion-of-chen.item.broadsword-of-damnation.rule.combat
+    name: Broadsword Of Damnation
+    effect: Source-defined equipment properties; mount and campaign consequences excluded.
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: weapon.broadsword-of-damnation
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: weapon.broadsword-of-damnation
+    name_i18n:
+      es: Broadsword Of Damnation
+    effect_i18n:
+      es: Source-defined equipment properties; mount and campaign consequences excluded.
+  - id: hireling.dramatis.belandysh-condemned-champion-of-chen.item.chaos-armour.rule.combat
+    name: Chaos Armour
+    effect: Source-defined equipment properties; mount and campaign consequences excluded.
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: armour.chaos-armour
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: armour.chaos-armour
+    name_i18n:
+      es: Chaos Armour
+    effect_i18n:
+      es: Source-defined equipment properties; mount and campaign consequences excluded.
   unresolved_references:
   - kind: random_profile
     source_name: Belandysh M4 WS D6 BS0 S D6 T D6 W3 I D6 A D3 Ld10
@@ -102,6 +187,16 @@ profiles:
     section: Dramatis Personae / Belandysh, Condemned Champion Of Chen
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1c
   out_of_scope_reason: Random-characteristic Dramatis plus a random-characteristic mount.
+  characteristics:
+    M: 4
+    WS: D6
+    BS: 0
+    S: D6
+    T: D6
+    W: 3
+    I: D6
+    A: D3
+    Ld: 10
 - id: hireling.dramatis.grand-master-ippan-shu
   kind: dramatis-personae
   grade: 1c

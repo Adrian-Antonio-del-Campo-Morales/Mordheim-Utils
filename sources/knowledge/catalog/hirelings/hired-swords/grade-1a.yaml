@@ -467,12 +467,28 @@ profiles:
       es: Tirador Letal
   - id: hireling.hired-sword.roadwarden.rule.stern
     name: Stern
-    effect: Uses the source stern/leadership rule.
+    effect: The Roadwarden may reroll failed Leadership tests for panic and fear, and is immune to All
+      Alone tests. Only the fear reroll is used in the duel.
     effect_i18n:
       es: >-
         Usa la regla de severidad/liderazgo de la fuente.
     name_i18n:
       es: Severo
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.fear-reroll
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.fear-reroll
+    source_refs:
+    - manual: Empire in Flames
+      printed_page: 0
+      section: Roadwarden / Stern
+      url: https://www.broheim.net/downloads/rules/Empire%20In%20Flames.pdf
   - id: hireling.hired-sword.roadwarden.rule.campaign-eligibility
     name: Dynamic Hiring Eligibility — Highwayman Incompatibility
     effect: The Roadwarden cannot be hired by a warband whose current roster contains a Highwayman.

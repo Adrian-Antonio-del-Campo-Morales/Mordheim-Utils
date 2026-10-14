@@ -294,3 +294,20 @@ The discount and rarity/initial-purchase clauses are separate acquisition
 conditions; they neither grant nor remove eligibility to use the items.
 Preserve the printed prices and notes in the
 [equipment lists](../../sources/knowledge/bands/mordheim/wood-elves-of-athel-loren-web/equipment-access.yaml).
+
+## Cathayan longsword prints no armour penalty — 2026-10-14
+
+The coordinator decides that the printed prose governs: the Cathayan longsword
+gives only +1 Initiative and +1 Weapon Skill. The `armour_penetration: 1`
+parameter of the execution contract was project scaffolding and is removed from
+`sources/knowledge/catalog/mechanics/execution.yaml`. Armoured defenders save
+at their own printed face against the longsword. The corresponding E2E
+clauses-authored record is in the corpus ficha for `weapon.cathayan-longsword`.
+
+## The Starsword printed Dodge save is the ward save — 2026-10-14
+
+For the Starsword standing exception ("ignores all armour saves except for ward
+and Dodge saves"), the coordinator rules that the printed Dodge save and the ward
+save are the same thing. The engine's ward face therefore carries the printed
+Dodge exemption; no separate Dodge-save representation is added. The E2E
+scenarios live in the `dodge-exception` clause of the starsword ficha.

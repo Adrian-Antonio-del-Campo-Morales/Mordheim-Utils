@@ -2,11 +2,11 @@
 # audit_id: mechanic/weapon.kusara-kama
 # scaffold_fingerprint: 07628ed7cc352742eb6e796f5690d6aeab257a1bae564ee879c3ae3e6dfedb4c
 # authoring_status: PARTIAL
-# authoring_progress: the admitted clause carries 5 authored scenarios and stays
-#   PARTIAL: its printed weapon-hamper sentence has no authored tape.  The state
-#   it needs does exist in the round snapshot (see the corrected clause note), but
-#   the hand token, the reset boundary and the pool arithmetic are not pinned by
-#   any admitted fixture, so no expectation is invented here.
+# authoring_progress: the admitted clause carries 7 authored scenarios and stays
+#   PARTIAL: the hamper trigger, the reduced pool and the between-phase recovery
+#   (the reset at the start of the wielder's next close-combat phase, pinned with
+#   maximum_rounds: 2) are authored; what stays unpinned is the literal hand token
+#   inside state.hampered_hands (see the refined clause note).
 #   REVIEWED still requires manual semantic review and execution_status stays
 #   UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -30,10 +30,15 @@
 #   are carried by the round snapshot as state.<side>.attack_penalty and
 #   state.<side>.hampered_hands, so "no round observation carries a hampered hand"
 #   was wrong. The two hamper tapes below pin the trigger, the declared hand choice
-#   and the reduced two-weapon pool; what stays unpinned is the literal hand token in
-#   hampered_hands at the round snapshot, the exact turn at which the reset happens
-#   relative to the defender's reply, and the pool arithmetic when a single weapon
-#   carries the whole multi-attack pool; those data are named here rather than invented. Pending semantic review.
+#   and the reduced two-weapon pool, and the between-phase recovery pinned with
+#   maximum_rounds: 2 - the printed "until the start of the wielder next close-combat
+#   phase" maps to the round-start reset, observed as state.<side>.attack_penalty 1 in
+#   the hampered phase and 0 beside the restored two-die pool in the next one.  The
+#   remaining dependency asks for the literal hand token inside state.hampered_hands:
+#   the normative text is the printed sentence above, the input is the round
+#   snapshot's own field, the assertion would be the exact token it records, and the
+#   missing capability is a documented token naming (or an admitted observation of
+#   one) so the expectation can be written without inventing it.
 # origin_id:
 #   mechanic/weapon.kusara-kama
 # analysis_status:
@@ -188,5 +193,34 @@
     - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 4}
     - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
     - {kind: roll, key: round.0.second.attack.1.hit, sides: 6, value: 1}
-
-
+# Recovery between phases: the hamper lasts exactly one close-combat phase of the
+# wielder.  In round 0 the declared five hampers the off hand and the defender's
+# pool keeps one attack (state attack penalty 1); at the start of round 1 the
+# printed reset fires, so the defender's pool is restored to both attack dice -
+# the tape carries the two round-1 defender attacks and the reset field reads 0.
+- audit_id: mechanic/weapon.kusara-kama
+  id: the-hamper-lasts-until-the-start-of-the-wielder-s-next-phase
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.kusara-kama
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.dagger
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  decisions:
+    - {key: round.0.first.attack.0.kusara-main-hand, value: false}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 5}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 2, state.second.attack_penalty: 1}
+    1: {state.second.attack_penalty: 0, attacks.1.hit: false, attacks.2.hit: false}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

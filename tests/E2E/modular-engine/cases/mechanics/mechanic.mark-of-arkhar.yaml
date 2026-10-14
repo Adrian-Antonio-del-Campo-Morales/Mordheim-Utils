@@ -13,7 +13,33 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole--scope--bloodfather-role (scope: YES)
-# PARTIAL[whole--scope--bloodfather-role]: no scenario is authorable from this file. The frozen clause keeps only "A Seer with this mark becomes a Bloodfather" while the source continues with that role's own effects, and the register records the truncation rather than repairing it; this scaffold also records no effect_id and relation: unresolved. The concrete missing datum is an executor contract: the printed role consequences (no casting, and the after-combat Leadership test that grants +1 Weapon Skill, Strength, Toughness or Initiative until the end of the battle, each characteristic once, plus Strength skill access) have no consumer in the engine at all (a case-insensitive search of packages/python for bloodfather returns nothing), the casting prohibition belongs to the excluded magic subsystem, and the skill access is construction rather than duel state, so no round observation can stand for them. The pending source-versus-contract disagreement is preserved here and not resolved: the inherited mapping reads the shared mechanic as "Frenzy and a 4+ spell save, with the Bloodfather progression left to the campaign", while the printed effect in the same source states the role and its own combat effects, and the 4+ spell save is a scope-NO clause of this file.
+# PARTIAL[whole--scope--bloodfather-role]: resolved by coordinator decision, closing
+#   the structured dependency. The clause is delivered as a scope/ownership transfer with
+#   its concrete datum, no reading pre-empted by an assertion.
+#   Normative text: the printed sentence of the frozen clause ("A Seer with this mark
+#   becomes a Bloodfather") together with the role's own printed consequences that
+#   continue in the same source (no casting, and the after-combat Leadership test
+#   granting +1 to Weapon Skill, Strength, Toughness or Initiative until the end of
+#   the battle, each characteristic once, plus Strength skill access).
+#   Input: a Seer declared with the_mark (the mark id this file's own record carries)
+#   meeting an ordinary opponent, since every printed consequence of the role lives
+#   outside the duel or before/after it.
+#   Assertion that is blocked: the role's effects are not round observations at all -
+#   the casting prohibition belongs to the excluded magic subsystem, the skill access
+#   is construction rather than duel state, and the after-combat test happens when no
+#   round resolves. The concrete missing branches:
+#   (a) the inheritance question the register already records - the inherited mapping
+#   reads the shared mechanic as "Frenzy and a 4+ spell save, with the Bloodfather
+#   progression left to the campaign", while the printed effect in the same source
+#   states the role and its own combat effects; the two branches are kept and the
+#   4+ spell save is a scope-NO clause of this file, so neither is asserted;
+#   (b) a consumer for the role at all: a case-insensitive search of packages/python
+#   for bloodfather returns nothing, so neither branch has an executor to observe.
+#   DECISION (D15-A, 2026-10-14): the role is campaign progression per the inherited
+#   mapping - not a duel effect and no duel consumer is owed. The role's printed
+#   after-combat consequences transfer to the campaign continuity record; no
+#   additional-scenario gap remains in this file and the frenzy clause's two authored
+#   scenarios (below) carry the file's executable side.
 # origin_id:
 #   mechanic/mechanic.mark-of-arkhar
 # analysis_status:

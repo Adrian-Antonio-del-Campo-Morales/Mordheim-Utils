@@ -2,14 +2,14 @@
 # audit_id: rule/mordheim/turjuk-rel/scholar--field-of-scholarship/unimplemented.turjuk-rel.scholar.field-of-scholarship
 # scaffold_fingerprint: 72215b51842d4545e40abc6307e7442cf782f4011cb371d7b038edb83da03392
 # authoring_status: PARTIAL
-# authoring_progress: neither admitted clause is authorable, for the same reason the sister records of this
-# special skill record (ghutani-rel scholar, muzil-rel scholar), which stand PARTIAL with the same missing
-# datum.  Both clauses carry no effect_id, an independent relation and an empty consumer list, and the record's
-# own note places the whole row in campaign scope: the Physiology injury reroll has no operator that takes a
-# duel injury result again (the injury step resolves one declared table face), and the Poetry Leadership is a
-# supplied leader value with no recorded producer, binding or key.  The missing representation is an
-# injury-reroll operator plus a recorded producer for the supplied Leadership, not a clarification.  REVIEWED
-# still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: both admitted clauses now carry scenarios, written from the printed sentence and this [Reconciled 2026-10-14: the injury-reroll tape was withdrawn against the register's scope-NO
+#   disposition; only the leader-leadership tapes remain.]
+#   origin's accepted contract, and the sister records (ghutani-rel and muzil-rel scholars) were corrected the
+#   same way.  The earlier claim that neither clause is authorable was wrong: an unrecorded effect_id and a
+#   null binding are missing implementation, not a missing requirement, and the duel does carry the two routes
+#   the tapes use (the injury-result re-roll and the supplied leader condition).  The clauses stay PARTIAL with
+#   the pending implementation and the printed reward gate named; REVIEWED still requires manual semantic
+#   review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -19,10 +19,14 @@
 # Governing rulings: docs/decisions/design-rulings.md
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: field-of-scholarship--scope--injury-reroll (scope: YES)
-# PARTIAL[field-of-scholarship--scope--injury-reroll]: [C] not asserted.  No injury-reroll operator exists for
-# this duelist and the record names no effect_id, binding or consumer, so the printed Physiology reroll of an
-# injury result cannot be evidenced as an observation of this revision.
+# Clause: field-of-scholarship--scope--injury-reroll (scope: NO)
+# PARTIAL[field-of-scholarship--scope--injury-reroll]: [E] accepted scope disposition, recorded against the canonical register: the row
+#   field-of-scholarship--scope--injury-reroll carries clause_scope NO (the printed producer is the
+#   post-battle Serious Injuries table, campaign scope), so the previous tape
+#   the-scholar-rerolls-an-injury-result-he-suffers (which covered this clause) is withdrawn and no
+#   tape may cover it. The contradiction between that historical scope review's admitted facet and
+#   the canonical register is recorded for the owner as decision MHD-13 in
+#   outputs/human-decisions.md; nothing here re-decides it. Retained previous contract text:
 # origin_id:
 #   rule/mordheim/turjuk-rel/scholar--field-of-scholarship/unimplemented.turjuk-rel.scholar.field-of-scholarship
 # analysis_status:
@@ -51,9 +55,18 @@
 #   Exploration, post-battle Serious Injuries and a campaign-win condition; campaign scope. Scope review integration: {"clause_id":"field-of-scholarship","review_clause_id":"injury-reroll","source_state":"unverified","review_status":"reviewed","scope_reason":"The Physiology reroll of an injury result is an admitted individual injury consequence of this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Cartography exploration bonus, Physiology injury reroll, Poetry leader Leadership","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 #
 # Clause: field-of-scholarship--scope--leader-leadership (scope: YES)
-# PARTIAL[field-of-scholarship--scope--leader-leadership]: [C] not asserted.  The clause admits a supplied
-# leader condition, but the record records no producer, effect_id, binding or consumer for it and places the
-# row in campaign scope, so no key or value can be named for the supplied Leadership without inventing one.
+# PARTIAL[field-of-scholarship--scope--leader-leadership]: [C] asserted as the admitted supplied leader
+#   condition, with its unrepresentable gate recorded.  The printed sentence is "your leader adds +1 to his
+#   Leadership for his first leadership test in a scenario", and the register admits the facet as the supplied
+#   leader condition the ruling allows ("an external aura, leader or temporary effect may be supplied as an
+#   explicit current condition/bonus of a duelist").  The tapes below therefore give the band's own printed
+#   Leader (`emir`, the profile its own `emir--leader` rule applies to) as the tested duelist and the band's
+#   own `scholar` as the supplied rule carrier, and the pair reads the printed +1 across the boundary at
+#   Ld 8 / Ld 9; no key or value is invented (the supplied value comes from the printed profile and the
+#   decision is the corpus's ordinary Leadership test).  The printed reward gate ("if your warband won the
+#   last battle they fought") is a previous-battle fact no fixture field or condition identity carries; it is
+#   recorded here, not silently dropped.  Pending implementation: the binding is null.  REVIEWED still
+#   requires manual semantic review.
 # origin_id:
 #   rule/mordheim/turjuk-rel/scholar--field-of-scholarship/unimplemented.turjuk-rel.scholar.field-of-scholarship
 # analysis_status:
@@ -110,4 +123,65 @@
 # Register notes (context only, not behavioral authority):
 #   Exploration, post-battle Serious Injuries and a campaign-win condition; campaign scope. Scope review integration: {"clause_id":"field-of-scholarship","review_clause_id":"exploration","source_state":"unverified","review_status":"reviewed","scope_reason":"A Cartography exploration bonus is campaign exploration content, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Cartography exploration bonus, Physiology injury reroll, Poetry leader Leadership","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
-[]  # Empty scenario list: PARTIAL - no injury-reroll operator and no recorded supplied-Leadership producer.
+- audit_id: rule/mordheim/turjuk-rel/scholar--field-of-scholarship/unimplemented.turjuk-rel.scholar.field-of-scholarship
+  id: the-supplied-scholar-raises-the-leaders-first-leadership-test
+  covers: [field-of-scholarship--scope--leader-leadership]
+  # Poetry: "your leader adds +1 to his Leadership for his first leadership test in a scenario", admitted
+  # by this origin's scope review as the supplied leader condition the ruling allows.  The recipient is the
+  # printed leader, so the tested duelist is the band's own `emir` (its printed Leader, Ld 8, the profile
+  # the band's own `emir--leader` rule applies to) and the rule carrier is the band's own `scholar`,
+  # supplied as a nearby participant of the leader's side.  The fear-causing charge and the two faces are
+  # the corpus's ordinary Leadership test (4 + 5 = 9): it passes at the printed Ld 8 + 1 and fails at the
+  # unmodified Ld 8, so this tape and its control below read the +1 and nothing else.  The rule's binding is
+  # null today, so the strict tape fails until the Poetry condition is projected onto the tested duelist's
+  # value - the PENDING implementation defect, not a withheld requirement.
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: turjuk-rel, profile_id: emir}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: poet
+        side_id: second
+        condition: standing
+        fighter: {collection: mordheim, band_id: turjuk-rel, profile_id: scholar}
+    distances:
+      - [second, poet, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/turjuk-rel/scholar--field-of-scholarship/unimplemented.turjuk-rel.scholar.field-of-scholarship
+  id: the-same-faces-fail-without-the-supplied-scholar
+  covers: [field-of-scholarship--scope--leader-leadership]
+  # The control of the tape above: the same leader, the same charge and the same faces (4 + 5 = 9), with no
+  # scholar supplied, so the +1 of the printed Poetry clause is absent and the printed Ld 8 fails it.  The
+  # pair is what makes the boundary attributable to the clause rather than to the fixture.
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: turjuk-rel, profile_id: emir}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

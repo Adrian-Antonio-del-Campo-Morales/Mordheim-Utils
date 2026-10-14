@@ -155,15 +155,15 @@ rules:
     - sabretusks
 - id: sabretusks--feral-instinct
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.maneaters.sabretusks.feral-instinct
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.feral-instinct
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.feral-instinct
   name: Feral Instinct
   effect: >-
     Even a Guide has difficulty controlling such feral beasts. At the beginning of the Ogres turn
@@ -504,15 +504,15 @@ rules:
 - id: band--ogres-special-skills-crude-belch
   kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.maneaters.band.ogres-special-skills-crude-belch
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.crude-belch-ogre
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.crude-belch-ogre
   name: Crude Belch
   effect: >-
     Ogres eat almost anything. Consequences are to be expected from those inconsiderate enough to

@@ -1,13 +1,12 @@
-"""T13 M4g: the Lunatics own-turn state and the Mushroom consumable states.
+"""T13 M4g: the Lunatics recurring state and the Mushroom consumable states.
 
-Every expectation is derived from the printed clause, never from the current
-engine output:
+Source expectations retain the printed clock and named grants. Lunatics
+cross-turn duration assertions preserve the recovered implementation pending
+an explicit source/ruling decision; they do not certify accumulation semantics.
 
-* Lustria Pygmies *Lunatics* rolls its own D6 at the start of each of the
-  model's turns: 1-3 gains Frenzy and 4-6 gains Stupidity.  The grants last as
-  their own printed rules do - the Frenzy until the warrior is Knocked Down or
-  Stunned, the Stupidity for the rest of the duel - and the model's printed
-  Immunity to Psychology does not cancel the grant its own profile prints.
+* Lustria Pygmies *Lunatics* rolls its own D6 at the start of EACH player turn:
+  1-3 gains Frenzy and 4-6 gains Stupidity. The model's printed Immunity to
+  Psychology does not cancel the grant its own profile prints.
 * The Fungus Brew is a pre-battle producer: the caller supplies the affected
   duelist and the results its batch printed, one canonical condition per result.
   *Loony* supplies Frenzy and Stupidity together, which is the printed
@@ -97,7 +96,7 @@ def misses(round_index, owner, count, *, first=0):
             for index in range(first, first + count)}
 
 
-# --- Lunatics: the printed recipient and its own-turn D6 -------------------
+# --- Lunatics: the printed recipient and its every-player-turn D6 -------------------
 
 def test_the_lunatics_rule_reaches_its_printed_recipient_only():
     fighter = lunatic()
@@ -109,7 +108,7 @@ def test_the_lunatics_rule_reaches_its_printed_recipient_only():
     assert LUNATICS not in pygmy().global_effects.tags
 
 
-def test_a_roll_of_one_to_three_grants_the_printed_frenzy_for_the_battle():
+def test_a_roll_of_one_to_three_grants_frenzy_and_retains_recovered_duration():
     fighter, foe = lunatic(), bare()
     dice = KeyedDice({"round.0.first.lunatics": 2, **misses(0, "first", 2), **misses(0, "second", 1)})
     choices = StrictDecisions([])
@@ -118,13 +117,13 @@ def test_a_roll_of_one_to_three_grants_the_printed_frenzy_for_the_battle():
     # Frenzy doubles the printed one Attack, and the foe still strikes once.
     assert result.state.first.frenzy and result.state.first.lunatic_result == 2
     assert len(result.attacks) == 3
-    # The die belongs to the bearer's own turn: on the opponent's turn no roll is
-    # asked for, and the Frenzy it granted persists.
-    dice = KeyedDice({**misses(1, "first", 2), **misses(1, "second", 1)})
+    # The source says EACH turn: the opponent's player turn also requires its
+    # die, independently of the still-pending duration/accumulation ruling.
+    dice = KeyedDice({"round.1.first.lunatics": 2, **misses(1, "first", 2), **misses(1, "second", 1)})
     choices = StrictDecisions([])
     second = resolve_round(fighter, foe, result.state, dice, choices)
     dice.finish(); choices.finish()
-    assert "round.1.first.lunatics" not in dice.requests
+    assert "round.1.first.lunatics" in dice.requests
     assert second.state.first.frenzy and len(second.attacks) == 3
 
 
@@ -145,9 +144,9 @@ def test_a_roll_of_four_to_six_grants_the_printed_stupidity():
     assert result.state.first.stupidity_failed and result.state.first.lunatic_stupidity
     assert not result.state.first.frenzy
     assert len(result.attacks) == 1
-    # It is not a this-turn-only result: the state survives the opponent's turn
+    # Retained compatibility, pending duration ruling: the state survives the opponent's turn
     # and the next own turn asks for the test again.
-    dice = KeyedDice({**misses(1, "second", 1)})
+    dice = KeyedDice({"round.1.first.lunatics": 5, **misses(1, "second", 1)})
     choices = StrictDecisions([])
     second = resolve_round(fighter, foe, result.state, dice, choices)
     dice.finish(); choices.finish()

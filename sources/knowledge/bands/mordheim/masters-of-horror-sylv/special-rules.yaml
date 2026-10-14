@@ -591,16 +591,15 @@ rules:
     - flesh-construct
 - id: the-bitten--transform
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.masters-of-horror-sylv.the-bitten.transform
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: per-turn transformation with Frenzy/Sprint grants and equipment dropping
-        is outside the current engine scope.
+    - id: mechanic.bitten-transform
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.bitten-transform
   name: Transform
   effect: >-
     Roll a D6 each turn and consult the following. Once transformed, the Bitten cast off all

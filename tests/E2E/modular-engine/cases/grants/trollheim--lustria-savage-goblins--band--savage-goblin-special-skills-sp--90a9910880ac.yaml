@@ -1,8 +1,8 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-spider-infested/mechanic.spider-infested
 # scaffold_fingerprint: 6a75e8c59ec0bf094900fc96b78eb3300dbca41037442c52ea324f1e8b352e83
-# authoring_status: PARTIAL
-# authoring_progress: the admitted whole clause carries 4 authored scenarios derived from the printed rule and the recorded contract: the enemy penalty after a missed To Hit roll, after a successful parry by the bearer, its cumulation across two of the bearer's turns and its absence without the rule.  The printed end condition ("until it is no longer engaged with the Hero or the Hero is taken Out of Action") is NOT represented: the canonical operator's own case records that the round snapshot carries state.<side>.initiative_penalty but no assignment in modular/ clears it, and once the duel disengages the runner resolves no further round, so no snapshot of a cleared value can exist.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted whole clause carries 5 authored scenarios derived from the printed rule and the recorded contract: the enemy penalty after a missed To Hit roll, after a successful parry by the bearer, its cumulation across two of the bearer's turns, its absence without the rule and its clearing when the bearer is taken Out of Action.  The printed end condition ("until it is no longer engaged with the Hero or the Hero is taken Out of Action") is now authored through its second arm: the fifth scenario declares the accumulated point in round 0 and the field at zero in round 1, once the enemy has taken the bearer's last wound, which is the printed reset and an observation the round snapshot can carry.  The first arm of the same sentence (the penalty ending when the two are no longer engaged) stays unrepresented: contacts and distances are supplied setup facts and the round loop ends once the duel disengages, so no post-disengagement snapshot exists; the absent reset assignment in the modular round is the defect the new tape detects, not a reason to withhold the scenario.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -13,11 +13,19 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole (scope: YES)
-# PARTIAL[whole]: [C] the pending facet is an observation the contract cannot produce, not authoring work:
-# the round snapshot carries state.<side>.initiative_penalty but no assignment in modular/ clears it, and
-# once the duel disengages the runner resolves no further round, so no snapshot of the cleared value can
-# exist.  [B] does not apply because the tape itself is expressible but its expected observation is not;
-# the named implementation gap is a reset operator on disengagement.  4 scenarios evidence the accumulated Initiative penalty the printed triggers produce on the attacker (a missed To Hit roll and a successful bearer parry) and its absence without the rule.  Pending: the printed clearing condition, whose missing datum is an operator that resets the field when the engagement ends - an implementation gap, not a vocabulary limit.
+# AUTHORED[whole]: 5 scenarios evidence the printed clause end to end.  Four of them carry its accumulation on
+# the attacker: the penalty after a missed To Hit roll, the same point after a successful parry by the bearer, its
+# cumulation across two of the bearer's turns while the two stay engaged, and its absence without the rule.  The
+# fifth carries the printed end condition at the arm a snapshot can reach - the Hero being taken Out of Action:
+# round 0 declares the accumulated point (state.first.initiative_penalty: 1) and round 1 declares the field back
+# at zero in the same round the bearer's last wound is dealt (state.second.condition: OUT), so the reset is an
+# observable difference between two round snapshots rather than an internal modifier.  The other arm of the same
+# sentence - the penalty ending when the enemy is no longer engaged with the Hero - stays unrepresented because
+# the fixture supplies contacts and distances as setup facts and the round loop ends when the duel disengages, so
+# no post-disengagement round snapshot exists; that is recorded here as the remaining limit of this clause.
+# THE DEFECT THESE TAPES DETECT (recorded, not hidden): the round snapshot carries
+# state.<side>.initiative_penalty but no assignment in the modular round resets it, so the printed end condition
+# has no implementation today - which is exactly what the fifth scenario fails on.
 # origin_id:
 #   rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-spider-infested/mechanic.spider-infested
 # analysis_status:
@@ -138,3 +146,32 @@
     0: {attacks.0.hit: false, state.first.initiative_penalty: 1}
     1: {attacks.0.hit: false, state.first.initiative_penalty: 2, state.engaged: true}
   expect_final: {rounds_executed: 2, termination_reason: horizon}
+
+# The printed end condition, second arm: the penalty ends when the Hero is taken Out of Action.  Round 0
+# accumulates one point (the enemy misses), and in round 1 the same enemy takes the bearer's last wound, so the
+# cleared field is the difference between the two snapshots.  The bearer has one wound, so the declared injury
+# result takes it out of action and it resolves no attack of its own in that round - a removed model does not
+# strike back, which is why round 1 declares no second-attack die.
+- audit_id: rule/trollheim/lustria-savage-goblins/band--savage-goblin-special-skills-spider-infested/mechanic.spider-infested
+  id: the-accumulated-penalty-is-cleared-when-the-bearer-is-taken-out-of-action
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.spider-infested]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.first.attack.0.hit, value: 4}
+    - {key: round.1.first.attack.0.wound, value: 4}
+    - {key: round.1.first.attack.0.injury.0, value: 5}
+  expect_rounds:
+    0: {state.first.initiative_penalty: 1, state.engaged: true}
+    1: {state.second.condition: OUT, state.first.initiative_penalty: 0}
+  expect_final: {rounds_executed: 2, termination_reason: second_out}

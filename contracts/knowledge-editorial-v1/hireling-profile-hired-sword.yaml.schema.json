@@ -36,6 +36,7 @@
       "required": ["id", "name", "name_i18n", "effect", "effect_i18n", "source_refs"],
       "additionalProperties": false,
       "properties": {
+        "runtime": { "$ref": "defs.schema.json#/$defs/rule_runtime" },
         "id": { "$ref": "defs.schema.json#/$defs/id" },
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
@@ -201,6 +202,7 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "innate_weapon_id": { "description": "Printed innate weapon used instead of the neutral default loadout.", "$ref": "defs.schema.json#/$defs/id" },
         "fixed_items": {
           "description": "Items the profile always carries.",
           "type": "array",
@@ -314,6 +316,7 @@
       "required": ["choose", "options"],
       "additionalProperties": false,
       "properties": {
+        "id": { "description": "Stable identity of this source loadout choice.", "$ref": "defs.schema.json#/$defs/id" },
         "choose": {
           "description": "How many options the player picks.",
           "type": "integer",
@@ -362,6 +365,8 @@
       "required": ["id", "name", "name_i18n", "effect", "effect_i18n"],
       "additionalProperties": false,
       "properties": {
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" },
+        "eligibility": { "description": "Canonical profiles allowed to select this rule.", "$ref": "defs.schema.json#/$defs/id_list" },
         "runtime": { "$ref": "defs.schema.json#/$defs/rule_runtime" },
         "id": { "$ref": "defs.schema.json#/$defs/id" },
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },

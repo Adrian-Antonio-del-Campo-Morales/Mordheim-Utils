@@ -110,22 +110,26 @@ def test_the_promoted_knight_of_purity_auto_passes_a_required_test():
 
 
 def test_the_emissary_patron_states_are_the_supplied_branch():
-    # The Emissary's catalogue grade is not projected as a duel participant
-    # yet, so this clause is proved at the canonical-record level: each supplied
-    # patron resolves to the operator the duel reads.
-    from pathlib import Path
+    # Fanatic Online 94: native equipment and one complete selected patron.
+    def emissary(patron):
+        return compile_fighter(FighterBuild(
+            "mordheim", band_id="hirelings.hired-sword.2a",
+            profile_id="hireling.hired-sword.emissary-of-chaos",
+            main_weapon_id="weapon.sword", armour_id="armour.chaos-armour",
+            off_hand_id="defence.shield", defence_ids=("defence.helmet",),
+            special_rule_ids=("hireling.hired-sword.emissary-of-chaos.patron." + patron,)))
 
-    import yaml
-
-    root = Path(__file__).resolve().parents[4] / "sources" / "knowledge"
-    document = yaml.safe_load((root / "catalog/rules/conditions.yaml").read_text(
-        encoding="utf-8-sig"))
-    records = {row["id"]: row for row in document["conditions"] if "id" in row}
-    nurgle = records["condition.emissary-patron-nurgle"]["runtime"]["effects"]
-    assert [effect["binding"]["id"] for effect in nurgle] == ["mechanic.causes-fear"]
-    khorne = records["condition.emissary-patron-khorne"]["runtime"]["effects"]
-    assert [effect["binding"]["id"] for effect in khorne] == ["trait.frenzy"]
-    assert all(effect["binding"]["parameters"] == {"value": True} for effect in khorne)
+    khorne, nurgle = emissary("khorne"), emissary("nurgle")
+    slaanesh, tzeentch = emissary("slaanesh"), emissary("tzeentch")
+    assert khorne.global_effects.frenzy
+    assert khorne.global_effects.attacks_bonus == 1
+    assert "poison.black-lotus" in nurgle.global_effects.tags
+    assert "mechanic.causes-fear" in nurgle.global_effects.tags
+    assert "mechanic.causes-fear" not in slaanesh.global_effects.tags
+    assert "mechanic.slaanesh-charge-test" in slaanesh.global_effects.tags
+    assert slaanesh.global_effects.incoming_hit_modifier == -1
+    assert "identity.spellcaster" in tzeentch.global_effects.tags
+    assert "poison.black-lotus" not in khorne.global_effects.tags
 
 
 # --- The qualified Beast Hunter family -------------------------------------

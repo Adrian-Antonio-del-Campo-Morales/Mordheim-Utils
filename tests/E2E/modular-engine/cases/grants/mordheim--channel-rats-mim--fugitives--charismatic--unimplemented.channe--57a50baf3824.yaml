@@ -2,10 +2,21 @@
 # audit_id: rule/mordheim/channel-rats-mim/fugitives--charismatic/unimplemented.channel-rats-mim.fugitive.charismatic
 # scaffold_fingerprint: b55ef01724c1a84d32d656f0926c3a1164a7c8bca9f82d8b8aa75acdce8219f0
 # authoring_status: PARTIAL
-# authoring_progress: no scenario is authored for the admitted clause because the record names a
-# proposed effect with no operator and no supplied opponent facts to gate on.  The exact missing
-# representation is named in the clause note below.  REVIEWED still requires manual semantic review
-# and execution_status stays UNEXECUTED.
+# authoring_progress: the corridor re-checked the clause note against the current KB and executor
+#   contract, because the 2026-10-14 snapshot predated the gate's activation: the band's own row
+#   fugitives--charismatic is runtime YES / implemented YES / grant profile with the live
+#   mechanic.opposite-sex-charge-test binding, the sex facts are a declared canonical trait
+#   (TRAIT_TYPES carries "sex"; the compiler projects sex.male/sex.female tags), and the
+#   resolve_fear path now names the gate exactly (a charging opposite-sex opponent takes the
+#   leadership-gated charge; the engine refuses the setup when either sex fact is missing, so the
+#   printed "any model from the opposite sex" is stated, not assumed).  The two tapes below state
+#   the clause: an enemy woman charging the printed machismo Fugitive takes the
+#   round.0.first.charismatic-charge test and a failure cancels that voluntary charge (no combat
+#   dice, the charge flags carry the failure); the same-sex control charges ungated.  The printed
+#   recipient list (Sisters of Sigmar, Amazons, Kislev Ranger etc) is the print's own examples,
+#   not a fixture input.  REVIEWED still requires manual semantic review; execution_status stays
+#   UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
@@ -54,4 +65,56 @@
 # Register notes (context only, not behavioral authority):
 #   The complete resolve_fear path has no opposite-sex qualification for this source. Reuse its charge-failure/state seam and resolve_local_leadership infrastructure, but add the specific gate and explicit sex facts. These are existing seams, not an already implemented Charismatic operator.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Derived from the printed clause and the band's own implemented rule row; no engine output was
+# consulted.  The Fugitive is read from its printed profile (Ld 7, A 1) and states the printed
+# sex fact; the charging enemy is a hand-built warrior (Leadership 5 declared) with the opposite
+# sex declared for the gate.  The gate is a 2d6 Leadership test keyed round.0.first.charismatic-charge.
+
+- audit_id: rule/mordheim/channel-rats-mim/fugitives--charismatic/unimplemented.channel-rats-mim.fugitive.charismatic
+  id: the-opposite-sex-charger-takes-the-gate-and-fails-it
+  covers: [charismatic]
+  # The printed gate: a woman of the opposite sex wishing to charge the Fugitive takes a
+  # Leadership test.  4+3 = 7 is above the declared Leadership 5, so the charge fails and the
+  # round resolves without combat (the strict tape holds no combat dice).
+  fighters:
+    first:
+      trait_overrides: {sex: female}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 5}
+    second:
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: fugitives
+      trait_overrides: {sex: male}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.charismatic-charge.0, value: 4}
+    - {key: round.0.first.charismatic-charge.1, value: 3}
+  expect_rounds:
+    0: {state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control charges with the same sex as the Fugitive: the clause qualifies the opposite sex
+# only, so no gate die exists and the charge resolves as ordinary close combat (natural-1 strikes
+# miss for everyone).
+- audit_id: rule/mordheim/channel-rats-mim/fugitives--charismatic/unimplemented.channel-rats-mim.fugitive.charismatic
+  id: the-same-sex-charger-is-ungated
+  covers: [charismatic]
+  fighters:
+    first:
+      trait_overrides: {sex: male}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1, leadership: 5}
+    second:
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: fugitives
+      trait_overrides: {sex: male}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

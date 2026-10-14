@@ -16,9 +16,11 @@ export function installCatalogue(key: string, catalogue: Catalogue): boolean {
  * rows; the shared module is the single interpreter of their bindings, so no
  * consumer walks `runtime.effects` on its own.
  */
-export function profileFacts(pack: BandPackage, profile: EditorialProfile, bandId?: string, catalogue?: Catalogue | null): ProfileFacts {
+export function profileFacts(pack: BandPackage, profile: EditorialProfile, bandId?: string, catalogue?: Catalogue | null,
+  additionalBindings: readonly Binding[] = []): ProfileFacts {
   return eligibility.profileFactsProjection({
     pack, profile, ...(bandId ? { band_id: bandId } : {}), ...(catalogue ? { catalogue } : {}),
+    additional_bindings: additionalBindings,
   });
 }
 
@@ -61,7 +63,7 @@ export function desktopCall(operation: string, key: string, input: Omit<BuildCon
   if (operation === "ruleBindings") return eligibility.selectedRuleBindings(
     input.package, input.build.special_rule_ids ?? [], catalogue);
   if (operation === "skillChoices") return eligibility.catalogueSkillChoices(context);
-  if (operation === "profileFacts") return profileFacts(input.package, input.profile, input.build.band_id ?? undefined, catalogue);
+  if (operation === "profileFacts") return profileFacts(input.package, input.profile, input.build.band_id ?? undefined, catalogue, input.profile_bindings);
   if (operation === "bandFacts") return bandFacts(input.package);
   if (operation === "profileSkillLists") return profileSkillLists(input.package, input.profile);
   if (operation === "profileBindings") return profileBindings(input.package, input.profile);

@@ -1,27 +1,17 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
-
 # audit_id: mechanic/mechanic.killing-blow
-
 # scaffold_fingerprint: 832fe70d909d3f4f934d3b4d40b0dae60412be864c5a5036a4c4eff129827dfb
-
-# authoring_status: PARTIAL
-
-# authoring_progress: the admitted clause is PARTIAL. Five scenarios evidence the automatic wound, the To Wound roll the same six still needs without the skill, the armour save a killing-blow wound allows and the printed parry refusal against a defender that may parry a six; the special-save half of the clause has no admitted source (see the clause note). REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
-
-#   the automatic wound on a natural hit six, the To Wound roll the same six still needs
-
-#   without the skill, and the armour save that remains available to a killing-blow wound.
-
-#   The printed parry refusal and the special-save half are not authored (see the clause
-
-#   note below). REVIEWED still requires manual semantic review and execution_status stays
-
-#   UNEXECUTED.
-
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause is AUTHORED after this intervention. Seven
+#   scenarios evidence the automatic wound on the natural hit six, the To Wound roll
+#   the same six still needs without the skill, the armour save the killing-blow wound
+#   still allows, both faces of the printed parry refusal against the admitted
+#   six-parry defender, and the printed special-save half authored as normative
+#   support from mechanic.bestial's printed 6+ ward: a ward six saves the automatic
+#   wound and a ward five does not. REVIEWED still requires manual semantic review
+#   and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
-
 #
-
 # Derive inputs and expectations from rule text and accepted rulings.
 
 # Do not derive them from the engine or execute combat during authoring.
@@ -38,13 +28,14 @@
 
 # Clause: whole (scope: YES)
 
-# PARTIAL[whole]: 5 scenarios cover the automatic wound on a natural hit six, the To Wound
+# AUTHORED[whole]: 7 scenarios cover the automatic wound on a natural hit six, the To Wound
 #   roll the same six still needs without the skill, the armour save that a killing-blow wound
 #   still allows, and both halves of the printed parry refusal against a defender that may
 #   parry a roll of six.  The special-save half of "armour and special saves remain allowed"
-#   has no scenario: this clause supplies no ward or regeneration source, and their thresholds
-#   are not stated by its own record, so the missing datum is an admitted special-save source
-#   bound to this clause.  The parry pair is reachable because the engine's six-parry gate is
+#   is authored as normative support through the admitted mechanic/mechanic.bestial clause,
+#   whose printed 6+ ward against all attacks supplies the special-save source this clause
+#   does not state: a ward six saves the automatic wound, a ward five does not.  The parry
+#   pair is reachable because the engine's six-parry gate is
 #   `rule.blood-dragon-sword-master`, which the admitted special rule
 #   `band--blood-dragon-power-sword-master` (grant: selectable, implemented: YES, eligibility
 #   blood-dragon-vampire) carries into the defender's global effects; the killing-blow attack
@@ -295,4 +286,54 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.parried: true, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "armour and special saves remain allowed": the admitted
+# mechanic/mechanic.bestial clause supplies the special save as normative support
+# (its printed ward is 6+ against all attacks).  The killing-blow wound still
+# offers the ward, and a six negates the automatic wound entirely.
+- audit_id: mechanic/mechanic.killing-blow
+  id: the-special-ward-save-still-applies-to-the-automatic-wound
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.killing-blow]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bestial]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.special.ward, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Boundary face of the same support: a ward five is below the printed 6+ and
+# cannot negate the automatic wound, so the killing-blow lands without the
+# ward die having been skipped.
+- audit_id: mechanic/mechanic.killing-blow
+  id: a-ward-below-six-does-not-negate-the-killing-blow
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.killing-blow]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.bestial]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 6}
+    - {key: round.0.first.attack.0.special.ward, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

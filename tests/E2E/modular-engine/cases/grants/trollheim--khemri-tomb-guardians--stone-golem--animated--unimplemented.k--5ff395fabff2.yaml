@@ -1,8 +1,22 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/khemri-tomb-guardians/stone-golem--animated/unimplemented.khemri-tomb-guardians.stone-golem.animated
 # scaffold_fingerprint: a92e780677ffbf3c7769b569b9e3527650c606f6b09aa5829908fa17ffee506f
-# authoring_status: PARTIAL
-# authoring_progress: the admitted animated clause was reviewed and no scenario is authorable.  The printed sentence is a classification ("is an animated being and is not Undead") whose consequence is which admitted rule set applies to the duelist; the register records no effect_id, an unresolved relation and no implementation consumer, and the duel vocabulary has no key that would exhibit the classification itself.  The adjacent consequences of the classification are separate origins with their own files (stone-golem--fear, --immune-to-psychology, --immune-to-poison).  The missing datum is a consumer that reads the animated classification.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted animated clause carries 2 authored scenarios and is no longer pending.  The
+# half of the printed sentence that had no tape is "is not Undead", and it is observable through an
+# implemented mechanic whose printed exemption keys on the target's kind: the hatred-(Undead) first-round hit
+# reroll is offered only against a `nature.undead` target (modular/contexts.py matches mechanic.hatred-undead
+# against that tag), so a declared miss stands against the published `stone-golem` profile and is rerolled
+# against a supplied `creature_kind: undead` enemy - the calibration tape that shows the device is live.  The
+# golem's own printed Fear grant is why the charging attacker's Fear dice are declared in the first tape; the
+# profile is built from sources/knowledge/bands/trollheim/khemri-tomb-guardians/profiles.yaml (id stone-golem,
+# `combat_traits: {natural_armour_save: 4}`, no creature kind) and no field was invented.  The residual is
+# recorded, not silently dropped: the label "animated being" itself has no key of its own, and the three
+# adjacent consequences of the classification are separately bound sibling rows (stone-golem--fear ->
+# mechanic.causes-fear, --immune-to-psychology -> mechanic.psychology-immunity, --immune-to-poison ->
+# trait.poison-immune), so they are not restated here.  The register row keeps its deferred null binding
+# (scope LATER, "Deferred subsystem: psychology or mounts"), which is the defect the tape detects.  REVIEWED
+# still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -13,7 +27,13 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: animated (scope: YES)
-# PARTIAL[animated]: [C] no scenario is authorable for this clause.  The printed classification is a scope disposition: the recorded contract has no effect_id and no consumer, and no observation in the duel vocabulary distinguishes an animated non-Undead duelist from any other, so any scenario would decide an unrecorded question.  Pending: a consumer that reads the animated classification.
+# AUTHORED[animated]: 2 scenarios carry the printed "is not Undead" onto the implemented hatred-(Undead)
+# first-round hit reroll, whose qualifying identity is the defender's `nature.undead` tag.  Against the
+# published `stone-golem` profile the declared miss stands and no reroll die is declared, while the same
+# device rerolls the same miss against a supplied `creature_kind: undead` enemy, so the absence is a statement
+# about the golem.  Recorded, not dropped: the label "animated being" has no key of its own and the three
+# adjacent consequences of the classification are separately bound sibling rows, so they are not restated; the
+# register row keeps its deferred null binding, the missing consumer the tape detects.
 # origin_id:
 #   rule/trollheim/khemri-tomb-guardians/stone-golem--animated/unimplemented.khemri-tomb-guardians.stone-golem.animated
 # analysis_status:
@@ -41,4 +61,56 @@
 # Register notes (context only, not behavioral authority):
 #   Map/movement, deployment, water/weather or mount mechanics are permanent 1v1 exclusions; the clause is recorded explicitly and no implementation consumer is assigned. Scope review integration: {"clause_id":"animated","review_clause_id":"whole","source_state":"matched","review_status":"reviewed","scope_reason":"The classification that the Stone Golem is animated and not Undead decides which admitted rule sets apply to this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"The Stone Golem is an animated being and is not Undead.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Derived from the printed rule, the published profile stanza and the recorded contract of the device the
+# tapes lean on; no engine output was consulted.  The device is the implemented hatred-(Undead) first-round
+# hit reroll, offered only against a defender tagged `nature.undead`.
+
+# The printed classification face: the Stone Golem is not Undead, so the printed hatred-(Undead) reroll is not
+# offered against it and the declared miss stands.  The golem causes Fear, so the charging attacker must test
+# its own Leadership first, and the declared 1+1 passes its printed 7 without cancelling the charge.
+- audit_id: rule/trollheim/khemri-tomb-guardians/stone-golem--animated/unimplemented.khemri-tomb-guardians.stone-golem.animated
+  id: the-printed-not-undead-golem-is-not-a-hatred-undead-target
+  covers: [animated]
+  fighters:
+    first:
+      skill_ids: [mechanic.hatred-undead]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: stone-golem}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 1}
+    - {key: round.0.first.fear.charge.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The device calibration: the same declared miss is rerolled against an enemy that does carry
+# nature.undead, so the absence recorded above is a statement about the printed classification.
+- audit_id: rule/trollheim/khemri-tomb-guardians/stone-golem--animated/unimplemented.khemri-tomb-guardians.stone-golem.animated
+  id: the-same-miss-is-rerolled-against-a-supplied-undead-enemy
+  covers: [animated]
+  fighters:
+    first:
+      skill_ids: [mechanic.hatred-undead]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

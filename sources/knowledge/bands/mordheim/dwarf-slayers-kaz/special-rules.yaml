@@ -2,14 +2,29 @@ schema_version: 2
 band_id: dwarf-slayers-kaz
 rules:
 - id: band--town-crier-6-inheritance
+  kind: warband_skill
   runtime:
-    scope: LATER
-    implemented: 'NO'
-    grant: band
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
     effects:
     - id: unimplemented.dwarf-slayers-kaz.band.town-crier-6-inheritance
-      scope: LATER
-      binding: null
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.hard-to-kill
+    - id: inherited.dwarf-slayers-kaz.band.town-crier-6-inheritance.hard-head
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.concussion-immune
+        parameters:
+          value: true
+    - id: inherited.dwarf-slayers-kaz.band.town-crier-6-inheritance.hatred-orcs-goblins
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hatred-orcs-goblins
       reason: >-
         Deferred cross-reference: Dwarf Axe usage, Dwarf Special Skills for Dwarf heroes, and
         Slayer Special Skills for Slayer heroes (all from Town Crier 6 or Best of Town Crier),
@@ -203,14 +218,16 @@ rules:
     - rememberer
 - id: rememberer--rememberer
   runtime:
-    scope: 'YES'
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
-    - id: unimplemented.dwarf-slayers-kaz.rememberer.rememberer
-      scope: 'YES'
+    - id: rememberer--rememberer.provider
+      scope: 'NO'
       binding: null
-      reason: 'Included individual duel effect, not implemented: Supplied qualified Rememberer grants one battle reroll against a Large duel opponent; source-specific resource and canonical projection remain pending.'
+      reason: The independent Rememberer provider and radius are excluded. Its qualified Slayer Hero
+        recipient supplies condition.rememberer-kaz-support; the Large-only and Large-or-T5+ variants
+        remain distinct.
   name: Rememberer
   effect: >-
     The Rememberer's task is to record the doom of each of the slayers. When he is close by, the
@@ -288,6 +305,14 @@ rules:
           - armour
           - constant-save-cloak
           - non-thrown-ranged
+    - id: mechanic.slayer-identity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.slayer-identity
+        parameters:
+          profile_ids:
+          - giant-slayer
   name: Equipment Restrictions
   effect: "May not use any missile weapons or armour."
   source:
@@ -348,6 +373,11 @@ rules:
           - armour
           - constant-save-cloak
           - non-thrown-ranged
+    - id: mechanic.slayer-identity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.slayer-identity
   name: Equipment Restrictions
   effect: "May not use any missile weapons or armour."
   source:

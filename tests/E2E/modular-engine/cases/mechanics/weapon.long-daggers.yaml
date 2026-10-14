@@ -1,8 +1,14 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/weapon.long-daggers
 # scaffold_fingerprint: ed4f9049aa272e5e42826573cd18dbf1d7d6f379d013fdc4107953023d88dbf2
-# authoring_status: PARTIAL
-# authoring_progress: the admitted clause is PARTIAL. Two scenarios evidence the paired extra attack and the parry; the retained dagger tag has no observation of its own and the executor consumers that read it are named in the clause note below. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause is AUTHORED after this intervention. Four scenarios
+#   evidence the paired extra attack and the parry as a sword, and the retained dagger tag
+#   is now observable through the admitted skill.knife-fighting clause as normative
+#   support: with the pair it grants its +1 Weapon Skill (hit target three on an equal
+#   Weapon Skill) and its +1 injury total (a two stuns where the plain chart knocks
+#   down). REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -13,7 +19,13 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole (scope: YES)
-# PARTIAL[whole]: 2 scenarios evidence the paired extra attack and the parry. The retained `weapon.dagger` tag has no observation of its own, and the executor names its readers instead of a duel outcome: skill.knife-fighting adds +1 Weapon Skill and one injury modifier when the weapon carries the tag (modular/contexts.py:316, modular/contexts.py:243), dagger_master rerolls on the charge with it (modular/contexts.py:160), the paired-dagger save path tests the same tag set (modular/contexts.py:476) and equipment.RETAINED_DAGGER_TAGS keeps it on a transformed Bitten (modular/equipment.py:24). So this clause is PARTIAL not for a missing datum but because its observation belongs to those consumer clauses: the printed pair and parry are the halves this file owns.
+# AUTHORED[whole]: 4 scenarios evidence the paired extra attack, the parry as a sword and the
+#   retained `weapon.dagger` tag. The tag is observable through the admitted skill.knife-fighting
+#   clause as normative support: contexts.py's readers test the `weapon.dagger` tag membership and
+#   the pair carries it per this file's recorded parameters, so with the skill the pair
+#   raises the hit target by one and the injury total by one; without the skill the same
+#   weapon keeps the plain targets, which the earlier scenarios in this file pin. PARTIAL
+#   stay only for semantic review; execution_status stays UNEXECUTED.
 # origin_id:
 #   mechanic/weapon.long-daggers
 # analysis_status:
@@ -95,3 +107,54 @@
     0: {attacks.0.parried: True, attacks.0.wounded: False, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
+# The retained dagger tag is observable, not a dead label: the admitted skill.knife-fighting
+# clause grants +1 Weapon Skill "while using a Dagger", and the executor reads that condition from
+# the `weapon.dagger` tag which this pair carries.  The hit target on an equal Weapon Skill is three
+# (the file's own first scenario pins four without the skill), so the declared three hits.
+- audit_id: mechanic/weapon.long-daggers
+  id: knife-fighting-reads-the-retained-dagger-tag-for-the-better-weapon-skill
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.long-daggers
+      skill_ids: [skill.knife-fighting]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 3, attacks.0.wounded: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The same readership on the injury branch: the pair wounds with its ordinary tape and the
+# skill's printed +1 turns the injury-table two into a three, so the defender stuns where the
+# plain chart (the file's earlier parry scenario and knife-fighting's own control) knocks down.
+- audit_id: mechanic/weapon.long-daggers
+  id: knife-fighting-reads-the-retained-dagger-tag-for-the-better-injury
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.long-daggers
+      skill_ids: [skill.knife-fighting]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 2}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.damage: 1,
+        state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

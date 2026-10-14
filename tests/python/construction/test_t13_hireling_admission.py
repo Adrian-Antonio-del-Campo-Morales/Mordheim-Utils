@@ -84,9 +84,17 @@ def test_a_profile_with_pending_intrinsic_clauses_is_refused_by_name():
         compile_hireling("hireling.dramatis.grand-master-ippan-shu")
 
 
-def test_a_profile_outside_the_duel_runtime_is_refused():
-    with pytest.raises(ValueError, match="no canonical duel profile"):
-        compile_hireling("hireling.dramatis.belandysh-condemned-champion-of-chen")
+def test_belandysh_printed_random_profile_and_complete_kit_compile():
+    fighter = compile_hireling("hireling.dramatis.belandysh-condemned-champion-of-chen",
+        main_weapon_id="weapon.broadsword-of-damnation", armour_id="armour.chaos-armour",
+        defence_ids=("defence.helmet",))
+    assert fighter.characteristics.wounds == 3
+    assert fighter.random_characteristics == (
+        ("WS", 1, 6, 0), ("S", 1, 6, 0), ("T", 1, 6, 0),
+        ("I", 1, 6, 0), ("A", 1, 3, 0))
+    assert fighter.main_weapon.strength_bonus == 2
+    assert fighter.main_weapon.two_handed
+    assert fighter.global_effects.strongman
 
 
 # --- the printed unique object ----------------------------------------------
@@ -113,16 +121,16 @@ def test_an_item_whose_own_rules_are_excluded_cannot_be_a_weapon():
             main_weapon_id="hireling.dramatis.snerik-night-goblin-scout.item.camouflage-cloak")
 
 
-def test_the_two_unmapped_unique_weapons_stay_out_by_name():
-    """No equivalence is invented for a weapon the KB itself has no record of.
-
-    The two objects assigned to this check (the Ninja Gnoblar's and Innominatus')
-    are refused earlier, by their profiles' pending intrinsic clauses; the
-    profiles the unique-object rule itself refuses are named here instead.
-    """
-    with pytest.raises(ValueError, match="hireling unique equipment needs a canonical combat mapping"):
-        compile_hireling("hireling.dramatis.johann-the-knife", main_weapon_id="weapon.sword")
-    with pytest.raises(ValueError, match="hireling unique equipment needs a canonical combat mapping"):
+def test_source_unique_equivalences_reach_their_actual_active_slots():
+    johann = compile_hireling("hireling.dramatis.johann-the-knife", main_weapon_id="weapon.sword",
+                             off_hand_id="weapon.sword")
+    assert johann.main_weapon.parry and johann.off_hand.parry
+    assert "poison.black-lotus" in johann.main_weapon.tags
+    assert "poison.black-lotus" in johann.off_hand.tags
+    scout = compile_hireling("hireling.hired-sword.halfling-scout", main_weapon_id="weapon.dagger",
+                             defence_ids=("defence.helmet",))
+    assert scout.helmet_save == 4
+    with pytest.raises(ValueError, match="complete legal printed kit"):
         compile_hireling("hireling.hired-sword.halfling-scout", main_weapon_id="weapon.sword")
     with pytest.raises(ValueError, match="intrinsic duel clauses are pending"):
         compile_hireling("hireling.hired-sword.ninja-gnoblar", main_weapon_id="weapon.double-handed-weapon")
@@ -144,13 +152,23 @@ def test_the_printed_shovel_equivalence_is_blocked_by_the_pending_clause():
     assert "weapon.double-handed-weapon" in holy_man.main_weapon.tags
 
 
-def test_a_printed_unique_quantity_is_blocked_by_the_unmapped_object():
-    """Johann's Long Daggers are a pair, but the object has no canonical mapping."""
+def test_a_printed_unique_quantity_is_retained_and_missing_copy_is_refused():
+    """Johann's two Long Daggers count as two Swords, with one throwing knife kit."""
     daggers = "hireling.dramatis.johann-the-knife.item.long-daggers"
     kit = (daggers, daggers, "throwing_knives")
-    with pytest.raises(ValueError, match="hireling unique equipment needs a canonical combat mapping"):
+    fighter = compile_hireling("hireling.dramatis.johann-the-knife",
+        main_weapon_id="weapon.sword", off_hand_id="weapon.sword", owned_item_ids=kit)
+    assert fighter.off_hand.parry
+    with pytest.raises(ValueError, match="complete legal printed kit"):
         compile_hireling("hireling.dramatis.johann-the-knife",
-                         main_weapon_id="weapon.sword", owned_item_ids=kit)
+            main_weapon_id="weapon.sword", owned_item_ids=(daggers, "throwing_knives"))
+
+
+def test_aenur_unique_weapon_strength_is_not_granted_twice_by_its_intrinsic_rules():
+    fighter = compile_hireling("hireling.dramatis.aenur", main_weapon_id="weapon.ienh-khain")
+    assert fighter.main_weapon.strength_bonus == 1
+    assert fighter.global_effects.strength_bonus == 1  # printed starting Mighty Blow
+    assert fighter.main_weapon.critical_threshold == 5
 
 
 # --- the prepared trait facts, with a live consequence ------------------------
@@ -160,11 +178,12 @@ def test_the_prepared_trait_facts_reach_admitted_hirelings():
                                  main_weapon_id="weapon.double-handed-weapon")
     assert "mechanic.causes-fear" in bodyguard.global_effects.tags
     assert "species.ogre" in bodyguard.global_effects.tags
-    # The prepared undead/fear carriers still refuse by name: their own intrinsic
-    # rules carry no executable runtime, so their trait facts reach no consumer.
-    for carrier in ("hireling.hired-sword.grave-robber", "hireling.hired-sword.chaos-fury"):
-        with pytest.raises(ValueError, match="intrinsic duel clauses are pending"):
-            compile_hireling(carrier)
+    fury = compile_hireling("hireling.hired-sword.chaos-fury")
+    assert "mechanic.causes-fear" in fury.global_effects.tags
+    assert "nature.daemon" in fury.global_effects.tags
+    # Grave Robber still has an unresolved intrinsic rule of its own.
+    with pytest.raises(ValueError, match="intrinsic duel clauses are pending"):
+        compile_hireling("hireling.hired-sword.grave-robber")
 
 
 @pytest.mark.parametrize("carrier", TRAIT_CARRIERS)
@@ -282,3 +301,34 @@ def test_an_inequivalent_unique_weapon_triggers_a_named_blocker():
                          owned_item_ids=("hireling.dramatis.dark-emissary.item.staff-of-darkness",
                                          "hireling.dramatis.dark-emissary.item.spiral"),
                          main_weapon_id="weapon.axe")
+
+
+@pytest.mark.parametrize("profile_id", [
+    "hireling.hired-sword.chaos-fury",
+    "hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne",
+])
+def test_daemonic_flesh_is_armour_and_innate_attacks_are_not_owned_weapons(profile_id):
+    daemon = compile_hireling(profile_id)
+    assert daemon.natural_armour_save == 5
+    assert daemon.natural_armour_unmodified
+    assert daemon.global_effects.natural_armour_negated_by_magic
+    assert "attack.magical" in daemon.global_effects.tags
+    assert daemon.global_effects.ward_save == 7
+    assert "weapon.natural-attacks" in daemon.main_weapon.tags
+    assert daemon.mutation_equipment == ()
+    if "aksho" in profile_id:
+        assert "mechanic.craven" in daemon.global_effects.tags
+        assert "mechanic.psychology-immunity" not in daemon.global_effects.tags
+
+
+def test_solkan_marks_are_chosen_only_for_the_printed_variant():
+    options = dict(main_weapon_id="weapon.dagger", variant_ids=("deity.solkan",),
+                   special_rule_ids=("hireling.hired-sword.priest-of-verena.skill.inquisitor",))
+    priest = compile_hireling("hireling.hired-sword.priest-of-verena", **options)
+    assert "mechanic.solkan-inquisitor" in priest.global_effects.tags
+    assert len(priest.mutation_options) == 36
+    assert {option.roll for option in priest.mutation_options} == {
+        tens * 10 + units for tens in range(1, 7) for units in range(1, 7)}
+    with pytest.raises(ValueError, match="Solkan variant"):
+        compile_hireling("hireling.hired-sword.priest-of-verena", **{
+            **options, "variant_ids": (), "main_weapon_id": "weapon.sword"})

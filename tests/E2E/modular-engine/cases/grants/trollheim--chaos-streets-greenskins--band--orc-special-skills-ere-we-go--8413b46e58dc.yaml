@@ -50,6 +50,19 @@
 #   [M4-psychology 2026-10-08] delivered. The Trollheim Greenskin copy of the skill now carries the same `mechanic.ere-we-go` binding and joins the shared family; its printed `eligibility` restriction to Orc Boss/Shaman/Big Uns is untouched. The focused suite compiles it. No residual.
 
 # --- Authored scenarios ---
+# WHAT THESE TAPES FAIL ON (checked statically in the shared construction stage, not by running it): this
+# row is recorded `implemented: NO`, so `compile_fighter()` refuses the declared selection with
+# "special rule is outside the executable duel runtime: band--orc-special-skills-ere-we-go: Deferred
+# subsystem: psychology or mounts." before any duel runs.  The scenarios keep the printed charging waiver
+# because that is the requirement; they are expected to fail on it until the recorded consumer exists.
+# RECIPIENT BOUNDARY (checked statically in the shared construction stage, not by running it): the
+# bearer is orc-big-uns, one of the three recipients this table's own printed row names in its
+# `eligibility` list ([orc-boss, orc-shaman, orc-big-uns]); the Henchman row orc-boyz is not among them
+# and `specialRuleRestriction()`'s recipients stage refuses it
+# ("special rule is not available to chaos-streets-greenskins/orc-boyz: band--orc-special-skills-ere-we-go").
+# orc-big-uns carries no automatic profile rule, every declared attack die of the tape is a 1, and the
+# printed Toughness 4 and Wounds 1 the expectations read are the same on the previous fixture.
+#   band--orc-special-skills-ere-we-go  kind warband_skill  applies_to {band: true}  eligibility [orc-boss, orc-shaman, orc-big-uns]
 
 - audit_id: rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-ere-we-go/unimplemented.chaos-streets-greenskins.band.orc-special-skills-ere-we-go
   id: the-charging-waiver-skips-its-own-fear-test
@@ -59,7 +72,7 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: trollheim, band_id: chaos-streets-greenskins, profile_id: orc-boyz, special_rule_ids: [band--orc-special-skills-ere-we-go]}
+    second: {collection: trollheim, band_id: chaos-streets-greenskins, profile_id: orc-big-uns, special_rule_ids: [band--orc-special-skills-ere-we-go]}
   duel_context: {charging: [second], active_participant: second}
   maximum_rounds: 1
   rolls:
@@ -77,7 +90,7 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: trollheim, band_id: chaos-streets-greenskins, profile_id: orc-boyz, special_rule_ids: [band--orc-special-skills-ere-we-go]}
+    second: {collection: trollheim, band_id: chaos-streets-greenskins, profile_id: orc-big-uns, special_rule_ids: [band--orc-special-skills-ere-we-go]}
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:

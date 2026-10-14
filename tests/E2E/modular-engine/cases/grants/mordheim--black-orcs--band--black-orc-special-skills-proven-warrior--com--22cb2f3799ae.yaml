@@ -52,6 +52,16 @@
 # authoring_progress: 2 authored scenario(s) in this file; authored clauses ['whole']; clauses still pending or unrepresentable in this file: []. REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 
 # --- Authored scenarios ---
+# RECIPIENT BOUNDARY (checked statically in the shared construction stage, not by running it): the
+# refused recipient is the printed Hero row black-orcs, not the Henchman row orc-boyz.
+# `_eligibility.js:1193` `specialRuleRestriction()` runs before `_validate_profile_selections()`, and its
+# access stage refuses a band warband_skill row with `applies_to.band: true` and no `eligibility` for a
+# recipient whose own printed `skill_access` lacks the `special` category; orc-boyz prints none, so that
+# earlier sentence - not the contract's own branch - would be the first one raised for it.  black-orcs
+# prints [combat, shooting, strength, speed, special], so the construction reaches
+# `profileSelections` and the contract's message.  The retarget adds only black-orcs' own automatic rule
+# (black-orcs--black-orc, a natural-armour trait) and the build declares the band default dagger, which
+# black-orc-list offers, so no earlier equipment sentence can stand in front of the refusal either.
 # The selectable rule is declared through special_rule_ids, the channel the sibling selectable band
 # skills use in this directory; the contract then gates the recipient.  The refusal is the contract's
 # own message verbatim.
@@ -62,7 +72,7 @@
     first:
       collection: mordheim
       band_id: black-orcs
-      profile_id: orc-boyz
+      profile_id: black-orcs
       special_rule_ids: [band--black-orc-special-skills-proven-warrior]
   expect_error: Proven Warrior may only be selected by a Young'un
 

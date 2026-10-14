@@ -199,7 +199,9 @@ def test_fen_hard_to_kill_is_recipient_and_fire_qualified(fire):
     if fire:
         incoming = replace(incoming, main_weapon=replace(incoming.main_weapon,
             tags=(*incoming.main_weapon.tags, 'attack.fire')))
-    rolls = [('hit', 4), ('wound', 5), ('armour', 1), ('injury.0', 5)]
+    rolls = [('hit', 4), ('wound', 5)]
+    if not fire: rolls.append(('armour', 1))
+    rolls.append(('injury.0', 5))
     if not fire: rolls.append(('helmet', 1))
     assert strike(incoming, fen, rolls).defender.condition == (Condition.OUT if fire else Condition.STUNNED)
 
@@ -234,7 +236,9 @@ def test_hard_to_rattle_has_a_helmet_reaction_except_against_fire(fire):
     attacker_state = initialize_fighter(incoming, init, 'a')
     defender_state = replace(initialize_fighter(fen, init, 'd'), wounds=1)
     init.finish()
-    rolls = [('hit', 4), ('wound', 4), ('armour', 1), ('injury.0', 3)]
+    rolls = [('hit', 4), ('wound', 4)]
+    if not fire: rolls.append(('armour', 1))
+    rolls.append(('injury.0', 3))
     if not fire: rolls.append(('helmet', 4))
     dice = StrictDice([{'key': 'x.' + key, 'value': value} for key, value in rolls])
     result = resolve_reference_attack(incoming, fen, attacker_state, defender_state,
@@ -771,7 +775,72 @@ def test_failed_fear_charge_has_no_contact_attacks_or_invented_winner():
     assert result.state.first.condition == result.state.second.condition == Condition.STANDING
     assert result.state.first.active and result.state.second.active
     later = fear_round(foe, [], state=result.state)
-    assert later.state == result.state and not later.attacks
+    # A contact-free round is still a resolved round: it advances the counter that names
+    # it (round.{index}....) and may still carry the active participant's own autonomous
+    # effects, so it is not an early exit. Everything else is untouched, which is what
+    # keeps the failed charge from re-engaging, re-rolling or inventing a winner. The
+    # empty roll script already proves no die was needed.
+    assert not later.attacks and later.state.round_index == result.state.round_index + 1
+    assert later.state == replace(result.state, round_index=later.state.round_index)
+
+
+@pytest.mark.parametrize('charging', ['first', 'second'])
+def test_supplied_base_contact_refuses_an_initial_charge_between_the_same_duelists(charging):
+    # A charge is an in-range attempt against a model that is not in base contact,
+    # so one supplied snapshot cannot both place the duelists in base contact and
+    # attribute either of them an in-range attempt.  The established contact is
+    # resolved as such and the contradictory charge is refused where the charge
+    # configuration is read, before any die is drawn.
+    cub, foe = canonical('ogre-hunting-party-web', 'sabretusks', 'weapon.fist'), enemy()
+    dice = StrictDice([])
+    with pytest.raises(ValueError, match='base contact'):
+        initialize_duel(cub, foe, dice, context=DuelContext(contacts=(('first', 'second'),),
+            charging=(charging,), active_participant=charging))
+    dice.finish()
+
+
+def test_supplied_base_contact_keeps_a_fear_causing_duel_engaged_without_a_charge_test():
+    # The supplied contact is the established engagement, so the round's charge
+    # question is already answered as "nobody charges".  There is no initial
+    # in-range attempt, so no charge Fear test exists for either duelist and no
+    # fear die is drawn; both of them strike and the engagement outlives the round.
+    cub, foe = canonical('ogre-hunting-party-web', 'sabretusks', 'weapon.fist'), enemy()
+    dice = StrictDice([{'key': 'round.0.first.attack.0.hit', 'value': 1},
+                      {'key': 'round.0.second.attack.0.hit', 'value': 1}])
+    decisions = StrictDecisions([])
+    state = initialize_duel(cub, foe, dice, context=DuelContext(contacts=(('first', 'second'),),
+        charging=(), active_participant='first'))
+    assert state.engaged and state.initial_charge_flags == (False, False)
+    assert not state.failed_charges
+    result = resolve_round(cub, foe, state, dice, decisions)
+    dice.finish()
+    decisions.finish()
+    assert result.state.engaged and not result.state.failed_charges
+    assert len(result.attacks) == 2
+
+
+def test_a_supplied_engagement_is_not_broken_by_the_legacy_charge_attribution():
+    # Without supplied charging the legacy sampler still owns the player turn, and
+    # the one charge it must not sample is the impossible attempt against a model
+    # the snapshot places in base contact.  Before that rule a roll of 4+ gave the
+    # attempt to the first duelist; its failed Fear charge test cleared the attempt
+    # and with it the supplied contact, so the engagement and the round's blows
+    # disappeared although every die was already declared.
+    cub, foe = enemy(), canonical('ogre-hunting-party-web', 'sabretusks', 'weapon.fist')
+    # The uncharged round is ordered by Initiative, so the second duelist strikes first.
+    dice = StrictDice([{'key': 'duel.charge', 'value': 6},
+                      {'key': 'round.0.second.attack.0.hit', 'value': 1},
+                      {'key': 'round.0.first.attack.0.hit', 'value': 1}])
+    decisions = StrictDecisions([])
+    state = initialize_duel(cub, foe, dice, context=DuelContext(contacts=(('first', 'second'),)))
+    assert state.engaged and state.initial_charge_flags == (False, False)
+    assert state.initial_first_player_turn  # The legacy roll still owns the player turn.
+    assert not state.failed_charges
+    result = resolve_round(cub, foe, state, dice, decisions)
+    dice.finish()
+    decisions.finish()
+    assert result.state.engaged and not result.state.failed_charges
+    assert len(result.attacks) == 2
 
 
 def test_successful_fear_charge_retains_its_real_priority_and_only_one_test():

@@ -516,6 +516,68 @@ partial closure, not a completed engine.
 
 ## Progress register
 
+Stop checkpoint requested by the user (2026-10-14): the current Condemned block
+is complete. Its four variable attributes reuse lazy Inconsistency; supplied
+permanently fixed attributes retain their declared values, with ordinary
+equipment access only after all four are fixed. Variable fighters use natural
+attacks without unarmed penalties. The shared validation transport and desktop
+configuration preserve this state. Nine focused construction/UI cases passed;
+five individual CSV clauses were integrated with full-register conservation.
+Rune item consequences previously passed ten construction cases and one UI
+case. No joint closure check or T14 certification has been performed.
+
+Concurrent packages stopped with literal integration candidates still pending
+coordinator review. Lifecycle reported 109 focused passes before its last
+castoff adjustment and 75 lifecycle passes afterwards. Remaining executable
+work includes physical mutation/equipment composition (especially numeric item
+bonuses already compiled into Characteristics), canonical admission of Marianna,
+Sigmund and Bone Goliath beyond their implemented No Pain consumers, outstanding
+data/assessment integrations, and the final modular/construction check. Positive
+source-derived admission tests remain unresolved; they must not become rejection
+tests to conceal those gaps. External source/ruling questions below remain
+separate. Work is paused at the user's requested block boundary.
+
+Current working checkpoint (2026-10-14, modular continuation; not acceptance or
+T14 certification): lost state fields and demonstrated canonical connections
+have been recovered by fragment, retaining the current Trip, Dark Jester, Crow
+Master, Assassin, Hillman and Ghostly Howl contracts. Residual charge gates,
+source-specific songs and belches, supplied providers, persistent Frenzy,
+personal roll resources, defensive composition and lazy Belandysh characteristics
+have focused evidence. Canonical kits, named grant tables and the remaining
+individual assessments are still being reconciled; newly recovered Gaoler,
+Foole and Electrical Touch consequences now have focused execution evidence.
+Timed Djinn save composition and the Inquisitor's individual D66 mutation
+consequences remain active work. The complete 36-result primary-source chart
+has been transcribed without importing its campaign, terrain or shooting facets.
+
+The lasting injury result family is connected through canonical supplied
+conditions and the existing shared construction decisions: Toughness, Initiative
+and Weapon Skill penalties, and amputated-arm active weapon restrictions without
+a prohibition on holstered ownership. Four focused cases passed through
+compilation and the modular round route. The seven affected Fen/Shallya cases
+also passed after restoring the printed fire exception and preserving weapon
+Initiative during lazy priority refresh. Shared eligibility was rebuilt after
+the condition transport change.
+
+The latest register integration applies 60 individually reviewed defence and
+lifecycle clauses, correcting the old Miniath, Gaoler, Foole and Djinn contracts
+rather than preserving contradictory summaries. Three Physiology assessments
+were corrected to excluded post-battle Serious Injury rerolls after reading
+their full paragraphs; their separately admitted Poetry consequences remain
+open independently. The mutation and hireling schemas now admit their actual
+source data and reuse the canonical execution parameter vocabulary. The focused
+schema/field checks passed 42 cases; the three affected catalogue documents
+validate. These checks do not replace the final modular/construction check.
+
+Every register integration reloads the live 4,556 rows, checks immutable keys,
+texts and fingerprints against the complete entry snapshot, retains earlier
+notes and rejects concurrent changes. The current validator reports zero
+violations. The joint modular/construction closure check is reserved until the
+remaining executable integrations are stable. Source questions about Lunatics'
+duration, the Alchemist's two unspecified test/brewing clocks, Scryer's roll
+ownership and Djinn penalties against explicitly unmodifiable saves remain
+separate from missing connections; independent families continue.
+
 The coordinator updates this table. It tracks **residual blocks**, not the
 implementation status of every historical rule. Previous completed deliveries
 remain completed; the closed assignments from M0 determine what is left.
@@ -731,3 +793,97 @@ carrier spends the Fear die and the charge fails**, alongside the kept focused
 (`shared-construction-context`, `construction-validation-transport`,
 `t13-shared-eligibility-reconciliation`) 45 passed; `packages/typescript` typecheck
 clean.
+
+### Five cross-copied equipment origins (2026-10-14, coordinator)
+
+The twenty clauses of `item/bone_helmet`, `item/bone_helmet_skink_priest_only`,
+`item/eshin_assassin_clothes`, `item/mage_robes` and `item/wizard_robe` now have an
+individual disposition. Both Bone Helmet rows keep the ordinary Helmet defence
+(`defence.helmet`, a 4+ Stunned-to-Knocked-Down conversion) with no invented
+bone-specific property: the empty local paragraph is an extraction observation,
+not an executable blocker, and the Skink-Priest entry keeps its `Skink Priest
+only` note as a construction constraint. The three robe/clothes items' own
+clauses stay blocked and `unresolved`: the Eshin Assassin Clothes need the
+chaos-in-the-streets p161 paragraph, the Mage Robes the khemri p59 one and the
+Wizard Robe the chaos-in-the-streets p167 one, since an existing
+`armour.eshin-assassin-robes` / `armour.wizard-s-robe` connection is not proof of
+equivalence, and no consumer route is certified. The ten cross-copied sibling
+clauses that name another object's recipient (helmet, assassin-robes and
+wizard-robe copies) were dismissed as provenance errors rather than blocks.
+
+Applied by `build/audit/m0-reconciliation/apply_t13_five_origins_20261014.py`
+through the reviewed `integrate_explicit_csv.py`: the complete register was
+reloaded immediately before writing and the concurrent-change guard held. All
+4,556 keys, 3,594 origins, clause texts, fingerprints and prior notes are
+conserved and exactly those 20 rows changed; the unchanged `validate_csv.py`
+reports PASS with 0 violations. Interpretation and register only: no code, YAML,
+mapping, grant or engine suite was touched, and the joint modular/construction
+closure check remains reserved.
+
+Primary-source search for the three wardrobe objects (2026-10-14): the cited
+paragraphs — Eshin Assassin Clothes (chaos-in-the-streets printed 161,
+Deathbringer Assassin Equipment List), Mage Robes (khemri printed 59, Mage
+Equipment List) and Wizard Robe (chaos-in-the-streets printed 167, Arcane
+Society Equipment List) — were not recovered. No copy is in the repository or
+the local caches; the Chaos in the Streets publication has no mordheimer.net
+page and is not obtainable as a readable document, and exact-phrase searches for
+the three item names return no source at all. For Mage Robes the accessible
+transcriptions of the same warband's Mage Equipment list (the archived original
+Khemri supplement page and Broheim's 2015 re-edition) print only Familiar,
+Dagger, Staff, Sword, Pistol, Duelling pistol and Sling, a slimmer revision than
+the cited one, and mordheimer.net's Khemri pages carry only the Tomb Guardians
+and Arabian Tomb Raiders. No equivalence is therefore proven or contradicted and
+no disposition changed: the six own clauses keep `source_blocked`, `unresolved`
+and no consumer, while the verified source state and the references actually
+read were appended to their notes by
+`build/audit/m0-reconciliation/apply_t13_source_search_20261014.py`. Exactly
+those six rows changed (notes and `evidence_refs`); all 4,556 keys, texts,
+fingerprints and prior notes are conserved and the unchanged `validate_csv.py`
+reports PASS with 0 violations. Sources were read, nothing was executed.
+
+Visual review of the same three objects (2026-10-14): the cited paragraphs exist and
+were read as rendered pages from the two manuals' own copies, both of which lack a
+usable text layer. `Caos en las Calles` (the manual registered as
+chaos-in-the-streets; 300 pages, printed page = PDF page, its contents page matching
+the registered band ranges) prints the Eshin Assassin Clothes at printed 159 with
+its list line at printed 161 (15 gc, Silent-Hunter-only, 6+ Light Armour save, no
+combination except a helmet) and adds an `Assassin's Luck` re-roll of failed saves
+that `armour.eshin-assassin-robes` does not carry, so its clause becomes
+`parameterized_variant` rather than an exact equivalence. `Khemri - La Tierra de
+los Muertos` (148 pages, printed page = PDF page, text layer only on printed 1-75)
+prints the Mage Robes in the Mage Equipment List at printed 59 and its full entry at
+printed 61 (Raro 6, 10 gc, 6+ save, no combination with any other armour, no
+spellcasting penalty), and `Caos en las Calles` prints the Wizard Robe the same way
+at printed 167 and printed 68 in the rules chapter, corroborating the entry's
+"el almacen de Yohan" footnote. Both printed texts forbid combining the robe with any
+other armour while the canonical `armour.wizard-s-robe` allows a helmet, and the
+same manual does print the helmet exception for the neighbouring Eshin robes, so the
+case is flagged `needs_clarification` for the artefact owner instead of being
+resolved here. The three coverage clauses become `independent` + `reviewed` (their
+rule is carried by the sibling clause) and the six rows were written by
+`build/audit/m0-reconciliation/apply_t13_visual_review_20261014.py` through the same
+reviewed helper: exactly those six rows changed, evidence stays `inspection`, no
+consumer route is certified, all 4,556 keys, texts, fingerprints and prior notes are
+conserved and `validate_csv.py` reports PASS with 0 violations. No code, YAML, test,
+grant or new report was touched and no engine suite was run.
+
+Wardrobe variants implemented (2026-10-14): the three recovered entries now carry their
+printed clauses end to end. Each binds its own origin mechanic — `mage_robes` ->
+`armour.mage-robes` (khemri printed 61/59) and `wizard_robe` -> `armour.wizard-robe`
+(chaos-in-the-streets printed 68/167) state the 6+ save with their own no-other-armour
+limit, while `eshin_assassin_clothes` keeps `armour.eshin-assassin-robes` (printed
+159/161) and its mechanic now prints the Assassin's Luck rider: failed save rolls of the
+wearer are re-rolled. Both tunics refuse a helmet as well, because the paragraph excepts
+none and the same manuals list the Casco under Armaduras; the generic
+`armour.wizard-s-robe` keeps the helmet exception of its own source and no bearer of it
+is re-judged. The limit passes through the shared eligibility (`loadoutRestriction`, one
+place, no interface copy) and the re-roll is wired at the armour save stage of the
+modular attack path, where the printed sentence's lack of a cost or a frequency is
+implemented as one second die per failed save that is never itself re-rolled. Focused
+discriminators were added (`tests/python/construction/test_t13_wardrobe_variants.py`,
+`tests/python/combat/modular/test_t13_eshin_assassins_luck.py`) and the Eshin scaffold
+gained the re-roll scenarios. The register rows for the six affected clauses were
+rewritten by `build/audit/m0-reconciliation/apply_t13_wardrobe_resolution_20261014.py`
+behind a concurrent-change guard: relation/effect/parameters/conditions/consumer/status
+and notes changed, all other records kept their exact bytes, and `validate_csv.py`
+reports PASS with 0 violations over the 4,556 conserved keys.

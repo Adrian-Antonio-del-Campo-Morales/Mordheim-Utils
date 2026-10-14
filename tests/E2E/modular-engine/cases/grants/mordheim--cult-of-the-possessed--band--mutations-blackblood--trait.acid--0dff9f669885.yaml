@@ -2,11 +2,13 @@
 # audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-blackblood/trait.acid-blood
 # scaffold_fingerprint: e9a767d1683c028063d90fa3787eb332af44cb04b6baea28a95a93f14afb1c69
 # authoring_status: AUTHORED
-# authoring_progress: the admitted acid-blood clause carries 2 authored scenarios derived from the
+# authoring_progress: the admitted acid-blood clause carries 3 authored scenarios derived from the
 #   printed rule and the recorded contract: the wound that the bearer loses answers with the printed
-#   Strength 3 hit on the contacting opponent, and the identical wound on a bearer without the trait
-#   costs the attacker nothing.  REVIEWED still requires manual semantic review and execution_status
-#   stays UNEXECUTED.
+#   Strength 3 hit on the contacting opponent, the identical wound on a bearer without the trait costs
+#   the attacker nothing, and the printed "(no critical hits)" is pinned on its own boundary - the
+#   declared six on the reactive hit's wound roll, where the core critical rule would otherwise take a
+#   critical wound.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -17,13 +19,16 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole--scope--acid-blood (scope: YES)
-# AUTHORED[whole--scope--acid-blood]: 2 scenarios evidence the printed reaction on the real wound
+# AUTHORED[whole--scope--acid-blood]: 3 scenarios evidence the printed reaction on the real wound
 #   route: the bearer's own lost wound is followed by the automatic Strength 3 hit, whose declared four
 #   against the attacker's Toughness 3 takes a wound off that attacker, and the same attack on the same
-#   fixture without the trait leaves the attacker untouched.  The printed "no critical hits" is carried
-#   by the recorded contract and is not separately asserted; the reaction's four is only a wound face,
-#   not a natural six, so no critical die belongs in the evidence.  REVIEWED still requires manual
-#   semantic review.
+#   fixture without the trait leaves the attacker untouched.  The printed "(no critical hits)" is
+#   asserted on its own boundary rather than left to the contract: the core critical rule makes a
+#   natural six on a wound roll a critical wound whenever the required target is below six
+#   (cases/core/combat-critical-hits, clause critical-trigger), and this Strength 3 hit against
+#   Toughness 3 needs a four, so the declared six is exactly that candidate and the tape shows the
+#   denial - the contacting attacker loses one wound, where a critical chart's two would cost it two.
+#   REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/mordheim/cult-of-the-possessed/band--mutations-blackblood/trait.acid-blood
 # analysis_status:
@@ -84,8 +89,10 @@
 # Derived from the printed rule and the recorded contract; no engine output was consulted.  The
 # bearer is a hand-built fixture carrying the printed trait, because the clause is about the wound the
 # bearer loses rather than about one printed statline.  The attacker is unarmoured, so the printed
-# Strength 3 hit needs only its wound face, and both fixtures stand at three wounds so neither victim
-# reaches zero and no injury roll joins the tape.
+# Strength 3 hit needs only its wound face, and the wound totals are chosen per tape - three each where
+# only the one-damage reaction and the bearer's own lost wound are at stake, and four on the attacker
+# in the critical-boundary tape so the two damage a critical would deal is a different number on the
+# same assertion - so no victim reaches zero and no injury roll joins the evidence.
 
 - audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-blackblood/trait.acid-blood
   id: an-unsaved-wound-answers-with-the-printed-strength-three-hit
@@ -126,6 +133,34 @@
   rolls:
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.first.wounds: 3, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed "(no critical hits)" face, on the boundary the core critical rule makes observable: a
+# natural six on a wound roll is a critical wound whenever the required target is below six
+# (cases/core/combat-critical-hits, clause critical-trigger), and the printed Strength 3 hit against
+# this Toughness 3 attacker needs a four, so the reaction's declared six is the critical candidate.
+# The attacker stands at four wounds, so the two damage a critical chart deals would leave it on two
+# while the printed denial leaves it on three; the bearer's own loss is unchanged.
+- audit_id: rule/mordheim/cult-of-the-possessed/band--mutations-blackblood/trait.acid-blood
+  id: the-reactive-hit-is-no-critical-even-on-a-natural-six
+  covers: [whole--scope--acid-blood]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 4, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {acid_blood: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.acid-blood.0.wound, value: 6}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 1, state.first.wounds: 3, state.second.wounds: 2}

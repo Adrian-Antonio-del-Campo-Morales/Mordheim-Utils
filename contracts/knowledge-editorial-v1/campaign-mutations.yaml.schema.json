@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/campaign-mutations.yaml.schema.json",
   "title": "Mordheim KB catalogue — catalog/campaign/mutations.yaml",
-  "description": "The purchase rules and the mutation list of the Chaos warbands. A mutation is prose plus its listed price; the mutations a concrete warrior carries are campaign state. `effect` is the source text, not a typed operation, because no engine evaluates a mutation yet — the schema says so instead of pretending otherwise.",
+  "description": "Chaos mutation purchase rules and source prose, plus the explicit MiM D66 results used by the Inquisitor in a duel. Campaign acquisition remains outside the duel engine.",
   "type": "object",
   "required": ["schema_version", "ruleset", "catalog", "status", "rules", "mutations", "effect_ids"],
   "additionalProperties": false,
@@ -17,6 +17,122 @@
       "type": "array",
       "minItems": 1,
       "items": { "$ref": "#/$defs/mutation" }
+    },
+    "random_mutation_chart": {
+      "description": "Literal MiM Random Mutation Chart results. Excluded facets retain their source without inventing a duel producer.",
+      "type": "array",
+      "minItems": 36,
+      "maxItems": 36,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "roll",
+          "name",
+          "source_refs"
+        ],
+        "properties": {
+          "roll": {
+            "enum": [
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              61,
+              62,
+              63,
+              64,
+              65,
+              66
+            ]
+          },
+          "name": {
+            "$ref": "defs.schema.json#/$defs/display_text"
+          },
+          "effect_ids": {
+            "$ref": "defs.schema.json#/$defs/id_list"
+          },
+          "limb_effect_ids": {
+            "$ref": "defs.schema.json#/$defs/id_list"
+          },
+          "effect_parameters": {
+            "$ref": "catalog-mechanics-execution.yaml.schema.json#/$defs/mechanic/properties/parameters"
+          },
+          "extra_attack_parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "catalog-mechanics-execution.yaml.schema.json#/$defs/mechanic/properties/parameters"
+            }
+          },
+          "stat_ops": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "prefixItems": [
+                {
+                  "enum": [
+                    "movement",
+                    "weapon_skill",
+                    "ballistic_skill",
+                    "strength",
+                    "toughness",
+                    "wounds",
+                    "initiative",
+                    "attacks",
+                    "leadership",
+                    "natural_armour_save",
+                    "natural_armour_worst_save"
+                  ]
+                },
+                {
+                  "enum": [
+                    "add",
+                    "set",
+                    "halve-ceil"
+                  ]
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            }
+          },
+          "excluded_facet": {
+            "$ref": "defs.schema.json#/$defs/display_text"
+          },
+          "source_refs": {
+            "$ref": "defs.schema.json#/$defs/source_refs"
+          }
+        }
+      }
     },
     "grant_rules": {
       "description": "Printed band rules that grant a mutation. Each one names the band, its rule, who may receive a mutation and the mutation ids the rule lists; the ids the rule names but the catalogue does not publish are listed by name instead of invented.",

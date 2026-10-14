@@ -2,12 +2,11 @@
 # audit_id: rule/mordheim/snotlings-web/shoota-teams--teamwork/unimplemented.snotlings-web.shoota-teams.teamwork
 # scaffold_fingerprint: fc0067eae32b146b46e272c16bc38b88ec86bcabea830a55326893b21508a51d
 # authoring_status: PARTIAL
-# authoring_progress: the admitted single-model-projection clause stays without scenarios for the concrete
-# reason recorded in its PARTIAL note below: the register records that the profile already carries a single
-# canonical characteristic block, so the printed "counts as one model" is a projection/accounting fact the
-# duel satisfies vacuously and the stale deferred marker is a data-reconciliation item.  A scenario that
-# cannot fail is not evidence, so this file is not offered as clause-complete.  execution_status stays
-# UNEXECUTED.
+# authoring_progress: the admitted single-model-projection clause now carries one authored tape (the
+# printed one-model projection asserted through the band's own profile: one characteristic block and one
+# attack pool).  The file stays PARTIAL for the register's own remaining item - the stale deferred marker
+# and the blocked canonical metadata, which is data reconciliation rather than a duel observable.
+# execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -18,13 +17,17 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: single-model-projection (scope: YES)
-# PARTIAL[single-model-projection]: [C] no scenario is authorable for this clause.  The printed "they count as
-# one model" is already the duel's own projection - one duelist, one characteristic block, one injury and
-# resource state per side - so every possible tape satisfies it and no face of the dice can discriminate;
-# the register reaches the same conclusion ("Both already have a single canonical characteristic block.
-# Reconcile the stale deferred marker as a projection/accounting fact; no multiple-fighter engine or extra
-# per-Snotling attacks are justified").  What remains is data reconciliation of that stale marker plus the
-# blocked canonical metadata, not an observable, so no scenario is invented.
+# PARTIAL[single-model-projection]: [E] the printed projection is now asserted by the tape below; what
+# keeps this file PARTIAL is the data reconciliation the register names, not a missing input or
+# observation.  "While a Shoota Team technically consists of 2 or more snotlings, for all intents and
+# purposes, they count as one model": the bearer is the band's own printed profile (shoota-teams, whose
+# single block prints Wounds 2 and Attacks 2) and the tape declares that one characteristic block and the
+# one attack pool - two declared attack entries consumed by the single duelist, which is what a
+# per-Snotling accounting would not produce.  The register's own note records that both profiles already
+# carry a single canonical characteristic block and that no multiple-fighter engine or extra per-Snotling
+# attacks are justified, so no further duel observable exists; the remaining item is the stale deferred
+# marker and the blocked canonical metadata (data reconciliation).  The earlier class-C claim - an
+# unstatable case - is removed by the tape below.
 # origin_id:
 #   rule/mordheim/snotlings-web/shoota-teams--teamwork/unimplemented.snotlings-web.shoota-teams.teamwork
 # analysis_status:
@@ -52,4 +55,36 @@
 # Register notes (context only, not behavioral authority):
 #   Both already have a single canonical characteristic block. Reconcile the stale deferred marker as a projection/accounting fact; no multiple-fighter engine or extra per-Snotling attacks are justified. Canonical metadata may still block admission, so this is data reconciliation rather than certified closure.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Derived from the printed clause and the band's own printed profile; no engine output was consulted.
+
+- audit_id: rule/mordheim/snotlings-web/shoota-teams--teamwork/unimplemented.snotlings-web.shoota-teams.teamwork
+  id: the-shoota-team-counts-as-one-model-with-one-block
+  covers: [single-model-projection]
+  # The printed projection: however many Snotlings the miniature depicts, the team is ONE duelist with one
+  # characteristic block.  The band's own profile prints Wounds 2 and Attacks 2 in a single block, and the
+  # declared strict tape consumes exactly two attack entries from that one fighter.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: snotlings-web
+      profile_id: shoota-teams
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+  # The composition channel (E01's expect_fighters, real in the runner contract): the compiled
+  # fighter itself carries the one characteristic block, so the single-model projection is
+  # observed at construction, not only through the declared dice - a per-Snotling accounting
+  # would not produce one compiled fighter with the printed Attacks 2 and no extra attack list.
+  expect_fighters:
+    first.characteristics.wounds: 2
+    first.characteristics.attacks: 2
+  expect_initial: {first.wounds: 2, first.attacks: 2}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.1.hit: False, state.second.wounds: 2, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

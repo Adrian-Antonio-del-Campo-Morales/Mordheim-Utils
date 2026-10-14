@@ -13,7 +13,28 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: match-parry-and-parry-a-six (scope: YES)
-# PARTIAL[match-parry-and-parry-a-six]: 2 scenarios evidence the equality half (an equal parry die blocks an attack that a plain parry would let through, and the same equal die fails without the skill). The printed second half, "may therefore parry a roll of 6", is NOT represented. The blocker is not the vocabulary - a defender that parries a six is reachable and authored in the killing-blow clause through the admitted special rule band--blood-dragon-power-sword-master - but the assignment of the gate to an identity: the executor reads can_parry_six from the tag rule.blood-dragon-sword-master alone (contexts.py `_parry_context`, mirrored in pools.py and the native port), while this clause's own recorded parameters declare can_parry_six=true for skill.sword-master, and the compiler maps the Blood Dragon editorial variant onto the separate tag (compiler.py, the parry_variant table next to band--dwarf-special-skills-master-of-blades). Unresolved source-versus-contract conflict kept, not decided here: the printed text attributes the six-parry to this skill itself, the implementation attributes it to a different admitted tag, and a scenario asserting either reading would silently adopt one. The datum still missing for this clause is the decision (or the consumer change) that fixes which identity carries the six-parry; the two candidate tags and their evidence are named above.
+# PARTIAL[match-parry-and-parry-a-six]: 2 scenarios evidence the equality half
+#   (an equal parry die blocks an attack that a plain parry would let through, and the
+#   same equal die fails without the skill). The printed second half, "may therefore
+#   parry a roll of 6", is a structured dependency, kept concrete instead of vague.
+#   Normative text: the printed sentence of this clause (the Vampire "only needs to
+#   equal the opponent's roll and may therefore parry a roll of 6"). Input: a defence
+#   carrying its can_parry_six source while an attacker rolls the natural six this
+#   half answers (the corpus shape of mechanic.killing-blow's attacker). Assertion
+#   that is blocked: whether the parry die is requested and succeeds against the six -
+#   the candidates attach the gate to different identities, and a scenario asserting
+#   either would silently adopt one. Candidate identity 1: skill.sword-master itself,
+#   whose own recorded parameters declare can_parry_six=true (this clause). Candidate
+#   identity 2: the tag rule.blood-dragon-sword-master, which the executor's parry
+#   contexts read alone (contexts.py `_parry_context`, mirrored in pools.py and the
+#   native port) and which the compiler maps from the admitted special rule
+#   band--blood-dragon-power-sword-master (the Blood Dragon editorial variant,
+#   compiler.py parry_variant table next to band--dwarf-special-skills-master-of-
+#   blades).
+#   DECISION (D1-A, 2026-10-14): the gate belongs to skill.sword-master itself; the
+#   executor's tag-only read is remitted to the engine as dec-d1-sword-master-parry-gate.
+#   The six-parry tape is authored once the consumer honours the skill; the equality
+#   scenarios already authored above stand unchanged.
 # origin_id:
 #   mechanic/skill.sword-master
 # analysis_status:

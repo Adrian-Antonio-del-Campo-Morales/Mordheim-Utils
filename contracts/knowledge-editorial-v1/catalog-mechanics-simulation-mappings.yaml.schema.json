@@ -26,6 +26,10 @@
           "$ref": "defs.schema.json#/$defs/id"
         },
         "status": { "enum": ["implemented", "out_of_scope"] },
+        "mechanic_id": {
+          "description": "Canonical mechanic identity of this explicit item mapping.",
+          "$ref": "defs.schema.json#/$defs/id"
+        },
         "engine_option": {
           "description": "Engine option the item compiles to.",
           "type": "string",

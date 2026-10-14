@@ -1,12 +1,13 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/night-goblins-web/squig-herder--handle-animal-squig/unimplemented.night-goblins-web.squig-herder.handle-animal-squig
 # scaffold_fingerprint: 5901fbbb127a88e18d2c2a8859211f46ec2ce224a2b4d32a802afb58b00c2d78
-# authoring_status: PARTIAL
-# authoring_progress: the admitted handler-leadership clause cannot be authored from this origin: the
-#   canonical effect and its consumer exist and are authored elsewhere, but the register records no binding
-#   on this record and the Cave Squig prints no Leadership test of its own.  The exact pending datum is named
-#   in the clause marker below.  REVIEWED still requires manual semantic review and execution_status stays
-#   UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the single admitted handler-leadership clause now carries 2 authored scenarios derived
+#   from the printed rule, the printed Cave Squigs, Squig Herder and Boss profiles and the recorded
+#   handler-leadership contract; the canonical mechanic is supplied on the bearer because this record's KB
+#   binding is the missing connection the register names, and the Leadership test the rule speaks about is
+#   supplied as the fixture's own Stupidity test.  No admitted clause of this origin is left pending.  REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -17,14 +18,26 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: handler-leadership (scope: YES)
-# PARTIAL[handler-leadership]: [C] no scenario is authorable without inventing the test.  The printed sentence
-#   ("Any Cave Squig within 6" (12" with a Squig Prodder) of the herder can use their Leadership value when
-#   taking Leadership tests") binds the canonical mechanic.handler-leadership, whose consumer
-#   resolve_local_leadership is recorded (it reads the supplied handler value and blocks ordinary leader
-#   borrowing), and the register adds that "no binding on this record; the canonical effect exists, so the
-#   missing step is the KB connection".  Two data are missing: the KB binding of this origin, and a Leadership
-#   or Stupidity test the Cave Squig actually takes in the duel (its printed profile has no such state), which
-#   is what the authored handler cases use as the vehicle.
+# AUTHORED[handler-leadership]: 2 scenarios read the printed "Any Cave Squig within 6\" (12\" with a Squig
+#   Prodder) of the herder can use their Leadership value when taking Leadership tests" at a Leadership-test
+#   boundary, from the printed sources alone; no engine output was consulted.  The recipient is the printed
+#   Cave Squigs profile (Leadership 5) and the supplied value is the printed Squig Herder's own Leadership 6
+#   (sources/knowledge/bands/mordheim/night-goblins-web/profiles.yaml), so the declared stupidity pair 3 + 3
+#   passes at six and would fail against the Squig's own five: the two tapes differ only in whether the handler
+#   value is supplied, which is what makes that test the clause's observable.  The Leadership test vehicle is
+#   supplied as the fixture's own Stupidity state (trait_overrides stupidity), because the printed Squig takes
+#   no Leadership test of its own and the rule governs every Leadership test the Squig makes.  The bearer
+#   declares the canonical mechanic.handler-leadership, because the register records that this row's KB binding
+#   is the missing connection ("no binding on this record; the canonical effect exists, so the missing step is
+#   the KB connection"); the band's own row (special-rules.yaml, squig-herder--handle-animal-squig, grant
+#   profile, effect mechanic.handler-leadership) is the printed grant, and the same authoring shape is used by
+#   cases/grants/mordheim--druchii-mic--slavehounds--beastmaster--mechanic.handler-leader--5a0b5fa15729.yaml.
+#   The second scenario carries this band's printed source limit: the Boss's own Leader rule (special-rules.yaml,
+#   boss--leader, mechanic.leader-six) is supplied as an admitted nearby participant four inches away, and the
+#   identical declared six still fails at the Squig's own five, so the warband leader is never the source.  The
+#   printed 6-inch range, its 12-inch Squig Prodder upgrade and the herder's standing status stay supplied facts
+#   of the duel, which the mechanic origin's own case records as unmodelled.  REVIEWED still requires manual
+#   semantic review.
 # origin_id:
 #   rule/mordheim/night-goblins-web/squig-herder--handle-animal-squig/unimplemented.night-goblins-web.squig-herder.handle-animal-squig
 # analysis_status:
@@ -52,4 +65,68 @@
 # Register notes (context only, not behavioral authority):
 #   Handler-only Leadership for an animal profile. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Surface reuse candidate: {"family":"mechanic.handler-leadership","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare supplied provider, same side/band, standing status, recipient, distance, range upgrades and borrowing/reroll effects. Do not simulate another fighter or erase handler/leader restrictions; a range upgrade is not another aura.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Derived from the printed rule and the recorded contract; no engine output was consulted.  The bearer is the
+# printed Cave Squigs profile and the Leadership test is supplied as the fixture condition the rule speaks
+# about; the Squig Herder's printed Leadership 6 is supplied as its value and the warband Boss as an admitted
+# nearby participant, never simulated.
+
+- audit_id: rule/mordheim/night-goblins-web/squig-herder--handle-animal-squig/unimplemented.night-goblins-web.squig-herder.handle-animal-squig
+  id: the-supplied-herders-value-is-the-one-tested
+  covers: [handler-leadership]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: night-goblins-web
+      profile_id: cave-squigs
+      skill_ids: [mechanic.handler-leadership]
+      trait_overrides: {stupidity: true, stupidity_leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed source limit of this band: the Boss's Leader rule offers its own Leadership to warriors within
+# six inches, but a handler-only animal never borrows the warband leader's value, so the identical declared
+# six fails at the Squig's own Leadership 5 and the charge is cancelled.
+- audit_id: rule/mordheim/night-goblins-web/squig-herder--handle-animal-squig/unimplemented.night-goblins-web.squig-herder.handle-animal-squig
+  id: the-warband-boss-is-never-the-source-of-this-test
+  covers: [handler-leadership]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: night-goblins-web
+      profile_id: cave-squigs
+      skill_ids: [mechanic.handler-leadership]
+      trait_overrides: {stupidity: true}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, boss, 4]]
+    nearby:
+      - participant_id: boss
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: night-goblins-web, profile_id: boss}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 3}
+    - {key: round.0.first.stupidity.1, value: 3}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}

@@ -574,6 +574,8 @@ profiles:
       quantity:
         kind: fixed
         value: 1
+      notes: Printed Scimitar is a Sword alias in the same Khemri Trading Table (Town Cryer Compilation
+        printed23). This does not grant the different Cutting Edge Scimitar variant.
   skill_access: []
   starting_skill_ids: []
   rules:
@@ -603,6 +605,21 @@ profiles:
         Tiene una salvación no modificable de 5+, excepto contra armas mágicas.
     name_i18n:
       es: Etéreo
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.djinn-ethereal
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.djinn-ethereal
+    source_refs:
+    - manual: Town Cryer21 / Khemri
+      printed_page: 17
+      section: Khar-Mel / Powers
+      url: https://broheim.net/downloads/campaigns/khemri/Khemri%20Dramatis%20Personae.pdf
   - id: hireling.dramatis.khar-mel-the-djinn.rule.elemental-magic
     name: Elemental Magic
     effect: Knows D3 random Elemental spells.
@@ -611,6 +628,15 @@ profiles:
         Conoce D3 conjuros Elementales aleatorios.
     name_i18n:
       es: Magia Elemental
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: profile
+      effects:
+      - id: hireling.dramatis.khar-mel-the-djinn.rule.elemental-magic.casting
+        scope: 'NO'
+        binding: null
+        reason: Casting and random spell generation are excluded.
   - id: hireling.dramatis.khar-mel-the-djinn.rule.whirlwind
     name: Whirlwind
     effect: Uses source movement/power mode.
@@ -619,22 +645,65 @@ profiles:
         Usa el modo de movimiento/poder de la fuente.
     name_i18n:
       es: Remolino
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: profile
+      effects:
+      - id: hireling.dramatis.khar-mel-the-djinn.rule.whirlwind.departure
+        scope: 'NO'
+        binding: null
+        reason: Whirlwind prevents contact/charging and attacks; movement modes leaving the duel unresolved
+          are excluded.
   - id: hireling.dramatis.khar-mel-the-djinn.rule.djinn-s-curse
     name: Djinn's Curse
-    effect: Applies source penalties nearby.
+    effect: At own Recovery may choose one power until next own Recovery, never the same power on consecutive
+      turns. Curse imposes -1 to all enemy hit rolls and saves within4 inches. The supplied duel is in
+      base contact; shooting and radius producers are excluded.
     effect_i18n:
       es: >-
         Aplica las penalizaciones de la fuente a las miniaturas cercanas.
     name_i18n:
       es: Maldición del Genio
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.djinns-curse
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.djinns-curse
+    source_refs:
+    - manual: Town Cryer21 / Khemri
+      printed_page: 17
+      section: Khar-Mel / Powers
+      url: https://broheim.net/downloads/campaigns/khemri/Khemri%20Dramatis%20Personae.pdf
   - id: hireling.dramatis.khar-mel-the-djinn.rule.djinn-s-luck
     name: Djinn's Luck
-    effect: Uses source Ward save mode.
+    effect: At own Recovery may choose one power until next own Recovery, never the same power on consecutive
+      turns. Luck grants a4+ Ward when an ordinary save applies, otherwise6+ (including magical weapons).
     effect_i18n:
       es: >-
         Usa el modo de salvación de Guarda de la fuente.
     name_i18n:
       es: Suerte del Genio
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.djinns-curse
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.djinns-curse
+    source_refs:
+    - manual: Town Cryer21 / Khemri
+      printed_page: 17
+      section: Khar-Mel / Powers
+      url: https://broheim.net/downloads/campaigns/khemri/Khemri%20Dramatis%20Personae.pdf
   unresolved_references:
   - kind: summoning_procedure
     source_name: requires wizard/priest Leadership summoning procedure

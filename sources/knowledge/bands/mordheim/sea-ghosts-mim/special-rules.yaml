@@ -473,13 +473,14 @@ rules:
 - id: minstrels--songster
   runtime:
     scope: 'YES'
-    implemented: 'NO'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.sea-ghosts-mim.minstrels.songster
+    - id: mechanic.songster
       scope: 'YES'
-      binding: null
-      reason: 'Included individual duel effect, not implemented: Supplied qualified provider grants a personal Leadership reroll and +1 Leadership; canonical provider projection remains pending. Group Rout remains excluded.'
+      binding:
+        kind: mechanic
+        id: mechanic.songster
   name: Songster
   effect: >-
     Invigorating deep-sea shanties and reflective Elven lays boost the morale of all those around.

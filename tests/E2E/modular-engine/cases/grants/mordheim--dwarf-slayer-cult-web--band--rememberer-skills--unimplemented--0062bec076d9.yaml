@@ -2,7 +2,11 @@
 # audit_id: rule/mordheim/dwarf-slayer-cult-web/band--rememberer-skills/unimplemented.dwarf-slayer-cult-web.special.rememberer-skills
 # scaffold_fingerprint: 4d027b73b76217d2792414f7f3617d7b62d614f4735ae51fe37ff241c71058e4
 # authoring_status: PARTIAL
-# authoring_progress: no scenario is authorable from this file's recorded evidence.  The clause registers effect_id (not recorded) with relation "unresolved", so the supplied Leadership reroll the printed Songster aura delivers is not bound to any admitted operator here; the representation the ruling admits exists (a supplied same-band nearby provider, exactly the shape the shared wizened-halfling case uses) but the rule the provider would carry cannot be named without inventing it.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: the admitted clause now carries the supplied Leadership reroll the printed Songster
+#   aura delivers, in the receipt shape the accepted sea-ghosts Minstrels sibling documents, plus its
+#   control; the provider projection this origin still waits on is named in the clause marker below as a
+#   pending implementation defect rather than as a reason to withhold the requirement.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -13,7 +17,23 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: rememberer-skills--scope--leadership-reroll-aura (scope: YES)
-# PARTIAL[rememberer-skills--scope--leadership-reroll-aura]: [C] pending an accepted effect_id and the operator the supplied Songster provider carries (the register leaves both unrecorded/unresolved).  With that binding the tape is the supplied-leader shape already accepted for the shared wizened-halfling operator: a same-band nearby provider within the printed radius, a failed individual Leadership test by the recipient, one reroll offered.  The printed six-inch radius would be a supplied distance, never measured, exactly as the accepted case documents.
+# PARTIAL[rememberer-skills--scope--leadership-reroll-aura]: the printed clause is the Songster facet and its
+#   accepted reading is asserted at the end of this file; the provider projection it still waits on is named
+#   here.
+#   ACCEPTED FACET: the shared supplied-Leadership reroll (reviewed family EQ-mechanic.leadership-reroll,
+#   verified facet "leadership/optional-reroll", consumer packages/python/combat-engine/mordheim_combat/
+#   modular/leadership.py::resolve_local_leadership, boundary "Optional failed individual Leadership reroll.
+#   Hound requires the supplied Priest within 12 inches; Songster also supplies +1 Leadership").  The accepted
+#   sibling for the same printed ability is the sea-ghosts Minstrels Songster origin
+#   (mordheim--sea-ghosts-mim--minstrels--songster--*.yaml), whose three authored tapes supply that operator
+#   on the beneficiary; the receipt shape they document - the optional decision
+#   round.N.<side>.fear.charged.reroll together with its own reroll dice - is the shape used here, so no key
+#   is invented.  The printed six-inch radius is the supplied provider condition and is never measured.
+#   PENDING IMPLEMENTATION DEFECT (recorded, not a reason to withhold the requirement): this origin binds no
+#   operator of its own (effect_id not recorded, relation unresolved in the register), so the provider
+#   projection - the same-band Rememberer/Songster supplied within the printed radius - has to be connected
+#   before this tape can pass.  The rule's own identity for this band is what is missing, not the requirement.
+#   REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/mordheim/dwarf-slayer-cult-web/band--rememberer-skills/unimplemented.dwarf-slayer-cult-web.special.rememberer-skills
 # analysis_status:
@@ -70,4 +90,61 @@
 # Register notes (context only, not behavioral authority):
 #   Group aura (friendly models within 6") plus Rout and post-game experience; excluded group and campaign mechanics. Scope review integration: {"clause_id":"rememberer-skills","review_clause_id":"rout-and-experience","source_state":"unverified","review_status":"reviewed","scope_reason":"The Rout inclusion and the post-game experience are excluded group and campaign content.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Songster Ld-reroll aura within 6\" including Rout, and post-game experience","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+
+# --- Authored scenarios ---
+# Derived from the printed Songster clause, the reviewed EQ-mechanic.leadership-reroll facet and the accepted
+# sea-ghosts Minstrels sibling's receipt shape; no engine output was consulted.  Both fighters strike once with
+# a plain mace and every declared attack die is a natural one, a miss, so the Leadership test and its reroll
+# are the whole of the evidence.
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--rememberer-skills/unimplemented.dwarf-slayer-cult-web.special.rememberer-skills
+  id: one-optional-reroll-turns-the-failed-leadership-test-around
+  covers: [rememberer-skills--scope--leadership-reroll-aura]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.leadership-reroll]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.second.fear.charged.reroll.0, value: 1}
+    - {key: round.0.second.fear.charged.reroll.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/dwarf-slayer-cult-web/band--rememberer-skills/unimplemented.dwarf-slayer-cult-web.special.rememberer-skills
+  id: without-the-supplied-provider-the-first-failure-stands
+  covers: [rememberer-skills--scope--leadership-reroll-aura]
+  # The control of the same contract: the identical failed test without the supplied reroll stands, and no
+  # reroll die is requested at all, so the turn-around above belongs to the supplied provider.
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 6}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 6}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 6}
+    - {key: round.0.second.fear.charged.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

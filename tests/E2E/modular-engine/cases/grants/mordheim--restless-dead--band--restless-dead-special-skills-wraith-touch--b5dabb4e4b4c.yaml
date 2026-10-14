@@ -2,13 +2,17 @@
 # audit_id: rule/mordheim/restless-dead/band--restless-dead-special-skills-wraith-touch/mechanic.wraith-touch
 # scaffold_fingerprint: 67e04c75e465231dd2f435071fdf15494cbeaefb62dfc0160684cf8ac96992fc
 # authoring_status: PARTIAL
-# authoring_progress: the admitted whole clause carries three authored scenarios covering the
+# authoring_progress: the admitted whole clause carries four authored scenarios covering the
 # automatic unarmed wound against an eligible defender, the Liche heal with its printed cap at the
-# starting total, and the printed no-effect rule against an Undead defender.  The "all rules that
-# apply to unarmed attacks apply to the Wraith Touch" sentence stays pending, because the automatic
-# wound skips the To Wound step that the unarmed Strength penalty would modify - the same gap the
-# mechanic origin's own case records.  REVIEWED still requires manual semantic review and
-# execution_status stays UNEXECUTED.
+# starting total, the printed no-effect rule against an Undead defender, and - added in this pass -
+# the printed "all rules that apply to unarmed attacks apply to the Wraith Touch" sentence, whose
+# armour half is observable: the declared replacement carries the unarmed attack's +1 to the target's
+# save (rounds.py builds the wraith-touch effect with the fist's `target_armour_bonus=1`), so against
+# the 5+ heavy-armour defender a declared save die of four holds only while that unarmed rule is
+# applied.  The remaining unobservable component is narrowed and recorded in the marker below: the
+# unarmed rule set's -1 Strength reaches the same replaced effect, but the printed automatic wound
+# takes the To Wound step out of play, so no declared die can exhibit that component.  REVIEWED still
+# requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -19,15 +23,22 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole (scope: YES)
-# PARTIAL[whole]: [C] the pending facet is an observation genuinely absent from the executor contract,
-# not authoring work: the printed sentence
-# "all rules that apply to unarmed attacks apply to the Wraith Touch" would be observed at the To Wound
-# step (the unarmed Strength penalty is applied there), and the printed automatic wound skips that step
-# entirely, so no tape can exhibit it - the same missing datum the mechanic origin's own case records.
-# [B] does not apply because the configuration is already expressible and IS authored; only the
-# observation does not exist.  Closing review keeps PARTIAL with this citation.
-#   3 scenarios cover the printed automatic wound, the Liche heal (including the
-# printed cap) and the Undead prohibition.  The heal is authored here from the band's own Liche
+# PARTIAL[whole]: [C] narrowed in this pass, and the narrowing is why the clause now carries a fourth
+# authored scenario.  The printed sentence "all rules that apply to unarmed attacks apply to the Wraith
+# Touch" is not wholly unobservable: the declared replacement is built with the unarmed attack's own
+# device (packages/python/combat-engine/mordheim_combat/modular/rounds.py builds the wraith-touch effect
+# as the fist effect with `strength_bonus=-1, target_armour_bonus=1`), so the +1 to the target's save IS
+# readable through the armour step - that tape is authored below and needs no new field or key.  What is
+# genuinely absent is the observation for the other component of the same unarmed rule set: the -1
+# Strength is applied at the To Wound step, and modular/contexts.py marks the wraith-touch attack
+# `automatic` outside a `nature.undead`/`nature.possessed` defender, so no declared die can exhibit that
+# component - the same missing datum the mechanic origin's own case records.  [B] does not apply because
+# the configuration is expressible and IS authored; only this one observation does not exist.  Closing
+# review keeps PARTIAL with these citations, and the register row's own binding is the implementation
+# defect the tapes read, not the blocker.
+#   The scenarios cover the printed automatic wound, the Liche heal (including the
+# printed cap), the Undead prohibition, and the unarmed-rule sentence's armour component.  The heal is
+# authored here from the band's own Liche
 # configuration (`collection: mordheim, band_id: restless-dead, profile_id: liche`, whose printed
 # line is WS2 S2 T2 W4 I4 A1 Ld8), which the executor's wound branch reads as the Liche identity:
 # the bearer is built with a lost wound, declares the touch, and the automatic wound restores one
@@ -131,5 +142,33 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed unarmed-rule sentence, armour component: the declared wraith touch carries the unarmed
+# attack's +1 to the target's save, so the heavy-armour defender's printed 5+ becomes a 4+ and the
+# declared save die of four holds.  Without that unarmed rule the same die is below the printed 5 and
+# the defender would take the automatic wound.
+- audit_id: rule/mordheim/restless-dead/band--restless-dead-special-skills-wraith-touch/mechanic.wraith-touch
+  id: the-unarmed-attacks-armour-rule-applies-to-the-wraith-touch
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.wraith-touch]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.heavy-armour
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.wraith-touch, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 

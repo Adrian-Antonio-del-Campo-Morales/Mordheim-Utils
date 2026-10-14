@@ -1,5 +1,6 @@
 """L05: canonical table membership, configured promotions and complete owned kits."""
 from copy import deepcopy
+from dataclasses import replace
 from functools import lru_cache
 
 import pytest
@@ -12,7 +13,7 @@ from mordheim_construction.compiler import compile_fighter
 from mordheim_construction.contracts import SPECIAL_RULE_EFFECTS
 from mordheim_construction.eligibility import desktop_call, call, configuration_context, construction_call
 from mordheim_construction.selection import available_special_rules, _profile
-from mordheim_core.models import Characteristics, DuelContext, FighterBuild
+from mordheim_core.models import CarriedEquipment, Characteristics, DuelContext, EffectSet, FighterBuild
 from mordheim_knowledge.loader import knowledge_root, load_bands, validate_rule_runtime
 
 ROOT = knowledge_root()
@@ -22,7 +23,15 @@ TABLES = {
     'imperial-noble': ('skill.trading-flair', 'skill.taunt'),
     'dwarf': ('skill.magic-resistant', 'skill.ferocious-charge', 'skill.monster-slayer', 'skill.berserker'),
 }
-SUPPORTED = {'skill.hard-to-kill', 'skill.ferocious-charge', 'skill.monster-slayer', 'skill.berserker'}
+# Named table members the duel runtime actually executes: each one carries an
+# operator in the execution contract (catalog/mechanics/execution.yaml) whose tag
+# the engine consumes (verification/consumers.py: Chosen of the White Tower and
+# Instinctive Warrior parry through state/contexts, Hard to Kill's threshold,
+# Monster Slayer, Ferocious Charge, Berserker). Offering stays a separate fact: a
+# named member outside this set is still offered to its table and still refused at
+# compilation, which is the separation this test protects.
+SUPPORTED = {'skill.hard-to-kill', 'skill.ferocious-charge', 'skill.monster-slayer', 'skill.berserker',
+             'skill.chosen-of-the-white-tower', 'skill.instinctive-warrior'}
 
 
 @lru_cache
@@ -152,26 +161,62 @@ def test_compiler_checks_a_supplied_owned_kit_without_folding_holstered_items(ow
         compiled = compile_fighter(build)
         control = compile_fighter(FighterBuild('mordheim', band_id=build.band_id,
             profile_id=build.profile_id, main_weapon_id=build.main_weapon_id))
-        assert compiled == control
+        # A holstered kit is carried, never wielded: each supplied item is recorded with
+        # an empty effect and no occupied slot, exactly as the duel brands a carried bow.
+        assert compiled.mutation_equipment == tuple(
+            CarriedEquipment(item_id, EffectSet(), 'weapon') for item_id in (owned or ()))
+        # Every wielded fact is the control's, so whole-fighter equality holds once the
+        # three fields that hold those records are the control's: folding a holstered
+        # item into a hand or a stat still fails here.
+        assert replace(compiled, global_effects=control.global_effects,
+            global_effects_without_equipment=control.global_effects_without_equipment,
+            mutation_equipment=control.mutation_equipment) == control
+        # Neither effect set moves a number: they differ in tags alone.
+        assert replace(compiled.global_effects, tags=control.global_effects.tags) == control.global_effects
+        assert replace(compiled.global_effects_without_equipment,
+            tags=control.global_effects_without_equipment.tags) == control.global_effects_without_equipment
+        # The one derived consequence is the printed possession identity the Hatred
+        # clauses read (a model carrying a missile weapon is ranged-armed:
+        # mechanic.noble-disdain / contexts._hit_reroll), and it is the only one.
+        carried_identity = {'condition.ranged-armed'} if owned else set()
+        assert set(compiled.global_effects.tags) - set(control.global_effects.tags) == carried_identity
+        assert (set(compiled.global_effects_without_equipment.tags)
+                - set(control.global_effects_without_equipment.tags)) == carried_identity
     else:
         with pytest.raises(ValueError, match=reason):
             compile_fighter(build)
 
 
-@pytest.mark.parametrize('band,profile,prefix,other', [
-    ('sea-ghosts-mim', 'feast-master', 'band--dance-', 'wayfinder'),
-    ('araby-smugglers-sar', 'rais', 'band--skill-pious-fury', 'crew'),
-    ('protectorate-of-sigmar-lotd3', 'warrior-priest', 'band--special-skill-utter-determination', 'templar'),
-    ('protectorate-of-sigmar-lotd3', 'warrior-priest', 'band--special-skill-rousing-sermon', 'templar'),
+@pytest.mark.parametrize('band,profile,prefix,other,effect_prefix', [
+    ('sea-ghosts-mim', 'feast-master', 'band--dance-', 'wayfinder', 'dance.'),
+    ('araby-smugglers-sar', 'rais', 'band--skill-pious-fury', 'crew', None),
+    ('protectorate-of-sigmar-lotd3', 'warrior-priest', 'band--special-skill-utter-determination', 'templar', None),
+    ('protectorate-of-sigmar-lotd3', 'warrior-priest', 'band--special-skill-rousing-sermon', 'templar', 'mechanic.rousing-sermon'),
 ])
-def test_source_backed_pending_options_have_recipients_without_activation(band, profile, prefix, other):
+def test_source_backed_options_have_recipients_and_registered_activation(band, profile, prefix, other, effect_prefix):
+    """Printed options reach their own recipients; the register decides activation.
+
+    A family the register declares implemented
+    (catalog/rules/implemented-canonical-families.yaml, with its engine consumer in
+    verification/consumers.py: the four Shadow Dances and Rousing Sermon) activates
+    and delivers its tag; a family still pending is refused when supplied as a
+    current warrior fact. Offering is one fact and activation another, so both
+    states are asserted rather than dropped.
+    """
     build = FighterBuild('mordheim', band_id=band, profile_id=profile)
     ids = [rid for rid in available_special_rules(build, ROOT) if rid.startswith(prefix)]
     assert len(ids) == (4 if prefix == 'band--dance-' else 1)
     assert set(ids).isdisjoint(available_special_rules(FighterBuild('mordheim', band_id=band, profile_id=other), ROOT))
     for rid in ids:
-        with pytest.raises(ValueError, match='outside the executable duel runtime'):
-            compile_fighter(FighterBuild('mordheim', band_id=band, profile_id=profile, special_rule_ids=(rid,)))
+        selected = FighterBuild('mordheim', band_id=band, profile_id=profile, special_rule_ids=(rid,))
+        if effect_prefix is None:
+            with pytest.raises(ValueError, match='outside the executable duel runtime'):
+                compile_fighter(selected)
+        else:
+            # Exactly one effect of the declared family reaches the fighter: the
+            # activated rule delivers its own tag and nothing else of that family.
+            tags = compile_fighter(selected).global_effects.tags
+            assert len([tag for tag in tags if tag.startswith(effect_prefix)]) == 1
 
 
 def test_bloodline_is_a_configured_ability_not_a_foreign_profile_skill():
@@ -457,9 +502,13 @@ def test_dame_of_the_mare_ancient_armour_is_intrinsic_and_not_substitutable():
     assert fighter.natural_armour_unmodified is True
     assert fighter.global_effects.natural_armour_negated_by_magic is True
     assert fighter.armour_save == 7
-    # The clause is the Dame's; the Companion Filly is a different printed line.
-    assert compile_fighter(FighterBuild('mordheim', band_id='order-of-the-mare-web',
-        profile_id='companion-filly')).natural_armour_save == 7
+    # Companion Filly's own Divine Protection paragraph also prints 5+;
+    # both profiles retain the separate magic-weapon negation.
+    filly = compile_fighter(FighterBuild('mordheim', band_id='order-of-the-mare-web',
+        profile_id='companion-filly'))
+    assert filly.natural_armour_save == 5
+    assert filly.natural_armour_unmodified is True
+    assert filly.global_effects.natural_armour_negated_by_magic is True
 
 
 def test_shoota_team_bounds_missile_weapons_by_units_and_exempts_pebbles():
@@ -600,7 +649,7 @@ def test_catalogue_declares_the_closed_condition_set_and_its_bindings():
 
 
 def test_condition_validation_rejects_a_malformed_declaration():
-    from mordheim_knowledge.loader import load_conditions, validate_rule_runtime
+    from mordheim_knowledge.loader import load_conditions, runtime_bindings, validate_rule_runtime
     with pytest.raises(ValueError, match='implemented YES effect has no binding'):
         validate_rule_runtime({'id': 'condition.broken', 'runtime': {
             'scope': 'YES', 'implemented': 'YES', 'grant': 'none',
@@ -612,7 +661,12 @@ def test_condition_validation_rejects_a_malformed_declaration():
             'scope': 'YES', 'implemented': 'YES', 'grant': 'none',
             'effects': [{'id': 'mechanic.causes-fear', 'scope': 'YES', 'binding': {
                 'kind': 'profile', 'id': 'profile.not-a-binding'}}]}}, context='condition')
-    # The loader reads the caller's root, never a silent global default.
-    assert load_conditions('mordheim', ROOT)[0]['id'] == 'campaign.condition.frenzy'
+    # The loader reads the caller's root, never a silent global default. The
+    # catalogue's declaration order is not a contract, so the canonical condition
+    # is located by its identifier; an absent row, a stub, or a row without its
+    # executable binding still fails here.
+    rows = {row['id']: row for row in load_conditions('mordheim', ROOT)}
+    frenzy = rows['campaign.condition.frenzy']['runtime']
+    assert frenzy['implemented'] == 'YES' and runtime_bindings(rows['campaign.condition.frenzy'])
     with pytest.raises(ValueError):
         load_conditions('not-a-ruleset', ROOT)

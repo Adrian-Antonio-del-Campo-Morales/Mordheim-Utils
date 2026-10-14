@@ -1,8 +1,8 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/khemri-tomb-guardians/tomb-scorpions--living/unimplemented.khemri-tomb-guardians.tomb-scorpions.living
 # scaffold_fingerprint: dfb2040a29596cb11f64620c45fb09ae1a946cccd06ea6c149b58b2c6db5d39b
-# authoring_status: PARTIAL
-# authoring_progress: the admitted living clause was reviewed and no scenario is authorable.  The printed sentence ("Tomb Scorpions are living creatures and are affected by Psychology normally") is a classification: the register records no effect_id, an unresolved relation and no consumer, and its only duel-visible consequence would be a Psychology test the creature does take, whose tape key no case in the current revision records.  Writing one would invent the key.  The missing datum is either a consumer for the classification or a recorded Fear/Psychology test key for the defender.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted living clause carries 3 authored scenarios and is no longer pending.  The earlier claim that the tape key for a Psychology test "is not recorded" is false: the round-0 Fear test key of a charging warrior is used by the canonical mechanics of this revision (cases/mechanics/mechanic.undead.yaml, mechanic.psychology-immunity.yaml) and by the authored immune-to-psychology grants of this band family, so the fabricated key was never needed.  The published `tomb-scorpions` profile of this band prints this very clause in its own rule list (`rule_ids: [tomb-scorpions--living, tomb-scorpions--animal, tomb-scorpions--scorpion-sting]`, sources/knowledge/bands/trollheim/khemri-tomb-guardians/profiles.yaml), so the tapes are built from the published profile and state the printed outcome.  The Psychology face is the Fear test the charging Tomb Scorpion takes against a Fear-causing opponent (its printed Leadership 4 fails the declared 6+6 and the charge is cancelled); the creature-kind face is the implemented hatred-(Undead) reroll, whose qualifying identity is the target's `nature.undead` tag and which therefore must not be offered against this printed living profile; a third tape calibrates that device on a supplied `creature_kind: undead` enemy.  Recorded defect, not a blocker: the register row is the deferred null placeholder unimplemented.khemri-tomb-guardians.tomb-scorpions.living (scope LATER, binding null, "Deferred subsystem: psychology or mounts"), so nothing consumes the printed classification yet.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -13,7 +13,15 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: living (scope: YES)
-# PARTIAL[living]: [C] no scenario is authorable for this clause.  The classification has no recorded consumer, and the observable it would produce (the creature does take a Psychology test) needs the tape key the psychology context requests from the defender, which no authored case in this revision records.  Pending: that key or an explicit classification consumer.
+# AUTHORED[living]: 3 scenarios carry the printed classification onto observables of the duel, derived from
+# the printed sentence and the published profile stanza alone.  The Psychology face is the round-0 Fear test
+# of the charging Tomb Scorpion (the key the canonical mechanics cases already use): the declared 6+6 fails
+# its printed Leadership 4, so the test is taken and the charge is cancelled - the printed "affected by
+# Psychology normally".  The creature-kind face is the implemented hatred-(Undead) reroll, offered only
+# against a `nature.undead` target: no reroll is offered against this published profile, and the calibration
+# tape shows the same device rerolling the same miss against a supplied `creature_kind: undead` enemy.  The
+# register row keeps its deferred null binding: the consumer that would read the printed living kind is the
+# missing piece these tapes detect, not a reason to withhold them.
 # origin_id:
 #   rule/trollheim/khemri-tomb-guardians/tomb-scorpions--living/unimplemented.khemri-tomb-guardians.tomb-scorpions.living
 # analysis_status:
@@ -41,4 +49,73 @@
 # Register notes (context only, not behavioral authority):
 #   Map/movement, deployment, water/weather or mount mechanics are permanent 1v1 exclusions; the clause is recorded explicitly and no implementation consumer is assigned. Scope review integration: {"clause_id":"living","review_clause_id":"whole","source_state":"matched","review_status":"reviewed","scope_reason":"Being a living creature and therefore affected by Psychology normally is an admitted lasting individual state of this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Tomb Scorpions are living creatures and are affected by Psychology normally.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Derived from the printed rule, the published profile stanza and the recorded contracts of the mechanics
+# the tapes lean on; no engine output was consulted.  The two vehicles are the round-0 Fear test, the one
+# Psychology request this setup can force, and the implemented hatred-(Undead) first-round hit reroll, whose
+# qualifying identity is the defender's `nature.undead` tag.
+
+# The printed Psychology face: charging an opponent who causes Fear, the Tomb Scorpion must take its own
+# Leadership test, and the declared 6+6 fails its printed Leadership 4, so the charge is cancelled.
+- audit_id: rule/trollheim/khemri-tomb-guardians/tomb-scorpions--living/unimplemented.khemri-tomb-guardians.tomb-scorpions.living
+  id: the-printed-living-scorpion-takes-the-fear-test-for-its-charge
+  covers: [living]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 1, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-scorpions}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charge.0, value: 6}
+    - {key: round.0.second.fear.charge.1, value: 6}
+  expect_rounds:
+    0: {state.engaged: False, state.failed_charges: ['second'], state.second_charged: False}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The printed creature-kind face: a living creature is not an Undead model, so the printed first-round
+# hatred-(Undead) reroll is not offered against this profile and the declared miss stands.
+- audit_id: rule/trollheim/khemri-tomb-guardians/tomb-scorpions--living/unimplemented.khemri-tomb-guardians.tomb-scorpions.living
+  id: the-printed-living-scorpion-is-not-a-hatred-undead-target
+  covers: [living]
+  fighters:
+    first:
+      skill_ids: [mechanic.hatred-undead]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second: {collection: trollheim, band_id: khemri-tomb-guardians, profile_id: tomb-scorpions}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The device calibration: the same declared miss is rerolled against an enemy that does carry
+# nature.undead, so the absence recorded above is a statement about the printed living profile.
+- audit_id: rule/trollheim/khemri-tomb-guardians/tomb-scorpions--living/unimplemented.khemri-tomb-guardians.tomb-scorpions.living
+  id: the-same-miss-is-rerolled-against-a-supplied-undead-enemy
+  covers: [living]
+  fighters:
+    first:
+      skill_ids: [mechanic.hatred-undead]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      trait_overrides: {creature_kind: undead}
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

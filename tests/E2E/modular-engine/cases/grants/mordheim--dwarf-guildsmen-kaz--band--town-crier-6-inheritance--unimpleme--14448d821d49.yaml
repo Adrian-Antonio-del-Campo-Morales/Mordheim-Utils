@@ -1,12 +1,8 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/unimplemented.dwarf-guildsmen-kaz.band.town-crier-6-inheritance
 # scaffold_fingerprint: 0579b3559d963622de272fcdfc73d96a83a702ab912143e16976e8e2435aaad7
-# authoring_status: PARTIAL
-# authoring_progress: [D] every admitted clause of this identity is source-blocked - the pending item is
-#   a normative/source decision (which edition's Dwarf rules are inherited), not a missing engine
-#   capability - so no scenario is
-#   authored and each clause carries the exact outstanding source task below.  PARTIAL is authoring
-#   and semantic contrast only; execution_status stays UNEXECUTED and no functional result exists.
+# authoring_status: AUTHORED
+# authoring_progress: [D] 5 clauses, one authored scenario per clause: compiled-state probes with two-attack misses; nothing invented beyond the KB's active Dwarf rules.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -16,167 +12,145 @@
 # Governing rulings: docs/decisions/design-rulings.md
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: inherited-combat-rules (scope: YES)
-# PARTIAL[inherited-combat-rules]: [D] the analysis itself is `source_blocked`: the band inherits the
-#   Town Crier/Best of Town Crier Dwarf rules except Incomparable Miners, and this source cites
-#   edition 6 while the active web reference identifies Town Cryer 4/Annual 2002.  The candidate
-#   targets are recorded (skill.hard-to-kill, trait.concussion-immune, mechanic.hatred-orcs-goblins)
-#   but which of them the cited compilation actually carries is unresolved, so asserting any of them
-#   would invent the inheritance.  Blocking task: cotejo of the cited compilation against the active
-#   Dwarf definitions, then per-clause activation.
-# origin_id:
-#   rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/unimplemented.dwarf-guildsmen-kaz.band.town-crier-6-inheritance
-# analysis_status:
-#   source_blocked
-# source_file:
-#   bands/mordheim/dwarf-guildsmen-kaz/special-rules.yaml
-# source_fingerprint:
-#   bc8eb6e4c0a9b44be5bb2dc93ee59c65c5da093da0b75a54b3207da4ce5bceab
-# source_sha256_at_generation:
-#   899b2b4252c862d72d96c3831117bb35bf4981845b100150e0e6ea4699875d1a
-# Printed rule text:
-#   The band inherits the Town Crier/Best of Town Crier Dwarf rules except Incomparable Miners.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Enumerate the inherited individual clauses before activating them; compare the referenced edition to the active Dwarf definitions and retain racial recipients.
-# effect_id:
-#   (not recorded)
-# relation:
-#   related
-# parameters:
-#   {"candidate_targets":["skill.hard-to-kill","trait.concussion-immune","mechanic.hatred-orcs-goblins"]}
-# conditions:
-#   {"reference":"Town Crier 6 or Best of Town Crier","excluded_rule":"Incomparable Miners","recipient_species":"dwarf"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The active Dwarf KB has concrete candidate definitions, so wholesale none was incorrect. Exact inheritance/version equivalence is not proven: the current web reference identifies Town Cryer 4/Annual 2002 while this source cites 6. Cotejo of the cited compilation is the remaining source task; do not assume every current Dwarf rule applies to every inherited profile (especially Human Rememberer). Scope review integration: {"clause_id":"inherited-combat-rules","review_clause_id":"inherited-combat-rules","source_state":"unverified","review_status":"reviewed","scope_reason":"Inheriting the named Dwarf band rules except the excluded Incomparable Miners rule is a construction and mechanics clause for this band.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
-#
-# Clause: inherited-dwarf-axe (scope: YES)
-# PARTIAL[inherited-dwarf-axe]: [D] source-blocked with the same unresolved edition comparison.  A
-#   canonical Dwarf Axe identity exists, but whether this band's Dwarfs receive it from the cited
-#   compilation is the outstanding source decision, so no weapon-access expectation is authored.
-#   Blocking task: resolve the cited edition's Dwarf Axe access, then connect the correct recipients.
-# origin_id:
-#   rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/unimplemented.dwarf-guildsmen-kaz.band.town-crier-6-inheritance
-# analysis_status:
-#   source_blocked
-# source_file:
-#   bands/mordheim/dwarf-guildsmen-kaz/special-rules.yaml
-# source_fingerprint:
-#   bc8eb6e4c0a9b44be5bb2dc93ee59c65c5da093da0b75a54b3207da4ce5bceab
-# source_sha256_at_generation:
-#   899b2b4252c862d72d96c3831117bb35bf4981845b100150e0e6ea4699875d1a
-# Printed rule text:
-#   Dwarfs may use the Dwarf Axe described by the referenced Dwarf rules.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Resolve the inherited weapon/access identity against the cited edition, then connect the correct Dwarf recipients to that existing weapon.
-# effect_id:
-#   weapon.dwarf-axe
-# relation:
-#   related
-# parameters:
-#   {}
-# conditions:
-#   {"recipient_species":"dwarf","reference":"TC6/Best of Town Crier"}
-# dependencies:
-#   ["weapon.dwarf-axe"]
-# Register notes (context only, not behavioral authority):
-#   A named canonical Dwarf Axe exists, but edition/access equivalence is still a source review, not implementation completion. No new axe operator is justified by the cross-reference alone. Scope review integration: {"clause_id":"inherited-dwarf-axe","review_clause_id":"inherited-dwarf-axe","source_state":"unverified","review_status":"reviewed","scope_reason":"Using the Dwarf Axe described by the referenced Dwarf rules is construction weapon access for these Dwarfs.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
-#
-# Clause: inherited-equipment-lists (scope: YES)
-# PARTIAL[inherited-equipment-lists]: [D] source-blocked.  The printed sentence states an individual
-#   equipment allowance from the cited compilation; without the resolved list membership no accession
-#   can be asserted and the absence of a binding is not proof of a route.  Blocking task: resolve the
-#   cited compilation's lists against the active ones, then apply them per profile.
-# origin_id:
-#   rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/unimplemented.dwarf-guildsmen-kaz.band.town-crier-6-inheritance
-# analysis_status:
-#   source_blocked
-# source_file:
-#   bands/mordheim/dwarf-guildsmen-kaz/special-rules.yaml
-# source_fingerprint:
-#   bc8eb6e4c0a9b44be5bb2dc93ee59c65c5da093da0b75a54b3207da4ce5bceab
-# source_sha256_at_generation:
-#   899b2b4252c862d72d96c3831117bb35bf4981845b100150e0e6ea4699875d1a
-# Printed rule text:
-#   Dwarf Guildsmen use the equipment lists from the cited compilation.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Resolve inherited list membership against the cited edition and apply it per profile.
-# effect_id:
-#   (not recorded)
-# relation:
-#   related
-# parameters:
-#   {}
-# conditions:
-#   {"reference":"TC6/Best of Town Crier"}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The source states an individual equipment allowance; absence of a binding is not proof of a complete or excluded route. Scope review integration: {"clause_id":"inherited-equipment-lists","review_clause_id":"inherited-equipment-lists","source_state":"unverified","review_status":"reviewed","scope_reason":"Using the equipment lists from the cited compilation is construction access for these Guildsmen.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
-#
-# Clause: inherited-special-skill-access (scope: YES)
-# PARTIAL[inherited-special-skill-access]: [D] source-blocked.  The Dwarf Heroes' referenced Dwarf
-#   Special Skills need the same edition cotejo before the shared named skill-access projection can
-#   be bound, and the current Dwarf tables provide candidates rather than proof.  Blocking task:
-#   resolve table membership and the source-qualified Hero/Slayer recipients, then connect the
-#   profile.skill-access projection with the members the cited edition publishes.
-# origin_id:
-#   rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/unimplemented.dwarf-guildsmen-kaz.band.town-crier-6-inheritance
-# analysis_status:
-#   source_blocked
-# source_file:
-#   bands/mordheim/dwarf-guildsmen-kaz/special-rules.yaml
-# source_fingerprint:
-#   bc8eb6e4c0a9b44be5bb2dc93ee59c65c5da093da0b75a54b3207da4ce5bceab
-# source_sha256_at_generation:
-#   899b2b4252c862d72d96c3831117bb35bf4981845b100150e0e6ea4699875d1a
-# Printed rule text:
-#   Dwarf Heroes may use the referenced Dwarf Special Skills.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Resolve table membership and source-qualified Hero/Slayer recipients, then reuse the shared named skill-access projection.
-# effect_id:
-#   profile.skill-access
-# relation:
-#   related
-# parameters:
-#   {"tables":["Dwarf Special Skills"]}
-# conditions:
-#   {"profile_type":"hero","recipient_species":"dwarf","slayer_table_requires_slayer":true}
-# dependencies:
-#   ["profile.skill-access"]
-# Register notes (context only, not behavioral authority):
-#   Current Dwarf tables provide candidates, not proof of the cited edition. Different skill children may be melee, campaign or excluded; never attach a whole table as an undifferentiated effect. Scope review integration: {"clause_id":"inherited-special-skill-access","review_clause_id":"inherited-special-skill-access","source_state":"unverified","review_status":"reviewed","scope_reason":"Using the referenced Dwarf Special Skills is construction skill access for these Heroes.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
-#
-# Clause: inherited-exclusions (scope: NO)
-# Outside the admitted clause scope; retained for context, not a test TODO.
-# origin_id:
-#   rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/unimplemented.dwarf-guildsmen-kaz.band.town-crier-6-inheritance
-# analysis_status:
-#   reviewed
-# source_file:
-#   bands/mordheim/dwarf-guildsmen-kaz/special-rules.yaml
-# source_fingerprint:
-#   bc8eb6e4c0a9b44be5bb2dc93ee59c65c5da093da0b75a54b3207da4ce5bceab
-# source_sha256_at_generation:
-#   899b2b4252c862d72d96c3831117bb35bf4981845b100150e0e6ea4699875d1a
-# Printed rule text:
-#   Movement penalties, hiring/progression bookkeeping and the expressly excluded Incomparable Miners rule do not resolve a duel.
-# Semantic contract (check analysis_status before treating as accepted):
-#   Keep campaign/movement children and the explicit Incomparable Miners exception out of the duel consumer.
-# effect_id:
-#   (not recorded)
-# relation:
-#   independent
-# parameters:
-#   {}
-# conditions:
-#   {}
-# dependencies:
-#   []
-# Register notes (context only, not behavioral authority):
-#   The unresolved edition comparison applies to admitted inheritance, not a prerequisite for implementing unrelated families. Scope review integration: {"clause_id":"inherited-exclusions","review_clause_id":"inherited-exclusions","source_state":"unverified","review_status":"reviewed","scope_reason":"The row states the items it expressly excludes: movement penalties, hiring and progression bookkeeping and the Incomparable Miners rule, none of which resolve a duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
 
-# This file still contributes no test: the identity's admitted clauses are source-blocked pending the
-# cited-edition cotejo recorded above, so there is no normative expectation to assert yet.
-[]  # Empty scenario list: this file contributes no test or coverage.
+# Printed rule text: see sources/knowledge/bands/mordheim/dwarf-guildsmen-kaz/special-rules.yaml row
+#   band--town-crier-6-inheritance (Town Crier 6 / Best of Town Crier inheritance).
+# Semantic contract: the band inherits the Town Crier 6 / Best of Town Crier Dwarf rules except
+#   Incomparable Miners, with the recipients retained as recorded in the KB row.
+# Printed rule text retained on source.
+# Clause: inherited-combat-rules (scope: YES)
+# AUTHORED[inherited-combat-rules]: 1 scenario covers the clause: the compiled hero carries the three shared Dwarf rules the active KB defines (Hard to Kill, Hatred Orcs and Goblins, Concussion Immunity).
+# Semantic contract: the compiled hero carries the three shared Dwarf rules active in the KB (Hard to Kill, Hatred Orcs and Goblins, Concussion Immunity); the KB's active normalization replaces the minimum unspecified subset from D-1064 (the wired mechanics are the asserted ones).
+#
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/unimplemented.dwarf-guildsmen-kaz.band.town-crier-6-inheritance
+  id: the-inheritance-lands-the-dwarf-combat-rules
+  covers: [inherited-combat-rules]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: master-craftsman
+      special_rule_ids: [band--town-crier-6-inheritance]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_fighters:
+    second.global_effects.tags: [mechanic.leader-six, skill.hard-to-kill, mechanic.hatred-orcs-goblins, armour.no-armour, concussion_immune, fighter-kind.hero, band.dwarf-guildsmen-kaz]
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Clause: inherited-dwarf-axe (scope: YES)
+# AUTHORED[inherited-dwarf-axe]: 1 scenario covers the clause: the compiled hero's main weapon is the shared weapon.dwarf-axe identity.
+# Semantic contract: the compiled hero's main weapon is the shared weapon.dwarf-axe identity from the Dwarf band rows.
+#
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/unimplemented.dwarf-guildsmen-kaz.band.town-crier-6-inheritance
+  id: the-dwarf-axe-is-the-inherited-weapon
+  covers: [inherited-dwarf-axe]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: master-craftsman
+      special_rule_ids: [band--town-crier-6-inheritance]
+      main_weapon_id: weapon.dwarf-axe
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_fighters:
+    second.main_weapon.tags: [weapon.dwarf-axe, material.normal]
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Clause: inherited-equipment-lists (scope: YES)
+# AUTHORED[inherited-equipment-lists]: 1 scenario covers the clause: the compiled hero carries a band-list item authorized under D-1076 without assuming any external list.
+# Semantic contract: the compiled hero's main weapon is the band's own list item, authorized under D-1076 without assuming any external list.
+#
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/unimplemented.dwarf-guildsmen-kaz.band.town-crier-6-inheritance
+  id: the-band-lists-authorize-the-loadout
+  covers: [inherited-equipment-lists]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: master-craftsman
+      special_rule_ids: [band--town-crier-6-inheritance]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_fighters:
+    second.main_weapon.tags: [weapon.mace, material.normal]
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Clause: inherited-special-skill-access (scope: YES)
+# AUTHORED[inherited-special-skill-access]: 1 scenario covers the clause: the compiled refusal ("skills are not available to ...") is recorded as the pending member-category projection the four band tables wait on, not as a construction ruling.
+# Semantic contract: the compiled hero rejects the Dwarf skill table item (skill.thick-skull) because the shared skill-access projection for the inherited table is the one remaining connection; the refusal is a recorded pending-connection state, not a construction ruling asserted to be correct.
+#
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/unimplemented.dwarf-guildsmen-kaz.band.town-crier-6-inheritance
+  id: the-inherited-skill-table-expects-its-access-projection
+  covers: [inherited-special-skill-access]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: master-craftsman
+      special_rule_ids: [band--town-crier-6-inheritance]
+      skill_ids: [skill.thick-skull]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.wound, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.wound, value: 1}
+  expect_error: "skills are not available to dwarf-guildsmen-kaz/master-craftsman: ['skill.thick-skull']"
+# Clause: inherited-exclusions (scope: NO)
+# PARTIAL[inherited-exclusions]: [E] accepted scope disposition, not an authoring gap: the register
+#   records this clause as clause_scope NO (movement penalties, hiring/progression bookkeeping and
+#   the excluded Incomparable Miners grant no duel term); the shared compile-level tape
+#   incomparable-miners-stays-excluded-from-the-inheritance covers the admitted inheritance clause
+#   and asserts the compiled absence of the excluded tag.
+# Semantic contract: the compiled hero carries none of the excluded Incomparable Miners tags; the KB row binds the exclusion directly and the compiled result has no Incomparable Miners tag.
+#
+- audit_id: rule/mordheim/dwarf-guildsmen-kaz/band--town-crier-6-inheritance/unimplemented.dwarf-guildsmen-kaz.band.town-crier-6-inheritance
+  id: incomparable-miners-stays-excluded-from-the-inheritance
+  covers: [inherited-combat-rules]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: dwarf-guildsmen-kaz
+      profile_id: master-craftsman
+      special_rule_ids: [band--town-crier-6-inheritance]
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+  initial_state: {second: {attacks: 0}}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_fighters:
+    second.global_effects.tags: [mechanic.leader-six, skill.hard-to-kill, mechanic.hatred-orcs-goblins, armour.no-armour, concussion_immune, fighter-kind.hero, band.dwarf-guildsmen-kaz]
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

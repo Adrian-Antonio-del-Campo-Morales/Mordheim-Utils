@@ -109,6 +109,16 @@
 #   Record the recipient prohibition without introducing campaign succession or group Rout tests. Scope review integration: {"clause_id":"no-leader","review_clause_id":"no-leader","source_state":"unverified","review_status":"reviewed","scope_reason":"Whether this model may ever become the warband Leader is a roster and leader-selection rule, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The Rememberer cannot receive the Leader role/ability in a supplied canonical construction.","effect_id":"proposed.leader-grant-prohibition","relation":"independent","parameters":"{}","conditions":"{\"profile\":\"rememberer\"}","consumer":"[\"packages/typescript/domain/eligibility/index.ts::applicableRules\",\"packages/python/roster-construction/mordheim_construction/compiler.py::compile_fighter\"]","implementation_work":"data","dependencies":"[]","implementation_batch":"D-leader-recipients","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/mordheim/dwarf-slayer-cult-web/special-rules.yaml\",\"packages/python/combat-engine/mordheim_combat/modular/leadership.py\"]"},"inherited_clause_text":"A Rememberer may never be the warband Leader.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
 # --- Authored scenarios ---
+# RECEIPT (checked statically in the shared construction stage, not by running it): the declared id is
+# this band's own package row which carries the printed restriction - `band--slayer-rules`,
+# `applies_to {band: true, profile_ids: [giant-slayer, doomseeker, troll-slayers, stubbles, axe-hurlers]}`,
+# i.e. every profile of the band except the Rememberer - so the recipients stage of
+# `specialRuleRestriction()` raises this origin's own sentence and the declared fragment is the head of
+# that sentence.  The earlier revision declared the catalogue id `band--slayer`, which is not a row of
+# this band's package at all: for a band build `selectedRuleCandidates()` resolves ids from that package
+# alone, so the only sentence that id can produce is the band-level "special rule is not available to
+# dwarf-slayer-cult-web: band--slayer", which evidences that the id is foreign rather than that the
+# Slayer package is closed to this recipient.
 # Derived from the printed rule text and the recorded semantic contract; no engine output was
 # consulted.
 
@@ -132,6 +142,6 @@
       collection: mordheim
       band_id: dwarf-slayer-cult-web
       profile_id: rememberer
-      special_rule_ids: [band--slayer]
+      special_rule_ids: [band--slayer-rules]
       main_weapon_id: weapon.mace
   expect_error: "special rule is not available to dwarf-slayer-cult-web/rememberer"

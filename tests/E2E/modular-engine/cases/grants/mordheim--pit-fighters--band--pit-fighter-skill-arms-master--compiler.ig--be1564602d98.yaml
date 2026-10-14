@@ -53,6 +53,16 @@
 #   Arms Master shares the contract with Master of Arms; selection-specific prerequisites belong to the skill. Surface reuse candidate: {"family":"C-DIFFICULT","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Keep one Difficult-to-Use weapon plus an ordinary hand weapon distinct from ignoring every Difficult-to-Use restriction. Weapons Training expands allowed identities; it does not imply the same waiver.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
 # --- Authored scenarios ---
+# RECIPIENT BOUNDARY (checked statically in the shared construction stage, not by running it): the
+# bearer is the printed Hero row pit-veterans, not the Henchman row pit-fighters.
+# `specialRuleRestriction()`'s access stage admits a band warband_skill row with `applies_to.band: true`
+# and no `eligibility` only for a recipient whose own printed `skill_access` carries the `special`
+# category; pit-fighters prints none and would be refused one stage before this construction face is
+# reached, which is the table's access requirement, not the waiver.  The retarget is inert for the tape:
+# both rows print the same pit-fighter-equipment-list, the waiver tape declares no die at all and no
+# characteristic of its own (both pools are suppressed), so only construction legality is read.
+#   band--pit-fighter-skill-arms-master  kind warband_skill  applies_to {band: true}  eligibility none
+#   pit-veterans  type hero  skill_access [combat, strength, speed, special]
 # Derived from the printed sentence and the recorded contract; no engine output was consulted.  The
 # relaxation is a construction fact, so the trigger is a two-handed main weapon combined with an off-hand
 # choice.
@@ -78,7 +88,7 @@
     first:
       collection: mordheim
       band_id: pit-fighters
-      profile_id: pit-fighters
+      profile_id: pit-veterans
       special_rule_ids: [band--pit-fighter-skill-arms-master]
       main_weapon_id: weapon.flail
       off_hand_id: defence.shield

@@ -13,7 +13,20 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole (scope: YES)
-# PARTIAL[whole]: 3 scenarios evidence the one-point Whipcrack bonus when charging, the two-whip cap and the strike-first timing of the charged bonus. The printed restriction that the charged bonus may only be used against the charger is not unobservable but vacuous here: a duel has exactly one opponent, so the charger is always the only model the extra attack can be directed at, and no configuration this vocabulary can build violates the restriction (the executor grants the bonus through whipcrack_weapon(attacker) whenever the bearer is charged, with no target selection at all - equipment.py:13, pools.py:276, rounds.py:634/962). The missing datum is therefore a second enemy model to misdirect the attack at, which the one-against-one runtime does not model; the facet is satisfied by every authored configuration rather than separable within one.
+# PARTIAL[whole]: 3 scenarios evidence the one-point Whipcrack bonus when charging,
+#   the two-whip cap and the strike-first timing of the charged bonus, and a fourth
+#   control scenario (authored below) pins the uncharged bearer's ordinary pool.
+#   The printed restriction that the charged bonus may only be used against the
+#   charger is vacuous here rather than unobservable: a duel has exactly one
+#   opponent, so the charger is always the only model the extra attack can be
+#   directed at, and no configuration this vocabulary can build violates the
+#   restriction (the executor grants the bonus through whipcrack_weapon(attacker)
+#   whenever the bearer is charged, with no target selection at all -
+#   equipment.py:13, pools.py:276, rounds.py:634/962). The missing datum is
+#   therefore a second enemy model to misdirect the attack at, which the
+#   one-against-one runtime does not model; multi-model combat is an excluded
+#   runtime, not a deferred one, so the facet is satisfied by every authored
+#   configuration rather than separable within one.
 # origin_id:
 #   mechanic/weapon.barbed-whip
 # analysis_status:
@@ -128,3 +141,25 @@
     - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
     - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
 
+
+# Control for the pool shape: the same bearer without a charge resolves the
+#   ordinary single-attack pool - no Whipcrack bonus and no strike-first tier, so
+#   the tape opens with the opponent's reply only.
+- audit_id: mechanic/weapon.barbed-whip
+  id: an-uncharged-bearer-resolves-the-ordinary-pool
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.barbed-whip
+      characteristics: *a-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: *d-ws3-s3-t3-w2-i2
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

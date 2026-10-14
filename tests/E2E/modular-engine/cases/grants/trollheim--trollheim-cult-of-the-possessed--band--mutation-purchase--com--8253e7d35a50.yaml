@@ -42,9 +42,23 @@
 #   The profile-specific one-or-two limit for initial Possessed recruitment is a separate origin.
 
 # --- Authored scenarios ---
-# The mutation row is the same in both tapes, so the recipient identity is the only difference; the
-# refusal fragment is the shared stage's own template for this contract, quoted with this origin's
-# recipient.
+# The mutation row is the same in both tapes, so the recipient identity is the only difference.
+#
+# WHICH GATE FIRES (checked statically in the shared construction stage, not by running it): the
+# declared fragment is the sentence the stage actually raises for this recipient, the per-recipient
+# availability template of `specialRuleRestriction()`'s recipients stage, because
+# `band--mutations-extra-arm` itself carries `eligibility: [the-possessed, mutants]`
+# (sources/knowledge/bands/trollheim/trollheim-cult-of-the-possessed/special-rules.yaml) and the
+# recipients stage runs before every later stage.  The contract's own branch - the
+# `initialChoices` sentence "mutations are available only to Mutants and the Possessed: {who}"
+# (_eligibility.js `profileSelections`, reached from `_validate_profile_selections()`) - is masked for
+# this band: a recipient that is not one of the two named profiles is refused by the row's own
+# eligibility first, and a recipient that is one of them never satisfies that branch's condition.  The
+# clause's requirement (a line outside the printed recipients cannot carry a mutation) is what both
+# sentences express, and the reachable one is asserted here; the contract's own branch stays recorded
+# as a pending consumer for this origin rather than being asserted as if it fired.
+# The accepted pairing tape below carries the two named recipients, so the member row's eligibility
+# admits them and the construction completes.
 
 - audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutation-purchase/compiler.mutation-purchase-at-recruitment
   id: a-line-outside-the-printed-recipients-cannot-carry-a-mutation
@@ -57,7 +71,7 @@
       profile_id: brethren
       special_rule_ids:
       - band--mutations-extra-arm
-  expect_error: 'mutations are available only to Mutants and the Possessed: trollheim-cult-of-the-possessed/brethren'
+  expect_error: 'special rule is not available to trollheim-cult-of-the-possessed/brethren: band--mutations-extra-arm'
 
 - audit_id: rule/trollheim/trollheim-cult-of-the-possessed/band--mutation-purchase/compiler.mutation-purchase-at-recruitment
   id: a-mutant-with-the-same-mutation-is-accepted-at-construction

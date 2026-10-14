@@ -3,8 +3,12 @@
 # scaffold_fingerprint: c05c1e115728cbfdfe379c3e03b2e71d7a0d4d60c8abc158df895bc87f8d91c2
 # authoring_status: PARTIAL
 # authoring_progress: the admitted whole clause now carries 2 authored scenarios for its printed
-# incompatibility term (the refusal of a BigSnot that also carries Frustratingly Tiny, and the accepted
-# control that carries Big Bully alone), derived from the printed sentence and the shared eligibility stage.
+# incompatibility term (the refusal of a BigSnot that declares the printed pair, and the accepted
+# control that declares neither skill of it), derived from the printed sentence and the shared
+# eligibility stage.  The pair guard reads the build's declared `special_rule_ids`
+# (eligibility.py::build_facts passes that field through unchanged), so the refusal tape declares both
+# printed ids, Frustratingly Tiny first: the declared-rule loop of compile_fighter validates each
+# declared id in order and that row's own `prerequisites` stage is where the pair sentence is raised.
 # The blocker recorded here previously was FALSE and is corrected: packages/python/roster-construction/
 # mordheim_construction/_eligibility.js::specialRuleRestriction carries the literal refusal
 # `Frustratingly Tiny cannot be combined with Big Bully` for exactly this pair of rule ids, and the E2E
@@ -23,6 +27,13 @@
 #
 # Clause: whole (scope: YES)
 # PARTIAL[whole]: [E] the two remaining printed consequences are excluded by accepted scope rather than
+#   CRITERION CORRECTION (final reconciliation): the wording "excluded by an accepted scope decision" above
+#   is replaced by the precise record.  This requirement is NOT out of the admitted scope: its own recorded
+#   scope_reason admits it - "The BigSnot's immediate grant of one Strength skill, the once-only limit, the BigSnotz recipient and the printed incompatibility with Frustratingly Tiny are all construction and legal-combination consequences of that bearer." - and nothing here is concluded from a scope-LATER / implemented-NO /
+#   null binding, which belongs to another row and carries its own recorded reason.  What blocks a tape is
+#   the concrete requirement named above in this marker; the clause stays recorded as withheld and is not
+#   dropped, aliased to another origin or counted as covered.  Where this file also quotes a register
+#   exclusion, that exclusion applies to the campaign, roster or advancement faces it names.
 # unwritten: (a) the immediate grant of ONE Strength skill is a skill-selection/advancement coupling whose
 # only recorded enforcement lives in the advancement layer, and (b) the once-only limit on this skill is
 # likewise advancement scope with no construction field in the corpus vocabulary - both are the campaign
@@ -31,9 +42,11 @@
 # evidenced (2 scenarios); the other two printed consequences stay pending with their exact missing
 # representation.  Evidence: _eligibility.js::specialRuleRestriction returns the literal string
 # "Frustratingly Tiny cannot be combined with Big Bully" when either rule of the printed pair is declared
-# together with the other, and the KB row bigsnotz--big-bully is applicable to the bigsnotz profile, so a
-# band build of that profile declaring both ids is refused while the same build declaring Big Bully alone
-# constructs and fights.  Still pending: (a) the printed immediate grant of ONE Strength skill - a
+# together with the other, so a band build that declares both printed ids is refused at the first
+# declared id's `prerequisites` stage, while a build declaring neither of the pair constructs and fights.
+# A lone declaration of the sibling is not that control: the KB row records `grant: profile` with
+# `implemented: NO`, so the declared-rule loop refuses it as outside the executable duel runtime before
+# any effect.  Still pending: (a) the printed immediate grant of ONE Strength skill - a
 # skill-selection/advancement coupling whose only recorded enforcement is the advancement layer, and no
 # duel observation exists for it; (b) the printed once-only limit on this skill - likewise advancement
 # scope with no construction field in the corpus vocabulary.  Neither is asserted from an unobservable
@@ -67,7 +80,9 @@
 
 # --- Authored scenarios ---
 # The printed incompatibility, asserted through the shared eligibility stage's own literal refusal
-# for this pair of rule ids.
+# for this pair of rule ids.  Both printed skills are declared because the guard reads the build's
+# declared `special_rule_ids`; Frustratingly Tiny is declared first, so the pair sentence is raised in
+# that row's `prerequisites` stage before the sibling's own runtime gate is reached.
 - audit_id: rule/mordheim/snotlings-web/bigsnotz--big-bully/unimplemented.snotlings-web.special.big-bully
   id: a-bigsnot-carrying-both-printed-skills-is-refused
   covers: [whole]
@@ -76,11 +91,15 @@
       collection: mordheim
       band_id: snotlings-web
       profile_id: bigsnotz
-      special_rule_ids: [bigsnotz--big-bully, bullied-goblin--frustratingly-tiny]
+      special_rule_ids: [bullied-goblin--frustratingly-tiny, bigsnotz--big-bully]
   expect_error: Frustratingly Tiny cannot be combined with Big Bully
 
-# Accepted control: the same printed bearer with Big Bully alone constructs and fights, so the
-# refusal above belongs to the printed pairing and not to the rule itself.
+# Accepted control: the same printed bearer declaring neither skill of the pair constructs and fights,
+# so the refusal above belongs to the declared pairing and is not a blanket rejection of the profile or
+# of the Frustratingly Tiny row.  The sibling id cannot serve as a lone control: its KB row records
+# `grant: profile` with `implemented: NO`, so declaring it alone is refused as outside the executable
+# duel runtime before any effect.  The scenario keeps its original collected id; the build it
+# declares carries neither skill of the pair, which is what the comment above states.
 - audit_id: rule/mordheim/snotlings-web/bigsnotz--big-bully/unimplemented.snotlings-web.special.big-bully
   id: the-bigsnot-with-big-bully-alone-constructs-and-fights
   covers: [whole]
@@ -89,7 +108,6 @@
       collection: mordheim
       band_id: snotlings-web
       profile_id: bigsnotz
-      special_rule_ids: [bigsnotz--big-bully]
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 2, strength: 2, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 5}
     second:

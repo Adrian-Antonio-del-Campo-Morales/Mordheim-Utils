@@ -242,13 +242,25 @@ Each scenario declares:
 | `expect_initial` | Required observations before the first executed combat phase. |
 | `expect_rounds` | Required observations after specific executed combat phases. |
 | `expect_final` | Final state, phases executed and termination expectations. |
-| `expect_events` | Optional ordered events required by the semantic or documented executor contract. |
+| `expect_events` | Optional ordered events required by the semantic or documented executor contract; an empty list asserts that no event occurred. |
+| `expect_fighters` | Required observations on the compiled `first`/`second` build snapshot delivered by execution; the harness computes no armour or rule values itself, and it is incompatible with `expect_error`. |
 
 The existing runner vocabulary is the encoding baseline. Phase 1 identifies
 required contract extensions from the rules. Invalid field names, duplicate
 identities and unknown requirement references must fail static validation.
 Validate observation paths against the documented contract where possible;
 runtime path resolution is checked in the later execution milestone.
+
+Contract note (E07 revision, 2026-10-14): the harness class needs no new
+vocabulary field. Lasting fire state (`on_fire`) is declared under
+`initial_state.<side>` and observed through the state snapshots; the fire
+recovery request keys (`round.<i>.<side>.fire.extinguish`, the governed S4
+hit family) are technical protocol references. Still external, specified not
+implemented: a pre-floor opponent-attack-pool observation (`state.<side>.pool_size`
+and kin) is unavailable until the engine exposes the pre-floor fact behind an
+exact signature; and no catalog id or harness build field produces
+`attack.blessed` on an attacker's incoming effect. Both reach their consumers
+without changing this table or case authoring.
 
 The observation ledger also records attack outcomes and the combined order of
 dice and decision requests. Declare event-order expectations where a contract

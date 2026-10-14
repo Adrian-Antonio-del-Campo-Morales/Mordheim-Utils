@@ -95,6 +95,41 @@ def _fighter_plan(fighter: CompiledFighter, tag_indices: dict[str, int]) -> Figh
 
 def require_optimized_support(first: CompiledFighter, second: CompiledFighter) -> None:
     """Refuse modular-only choices before an optimized engine can omit them."""
+    residual_tags = {
+        "mechanic.feral-instinct", "mechanic.slave-driver", "mechanic.opposite-sex-charge-test",
+        "mechanic.relay-orders", "mechanic.songster", "mechanic.devoted", "mechanic.broken-spirit",
+        "mechanic.invincible-swordsman", "mechanic.djinns-curse", "mechanic.greenskin-traitor",
+        "mechanic.cannot-charge", "mechanic.sea-shanty", "mechanic.sea-shanty-psychology",
+        "mechanic.crude-belch-ogre", "mechanic.noblesse-stomp", "mechanic.ranalds-luck",
+        "mechanic.oracle", "mechanic.augur-one-roll-reroll", "mechanic.slaanesh-charge-test",
+        "skill.chosen-of-the-white-tower", "skill.instinctive-warrior", "mechanic.marks-of-ranald",
+        "mechanic.devoted-to-the-vampire", "mechanic.bitten-transform", "weapon.ienh-khain",
+        "mechanic.estalian-technique", "mechanic.darting-steel", "mechanic.rememberer-large-only",
+        "mechanic.rememberer-large-or-tough", "mechanic.achilles-heel", "mechanic.corruption",
+        "condition.rememberer-support", "condition.stampede-active", "mechanic.main-gauche-modes",
+        "mechanic.inconsistency", "condition.petru-debilitating", "condition.petru-strength",
+        "condition.petru-resilience", "condition.petru-fortitude", "condition.danse-macabre-controlled",
+        "mechanic.herb-lore-self-heal", "condition.alchemist-backleys-brew", "condition.alchemist-addicted",
+        "mechanic.herb-lore", "condition.alchemist-strength", "condition.alchemist-resilience",
+        "condition.alchemist-aberrantius-vigortia", "condition.fungus-brew-dizzy",
+        "mechanic.fungus-rowdy", "mechanic.lunatics", "mechanic.own-leadership",
+        "mechanic.leader-twelve", "mechanic.drug-immunity",
+        "mechanic.persistent-frenzy", "mechanic.hypnotic-musk", "condition.impetuous-charge",
+        "mechanic.beak", "mechanic.prehensile-tail", "mechanic.electrical-touch",
+        "mechanic.gaoler-grapple", "mechanic.inured-to-pain", "mechanic.giggle-juice-spray",
+        "mechanic.daemonic-flesh", "condition.djinns-curse-active", "condition.djinns-luck-active",
+        "poison.giggle-juice", "mechanic.solkan-inquisitor", "mechanic.solkan-witch-finder",
+        "condition.witch-finder-charge", "condition.tomb-robber-dodge-known",
+        "condition.bear-handler-nearby", "condition.command.raise-our-insignia",
+        "condition.goading-charge", "condition.netted", "condition.nuttaz-charge",
+        "condition.poetry-inspired", "condition.poetry-victorious-leader",
+        "mechanic.bear-handler", "mechanic.bear-handler-recipient", "mechanic.dim-witted-leader",
+        "mechanic.herb-lore-outside-combat", "mechanic.magic-acorn",
+    }
+    if any(set(effect.tags) & residual_tags or effect.critical_threshold != 6
+           or effect.ethereal_hit_save != 4 or effect.natural_armour_negated_by_fire
+           for fighter in (first, second) for effect in _effects(fighter)):
+        raise ValueError("Residual modular effects require the modular engine; optimized ports are pending")
     if any(set(effect.tags) & {"mechanic.confound-and-confuse", "mechanic.dodge-sidestepper",
             "mechanic.babbling-banter", "mechanic.mantle-of-crows", "skill.backstabber",
             "mechanic.needle-and-thread", "mechanic.hillman-lycanthrope",

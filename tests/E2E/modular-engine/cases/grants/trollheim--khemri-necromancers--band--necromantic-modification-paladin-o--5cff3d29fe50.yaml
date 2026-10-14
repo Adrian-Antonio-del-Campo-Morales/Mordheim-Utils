@@ -1,13 +1,18 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-paladin-of-horror/unimplemented.khemri-necromancers.band.necromantic-modification-paladin-of-horror
 # scaffold_fingerprint: 335acd2b795eee863fe128f774ed71e3d03a226b0002c1d4b4e9005c51de72ef
-# authoring_status: PARTIAL
-# authoring_progress: no scenario is authorable for the admitted clause, and the missing connection is
-# named in the clause note below.  The printed +1 Leadership has no recorded effect id and no consumer
-# that applies it: the register note records the clause as a profile-characteristic adjustment that the
-# caller must supply, so a tape built with the row can only restate the value it was given and cannot
-# discriminate the rule from its absence.  REVIEWED still requires manual semantic review and
-# execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted leadership-characteristic-bonus clause carries 3 authored scenarios for the
+#   printed +1 Leadership of the Necromantic Abomination.  The corrected value is observed through the compiled
+#   fighter's own Leadership (expect_initial), the same route the reviewed Middenheim characteristic grant and
+#   the authored Lustria-Tileans Leadership grant use: the recipient is built from the band package with the
+#   printed row selected through special_rule_ids, and the identical build without that selection supplies the
+#   printed base value as the contrast.  The earlier claim that a tape could not discriminate is withdrawn: the
+#   raised point comes from the selected rule row, not from the fixture, so no field has to be invented and the
+#   bonus is not restated as an input.  What stays missing is the executable binding - the row's own effect is
+#   `unimplemented.khemri-necromancers.band.necromantic-modification-paladin-of-horror` with a null binding -
+#   which is the defect these tapes detect.  The scope-NO advancement roll and cost stay outside the admitted
+#   clause set.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -18,17 +23,13 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: leadership-characteristic-bonus (scope: YES)
-# PARTIAL[leadership-characteristic-bonus]: [C] no scenario is authorable for this clause.  Category C: the listed build vocabulary carries no supplied race-role or characteristic-adjustment input, so the printed bonus has nothing to be declared against. The printed
-# sentence adds a flat +1 Leadership to the Abomination and the semantic contract names the observable
-# as "the Leadership supplied to the duel is one point higher than the printed value", but the recorded
-# analysis declines to name an effect id for a bare bonus and records no consumer that applies it ("A
-# profile-characteristic adjustment, not a new runtime branch; the duel must be given the corrected
-# Leadership value. No canonical effect id exists for a bare bonus"). Because the corrected value would
-# have to be supplied by the scenario itself, any tape would restate its own input instead of evidencing
-# the rule, so no scenario can fail and none is written. The missing datum is the compiled +1 Leadership
-# projection the reuse guidance names (mechanic.leadership-bonus), after which the pair would assert the
-# supplied Leadership with and without the selected row. The scope-NO advancement roll and cost of this
-# origin stay outside the admitted clause set, as the register records.
+# AUTHORED[leadership-characteristic-bonus]: 3 scenarios cover the printed +1 Leadership of the Necromantic
+#   Abomination, the same recipient built without the printed row, and the refusal of a profile the row's own
+#   `eligibility: [necromantic-abomination]` does not name.  The admission reads the recipient's compiled
+#   Leadership as the duel's own initial characteristic: the printed 6 becomes 7 with the row selected and stays
+#   6 without it, so the raised point is supplied by the rule and not by an unconditional profile value.  The
+#   clause is an admitted lasting individual characteristic consequence; the printed 6-on-2D6 table row and its
+#   20 gc cost are campaign consequences and stay outside, as the register records.
 # origin_id:
 #   rule/trollheim/khemri-necromancers/band--necromantic-modification-paladin-of-horror/unimplemented.khemri-necromancers.band.necromantic-modification-paladin-of-horror
 # analysis_status:
@@ -56,4 +57,63 @@
 # Register notes (context only, not behavioral authority):
 #   A profile-characteristic adjustment, not a new runtime branch; the duel must be given the corrected Leadership value. No canonical effect id exists for a bare bonus. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"leadership-characteristic-bonus","audit_group":"EQ-mechanic.leadership-bonus","verified_facet":"mechanic.leadership-bonus","relationship":"shared_facet","boundary":"Share the compiled +1 Leadership characteristic, keeping the three distinct recipient sets. Not a leader aura or a bonus supplied by allies.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# The printed sentence is "The Necromantic Abomination gains +1 Leadership" (Paladin of Horror row of the
+# Necromantic Modification table), and the row's own `eligibility` names the Abomination as its recipient.
+# The recipient is built from the band package with the row selected through special_rule_ids; the supplied
+# Leadership is read as the duel's own initial characteristic, and the same build without the selection
+# supplies the printed base value.  Both duels are uncharged, so the only thing under test is the compiled
+# characteristic and the only dice are declared misses (the Abomination has two attacks, so two hit dice).
+- audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-paladin-of-horror/unimplemented.khemri-necromancers.band.necromantic-modification-paladin-of-horror
+  id: the-necromantic-abomination-is-supplied-leadership-seven
+  covers: [leadership-characteristic-bonus]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+    second:
+      characteristics: &khemri-fixture {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &khemri-uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.leadership: 7}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same recipient without the printed row: the printed Leadership 6 stands, so the seventh point is what
+# the selected row supplies rather than an unconditional profile value.
+- audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-paladin-of-horror/unimplemented.khemri-necromancers.band.necromantic-modification-paladin-of-horror
+  id: the-unselected-abomination-keeps-leadership-six
+  covers: [leadership-characteristic-bonus]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: necromantic-abomination
+    second:
+      characteristics: *khemri-fixture
+  duel_context: *khemri-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.leadership: 6}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A profile the row's eligibility does not name keeps no bonus and is refused the row itself, which is the
+# closure of the recipient set; the fragment is the shared diagnostic of specialRuleRestriction.
+- audit_id: rule/trollheim/khemri-necromancers/band--necromantic-modification-paladin-of-horror/unimplemented.khemri-necromancers.band.necromantic-modification-paladin-of-horror
+  id: a-profile-outside-the-recipient-list-is-refused
+  covers: [leadership-characteristic-bonus]
+  fighters:
+    first:
+      collection: trollheim
+      band_id: khemri-necromancers
+      profile_id: skeleton-warriors
+      special_rule_ids: [band--necromantic-modification-paladin-of-horror]
+  expect_error: "special rule is not available to khemri-necromancers/skeleton-warriors"
+

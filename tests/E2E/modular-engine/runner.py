@@ -12,6 +12,7 @@ from mordheim_construction.compiler import compile_fighter
 from mordheim_core.dice import DecisionPolicy, DiceSource
 from mordheim_core.models import Characteristics, DuelContext, FighterBuild, LocalParticipant
 
+from .corpus import CorpusError, assert_observations
 from .dice import EvidenceMismatch, StrictDecisions, StrictDice
 
 #: Fields ``execute_case`` accepts: the runner vocabulary plus the corpus metadata
@@ -20,10 +21,11 @@ from .dice import EvidenceMismatch, StrictDecisions, StrictDice
 CASE_FIELDS = frozenset({
     "id", "audit_id", "covers", "fighters", "initial_state", "duel_context", "maximum_rounds",
     "rolls", "decisions", "expect_initial", "expect_rounds", "expect_final", "expect_events",
-    "expect_error",
+    "expect_fighters", "expect_error",
 })
 #: Observation fields a refusal may not be combined with.
-OBSERVATION_FIELDS = ("expect_initial", "expect_rounds", "expect_final", "expect_events")
+OBSERVATION_FIELDS = ("expect_initial", "expect_rounds", "expect_final", "expect_events",
+                      "expect_fighters")
 
 
 def _plain(value):
@@ -37,12 +39,6 @@ def _plain(value):
         return [_plain(v) for v in value]
     if isinstance(value, (set, frozenset)):
         return sorted(_plain(v) for v in value)
-    return value
-
-
-def _lookup(value, path: str):
-    for part in path.split("."):
-        value = value[int(part)] if isinstance(value, list) else value[part]
     return value
 
 
@@ -196,17 +192,11 @@ def execute_case(case: dict, root: Path, dice: DiceSource, decisions: DecisionPo
 
 
 def _assert_observations(observed, expected, label):
-    if not isinstance(expected, dict) or not expected:
-        raise ValueError(f"{label} expectations must be a nonempty mapping")
-    for path, value in expected.items():
-        if not isinstance(path, str) or not path:
-            raise ValueError(f"{label} observation paths must be nonempty strings")
-        try:
-            actual = _lookup(observed, path)
-        except (KeyError, IndexError, ValueError, TypeError) as error:
-            raise EvidenceMismatch(f"{label}.{path}: observation does not exist") from error
-        if actual != value or isinstance(actual, bool) != isinstance(value, bool):
-            raise EvidenceMismatch(f"{label}.{path}: got {actual!r}, expected {value!r}")
+    """Delegate the pure dotted-path assertion; keep the evidence-mismatch type."""
+    try:
+        assert_observations(observed, expected, label)
+    except CorpusError as error:
+        raise EvidenceMismatch(str(error)) from error
 
 
 def _declared_rejection(case: dict) -> str | None:
@@ -236,7 +226,7 @@ def check_case(case: dict, root: Path) -> dict:
     rejection = _declared_rejection(case)
     if rejection is None and not any(
             case.get(name) for name in ("expect_initial", "expect_rounds", "expect_final")) and (
-            "expect_events" not in case):
+            "expect_events" not in case) and ("expect_fighters" not in case):
         raise ValueError("an E2E case must assert an observation")
     dice = StrictDice(case.get("rolls", []))
     decisions = StrictDecisions(case.get("decisions", []))
@@ -258,7 +248,8 @@ def check_case(case: dict, root: Path) -> dict:
         raise EvidenceMismatch(f"expected the refusal {rejection!r}, but the case ran")
     dice.finish()
     decisions.finish()
-    for name, output in (("expect_initial", "initial"), ("expect_final", "final")):
+    for name, output in (("expect_initial", "initial"), ("expect_final", "final"),
+                         ("expect_fighters", "fighters")):
         if name in case:
             _assert_observations(observed[output], case[name], output)
     if "expect_rounds" in case:

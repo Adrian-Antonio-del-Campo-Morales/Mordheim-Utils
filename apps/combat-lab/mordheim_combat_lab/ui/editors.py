@@ -19,6 +19,7 @@ FREE_SELECTION = "Special · Free selection"
 
 
 ENERGY_FOCUS_RULE_ID = "band--battle-monks-special-skills-energy-focus"
+_RUNE_NAMES = ("iron", "stone", "fury", "striking", "speed", "cleaving")
 
 
 
@@ -44,11 +45,17 @@ _SUPPLIED_CHOICES = {
 _SUPPLIED_FLAGS = {
     "lit_item": "Carrying an open flame", "normal_animal": "Ordinary animal",
     "chaos_follower": "Follower of Chaos", "onogal_follower": "Follower of Onogal",
+    "spellcaster": "Spellcaster (for source-qualified enemy effects)",
+    "metal_armour": "Worn armour includes metal (for Electrical Touch)",
     "ulric_rival": "Named rival of Ulric (Witch Hunter or listed Sigmarite)",
     "aquatic": "Aquatic model", "flesh_peddler_mark": "Opponent is the nominated Flesh-Peddler mark",
     "guiding_dream_target": "Opponent is the nominated Guiding Dream Hero",
     "lizardman": "Lizardman", "vampire": "Vampire",
     "righteous_charge_active": "Righteous Charge already qualified",
+    "slave": "Slave qualified for Overseer Leadership",
+    "scourge_armed": "Supplied Overseer carries a scourge",
+    "devoted_vampire_down": "Devoted: nominated Vampire was knocked down in close combat",
+    "devoted_vampire_killed": "Devoted: nominated Vampire was killed in close combat",
 }
 
 class FighterEditor(ttk.Frame):
@@ -85,6 +92,8 @@ class FighterEditor(ttk.Frame):
             variable.set_options({None: "Use profile identity", **options})
             self.supplied_choices[key] = variable
         self.supplied_flags = {key: tk.BooleanVar(value=False) for key in _SUPPLIED_FLAGS}
+        self.rune_slots = {rune: {} for rune in _RUNE_NAMES}
+        self.condemned_fixed = {key: tk.BooleanVar(value=False) for key in ("WS", "S", "T", "A")}
         self.condition_labels = {choice.id: choice.name for choice in catalogue.conditions()}
         self.condition_vars = {condition_id: tk.BooleanVar(value=False) for condition_id in self.condition_labels}
         self.mounted = tk.BooleanVar(value=False)
@@ -142,7 +151,20 @@ class FighterEditor(ttk.Frame):
         self.eagle_friends.trace_add("write", lambda *_: self._notify_change())
         ttk.Checkbutton(supplied, text=tr("Mounted"), variable=self.mounted,
                         command=self._notify_change).grid(row=len(_SUPPLIED_CHOICES) + 1, column=0, columnspan=2, sticky="w")
+        for offset, rune in enumerate(_RUNE_NAMES, 2):
+            ttk.Label(supplied, text=tr(f"{rune.title()} rune (already inscribed)")).grid(
+                row=len(_SUPPLIED_CHOICES) + offset, column=0, sticky="w")
+            button = ttk.Menubutton(supplied, text=tr("Choose equipment"))
+            menu = tk.Menu(button, tearoff=False)
+            menu.configure(postcommand=lambda name=rune, target=menu: self._rune_menu(name, target))
+            button.configure(menu=menu)
+            button.grid(row=len(_SUPPLIED_CHOICES) + offset, column=1, sticky="w")
         self.leadership.trace_add("write", lambda *_: self._notify_change())
+        fixed = ttk.LabelFrame(self, text=tr("Condemned: permanently fixed characteristics"), padding=(8, 5))
+        fixed.pack(fill="x", pady=(6, 0))
+        for column, (key, variable) in enumerate(self.condemned_fixed.items()):
+            ttk.Checkbutton(fixed, text=key, variable=variable,
+                            command=self._notify_change).grid(row=0, column=column)
         psychology = ttk.LabelFrame(self, text=tr("Stupidity — supplied individual conditions"), padding=(8, 5))
         psychology.pack(fill="x", pady=(6, 0))
         for row, (label, variable) in enumerate((
@@ -416,6 +438,28 @@ class FighterEditor(ttk.Frame):
                     if option_id != selected and other_kind == kind:
                         self._equipment_vars[option_id].set(False)
         names=[self.catalogue.localized_name(item_id, name) for option_id,(item_id,name,_kind) in self._equipment_options.items() if self._equipment_vars[option_id].get()]; self.equipment_summary.set(", ".join(names) if names else tr("None")); self._notify_change()
+    def _rune_menu(self, rune, menu):
+        menu.delete(0, "end")
+        positions = []
+        armour_rune = rune in {"iron", "stone"}
+        if not armour_rune and self.weapon.get() not in (None, "weapon.fist", "weapon.natural-attacks"):
+            positions.append(("main", tr("Main weapon")))
+        off = self.off_hand.get()
+        if off and (off.startswith("defence.") == armour_rune):
+            positions.append(("off", tr("Other hand")))
+        if armour_rune:
+            if self.armour.get() not in (None, "armour.no-armour"):
+                positions.append(("armour", tr("Armour")))
+            positions.extend((f"defence.{index}", self.catalogue.localized_name(item_id, item_id))
+                             for index, item_id in enumerate(self._selected("helmet")))
+        for slot, label in positions:
+            variable = self.rune_slots[rune].setdefault(slot, tk.BooleanVar(value=False))
+            def changed(name=rune):
+                self.condition_vars[f"condition.rune-{name}"].set(
+                    any(value.get() for value in self.rune_slots[name].values()))
+                self._notify_change()
+            menu.add_checkbutton(label=label, variable=variable, command=changed)
+
     def _selected(self,kind): return tuple(item_id for option_id,(item_id,_name,item_kind) in self._equipment_options.items() if item_kind==kind and self._equipment_vars[option_id].get())
     def build(self):
         selected_ids = self.skill_checklist.selected_ids()
@@ -425,6 +469,9 @@ class FighterEditor(ttk.Frame):
         values=dict(main_weapon_id=main_weapon_id,off_hand_id=self.off_hand.get(),armour_id=self.armour.get() or "armour.no-armour",defence_ids=self._selected("helmet"),main_material_id=self.main_material.get() or "material.normal",off_material_id=self.off_material.get() or "material.normal",preparation_ids=self._selected("preparation"),main_poison_id=self.main_poison.get(),off_poison_id=self.off_poison.get(),skill_ids=skill_ids,special_rule_ids=special_rule_ids,energy_focus_attacks=self.energy_focus_attacks.get())
         for key in self.manual_characteristics:self._normalise_stat(key)
         traits = dict(self._supplied_traits)
+        fixed = [key for key, variable in self.condemned_fixed.items() if variable.get()]
+        if fixed: traits["condemned_fixed_characteristics"] = fixed
+        else: traits.pop("condemned_fixed_characteristics", None)
         if self.elf_kind.get() is not None: traits["elf_kind"] = self.elf_kind.get()
         else: traits.pop("elf_kind", None)
         if self.sex.get() is not None: traits["sex"] = self.sex.get()
@@ -447,6 +494,11 @@ class FighterEditor(ttk.Frame):
         for key, variable in self.supplied_flags.items():
             if variable.get(): traits[key] = True
             else: traits.pop(key, None)
+        for rune, positions in self.rune_slots.items():
+            slots = [slot for slot, variable in positions.items() if variable.get()]
+            key = f"rune_{rune}_slots"
+            if slots: traits[key] = slots
+            else: traits.pop(key, None)
         values["condition_ids"] = tuple(
             condition_id for condition_id, variable in self.condition_vars.items() if variable.get())
         values["mounted"] = self.mounted.get()
@@ -459,6 +511,9 @@ class FighterEditor(ttk.Frame):
         choice=self.choice; return FighterBuild(self.catalogue.ruleset,characteristics,collection=choice.collection,band_id=choice.band_id,profile_id=choice.profile_id,**values)
     def main_weapon_options(self): return tuple((item_id,name) for item_id,name in self._weapon_options.items())
     def load_build(self,build):
+        fixed = build.trait_overrides.get("condemned_fixed_characteristics", [])
+        if not isinstance(fixed, list) or any(key not in self.condemned_fixed for key in fixed) or len(set(fixed)) != len(fixed):
+            raise ValueError("invalid Condemned fixed characteristics")
         if "sex" in build.trait_overrides and build.trait_overrides["sex"] not in ("male", "female"):
             raise ValueError("sex must be male or female")
         if "elf_kind" in build.trait_overrides and build.trait_overrides["elf_kind"] not in ("high", "dark", "other"):
@@ -469,6 +524,11 @@ class FighterEditor(ttk.Frame):
         for key in _SUPPLIED_FLAGS:
             if not isinstance(build.trait_overrides.get(key, False), bool):
                 raise ValueError(f"{key} must be a boolean")
+        for rune in _RUNE_NAMES:
+            slots = build.trait_overrides.get(f"rune_{rune}_slots", [])
+            if (not isinstance(slots, list) or any(not isinstance(slot, str) or not re.fullmatch(
+                    r"main|off|extra|armour|defence\.[0-9]+", slot) for slot in slots)):
+                raise ValueError(f"{rune.title()} rune requires equipment positions")
         count = build.trait_overrides.get("eagle_friends")
         if count is not None and (type(count) is not int or count < 1):
             raise ValueError("eagle_friends must be a positive integer")
@@ -503,6 +563,8 @@ class FighterEditor(ttk.Frame):
             self._equipment_changed()
             ui_skill_ids = self.catalogue.skill_ui_ids(self.choice, build.skill_ids, build.special_rule_ids)
             self._supplied_traits = dict(build.trait_overrides)
+            for key, variable in self.condemned_fixed.items():
+                variable.set(key in fixed)
             self._owned_item_ids = build.owned_item_ids
             self._owned_for_choice = self.choice
             self.eagle_friends.set(str(build.trait_overrides.get("eagle_friends", "")))
@@ -512,6 +574,10 @@ class FighterEditor(ttk.Frame):
                 variable.set(build.trait_overrides.get(key))
             for key, variable in self.supplied_flags.items():
                 variable.set(build.trait_overrides.get(key, False))
+            for rune, positions in self.rune_slots.items():
+                for variable in positions.values(): variable.set(False)
+                for slot in build.trait_overrides.get(f"rune_{rune}_slots", []):
+                    positions.setdefault(slot, tk.BooleanVar(value=False)).set(True)
             for condition_id, variable in self.condition_vars.items():
                 variable.set(condition_id in build.condition_ids)
             self.mounted.set(build.mounted)

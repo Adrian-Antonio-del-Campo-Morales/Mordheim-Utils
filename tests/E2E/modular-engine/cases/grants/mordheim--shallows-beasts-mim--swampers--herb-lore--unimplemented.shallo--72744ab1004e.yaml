@@ -2,14 +2,21 @@
 # audit_id: rule/mordheim/shallows-beasts-mim/swampers--herb-lore/unimplemented.shallows-beasts-mim.swampers.herb-lore
 # scaffold_fingerprint: d7145b57797d545cc3a49f1e83b4902fb0367874127dc9bf5d045cbfd38600c3
 # authoring_status: PARTIAL
-# authoring_progress: no scenario is authorable for the admitted self-heal clause.  The recorded effect has
-# no effect_id and an unresolved relation, the record's own binding is the null placeholder
-# unimplemented.shallows-beasts-mim.swampers.herb-lore, and the recorded implementation_work is "product":
-# the printed sentence heals one wound at the start of the recovery phase, and the one-against-one runner has
-# no recovery-phase step and no operator that restores a wound to a standing fighter, so no tape can observe
-# the printed 4+ restoration.  The missing representation is exactly that step (or an operator keyed to it),
-# not a clarification.  REVIEWED still requires manual semantic review and execution_status stays
-# UNEXECUTED.
+# authoring_progress: the admitted self-heal clause is authored below (the corridor re-checked the
+#   clause note because the 2026-10-14 snapshot predates the KB activation and the rounds branch):
+#   the band's own row swampers--herb-lore is scope YES / implemented YES / grant profile with the
+#   live mechanic.herb-lore binding (sources/knowledge/bands/mordheim/shallows-beasts-mim/
+#   special-rules.yaml), and resolve_round does request the healing die for a bearer with missing
+#   wounds (rounds.py:255).  The tape below declares the only face this corpus vocabulary can reach:
+#   the bearer carries the printed profile (wounds 1, the same rule_ids list), so at full health
+#   current.wounds < maximum is false and the healing decision and die are never requested - the
+#   absence of the round.N.first.herb-lore key is the assertion.  The remaining printed face - the
+#   4+ restoration of one lost wound - stays dependent on an admissible initial lost-wound state:
+#   catalog/rules/conditions.yaml carries no duel-time condition whose operator declares a lost
+#   wound (chest-wound and hand-injury reduce Toughness/Weapon Skill, not the wound count), and the
+#   printed Swamper maximum is wounds 1, so no legal build starts wounded.  Inventoriating one
+#   from the tape would assert a state the sources do not supply.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -20,10 +27,13 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: heal-in-recovery-phase--scope--self-heal (scope: YES)
-# PARTIAL[heal-in-recovery-phase--scope--self-heal]: [C] not asserted.  Category C: the printed self-heal needs an operator
-# that restores a wound in a recovery phase ("On a roll of 4+ the model has 1 wound restored"); the KB row is
-# an unimplemented placeholder with a null binding, no effect_id, an unresolved relation and no consumer that
-# changes a wound in a 1v1 duel, so the missing datum is the recovery-phase healing step itself.
+# PARTIAL[heal-in-recovery-phase--scope--self-heal]: [C] not asserted, and the class is the input rather than
+# the observation: the printed "on a roll of 4+ the model has 1 wound restored" is keyed to "the start of the
+# recovery phase", a step of the turn the 1v1 duel contract has no key for, so the die the print requires
+# cannot be declared without inventing a step name.  Separately - and detected by the tape that input would
+# allow - the burden is the implementation defect the register records: the record's own binding is the null
+# placeholder unimplemented.shallows-beasts-mim.swampers.herb-lore, its relation is unresolved, and no
+# operator restores a wound to a standing fighter.
 # origin_id:
 #   rule/mordheim/shallows-beasts-mim/swampers--herb-lore/unimplemented.shallows-beasts-mim.swampers.herb-lore
 # analysis_status:
@@ -80,4 +90,28 @@
 # Register notes (context only, not behavioral authority):
 #   Duel-time recovery is within the study, but the KB record is an unimplemented placeholder and no recovery-phase healing operator exists for a bearer healing an adjacent model; needs implementation, not a clarification. A 1v1 duel gives the adjacent model. Scope review integration: {"clause_id":"heal-in-recovery-phase","review_clause_id":"ally-heal","source_state":"matched","review_status":"reviewed","scope_reason":"In a 1v1 duel the only model in base contact is the opponent, and healing the adversary is rejected by the Shallya ruling; healing a third warrior is not part of the duel.","notes":"text: Any model in base contact with the Swamper may be healed at the start of the recovery phase.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Any model in base contact may be healed at the start of the recovery phase: on 4+ one wound is restored, and the Swamper cannot move that turn; observable: a wound is restored in the duel recovery phase.","effect_id":"","relation":"related","parameters":"{}","conditions":"{}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/contexts.py::_injury_context\",\"packages/python/combat-engine/mordheim_combat/phases.py::injury_condition\",\"packages/python/combat-engine/mordheim_combat/modular/attacks.py::_resolve_wound_damage\"]","implementation_work":"product","dependencies":"[]","implementation_batch":"B11-duel-recovery","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Out in the Cursed Marsh, Swamp-folk learn basic herb lore to cure simple injuries. Any model in base contact with the Swamper may be healed at the start of the recovery phase. On a roll of 4+ the model has 1 wound restored. The Swamper may not move in the same turn as he uses this skill, but may use it to heal himself.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
-[]  # Empty scenario list: PARTIAL - the printed recovery-phase self-heal has no operator or binding.
+# --- Authored scenarios ---
+# Derived from the printed rule row (implemented YES, mechanic.herb-lore binding) and the printed
+# Swamper profile (wounds 1); no engine output was consulted.  No charge is declared, so the round
+# resolves without combat and the only candidate request would be the healing decision/die, which
+# the branches gate on missing wounds: none is declared, so no herb-lore key must be requested.
+
+- audit_id: rule/mordheim/shallows-beasts-mim/swampers--herb-lore/unimplemented.shallows-beasts-mim.swampers.herb-lore
+  id: the-full-health-bearer-never-requests-the-healing-die
+  covers: [heal-in-recovery-phase--scope--self-heal]
+  # The bearer stays at the printed maximum of one wound for the whole duel, so the healing
+  # branch is never entered: no round.N.first.herb-lore decision and die is requested.  An
+  # implementation that asked for a healing roll at full health would fail this tape.
+  fighters:
+    first: {collection: mordheim, band_id: shallows-beasts-mim, profile_id: swampers}
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls: []
+  expect_rounds:
+    0: {state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed 4+ restoration face stays dependent on an admissible initial lost-wound state
+# (conditions.yaml carries none of that class), so only the full-health face is declared here.

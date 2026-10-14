@@ -1,10 +1,19 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-unshakeable-faith/unimplemented.protectorate-of-sigmar-lotd3.band.unshakeable-faith
 # scaffold_fingerprint: eaa515194702e69792b72dfd185781faabbc197538699849af28b43d72cd5196
-# authoring_status: AUTHORED
-# authoring_progress: the admitted fear-immunity clause carries 2 authored scenario(s) derived
-# from the printed rule, the recorded semantic contract and the printed profile; any remaining
-# face of the file stays recorded as pending below.  REVIEWED still requires manual semantic
+# authoring_status: PARTIAL
+# authoring_progress: the admitted fear-immunity clause is withheld: no declaration can carry this member to
+# any recipient of the clause.  The tape that asserted the printed effect named the member as its
+# declared-selection, and that channel refuses it at the access stage with the verbatim sentence "special rule
+# is not available to protectorate-of-sigmar-lotd3/<profile>: band--special-skill-unshakeable-faith"
+# (packages/python/roster-construction/mordheim_construction/_eligibility.js, specialRuleRestriction: a
+# warband_skill row with applies_to.band true and no eligibility list is admitted only for a recipient whose
+# own printed skill_access carries the "special" category, and no profile of this band prints it).  Both
+# authored scenarios were therefore withdrawn: the admission tape because the gate it feeds is refused before
+# the immunity is reached, and the band-mate boundary tape because without the admission half its expectation
+# holds whether or not the immunity exists, which makes it non-discriminating evidence for this clause.  The
+# requirement is not deleted - what is missing is the projection that carries the printed "special" category,
+# the same member-list projection the four band-table files record.  REVIEWED still requires manual semantic
 # review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
@@ -16,10 +25,15 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: fear-immunity (scope: YES)
-# AUTHORED[fear-immunity]: the bearer templar is the declared recipient, built from its printed profile (W1 A1); the opponent is a hand-built fixture that declares its own facts.
-#   2 scenario(s) cover the clause: the fear-causing charger reaches the bearer, which would be tested and is not, so the tape holds only the two attack pools; the same setup does request the two-dice Fear test for warrior-priest, which does not carry the rule.
-#   Every strike is declared as a natural 1, so each round reports the Fear or Stupidity request under test and nothing else.
-#   REVIEWED still requires manual semantic review.
+# PARTIAL[fear-immunity]: [C] the requirement stands and is not weakened - the printed warrior is hardened and
+#   takes no Fear test - but no scenario covers it.  The printed recipient reaches this member only through the
+#   declared-selection channel, which refuses it at the access stage for every profile of this band (the
+#   verbatim sentence and the guard are quoted above), so the two tapes this file carried were withdrawn: the
+#   admission tape (a fear-causing charger reaching the bearer, which would be tested and is not) because its
+#   declared channel never reaches the immunity, and its band-mate boundary because a tape that holds in both
+#   worlds is not evidence (INVENTORY.md section 2, rule 5).  What is missing is the projection carrying the
+#   printed "special" category; the identities, the printed recipient and the required outcome are declarable
+#   and remain recorded here for the file that will carry them once that projection exists.
 # origin_id:
 #   rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-unshakeable-faith/unimplemented.protectorate-of-sigmar-lotd3.band.unshakeable-faith
 # analysis_status:
@@ -47,42 +61,26 @@
 # Register notes (context only, not behavioral authority):
 #   Individual Fear immunity granted by this source. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Surface reuse candidate: {"family":"mechanic.fear-immunity","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
-# --- Authored scenarios ---
+# --- Recorded cause (this file carries no scenarios) ---
+# MISSING CAPABILITY (pending implementation, not an authoring blocker; checked statically in the shared
+# construction stage, not by running it): no profile of this band can currently be handed
+# band--special-skill-unshakeable-faith.  The row is `kind: warband_skill` with `applies_to.band: true`
+# and no `eligibility`, and `specialRuleRestriction()`'s access stage admits such a row only for a
+# recipient whose own printed `skill_access` carries the `special` category; this band prints
+# warrior-priest [combat, academic, strength, speed], templar [combat, strength, speed], huntsman
+# [combat, shooting], acolyte [combat, academic, strength, speed] and no Henchman row, so the sentence
+# "special rule is not available to protectorate-of-sigmar-lotd3/{profile}: band--special-skill-unshakeable-faith"
+# fires for every recipient before the immunity is reached.  The identities, the printed recipient (the
+# warrior the text names, built here as templar) and the required outcome (no Fear test is taken) are all
+# declarable and are recorded above; what is missing is the projection that carries the printed
+# `special` category - either a `profile.skill-access` grant on the band's own table row or an
+# `eligibility` list on this member - exactly the member-list projection the four band-table files record.
+# No tape is carried while that projection is absent: a declaration this gate refuses cannot evidence the
+# immunity, and the boundary tape alone would hold whether or not the immunity exists.
 
-- audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-unshakeable-faith/unimplemented.protectorate-of-sigmar-lotd3.band.unshakeable-faith
-  id: the-fear-immune-warrior-is-not-tested
-  covers: [fear-immunity]
-  fighters:
-    first:
-      trait_overrides: {causes_fear: true}
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: protectorate-of-sigmar-lotd3, profile_id: templar, special_rule_ids: [band--special-skill-unshakeable-faith]}
-  duel_context: {charging: [first], active_participant: first}
-  maximum_rounds: 1
-  rolls:
-    - {key: round.0.first.attack.0.hit, value: 1}
-    - {key: round.0.second.attack.0.hit, value: 1}
-  expect_rounds:
-    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
-
-- audit_id: rule/mordheim/protectorate-of-sigmar-lotd3/band--special-skill-unshakeable-faith/unimplemented.protectorate-of-sigmar-lotd3.band.unshakeable-faith
-  id: a-band-mate-without-the-immunity-is-tested
-  covers: [fear-immunity]
-  fighters:
-    first:
-      trait_overrides: {causes_fear: true}
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: protectorate-of-sigmar-lotd3, profile_id: warrior-priest}
-  duel_context: {charging: [first], active_participant: first}
-  maximum_rounds: 1
-  rolls:
-    - {key: round.0.second.fear.charged.0, value: 1}
-    - {key: round.0.second.fear.charged.1, value: 1}
-    - {key: round.0.first.attack.0.hit, value: 1}
-    - {key: round.0.second.attack.0.hit, value: 1}
-  expect_rounds:
-    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
-  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# --- Withdrawn scenarios ---
+# The two scenarios this file carried were withdrawn with the finding recorded in the marker above; the
+# requirement they stated is not deleted and is restated there.  The admission tape and its band-mate
+# boundary return together, once the projection that carries the printed "special" category exists, since a
+# boundary tape without its admission half cannot evidence the clause.
+[]

@@ -42,7 +42,14 @@
 #   Consumed through the disability resource recorded at initialisation, which makes the fighter take Stupidity tests; the 6-inch Hero exemption has no counterpart in a 1v1 duel and is the reason the flag is rolled per duel rather than per group. Surface reuse candidate: {"family":"mechanic.disability","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact supplied/rolled state, trigger, frequency, duration, termination and attack-count contribution. Permanent and conditional Frenzy, +1 Attack and doubling are different. Do not implement group creation, movement or campaign tables merely to supply an individual state.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: no-two-weapons-or-weapon-and-shield (scope: YES)
-# PARTIAL[no-two-weapons-or-weapon-and-shield]: no scenario is authorable for this clause. The printed result-2 prohibition (the group may not use two weapons or a weapon and shield) has no consumer in the executor: the contract for mechanic.disability is a single passive effect-set carrying the tag, the recorded register note states that "the loadout prohibition has no consumer in construction, eligibility or the armour/attack composition, so it is a missing connection rather than a modelled rule", and the only consumed half of result 2 is the Weapon Skill penalty. The missing datum is the construction/eligibility check that would refuse the forbidden loadout; the duel runner compiles a supplied main/off-hand build directly, so no tape can show a refusal.
+# AUTHORED[no-two-weapons-or-weapon-and-shield]: the printed result-2 prohibition is
+#   replayed as a normative refusal: both forbidden loadouts (two weapons; a weapon and
+#   a shield) are authored as expect_error scenarios on the same rolled result 2, and
+#   the accepting control for the same roll is a single-weapon group that fights
+#   normally, so the pair evaluates the prohibition and its acceptance as one whole.
+#   The executor still lacks the construction consumer, so the refusal fires only once
+#   that connection exists; until then execution shows "but the case ran", which is
+#   the recorded pending-connection state and not a fixture defect.
 # origin_id:
 #   mechanic/mechanic.disability
 # analysis_status:
@@ -274,4 +281,65 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.wounded: False, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed result-2 prohibition, first face: a Parkinson's group cannot use two
+# weapons. The loadout declares the supplied main and off hand and the rolled result
+# 2; the refusal fragment is the printed wording, held while the construction
+# consumer is still to be connected.
+- audit_id: mechanic/mechanic.disability
+  id: a-parkinson-s-roll-refuses-two-weapons
+  covers: [no-two-weapons-or-weapon-and-shield]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.dagger
+      skill_ids: [mechanic.disability]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: first.disability, value: 2}
+  expect_error: "may not use two weapons"
+- audit_id: mechanic/mechanic.disability
+  id: a-parkinson-s-roll-refuses-a-weapon-and-a-shield
+  covers: [no-two-weapons-or-weapon-and-shield]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      off_hand_id: defence.shield
+      skill_ids: [mechanic.disability]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: first.disability, value: 2}
+  expect_error: "may not use a weapon and a shield"
+# The accepting control: the same rolled result 2 with a single-weapon group (the
+# only remaining loadout) fights normally, so the two refusals and this acceptance
+# read as the whole of the printed prohibition.
+- audit_id: mechanic/mechanic.disability
+  id: a-parkinson-s-single-weapon-group-is-still-accepted
+  covers: [no-two-weapons-or-weapon-and-shield]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.disability]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: first.disability, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

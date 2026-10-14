@@ -2,10 +2,12 @@
 # audit_id: rule/mordheim/call-of-the-night-haint-mim/tomb-banshee--ghostly-howl/unimplemented.call-of-the-night-haint-mim.tomb-banshee.ghostly-howl
 # scaffold_fingerprint: 385bb50e4b497ff030e65decdc21da620583d821a451287546e024ab4ae52f05
 # authoring_status: PARTIAL
-# authoring_progress: the admitted ghostly-howl clause has no authored scenario.  The pending
-#   requirement is named in the clause note below: a resolve_round branch with an established test key
-#   for this charm-style effect.  REVIEWED still requires manual semantic review and execution_status
-#   stays UNEXECUTED.
+# authoring_progress: the admitted ghostly-howl clause now carries a control pair written from the printed
+#   sentence: the howling bearer faces a charging enemy, the enemy's fear test declares its two dice and the
+#   printed D6 drop, and the same dice pass when a plain fear-causer stands in the howler's place.  The
+#   recorded charm reading in the register is NOT the printed sentence and is recorded rather than asserted;
+#   the printed -D6 sentence is the specification and the tape follows it.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -16,22 +18,18 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: ghostly-howl (scope: YES)
-# PARTIAL[ghostly-howl]: [C] no scenario is authorable in this revision.  The record carries no
-#   effect_id, its relation is only related, and its own register note states that a new branch of
-#   rounds.resolve_round is needed because the target qualification and the effect on the charm source
-#   differ from the existing entranced branch.  The missing datum is that branch plus the test key it
-#   would consume; the fallback reading also diverges from the printed sentence (the printed text
-#   reduces the Leadership of enemies within six inches taking fear tests, while the recorded contract
-#   describes a charm that bars the opponent's attacks), so neither the -D6 requirement nor an attack
-#   block can be asserted without inventing the observable.  Both readings are recorded above.
-#   Source check (verified): the origin row `tomb-banshee--ghostly-howl` in
-#   sources/knowledge/bands/mordheim/call-of-the-night-haint-mim/special-rules.yaml (line 443
-#   onward) carries `scope: 'YES'`, `implemented: 'NO'`, `grant: profile`, a null binding and the
-#   placeholder `unimplemented.call-of-the-night-haint-mim.tomb-banshee.ghostly-howl`, whose own
-#   reason reads "Included individual duel effect, not implemented: Leadership penalty to the duel
-#   opponent Fear test; source-specific D6 timing and application remain pending."  The missing
-#   branch is therefore declared by the source, and the printed -D6 sentence still has no admitted
-#   operator to assert.
+# PARTIAL[ghostly-howl]: [C] the printed sentence is asserted; the divergent recorded reading is not.  The
+#   print is "Enemies within 6 inches of the Tomb Banshee suffer -D6 to their Leadership when taking fear
+#   tests", and this origin's own source row states the missing piece as "Leadership penalty to the duel
+#   opponent Fear test; source-specific D6 timing and application remain pending" - i.e. the printed sentence
+#   itself is the shape the operator must take.  The tapes below therefore state the case through the
+#   corpus's own fear-test route (a charging fear-causer and the tested enemy's two declared Leadership dice,
+#   the same keys the accepted leader-borrow tapes use) with the printed D6 declared beside them, and the
+#   control swaps the howler for a plain fear-causer so the pair reads the drop and nothing else.  The
+#   register's recorded charm reading (an attack bar) contradicts the printed sentence; it is recorded here,
+#   not asserted, because the print is the specification.  Pending implementation, not a withheld requirement:
+#   the origin's binding is the null placeholder, so nothing applies the declared D6 today - the defect the
+#   strict tape is written to detect.
 # origin_id:
 #   rule/mordheim/call-of-the-night-haint-mim/tomb-banshee--ghostly-howl/unimplemented.call-of-the-night-haint-mim.tomb-banshee.ghostly-howl
 # analysis_status:
@@ -59,4 +57,58 @@
 # Register notes (context only, not behavioral authority):
 #   Charm/control effect in the family of rounds.resolve_round's entranced branch, but the specific target qualification and the effect on the charm source differ (some are once-per-turn, some use the target's own Leadership only); a new branch is needed. The exact source-specific parameters are noted in the origin text and are not fully captured by an existing branch. Surface reuse candidate: {"family":"fear/ghostly-howl","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare this specific printed individual effect and active contract, keeping recipient, timing, exceptions and scope. Similar parameters do not establish whole-rule equivalence or a supplied third fighter.","candidate_parameters":{"fear_test_leadership_modifier":"-D6","radius":6},"gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Derived from the printed sentence and this origin's own source row; no engine output was consulted.  The
+# tested fighter is the enemy that receives the charge, its fear test is the corpus's ordinary charged-fear
+# test, and the printed D6 drop is declared beside its two dice.  The control replaces the howler with a plain
+# fear-causer so the same dice read the drop and nothing else.
+
+- audit_id: rule/mordheim/call-of-the-night-haint-mim/tomb-banshee--ghostly-howl/unimplemented.call-of-the-night-haint-mim.tomb-banshee.ghostly-howl
+  id: the-howl-drops-the-tested-enemys-leadership-by-the-declared-die
+  covers: [ghostly-howl]
+  # The printed sentence: enemies facing the howler suffer -D6 Leadership when taking fear tests.  The enemy
+  # is charged by the band's own Tomb Banshee, so it takes the charged-fear test; its declared dice total two,
+  # which passes at its own Leadership 7 and fails once the declared D6 face of six is subtracted (7 - 6 = 1),
+  # so the failing test is the printed drop and nothing else.  Today the origin's binding is the null
+  # placeholder, so the declared D6 die is unrequested - the PENDING implementation defect.
+  fighters:
+    first: {collection: mordheim, band_id: call-of-the-night-haint-mim, profile_id: tomb-banshee}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.ghostly-howl, value: 6}
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.condition: STANDING, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/call-of-the-night-haint-mim/tomb-banshee--ghostly-howl/unimplemented.call-of-the-night-haint-mim.tomb-banshee.ghostly-howl
+  id: the-same-faces-pass-without-the-howl
+  covers: [ghostly-howl]
+  # The control: the same charging fear-causer and the same declared faces, with a plain fighter in the
+  # howler's place, so no drop applies and the total of two passes the enemy's own Leadership 7.  The pair is
+  # what makes the failing test attributable to the printed sentence rather than to the fixture.
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 1}
+    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -349,16 +349,20 @@ rules:
     - domnu
 - id: domnu--bear-hug
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.channel-rats-mim.domnu.bear-hug
-      scope: LATER
-      binding: null
-      reason: >-
-        Opposed roll replacing normal attacks is a turn-structure combat variant with no matching
-        engine mechanic.
+    - id: mechanic.bear-hug
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.bear-hug
+    - id: rule.bear-hug-unarmed
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: rule.bear-hug-unarmed
   name: Bear Hug
   effect: >-
     Wrestling and fist fighting are traditional Strigany sport. If the Domnu hits the same enemy
@@ -597,13 +601,14 @@ rules:
 - id: fugitives--charismatic
   runtime:
     scope: 'YES'
-    implemented: 'NO'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.channel-rats-mim.fugitive.charismatic
+    - id: mechanic.opposite-sex-charge-test
       scope: 'YES'
-      binding: null
-      reason: 'Included individual duel effect, not implemented: Sex-qualified Leadership gate on the duel opponent charge; this canonical source has no executable binding.'
+      binding:
+        kind: mechanic
+        id: mechanic.opposite-sex-charge-test
   name: Charismatic
   effect: >-
     Heartless seducers oozing machismo. A romantic rogue to the last, any model from the opposite

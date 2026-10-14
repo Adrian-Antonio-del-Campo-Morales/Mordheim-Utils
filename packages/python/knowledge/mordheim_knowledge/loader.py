@@ -31,7 +31,7 @@ SELECTABLE_RULE_KINDS = frozenset({
 PROFILE_BINDING_IDS = frozenset({
     "profile.skill-access", "profile.equipment-restrictions", "profile.active-weapon-restrictions",
     "profile.natural-attacks", "profile.fist", "profile.random-characteristics",
-    "profile.characteristics",
+    "profile.characteristics", "profile.item-modifiers",
 })
 
 

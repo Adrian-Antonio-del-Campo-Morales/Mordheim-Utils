@@ -12,7 +12,7 @@ from mordheim_construction.contracts import validate_execution_contract
 from mordheim_construction.conditions import resolve_supplied_conditions
 from mordheim_construction.eligibility import (
     call, construction_call, configuration_context,
-    desktop_call, selected_rules, validate_special_rule, validate_loadout, validate_additional_equipment,
+    desktop_call, selected_rules, validate, validate_special_rule, validate_loadout, validate_additional_equipment,
 )
 from mordheim_construction.restrictions import _validate_profile_selections
 from mordheim_construction.selection import _applicable_profile_rules
@@ -26,6 +26,8 @@ from mordheim_core.models import Characteristics
 from mordheim_core.models import CompiledFighter
 from mordheim_core.models import EffectSet
 from mordheim_core.models import FighterBuild
+from mordheim_core.models import MutationOption
+from mordheim_core.models import CarriedEquipment
 from mordheim_knowledge.loader import load_runtime_scope
 from mordheim_knowledge.loader import runtime_bindings
 from pathlib import Path
@@ -41,6 +43,113 @@ CHARACTERISTIC_BONUS_KEYS = (
 #: Optional characteristic fields.  ``None`` means the compiled profile has no
 #: known base value, so only a zero bonus can be applied.
 OPTIONAL_CHARACTERISTIC_BONUS_KEYS = ("movement", "leadership")
+
+
+def _prepared_mutation_options(ruleset, effects, root):
+    """Resolve the source's explicit D66 data into immutable duel inputs."""
+    from mordheim_knowledge.campaign import load_campaign_catalog
+    rows = load_campaign_catalog(ruleset, root).catalogue("mutations").get("random_mutation_chart") or ()
+    if {row["roll"] for row in rows} != {10 * tens + units for tens in range(1, 7) for units in range(1, 7)}:
+        raise ValueError("Solkan requires the complete canonical D66 mutation chart")
+    def declared_effect(parameters):
+        return EffectSet(**{**parameters, "tags": tuple(parameters.get("tags") or ())})
+    prepared = []
+    for row in rows:
+        effect = declared_effect(row.get("effect_parameters") or {})
+        for mechanic_id in row.get("effect_ids") or ():
+            effect = merge_effects(effect, effects[mechanic_id].effect)
+        prepared.append(MutationOption(
+            roll=row["roll"], effect=effect,
+            stat_ops=tuple(tuple(operation) for operation in row.get("stat_ops") or ()),
+            extra_attacks=tuple(declared_effect(parameters) for parameters in row.get("extra_attack_parameters") or ()),
+            limb_forms=tuple(effects[mid].effect for mid in row.get("limb_effect_ids") or ()),
+        ))
+    return tuple(prepared)
+
+
+def _mutation_equipment(build, profile, kit, main_id, main, off, mechanics, effects, root):
+    """Keep physical copies and their active positions; never grant availability."""
+    from mordheim_knowledge.loader import load_items, load_simulation_mappings
+    item_kinds = {row["id"]: row.get("kind") for row in load_items(build.ruleset, root)}
+    by_option = {row.get("engine_option"): mid for mid, row in mechanics.items()}
+    mappings = {row["item_id"]: row.get("mechanic_id") or by_option.get(row.get("engine_option"))
+                for row in load_simulation_mappings(build.ruleset, root).get("item_mappings") or ()
+                if row.get("status") == "implemented"}
+    equivalent = {}
+    for item in (profile or {}).get("hireling_equipment", {}).get("unique_equipment", ()):
+        counts_as = item.get("counts_as")
+        base = counts_as if isinstance(counts_as, str) else (counts_as or {}).get("item_id")
+        equivalent[item["id"]] = mappings.get(item["id"]) or mappings.get(base)
+    def mechanic_id(item_id):
+        return item_id if item_id in mechanics else equivalent.get(item_id) or mappings.get(item_id)
+    owned = list(build.owned_item_ids if build.owned_item_ids is not None else kit or ())
+    unused = list(owned)
+    prepared = []
+    armour_defences = {"defence.shield", "defence.buckler", "defence.kite-shield", "defence.helmet",
+                       "defence.cooking-pot-helmet", "defence.sea-dragon-cloak", "defence.wolf-pelt-cloak"}
+    def physical_kind(item, mid):
+        kind = item_kinds.get(item)
+        if kind in {"close-combat-weapon", "ranged-weapon"}:
+            return "weapon"
+        if kind == "armour":
+            return "armour"
+        if mid and mid.startswith("weapon."):
+            return "weapon"
+        if mid and mid.startswith("armour."):
+            return "armour"
+        return "defence" if mid in armour_defences else "other"
+    def physical(mid, effect, slot, clean=None):
+        index = next((index for index, item in enumerate(unused) if mechanic_id(item) == mid), None)
+        item = unused.pop(index) if index is not None else mid
+        prepared.append(CarriedEquipment(item, effect, physical_kind(item, mid), slot,
+            (("wounds", 1),) if mid == "armour.attlas-plate-mail" else (), clean))
+    def local_effect(mid):
+        effect = effects[mid].effect
+        if mid == "defence.sea-dragon-cloak":
+            effect = merge_effects(effect, EffectSet(armour_save_bonus=2))
+        if mid.startswith("armour."):
+            effect = merge_effects(effect, EffectSet(armour_save_bonus=7 - int(mechanics[mid].get("base_save") or 7)))
+            if mid in {"armour.gromril-armour", "armour.attlas-plate-mail"}:
+                effect = merge_effects(effect, EffectSet(tags=("material.gromril",)))
+            elif mid == "armour.ithilmar-armour":
+                effect = merge_effects(effect, EffectSet(tags=("material.ithilmar",)))
+        return effect
+    if main_id not in {"weapon.fist", "weapon.natural-attacks"}:
+        item_ids = [main_id, build.main_material_id]
+        clean = (apply_execution_effects(EffectSet(), item_ids, effects, "attack", "attack")
+                 if build.main_poison_id else None)
+        if build.main_poison_id:
+            item_ids.append(build.main_poison_id)
+        item_effect = apply_execution_effects(EffectSet(), item_ids, effects, "attack", "attack")
+        if "stance.wall-of-steel" in build.variant_ids:
+            item_effect = replace(item_effect, two_handed=True, parry=True)
+            if clean is not None:
+                clean = replace(clean, two_handed=True, parry=True)
+        physical(main_id, item_effect, "main", clean)
+    if build.off_hand_id:
+        clean = None
+        if build.off_hand_id.startswith("weapon."):
+            item_ids = [build.off_hand_id, build.off_material_id]
+            if build.off_poison_id:
+                clean = apply_execution_effects(EffectSet(), item_ids, effects, "attack", "attack")
+            if build.off_poison_id:
+                item_ids.append(build.off_poison_id)
+            item_effect = apply_execution_effects(EffectSet(), item_ids, effects, "attack", "attack")
+        else:
+            item_effect = local_effect(build.off_hand_id)
+        physical(build.off_hand_id, item_effect, "off", clean)
+    if build.extra_hand_id:
+        physical(build.extra_hand_id, local_effect(build.extra_hand_id), "extra")
+    if build.armour_id != "armour.no-armour":
+        physical(build.armour_id, local_effect(build.armour_id), "armour")
+    for index, mid in enumerate(build.defence_ids):
+        physical(mid, local_effect(mid), f"defence.{index}")
+    for item in unused:
+        mid = mechanic_id(item)
+        kind = physical_kind(item, mid)
+        prepared.append(CarriedEquipment(item, local_effect(mid) if mid in effects else EffectSet(), kind,
+            stat_bonuses=(("wounds", 1),) if mid == "armour.attlas-plate-mail" else ()))
+    return tuple(prepared)
 
 
 def _characteristic_bonus_block(bonuses, *, source):
@@ -95,6 +204,13 @@ def _apply_characteristic_bonuses(characteristics, stat_bonuses):
 
 def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFighter:
     characteristics, traits, package, profile, random_characteristics = _profile(build, root)
+    from mordheim_construction.source_profiles import prepare_source_profile
+    build, characteristics, traits, package, profile, random_characteristics = prepare_source_profile(
+        build, characteristics, traits, package, profile, random_characteristics)
+    morr = "hireling.hired-sword.priest-of-morr-miracle-workers"
+    if package is not None and morr + ".skill.haunted-mien" in build.special_rule_ids:
+        package = replace(package, special_rules=tuple(
+            rule for rule in package.special_rules if rule["id"] != morr + ".rule.strictures"))
     if package is not None:
         traits = {**traits, **_profile_rule_traits(package, profile)}
     automatic_rule_effects = EffectSet()
@@ -123,7 +239,11 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         if chosen not in allowed or build.off_poison_id not in (None, chosen):
             raise ValueError('Poisoner requires one shared Black Lotus or Dark Venom choice before battle')
         build = replace(build, off_poison_id=chosen if build.off_hand_id else None)
+    kit = ()
     if profile is not None and "hireling_equipment" in profile:
+        innate = profile["hireling_equipment"].get("innate_weapon_id")
+        if innate and build.main_weapon_id in {"weapon.dagger", "weapon.fist", innate}:
+            build = replace(build, main_weapon_id=innate)
         kit = desktop_call("hirelingKit", build, root, package=package, profile=profile)
         materials = {}
         for entry in profile["hireling_equipment"].get("fixed_items", ()):
@@ -141,6 +261,19 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     selected_compiler_contracts = set()
     selected_compiler_bindings = []
     stat_bonuses = {}
+    if package is not None:
+        for rule in _applicable_rules(package, profile):
+            if (rule.get("runtime") or {}).get("grant") == "selectable":
+                continue
+            for binding in runtime_bindings(rule, "profile"):
+                if binding.get("id") != "profile.characteristics":
+                    continue
+                parameters = binding.get("parameters") or {}
+                if parameters.get("profile_ids") and build.profile_id not in parameters["profile_ids"]:
+                    continue
+                for stat, bonus in _characteristic_bonus_block(
+                        parameters.get("bonuses"), source=f"{rule['id']} binding profile.characteristics").items():
+                    stat_bonuses[stat] = stat_bonuses.get(stat, 0) + bonus
     if build.special_rule_ids:
         rules = selected_rules(build, package, profile, root, automatic_compiler_contracts)
         for rule_id in build.special_rule_ids:
@@ -217,6 +350,15 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     # operator, so no adapter carries a second interpretation table.
     supplied = resolve_supplied_conditions(
         build.condition_ids, build.trait_overrides, build.ruleset, root)
+    supplied_stat_bonuses = {}
+    for binding in supplied.profile_bindings:
+        if binding.get("id") != "profile.characteristics":
+            continue
+        for stat, bonus in _characteristic_bonus_block(
+            (binding.get("parameters") or {}).get("bonuses"), source="supplied condition"
+        ).items():
+            supplied_stat_bonuses[stat] = supplied_stat_bonuses.get(stat, 0) + bonus
+    characteristics = _apply_characteristic_bonuses(characteristics, supplied_stat_bonuses)
     missing_condition_mechanics = sorted(set(supplied.mechanic_ids) - set(effects))
     if missing_condition_mechanics:
         raise ValueError(f"supplied conditions bind unknown mechanics: {missing_condition_mechanics}")
@@ -233,7 +375,7 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
             if (rule.get("runtime") or {}).get("grant") != "selectable"
             for binding in runtime_bindings(rule, "profile")
         ) if package is not None else ()
-    )
+    ) + supplied.profile_bindings
     if any(binding.get("id") == "profile.fist" for binding in automatic_profile_bindings):
         main_weapon_id = "weapon.fist"
     if (profile is not None and build.main_weapon_id=="weapon.dagger"
@@ -271,6 +413,8 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         if pending:
             raise ValueError(f"named skills have no executable duel mechanic: {pending}")
     if unknown: raise KeyError(f"unknown mechanic IDs: {unknown}")
+    if build.armour_id == "armour.attlas-plate-mail":
+        characteristics = _apply_characteristic_bonuses(characteristics, {"wounds": 1})
     compiler_contracts=automatic_compiler_contracts|selected_compiler_contracts
     compiler_bindings=(*automatic_compiler_bindings,*selected_compiler_bindings)
     if "compiler.lizardmen-scaly-skin" in compiler_contracts:
@@ -303,8 +447,12 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     if package is not None:_validate_profile_selections(
         build,package,profile,root,main_weapon_id,
         (*selected_profile_bindings, *automatic_profile_bindings),compiler_contracts,compiler_bindings)
+    elif supplied.profile_bindings:
+        validate("boundEquipment", build, root, main_weapon_id=main_weapon_id,
+                 profile_bindings=supplied.profile_bindings)
     if package is not None and build.owned_item_ids is not None:
         facts = configuration_context(build, package, profile, root=root, possession=build.owned_item_ids,
+            profile_bindings=supplied.profile_bindings,
             slots={"main_weapon_id": main_weapon_id, "off_hand_id": build.off_hand_id,
                    "extra_hand_id": build.extra_hand_id, "armour_id": build.armour_id,
                    "defence_ids": list(build.defence_ids),
@@ -350,6 +498,9 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     global_ids += list(profile_rule_skills)
     global_ids += selected_special_mechanics
     global_ids += list(supplied.mechanic_ids)
+    innate_ids = [*build.skill_ids, *build.preparation_ids, *profile_rule_skills,
+                  *selected_special_mechanics, *supplied.mechanic_ids]
+    innate_ids = [item for item in innate_ids if item != "condition.executioners-hood"]
     if (main_weapon_id == "weapon.chainsaw-sword" or build.off_hand_id == "weapon.chainsaw-sword"
             or "chainsaw_sword" in (build.owned_item_ids or ())):
         # Fear is granted by bearing this item, not by landing its attack.
@@ -364,8 +515,51 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     global_ids += [build.armour_id, *build.defence_ids]
     if build.off_hand_id and build.off_hand_id.startswith("defence."):
         global_ids.append(build.off_hand_id)
+    drug_ids = {"preparation.crimson-shade", "preparation.mandrake-root",
+                "preparation.mad-cap-mushrooms", "preparation.head-splitter-mushrooms",
+                "condition.fungus-brew-rowdy", "condition.fungus-brew-dizzy",
+                "condition.fungus-brew-fearless", "condition.fungus-brew-numbed",
+                "condition.fungus-brew-belligerent", "condition.fungus-brew-loony"}
+    if "mechanic.drug-immunity" in global_ids:
+        global_ids = [item for item in global_ids if item not in drug_ids]
+        innate_ids = [item for item in innate_ids if item not in drug_ids]
+    if (traits.get("creature_kind") in {"undead", "possessed"}
+            or traits.get("undead_or_possessed")
+            or traits.get("undead") or traits.get("possessed")
+            or "mechanic.undead" in global_ids):
+        inert = {"preparation.crimson-shade", "preparation.mad-cap-mushrooms"}
+        global_ids = [item for item in global_ids if item not in inert]
+        innate_ids = [item for item in innate_ids if item not in inert]
+    if "preparation.crimson-shade" in global_ids and characteristics.movement is not None:
+        characteristics = replace(characteristics, movement=characteristics.movement + 1)
+    if "condition.fungus-brew-dizzy" in global_ids:
+        characteristics = replace(characteristics, initiative=characteristics.initiative - 1)
     global_effects = apply_execution_effects(global_effects, global_ids, effects, "passive", "fighter")
     global_effects = apply_execution_effects(global_effects, global_ids, effects, "duel_start", "fighter")
+    if traits.get("metal_armour") and not (
+        build.armour_id != "armour.no-armour"
+        or "defence.helmet" in build.defence_ids
+        or build.off_hand_id in {"defence.shield", "defence.buckler", "defence.kite-shield"}
+        or build.extra_hand_id in {"defence.shield", "defence.buckler"}
+    ):
+        raise ValueError("metal_armour requires an actual worn armour, helmet, shield or buckler")
+    if traits.get("metal_armour") or build.armour_id in {
+        "armour.heavy-armour", "armour.gromril-armour", "armour.ithilmar-armour",
+        "armour.plate-armour", "armour.chaos-armour", "armour.attlas-plate-mail",
+    }:
+        global_effects = merge_effects(global_effects, EffectSet(tags=("condition.metal-armour",)))
+    global_effects_without_equipment = apply_execution_effects(
+        EffectSet(), innate_ids, effects, "passive", "fighter")
+    global_effects_without_equipment = apply_execution_effects(
+        global_effects_without_equipment, innate_ids, effects, "duel_start", "fighter")
+    selected_skill_mechanics = [
+        str(binding["id"])
+        for rule in (package.special_rules if package is not None else ())
+        if rule.get("kind") == "warband_skill" and rule["id"] in build.special_rule_ids
+        for binding in runtime_bindings(rule, "mechanic")
+    ]
+    skill_effects_only = apply_execution_effects(
+        EffectSet(), [*build.skill_ids, *selected_skill_mechanics], effects, "passive", "fighter")
     for skill_id in traits.get("starting_skills") or ():
         if skill_id not in effects:
             from mordheim_knowledge.loader import load_skills
@@ -374,6 +568,9 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
                 continue
             raise ValueError(f"profile references unknown or unsupported starting skill ID: {skill_id}")
         global_effects = apply_execution_effects(global_effects, (skill_id,), effects, "passive", "fighter")
+        global_effects_without_equipment = apply_execution_effects(
+            global_effects_without_equipment, (skill_id,), effects, "passive", "fighter")
+        skill_effects_only = apply_execution_effects(skill_effects_only, (skill_id,), effects, "passive", "fighter")
     # Current conditions are supplied facts, not acquisition or spell rolls.
     trait_tags=tuple({"spectral_touch": "trait.spectral-touch", "causes_fear": "mechanic.causes-fear", "stupidity": "mechanic.stupidity", "stupidity_exempt": "condition.stupidity-exempt", "stupidity_initial_failed": "condition.stupidity-failed"}.get(key, key)
                      for key,value in traits.items() if value is True)
@@ -457,6 +654,16 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         trait_tags = (*trait_tags, "identity.chaos-follower")
     if traits.get("aquatic"):
         trait_tags = (*trait_tags, "species.aquatic")
+    if traits.get("slave") or (build.band_id == "skaven-of-clan-skryre-rel" and build.profile_id == "skaven-slaves"):
+        trait_tags = (*trait_tags, "identity.slave")
+    if traits.get("scourge_armed") or "weapon.pirate-scourge" in (main_weapon_id, build.off_hand_id):
+        trait_tags = (*trait_tags, "condition.scourge-armed")
+    if traits.get("devoted_vampire_down"):
+        trait_tags = (*trait_tags, "condition.devoted-vampire-down")
+    if traits.get("devoted_vampire_killed"):
+        trait_tags = (*trait_tags, "condition.devoted-vampire-killed")
+    if traits.get("spellcaster"):
+        trait_tags = (*trait_tags, "identity.spellcaster")
     if traits.get("guiding_dream_target"):
         if "mechanic.guiding-dream" not in global_effects.tags:
             raise ValueError("a nominated Guiding Dream target requires Guiding Dream")
@@ -489,6 +696,51 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     fighter_kind = source_kind or fighter_kind
     if fighter_kind is not None:
         trait_tags = (*trait_tags, f"fighter-kind.{fighter_kind}")
+    if "defence.magic-acorn" in build.defence_ids and fighter_kind != "hero":
+        raise ValueError("the Magic Acorn may only be carried by a Hero")
+    if any(condition.startswith("condition.petru-") for condition in supplied.condition_ids) and fighter_kind != "hero":
+        raise ValueError("Petru's supplied draught requires a Hero recipient")
+    if any(condition.startswith("condition.alchemist-") for condition in supplied.condition_ids) and (
+        build.band_id != "masters-of-horror-sylv" or build.profile_id != "mad-scientist"
+    ):
+        raise ValueError("the Alchemist's supplied potion requires the Mad Scientist recipient")
+    if any(condition in {"condition.rememberer-kaz-support", "condition.rememberer-web-support"}
+           for condition in supplied.condition_ids):
+        expected_band = ("dwarf-slayers-kaz" if "condition.rememberer-kaz-support" in supplied.condition_ids
+                         else "dwarf-slayer-cult-web")
+        if build.band_id != expected_band or fighter_kind != "hero" or not any(
+            "identity.slayer" in effects[mid].effect.tags for mid in loadout_mechanics if mid in effects
+        ):
+            raise ValueError("Rememberer support requires a Slayer Hero of the printed source variant")
+    if "condition.impetuous-charge" in supplied.condition_ids and (
+        build.band_id != "bretonnian-chapel-guard" or build.profile_id != "knights-errant"
+    ):
+        raise ValueError("a compelled Impetuous charge requires a Knight Errant recipient")
+    if "condition.tomb-robber-dodge-known" in supplied.condition_ids and (
+        build.profile_id != "hireling.hired-sword.tomb-robber"
+    ):
+        raise ValueError("the Dodge upgrade requires the Tomb Robber's Excellent Reflexes")
+    if "condition.witch-finder-charge" in supplied.condition_ids and (
+        "deity.solkan" not in build.variant_ids
+        or "hireling.hired-sword.priest-of-verena.skill.witch-finder" not in build.special_rule_ids
+    ):
+        raise ValueError("the compulsory Witch-finder charge requires the chosen Mark of Solkan")
+    if "condition.bear-handler-nearby" in supplied.condition_ids and (
+        build.band_id != "kislevites" or build.profile_id != "trained-bear"
+    ):
+        raise ValueError("the nearby Bear Tamer waiver requires the native Trained Bear")
+    if "condition.adventurer-barbarian-leader" in supplied.condition_ids and (
+        build.band_id != "adventurers-kaz" or build.profile_id != "barbarian"
+    ):
+        raise ValueError("the chosen Barbarian Leader must be the native Adventurer Barbarian")
+    if "condition.poetry-victorious-leader" in supplied.condition_ids and (
+        build.band_id not in {"ghutani-rel", "muzil-rel", "turjuk-rel"} or build.profile_id != "emir"
+    ):
+        raise ValueError("victorious Poetry requires the actual Leader of its printed Araby band")
+    if "condition.nuttaz-charge" in supplied.condition_ids and (
+        build.band_id != "black-orcs" or build.profile_id != "orc-nuttaz"
+    ):
+        raise ValueError("the required Nuttaz charge needs the native Orc Nuttaz")
     house = traits.get("house_guard_house")
     if house is not None:
         if house not in {"fierezza", "halcon", "baluardo"}:
@@ -520,7 +772,7 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         for rule_id in profile.get("rule_ids") or ()
     ):
         trait_tags=(*trait_tags,"species.animal")
-    global_effects = merge_effects(global_effects,EffectSet(
+    intrinsic_effects = EffectSet(
         tags=trait_tags,attacks_bonus=int(traits.get("extra_natural_attacks",0)),
         charge_attacks_bonus=int(bool(traits.get("charge_attack_bonus",False))),
         first_round_charge_attacks_bonus=int(bool(traits.get("first_round_charge_attack_bonus",False))),
@@ -532,11 +784,21 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         regeneration_save=int(traits.get("regeneration_save",7)),
         ward_save_mundane_only=bool(traits.get("ward_save_mundane_only",False)),
         natural_armour_negated_by_magic=bool(traits.get("natural_armour_negated_by_magic",False)),
+        natural_armour_negated_by_fire=bool(traits.get("natural_armour_negated_by_fire",False)),
         regeneration_blocked_by_fire=bool(traits.get("regeneration_blocked_by_fire",False)),
         regeneration_blocked_by_blessed=bool(traits.get("regeneration_blocked_by_blessed",False)),
         caught_fire_threshold=int(traits.get("caught_fire_threshold",7)),
-        armour_penetration=int(bool(traits.get("perfect_killer",False)))))
+        armour_penetration=int(bool(traits.get("perfect_killer",False))))
+    global_effects = merge_effects(global_effects, intrinsic_effects)
+    global_effects_without_equipment = merge_effects(
+        merge_effects(global_effects_without_equipment, intrinsic_effects),
+        merge_effects(automatic_rule_effects, selected_special_effects))
     global_effects = merge_effects(merge_effects(global_effects, automatic_rule_effects), selected_special_effects)
+    if traits.get("devoted_vampire_down") or traits.get("devoted_vampire_killed"):
+        if "mechanic.devoted-to-the-vampire" not in global_effects.tags:
+            raise ValueError("supplied Vampire condition requires Devoted to the Vampire")
+        if traits.get("devoted_vampire_down") and traits.get("devoted_vampire_killed"):
+            raise ValueError("the supplied Vampire cannot be both Knocked Down and killed")
     drinking = traits.get("snorri_drunk_result")
     if "mechanic.snorri-drunk" in global_effects.tags:
         if type(drinking) is not int or drinking not in range(2, 7):
@@ -574,11 +836,22 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         global_effects = merge_effects(global_effects, EffectSet(energy_focus_attacks=build.energy_focus_attacks))
     elif build.energy_focus_attacks:
         raise ValueError("energy_focus_attacks requires Energy Focus")
-    main_ids=[main_weapon_id, build.main_material_id, *profile_rule_skills]
+    # An intrinsic unique-item rule connects its own active weapon operator;
+    # it is not a second weapon contribution or a bonus on every other hand.
+    profile_attack_effects = [mid for mid in profile_rule_skills if not mid.startswith("weapon.")]
+    main_ids=[main_weapon_id, build.main_material_id, *profile_attack_effects]
     main_without_poison = (apply_execution_effects(EffectSet(), main_ids, effects, "attack", "attack")
                            if build.main_poison_id else None)
     if build.main_poison_id: main_ids.append(build.main_poison_id)
     main_effect=apply_execution_effects(EffectSet(), main_ids, effects, "attack", "attack")
+    if "stance.wall-of-steel" in build.variant_ids:
+        main_effect = replace(main_effect, two_handed=True, parry=True)
+        if main_without_poison is not None:
+            main_without_poison = replace(main_without_poison, two_handed=True, parry=True)
+    if build.profile_id == "hireling.hired-sword.chaos-centaur" and main_weapon_id == "weapon.spear":
+        main_effect = replace(main_effect, charge_strength_bonus=main_effect.charge_strength_bonus + 1)
+    if "mechanic.ogre-unarmed" in global_effects.tags and main_weapon_id in {"weapon.fist", "weapon.natural-attacks"}:
+        main_effect = replace(effects["weapon.fist"].effect, strength_bonus=0)
     if ("compiler.aldred-fellblade" in compiler_contracts
             and main_weapon_id == "weapon.double-handed-weapon"):
         # This printed sword can parry; no parry is granted to an empty hand.
@@ -603,7 +876,7 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     off_effect=apply_execution_effects(EffectSet(), (build.off_hand_id,), effects, "attack", "attack") if build.off_hand_id else None
     off_without_poison = None
     if off_effect and build.off_hand_id.startswith("weapon."):
-        off_ids=[build.off_hand_id, build.off_material_id, *profile_rule_skills]
+        off_ids=[build.off_hand_id, build.off_material_id, *profile_attack_effects]
         if build.off_poison_id:
             off_without_poison = apply_execution_effects(EffectSet(), off_ids, effects, "attack", "attack")
         if build.off_poison_id: off_ids.append(build.off_poison_id)
@@ -625,6 +898,8 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     # weapon modifiers never leak into horns, hooves, claws, or bites.
     if "centigors--trample" in automatic_rule_ids:
         extra_attacks.append(EffectSet(tags=("rule.trample",)))
+    if "mechanic.centaur-trample" in global_effects.tags:
+        extra_attacks.append(EffectSet(tags=("weapon.natural-attacks", "rule.trample")))
     # Spiked Tail: one repeated natural tail attack in each close-combat phase at
     # the bearer's Strength +1.  Fimir Warriors and Young Nobles print the same
     # clause, so one profile contribution carries both recipients.
@@ -642,6 +917,20 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         ))
     if "compiler.strikes-last-bite" in automatic_compiler_contracts:
         extra_attacks.append(EffectSet(tags=("weapon.natural-attacks", "rule.strikes-last-bite")))
+    if "mechanic.beak" in global_effects.tags and not any(
+        "rule.bite-attack" in attack.tags or "rule.strikes-last-bite" in attack.tags
+        for attack in extra_attacks
+    ):
+        extra_attacks.append(EffectSet(tags=("weapon.natural-attacks", "rule.strikes-last-bite")))
+    if "mechanic.prehensile-tail" in global_effects.tags:
+        # The equipped tail replaces other tail attacks for the whole phase;
+        # a bare tail adds an attack only when there was no existing tail.
+        tail_tags = {"rule.spiked-tail", "rule.scorpion-tail", "rule.prehensile-tail"}
+        existing_tail = any(tail_tags.intersection(attack.tags) for attack in extra_attacks)
+        if build.extra_hand_id:
+            extra_attacks = [attack for attack in extra_attacks if not tail_tags.intersection(attack.tags)]
+        elif not existing_tail:
+            extra_attacks.append(EffectSet(tags=("weapon.natural-attacks", "rule.prehensile-tail")))
     if ("skill.unarmed-fighting" in global_effects.tags and "weapon.quarter-staff" in main_effect.tags
             and "compiler.woodsmen-quarterstaff" not in compiler_contracts):
         extra_attacks.append(effects["weapon.fist"].effect)
@@ -672,10 +961,12 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
     if build.off_hand_id == "defence.kite-shield" and build.mounted:armour_save+=1
     if "armour.cathayan-quilted-silk" in build.defence_ids:armour_save-=1
     natural_armour_save=int(traits.get("natural_armour_save") or 7)
-    # Hardened Leather explicitly gives no additional bonus to a Scaly Skin
-    # save.  Keep all other modifiers (for example, a shield), but cancel the
-    # leather's own 6+ contribution before composing the natural save.
-    if traits.get("natural_armour_stacks") and build.armour_id=="armour.toughened-leathers":
+    # Toughened Leathers cannot combine with other armour except a helmet or
+    # buckler. A natural armour clause saying it combines normally does not
+    # waive that item restriction. Keep the natural save, cancel the leather's
+    # contribution, and retain permitted helmet/buckler modifiers.
+    if (traits.get("natural_armour_stacks") and int(traits.get("natural_armour_save") or 7) <= 6
+            and build.armour_id == "armour.toughened-leathers"):
         armour_save+=1
     if traits.get("natural_armour_stacks") and natural_armour_save<=6:
         armour_save-=7-natural_armour_save
@@ -717,4 +1008,9 @@ def compile_fighter(build: FighterBuild, root: Path | None = None) -> CompiledFi
         raise ValueError("Handler Leadership requires a handler-only Leadership rule")
     if traits.get("stupidity_leadership_bonus", 0) and "mechanic.brood-mentality" not in global_effects.tags:
         raise ValueError("Stupidity Leadership bonus requires Brood Mentality")
-    return CompiledFighter(f"{build.band_id or 'custom'}:{build.profile_id or 'custom'}",characteristics,main_effect,off_effect,global_effects,max(1,armour_save),4 if "defence.helmet" in build.defence_ids else 5 if "defence.cooking-pot-helmet" in build.defence_ids else 7,natural_armour_save,bool(build.off_hand_id and build.off_hand_id.startswith("weapon.")),bool(traits.get("natural_armour_unmodified",False)),int(traits.get("injury_profile") or 0),random_characteristics,natural_armour_worst_save=int(traits.get("natural_armour_worst_save") or 7),extra_attacks=tuple(extra_attacks),missile_weapon_limit=missile_weapon_limit,ballistic_skill=ballistic_skill,construction_tags=construction_tags,main_weapon_without_poison=main_without_poison,off_hand_without_poison=off_without_poison,mounted=build.mounted,unarmed_weapon=effects["weapon.fist"].effect,vomit_attack=vomit_attack, shield_and_skill_effects=shield_and_skill_effects, stupidity_leadership=traits.get("stupidity_leadership"), stupidity_leadership_bonus=traits.get("stupidity_leadership_bonus", 0), animal_handler_leadership=handler_value)
+    mutation_options = (_prepared_mutation_options(build.ruleset, effects, root)
+                        if "mechanic.solkan-inquisitor" in global_effects.tags else ())
+    mutation_equipment = _mutation_equipment(build, profile, kit, main_weapon_id, main_effect, off_effect, mechanics, effects, root)
+    compiled = CompiledFighter(f"{build.band_id or 'custom'}:{build.profile_id or 'custom'}",characteristics,main_effect,off_effect,global_effects,max(1,armour_save),4 if "defence.helmet" in build.defence_ids else 5 if "defence.cooking-pot-helmet" in build.defence_ids else 7,natural_armour_save,bool(build.off_hand_id and build.off_hand_id.startswith("weapon.")),bool(traits.get("natural_armour_unmodified",False)),int(traits.get("injury_profile") or 0),random_characteristics,natural_armour_worst_save=int(traits.get("natural_armour_worst_save") or 7),extra_attacks=tuple(extra_attacks),missile_weapon_limit=missile_weapon_limit,ballistic_skill=ballistic_skill,construction_tags=construction_tags,main_weapon_without_poison=main_without_poison,off_hand_without_poison=off_without_poison,mounted=build.mounted,unarmed_weapon=(replace(effects["weapon.fist"].effect, strength_bonus=0) if "mechanic.ogre-unarmed" in global_effects.tags else effects["weapon.fist"].effect),vomit_attack=vomit_attack, shield_and_skill_effects=shield_and_skill_effects, stupidity_leadership=traits.get("stupidity_leadership"), stupidity_leadership_bonus=traits.get("stupidity_leadership_bonus", 0), animal_handler_leadership=handler_value, skill_effects_only=skill_effects_only, global_effects_without_equipment=global_effects_without_equipment, mutation_options=mutation_options, mutation_equipment=mutation_equipment, natural_armour_stacks=bool(traits.get("natural_armour_stacks", False)))
+    from mordheim_construction.runes import apply_item_modifiers
+    return apply_item_modifiers(compiled, (*automatic_profile_bindings, *selected_profile_bindings), effects, traits)

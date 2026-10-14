@@ -17,6 +17,9 @@ EFFECT_FIELDS = {field.name for field in fields(EffectSet)}
 
 
 TRAIT_TYPES = {
+    "condemned_fixed_characteristics": list,
+    "rune_iron_slots": list, "rune_stone_slots": list, "rune_fury_slots": list,
+    "rune_striking_slots": list, "rune_speed_slots": list, "rune_cleaving_slots": list,
     "snorri_drunk_result": int,
     "chaos_follower": bool, "onogal_follower": bool, "ulric_rival": bool, "aquatic": bool, "flesh_peddler_mark": bool, "guiding_dream_target": bool,
     "eagle_friends": int,
@@ -41,6 +44,13 @@ TRAIT_TYPES = {
     "flammable": bool,
     "ward_save_mundane_only": bool,
     "natural_armour_negated_by_magic": bool,
+    "natural_armour_negated_by_fire": bool,
+    "scourge_armed": bool,
+    "slave": bool,
+    "devoted_vampire_down": bool,
+    "devoted_vampire_killed": bool,
+    "spellcaster": bool,
+    "metal_armour": bool,
     "magical_attacks": bool,
     "spectral_touch": bool,
     "regeneration_blocked_by_fire": bool,
@@ -63,6 +73,8 @@ TRAIT_TYPES = {
 
 
 COMPILER_CONTRACTS = {
+    "compiler.aquatic-mutants",
+    "compiler.johann-crimson-shade",
     "compiler.assassin-poisoner",
     "compiler.woodsmen-quarterstaff",
     "compiler.aldred-fellblade",

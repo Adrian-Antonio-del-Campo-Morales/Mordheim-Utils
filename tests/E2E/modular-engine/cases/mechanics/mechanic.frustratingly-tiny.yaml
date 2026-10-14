@@ -2,7 +2,11 @@
 # audit_id: mechanic/mechanic.frustratingly-tiny
 # scaffold_fingerprint: 94af274033ca1442eb0a4a62d9ba341167d8c24a517cb62ae1e43c639610e54f
 # authoring_status: PARTIAL
-# authoring_progress: the melee To-Hit penalty clause carries 2 authored scenarios; the printed mutual exclusion with Big Bully has no runner-visible refusal and is documented as PARTIAL below; REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: the melee To-Hit penalty clause carries 2 authored scenarios;
+#   the printed mutual exclusion with Big Bully cannot compile a duel scenario (Big
+#   Bully's own runtime grant is LATER/implemented NO), so it is recorded as a
+#   structured construction dependency in its clause note instead. REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -13,7 +17,24 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: cannot-combine-with-big-bully (scope: YES)
-# PARTIAL[cannot-combine-with-big-bully]: no scenario is authorable from this file. The printed exclusion is a construction restriction, and the only enforcement found is the eligibility layer (packages/typescript/domain/eligibility/index.ts, the bullied-goblin--frustratingly-tiny rule against bigsnotz--big-bully), which the E2E runner never calls; compile_fighter applies no such refusal, so a duel build carrying both printed skills compiles and requests ordinary attacks, leaving no observation of the exclusion in the runner vocabulary. The recorded register already states that no construction or eligibility check enforces it in the frozen revision.
+# PARTIAL[cannot-combine-with-big-bully]: the exclusion is not authorable as a duel
+#   scenario, with a hard reason that this intervention verified against the sources:
+#   the printed partner skill `bigsnotz--big-bully` carries runtime scope LATER and
+#   implemented NO with grant profile, so no runtime skill id for Big Bully exists and
+#   no build can carry both skills in the compiled vocabulary. The refusal is therefore
+#   a construction/eligibility coupling, and it is requested here as a dependency, not
+#   left vague. Normative text: the printed sentences of both sources (bigsnotz--big-bully
+#   "Cannot be combined with the skill Frustratingly Tiny"; bullied-goblin--frustratingly-tiny
+#   "This skill cannot be combined with the Big Bully skill above"). Input: one build of one
+#   carrier holding both printable skills - Big Bully's own profile-only grant and the
+#   selectable frustratingly-tiny (the eligibility layer of
+#   packages/typescript/domain/eligibility/index.ts already pairs them as
+#   bullied-goblin--frustratingly-tiny against bigsnotz--big-bully). Assertion: an
+#   expect_error refusal naming the printed exclusion. Missing capability: a compile-time
+#   mutual-exclusion check enforced by the same compiler the runner drives (connection
+#   work, register implementation_batch B17-construction) plus a runtime grant id for
+#   Big Bully should the duel ever take that skill.; the pairing itself stays in the
+#   register as printed.
 # origin_id:
 #   mechanic/mechanic.frustratingly-tiny
 # analysis_status:

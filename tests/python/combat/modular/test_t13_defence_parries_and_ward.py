@@ -13,15 +13,19 @@ a compiled metadata field.
 from __future__ import annotations
 
 import pytest
+from dataclasses import replace
 
 from mordheim_combat import phases
 from mordheim_combat.modular.attacks import resolve_reference_attack
 from mordheim_combat.modular.contexts import (
     _combined_effect, _injury_context, _parry_context, prepare_armour_context,
-    prepare_special_save_context,
+    prepare_special_save_context, _hit_reroll,
 )
 from mordheim_combat.modular.state import _parry_capacity, initialize_fighter
-from mordheim_combat_lab.verification.dice import StrictDice
+from mordheim_combat.modular.pools import _resolve_attack_pool, _resolve_prepared_defences
+from mordheim_combat.modular.contexts import OwnedRollDice, prepare_hit_context
+from mordheim_combat_lab.verification.dice import StrictDice, StrictDecisions
+from mordheim_core.dice import RollRequest
 from mordheim_construction.compiler import compile_fighter
 from mordheim_core.models import Characteristics, EffectSet, FighterBuild
 
@@ -322,3 +326,959 @@ def test_white_wolf_pelt_resolves_to_the_six_plus_saving_throw():
 def test_pristekk_shock_rod_is_consumed_as_a_shock_weapon():
     chieftain = bare("skaven-of-clan-pristekk-sc", "chieftain", main_weapon_id="weapon.shock-rod")
     assert _injury_context(chieftain, chieftain.main_weapon, "i").shock is True
+
+
+def test_mourngul_three_plus_ethereal_save_has_the_printed_threshold_and_magic_exception():
+    unit = bare("call-of-the-night-haint-mim", "mourngul")
+    assert unit.global_effects.ethereal_hit_save == 3
+    assert strike(attacker(), unit, [("hit", 4), ("ethereal", 3)]).saved
+    # A failed Ethereal roll needs the ordinary wound roll, with no second save.
+    assert not strike(attacker(), unit,
+        [("hit", 4), ("ethereal", 2), ("wound", 1)]).saved
+    magic = strike(attacker(weapon="weapon.hellblade"), unit,
+        [("hit", 4), ("wound", 1)])
+    assert not magic.saved
+
+
+def test_pooled_ranald_ducks_every_hit_and_skips_a_hit_already_saved_by_ethereal():
+    # Composition witness: it does not establish a canonical Ethereal Priest.
+    atk = attacker()
+    priest = trickster(special_rule_ids=(MARKS,))
+    priest = replace(priest, global_effects=replace(priest.global_effects,
+        tags=(*priest.global_effects.tags, "mechanic.ethereal-hit-save")))
+    first, second = state(atk), state(priest)
+    prepared = resolve_reference_attack(atk, priest, first, second, atk.main_weapon,
+        StrictDice([{"key": "x.hit", "value": 4}]), key="x", hit_only=True)
+    dice = StrictDice([{"key": "x.ethereal", "value": 4}])
+    _, _, defended = _resolve_prepared_defences(atk, priest, first, second,
+        ((atk.main_weapon, prepared),), dice, keys=("x",),
+        first_round=False, charging=False, helpless=False)
+    assert defended[0].saved
+    dice.finish()
+    priest = trickster(special_rule_ids=(MARKS,))
+    dice = StrictDice([{"key": "x.marks-of-ranald", "value": 6}])
+    _, _, defended = _resolve_prepared_defences(atk, priest, first, state(priest),
+        ((atk.main_weapon, prepared),), dice, keys=("x",),
+        first_round=False, charging=False, helpless=False)
+    assert defended[0].saved
+    dice.finish()
+
+
+def test_ranald_plus_changes_one_own_hit_and_preserves_natural_face():
+    unit = trickster(special_rule_ids=(MARKS,))
+    target = attacker()
+    dice = StrictDice([{"key": "x.hit", "value": 3}])
+    decisions = StrictDecisions([{"key": "x.hit.ranalds-luck.plus", "value": True}])
+    result = resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
+        dice, key="x", hit_only=True, decisions=decisions)
+    assert result.hit and "ranalds-luck" in result.attacker.resources_spent
+    dice.finish()
+    decisions.finish()
+    # A modified five is a successful six, but carries no natural-six trigger.
+    dice = StrictDice([{"key": "y.hit", "value": 5}])
+    decisions = StrictDecisions([{"key": "y.hit.ranalds-luck.plus", "value": True}])
+    result = resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
+        dice, key="y", hit_only=True, decisions=decisions)
+    assert result.hit_roll == 6 and not result.natural_hit_six
+    dice.finish()
+    decisions.finish()
+
+
+def test_ranald_minus_is_optional_and_the_resource_follows_the_owner_across_sites():
+    unit = trickster(special_rule_ids=(MARKS,))
+    dice = StrictDice([{"key": "own.test", "value": 5}, {"key": "own.hit", "value": 2}])
+    decisions = StrictDecisions([
+        {"key": "own.test.ranalds-luck.plus", "value": False},
+        {"key": "own.test.ranalds-luck.minus", "value": True}])
+    owned = OwnedRollDice(dice, unit, state(unit), decisions)
+    assert owned.roll(RollRequest("own.test")) == 4
+    assert owned.roll(RollRequest("own.hit")) == 2
+    assert owned.state.resources_spent == {"ranalds-luck"}
+    dice.finish()
+    decisions.finish()
+
+
+def test_oracle_reroll_is_shared_across_hit_and_wound_and_never_rerolls_a_reroll():
+    # Local resource witness; the canonical selected Oracle is separately compiled.
+    unit = attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "mechanic.oracle"), reroll_hits=True))
+    target = attacker()
+    dice = StrictDice([
+        {"key": "x.hit", "value": 1}, {"key": "x.hit.reroll", "value": 1}])
+    decisions = StrictDecisions([{"key": "x.hit.one-roll-reroll", "value": True}])
+    result = resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
+        dice, key="x", decisions=decisions)
+    assert not result.hit and result.attacker.resources_spent == {"one-roll-reroll"}
+    dice.finish()
+    decisions.finish()
+    unit = replace(unit, global_effects=replace(unit.global_effects, reroll_hits=False))
+    dice = StrictDice([
+        {"key": "y.hit", "value": 4}, {"key": "y.wound", "value": 1},
+        {"key": "y.wound.reroll", "value": 4}])
+    decisions = StrictDecisions([
+        {"key": "y.hit.one-roll-reroll", "value": False},
+        {"key": "y.wound.one-roll-reroll", "value": True}])
+    result = resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
+        dice, key="y", decisions=decisions)
+    assert result.wounded and result.attacker.resources_spent == {"one-roll-reroll"}
+    dice.finish()
+    decisions.finish()
+
+
+def test_aenur_fixed_hit_threshold_retains_modifiers_and_automatic_hit_provenance():
+    unit = bare("hirelings.dramatis-personae.core", "hireling.dramatis.aenur",
+                main_weapon_id="weapon.ienh-khain")
+    target = attacker()
+    context = prepare_hit_context(unit, target, state(unit), state(target), unit.main_weapon,
+        _combined_effect(unit, unit.main_weapon))
+    assert context.fixed_target == 2
+    dice = StrictDice([{"key": "hit", "value": 2}])
+    assert phases.resolve_hit(context, dice).success
+    dice.finish()
+    dice = StrictDice([{"key": "hit", "value": 2}])
+    assert not phases.resolve_hit(replace(context, modifier=-1), dice).success
+    dice.finish()
+    hit = phases.resolve_hit(replace(context, automatic=True), StrictDice([]))
+    assert hit.success and hit.roll == 0
+    dice = StrictDice([{"key": "x.hit", "value": 2}, {"key": "x.wound", "value": 5},
+                      {"key": "x.critical", "value": 1}])
+    result = resolve_reference_attack(unit, target, state(unit), replace(state(target), wounds=4),
+        unit.main_weapon, dice, key="x")
+    assert result.critical and result.damage == 2
+    dice.finish()
+
+
+@pytest.mark.parametrize("mark,profile", [
+    ("hireling.hired-sword.war-priestess-of-myrmidia.rule.marks-of-myrmidia",
+     "hireling.hired-sword.war-priestess-of-myrmidia"),
+    ("hireling.hired-sword.priest-of-morr-miracle-workers.skill.augur",
+     "hireling.hired-sword.priest-of-morr-miracle-workers"),
+])
+def test_selected_oracle_and_augur_own_one_reroll_then_keep_it_spent_when_defending(mark, profile):
+    unit = bare("hirelings.hired-sword.2b", profile, special_rule_ids=(mark,))
+    target = attacker()
+    dice = StrictDice([{"key": "x.hit", "value": 1}, {"key": "x.hit.reroll", "value": 1}])
+    decisions = StrictDecisions([{"key": "x.hit.one-roll-reroll", "value": True}])
+    first = resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
+        dice, key="x", decisions=decisions, hit_only=True)
+    assert not first.hit and "one-roll-reroll" in first.attacker.resources_spent
+    dice.finish()
+    decisions.finish()
+    # A later real opposing attack may not offer another own-roll resource.
+    dice = StrictDice([{"key": "y.hit", "value": 4}, {"key": "y.wound", "value": 1}])
+    second = resolve_reference_attack(target, unit, state(target), first.attacker, target.main_weapon,
+        dice, key="y", decisions=StrictDecisions([]))
+    assert "one-roll-reroll" in second.defender.resources_spent
+    dice.finish()
+
+
+def test_andanti_roll_under_ws_parry_has_strict_boundary_and_retains_strength_limit():
+    unit = bare("dreamwalkers-cult-of-morr-fbg", "andanti",
+                main_weapon_id="weapon.rapier", off_hand_id="weapon.main-gauche")
+    context = _parry_context(unit, state(unit), EffectSet(), 3, 6, "p")
+    assert context.roll_under == unit.characteristics.weapon_skill
+    dice = StrictDice([{"key": "p.parry", "value": unit.characteristics.weapon_skill - 1}])
+    assert phases.resolve_parry(context, dice).blocked
+    dice.finish()
+    dice = StrictDice([{"key": "p.parry", "value": unit.characteristics.weapon_skill}])
+    assert not phases.resolve_parry(context, dice).blocked
+    dice.finish()
+    assert not phases.resolve_parry(replace(context,
+        attacker_strength=2 * context.defender_strength), StrictDice([])).attempted
+
+
+def test_greenskin_traitor_grants_hatred_to_the_enemy_only_with_psychology_and_first_round_limits():
+    scout = bare("hirelings.hired-sword.1c", "hireling.hired-sword.hobgoblin-scout")
+    greenskin = attacker()
+    greenskin = replace(greenskin, global_effects=replace(greenskin.global_effects,
+        tags=(*greenskin.global_effects.tags, "species.orc")))
+    def reroll(unit, target, first=True, frenzy=False):
+        return _hit_reroll(unit, target, unit.main_weapon, _combined_effect(unit, unit.main_weapon),
+                           first, False, frenzy=frenzy)
+    assert reroll(greenskin, scout)
+    assert not reroll(scout, greenskin)
+    assert not reroll(greenskin, scout, first=False)
+    assert not reroll(greenskin, scout, frenzy=True)
+    assert not reroll(attacker(), scout)
+    immune = replace(greenskin, global_effects=replace(greenskin.global_effects,
+        tags=(*greenskin.global_effects.tags, "mechanic.psychology-immunity")))
+    assert not reroll(immune, scout)
+
+
+def test_djinn_curse_modifies_enemy_melee_hits_and_each_ordinary_save_once():
+    # Only the selected, still active power contributes penalties.
+    unit, target = attacker(), attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "condition.djinns-curse-active")))
+    effect = _combined_effect(target, target.main_weapon)
+    context = prepare_hit_context(target, unit, state(target), state(unit), target.main_weapon, effect)
+    assert context.modifier == -1
+    assert prepare_hit_context(target, unit, state(target), state(unit), target.main_weapon,
+                               effect, melee_attack=False).modifier == 0
+    target = replace(target, armour_save=5, global_effects=replace(target.global_effects,
+        ward_save=5, regeneration_save=4))
+    incoming = _combined_effect(unit, unit.main_weapon)
+    context = prepare_armour_context(unit, target, state(unit), state(target), unit.main_weapon, incoming)
+    assert phases.armour_target(context) == 6
+    special = prepare_special_save_context(target, incoming)
+    assert (special.ward_save, special.regeneration_save) == (6, 5)
+
+
+def test_corruption_can_force_one_eligible_successful_hit_to_reroll_without_rerolling_a_reroll():
+    unit, target = attacker(), attacker()
+    target = replace(target, global_effects=replace(target.global_effects,
+        tags=(*target.global_effects.tags, "mechanic.corruption")))
+    dice = StrictDice([{"key": "x.hit", "value": 4}, {"key": "x.hit.reroll", "value": 1}])
+    decisions = StrictDecisions([{"key": "x.corruption", "value": True}])
+    result = resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
+        dice, key="x", hit_only=True, decisions=decisions)
+    assert not result.hit and "corruption" in result.defender.resources_spent
+    dice.finish()
+    decisions.finish()
+    immune = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "mechanic.psychology-immunity")))
+    dice = StrictDice([{"key": "y.hit", "value": 4}])
+    result = resolve_reference_attack(immune, target, state(immune), state(target), unit.main_weapon,
+        dice, key="y", hit_only=True, decisions=StrictDecisions([]))
+    assert result.hit and "corruption" not in result.defender.resources_spent
+    dice.finish()
+
+
+def test_rememberer_uses_one_selected_pool_with_variant_recipient_and_expiry_limits():
+    unit = canonical("dwarf-slayers-kaz", "giant-slayer", "weapon.mace",
+        condition_ids=("condition.rememberer-kaz-support",))
+    target = attacker()
+    target = replace(target, global_effects=replace(target.global_effects,
+        tags=(*target.global_effects.tags, "size.large")))
+    dice = StrictDice([
+        {"key": "x.attack.0.hit", "value": 1}, {"key": "x.attack.0.hit.reroll", "value": 4},
+        {"key": "x.attack.1.hit", "value": 1}, {"key": "x.attack.1.hit.reroll", "value": 4},
+        {"key": "x.attack.0.wound", "value": 1}, {"key": "x.attack.1.wound", "value": 1}])
+    decisions = StrictDecisions([{"key": "x.attack.0.rememberer", "value": True}])
+    first, second, outcomes = _resolve_attack_pool(unit, target, state(unit), state(target), 2, dice,
+        key="x", first_round=False, charging=False, decisions=decisions)
+    assert len(outcomes) == 2 and first.resources_spent == {"rememberer"}
+    dice.finish()
+    decisions.finish()
+    # The same key cannot revive the phase-local activation after it expires.
+    dice = StrictDice([{"key": "x.attack.0.hit", "value": 1}])
+    later = _resolve_attack_pool(unit, target, first, second, 1, dice,
+        key="x", first_round=False, charging=False, decisions=StrictDecisions([]))
+    assert not later[2][0].hit
+    dice.finish()
+    tough = replace(target, global_effects=replace(target.global_effects,
+        tags=tuple(tag for tag in target.global_effects.tags if tag != "size.large")))
+    tough_state = replace(state(tough), toughness=5)
+    dice = StrictDice([{"key": "z.hit", "value": 1}])
+    assert not resolve_reference_attack(unit, tough, state(unit), tough_state, unit.main_weapon,
+        dice, key="z", hit_only=True, decisions=StrictDecisions([])).hit
+    dice.finish()
+    unit = canonical("dwarf-slayer-cult-web", "giant-slayer", "weapon.mace",
+        condition_ids=("condition.rememberer-web-support",))
+    dice = StrictDice([{"key": "z.hit", "value": 1}, {"key": "z.hit.reroll", "value": 4}])
+    decisions = StrictDecisions([{"key": "z.rememberer", "value": True}])
+    assert resolve_reference_attack(unit, tough, state(unit), tough_state, unit.main_weapon,
+        dice, key="z", hit_only=True, decisions=decisions).hit
+    dice.finish()
+    decisions.finish()
+
+
+def test_shaggy_hide_combines_normal_armour_but_respects_the_specific_leather_exception():
+    unit = canonical("beastmen-raiders", "beastmen-chieftain", "weapon.mace",
+        armour_id="armour.light-armour", off_hand_id="defence.shield",
+        special_rule_ids=("band--beastmen-special-skills-shaggy-hide",))
+    assert armour(3, unit)[0] == 4  # ordinary light armour 6+, shield, hide
+    # Leathers are not on that warband's printed list. A free build exercises
+    # the same innate save/stack operators and the item's explicit exception.
+    free = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 2, 3, 1, leadership=7),
+        armour_id="armour.toughened-leathers",
+        trait_overrides={"natural_armour_save": 6, "natural_armour_stacks": True}))
+    assert armour(3, free)[0] == 6
+
+
+def test_achilles_heel_criticals_when_needing_six_and_stampede_denies_only_charge_armour():
+    unit, target = attacker(), attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "mechanic.achilles-heel")))
+    dice = StrictDice([{"key": "x.hit", "value": 4}, {"key": "x.wound", "value": 6},
+                      {"key": "x.critical", "value": 1}])
+    result = resolve_reference_attack(unit, target, state(unit), replace(state(target), toughness=5, wounds=5),
+        unit.main_weapon, dice, key="x")
+    assert result.critical and result.damage == 2
+    dice.finish()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "condition.stampede-active")))
+    target = replace(target, armour_save=2)
+    dice = StrictDice([{"key": "y.hit", "value": 4}, {"key": "y.wound", "value": 5}])
+    result = resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
+        dice, key="y", first_round=True, charging=True)
+    assert result.damage == 1 and not result.saved
+    dice.finish()
+    dice = StrictDice([{"key": "z.hit", "value": 4}, {"key": "z.wound", "value": 5},
+                      {"key": "z.armour", "value": 2}])
+    result = resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
+        dice, key="z", first_round=False, charging=False)
+    assert result.saved
+    dice.finish()
+
+
+def test_darting_steel_requires_both_under_ws_and_no_more_than_the_highest_hit_roll():
+    unit = compile_fighter(FighterBuild("mordheim", Characteristics(4, 3, 3, 2, 3, 1, leadership=7),
+        main_weapon_id="weapon.sword", off_hand_id="defence.buckler"))
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "mechanic.darting-steel")))
+    context = _parry_context(unit, state(unit), EffectSet(), 3, 2, "p")
+    assert (context.roll_under, context.maximum_roll) == (4, 2)
+    # Disable the independent sword+buckler reroll to isolate the two bounds.
+    context = replace(context, reroll=False)
+    dice = StrictDice([{"key": "p.parry", "value": 3}])
+    assert not phases.resolve_parry(context, dice).blocked
+    dice.finish()
+    dice = StrictDice([{"key": "p.parry", "value": 2}])
+    assert phases.resolve_parry(context, dice).blocked
+    dice.finish()
+
+
+def test_persistent_frenzy_survives_the_immediate_stunned_injury_transition():
+    unit, target = attacker(), attacker()
+    target = replace(target, global_effects=replace(target.global_effects,
+        tags=(*target.global_effects.tags, "mechanic.persistent-frenzy")))
+    dice = StrictDice([{"key": "x.hit", "value": 4}, {"key": "x.wound", "value": 4},
+                      {"key": "x.injury.0", "value": 3}])
+    result = resolve_reference_attack(unit, target, state(unit),
+        replace(state(target), wounds=1, frenzy=True), unit.main_weapon, dice, key="x")
+    assert result.defender.condition == phases.Condition.STUNNED and result.defender.frenzy
+    dice.finish()
+
+
+def test_self_backlash_has_one_roll_resource_owner_across_wound_and_save():
+    unit = attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "mechanic.oracle"), ward_save=5))
+    initial = state(unit)
+    effect = EffectSet(tags=("mechanic.black-hunger-backlash", "effect.no-critical"),
+        fixed_strength=3, automatic_hit=True, cannot_be_parried=True, ignore_armour=True)
+    dice = StrictDice([{"key": "x.wound", "value": 1}, {"key": "x.wound.reroll", "value": 4},
+                      {"key": "x.special.ward", "value": 1}])
+    decisions = StrictDecisions([{"key": "x.wound.one-roll-reroll", "value": True}])
+    result = resolve_reference_attack(unit, unit, initial, initial, effect, dice,
+        key="x", melee_attack=False, decisions=decisions)
+    assert result.attacker.resources_spent == result.defender.resources_spent == {"one-roll-reroll"}
+    dice.finish()
+    decisions.finish()
+
+
+def test_inconsistency_rolls_only_the_characteristics_needed_after_a_hit_and_caches_them():
+    unit, target = attacker(), attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "mechanic.inconsistency")),
+        random_characteristics=(("WS", 1, 6, 0), ("S", 1, 6, 0)))
+    initial = state(unit)
+    assert not initial.random_rolled
+    dice = StrictDice([{"key": "x.attacker.characteristic.WS.0", "value": 3},
+                      {"key": "x.hit", "value": 1}])
+    first = resolve_reference_attack(unit, target, initial, state(target), unit.main_weapon, dice, key="x")
+    assert first.attacker.random_rolled == {"WS"}
+    dice.finish()
+    dice = StrictDice([{"key": "y.hit", "value": 4},
+                      {"key": "y.attacker.characteristic.S.0", "value": 4},
+                      {"key": "y.wound", "value": 1}])
+    second = resolve_reference_attack(unit, target, first.attacker, first.defender,
+        unit.main_weapon, dice, key="y")
+    assert second.attacker.random_rolled == {"WS", "S"}
+    assert second.attacker.strength == 4
+    dice.finish()
+
+
+def test_an_indestructible_weapon_can_be_parried_without_a_trap_blade_break_roll():
+    unit, target = attacker(weapon="weapon.sword"), attacker(weapon="weapon.sword-breaker")
+    unit = replace(unit, main_weapon=replace(unit.main_weapon,
+        tags=(*unit.main_weapon.tags, "weapon.indestructible")))
+    result = strike(unit, target, [("hit", 4), ("parry", 5)])
+    assert result.parried and not result.attacker.broken_hands
+
+
+def test_ranald_modified_six_keeps_its_physical_five_for_pooled_equal_parry():
+    unit = trickster(special_rule_ids=(MARKS,))
+    target = attacker(weapon="weapon.sword")
+    target = replace(target, global_effects=replace(target.global_effects,
+        tags=(*target.global_effects.tags, "skill.sword-master")))
+    dice = StrictDice([{"key": "x.attack.0.hit", "value": 5},
+                      {"key": "x.attack.0.parry", "value": 6}])
+    decisions = StrictDecisions([{"key": "x.attack.0.hit.ranalds-luck.plus", "value": True}])
+    _, _, outcomes = _resolve_attack_pool(unit, target, state(unit), state(target), 1, dice,
+        key="x", first_round=False, charging=False, decisions=decisions)
+    assert outcomes[0].parried
+    dice.finish()
+    decisions.finish()
+
+
+def test_ethereal_and_step_aside_do_not_combine_but_magical_attacks_can_use_step_aside():
+    target = attacker()
+    target = replace(target, global_effects=replace(target.global_effects,
+        tags=(*target.global_effects.tags, "mechanic.ethereal-hit-save"), step_aside=True))
+    assert prepare_special_save_context(target, EffectSet()).ward_save == 7
+    assert prepare_special_save_context(target, EffectSet(tags=("attack.magical",))).ward_save == 5
+    result = strike(attacker(weapon="weapon.hellblade"), target,
+        [("hit", 4), ("wound", 4), ("special.ward", 5)])
+    assert result.saved
+
+
+@pytest.mark.parametrize("persistent", [False, True])
+def test_direct_titanic_knockdown_ends_ordinary_frenzy_only(persistent):
+    unit, target = attacker(), attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "mechanic.titanic-strength")))
+    if persistent:
+        target = replace(target, global_effects=replace(target.global_effects,
+            tags=(*target.global_effects.tags, "mechanic.persistent-frenzy")))
+    dice = StrictDice([{"key": "x.hit", "value": 4}, {"key": "x.wound", "value": 1},
+                      {"key": "x.titanic-strength", "value": 6}])
+    result = resolve_reference_attack(unit, target, state(unit), replace(state(target), frenzy=True),
+        unit.main_weapon, dice, key="x")
+    assert result.defender.condition == phases.Condition.KNOCKED_DOWN
+    assert result.defender.frenzy == persistent
+
+
+def test_djinn_passive_capability_has_no_curse_and_active_luck_respects_missing_intrinsic_save():
+    unit = attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "mechanic.djinns-curse"),
+        ward_save=5, ward_save_mundane_only=True))
+    target = attacker()
+    assert prepare_hit_context(target, unit, state(target), state(unit),
+        target.main_weapon, _combined_effect(target, target.main_weapon)).modifier == 0
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "condition.djinns-luck-active")))
+    assert prepare_special_save_context(unit, EffectSet()).ward_save == 4
+    magic = prepare_special_save_context(unit, EffectSet(tags=("attack.magical",)))
+    assert magic.ward_save == 6 and not magic.ward_blocked
+
+
+@pytest.mark.parametrize("injury,damage,condition", [(1, 0, phases.Condition.STANDING),
+    (2, 1, phases.Condition.KNOCKED_DOWN), (4, 1, phases.Condition.STUNNED)])
+def test_inured_to_pain_ignores_zero_injury_damage_and_keeps_other_boundaries(injury, damage, condition):
+    target = attacker()
+    target = replace(target, characteristics=replace(target.characteristics, wounds=1),
+        global_effects=replace(target.global_effects,
+        tags=(*target.global_effects.tags, "mechanic.inured-to-pain")))
+    result = strike(attacker(), target, [("hit", 4), ("wound", 4), ("injury.0", injury)])
+    assert result.damage == damage and result.defender.condition == condition
+    assert result.defender.wounds == (1 if damage == 0 else 0)
+
+
+@pytest.mark.parametrize("strength_roll,held", [(1, False), (2, True)])
+def test_gaoler_grapple_replaces_all_attacks_and_uses_strict_under_strength_minus_one(strength_roll, held):
+    unit = canonical("hirelings.hired-sword.1b", "hireling.hired-sword.gaoler", "weapon.flail",
+        owned_item_ids=("flail",))
+    target = attacker()
+    dice = StrictDice([{"key": "x.grapple.hit", "value": 4},
+        {"key": "x.grapple.strength", "value": strength_roll}])
+    decisions = StrictDecisions([{"key": "x.torturer-grapple", "value": True}])
+    first, second, results = _resolve_attack_pool(unit, target, state(unit), state(target),
+        3, dice, key="x", first_round=False, charging=False, decisions=decisions)
+    assert first.grappling == second.grappled == held
+    assert len(results) == 1 and results[0].damage == 0 and second.wounds == 2
+    dice.finish(); decisions.finish()
+
+
+def test_giggle_juice_replaces_one_attack_with_strength_two_and_consumes_one_battle_resource():
+    unit = bare("hirelings.dramatis-personae.2a", "hireling.dramatis.the-foole")
+    target = attacker()
+    target = replace(target, characteristics=replace(target.characteristics, wounds=1))
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        strength_bonus=3, damage=3))
+    dice = StrictDice([{"key": "x.attack.1.hit", "value": 4},
+        {"key": "x.attack.0.wound", "value": 5},
+        {"key": "x.attack.0.injury.0", "value": 2},
+        {"key": "x.attack.1.wound", "value": 1}])
+    decisions = StrictDecisions([{"key": "x.giggle-juice-attack.0", "value": True}])
+    first, second, results = _resolve_attack_pool(unit, target, state(unit), state(target),
+        2, dice, key="x", first_round=False, charging=False, decisions=decisions)
+    assert "giggle-juice" in first.resources_spent
+    assert len(results) == 2 and results[0].damage == 1 and not results[1].wounded
+    assert second.condition == phases.Condition.STUNNED
+    dice.finish(); decisions.finish()
+
+
+def test_electrical_forfeit_removes_only_nominated_offhand_and_no_sole_stunned_finisher():
+    unit = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 1, 3, 1),
+        main_weapon_id="weapon.mace", off_hand_id="weapon.dagger"))
+    target = attacker()
+    dice = StrictDice([{"key": "x.attack.0.hit", "value": 4},
+        {"key": "x.attack.0.wound", "value": 1}])
+    decisions = StrictDecisions([])
+    _, _, results = _resolve_attack_pool(unit, target, state(unit), state(target),
+        2, dice, key="x", first_round=False, charging=False, decisions=decisions, forfeit_index=1)
+    assert len(results) == 1
+    dice.finish(); decisions.finish()
+    dice = StrictDice([])
+    _, _, results = _resolve_attack_pool(unit, target, state(unit),
+        replace(state(target), condition=phases.Condition.STUNNED),
+        1, dice, key="x", first_round=False, charging=False,
+        decisions=StrictDecisions([]), forfeit_index=0)
+    assert not results
+    dice.finish()
+
+
+@pytest.mark.parametrize("last,damage,remaining,condition", [
+    (1, 0, 1, phases.Condition.STANDING), (4, 1, 0, phases.Condition.STUNNED)])
+def test_inured_zero_cancels_each_multiwound_injury_and_its_nightshade_penalty(last, damage, remaining, condition):
+    unit, target = attacker(), attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        damage=2, tags=(*unit.global_effects.tags, "poison.nightshade")))
+    target = replace(target, characteristics=replace(target.characteristics, wounds=1),
+        global_effects=replace(target.global_effects,
+            tags=(*target.global_effects.tags, "mechanic.inured-to-pain")))
+    result = strike(unit, target, [("hit", 4), ("wound", 4),
+        ("injury.0", 1), ("injury.1", last)])
+    assert result.damage == result.defender.initiative_penalty == damage
+    assert result.defender.wounds == remaining and result.defender.condition == condition
+
+
+@pytest.mark.parametrize("tag", ["nature.undead", "nature.daemon", "nature.dead",
+    "mechanic.pain-immunity", "size.large"])
+def test_gaoler_does_not_offer_grapple_to_an_excluded_recipient(tag):
+    unit, target = attacker(), attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "mechanic.gaoler-grapple")))
+    target = replace(target, global_effects=replace(target.global_effects,
+        tags=(*target.global_effects.tags, tag)))
+    dice, decisions = StrictDice([{"key": "x.attack.0.hit", "value": 1}]), StrictDecisions([])
+    _resolve_attack_pool(unit, target, state(unit), state(target), 1, dice,
+        key="x", first_round=False, charging=False, decisions=decisions)
+    dice.finish(); decisions.finish()
+
+
+def test_giggle_poison_immunity_cancels_the_whole_spray_and_the_once_battle_resource_stays_spent():
+    unit = bare("hirelings.dramatis-personae.2a", "hireling.dramatis.the-foole")
+    target = attacker()
+    target = replace(target, global_effects=replace(target.global_effects, poison_immunity=True))
+    dice = StrictDice([])
+    decisions = StrictDecisions([{"key": "x.giggle-juice-attack.0", "value": True}])
+    first, second, results = _resolve_attack_pool(unit, target, state(unit), state(target),
+        1, dice, key="x", first_round=False, charging=False, decisions=decisions)
+    assert "giggle-juice" in first.resources_spent and not results[0].wounded
+    dice.finish(); decisions.finish()
+    dice = StrictDice([{"key": "y.attack.0.hit", "value": 1}])
+    decisions = StrictDecisions([])
+    _resolve_attack_pool(unit, target, first, second, 1, dice,
+        key="y", first_round=False, charging=False, decisions=decisions)
+    dice.finish(); decisions.finish()
+
+
+@pytest.mark.parametrize("condition", [phases.Condition.KNOCKED_DOWN, phases.Condition.STUNNED])
+def test_electrical_fixed_strength_hit_still_rolls_to_wound_a_helpless_target(condition):
+    from mordheim_combat.modular.pools import electrical_touch_weapon
+    unit, target = attacker(), attacker()
+    unit = replace(unit, main_weapon=electrical_touch_weapon(target))
+    dice = StrictDice([{"key": "x.attack.0.wound", "value": 1}])
+    _, second, results = _resolve_attack_pool(unit, target, state(unit),
+        replace(state(target), condition=condition), 1, dice,
+        key="x", first_round=False, charging=False, single_bonus=True,
+        decisions=StrictDecisions([]))
+    assert len(results) == 1 and not results[0].wounded and second.condition == condition
+    dice.finish()
+
+
+def test_trip_roll_belongs_to_the_jester_and_uses_no_wound_die():
+    unit, target = attacker(), attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "mechanic.confound-and-confuse", "mechanic.ranalds-luck")))
+    dice = StrictDice([{"key": "x.hit", "value": 4}, {"key": "x.trip-roll", "value": 1}])
+    decisions = StrictDecisions([
+        {"key": "x.hit.ranalds-luck.plus", "value": False},
+        {"key": "x.hit.ranalds-luck.minus", "value": False},
+        {"key": "x.trip.hit", "value": True},
+        {"key": "x.trip-roll.ranalds-luck.plus", "value": True}])
+    result = resolve_reference_attack(unit, target,
+        replace(state(unit), trip_trick_active=True), state(target), unit.main_weapon,
+        dice, key="x", decisions=decisions)
+    assert result.defender.condition == phases.Condition.KNOCKED_DOWN
+    assert "ranalds-luck" in result.attacker.resources_spent
+    assert "ranalds-luck" not in result.defender.resources_spent and not result.wounded
+    dice.finish(); decisions.finish()
+
+
+def test_excellent_reflexes_has_one_special_save_with_a_source_bound_dodge_upgrade():
+    unit = canonical('hirelings.hired-sword.1b','hireling.hired-sword.tomb-robber','weapon.sword')
+    incoming = EffectSet(tags=("attack.magical",))
+    assert prepare_special_save_context(unit, incoming).ward_save == 5
+    upgraded = canonical('hirelings.hired-sword.1b','hireling.hired-sword.tomb-robber','weapon.sword',
+        condition_ids=('condition.tomb-robber-dodge-known',))
+    assert prepare_special_save_context(upgraded, incoming).ward_save == 4
+    other = attacker()
+    other = replace(other, global_effects=replace(other.global_effects,
+        tags=(*other.global_effects.tags, "condition.tomb-robber-dodge-known")))
+    assert prepare_special_save_context(other, incoming).ward_save == 7
+
+
+@pytest.mark.parametrize('upgraded,roll',[(False,5),(True,4)])
+def test_native_tomb_robber_special_save_resolves_actual_magical_wound(upgraded,roll):
+    target = canonical('hirelings.hired-sword.1b','hireling.hired-sword.tomb-robber','weapon.sword',
+        condition_ids=('condition.tomb-robber-dodge-known',) if upgraded else ())
+    unit = attacker(strength=6)
+    unit = replace(unit,global_effects=replace(unit.global_effects,tags=(*unit.global_effects.tags,'attack.magical')))
+    result = strike(unit,target,[('hit',6),('wound',3),('special.ward',roll)])
+    assert result.saved and result.defender.wounds == target.characteristics.wounds
+
+
+@pytest.mark.parametrize('incoming_tag',[None,'attack.magical','attack.blessed'])
+def test_native_chaos_fury_natural_armour_and_printed_denials(incoming_tag):
+    target = canonical('hirelings.hired-sword.2a','hireling.hired-sword.chaos-fury','weapon.natural-attacks')
+    assert phases.has_tag(target.global_effects,'attack.magical')
+    unit = attacker(strength=6)
+    if incoming_tag:
+        unit = replace(unit,global_effects=replace(unit.global_effects,tags=(*unit.global_effects.tags,incoming_tag)))
+    rolls = [('hit',6),('wound',3)]
+    rolls += [('armour',5)] if incoming_tag is None else [('injury.0',1)]
+    result = strike(unit,target,rolls)
+    assert result.saved == (incoming_tag is None)
+
+
+def test_native_magic_acorn_automatically_replaces_only_one_actual_first_round_miss():
+    unit = compile_fighter(FighterBuild('mordheim',Characteristics(3,3,3,2,3,2),
+        main_weapon_id='weapon.mace',defence_ids=('defence.magic-acorn',),
+        trait_overrides={'fighter_kind':'hero'}))
+    target = attacker()
+    dice = StrictDice([{'key':'x.attack.0.hit','value':1}, {'key':'x.attack.1.hit','value':1},
+        {'key':'x.attack.0.wound','value':1}])
+    first,_,results = _resolve_attack_pool(unit,target,state(unit),state(target),2,dice,
+        key='x',first_round=True,charging=False,decisions=None)
+    assert [result.hit for result in results] == [True,False]
+    assert results[0].hit_roll == 1 and not results[0].critical
+    assert 'magic-acorn' in first.resources_spent
+    dice.finish()
+
+
+def test_magic_acorn_is_hero_only_and_does_not_replace_later_round_misses():
+    with pytest.raises(ValueError,match='Hero|hero'):
+        compile_fighter(FighterBuild('mordheim',Characteristics(3,3,3,2,3,1),
+            defence_ids=('defence.magic-acorn',)))
+    unit = compile_fighter(FighterBuild('mordheim',Characteristics(3,3,3,2,3,1),
+        defence_ids=('defence.magic-acorn',),trait_overrides={'fighter_kind':'hero'}))
+    dice = StrictDice([{'key':'x.hit','value':1}])
+    result = resolve_reference_attack(unit,attacker(),state(unit),state(attacker()),unit.main_weapon,
+        dice,key='x',first_round=False)
+    assert not result.hit and 'magic-acorn' not in result.attacker.resources_spent
+    dice.finish()
+
+
+def veskit():
+    return canonical('hirelings.dramatis-personae.core','hireling.dramatis.veskit','weapon.veskit-claws')
+
+
+@pytest.mark.parametrize('injury,condition',[(1,phases.Condition.STANDING),
+    (3,phases.Condition.STANDING),(5,phases.Condition.OUT)])
+def test_native_veskit_ignores_injury_states_without_healing_or_skipping_out(injury,condition):
+    unit,target = attacker(strength=6),veskit()
+    dice = StrictDice([{'key':'x.hit','value':6},{'key':'x.wound','value':3},
+        {'key':'x.armour','value':1},{'key':'x.injury.0','value':injury}])
+    result = resolve_reference_attack(unit,target,state(unit),replace(state(target),wounds=1),
+        unit.main_weapon,dice,key='x')
+    assert result.defender.wounds == 0 and result.defender.condition == condition
+    assert result.damage == 1 and result.wounded and not result.saved
+    dice.finish()
+
+
+def test_native_veskit_keeps_four_attacks_and_uses_fixed_strength_five_total_penetration_three():
+    from mordheim_combat.modular.contexts import _attack_strength
+    unit,target = veskit(),attacker()
+    strength,armour_strength = _attack_strength(unit,target,state(unit),unit.main_weapon,
+        _combined_effect(unit,unit.main_weapon),False,False)
+    assert unit.characteristics.attacks == 4 and not unit.main_weapon.paired
+    assert strength == 5 and armour_strength-3+unit.main_weapon.armour_penetration == 3
+    assert unit.natural_armour_save == 3 and not unit.natural_armour_unmodified
+
+
+def test_native_veskit_claws_follow_the_adopted_one_parry_and_failed_reroll():
+    target = veskit()
+    assert _parry_capacity(target) == 1
+    assert strike(attacker(),target,[('hit',4),('parry',4),('parry.reroll',5)]).parried
+
+
+def lucky_ranger():
+    return canonical('hirelings.hired-sword.core','hireling.hired-sword.elf-ranger','weapon.sword',
+        special_rule_ids=('hireling.hired-sword.elf-ranger.skill.luck',))
+
+
+def test_native_ranger_luck_can_spend_the_shared_resource_on_own_leadership_then_not_a_hit():
+    from mordheim_combat.modular.leadership import resolve_local_leadership
+    from mordheim_combat.modular.state import DuelState
+    unit,target = lucky_ranger(),attacker()
+    current = DuelState(state(unit),state(target))
+    dice = StrictDice([{'key':'ld.0','value':6},{'key':'ld.0.reroll','value':1},{'key':'ld.1','value':6}])
+    choices = StrictDecisions([{'key':'ld.0.luck','value':True}])
+    passed,own = resolve_local_leadership(unit,current,dice,choices,'ld',first=True,return_state=True)
+    assert passed and 'luck' in own.resources_spent
+    dice.finish(); choices.finish()
+    dice = StrictDice([{'key':'hit.hit','value':1}])
+    result = resolve_reference_attack(unit,target,own,current.second,unit.main_weapon,dice,
+        key='hit',decisions=StrictDecisions([]))
+    assert not result.hit
+    dice.finish()
+
+
+def test_native_ranger_may_reroll_a_successful_own_wound_and_must_keep_the_worse_second_roll():
+    unit,target = lucky_ranger(),attacker()
+    dice = StrictDice([{'key':'x.hit','value':6},{'key':'x.wound','value':4},{'key':'x.wound.reroll','value':1}])
+    choices = StrictDecisions([{'key':'x.hit.luck','value':False},{'key':'x.wound.luck','value':True}])
+    result = resolve_reference_attack(unit,target,state(unit),state(target),unit.main_weapon,dice,key='x',decisions=choices)
+    assert not result.wounded and 'luck' in result.attacker.resources_spent
+    dice.finish(); choices.finish()
+
+
+@pytest.mark.parametrize('profile,band,weapon',[
+    ('hireling.dramatis.countess-marianna-chevaux-vampire-assassin','hirelings.dramatis-personae.1a','weapon.rapier'),
+    ('hireling.dramatis.sigmund-spindle-the-harvester-of-flesh','hirelings.dramatis-personae.2a','weapon.scythe')])
+@pytest.mark.parametrize('injury,condition',[(1,phases.Condition.STANDING),(3,phases.Condition.STANDING),(5,phases.Condition.OUT)])
+def test_native_marianna_and_sigmund_source_distinct_no_pain_compositions(profile,band,weapon,injury,condition):
+    unit,target = attacker(strength=6),canonical(band,profile,weapon)
+    dice = StrictDice([{'key':'x.hit','value':6},{'key':'x.wound','value':3},
+        {'key':'x.special.ward','value':1},{'key':'x.injury.0','value':injury}])
+    result = resolve_reference_attack(unit,target,state(unit),replace(state(target),wounds=1),unit.main_weapon,dice,key='x')
+    assert result.defender.condition == condition and result.defender.wounds == 0
+    assert result.damage == 1 and result.wounded
+    dice.finish()
+
+
+@pytest.mark.parametrize('magic,save,condition',[(False,4,phases.Condition.STANDING),
+    (False,3,phases.Condition.KNOCKED_DOWN),(True,None,phases.Condition.KNOCKED_DOWN)])
+def test_native_bone_goliath_ignores_injury_only_on_four_and_magic_denies_it(magic,save,condition):
+    unit = attacker(strength=6)
+    if magic: unit = replace(unit,global_effects=replace(unit.global_effects,tags=(*unit.global_effects.tags,'attack.magical')))
+    target = canonical('hirelings.hired-sword.1c','hireling.hired-sword.bone-goliath','weapon.natural-attacks')
+    rolls = [{'key':'x.hit','value':6},{'key':'x.wound','value':3},{'key':'x.injury.0','value':3}]
+    if save is not None: rolls.append({'key':'x.injury.0.undead-construct','value':save})
+    dice = StrictDice(rolls)
+    result = resolve_reference_attack(unit,target,state(unit),replace(state(target),wounds=1),unit.main_weapon,dice,key='x')
+    assert result.defender.condition == condition and result.defender.wounds == 0
+    assert result.wounded and result.damage == 1 and not result.saved
+    dice.finish()
+
+
+def test_bone_goliath_checks_each_injury_and_keeps_the_unignored_result():
+    unit,target = attacker(strength=6),canonical('hirelings.hired-sword.1c','hireling.hired-sword.bone-goliath','weapon.natural-attacks')
+    unit = replace(unit,main_weapon=replace(unit.main_weapon,damage=2))
+    dice = StrictDice([{'key':'x.hit','value':6},{'key':'x.wound','value':3},
+        {'key':'x.injury.0','value':5},{'key':'x.injury.0.undead-construct','value':4},
+        {'key':'x.injury.1','value':3},{'key':'x.injury.1.undead-construct','value':3}])
+    result = resolve_reference_attack(unit,target,state(unit),replace(state(target),wounds=1),unit.main_weapon,dice,key='x')
+    assert result.defender.condition == phases.Condition.KNOCKED_DOWN
+    assert result.defender.wounds == -1 and result.damage == 2 and not result.saved
+    dice.finish()
+
+
+@pytest.mark.parametrize("luck", [False, True])
+def test_intrinsic_djinn_save_is_unmodifiable_but_luck_replacement_is_an_ordinary_ward(luck):
+    unit, target = attacker(), attacker()
+    tags = ("mechanic.djinn-ethereal", "mechanic.ranalds-luck")
+    if luck:
+        tags += ("condition.djinns-luck-active",)
+    target = replace(target, global_effects=replace(target.global_effects,
+        tags=(*target.global_effects.tags, *tags), ward_save=5, ward_save_mundane_only=True))
+    dice = StrictDice([{"key": "x.hit", "value": 4}, {"key": "x.wound", "value": 4},
+        {"key": "x.special.ward", "value": 3 if luck else 4}])
+    decisions = StrictDecisions([{"key": "x.special.ward.ranalds-luck.plus", "value": True}] if luck else [])
+    result = resolve_reference_attack(unit, target, state(unit), state(target),
+        unit.main_weapon, dice, key="x", decisions=decisions)
+    assert result.saved == luck
+    assert ("ranalds-luck" in result.defender.resources_spent) == luck
+    dice.finish(); decisions.finish()
+
+
+@pytest.mark.parametrize("source", ["mechanic.ethereal-hit-save", "mechanic.marks-of-ranald", "mechanic.djinn-ethereal"])
+def test_active_curse_refuses_only_its_unsettled_composition_with_an_applicable_unmodifiable_save(source):
+    unit, target = attacker(), attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "condition.djinns-curse-active")))
+    target = replace(target, global_effects=replace(target.global_effects,
+        tags=(*target.global_effects.tags, source), ward_save=5 if source == "mechanic.djinn-ethereal" else 7))
+    rolls = [{"key": "x.hit", "value": 4}]
+    if source == "mechanic.djinn-ethereal":
+        rolls += [{"key": "x.wound", "value": 4}]
+    dice = StrictDice(rolls)
+    with pytest.raises(ValueError, match="Djinn's Curse versus the explicitly unmodifiable"):
+        resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
+            dice, key="x", decisions=StrictDecisions([]))
+    dice.finish()
+    dice = StrictDice([{"key": "x.hit", "value": 1}])
+    result = resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
+        dice, key="x", decisions=StrictDecisions([]))
+    assert not result.hit
+    dice.finish()
+
+
+@pytest.mark.parametrize("incoming_tag", [None, "attack.magical", "attack.blessed"])
+def test_daemonic_flesh_is_unmodifiable_natural_armour_with_both_printed_denials(incoming_tag):
+    unit = attacker(strength=6)
+    if incoming_tag:
+        unit = replace(unit, global_effects=replace(unit.global_effects,
+            tags=(*unit.global_effects.tags, incoming_tag)))
+    target = compile_fighter(FighterBuild("mordheim", Characteristics(3, 3, 3, 2, 3, 1),
+        trait_overrides={"natural_armour_save": 5, "natural_armour_unmodified": True,
+            "natural_armour_negated_by_magic": True}))
+    target = replace(target, global_effects=replace(target.global_effects,
+        tags=(*target.global_effects.tags, "mechanic.daemonic-flesh", "mechanic.ranalds-luck")))
+    rolls = [{"key": "x.hit", "value": 4}, {"key": "x.wound", "value": 3}]
+    if incoming_tag is None:
+        rolls += [{"key": "x.armour", "value": 4}]
+    dice, decisions = StrictDice(rolls), StrictDecisions([])
+    result = resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
+        dice, key="x", decisions=decisions)
+    assert not result.saved and result.damage == 1
+    assert "ranalds-luck" not in result.defender.resources_spent
+    dice.finish(); decisions.finish()
+
+
+def test_native_gaoler_zero_injury_preserves_its_current_last_wound():
+    unit = attacker(strength=4)
+    target = canonical("hirelings.hired-sword.1b", "hireling.hired-sword.gaoler", "weapon.flail",
+        owned_item_ids=("flail",))
+    dice = StrictDice([{"key": "x.hit", "value": 4}, {"key": "x.wound", "value": 4},
+        {"key": "x.injury.0", "value": 1}])
+    result = resolve_reference_attack(unit, target, state(unit), replace(state(target), wounds=1),
+        unit.main_weapon, dice, key="x", decisions=StrictDecisions([]))
+    assert result.damage == 0 and result.defender.wounds == 1
+    assert result.defender.condition == phases.Condition.STANDING
+    dice.finish()
+
+
+def test_native_centaur_adds_one_trample_without_its_spear_charge_bonus():
+    unit = canonical("hirelings.hired-sword.1c", "hireling.hired-sword.chaos-centaur", "weapon.spear",
+        off_hand_id="defence.shield", owned_item_ids=("throwing_axe", "shield", "spear"))
+    target = attacker()
+    target = replace(target, characteristics=replace(target.characteristics, toughness=4))
+    dice = StrictDice([{"key": "x.attack.0.hit", "value": 4}, {"key": "x.attack.1.hit", "value": 4},
+        {"key": "x.attack.0.wound", "value": 3}, {"key": "x.attack.1.wound", "value": 3}])
+    _, _, results = _resolve_attack_pool(unit, target, state(unit), state(target), 1, dice,
+        key="x", first_round=True, charging=True, decisions=StrictDecisions([]))
+    assert len(results) == 2 and results[0].wounded and not results[1].wounded
+    dice.finish()
+
+
+@pytest.mark.parametrize("tag,eligible", [(None, True), ("attack.magical", True), ("attack.fire", False)])
+def test_native_belandysh_uses_four_plus_wound_regeneration_except_fire(tag, eligible):
+    target = bare("hirelings.dramatis-personae.1c", "hireling.dramatis.belandysh-condemned-champion-of-chen",
+        main_weapon_id="weapon.broadsword-of-damnation", armour_id="armour.chaos-armour",
+        defence_ids=("defence.helmet",))
+    incoming = EffectSet(tags=(tag,) if tag else ())
+    context = prepare_special_save_context(target, incoming, defender_state=state(target))
+    dice = StrictDice([{"key": "special.regeneration", "value": 4}] if eligible else [])
+    result = phases.resolve_special_save(context, dice)
+    assert result.saved == eligible
+    dice.finish()
+
+
+def test_plague_carrier_retries_after_resistance_then_infects_that_enemy_only_once():
+    unit, target = attacker(), attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "mechanic.plague-carrier")))
+    first, second = state(unit), state(target)
+    for label, test, penalty in (("a", 3, 0), ("b", 4, 1), ("c", None, 1)):
+        rolls = [{"key": f"{label}.hit", "value": 4}]
+        if test is not None:
+            rolls.append({"key": f"{label}.plague-carrier", "value": test})
+        rolls.append({"key": f"{label}.wound", "value": 1})
+        dice = StrictDice(rolls)
+        result = resolve_reference_attack(unit, target, first, second, unit.main_weapon,
+            dice, key=label, decisions=StrictDecisions([]))
+        first, second = result.attacker, result.defender
+        assert second.initiative_penalty == penalty
+        assert ("plague-carrier-infected" in first.resources_spent) == bool(penalty)
+        dice.finish()
+
+
+@pytest.mark.parametrize("nature", ["nature.undead", "nature.daemon", "nature.possessed"])
+def test_plague_carrier_has_no_borrowed_rot_immunity_and_infects_before_an_armour_save(nature):
+    unit, target = attacker(), attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "mechanic.plague-carrier")))
+    target = replace(target, armour_save=5, global_effects=replace(target.global_effects,
+        poison_immunity=True, tags=(*target.global_effects.tags, nature)))
+    dice = StrictDice([{"key": "x.hit", "value": 4},
+        {"key": "x.plague-carrier", "value": 4},
+        {"key": "x.wound", "value": 4}, {"key": "x.armour", "value": 5}])
+    result = resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
+        dice, key="x", decisions=StrictDecisions([]))
+    assert result.saved and result.defender.initiative_penalty == 1
+    dice.finish()
+
+
+def test_plague_carrier_does_not_test_on_a_miss_or_parried_hit():
+    unit = attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "mechanic.plague-carrier")))
+    target = attacker(weapon="weapon.sword")
+    dice = StrictDice([{"key": "x.hit", "value": 4}, {"key": "x.parry", "value": 5}])
+    result = resolve_reference_attack(unit, target, state(unit), state(target), unit.main_weapon,
+        dice, key="x", decisions=StrictDecisions([]))
+    assert result.parried and not result.defender.initiative_penalty
+    dice.finish()
+    result = strike(unit, target, [("hit", 1)])
+    assert not result.hit and not result.defender.initiative_penalty
+
+
+def test_mim_regeneration_heals_full_ordinary_maximum_and_preserves_real_multiwound_reactions():
+    unit, target = attacker(), attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects, damage_die_sides=3))
+    target = replace(target, global_effects=replace(target.global_effects,
+        tags=(*target.global_effects.tags, "mechanic.mim-regeneration", "skill.monstrous",
+            "condition.petru-fortitude", "acid_blood")))
+    dice = StrictDice([{"key": "x.attack.0.hit", "value": 4},
+        {"key": "x.attack.0.wound", "value": 4},
+        {"key": "x.attack.0.damage", "value": 2, "sides": 3},
+        {"key": "x.attack.0.mim-regeneration", "value": 4},
+        {"key": "x.attack.0.acid-blood.0.wound", "value": 1},
+        {"key": "x.attack.0.acid-blood.1.wound", "value": 1}])
+    decisions = StrictDecisions([{"key": "x.attack.0.mim-regeneration", "value": True}])
+    _, second, results = _resolve_attack_pool(unit, target, state(unit),
+        replace(state(target), wounds=1), 1, dice, key="x", first_round=False,
+        charging=False, decisions=decisions)
+    assert second.wounds == 3  # base2 + Monstrous; spent extra Petru W is not restored
+    assert second.condition == phases.Condition.STANDING
+    assert results[0].damage == 2 and not results[0].saved and results[0].wounded
+    dice.finish(); decisions.finish()
+
+
+def test_mim_regeneration_decline_does_not_exhaust_but_first_failure_prevents_later_attempts():
+    unit, target = attacker(), attacker()
+    target = replace(target, characteristics=replace(target.characteristics, wounds=5),
+        global_effects=replace(target.global_effects,
+            tags=(*target.global_effects.tags, "mechanic.mim-regeneration")))
+    first, second = state(unit), state(target)
+    for label, attempt, failure, expected in (("a", False, None, 4), ("b", True, 3, 3), ("c", None, None, 2)):
+        rolls = [{"key": f"{label}.hit", "value": 4}, {"key": f"{label}.wound", "value": 4}]
+        if failure is not None:
+            rolls += [{"key": f"{label}.mim-regeneration", "value": failure}]
+        dice = StrictDice(rolls)
+        decisions = StrictDecisions([{"key": f"{label}.mim-regeneration", "value": attempt}]
+            if attempt is not None else [])
+        result = resolve_reference_attack(unit, target, first, second, unit.main_weapon,
+            dice, key=label, decisions=decisions)
+        first, second = result.attacker, result.defender
+        assert second.wounds == expected
+        assert ("mim-regeneration-exhausted" in second.resources_spent) == (label != "a")
+        dice.finish(); decisions.finish()
+
+
+@pytest.mark.parametrize("helpless", [False, True])
+def test_mim_regeneration_precedes_automatic_out_from_an_established_wound_and_allows_fire(helpless):
+    unit, target = attacker(), attacker()
+    unit = replace(unit, global_effects=replace(unit.global_effects,
+        tags=(*unit.global_effects.tags, "attack.fire")))
+    target = replace(target, injury_profile=0 if helpless else 2,
+        global_effects=replace(target.global_effects,
+            tags=(*target.global_effects.tags, "mechanic.mim-regeneration")))
+    current = replace(state(target), wounds=1,
+        condition=phases.Condition.KNOCKED_DOWN if helpless else phases.Condition.STANDING)
+    rolls = [] if helpless else [{"key": "x.hit", "value": 4}]
+    rolls += [{"key": "x.wound", "value": 4}, {"key": "x.mim-regeneration", "value": 4}]
+    dice = StrictDice(rolls)
+    decisions = StrictDecisions([{"key": "x.mim-regeneration", "value": True}])
+    result = resolve_reference_attack(unit, target, state(unit), current, unit.main_weapon,
+        dice, key="x", decisions=decisions, helpless_at_start=helpless)
+    assert result.defender.wounds == 2 and result.defender.condition == current.condition
+    assert result.damage == 1 and not result.saved
+    dice.finish(); decisions.finish()

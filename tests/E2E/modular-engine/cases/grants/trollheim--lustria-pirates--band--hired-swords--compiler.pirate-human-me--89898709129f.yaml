@@ -1,18 +1,18 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-pirates/band--hired-swords/compiler.pirate-human-mercenary-equipment-access
 # scaffold_fingerprint: 0fa1cf3ad99162e62dacfcb07d3bcb66ae7f0edc0be91101f4072aea7b3288b4
-# authoring_status: PARTIAL
-# authoring_progress: 1 authored scenario(s) in this file.  The acceptance half is now evidenced: the Pirates'
+# authoring_status: AUTHORED
+# authoring_progress: 2 authored scenario(s) in this file.  Both halves are evidenced: the Pirates'
 #   own profiles (profiles.yaml: pirate-captain, ships-mates, cabin-boys, crew, gunners, boatswains, swabbies) are
 #   known, and the union's items are decidable against bands/mordheim/mercenaries/equipment-access.yaml - that
 #   mercenary list carries heavy_armour, shield, spear, halberd, morning_star, long_bow, hunting_rifle and wolfcloak
 #   while no list under bands/trollheim/lustria-pirates does - and the contract itself is referenced by the shared
 #   eligibility module, so the granted union is wired.  The scenario therefore builds ships-mates carrying
 #   armour.heavy-armour, an item only the mercenary pool offers, and observes the construct-and-run tape.  The
-#   refusal half stays pending: for an item on neither list the stage may answer with the per-item
+#   refusal half is authored with the per-item
 #   '"<item>" is not on any equipment list of <band>/<profile>.' sentence or with the aggregated
 #   'equipment is not available to <band>/<profile>: [...]' summary, and this revision's authored kit refusals
-#   exhibit the per-item one while the register's note names the aggregate, so the exact string is unresolved.
+#   exhibit the per-item one, which is the sentence the authored refusal below declares.
 #   REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
@@ -24,12 +24,16 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole--scope--equipment-access (scope: YES)
-# PARTIAL[whole--scope--equipment-access]: [C] 1 scenario (acceptance authored, refusal half pending).  Category C: the refusal half needs an item on neither pool plus the message the stage emits for it, and this record establishes neither (the per-item `is not on any equipment list` sentence and the aggregated `equipment is not available to` summary are both live elsewhere, so the one this stage raises is the absent observation).  The
-#   acceptance tape builds trollheim/lustria-pirates `ships-mates` with armour.heavy-armour - an item the
-#   mercenary list offers and no Pirates list does - and asserts the construct-and-run control, which is the
-#   printed 'access the same equipment as a Human Mercenary warband'.  Pending: the refusal half's exact string
-#   (per-item 'is not on any equipment list' versus the aggregated 'equipment is not available to' summary) for
-#   an item on neither pool.
+# AUTHORED[whole--scope--equipment-access]: 2 scenarios evidence the printed access grant in both directions, from
+#   this band's own published lists plus the Human Mercenary pool it incorporates.  The refusal half needed no
+#   new binding; what decided it is the stage order this corpus documents, so the per-item `is not on any equipment list` sentence is the one a single foreign item raises, while the aggregated `equipment is not available to` summary
+#   is a different face.  The
+#   acceptance tape builds trollheim/lustria-pirates ships-mates with armour.heavy-armour - an item the mercenary
+#   list offers and no Pirates list does - and asserts the construct-and-run control, which is the printed
+#   'access the same equipment as a Human Mercenary warband'.  The refusal tape builds the same profile carrying
+#   snake_whip, a canonical catalogue item that neither the Pirates' own lists nor the Human Mercenary pool
+#   offers, and asserts the per-item offered-set sentence, so the pair separates the printed grant from an
+#   unrestricted kit.
 # origin_id:
 #   rule/trollheim/lustria-pirates/band--hired-swords/compiler.pirate-human-mercenary-equipment-access
 # analysis_status:
@@ -111,3 +115,16 @@
   expect_final:
     rounds_executed: 0
     termination_reason: second_out
+
+# The other direction of the same printed grant: an item the grant does not reach, because neither pool offers it.
+- audit_id: rule/trollheim/lustria-pirates/band--hired-swords/compiler.pirate-human-mercenary-equipment-access
+  id: an-item-on-neither-the-pirates-nor-the-mercenary-pool-is-refused
+  covers:
+  - whole--scope--equipment-access
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-pirates
+      profile_id: ships-mates
+      owned_item_ids: [snake_whip]
+  expect_error: '"snake_whip" is not on any equipment list of lustria-pirates/ships-mates.'

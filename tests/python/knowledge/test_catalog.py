@@ -587,7 +587,12 @@ def test_every_catalogue_item_has_a_resolved_simulation_mapping():
     by_item={row["item_id"]:row for row in mappings}
     assert by_item["blood_root"]["mechanic_id"]=="poison.bloodroot"
     assert by_item["long_boathook"]["mechanic_id"]=="weapon.long-boat-hook"
-    assert by_item["mage_robes"]["mechanic_id"]=="armour.wizard-s-robe"
+    # The three recovered wardrobe entries carry origin-specific mechanics: the
+    # khemri and chaos-in-the-streets robes print the stricter no-other-armour
+    # clause, so they no longer share the generic armour.wizard-s-robe.
+    assert by_item["mage_robes"]["mechanic_id"]=="armour.mage-robes"
+    assert by_item["wizard_robe"]["mechanic_id"]=="armour.wizard-robe"
+    assert by_item["eshin_assassin_clothes"]["mechanic_id"]=="armour.eshin-assassin-robes"
 
 
 def test_derived_trollheim_item_mappings_feed_profile_equipment_access():
@@ -596,9 +601,10 @@ def test_derived_trollheim_item_mappings_feed_profile_equipment_access():
         collection="trollheim",main_weapon_id="weapon.long-boat-hook"),ROOT)
     mage=compile_fighter(FighterBuild(
         "mordheim",band_id="khemri-mages",profile_id="archmage",
-        collection="trollheim",armour_id="armour.wizard-s-robe"),ROOT)
+        collection="trollheim",armour_id="armour.mage-robes"),ROOT)
     assert "weapon.long-boat-hook" in pirate.main_weapon.tags
     assert mage.armour_save==6
+    assert "armour.mage-robes" in mage.global_effects.tags
 
 
 def test_compiler_rejects_names_and_illegal_hands():

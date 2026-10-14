@@ -454,15 +454,15 @@ rules:
   applies_to:
     band: true
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.lustria-pirates.band.pirate-special-skills-sea-shanty-singer
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.sea-shanty-psychology
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.sea-shanty-psychology
 - id: band--pirate-special-skills-sea-legs
   kind: warband_skill
   name: Sea Legs

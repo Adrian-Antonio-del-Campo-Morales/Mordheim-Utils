@@ -3,9 +3,12 @@
 # scaffold_fingerprint: ed7025cd44c6d65cbccdb4f72cc96550931640b2ab823b1f59eda7668989089f
 # authoring_status: AUTHORED
 # authoring_progress: the contagious-reaction clause carries 3 authored scenarios derived from the
-# printed rule and the recorded contract; the contagious-rotten-body-prerequisite clause stays pending
-# because the verbatim diagnostic of that skills-stage refusal is not recorded, so the file is not
-# offered as clause-complete.  REVIEWED still requires manual semantic review and execution_status
+# printed rule and the recorded contract; the contagious-rotten-body-prerequisite clause carries 2 - the
+# refusal fixture now pins this record's own package (collection trollheim, band lustria-clan-pestilens,
+# the printed eligible recipient plague-priest), so the declared row is this origin's own implemented-YES
+# row and the refusal is produced by the shared gate (`loadoutRestriction` in `_eligibility.js`, reached
+# from compiler.py:317) instead of depending on how `free_rules` flattens the same id as another
+# collection defines it.  REVIEWED still requires manual semantic review and execution_status
 # stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
@@ -52,15 +55,18 @@
 #
 # Clause: contagious-rotten-body-prerequisite (scope: YES)
 # AUTHORED[contagious-rotten-body-prerequisite]: 2 scenarios take the printed selection gate onto the
-#   construction stage, which does carry the diagnostic after all: `_eligibility.js` line 1236 returns
-#   "Contagious requires Rotten Body" when the build's special_rule_ids carry
-#   band--clan-pestilens-special-skills-contagious without band--clan-pestilens-special-skills-rotten-body,
-#   so the refusal is asserted verbatim on a build carrying only the Contagious row, and the accepted
-#   pairing of the two rows constructs and resolves (the construct-and-run control).  Documented difference (AUTHORED vs implementation): every representable face of the clause has a written scenario, so AUTHORED is the correct header; what stays pending is the motor side [B] - nothing
-#   engine-side for this clause: the gate is implemented and the neighbouring Mordheim twin of the same
-#   origin carries the same pair; this listria record's own row, however, still carries no KB binding of
-#   the two companion rows, which is what the earlier progress sentence above described as missing.
-#   REVIEWED still requires manual semantic review.
+#   shared construction stage, which does carry the diagnostic: `loadoutRestriction` in `_eligibility.js`
+#   returns "Contagious requires Rotten Body" when the build's special_rule_ids carry
+#   band--clan-pestilens-special-skills-contagious without band--clan-pestilens-special-skills-rotten-body.
+#   That gate is reached from `compiler.py:317` (`validate_loadout(..., "hands")`), i.e. after the
+#   declared-rule block - which is why the refusal fixture pins this record's own package: collection
+#   trollheim, band lustria-clan-pestilens, profile plague-priest (a printed eligible recipient), where
+#   band--clan-pestilens-special-skills-contagious is runtime scope YES / implemented YES / grant
+#   selectable with the trait.contagious binding.  Without that pin the band-less fixture resolved the id
+#   through `free_rules`, which flattens every collection's packages by id, so an id defined by two
+#   collections with different runtimes was not bound to this origin.  The accepted pairing of the two
+#   rows constructs and resolves (the construct-and-run control).  REVIEWED still requires manual
+#   semantic review.
 # origin_id:
 #   rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
 # analysis_status:
@@ -167,12 +173,16 @@
   expect_final: {rounds_executed: 1, termination_reason: second_out}
 
 # The printed selection gate, read at the construction stage the record names: the message is the
-# module's own literal (`_eligibility.js` line 1236) and the build declares only the Contagious row.
+# module's own literal (`loadoutRestriction` in `_eligibility.js`) and the build declares only the
+# Contagious row, pinned to this record's own package so the row it resolves is this origin's own.
 - audit_id: rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious
   id: the-contagious-row-is-refused-without-rotten-body
   covers: [contagious-rotten-body-prerequisite]
   fighters:
     first:
+      collection: trollheim
+      band_id: lustria-clan-pestilens
+      profile_id: plague-priest
       main_weapon_id: weapon.mace
       special_rule_ids: [band--clan-pestilens-special-skills-contagious]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 5, attacks: 1}

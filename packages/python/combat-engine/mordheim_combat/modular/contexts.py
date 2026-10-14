@@ -13,10 +13,72 @@ from mordheim_combat.phases import has_tag
 from mordheim_core.effects import merge_effects
 from mordheim_core.models import CompiledFighter
 from mordheim_core.models import EffectSet
+from mordheim_core.dice import RollRequest
+
+
+class OwnedRollDice:
+    """Offer personal once-per-battle choices at an explicitly owned roll site."""
+
+    def __init__(self, dice, fighter, state, decisions=None, *, modifiable=True):
+        self.dice, self.fighter, self.state = dice, fighter, state
+        self.decisions, self.modifiable = decisions, modifiable
+        self.original_roll = None
+        self.rerolled = False
+        self._rerolled_results = {}
+
+    def roll(self, request):
+        if request.key in self._rerolled_results:
+            self.rerolled = True
+            return self._rerolled_results[request.key]
+        self.rerolled = False
+        value = self.dice.roll(request)
+        self.original_roll = value
+        if self.decisions is None:
+            return value
+        effects = self.fighter.global_effects
+        if (self.modifiable and has_tag(effects, "mechanic.ranalds-luck")
+                and "ranalds-luck" not in self.state.resources_spent):
+            context = (self.fighter, request, value)
+            if self.decisions.choose(f"{request.key}.ranalds-luck.plus", context):
+                value += 1
+                self.state = self.state.spend("ranalds-luck")
+            elif self.decisions.choose(f"{request.key}.ranalds-luck.minus", context):
+                value -= 1
+                self.state = self.state.spend("ranalds-luck")
+        if (any(has_tag(effects, tag) for tag in
+                ("mechanic.oracle", "mechanic.augur-one-roll-reroll"))
+                and "one-roll-reroll" not in self.state.resources_spent
+                and ".reroll" not in request.key
+                and self.decisions.choose(f"{request.key}.one-roll-reroll",
+                                          (self.fighter, request, value))):
+            self.state = self.state.spend("one-roll-reroll")
+            value = self.dice.roll(RollRequest(f"{request.key}.reroll", request.sides))
+            self.original_roll = value
+            self.rerolled = True
+            self._rerolled_results[f"{request.key}.reroll"] = value
+        if (has_tag(effects, 'skill.luck') and 'luck' not in self.state.resources_spent
+                and not self.rerolled and '.reroll' not in request.key
+                and self.decisions.choose(f'{request.key}.luck', (self.fighter, request, value))):
+            self.state = self.state.spend('luck')
+            value = self.dice.roll(RollRequest(f'{request.key}.reroll', request.sides))
+            self.original_roll = value
+            self.rerolled = True
+            self._rerolled_results[f'{request.key}.reroll'] = value
+        return value
+
+    def unmodifiable(self, request):
+        previous = self.modifiable
+        self.modifiable = False
+        try:
+            return self.roll(request)
+        finally:
+            self.modifiable = previous
 
 
 def _combined_effect(fighter: CompiledFighter, weapon: EffectSet) -> EffectSet:
-    return weapon if phases.has_tag(weapon, "mechanic.body-slam") else merge_effects(weapon, fighter.global_effects)
+    return weapon if any(has_tag(weapon, tag) for tag in (
+        "mechanic.body-slam", "mechanic.giggle-juice-spray-attack",
+        "mechanic.electrical-touch-attack")) else merge_effects(weapon, fighter.global_effects)
 
 
 def weapon_against_opponent(attacker: CompiledFighter, defender: CompiledFighter,
@@ -28,6 +90,9 @@ def weapon_against_opponent(attacker: CompiledFighter, defender: CompiledFighter
         return attacker.main_weapon_without_poison
     if weapon == attacker.off_hand and attacker.off_hand_without_poison is not None:
         return attacker.off_hand_without_poison
+    for poisoned, clean in attacker.extra_attacks_without_poison:
+        if weapon == poisoned:
+            return clean
     return weapon
 
 
@@ -43,8 +108,6 @@ def _attack_strength(
         phases.has_tag(weapon, tag) for tag in ("weapon.fist", "weapon.natural-attacks")
     ):
         strength += effect.energy_focus_attacks
-    if phases.has_tag(weapon, "rule.scorpion-tail") and defender.global_effects.poison_immunity:
-        strength = 2
     retains = phases.has_tag(effect, "mechanic.retain-flail-morning-star-strength-bonus") and any(
         phases.has_tag(weapon, tag) for tag in ("weapon.flail", "weapon.morning-star")
     )
@@ -65,6 +128,9 @@ def _attack_strength(
         strength += 1
     if phases.has_tag(weapon, "rule.eagle-friend"):
         strength = 3  # Directed bird weapon: never the Priestess's personal Strength bonuses.
+    if any(has_tag(weapon, tag) for tag in ('rule.scorpion-tail', 'rule.poisonous-bite')):
+        strength = 2 if (defender.global_effects.poison_immunity
+            or has_tag(defender.global_effects, 'poison_immune')) else 5
     armour_strength = strength + effect.armour_strength_modifier
     if phases.has_tag(effect, "mechanic.wolf-rat-bite"):
         # Its printed S4 wounds normally but contributes no armour modifier.
@@ -97,9 +163,16 @@ def _hit_reroll(
         if len(bloodlines) != 1:
             raise ValueError("Kindred Hatred requires the opposing Vampire's explicit bloodline")
         kindred = bloodlines[0] != "vampire-bloodline.strigoi"
-    psychology_allowed = not phases.has_tag(attacker.global_effects, "mechanic.psychology-immunity")
+    psychology_allowed = not frenzy and not phases.has_tag(attacker.global_effects, "mechanic.psychology-immunity")
     hatred = first_round and psychology_allowed and (
         phases.has_tag(effect, "skill.hatred")
+        or has_tag(effect, "mechanic.burn-the-witch") and "identity.spellcaster" in enemy_tags
+        or has_tag(effect, "mechanic.hang-the-bandit") and "warband-group.bandit" in enemy_tags
+        or has_tag(effect, "mechanic.profound-hatred") and not bool(
+            {"band.sisters-of-sigmar", "band.trollheim-sisters-of-sigmar"}.intersection(enemy_tags))
+        or has_tag(defender.global_effects, "mechanic.greenskin-traitor")
+        and bool({"species.orc", "species.goblin", "species.black-orc"}.intersection(
+            attacker.global_effects.tags))
         or has_tag(effect, "skill.righteous-fury") and (
             bool({"species.skaven", "nature.undead", "nature.possessed",
                   "species.beastman", "species.dark-elf"}.intersection(enemy_tags))
@@ -113,6 +186,11 @@ def _hit_reroll(
             {"warband-group.human", "warband-group.human-mercenary", "warband-group.chaos-human"}.intersection(enemy_tags))
         or has_tag(effect, "mechanic.ulric-intense-rivals") and "identity.ulric-rival" in enemy_tags
         or has_tag(effect, "mechanic.hatred-chaotic-warband") and "warband-group.chaotic" in enemy_tags
+        or has_tag(effect, "mechanic.gaoler-hatred") and bool({
+            "warband-group.skaven", "warband-group.beastmen", "warband-group.undead",
+            "band.cult-of-the-possessed", "band.trollheim-cult-of-the-possessed",
+            "band.carnival-of-chaos"}.intersection(enemy_tags))
+        or has_tag(effect, "mechanic.man-hater") and {"species.human", "sex.male"}.issubset(enemy_tags)
         or any(has_tag(effect, tag) and any(f"species.{species}" in enemy_tags for species in targets)
             for tag, targets in (("mechanic.hatred-orcs-goblins", ("orc", "goblin")),
                                  ("mechanic.hatred-skaven", ("skaven",)),
@@ -136,6 +214,8 @@ def _hit_reroll(
             ))
         )
         or hatred
+        or first_round and has_tag(effect, "mechanic.devoted-killer-hatred")
+        and has_tag(effect, "condition.devoted-killer-hatred")
         or kindred
         or charging and phases.has_tag(effect, "skill.infallible")
         or charging and first_round and phases.has_tag(effect, "skill.axe-expert") and any(
@@ -161,13 +241,19 @@ def _hit_reroll(
     )
 
 
+def _parrying_weapons(defender):
+    return (defender.main_weapon, defender.off_hand or EffectSet(),
+        *(weapon for weapon in defender.extra_attacks if has_tag(weapon, 'mutation.carried-weapon')))
+
+
 def _parry_context(
     defender: CompiledFighter, defender_state: FighterState,
     effect: EffectSet, strength: int, hit_roll: int, key: str,
+    *, natural_hit_six: bool | None = None,
 ) -> ParryContext | None:
     if defender_state.parries_remaining <= 0 or defender_state.condition != phases.Condition.STANDING:
         return None
-    native_parry = defender.main_weapon.parry or bool(defender.off_hand and defender.off_hand.parry)
+    native_parry = any(weapon.parry for weapon in _parrying_weapons(defender))
     match_allowed = any(phases.has_tag(defender.global_effects, tag) for tag in (
         "skill.sword-master", "skill.swordmaster", "skill.unbeatable-warrior",
     )) or (
@@ -175,16 +261,22 @@ def _parry_context(
     )
     starblade = any(
         phases.has_tag(weapon, "weapon.starblade")
-        for weapon in (defender.main_weapon, defender.off_hand or EffectSet())
+        for weapon in _parrying_weapons(defender)
     )
     # Miniath grants a parry to any weapon, but only native parrying weapons
     # gain the reroll (Lustria, High Elf Special Skills / Miniath).
     # Hochland Swordmaster changes equality only; it grants no reroll.
     reroll = native_parry and phases.has_tag(defender.global_effects, "skill.miniath")
+    reroll = reroll or (
+        phases.has_tag(defender.global_effects, "skill.chosen-of-the-white-tower")
+        and any(phases.has_tag(candidate, tag)
+                for candidate in (*_parrying_weapons(defender), defender.global_effects)
+                for tag in ("weapon.sword", "defence.buckler"))
+    )
     sword_and_buckler = (
-        any(phases.has_tag(weapon, "weapon.sword") for weapon in (defender.main_weapon, defender.off_hand or EffectSet()))
+        any(phases.has_tag(weapon, "weapon.sword") for weapon in _parrying_weapons(defender))
         and any(phases.has_tag(weapon, "defence.buckler") for weapon in (
-            defender.main_weapon, defender.off_hand or EffectSet(), defender.global_effects,
+            *_parrying_weapons(defender), defender.global_effects,
         ))
     )
     dwarf_axes = all(
@@ -205,8 +297,28 @@ def _parry_context(
         fixed_target=4 if starblade else None,
         reroll=reroll,
         key=f"{key}.parry",
-        can_parry_six=phases.has_tag(defender.global_effects, "rule.blood-dragon-sword-master"),
+        can_parry_six=(phases.has_tag(defender.global_effects, "rule.blood-dragon-sword-master")
+                      or _estalian_parry(defender)),
+        roll_under=defender_state.weapon_skill if _estalian_parry(defender) else None,
+        maximum_roll=hit_roll if _darting_steel_parry(defender) else None,
+        natural_hit_six=natural_hit_six,
     )
+
+
+def _estalian_parry(defender: CompiledFighter) -> bool:
+    return _darting_steel_parry(defender) or (has_tag(defender.global_effects, "mechanic.estalian-technique")
+            and any(has_tag(weapon, "weapon.rapier") for weapon in
+                    (defender.main_weapon, defender.off_hand or EffectSet()))
+            and any(has_tag(weapon, "weapon.main-gauche") for weapon in
+                    (defender.main_weapon, defender.off_hand or EffectSet())))
+
+
+def _darting_steel_parry(defender: CompiledFighter) -> bool:
+    return (has_tag(defender.global_effects, "mechanic.darting-steel")
+            and any(has_tag(weapon, "weapon.sword") for weapon in
+                    (defender.main_weapon, defender.off_hand or EffectSet()))
+            and any(has_tag(weapon, "defence.buckler") for weapon in
+                    (defender.main_weapon, defender.off_hand or EffectSet(), defender.global_effects)))
 
 
 def _injury_context(defender: CompiledFighter, effect: EffectSet, key: str,
@@ -220,7 +332,7 @@ def _injury_context(defender: CompiledFighter, effect: EffectSet, key: str,
         ) + int(
             phases.has_tag(effect, "skill.knife-fighting")
             and any(phases.has_tag(effect, tag) for tag in ("weapon.dagger", "weapon.yambiya"))
-        ),
+        ) - int(has_tag(global_effects, "mechanic.inured-to-pain")),
         critical_bonus=0,
         out_threshold=(4 if phases.has_tag(global_effects, "mechanic.bat-injury-chart")
                        else global_effects.out_of_action_threshold),
@@ -253,13 +365,15 @@ def prepare_hit_context(
     attacker_state: FighterState, defender_state: FighterState,
     weapon: EffectSet, effect: EffectSet, *, first_round: bool = False,
     charging: bool = False, helpless_at_start: bool = False, key: str = "hit",
-    melee_attack: bool = True,
+    melee_attack: bool = True, allow_luck: bool = True,
 ) -> HitContext:
     """The runtime and semantic tests share this contextual projection."""
     ws = attacker_state.weapon_skill + weapon.weapon_skill_bonus
     if first_round and charging:
         ws += effect.charge_ws_bonus
     modifier = effect.hit_modifier + defender.global_effects.incoming_hit_modifier
+    if melee_attack and has_tag(defender.global_effects, "condition.djinns-curse-active"):
+        modifier -= 1
     if melee_attack:
         modifier += int(first_round and charging
             and has_tag(attacker.global_effects, "skill.backstabber")
@@ -318,7 +432,7 @@ def prepare_hit_context(
                        ("mercenary-origin.marienburg", "mercenary-origin.middenheim"))
         modifier -= int(named or (mercenary and not excluded))
     reroll = _hit_reroll(attacker, defender, weapon, effect, first_round, charging, frenzy=attacker_state.frenzy)
-    luck = phases.has_tag(effect, "skill.luck") and "luck" not in attacker_state.resources_spent
+    luck = allow_luck and phases.has_tag(effect, "skill.luck") and "luck" not in attacker_state.resources_spent
     defender_ws = defender_state.weapon_skill
     if melee_attack and any(current.active and has_tag(fighter.global_effects, "mechanic.shallya-tranquil-aura")
             for fighter, current in ((attacker, attacker_state), (defender, defender_state))):
@@ -333,17 +447,27 @@ def prepare_hit_context(
         automatic=effect.automatic_hit or helpless_at_start or defender_state.charm_auto_hit
             or defender_state.condition == phases.Condition.PARALYZED,
         reroll=reroll or luck, key=key, needs_sixes=attacker_state.fear_hit_sixes and melee_attack,
+        fixed_target=2 if melee_attack and has_tag(effect, "mechanic.invincible-swordsman") else None,
     )
 
 
-def _supplied_ward(effects: EffectSet) -> int:
+def _supplied_ward(effects: EffectSet, *, suppress_step_aside: bool = False) -> int:
     """The special save one effect set supplies on its own."""
     ward = effects.ward_save
-    if effects.step_aside:
+    if has_tag(effects, "mechanic.excellent-reflexes"):
+        ward = min(ward, 4 if has_tag(effects, "condition.tomb-robber-dodge-known") else 5)
+    if effects.step_aside and not suppress_step_aside:
         ward = min(ward, 4 if phases.has_tag(effects, "skill.vampire-reflexes") else 5)
-    if effects.step_aside and phases.has_tag(effects, "skill.elven-agility"):
+    if (effects.step_aside and not suppress_step_aside
+            and phases.has_tag(effects, "skill.elven-agility")):
         ward = min(ward, 4)
     return ward
+
+
+def reject_curse_unmodifiable_save(defender: CompiledFighter, incoming: EffectSet, source: str) -> None:
+    """Refuse only the unresolved interaction at an actually applicable save."""
+    if has_tag(incoming, "condition.djinns-curse-active"):
+        raise ValueError(f"Djinn's Curse versus the explicitly unmodifiable {source} save requires a source composition ruling")
 
 
 def prepare_special_save_context(
@@ -359,7 +483,11 @@ def prepare_special_save_context(
         # that only reminds us for mundane attacks keeps that limit.
         allowed = defender.shield_and_skill_effects
         return SpecialSaveContext(
-            _supplied_ward(allowed), allowed.regeneration_save,
+            _supplied_ward(allowed, suppress_step_aside=(
+                has_tag(defender.global_effects, "mechanic.ethereal-hit-save")
+                and not has_tag(incoming, "attack.magical")))
+                + int(has_tag(incoming, "condition.djinns-curse-active")),
+            allowed.regeneration_save + int(has_tag(incoming, "condition.djinns-curse-active")),
             ward_blocked=(
                 allowed.ward_save_mundane_only and phases.has_tag(incoming, "attack.magical")
             ),
@@ -369,7 +497,9 @@ def prepare_special_save_context(
             ),
             key=key,
         )
-    ward = _supplied_ward(defender.global_effects)
+    ward = _supplied_ward(defender.global_effects, suppress_step_aside=(
+        has_tag(defender.global_effects, "mechanic.ethereal-hit-save")
+        and not has_tag(incoming, "attack.magical")))
     ward_blocked = defender.global_effects.ward_save_mundane_only and phases.has_tag(incoming, "attack.magical")
     if melee_attack and defender_state is not None and defender_state.dodge_trick_active:
         ward = 4 if ward_blocked else min(ward, 4)
@@ -389,12 +519,19 @@ def prepare_special_save_context(
             if phases.has_tag(defender.global_effects, tag):
                 ward = threshold if ward_blocked else min(ward, threshold)
                 ward_blocked = False
+    if has_tag(defender.global_effects, "condition.djinns-luck-active"):
+        # Luck improves the ordinary save, but grants only 6+ when the
+        # intrinsic Ethereal save does not apply (notably magical weapons).
+        threshold = 6 if ward_blocked or ward > 6 else 4
+        ward = threshold if ward_blocked else min(ward, threshold)
+        ward_blocked = False
     blocked = (
         defender.global_effects.regeneration_blocked_by_fire and phases.has_tag(incoming, "attack.fire")
         or defender.global_effects.regeneration_blocked_by_blessed and phases.has_tag(incoming, "attack.blessed")
     )
     return SpecialSaveContext(
-        ward, defender.global_effects.regeneration_save,
+        ward + int(has_tag(incoming, "condition.djinns-curse-active")),
+        defender.global_effects.regeneration_save + int(has_tag(incoming, "condition.djinns-curse-active")),
         ward_blocked=ward_blocked,
         regeneration_blocked=blocked, key=key,
     )
@@ -405,7 +542,7 @@ def prepare_wound_context(
     attacker_state: FighterState, defender_state: FighterState,
     weapon: EffectSet, effect: EffectSet, *, hit_roll: int = 4,
     first_round: bool = False, charging: bool = False, key: str = "wound",
-    melee_attack: bool = True,
+    melee_attack: bool = True, allow_luck: bool = True,
 ) -> WoundContext:
     strength, _ = _attack_strength(attacker, defender, attacker_state, weapon, effect, first_round, charging,
         melee_attack=melee_attack)
@@ -416,7 +553,7 @@ def prepare_wound_context(
         or has_tag(weapon, "effect.wraith-touch") and not any(
             has_tag(defender.global_effects, tag) for tag in ("nature.undead", "nature.possessed")))
     luck = (
-        phases.has_tag(effect, "skill.luck")
+        allow_luck and phases.has_tag(effect, "skill.luck")
         and "luck" not in attacker_state.resources_spent
         and not effect.reroll_wounds
     )
@@ -434,6 +571,7 @@ def prepare_wound_context(
         or phases.has_tag(attacker.global_effects, "spiritual_weapons")
         or phases.has_tag(effect, "skill.unarmed-critical-strikes") and phases.has_tag(weapon, "weapon.fist")
     ) else 6
+    critical_threshold = min(critical_threshold, effect.critical_threshold)
     if (phases.has_tag(weapon, "weapon.hellblade")
             and max(2, phases.wound_target(strength, toughness, maximum) - modifier) <= 4):
         critical_threshold = min(critical_threshold, 5)
@@ -450,6 +588,7 @@ def prepare_wound_context(
         critical_threshold=critical_threshold,
         critical_available=attacker_state.critical_available and not phases.has_tag(effect, "effect.no-critical"),
         critical_on_reroll=poison_blocked or not phases.has_tag(effect, "poison.devil-s-toxin"),
+        critical_when_needing_six=has_tag(effect, "mechanic.achilles-heel"),
         failure_still_wounds=failure_still_wounds,
         key=key,
     )
@@ -478,6 +617,14 @@ def prepare_armour_context(
     armour_save = defender.armour_save
     natural_armour_save = defender.natural_armour_save
     natural_armour_worst_save = defender.natural_armour_worst_save
+    if (defender.global_effects.natural_armour_negated_by_fire
+            and has_tag(effect, "attack.fire")):
+        natural_armour_save = natural_armour_worst_save = 7
+        # This natural save also contributed to the worn-armour combination.
+        armour_save += max(0, 7 - defender.natural_armour_save)
+    if (has_tag(defender.global_effects, "mechanic.daemonic-flesh")
+            and has_tag(effect, "attack.blessed")):
+        natural_armour_save = natural_armour_worst_save = 7
     if effect.ignore_armour_except_shield_and_skills:
         # Printed Ladle clause: only shields and skills may save, so the armour
         # the defender wears, its natural armour and every other provenance are
@@ -505,4 +652,7 @@ def prepare_armour_context(
         defender.global_effects.armour_cannot_be_ignored,
         phases.has_tag(effect, "attack.magical"), defender.global_effects.natural_armour_negated_by_magic,
         key=key,
+        flaming_attack=has_tag(effect, "attack.fire"),
+        natural_armour_negated_by_fire=defender.global_effects.natural_armour_negated_by_fire,
+        incoming_save_modifier=int(has_tag(effect, "condition.djinns-curse-active")),
     )

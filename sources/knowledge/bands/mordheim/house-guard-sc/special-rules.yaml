@@ -273,16 +273,15 @@ rules:
     - commander
 - id: adjutant--relay-orders
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.house-guard-sc.adjutant.relay-orders
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.relay-orders
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.relay-orders
   name: Relay Orders
   effect: >-
     As long as the Adjutant is able to use his leader's Leadership, any warrior within 6 inches of

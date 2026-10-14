@@ -238,13 +238,14 @@ rules:
 - id: hound--devoted
   runtime:
     scope: 'YES'
-    implemented: 'NO'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.protectorate-of-sigmar-lotd3.hound.devoted
+    - id: mechanic.devoted
       scope: 'YES'
-      binding: null
-      reason: 'Included individual duel effect, not implemented: Supplied qualified Warrior Priest grants a personal Leadership reroll within 12 inches; canonical provider projection remains pending.'
+      binding:
+        kind: mechanic
+        id: mechanic.devoted
   name: Devoted
   effect: >-
     Trained since pups, these Hounds are devoted beyond what a typical master could expect. A Hound

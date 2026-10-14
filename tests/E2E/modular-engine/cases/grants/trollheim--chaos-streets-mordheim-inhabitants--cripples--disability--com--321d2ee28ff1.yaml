@@ -1,12 +1,15 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/chaos-streets-mordheim-inhabitants/cripples--disability/compiler.disability
 # scaffold_fingerprint: 783caad94f40a5bcf90ab8f837a0e43eb41646f5b33694cb7c74469cd7841f71
-# authoring_status: PARTIAL
-# authoring_progress: two of the three admitted clauses carry authored scenarios derived from the
-# printed rule and the recorded contract; the printed loadout prohibition is recorded as pending in
-# its clause note because nothing reaches it.  The bearer is the printed Cripples profile that prints
-# the rolled disability.  REVIEWED still requires manual semantic review and execution_status stays
-# UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: all three admitted clauses carry authored scenarios derived from the printed
+# rule and the recorded contract.  The printed loadout prohibition of result 2 is authored through the
+# two observables an admitted duel already exposes rather than through a refusal message no gate
+# emits: the extra attack a second one-handed weapon contributes (the strict dice tape is the attack
+# count) and the shield's own +1 armour save, each paired with the same build without the rolled
+# disability as its control.  The bearer of the characteristic tapes is a hand-built fixture and the
+# bearer of the Head Injury tape is the printed Cripples profile.  REVIEWED still requires manual
+# semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -51,14 +54,20 @@
 #   Consumed through the disability resource recorded at initialisation, which makes the fighter take Stupidity tests; the 6-inch Hero exemption has no counterpart in a 1v1 duel and is the reason the flag is rolled per duel rather than per group. Surface reuse candidate: {"family":"mechanic.disability","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare exact supplied/rolled state, trigger, frequency, duration, termination and attack-count contribution. Permanent and conditional Frenzy, +1 Attack and doubling are different. Do not implement group creation, movement or campaign tables merely to supply an individual state.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: no-two-weapons-or-weapon-and-shield (scope: YES)
-# PARTIAL[no-two-weapons-or-weapon-and-shield]: [C] no scenario is authorable for this clause.  Category C: the executor has no consumer for the printed loadout prohibition - the recorded register states the item/armour composition carries none - so the two-weapon and weapon-and-shield build cannot be refused with any message the module emits.  The
-# printed result-2 prohibition (the group may not use two weapons or a weapon and shield) has no
-# consumer in the executor: the recorded register states that only the Weapon Skill penalty is
-# consumed for result 2 and that "the loadout prohibition has no consumer in construction, eligibility
-# or the armour/attack composition, so it is a missing connection rather than a modelled rule".  The
-# missing datum is the construction check that would refuse the forbidden loadout; the duel runner
-# compiles a supplied main/off-hand build directly, so no tape can show the refusal.  The mechanic
-# origin's own case keeps the same clause pending for the same reason.
+# AUTHORED[no-two-weapons-or-weapon-and-shield]: 4 scenarios cover both printed halves of result 2,
+# each refusal paired with the same build without the rolled disability as its control, and neither
+# tape needs a refusal message: the printed prohibition is observed where it changes the duel's own
+# outcome.  Half one, "the models may not use two weapons": the bearer's printed A1 plus a second
+# one-handed weapon is two attacks, so the tape declares exactly one hit die and one damage
+# expectation, which the strict dice tape accepts only while the pair contributes no attack, and its
+# control - the identical mace-and-axe build without the roll - declares both attacks and lands both.
+# Half two, "or a weapon and shield": the shield's printed contribution is the +1 armour save it adds
+# to the light armour the bearer wears (defence.shield, saved on five), so the same declared armour die
+# of five saves in the control and, with the prohibition, misses the printed six and the wound reaches
+# the injury chart.  The missing connection the pair detects is the composition check the register
+# names ("the loadout prohibition has no consumer in construction, eligibility or the armour/attack
+# composition"); what is authorable about it is the outcome, not the message.  The mechanic origin's
+# own case (mechanic.disability) records the same clause and can adopt these tapes verbatim.
 # origin_id:
 #   rule/trollheim/chaos-streets-mordheim-inhabitants/cripples--disability/compiler.disability
 # analysis_status:
@@ -211,4 +220,114 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Result 2 (Parkinson's), loadout half one: the pair must contribute no extra attack.  The bearer's
+# printed A1 and the second one-handed weapon are two attacks, so one declared hit die and one damage
+# expectation are consistent only while the prohibition removes the pair's attack; the strict dice
+# tape is the attack count, and today's two attacks leave the second hit die undeclared, which fails
+# the case.  The bearer's Weapon Skill is five so that the roll's own -1 leaves the declared four a hit
+# in both tapes, which keeps the attack count the only difference between this tape and its control.
+- audit_id: rule/trollheim/chaos-streets-mordheim-inhabitants/cripples--disability/compiler.disability
+  id: the-forbidden-second-weapon-contributes-no-attack
+  covers: [no-two-weapons-or-weapon-and-shield]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.axe
+      skill_ids: [mechanic.disability]
+      characteristics: {weapon_skill: 5, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: first.disability, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control for the same build: with no disability roll the same pair resolves both attacks, which
+# the two declared hit dice and the two damages show.
+- audit_id: rule/trollheim/chaos-streets-mordheim-inhabitants/cripples--disability/compiler.disability
+  id: without-the-prohibition-the-second-weapon-adds-its-attack
+  covers: [no-two-weapons-or-weapon-and-shield]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      off_hand_id: weapon.axe
+      characteristics: {weapon_skill: 5, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.main-weapon-majority, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Result 2 (Parkinson's), loadout half two: the shield must contribute no armour save.  The bearer
+# wears light armour in both tapes and the declared armour die of five is the boundary: it is the save
+# the canonical shield case reads with the worn light armour, and without the shield's point it misses
+# the printed six, so the wound reaches the injury chart instead of being saved.
+- audit_id: rule/trollheim/chaos-streets-mordheim-inhabitants/cripples--disability/compiler.disability
+  id: the-forbidden-shield-contributes-no-armour-save
+  covers: [no-two-weapons-or-weapon-and-shield]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      off_hand_id: defence.shield
+      skill_ids: [mechanic.disability]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: second.disability, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control for the shield half: the same armour die of five saves while the disability has not been
+# rolled, which is the printed +1 the shield adds to the worn light armour.
+- audit_id: rule/trollheim/chaos-streets-mordheim-inhabitants/cripples--disability/compiler.disability
+  id: without-the-prohibition-the-shield-saves-on-the-same-die
+  covers: [no-two-weapons-or-weapon-and-shield]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.light-armour
+      off_hand_id: defence.shield
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

@@ -94,13 +94,20 @@
 #   one is the printed Madness, which imposes Stupidity for that turn (the test is taken against his
 #   printed Leadership 6 with two dice and fails on 6,6), so he strikes not at all that phase.  The
 #   pending face is the printed "If Transformed, they revert to human form" and it is not authorable
-#   here.  The executor skips the form die while the bearer is transformed and engaged
-#   (rounds.py resolve_round), so reaching the reversion needs a transformed bearer in a disengaged
-#   duel; the corpus vocabulary supplies only FighterState fields through `initial_state` and never
-#   DuelState.engaged, and the only producer of disengagement in a tape is a Fear-cancelled charge,
-#   which cannot be combined with a form the same bearer already has.  The accepted end-to-end test
-#   covers that face with its own `engaged=False` fixture, so the behaviour is evidenced; what is
-#   missing is a corpus representation for it, not an expectation.
+#   here, and the blocker is an input the corpus cannot state, checked against the two routes that
+#   could state it.  (a) A tape cannot begin in the form: no authored tape in this corpus seeds
+#   `transformed` through `initial_state` - that FighterState field appears only inside expectations
+#   (this file's own `state.first.transformed` snapshots) - so the reversion has to be reached from a
+#   roll taken in play.  (b) A tape cannot reach the reversion's precondition in play either: the
+#   executor skips the form die while the bearer is transformed and engaged (rounds.py resolve_round),
+#   so the bearer must be disengaged at its own turn, and the only in-tape producer of disengagement
+#   (a Fear-cancelled charge) ends the duel there - the corpus's cancelled-charge tapes all finish
+#   `rounds_executed: 1, termination_reason: disengaged`, so no later own turn with a transformed,
+#   disengaged bearer exists.  The behaviour itself is evidenced by the accepted end-to-end test of
+#   this family, which supplies its own `engaged=False` fixture; what is missing is a corpus
+#   representation for that input (class C), not an expectation, and the implementation defect a tape
+#   would then detect is the reversion branch (and the engagement-aware form-die guard) in
+#   resolve_round.
 # origin_id:
 #   rule/mordheim/masters-of-horror-sylv/the-bitten--transform/unimplemented.masters-of-horror-sylv.the-bitten.transform
 # analysis_status:

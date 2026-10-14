@@ -262,15 +262,15 @@ rules:
     profile_ids:
     - wild-lunatics
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.lustria-pygmies.wild-lunatics.lunatics
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.lunatics
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.lunatics
 - id: band--jungle-natives
   name: Jungle Natives
   effect: Pygmies suffer no movement penalties for moving through woods or any kind of vegetation.

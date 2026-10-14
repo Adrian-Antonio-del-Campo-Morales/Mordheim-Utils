@@ -1430,37 +1430,91 @@ profiles:
       es: Marcas de Morr
     runtime:
       grant: selectable
-      scope: 'YES'
+      scope: 'NO'
       implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.marks-of-morr.choice
+        scope: 'NO'
+        binding: null
+        reason: Select Augur or Haunted Mien as distinct supplied choices; advance generation and new
+          prayers are excluded.
+    kind: warband_skill
+  - id: hireling.hired-sword.priest-of-morr-miracle-workers.skill.augur
+    kind: special-skill-option
+    name: Augur
+    name_i18n:
+      es: Augur
+    effect: The Priest becomes Immune to Psychology, may reroll any one dice roll he makes during a
+      battle, and suffers -1 Strength permanently.
+    effect_i18n:
+      es: El Sacerdote es Inmune a la Psicología, puede repetir una tirada que realice por batalla
+        y sufre -1 Fuerza permanentemente.
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: selectable
       effects:
       - id: mechanic.psychology-immunity
         scope: 'YES'
         binding:
           kind: mechanic
           id: mechanic.psychology-immunity
-      - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.marks-of-morr.augur-one-roll-reroll.pending
+      - id: mechanic.augur-one-roll-reroll
         scope: 'YES'
-        binding: null
-        reason: 'Retained individual clause: The selected Augur may spend one resource to reroll one roll he makes during the duel, keeping the rerolled result. The resource is shared across eligible roll points; it never rerolls a reroll.'
-      - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.marks-of-morr.augur-strength-reduction.pending
+        binding:
+          kind: mechanic
+          id: mechanic.augur-one-roll-reroll
+      - id: profile.characteristics
         scope: 'YES'
-        binding: null
-        reason: 'Retained individual clause: Compile a selected Augur with Strength one lower before the duel. Observable: all its melee Strength calculations start from the reduced characteristic; no repeated per-turn subtraction.'
-      - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.marks-of-morr.haunted-mien-strictures.pending
+        binding:
+          kind: profile
+          id: profile.characteristics
+          parameters:
+            bonuses:
+              strength: -1
+  - id: hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien
+    kind: special-skill-option
+    name: Haunted Mien
+    name_i18n:
+      es: Rostro Embrujado
+    effect: The Black Guardsman ignores Priest strictures and may choose Combat and Strength skills;
+      new prayer generation remains excluded.
+    effect_i18n:
+      es: El Guardia Negro ignora los preceptos sacerdotales y puede elegir habilidades de Combate
+        y Fuerza; obtener nuevas plegarias queda excluido.
+    runtime:
+      grant: selectable
+      scope: 'YES'
+      implemented: 'YES'
+      effects:
+      - id: mechanic.haunted-mien
         scope: 'YES'
-        binding: null
-        reason: 'Retained individual clause: A Priest with the supplied Haunted Mien choice no longer receives the Priest strictures restricting equipment. Observable: a choice forbidden solely by those strictures is allowed for Haunted Mien but remains refused for an ordinary Priest or Augur, subject to all other legality rules.'
-      - id: hireling.hired-sword.priest-of-morr-miracle-workers.rule.marks-of-morr.haunted-mien-skill-access.pending
+        binding:
+          kind: mechanic
+          id: mechanic.haunted-mien
+      - id: haunted-mien.combat-access
         scope: 'YES'
-        binding: null
-        reason: 'Retained individual clause: The supplied Haunted Mien build has Combat and Strength skill access. Observable: the shared decision offers and validates a legal skill from either category for that build, preserving other choice limits.'
-    kind: warband_skill
+        binding:
+          kind: profile
+          id: profile.skill-access
+          parameters:
+            category: combat
+      - id: haunted-mien.strength-access
+        scope: 'YES'
+        binding:
+          kind: profile
+          id: profile.skill-access
+          parameters:
+            category: strength
   source_refs:
   - manual: liber-malefic
     printed_page: 5
     section: Priests for Every Occasion / Priest of Morr
     url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
   experience: 12
+  special_skill_rule_ids:
+  - hireling.hired-sword.priest-of-morr-miracle-workers.skill.augur
+  - hireling.hired-sword.priest-of-morr-miracle-workers.skill.haunted-mien
 - id: hireling.hired-sword.war-priestess-of-myrmidia
   kind: hired-sword
   grade: 2b
@@ -1546,14 +1600,15 @@ profiles:
     name_i18n:
       es: Marcas de Myrmidia
     runtime:
+      scope: 'YES'
+      implemented: 'YES'
       grant: selectable
-      scope: LATER
-      implemented: 'NO'
       effects:
-      - id: hireling.hired-sword.war-priestess-of-myrmidia.rule.marks-of-myrmidia.pending-duel
-        scope: LATER
-        binding: null
-        reason: Oracle remains pending for ownership-safe once-per-battle arbitrary-roll rerolls; Eagle Friend is a separately selectable implemented skill.
+      - id: mechanic.oracle
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.oracle
   - id: hireling.hired-sword.war-priestess-of-myrmidia.skill.eagle-friend
     kind: special-skill-option
     name: Eagle Friend
@@ -1705,14 +1760,20 @@ profiles:
     name_i18n:
       es: Marcas de Ranald
     runtime:
+      scope: 'YES'
+      implemented: 'YES'
       grant: selectable
-      scope: LATER
-      implemented: 'NO'
       effects:
-      - id: hireling.hired-sword.trickster-priest-of-ranald.rule.marks-of-ranald.pending-duel
-        scope: LATER
-        binding: null
-        reason: The remaining individual source clause or its canonical item/starting-skill dependency is not yet implemented; retain the existing T13 source question and owning lot.
+      - id: mechanic.ranalds-luck
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.ranalds-luck
+      - id: mechanic.marks-of-ranald
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.marks-of-ranald
   source_refs:
   - manual: liber-malefic
     printed_page: 8
@@ -2396,20 +2457,78 @@ profiles:
     name_i18n:
       es: Marcas de Solkan (Variante Sacerdote de Guerra)
     runtime:
-      grant: selectable
-      scope: LATER
+      scope: 'NO'
       implemented: 'NO'
+      grant: none
       effects:
-      - id: hireling.hired-sword.priest-of-verena.rule.marks-of-solkan.pending-duel
-        scope: LATER
+      - id: solkan-marks-source-table
+        scope: 'NO'
+        reason: The individual chosen marks are separate selectable children; acquisition by a double
+          advancement and leaving-combat producer are excluded.
         binding: null
-        reason: The remaining individual source clause or its canonical item/starting-skill dependency is not yet implemented; retain the existing T13 source question and owning lot.
+  - id: hireling.hired-sword.priest-of-verena.skill.witch-finder
+    name: Witch-finder
+    name_i18n:
+      es: Witch-finder
+    effect: The chosen War-Priest must charge an eligible follower of Chaos, warlock, necromancer,
+      sorcerer or warp-tainted character; only the supplied actual charge is resolved, without movement
+      or visibility production.
+    effect_i18n:
+      es: Witch-finder
+    kind: warband_skill
+    eligibility:
+    - hireling.hired-sword.priest-of-verena
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: selectable
+      effects:
+      - id: mechanic.solkan-witch-finder
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.solkan-witch-finder
+    source_refs:
+    - manual: Mutiny in Marienburg
+      printed_page: 224
+      section: Clerics of Law / Marks of Solkan
+      url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20in%20Marienburg.pdf
+  - id: hireling.hired-sword.priest-of-verena.skill.inquisitor
+    name: Inquisitor
+    name_i18n:
+      es: Inquisitor
+    effect: At the beginning of each new round of combat roll a D6 for an opponent who is neither Undead
+      nor a follower of Chaos. On a 6 apply a D66 Random Mutation as a brand. The Inquisitor is immune
+      to Psychology.
+    effect_i18n:
+      es: Inquisitor
+    kind: warband_skill
+    eligibility:
+    - hireling.hired-sword.priest-of-verena
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: selectable
+      effects:
+      - id: mechanic.solkan-inquisitor
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.solkan-inquisitor
+    source_refs:
+    - manual: Mutiny in Marienburg
+      printed_page: 224
+      section: Clerics of Law / Marks of Solkan
+      url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20in%20Marienburg.pdf
   source_refs:
   - manual: liber-malefic
     printed_page: 16
     section: Priests for Every Occasion / Priest of Verena
     url: https://www.scribd.com/document/241727651/Miracle-workers-in-Mordheim
   experience: 12
+  special_skill_rule_ids:
+  - hireling.hired-sword.priest-of-verena.skill.witch-finder
+  - hireling.hired-sword.priest-of-verena.skill.inquisitor
 - id: hireling.hired-sword.crimashin
   kind: hired-sword
   grade: 2b

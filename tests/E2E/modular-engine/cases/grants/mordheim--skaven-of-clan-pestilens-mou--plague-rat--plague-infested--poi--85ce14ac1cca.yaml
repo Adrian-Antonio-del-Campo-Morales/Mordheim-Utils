@@ -6,9 +6,13 @@
 # rule and the recorded contract: the printed natural six wounds automatically with the optional wound
 # die declined, the same die of five leaves a normal wound, and the identical six without the band row
 # still needs the ordinary wound roll.  The register states this band row reuses the shared Black Lotus
-# identity exactly, so the fixtures carry the operator through the band row the audit id names and the
-# tape is the shared operator's own.  REVIEWED still requires manual semantic review and
-# execution_status stays UNEXECUTED.
+# identity exactly, so the bearer is the printed skaven-of-clan-pestilens-mou plague-rat profile and the
+# row reaches it by its own automatic route (plague-rat--plague-infested, applies_to.profile_ids
+# [plague-rat], grant: profile): no selection is declared, because the declared-selection channel
+# refuses a profile grant ("special rule is not selectable"), and this profile's only implemented
+# automatic rule is the row itself, so the tapes hold exactly the shared operator's own dice.  The
+# creature prints no equipment list and fights with its natural attacks.  REVIEWED still requires
+# manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -23,8 +27,10 @@
 # hit already wounds, so the declared optional die decides whether the critical is taken - declined it
 # leaves the automatic wound with no wound die at all, and taken on a five it leaves a normal wound -
 # and the same six without the band row neither wounds automatically nor reaches the critical without
-# the declared wound face.  The attacker is a hand-built fixture whose physical characteristics are
-# fixture facts and the defender contributes single scripted misses.  REVIEWED still requires manual
+# the declared wound face.  The attacker is the printed plague-rat profile (its own automatic row
+# supplies the coating) whose declared physical characteristics are fixture facts, and the defender
+# contributes single scripted misses.  The control keeps the same physical fixture without the profile,
+# because a profile grant cannot be withheld from its own recipient.  REVIEWED still requires manual
 # semantic review.
 # origin_id:
 #   rule/mordheim/skaven-of-clan-pestilens-mou/plague-rat--plague-infested/poison.black-lotus
@@ -65,8 +71,10 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
-      special_rule_ids: [plague-rat--plague-infested]
+      collection: mordheim
+      band_id: skaven-of-clan-pestilens-mou
+      profile_id: plague-rat
+      main_weapon_id: weapon.natural-attacks
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -87,8 +95,10 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
-      special_rule_ids: [plague-rat--plague-infested]
+      collection: mordheim
+      band_id: skaven-of-clan-pestilens-mou
+      profile_id: plague-rat
+      main_weapon_id: weapon.natural-attacks
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace

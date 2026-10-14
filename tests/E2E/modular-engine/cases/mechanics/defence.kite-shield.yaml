@@ -1,14 +1,18 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/defence.kite-shield
 # scaffold_fingerprint: 2b6f9926b094521d148e6deb33f39778fa8d43e8dc1efa9fca421f591ec4e38c
-# authoring_status: PARTIAL
-# authoring_progress: the admitted clause is PARTIAL. Three scenarios evidence the
-#   printed +2 on foot and +1 while mounted; the printed 1+ floor has no
-#   observation in the runner vocabulary, and the clause note now records why the
-#   executor's own floor (max(2, target)) makes a target of 1 and a target of 0
-#   outcome-identical, instead of claiming that both save on every die face.
-#   REVIEWED still requires manual semantic review and execution_status stays
-#   UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause is AUTHORED after this intervention. Three
+#   scenarios evidence the printed +2 on foot and +1 while mounted; the printed 1+ floor
+#   is now observed at the quantity the rule demands, through the composition channel
+#   that E01 delivered (expect_fighters): three admitted printed sources (Att'la's
+#   4+ plate, Cathayan quilted silk +1 and the kite shield's own +2 on foot) compose
+#   exactly the printed 1+ floor and the compiled fighter carries it as armour_save 1;
+#   the same bearer without the shield falls two points to a compiled 3.  The
+#   executor's own die floor max(2, target) stays recorded, not chosen: both authored
+#   armour faces (2 saves on the composed 1, 2 fails on the composed 3) hold under
+#   either reading. REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -19,17 +23,20 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: plus-two-on-foot-plus-one-mounted (scope: YES)
-# PARTIAL[plus-two-on-foot-plus-one-mounted]: the foot bonus and the mounted
+# AUTHORED[plus-two-on-foot-plus-one-mounted]: the foot bonus and the mounted
 #   reduction are authored as three scenarios (5 holds on foot, 4 fails on foot,
 #   5 fails while mounted). The third printed part, "the final save cannot
-#   improve beyond 1+", is NOT represented, and the reason recorded earlier is
-#   corrected here: the executor does not let a composed target of 1 save on
-#   every die face - phases.resolve_armour compares the die against
-#   max(2, target), so a target of 1 and a target of 0 are both saved on 2+ and
-#   both fail on a natural 1, which makes the clamp outcome-identical rather than
-#   universally saved. The missing datum is unchanged: the composed save value
-#   (or the armour target) of the defender, which the round snapshot does not
-#   carry, so no tape can separate 1 from 0 for the clamp.
+#   improve beyond 1+", is now observed at the printed quantity: three admitted
+#   printed sources (Att'la's plate mail 4+, Cathayan quilted silk's printed +1
+#   that combines with any body armour, and the kite shield's own +2 on foot)
+#   compose exactly the printed floor, and the composition channel delivered with
+#   E01 (expect_fighters) asserts the compiled fighter's armour_save == 1. The
+#   same bearer without the shield composes 3 and is authored as the two-point
+#   contrast, so the two compiled values differ by exactly the printed +2 on
+#   foot. The earlier worry is kept but not chosen: the executor's own die floor
+#   max(2, target) makes a target of 1 and a target of 0 outcome-identical on the
+#   die, so separating an interior 0 would need a fourth admitted printed source
+#   and would decide a question the printed floor does not itself reach.
 # origin_id:
 #   mechanic/defence.kite-shield
 # analysis_status:
@@ -172,3 +179,64 @@
   expect_rounds:
     0: {attacks.0.saved: false, attacks.0.damage: 1, state.second.wounds: 1}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed floor at its printed quantity: Att'la's plate mail (a printed 4+
+# gromril suit), Cathayan quilted silk (printed +1, combines with any body armour)
+# and the kite shield's printed +2 on foot compose exactly 1+, and the compiler
+# carries that as the compiled armour_save 1.  The E01 composition channel
+# (expect_fighters) observes the compiled quantity directly; the scripted armour
+# die 2 only shows that the save still resolves - it holds under the compiled 1
+# and under the executor's own max(2, target) floor alike.
+- audit_id: mechanic/defence.kite-shield
+  id: the-composed-floor-is-carried-as-the-compiled-armour-save
+  covers: [plus-two-on-foot-plus-one-mounted]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *attacker-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.attlas-plate-mail
+      defence_ids: [armour.cathayan-quilted-silk]
+      off_hand_id: defence.kite-shield
+      characteristics: *defender-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, attacks.0.damage: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_fighters:
+    second.armour_save: 1
+# The same bearer without the shield: the identical die 2 now fails, because the
+# compiled quantity without the kite shield is 3 (the printed 4+ suit and the
+# silk's printed +1).  The pair's two compiled values differ by exactly the
+# printed +2 on foot.
+- audit_id: mechanic/defence.kite-shield
+  id: without-the-shield-the-compiled-quantity-falls-two-points-worse
+  covers: [plus-two-on-foot-plus-one-mounted]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *attacker-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.attlas-plate-mail
+      defence_ids: [armour.cathayan-quilted-silk]
+      characteristics: *defender-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: false, attacks.0.damage: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_fighters:
+    second.armour_save: 3

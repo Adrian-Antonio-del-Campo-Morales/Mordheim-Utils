@@ -1,8 +1,8 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/house-guard-sc/adjutant--relay-orders/unimplemented.house-guard-sc.adjutant.relay-orders
 # scaffold_fingerprint: 00bb1bfe9be698d66885395fbbd11c81ed40183513bb746cf85779b77c873ed2
-# authoring_status: PARTIAL
-# authoring_progress: no scenario is authorable from this file's recorded evidence.  The clause is a parameterised variant of the leader-radius operator whose declared condition needs TWO supplied providers at once - the leader whose Leadership is borrowed and the Adjutant whose six-inch radius relays it - while every accepted case in this family supplies exactly one nearby provider (the wizened-halfling and leader-six cases).  A tape written on one provider would assert a relay it cannot distinguish from the direct borrow.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted relay-orders clause carries 5 authored scenarios derived from the printed rule and the printed Adjutant, Commander and Guards profiles; the two-hop relay, its "as long as the Adjutant is able to use his leader's Leadership" precondition, the beyond-six negative and the printed twelve-inch Battle Tongue widening are each declared through supplied same-side nearby participants plus distance rows, so no admitted clause of this origin is left pending.  The earlier blocker is withdrawn: duel_context needs no new shape, because nearby already accepts several supplied participants with their distances, and the relay is distinguished from a direct leader radius by those declared distances rather than by the engine's current single hop.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -13,7 +13,7 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: relay-orders (scope: YES)
-# PARTIAL[relay-orders]: [B] pending an accepted duel-context shape for a relayed borrow - a supplied leader plus a supplied Adjutant within the printed six inches, with the recipient standing at the distance the relay (not the leader) covers.  The printed Battle Tongue upgrade to twelve inches is a second supplied distance on the same variant and needs the same shape; until it exists, asserting the borrow would not distinguish the relay from a direct leader radius.
+# AUTHORED[relay-orders]: 5 scenarios carry the printed two-hop relay onto the real route.  The recipient is the printed `guards` profile (Leadership 7); the supplied providers are the printed `commander` (its own rule commander--leader binds mechanic.leader-six, Leadership 8) and the printed `adjutant` (its own rule adjutant--relay-orders binds mechanic.relay-orders, Leadership 6), declared as same-side nearby participants with their own distance rows.  What separates the relay from a direct leader radius is those distances: the recipient stands 10 inches from the Commander - outside the six inches of the Commander's own Leader radius - and 4 inches from the supplied Adjutant, inside the printed six inches of the relay.  The visible consequence is the recipient's own Leadership test, a supplied stupidity test whose two declared dice are 4 and 4: the total of 8 passes with the borrowed Leadership 8 and fails with the recipient's own 7, so the anchor tape charges, passes and lands its attack while the identical total cancels the charge when (b) no Adjutant is supplied and the Commander alone sits beyond his radius, when (c) the supplied Adjutant stands 8 inches from the Commander, so the Adjutant cannot use his leader's Leadership and the relay offers nothing, and when (d) the recipient stands 10 inches from the supplied Adjutant, beyond the unwidened six.  Scenario (e) is the printed Battle Tongue upgrade: the supplied Adjutant carries the canonical academic skill `skill.battle-tongue` (catalog/skills/general.yaml, which the profile's own academic skill access admits) and the same recipient at 10 inches then passes with the leader's value.  Both printed halves are therefore represented.  The register's note records that the consumer performed only a single hop; the two-hop branch and the skill-widened radius are the wiring these tapes detect, and the Battle Tongue row itself is still scope NO / unimplemented in the catalogue, which is the second defect the widened tape detects.  The Adjutant's own value is never the tested one, which the distance rows keep visible.
 # origin_id:
 #   rule/mordheim/house-guard-sc/adjutant--relay-orders/unimplemented.house-guard-sc.adjutant.relay-orders
 # analysis_status:
@@ -41,4 +41,176 @@
 # Register notes (context only, not behavioral authority):
 #   Two-hop Leadership relay; the consumer only does a single hop, so the relay needs a new branch.
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Derived from the printed rule, the printed Adjutant / Commander / Guards profiles and the band's own rule
+# rows; no engine output was consulted.  The borrow is supplied as the fixture condition the rule speaks about,
+# and both providers are admitted nearby participants, never simulated.
+
+- audit_id: rule/mordheim/house-guard-sc/adjutant--relay-orders/unimplemented.house-guard-sc.adjutant.relay-orders
+  id: the-supplied-adjutant-relays-the-commanders-leadership
+  covers: [relay-orders]
+  fighters:
+    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, trait_overrides: {stupidity: true}}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, commander, 10], [first, adjutant, 4], [commander, adjutant, 5]]
+    nearby:
+      - participant_id: commander
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: commander}
+      - participant_id: adjutant
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: adjutant}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same fixture with no Adjutant supplied: the Commander alone is 10 inches away, outside his own six-inch
+# Leader radius, so nothing is borrowed and the identical total fails against the recipient's own Leadership.
+- audit_id: rule/mordheim/house-guard-sc/adjutant--relay-orders/unimplemented.house-guard-sc.adjutant.relay-orders
+  id: without-the-adjutant-the-commanders-own-radius-does-not-reach
+  covers: [relay-orders]
+  fighters:
+    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, trait_overrides: {stupidity: true}}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, commander, 10]]
+    nearby:
+      - participant_id: commander
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: commander}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The printed precondition: an Adjutant who cannot use his leader's Leadership relays nothing, so the recipient
+# four inches from him still tests with its own value even though the Commander is supplied.
+- audit_id: rule/mordheim/house-guard-sc/adjutant--relay-orders/unimplemented.house-guard-sc.adjutant.relay-orders
+  id: an-adjutant-beyond-his-leaders-own-radius-relays-nothing
+  covers: [relay-orders]
+  fighters:
+    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, trait_overrides: {stupidity: true}}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, commander, 10], [first, adjutant, 4], [commander, adjutant, 8]]
+    nearby:
+      - participant_id: commander
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: commander}
+      - participant_id: adjutant
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: adjutant}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The unwidened radius: a recipient ten inches from the supplied Adjutant is outside the printed six, so the same
+# supplied pair lends nothing and the declared total fails against the recipient's own Leadership.
+- audit_id: rule/mordheim/house-guard-sc/adjutant--relay-orders/unimplemented.house-guard-sc.adjutant.relay-orders
+  id: beyond-six-inches-the-unwidened-relay-does-not-reach
+  covers: [relay-orders]
+  fighters:
+    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, trait_overrides: {stupidity: true}}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, commander, 12], [first, adjutant, 10], [commander, adjutant, 5]]
+    nearby:
+      - participant_id: commander
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: commander}
+      - participant_id: adjutant
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: adjutant}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+  expect_rounds:
+    0: {attacks: [], state.first.stupidity_failed: true, state.first_charged: false, state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: disengaged}
+
+# The printed Battle Tongue upgrade: the same distances as the unwidened negative, but the supplied Adjutant
+# carries the canonical academic skill, whose printed effect increases the range of the Leader ability by six
+# inches - for this relay that is the printed twelve - so the recipient at ten inches uses the leader's value.
+- audit_id: rule/mordheim/house-guard-sc/adjutant--relay-orders/unimplemented.house-guard-sc.adjutant.relay-orders
+  id: battle-tongue-widens-the-relay-to-twelve-inches
+  covers: [relay-orders]
+  fighters:
+    first: {collection: mordheim, band_id: house-guard-sc, profile_id: guards, trait_overrides: {stupidity: true}}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context:
+    first_id: first
+    second_id: second
+    charging: [first]
+    active_participant: first
+    distances: [[first, commander, 12], [first, adjutant, 10], [commander, adjutant, 5]]
+    nearby:
+      - participant_id: commander
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: commander}
+      - participant_id: adjutant
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: house-guard-sc, profile_id: adjutant, skill_ids: [skill.battle-tongue]}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.stupidity.0, value: 4}
+    - {key: round.0.first.stupidity.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.first.stupidity_failed: false, attacks.0.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

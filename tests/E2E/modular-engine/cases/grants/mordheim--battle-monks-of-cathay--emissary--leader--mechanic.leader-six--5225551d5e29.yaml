@@ -3,8 +3,12 @@
 # scaffold_fingerprint: 949b7b8f8293ed9335614093b5c4dff49a85d2c6855d3e1db62c99945938e1ac
 # authoring_status: AUTHORED
 # authoring_progress: the admitted leader-six clause carries 5 authored scenarios for the
-#   printed supplied-leader contract. REVIEWED still requires manual semantic review and
-#   execution_status stays UNEXECUTED; no behavioral result is claimed.
+#   printed supplied-leader contract.  The borrower is the band's printed `soldiers`
+#   profile (Leadership 7) and not its `raging-peasants` profile: that profile carries its
+#   own printed denial of the leader rule (raging-peasants--mob, no-leader-benefit), which
+#   the mob scaffold of this same band asserts, so it cannot be the recipient of a leader
+#   borrow.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED; no behavioral result is claimed.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -51,39 +55,17 @@
 
 # --- Authored scenarios ---
 # The supplied leader is a nearby participant of the borrower's own side and band; the
-# borrower is the band's printed raging-peasants profile (Leadership 6) and the leader
-# is the printed emissary profile (Leadership 8).
+# leader is the printed `emissary` profile (Leadership 8) and its printed borrow radius is
+# 6 inches.  The borrower is the band's printed `soldiers` profile (Leadership 7): the
+# band's `raging-peasants` profile carries its own printed denial of the leader rule
+# (raging-peasants--mob, no-leader-benefit, asserted in the mob scaffold of this band), so
+# the recipient has to be a warrior that the leader rule reaches.
 #
-# The charged borrower fails against its own Leadership and passes with the
-# supplied leader's value, so the charge it received leaves it unclamped.
-# The supplied leader is a nearby participant of the borrower's own side and band; the
-# borrower is the band's printed raging-peasants profile (Leadership 6) and the leader
-# is the printed emissary profile (Leadership 8), whose printed borrow radius is
-# 6 inches.
-#
-# The charged borrower fails against its own Leadership and passes with the
-# supplied leader's value, so the charge it received leaves it unclamped.
-# The supplied leader is a nearby participant of the borrower's own side and band; the
-# borrower is the band's printed raging-peasants profile (Leadership 6) and the leader
-# is the printed emissary profile (Leadership 8), whose printed borrow radius is
-# 6 inches.
-#
-# The charged borrower fails against its own Leadership and passes with the
-# supplied leader's value, so the charge it received leaves it unclamped.
-# The supplied leader is a nearby participant of the borrower's own side and band; the
-# borrower is the band's printed raging-peasants profile (Leadership 6) and the leader
-# is the printed emissary profile (Leadership 8), whose printed borrow radius is
-# 6 inches.
-#
-# The charged borrower fails against its own Leadership and passes with the
-# supplied leader's value, so the charge it received leaves it unclamped.
-# The supplied leader is a nearby participant of the borrower's own side and band; the
-# borrower is the band's printed raging-peasants profile (Leadership 6) and the leader
-# is the printed emissary profile (Leadership 8), whose printed borrow radius is
-# 6 inches.
-#
-# The charged borrower fails against its own Leadership and passes with the
-# supplied leader's value, so the charge it received leaves it unclamped.
+# What each tape discriminates is the total the declared dice produce: 4 + 4 = 8 passes
+# against the supplied leader's 8 and fails against the borrower's own 7, so a tape's
+# expectation below follows from which value the test used.  The Fear test of the charge
+# the borrower receives is that Leadership test, and its printed consequence for a failure
+# is explicit in state.second.fear_hit_sixes.
 - audit_id: rule/mordheim/battle-monks-of-cathay/emissary--leader/mechanic.leader-six
   id: a-supplied-leader-at-six-inches-lends-his-leadership
   covers: [leader-six]
@@ -92,7 +74,7 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: raging-peasants}
+    second: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: soldiers}
   duel_context:
     charging: [first]
     active_participant: first
@@ -110,7 +92,7 @@
     - {key: round.0.second.fear.charged.leader.leader, value: true}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.0, value: 4}
     - {key: round.0.second.fear.charged.1, value: 4}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
@@ -118,13 +100,8 @@
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
-# The supplied leader is a nearby participant of the borrower's own side and band; the
-# borrower is the band's printed raging-peasants profile (Leadership 6) and the leader
-# is the printed emissary profile (Leadership 8), whose printed borrow radius is
-# 6 inches.
-#
-# The use is optional: the same dice are tested against the borrower's own
-# Leadership when it declines, so the received charge clamps its hits.
+# The use is optional: the same dice are tested against the borrower's own Leadership 7
+# when it declines, so the received charge clamps its hits.
 - audit_id: rule/mordheim/battle-monks-of-cathay/emissary--leader/mechanic.leader-six
   id: declining-the-supplied-leader-keeps-the-borrowers-own-leadership
   covers: [leader-six]
@@ -133,7 +110,7 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: raging-peasants}
+    second: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: soldiers}
   duel_context:
     charging: [first]
     active_participant: first
@@ -151,7 +128,7 @@
     - {key: round.0.second.fear.charged.leader.leader, value: false}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.0, value: 4}
     - {key: round.0.second.fear.charged.1, value: 4}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
@@ -159,13 +136,8 @@
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
-# The supplied leader is a nearby participant of the borrower's own side and band; the
-# borrower is the band's printed raging-peasants profile (Leadership 6) and the leader
-# is the printed emissary profile (Leadership 8), whose printed borrow radius is
-# 6 inches.
-#
-# Past the printed radius no use is offered at all, which the strict
-# decision tape itself proves.
+# Past the printed radius no use is offered at all, which the strict decision tape itself
+# proves: the leader stands at 7 inches, one inch beyond the printed 6.
 - audit_id: rule/mordheim/battle-monks-of-cathay/emissary--leader/mechanic.leader-six
   id: a-leader-beyond-the-printed-radius-supplies-nothing
   covers: [leader-six]
@@ -174,7 +146,7 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: raging-peasants}
+    second: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: soldiers}
   duel_context:
     charging: [first]
     active_participant: first
@@ -190,7 +162,7 @@
       - [second, leader, 7.0]
   maximum_rounds: 1
   rolls:
-    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.0, value: 4}
     - {key: round.0.second.fear.charged.1, value: 4}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
@@ -198,13 +170,7 @@
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
-# The supplied leader is a nearby participant of the borrower's own side and band; the
-# borrower is the band's printed raging-peasants profile (Leadership 6) and the leader
-# is the printed emissary profile (Leadership 8), whose printed borrow radius is
-# 6 inches.
-#
-# The printed provider must be in action; a knocked-down leader lends
-# nothing.
+# The printed provider must be in action; a knocked-down leader lends nothing.
 - audit_id: rule/mordheim/battle-monks-of-cathay/emissary--leader/mechanic.leader-six
   id: a-supplied-leader-that-is-not-standing-supplies-nothing
   covers: [leader-six]
@@ -213,7 +179,7 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: raging-peasants}
+    second: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: soldiers}
   duel_context:
     charging: [first]
     active_participant: first
@@ -229,7 +195,7 @@
       - [second, leader, 6]
   maximum_rounds: 1
   rolls:
-    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.0, value: 4}
     - {key: round.0.second.fear.charged.1, value: 4}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}
@@ -237,13 +203,8 @@
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
-# The supplied leader is a nearby participant of the borrower's own side and band; the
-# borrower is the band's printed raging-peasants profile (Leadership 6) and the leader
-# is the printed emissary profile (Leadership 8), whose printed borrow radius is
-# 6 inches.
-#
-# The printed leader lends to his own warband only, so the same profile
-# supplied on the opposing side supplies nothing.
+# The printed leader lends to his own warband only, so the same profile supplied on the
+# opposing side supplies nothing.
 - audit_id: rule/mordheim/battle-monks-of-cathay/emissary--leader/mechanic.leader-six
   id: a-supplied-leader-on-the-other-side-supplies-nothing
   covers: [leader-six]
@@ -252,7 +213,7 @@
       trait_overrides: {causes_fear: true}
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
-    second: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: raging-peasants}
+    second: {collection: mordheim, band_id: battle-monks-of-cathay, profile_id: soldiers}
   duel_context:
     charging: [first]
     active_participant: first
@@ -268,7 +229,7 @@
       - [second, leader, 6]
   maximum_rounds: 1
   rolls:
-    - {key: round.0.second.fear.charged.0, value: 3}
+    - {key: round.0.second.fear.charged.0, value: 4}
     - {key: round.0.second.fear.charged.1, value: 4}
     - {key: round.0.first.attack.0.hit, value: 1}
     - {key: round.0.second.attack.0.hit, value: 1}

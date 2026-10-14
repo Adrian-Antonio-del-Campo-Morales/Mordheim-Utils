@@ -112,3 +112,60 @@ Engine execution remains deferred under the plan. It is a separate milestone,
 not a prerequisite for evaluating the current authoring conclusions. This
 document records pending judgments without selecting or dispatching the next
 action.
+
+## Cross-check by E08 (2026-10-14)
+
+This closing document was re-measured by the static integration pass (E08) with
+the engine-free validator and the pure contract tests, with identical input
+hashes before and after. Nothing in this chapter rewrites cases, the register
+or the baseline; it reconciles the numbers the closing snapshot reported
+against the corpus as it stands now.
+
+| Measure | Closing report | E08 re-measure |
+| --- | ---: | ---: |
+| Per-ID files | 306 | 306 |
+| Declared scenarios | 875 | 898 |
+| File status `AUTHORED` | 288 | 292 |
+| File status `PARTIAL` | 18 | 14 |
+| Files `TODO` / `REVIEWED` | 0 / 0 | 0 / 0 |
+| Files with an empty body | — | 0 |
+| Authoring metadata conflicts | — | 5 |
+| Unknown audit/clause references | — | 0 |
+
+The mechanics delta against the register snapshot is zero new requirements: no
+`mechanics` identity moved scope in the working register beyond the
+`scope-admitted-contract-reconciliation` batch already documented by E06's
+matrix. The 14 remaining `PARTIAL` files classify, by their own `PARTIAL[...]`
+note and the consolidated dependency register, into two groups:
+
+1. Pending clause attached to a registered dependency identifier
+   (dependencias.json) — 10 files: `mechanic.frustratingly-tiny`
+   (`charera-mutual-exclusion`), `mechanic.mark-of-arkhar`
+   (`dec-blood-father-role`), `weapon.cathayan-longsword` (`dec-cathayan-ap`),
+   `weapon.starsword` (`dodge-save`), `skill.sword-master`
+   (`dec-parry-six-identity`), `weapon.pike` (`pool-pre-reserva-pike`),
+   `mechanic.spider-infested` and `weapon.kusara-kama` (`duracion-reset`),
+   `skill.sigmar-s-sign` (`obs-pre-floor-sigmar`, E07 external),
+   `skill.regeneration-blocked-by-blessed` (`src-attack-blessed`, E07 external).
+2. Pending disposition documented without a register identifier — 4 files,
+   candidate delta for a future dependency entry, each with its owner:
+   `mechanic.curse-of-the-revenant` (the fire facet is unlocked since the E07
+   contract revision; its stale note awaits the owner's second pass),
+   `mechanic.wheelo-skill-modifications` and `weapon.disease-dagger`
+   (source-vs-contract conflict alternatives handed to the coordinator in the
+   E02 report, no chosen rule), `weapon.barbed-whip` (third-model multi-figure
+   runtime documented as excluded in the E02 report).
+
+No mechanics classification above claims a scenario is untestable because a
+consumer is missing; each pending note names its exact blocked datum.
+
+The 5 metadata conflicts, per file, for their owner (E02 list):
+- `skill.elven-agility.yaml` — `AUTHORED` status without any `AUTHORED[...]` marker.
+- `skill.iron-sinews.yaml` — marker `AUTHORED[whole]` names a declared clause.
+- `skill.regeneration-5-plus.yaml` — `AUTHORED` without marker.
+- `skill.regeneration.yaml` — `AUTHORED` without marker.
+- `skill.step-aside.yaml` — `AUTHORED` without marker.
+
+These are metadata-repair findings, not behavioral verdicts; none justifies a
+mass status promotion, and no note above certifies semantic sufficiency.
+Engine execution remains deferred; all scenarios stay `UNEXECUTED`.

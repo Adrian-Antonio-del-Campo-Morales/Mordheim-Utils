@@ -2,12 +2,14 @@
 # audit_id: rule/mordheim/nipponese-expedition-web/ashigaru--wall-of-steel/unimplemented.nipponese-expedition-web.ashigaru.wall-of-steel
 # scaffold_fingerprint: 8fe720e71ec80020b08d952ffe99c87fcfa11aee513bdf10f23d1cad99a00ec7
 # authoring_status: PARTIAL
-# authoring_progress: the admitted two-handed-spear-gains-parry clause cannot be authored: the origin is
-#   recorded as source_blocked and the file's own M3 note gives the reason and the resolution - the optional
-#   two-handed spear Parry contribution needs a loadout choice for wielding the spear two-handed, and the parry
-#   capacity reads per-weapon flags, so the effect cannot be wired without that product input.  The exact
-#   pending datum is named in the clause marker below.  REVIEWED still requires manual semantic review and
-#   execution_status stays UNEXECUTED.
+# authoring_progress: the admitted two-handed-spear-gains-parry clause stays without scenarios, and the
+#   blocker is now stated with its evidence rather than by the source row alone.  The recipient and the item
+#   identity are both known and in the KB - the bearer is the band's Ashigaru profile and the weapon is the
+#   catalogue's weapon.spear - so what is genuinely absent is the *declared case*: no build field, variant id
+#   or off-hand value expresses the printed choice of wielding the spear two-handed, and the parry capacity
+#   reads per-weapon flags, so with no declared wielding mode the spear still parries exactly as a one-handed
+#   spear does and a tape could not state the difference the clause decides.  REVIEWED still requires manual
+#   semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -18,14 +20,24 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: two-handed-spear-gains-parry (scope: YES)
-# PARTIAL[two-handed-spear-gains-parry]: [C] no scenario is authorable while the loadout choice is missing.  The
-#   printed sentence ("if wielding a spear you may choose to wield it two-handed, in which case the spear gains
-#   the parry special rule") is admitted in scope but the recorded effect is only
-#   proposed.mechanic.wall-of-steel with an unresolved relation, and the register note states: "No effect carries
-#   this grant for the origin, and the parry capacity reads per-weapon parry flags, so the printed option cannot
-#   be expressed without a new effect row plus a loadout choice for wielding the spear two-handed."  The missing
-#   data are that effect row and that declaration; with them the observable is a parry attempt from a spear
-#   that does not parry when wielded one-handed.
+# PARTIAL[two-handed-spear-gains-parry]: [C] missing input, with the identity gap ruled out.  The printed
+#   sentence ("if wielding a spear you may choose to wield it two-handed, in which case the spear gains the
+#   parry special rule") fixes the outcome and names its recipient: the Ashigaru bearer of weapon.spear, an
+#   item identity the catalogue does carry (its own row is bound to the canonical first-strike contract), so
+#   this is not the "no identity exists" case.  What the fixture cannot declare is the *option itself*: the
+#   printed effect is conditional on a wielding mode, and FighterBuild
+#   (packages/python/core/mordheim_core/models.py) carries main-hand, off-hand, extra-hand, armour, material,
+#   skill, preparation, special-rule, condition, trait-override and variant fields and none of them expresses
+#   "the spear is wielded two-handed" - the two-handed quality is a property of the weapon row's `hands`, not
+#   of the declared loadout - so both sides of the conditional (the parrying two-handed spear and the
+#   identical one-handed spear that does not parry) would compile to the same demanded fixture.  The recorded
+#   effect_id proposed.mechanic.wall-of-steel is also only a proposal with an unresolved relation, and the
+#   parry capacity reads per-weapon parry flags, so the printed grant has no route even once a mode is
+#   declared.  Missing capability, exactly: a declarable wielding mode for a carried weapon plus the effect
+#   row that flags that weapon as parrying for that bearer (the register's own resolution: "add the two-handed
+#   loadout choice and flag the spear as parrying for that bearer").  Declaring the mode is the prerequisite
+#   for the tape, because a tape that declared no mode would assert the one-handed case the clause does not
+#   decide.
 # origin_id:
 #   rule/mordheim/nipponese-expedition-web/ashigaru--wall-of-steel/unimplemented.nipponese-expedition-web.ashigaru.wall-of-steel
 # analysis_status:

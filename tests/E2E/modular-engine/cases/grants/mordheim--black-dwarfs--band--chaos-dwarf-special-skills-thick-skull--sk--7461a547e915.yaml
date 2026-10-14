@@ -78,6 +78,18 @@
 #   resolve_stun_reaction runs only for STUNNED, threshold 3 without a helmet. Selectively verified equivalence: {"review_file":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"thick-skull-save","verified_family":"skill.thick-skull","verified_peer_keys":[{"origin_id":"rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-thick-skull/skill.thick-skull","clause_id":"thick-skull-save"},{"origin_id":"rule/mordheim/black-dwarfs/band--chaos-dwarf-special-skills-thick-skull/skill.thick-skull","clause_id":"helmet-improves-to-two"},{"origin_id":"rule/mordheim/black-orcs/band--black-orc-special-skills-ard-ead/skill.thick-skull","clause_id":"whole"},{"origin_id":"rule/mordheim/clan-angrund-kep/band--dwarf-special-skills-thick-skull/skill.thick-skull","clause_id":"whole"},{"origin_id":"rule/mordheim/dwarf-rangers/band--dwarf-special-skills-thick-skull/skill.thick-skull","clause_id":"whole"},{"origin_id":"rule/mordheim/dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull/skill.thick-skull","clause_id":"whole"},{"origin_id":"rule/mordheim/orc-mob/band--orc-special-skills-ard-ead/skill.thick-skull","clause_id":"whole"},{"origin_id":"rule/trollheim/chaos-streets-dwarf-treasure-hunters/band--dwarf-special-skills-thick-skull/skill.thick-skull","clause_id":"whole"},{"origin_id":"rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-ard-ead/skill.thick-skull","clause_id":"whole"},{"origin_id":"source/catalog/rules/special-rules.yaml/shared-rule.thick-skull/unclassified","clause_id":"whole"},{"origin_id":"rule/mordheim/sons-of-hashut/band--chaos-dwarfs-special-skills-thick-skull/skill.thick-skull","clause_id":"stun-to-knocked-down-on-three"},{"origin_id":"rule/mordheim/sons-of-hashut/band--chaos-dwarfs-special-skills-thick-skull/skill.thick-skull","clause_id":"helmet-improves-to-two-and-replaces"},{"origin_id":"rule/catalog/warband/skill.thick-skull/unclassified","clause_id":"stun-to-knocked-down-on-three"},{"origin_id":"rule/catalog/warband/skill.thick-skull/unclassified","clause_id":"helmet-improves-to-two-and-replaces"},{"origin_id":"mechanic/skill.thick-skull","clause_id":"stun-to-knocked-down-on-three"},{"origin_id":"mechanic/skill.thick-skull","clause_id":"helmet-improves-to-two-and-replaces"}],"sharing_boundary":"One Stunned-to-Knocked-Down conversion at 3+, improved to 2+ by a helmet instead of a second helmet roll. Split rows retain only their own threshold/replacement facet; not an alternate Injury chart.","evidence":"inspection","limit":"Only this closed selection was checked. No acceptance of the entire review, KB activation, implementation closure or execution evidence."}
 
 # --- Authored scenarios ---
+# RECIPIENT BOUNDARY (checked statically in the shared construction stage, not by running it): the
+# bearer is the printed Hero row sorcerer, not the Henchman row chaos-dwarfs.
+# `specialRuleRestriction()`'s access stage admits a band warband_skill row with `applies_to.band: true`
+# and no `eligibility` only for a recipient whose own printed `skill_access` carries the `special`
+# category; chaos-dwarfs prints none and would be refused one stage before this clause is reached
+# ("special rule is not available to black-dwarfs/chaos-dwarfs: band--chaos-dwarf-special-skills-thick-skull"),
+# which is the table's access requirement, not this save.  The retarget is inert for the tape: the two
+# rows print the identical characteristic line (M3 WS4 BS3 S3 T4 W1 I2 A1 Ld9) and the same
+# chaos-dwarf-equipment-list, and of the Hero's automatic profile rules only sorcerer--leader is
+# implemented (mechanic.leader-six, which consumes a supplied leader and none is supplied here).
+#   band--chaos-dwarf-special-skills-thick-skull  kind warband_skill  applies_to {band: true}  eligibility none
+#   sorcerer  type hero  skill_access [combat, academic, strength, special]
 # Family model (Chaos Dwarf Thick Skull stun save): the bearer is the printed recipient of this band
 # record, built from its own band and profile and selecting the band rule row named in the audit id,
 # so the granted effect is what the scenario exercises.  Its physical characteristics are supplied as
@@ -101,7 +113,7 @@
     second:
       collection: mordheim
       band_id: black-dwarfs
-      profile_id: chaos-dwarfs
+      profile_id: sorcerer
       special_rule_ids: [band--chaos-dwarf-special-skills-thick-skull]
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
@@ -128,7 +140,7 @@
     second:
       collection: mordheim
       band_id: black-dwarfs
-      profile_id: chaos-dwarfs
+      profile_id: sorcerer
       special_rule_ids: [band--chaos-dwarf-special-skills-thick-skull]
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
@@ -155,7 +167,7 @@
     second:
       collection: mordheim
       band_id: black-dwarfs
-      profile_id: chaos-dwarfs
+      profile_id: sorcerer
       special_rule_ids: [band--chaos-dwarf-special-skills-thick-skull]
       main_weapon_id: weapon.mace
       defence_ids: [defence.helmet]
@@ -185,7 +197,7 @@
     second:
       collection: mordheim
       band_id: black-dwarfs
-      profile_id: chaos-dwarfs
+      profile_id: sorcerer
       special_rule_ids: [band--chaos-dwarf-special-skills-thick-skull]
       main_weapon_id: weapon.mace
       defence_ids: [defence.helmet]

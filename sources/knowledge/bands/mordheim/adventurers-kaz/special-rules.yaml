@@ -176,15 +176,15 @@ rules:
     - barbarian
 - id: barbarian--dim-witted
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.adventurers-kaz.barbarian.dim-witted
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology and leader election.
+    - id: mechanic.dim-witted-leader
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.dim-witted-leader
   name: Dim-Witted
   effect: >-
     If the Barbarian is the warband's leader then he has an effective Leadership of 7 for warband

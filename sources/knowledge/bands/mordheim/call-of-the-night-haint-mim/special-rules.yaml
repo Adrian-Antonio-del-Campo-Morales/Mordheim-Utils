@@ -704,13 +704,14 @@ rules:
 - id: mourngul--haunter-of-the-dark
   runtime:
     scope: 'YES'
-    implemented: 'NO'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.call-of-the-night-haint-mim.mourngul.haunter-of-the-dark
+    - id: mechanic.ethereal-hit-save-improved
       scope: 'YES'
-      binding: null
-      reason: 'Included individual duel effect, not implemented: Personal 3+ Ethereal save; the source-specific save projection is not implemented.'
+      binding:
+        kind: mechanic
+        id: mechanic.ethereal-hit-save-improved
   name: Haunter of the Dark
   effect: The Mourngul's Ethereal save is increased to 3+.
   source:

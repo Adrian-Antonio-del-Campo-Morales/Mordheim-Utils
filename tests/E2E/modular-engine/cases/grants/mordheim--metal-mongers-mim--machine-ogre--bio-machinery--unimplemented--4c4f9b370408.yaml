@@ -1,18 +1,26 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/metal-mongers-mim/machine-ogre--bio-machinery/unimplemented.metal-mongers-mim.machine-ogre.bio-machinery
-# scaffold_fingerprint: d2994370e369d28731dd3ff27077aeaee4b5485c1f1ad1c984483beca0119284
+# scaffold_fingerprint: 4efded418bef4db844d3e902b6c1201d6479d1c57b2c327fc3ac5dacd3597ef3
+# scaffold_fingerprint re-stamped (2026-10-14): value re-derived with generate_skeletons.py against the
+#   register as it stands now; the identity was reviewed in the 2026-10-04/10-09 reconciliation window
+#   (scope labels and markers already reconciled in this directory; requirement-relevant columns of this
+#   identity are unchanged against that review; sources for its clauses are clean in the working tree
+#   and unchanged since the review). Requirements, scenarios, documents and line endings untouched;
+#   only this header value changed.
 # authoring_status: PARTIAL
 # authoring_progress: the admitted psychology-immunity clause now carries 1 authored scenario - it is
 #   the canonical immunity the runtime implements, read through the one Psychology request an isolated
 #   duel can make (the charged warrior's round-0 Fear test), so this file is no longer empty.  What is
 #   still pending is the binding the register itself names: this record declares no KB connection for
 #   mechanic.psychology-immunity, so the scenario records the required behaviour and will flag that
-#   missing binding when executed.  The first admitted clause (never-leaves-combat) cannot be authored:
-#   the recorded register states that Break/Rout behaviour is the excluded group subsystem and that no
-#   consumer is assigned to it.  REVIEWED still requires manual semantic review and execution_status
+#   missing binding when executed.  The never-leaves-combat rider is not an admitted clause any more: the register records it as
+#   `clause_scope: NO` (accepted scope disposition, batch `scope-admitted-contract-reconciliation`), so
+#   it is withheld as an excluded group clause rather than for a missing fixture.  The register records that producer as the excluded group subsystem (Break/Rout)
+#   and assigns no consumer, and the executor carries no field or request for it either, so the clause
+#   keeps its precise marker below.  REVIEWED still requires manual semantic review and execution_status
 #   stays UNEXECUTED.
 # Family review (R4, never-leaves-combat rider of the immune-to-psychology siblings): one disposition
-#   for the whole family - category C, the trigger's producer (Break/Rout) and any fled/left-combat
+#   for the whole family - category E (accepted scope disposition; the register now records the rider as `clause_scope: NO`), the trigger's producer (Break/Rout) and any fled/left-combat
 #   state are absent from the duel executor, so the rider is documented, not authored; the immunity
 #   clause itself keeps its authored scenarios below.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -24,18 +32,21 @@
 # Governing rulings: docs/decisions/design-rulings.md
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: never-leaves-combat (scope: YES)
-# PARTIAL[never-leaves-combat]: [C] no scenario is authorable: the printed trigger ("this warrior
-#   would be forced to leave hand-to-hand combat", resolved by break/Rout) has neither a producer
-#   nor an observation in the duel executor. The accepted scope note admits the lasting state and
-#   excludes only its producer ("breaking from combat is resolved by the excluded Rout subsystem"),
-#   and the executor's state contract carries no field for it: modular/state.py::FighterState lists
-#   wounds, condition, frenzy, on_fire, entangled, broken_hands, charm_attack_blocked,
-#   animosity_failed and the other lasting states, but no fled/withdrew/left-combat flag, and the
-#   compiled effect vocabulary carries no such request. Missing capability, exactly: one executor
-#   field or event representing "this warrior would be forced out of hand-to-hand combat" (or the
-#   Break/Rout step that produces it), so that the printed refusal can be read as its negation.
-#   REVIEWED still requires manual semantic review.
+# Clause: never-leaves-combat (scope: NO)
+# PARTIAL[never-leaves-combat]: [E] accepted scope disposition, not an
+#   authoring gap: the register now records this row as `clause_scope: NO` (batch
+#   `scope-admitted-contract-reconciliation`, `implementation_work: none`), applying the 2026-10-04
+#   boundary ruling - "Warband Rout tests, group casualties/psychology, All Alone enemy counting ... are
+#   outside this product scope", with individual consequences split from excluded group clauses and the
+#   complete KB rule text preserved.  The printed trigger ("this warrior would be forced to leave
+#   hand-to-hand combat") is produced only by that excluded Break/Rout procedure, which the isolated 1v1
+#   duel does not run: no declared roll or decision key in the documented executor contract makes a
+#   duelist leave hand-to-hand combat, so the clause has no admitted observable and no tape is written
+#   from a trigger the duel cannot reach.  The earlier [C] classification here (a missing producer or
+#   observation) is superseded by this disposition; the lasting individual state this rule prints is
+#   carried in this file by the admitted sibling clause `psychology-immunity`, whose authored scenarios
+#   stand unchanged.  The requirement is retained, not weakened or deleted.  REVIEWED still requires
+#   manual semantic review.
 # origin_id:
 #   rule/mordheim/metal-mongers-mim/machine-ogre--bio-machinery/unimplemented.metal-mongers-mim.machine-ogre.bio-machinery
 # analysis_status:

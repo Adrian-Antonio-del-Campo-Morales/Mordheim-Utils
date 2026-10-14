@@ -113,7 +113,7 @@ def build_facts(build, main_weapon_id=None):
     keys = ("band_id", "profile_id", "main_weapon_id", "armour_id", "off_hand_id",
             "extra_hand_id", "main_material_id", "off_material_id", "main_poison_id",
             "off_poison_id", "defence_ids", "skill_ids", "preparation_ids",
-            "special_rule_ids", "mounted", "owned_item_ids")
+            "special_rule_ids", "mounted", "owned_item_ids", "trait_overrides")
     result = {key: getattr(build, key) for key in keys}
     # The House chosen for a House Guard warband is a selection fact, like a
     # declared variant; the shared `configuredProfile` turns it into the
@@ -178,10 +178,11 @@ def construction_call(operation, build, context_facts, proposals=(), root=None, 
                        context_facts, list(proposals), {"draft": draft})
 
 
-def configuration_context(build, package, profile, *, possession, slots, root=None):
+def configuration_context(build, package, profile, *, possession, slots, root=None, profile_bindings=()):
     """Project a supplied complete kit separately from the active duel slots."""
     band = desktop_call("bandFacts", build, root, package=package, profile=profile)
-    return {"profile": desktop_call("profileFacts", build, root, package=package, profile=profile),
+    return {"profile": desktop_call("profileFacts", build, root, package=package, profile=profile,
+                                   profile_bindings=profile_bindings),
             "items": {}, "skills": {}, "possession": list(possession), "slots": slots,
             "limits": band["equipment_limits"], "band_forbids": band["equipment_forbids"],
             "operation": {"product": "combat-lab", "mounted": build.mounted}}

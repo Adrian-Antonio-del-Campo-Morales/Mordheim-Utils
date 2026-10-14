@@ -113,6 +113,13 @@
 #   execution_status stays UNEXECUTED.
 
 # --- Authored scenarios ---
+# WHAT THESE TAPES FAIL ON (checked statically in the shared construction stage, not by running it): this
+# row is recorded `implemented: NO`, so `compile_fighter()` refuses the declared selection with
+# "special rule is outside the executable duel runtime: band--amazon-special-skills-animal-fury: Retained
+# individual clause: The +1 Attack in a turn in which she charges is an admitted individual charge and
+# attack consequence. Printed clause: gains +1 Attack during a turn in which she charges" before any duel
+# runs.  The scenarios keep the printed +1 Attack and the Fear immunity because that is the requirement;
+# they are expected to fail on them until the recorded consumers exist.
 # Derived from the printed sentence ("The Hero is immune to Fear and All Alone tests and gains +1
 # Attack during a turn in which she charges") and the recorded contract for the admitted half
 # (mechanic.fear-immunity: no Fear test is taken, other Leadership and Psychology tests roll

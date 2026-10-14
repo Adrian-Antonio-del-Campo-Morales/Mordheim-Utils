@@ -81,12 +81,34 @@ profiles:
       es: Inmune al Veneno
   - id: hireling.hired-sword.bone-goliath.rule.undead-construct
     name: Undead Construct
-    effect: May ignore Injury results on 4+ except source magical exceptions.
+    effect: 'For each Injury result roll a D6: on 4+ the result is ignored, without restoring lost Wounds.
+      Magical attacks and magical weapons bypass this roll. The ordinary Undead No Pain conversion still
+      applies independently.'
     effect_i18n:
       es: >-
         Puede ignorar resultados de Herida con 4+, salvo las excepciones mágicas de la fuente.
     name_i18n:
       es: Constructo No Muerto
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.undead-construct
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.undead-construct
+      - id: skill.ignore-pain
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: skill.ignore-pain
+    source_refs:
+    - manual: Border Town Burning
+      printed_page: 173
+      section: Bone Goliath / Undead Construct
+      url: https://tonightwedineinmordheim.com/pdf/btb_pt3_lq.pdf
   - id: hireling.hired-sword.bone-goliath.rule.assembly
     name: Assembly
     effect: Is constructed by a Liche with the source cost/consequences.
@@ -248,6 +270,21 @@ profiles:
       quantity:
         kind: fixed
         value: 1
+    choices:
+    - id: hireling.hired-sword.chaos-centaur.weapon-choice
+      choose: 1
+      options:
+      - items:
+        - item_id: sword
+          quantity:
+            kind: fixed
+            value: 1
+      - items:
+        - item_id: spear
+          quantity:
+            kind: fixed
+            value: 1
+          notes: The source treats this Centaur spear as cavalry +1 Strength when charging.
   skill_access:
   - combat
   - strength
@@ -255,12 +292,29 @@ profiles:
   rules:
   - id: hireling.hired-sword.chaos-centaur.rule.drunken
     name: Drunken
-    effect: Uses source drunken rule.
+    effect: At each own turn start roll D6:1 test Stupidity this turn;2–5 no effect;6 Frenzy this turn.
+      While subject to Stupidity or Frenzy ignore other psychology.
+      While subject to Stupidity or Frenzy ignore other psychology.
     effect_i18n:
       es: >-
         Usa la regla de embriaguez de la fuente.
     name_i18n:
       es: Ebrios
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.centigor-drunken
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.centigor-drunken
+    source_refs:
+    - manual: Border Town Burning
+      printed_page: 1
+      section: Chaos Centaur / Special Rules
+      url: https://www.broheim.net/downloads/hiredswords/btb/btb%20Soldiers%20Of%20Fortune.pdf
   - id: hireling.hired-sword.chaos-centaur.rule.woodland
     name: Woodland
     effect: Uses source woodland/terrain rule.
@@ -269,17 +323,41 @@ profiles:
         Usa la regla de bosque/terreno de la fuente.
     name_i18n:
       es: Arboleda
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: profile
+      effects:
+      - id: hireling.hired-sword.chaos-centaur.rule.woodland.terrain
+        scope: 'NO'
+        binding: null
+        reason: Woodland movement is excluded.
   - id: hireling.hired-sword.chaos-centaur.rule.trample
     name: Trample
-    effect: Has source trample attack.
+    effect: One additional natural attack, separate from the printed A1, which receives no weapon bonuses
+      or penalties.
+      or penalties.
     effect_i18n:
       es: >-
         Tiene el ataque de pisotear de la fuente.
     name_i18n:
       es: Pisotear
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.centaur-trample
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.centaur-trample
+    source_refs:
+    - manual: Border Town Burning
+      printed_page: 1
+      section: Chaos Centaur / Special Rules
+      url: https://www.broheim.net/downloads/hiredswords/btb/btb%20Soldiers%20Of%20Fortune.pdf
   unresolved_references:
-  - kind: equipment_choice
-    source_name: Sword or Spear
   - kind: advancement_choice
     source_name: may take a mutation instead of a skill
   source_refs:
@@ -482,44 +560,99 @@ profiles:
   rules:
   - id: hireling.hired-sword.hobgoblin-scout.rule.ride
     name: Ride
-    effect: Rides a Giant Wolf.
+    effect: A Hobgoblin Scout has the Ride Giant Wolf skill.
     effect_i18n:
       es: >-
         Monta un Lobo Gigante.
     name_i18n:
       es: Montar
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.hobgoblin-scout.rule.ride.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Mounted skill and Giant Wolf model are excluded.
   - id: hireling.hired-sword.hobgoblin-scout.rule.loner
     name: Loner
-    effect: Uses source loner rule.
+    effect: The Scout may never use the warband leader's Leadership for any tests. He never counts as
+      All Alone and may operate independently.
     effect_i18n:
       es: >-
         Usa la regla de solitario de la fuente.
     name_i18n:
       es: Solitario
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.own-leadership
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.own-leadership
+      - id: hireling.hired-sword.hobgoblin-scout.rule.loner.group
+        scope: 'NO'
+        binding: null
+        reason: All Alone counting and map independence are excluded; personal Leadership prohibition
+          remains executable.
   - id: hireling.hired-sword.hobgoblin-scout.rule.traitor
     name: Traitor
-    effect: Uses source traitor rule.
+    effect: Opposing Orcs, Goblins and Black Orcs hate the Hobgoblin Scout; hiring other greenskin hired
+      swords is prohibited in the campaign.
     effect_i18n:
       es: >-
         Usa la regla de traidor de la fuente.
     name_i18n:
       es: Traidor
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.greenskin-traitor
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.greenskin-traitor
   - id: hireling.hired-sword.hobgoblin-scout.rule.spy
     name: Spy
-    effect: Uses source spying rule.
+    effect: Before battle and after deployment the Scout may redeploy D3 other models; alternatively
+      deploy outside 18 inches from enemies.
     effect_i18n:
       es: >-
         Usa la regla de espionaje de la fuente.
     name_i18n:
       es: Espía
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.hobgoblin-scout.rule.spy.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Deployment and repositioning other models are excluded.
   - id: hireling.hired-sword.hobgoblin-scout.rule.potshot
     name: Potshot
-    effect: Uses source shooting rule.
+    effect: May fire a bow while running with a -2 To Hit modifier.
     effect_i18n:
       es: >-
         Usa la regla de disparo de la fuente.
     name_i18n:
       es: Disparo a Bocajarro
+    runtime:
+      grant: profile
+      scope: 'NO'
+      implemented: 'NO'
+      effects:
+      - id: hireling.hired-sword.hobgoblin-scout.rule.potshot.non-duel
+        scope: 'NO'
+        binding: null
+        reason: Shooting and map running are excluded.
   unresolved_references:
   - kind: mount_profile
     source_name: Giant Wolf profile M9 WS3 BS0 S3 T3 W1 I4 A1 Ld4
@@ -658,6 +791,16 @@ profiles:
         Usa la regla de piromanía de la fuente.
     name_i18n:
       es: Piromaníaco Enajenado
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.cannot-charge
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.cannot-charge
   - id: hireling.hired-sword.pyromaniac.rule.rockets
     name: Rockets
     effect: Uses source rocket rule.

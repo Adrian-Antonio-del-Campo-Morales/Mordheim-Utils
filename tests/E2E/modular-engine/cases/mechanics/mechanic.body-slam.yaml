@@ -1,8 +1,17 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.body-slam
 # scaffold_fingerprint: db28cc5a8122e2f14274bdc56e8c65a845c9256f633a0e42bb3c2f0c71a090a0
-# authoring_status: PARTIAL
-# authoring_progress: the admitted clause is PARTIAL. Two scenarios evidence the declared charge replacement hitting on the raised target and wounding with the raised Strength, and the declined declaration leaving the printed pool; the printed 5+ critical threshold and the ignored weapon/skill modifiers have no scenario (see the clause note below). REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted clause carries authored scenarios for every printed
+#   facet of the acceptance: the declared replacement hitting on the raised target and
+#   wounding with the raised Strength, the declined declaration keeping the ordinary
+#   pool, the printed 5+ critical threshold on both faces of its boundary (a wound of
+#   five scores the critical under the basic chart, a four stays an ordinary wound),
+#   and the modifier exclusion for the two modifier sources: the +1 To Hit weapon
+#   payload (weapon.duelling-pistol) and the global skill wound modifier
+#   (skill.expert-fighter), each contrasted against the ordinary pool where the same
+#   modifier does reach. REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -13,7 +22,20 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole (scope: YES)
-# PARTIAL[whole]: 2 scenarios evidence the +1 To Hit and +1 Strength the acceptance delivers (the same declared three now hits where an unmodified equal Weapon Skill needs a four, and the declared three that follows now wounds Toughness 3 from Strength 4 where Strength 3 would need a four) and the declined declaration keeping the ordinary pool. The printed 5+ critical threshold and the ignored weapon and skill modifiers are NOT asserted: what a critical then does belongs to the core critical table's own die and chart, which this clause does not state, so a scenario asserting one would be deriving its expectation from another rule's contract; and showing an ignored weapon modifier needs a modifier-bearing weapon whose own effect the scenario could contrast, which none of the admitted weapon profiles provides without importing that profile's clause.
+# AUTHORED[whole]: 8 scenarios cover the declared charge
+#   replacement (+1 To Hit, +1 Strength, pool declined keeps the ordinary charge),
+#   the printed 5+ critical threshold on both boundary faces (the declared five
+#   scores the critical under the basic chart mirrored from core/combat-critical-hits;
+#   the declared four stays an ordinary wound and requests no critical die), and the
+#   printed modifier exclusion for both modifier sources. The weapon modifier is the
+#   admitted +1 To Hit payload of weapon.duelling-pistol: under the slam the hit
+#   target stays 3 (the slam's own +1 alone) where the ordinary charge with the same
+#   build reaches 3 as well - the old PARTIAL reason ("no modifier-bearing weapon")
+#   is corrected: the admitted profile exists and is authorable as support. The skill
+#   modifier is skill.expert-fighter's global wound_modifier 1: under the slam the
+#   wound target stays 3 so a declared four misses (a merged modifier would make the
+#   four wound), while the same skill on the ordinary pool turns the declared three
+#   into a wound that the plain profile would need a four for.
 # origin_id:
 #   mechanic/mechanic.body-slam
 # analysis_status:
@@ -93,5 +115,165 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.hit: false, attacks.0.hit_target: 4, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed critical threshold of five, first boundary face: the replacement
+# attack's wound roll of five scores the critical although the ordinary rule would
+# need a six.  The chart entry stays on the basic table this duel resolves: a
+# critical-table result in the 1-2 band deals two wounds, may still save and
+# requests no injury die (mirrored from core/combat-critical-hits, the reviewed
+# basic-table scenario with the same unarmoured defender), so the tape below is
+# that chart shape and not an invented one.
+- audit_id: mechanic/mechanic.body-slam
+  id: the-declared-five-wounds-critically-under-the-slam-threshold
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.body-slam]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.body-slam, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 5}
+    - {key: round.0.first.attack.0.critical, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: true, attacks.0.damage: 2, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Second boundary face: the declared four is inside the wound target (3+) and
+# stays an ordinary wound, so no critical die is scripted - the strict tape
+# would fail if the threshold were four or if the critical chart were entered.
+- audit_id: mechanic/mechanic.body-slam
+  id: the-declared-four-stays-an-ordinary-wound
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.body-slam]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.body-slam, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Weapon-modifier exclusion: the same bearer wields the modifier-bearing weapon.
+# The slam's replacement pool keeps the ordinary hit target of three (its own +1
+# on an equal Weapon Skill) and does NOT merge the duelling pistol's printed +1
+# To Hit into the pool.  A merged modifier would reach a target of two and turn
+# the declared three into a miss, so declaring a three, the prohibition reading
+# prepared into the context above is excluded by the strict tape.
+- audit_id: mechanic/mechanic.body-slam
+  id: the-weapon-hit-modifier-never-reaches-the-replacement-attack
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.duelling-pistol
+      skill_ids: [mechanic.body-slam]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.body-slam, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 3, attacks.0.wounded: true, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Contrast: without the slam the same weapon does reach into the ordinary charge
+# pool - the declared three hits because the pistol's printed +1 lowers the
+# unmodified four - so the exclusion above does not mean the modifier is inert.
+- audit_id: mechanic/mechanic.body-slam
+  id: the-modifier-bearing-weapon-applies-its-bonus-to-the-ordinary-charge
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.duelling-pistol
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 3, attacks.0.wounded: true, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Skill-modifier exclusion: skill.expert-fighter's global wound_modifier 1 never
+# merges into the slam pool, so the wound target stays 3 (Strength 4 vs Toughness
+# 3) and the declared three wounds.  A merged modifier would reach 2+ and turn
+# the declared three into a miss, so the strict tape fails under the
+# prohibited reading.  The declared hit three stands on the slam's own +1 To Hit
+# (an equal Weapon Skill needs a four unraised).
+- audit_id: mechanic/mechanic.body-slam
+  id: the-skill-wound-modifier-never-reaches-the-replacement-attack
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.body-slam, skill.expert-fighter]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.body-slam, value: true}
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 3}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 3, attacks.0.wounded: true,
+        attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Contrast: on the ordinary pool the same skill does reach - Strength 3 versus
+# Toughness 3 needs a four, the skill turns the declared three into a wound, so
+# the exclusion above concerns the slam pool alone and not the skill itself.
+# The wound two of three deliberately mirrors the slam scenario's declared
+# faces so the only difference between the pair is the replaced pool.
+- audit_id: mechanic/mechanic.body-slam
+  id: the-skill-wound-modifier-applies-to-the-ordinary-pool
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.expert-fighter]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 3}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.hit_target: 4, attacks.0.wounded: true,
+        attacks.0.critical: false, attacks.0.damage: 1, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 

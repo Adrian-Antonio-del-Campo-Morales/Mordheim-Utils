@@ -580,3 +580,59 @@ rules:
       indicado.
   applies_to:
     band: true
+- id: band--clan-moulder-special-skills-hypnotic-musk
+  name: Hypnotic Musk
+  name_i18n:
+    es: Almizcle Hipnótico
+  kind: warband_skill
+  effect: Any animal or beast from an opposing warband wishing to charge him must pass a Leadership
+    test to do so unless said charge is the result of Goading; mounts are immune.
+  effect_i18n:
+    es: Los animales y bestias enemigos deben superar Liderazgo para cargar salvo si son azuzados;
+      las monturas son inmunes.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  applies_to:
+    profile_types:
+    - hero
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: mechanic.hypnotic-musk
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hypnotic-musk
+- id: band--clan-moulder-special-skills-black-hunger
+  kind: warband_skill
+  name: Black Hunger
+  name_i18n:
+    es: Hambre Negra
+  effect: At the beginning of his own turn the Hero may declare Black Hunger, gaining +1 Attack for
+    that turn and suffering D3 Strength3 hits without armour at its end. Movement bonus is excluded.
+  effect_i18n:
+    es: Al principio de su turno el Héroe puede declarar Hambre Negra, gana +1 Ataque ese turno y
+      al final sufre 1D3 impactos de Fuerza3 sin armadura. El movimiento queda excluido.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/skaven-of-clan-moulder
+  applies_to:
+    profile_types:
+    - hero
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: mechanic.black-hunger
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.black-hunger

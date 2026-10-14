@@ -267,6 +267,7 @@ when a combatant is out, or when the local engagement ends.
 | `rounds[index]` | `expect_rounds[index]` | State and attack outcomes after that executed phase; index starts at zero. |
 | `final` | `expect_final` | State, `rounds_executed` and `termination_reason`. |
 | `events` | `expect_events` | Optional exact ordered list of roll and decision events. |
+| `fighters` | `expect_fighters` | Compiled build snapshot of `first` and `second` as delivered by the engine. |
 
 Initial and final expectations are nonempty mappings of dotted observation paths
 to independent expected values. Intermediate expectations map zero-based
@@ -284,6 +285,70 @@ which enforces complete consumption of strict scripts and requires an assertion.
 Case metadata such as `id` and `covers` is carried by the future corpus; this
 loop does not certify requirement coverage or inventory completeness.
 
+### expect_fighters
+
+`expect_fighters` reuses the compiled-build snapshot that `execute_case` already
+returns; the harness computes no armour or derived rule values of its own. It is
+a nonempty mapping of nonempty dotted paths (values that exist in the delivered
+fighter snapshot) to independent expected values, compared with the same
+pure assertion as every other observation channel, so a `True` expectation is
+distinguished from the integer `1`:
+
+```yaml
+- audit_id: mechanic/armour.heavy-armour
+  id: heavy-armour-shows-on-the-compiled-fighter
+  covers: [validation-of-armour-fields]
+  fighters:
+    first: {collection: ..., band_id: ..., profile_id: ...,
+            equipment: [heavy-armour]}
+    second: {}
+  expect_fighters:
+    first.armour.roll_requirement: 5
+    second.off_hand_id: null        # only paths that exist are legible
+```
+
+A case whose only observation is `expect_fighters` is legitimate — the
+observation requirement is satisfied by that channel alone. It cannot be
+combined with `expect_error`, which governs a refusal and forbids every
+observation. Structural checks for the field (nonempty mapping, nonempty
+dotted paths, first/second-only participants for the builds it observes) are
+part of the loader's static contract; deferred runtime validation follows the
+documented boundary for every other observation.
+
+### Harness capacities and external dependencies (2026-10-14, E07 contract revision)
+
+Facts the runner vocabulary already admits may be declared or observed through
+the existing channels without any new format; naming a lasting `FighterState`
+field is declaring what the production model already carries, never injecting
+an expected result. Two capacities matter for pending second-pass authoring:
+
+- Lasting fire state: `on_fire` is a real `FighterState` field, so a
+  scenario declares it normally under `initial_state.<side>` (a boolean, like
+  every other supplied lasting state) and observes `state.<side>.on_fire`
+  through `expect_initial`/`expect_rounds`/`expect_final`. The fire recovery
+  phase exposes only protocol request keys — the extinguishing die
+  `round.<i>.<side>.fire.extinguish` and the resulting S4 non-critical hit
+  reaching the `attacks` ledger under that `round.<i>.<side>.fire.hit` family —
+  documented strictly as a technical protocol: the concepts (whose fire state
+  it is, which combat-phase attempts the recovery) live in the case, never
+  thresholds, dice or results taken from an engine run.
+- Compiled single-model projection pairs: `expect_fighters` (E01) observes the
+  compiled fighter — `armour_save`, `helmet_save`, `characteristics.*` and the
+  rule/gift tags the engine compiles — so an admitted printed quantity that the
+  compiler already materializes is asserted by pair (bearer/bearer-without),
+  never recomputed in the harness.
+
+Still external (must be specified, never implemented here): an observation of
+the opponent-attack pool *before* the printed minimum is not in any dataclass
+nor in the runner output — a `state.<side>.pool_size` pre-floor path stays
+impossible until the engine exposes that pre-floor fact behind an exact
+signature (to its owner; signature and the assertion it unlocks are in the
+E07 report), and no catalog id or harness build field materializes
+`attack.blessed` on an attacker's incoming effect today. These
+dependencies unlock their consumers without touching this vocabulary, so no
+author re-authors for them in advance and no author fakes a pre-floor or a
+blessed label into the state.
+
 ## Declarative corpus
 
 Every `cases/**/*.yaml` document is a list of scenario mappings using the runner
@@ -297,11 +362,31 @@ vocabulary plus two corpus metadata fields:
 All other fields are exactly the runner's scenario contract (`fighters`,
 `initial_state`, `duel_context`, `maximum_rounds`, `rolls`, `decisions`,
 `expect_initial`, `expect_rounds`, `expect_final`, `expect_events`,
-`expect_error`). Unknown
+`expect_fighters`, `expect_error`). Unknown
 fields, a missing `audit_id`/`covers`, a missing assertion, a duplicate
 `audit-ID::scenario-ID` and a non-list document all raise `CorpusError` naming
-the file and the offending scenario. `corpus.py` validates structure only;
+the file and the offending scenario. `expect_events` may be the empty list; it
+asserts that no event occurred. Observation maps are nonempty mappings of
+nonempty dotted paths (checkpoint expectations included), `maximum_rounds` is a
+positive integer that may not be a boolean, roll values are integers inside
+die faces (no boolean values, nonempty keys, positive side counts), and
+decision values are booleans.
+`corpus.py` validates structure only;
 reference checking against the register belongs to `test_inventory.py`.
+
+`validate_corpus.py [corpus_directory] [--require-complete]` is the global
+structural report: it reuses the loader above plus the register reading in
+`test_inventory.py` (nothing from a combat package), reports integrity
+(unknown references, duplicates, unloadable files), the authoring-metadata
+grammar per file (`# authoring_status` markers vs. declared clauses), and the
+declared coverage with its gaps. Retirement from the register is reported
+separately, never mistaken for pending authoring, and scaffold staleness is
+not measured here — generative source snapshots remain
+`generate_skeletons.py`'s concern. Exit codes: `0` when nothing failed (gaps
+stay reported and do not pretend completeness), `1` on integrity problems, `2`
+when `--require-complete` was requested and coverage is still incomplete.
+Run it directly, engine-free, as a companion to the pytest contract tests;
+do not patch a case's expectation because this report names it.
 
 One scenario is one collected test whose identity is `audit-ID::scenario-ID`, so
 a failure never stops its siblings. Parameterization is inline in the data: a

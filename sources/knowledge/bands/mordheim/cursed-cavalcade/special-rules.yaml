@@ -607,19 +607,20 @@ rules:
 - id: band--cursed-cavalcade-special-skills-noblesse-obliges
   kind: warband_skill
   runtime:
-    grant: selectable
     scope: 'YES'
-    implemented: 'NO'
+    implemented: 'YES'
+    grant: selectable
     effects:
     - id: mechanic.fear-immunity
       scope: 'YES'
       binding:
         kind: mechanic
         id: mechanic.fear-immunity
-    - id: band--cursed-cavalcade-special-skills-noblesse-obliges.noblesse-stomp.pending
+    - id: mechanic.noblesse-stomp
       scope: 'YES'
-      binding: null
-      reason: 'Retained individual clause: May stomp an opponent that is Knocked Down, making an additional attack at the warrior''s own Strength. Observable: against a knocked-down opponent this warrior''s attack allocation includes one extra attack at its base Strength.'
+      binding:
+        kind: mechanic
+        id: mechanic.noblesse-stomp
   name: Noblesse Obliges
   effect: >-
     The warrior feels utterly superior to his opponents, with long lineage and prestige to look down

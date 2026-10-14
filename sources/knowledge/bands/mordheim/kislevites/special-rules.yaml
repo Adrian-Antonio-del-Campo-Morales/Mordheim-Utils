@@ -78,15 +78,15 @@ rules:
     - druzhina-captain
 - id: bear-tamer--bear-handler
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.kislevites.bear-tamer.bear-handler
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.bear-handler
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.bear-handler
   name: Bear Handler
   effect: >-
     A Kislevite Warband that includes a Bear Tamer is allowed to purchase a Bear as a henchman. This
@@ -221,10 +221,14 @@ rules:
     - id: unimplemented.kislevites.trained-bear.trained.outside-duel
       scope: 'NO'
       binding: null
-      reason: >-
-        Board movement, campaign progression/participation and independently
-        simulated helper/rider/group producers are outside the 1v1 duel.
-        Admissible individual exemptions and bonuses are supplied active facts.
+      reason: Board movement, campaign progression/participation and independently simulated helper/rider/group
+        producers are outside the 1v1 duel. Admissible individual exemptions and bonuses are supplied
+        active facts.
+    - id: mechanic.bear-handler-recipient
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.bear-handler-recipient
   name: Trained
   effect: >-
     A bear doesn’t care about the warband's mission or enmity for other warbands – it’s just

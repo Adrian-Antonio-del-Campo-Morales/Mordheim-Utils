@@ -2,7 +2,13 @@
 # audit_id: mechanic/mechanic.wheelo-skill-modifications
 # scaffold_fingerprint: 651512d9871abc837667cb7b208d46299d4a3169054d82848573fe96cd0265a3
 # authoring_status: PARTIAL
-# authoring_progress: the weapons-training clause carries 2 authored scenarios (the morning-star first impact at Strength 5 and the spear-fitted counter hit on a charger) while the Mighty Blow clause is PARTIAL: the printed +1 to wound is arithmetically cancelled by the Strength the same contract substitutes for it, so no wound-roll observation can evidence it (see the clause note below). REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: the weapons-training clause carries 2 authored scenarios (the
+#   morning-star first impact at Strength 5 and the spear-fitted counter hit on a
+#   charger) while the Mighty Blow clause is a structured alternatives note: the
+#   printed +1 to wound and the executor's swap of Strength for it cannot be separated
+#   by a wound die, and the note now delivers both readings with their sources for the
+#   coordinator instead of choosing one (see the clause note). REVIEWED still requires
+#   manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -13,7 +19,30 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole--scope--mighty-blow (scope: YES)
-# PARTIAL[whole--scope--mighty-blow]: no scenario separates the printed +1 to wound from the Strength the source replaces with it. The executor applies the swap to a bearer carrying both mechanic.wheelo-skill-modifications and skill.mighty-blow by subtracting one from strength_bonus and adding one to wound_modifier (compiler.py:581-584). The Wheelo crew's printed Strength 4 therefore enters the wound table as Strength 3, whose 4+ against Toughness 3 the printed +1 improves to 3+, exactly the 3+ Strength 4 reaches unaided: the two changes cancel on the wound target, so no wound die can evidence the bonus. The duel vocabulary also exposes neither the attack's wound modifier nor the compiled strength_bonus, so the only duel-visible difference of the swap is the one-point softer armour save (Strength 3 rather than 4) and the Strength-dependent gates, which follow from the substitution and not from the printed bonus. The missing datum is a target whose wound table separates +1 to wound from +1 Strength, or an observation of the compiled effect fields.
+# PARTIAL[whole--scope--mighty-blow]: no scenario separates the printed +1 to wound
+#   from the Strength the executor's mapping replaces with it. Both readings are kept
+#   with their sources; a scenario asserting either one silently adopts it.
+#   Alternative A (printed +1 to wound in combat, crew Strength unchanged): source is
+#   the printed clause of this file ("Mighty Blow: the crew gains +1 to wound in
+#   combat; has no effect on Impact Hits") together with the crew's printed Strength
+#   in the band profile; the crew then enters the wound table at its printed Strength
+#   with the wound die one better, and the attack's armour modifier keeps the printed
+#   Strength (one point harder for the defender than under B).
+#   Alternative B (the executor's swap, Strength -1 and to-wound +1 at once): source
+#   is the recorded mapping the register note and the compiler carry (compiler.py:581-584)
+#   subtracts one from strength_bonus and adds one to wound_modifier), so the wound
+#   target lands where A lands and the only duel-visible difference is the one-point
+#   softer armour save and the Strength-dependent gates (which follow from the
+#   substitution, not from the printed bonus).
+#   Where the readings separate: exactly on the armour-save modifier (A: crew Strength
+#   4 gives the defender +1; B: crew Strength 3 gives none) and those gates - both are
+#   authorable as a strict tape, which is why the note records rather than asserts:
+#   choosing one would silently adopt a new rule for this clause.
+#   DECISION (D12-A, 2026-10-14): the printed prose governs; the inherited mapping
+#   (compiler.py:581-584) is remitted to the engine team as dec-d12-mighty-blow-prose-binding.
+#   Until that corrected binding is executable this file keeps the two authored impact
+#   scenarios, and the armour-save/wound-target differential tape adopts the prose reading
+#   once they run under it.
 # origin_id:
 #   mechanic/mechanic.wheelo-skill-modifications
 # analysis_status:

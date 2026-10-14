@@ -100,13 +100,50 @@ profiles:
           id: mechanic.causes-fear
   - id: hireling.hired-sword.chaos-fury.rule.daemonic-flesh
     name: Daemonic Flesh
-    effect: Has a 5+ unmodifiable save with source magic/blessed exceptions.
+    effect: A 5+ base armour save is never modified and is entirely negated by magical or blessed weapons
+      and spells. All of the daemon's close combat attacks count as magical.
     effect_i18n:
       es: >-
         Tiene una salvación de 5+ no modificable con las excepciones mágicas/bendecidas de la
         fuente.
     name_i18n:
       es: Carne Demoníaca
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.daemonic-flesh
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.daemonic-flesh
+      - id: trait.natural-armour-save
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.natural-armour-save
+          parameters:
+            value: 5
+      - id: trait.natural-armour-unmodified
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.natural-armour-unmodified
+          parameters:
+            value: true
+      - id: trait.creature-kind
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.creature-kind
+          parameters:
+            value: daemon
+    source_refs:
+    - manual: Chaos Fury
+      printed_page: 1
+      section: Daemonic Flesh
+      url: https://www.broheim.net/downloads/hiredswords/facebook/Chaos%20Fury.pdf
   - id: hireling.hired-sword.chaos-fury.rule.daemonic-mind
     name: Daemonic Mind
     effect: Does not gain Experience and is immune to psychology.
@@ -133,6 +170,16 @@ profiles:
         Usa la regla de destierro de la fuente.
     name_i18n:
       es: Inestabilidad
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: excluded.scope
+        scope: 'NO'
+        reason: Banishment after Out of Action or loss of an external summoner; no unresolved campaign/group
+          producer is simulated.
+        binding: null
   - id: hireling.hired-sword.chaos-fury.rule.fly
     name: Fly
     effect: May fly according to source.
@@ -141,6 +188,15 @@ profiles:
         Puede volar según la fuente.
     name_i18n:
       es: Volar
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: excluded.scope
+        scope: 'NO'
+        reason: Flying movement is outside the close combat duel.
+        binding: null
   - id: hireling.hired-sword.chaos-fury.rule.malicious
     name: Malicious
     effect: Uses source malicious behaviour rule.
@@ -149,11 +205,22 @@ profiles:
         Usa la regla de comportamiento malicioso de la fuente.
     name_i18n:
       es: Malicioso
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: excluded.scope
+        scope: 'NO'
+        reason: Movement after taking an opponent Out of Action occurs after the duel is already resolved.
+        binding: null
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
     section: Hired Swords / Chaos Fury
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  equipment:
+    innate_weapon_id: weapon.natural-attacks
 - id: hireling.hired-sword.cursed-hillman
   kind: hired-sword
   grade: 2a
@@ -356,6 +423,16 @@ profiles:
         Usa la regla de psicología de la fuente.
     name_i18n:
       es: Seguro de Sí Mismo
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: excluded.scope
+        scope: 'NO'
+        reason: Immunity to All Alone and never fleeing as a result of that test require a group; this
+          is not immunity to Fear or general Psychology.
+        binding: null
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -477,6 +554,8 @@ profiles:
       name: Chaos Armour
       name_i18n:
         es: Armadura del Caos
+      rules:
+      - hireling.hired-sword.emissary-of-chaos.item.chaos-armour.rule.combat
   skill_access:
   - combat
   - strength
@@ -491,31 +570,141 @@ profiles:
     name_i18n:
       es: Patrón
     runtime:
-      grant: profile
-      scope: 'YES'
+      scope: 'NO'
       implemented: 'NO'
+      grant: none
       effects:
-      - id: mechanic.causes-fear
+      - id: patron-source-table
+        scope: 'NO'
+        binding: null
+        reason: Choose exactly one individual patron child; casting and campaign advancement producers
+          are excluded.
+  - id: hireling.hired-sword.emissary-of-chaos.patron.khorne
+    name: Patron Khorne
+    name_i18n:
+      es: Patrón Khorne
+    effect: Frenzy and +1 Attack.
+    effect_i18n:
+      es: Frenzy and +1 Attack.
+    kind: warband_skill
+    eligibility:
+    - hireling.hired-sword.emissary-of-chaos
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: selectable
+      effects:
+      - id: mechanic.emissary-khorne
         scope: 'YES'
         binding:
           kind: mechanic
-          id: mechanic.causes-fear
-      - id: hireling.hired-sword.emissary-of-chaos.rule.patron.patron-khorne.pending
+          id: mechanic.emissary-khorne
+    source_refs:
+    - manual: Fanatic Online 94
+      printed_page: 3
+      section: Emissary of Chaos
+      url: https://www.broheim.net/downloads/fo/94NewHiredSwords.pdf
+  - id: hireling.hired-sword.emissary-of-chaos.patron.tzeentch
+    name: Patron Tzeentch
+    name_i18n:
+      es: Patrón Tzeentch
+    effect: The Tzeentch Emissary also has Academic skill access; spell casting is excluded.
+    effect_i18n:
+      es: The Tzeentch Emissary also has Academic skill access; spell casting is excluded.
+    kind: warband_skill
+    eligibility:
+    - hireling.hired-sword.emissary-of-chaos
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: selectable
+      effects:
+      - id: mechanic.emissary-tzeentch
         scope: 'YES'
-        binding: null
-        reason: 'Retained individual clause: Admitted individual consequence: the Khorne Emissary gains the frenzy state and one extra Attack. The KB declares trait.frenzy for other bearers.'
-      - id: hireling.hired-sword.emissary-of-chaos.rule.patron.patron-nurgle-poison.pending
+        binding:
+          kind: mechanic
+          id: mechanic.emissary-tzeentch
+      - id: profile.skill-access
         scope: 'YES'
-        binding: null
-        reason: 'Retained individual clause: Admitted individual consequence: all attacks made by the bearer carry the Black Lotus poison contract, as the printed text specifies. The declared poison.black-lotus operator resolves the wound guarantee and the optional wound-die critical.'
-      - id: hireling.hired-sword.emissary-of-chaos.rule.patron.patron-slaanesh-charge-test.pending
+        binding:
+          kind: profile
+          id: profile.skill-access
+          parameters:
+            category: academic
+    source_refs:
+    - manual: Fanatic Online 94
+      printed_page: 3
+      section: Emissary of Chaos
+      url: https://www.broheim.net/downloads/fo/94NewHiredSwords.pdf
+  - id: hireling.hired-sword.emissary-of-chaos.patron.nurgle
+    name: Patron Nurgle
+    name_i18n:
+      es: Patrón Nurgle
+    effect: All attacks are poisoned as Black Lotus and the Emissary causes Fear.
+    effect_i18n:
+      es: All attacks are poisoned as Black Lotus and the Emissary causes Fear.
+    kind: warband_skill
+    eligibility:
+    - hireling.hired-sword.emissary-of-chaos
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: selectable
+      effects:
+      - id: mechanic.emissary-nurgle
         scope: 'YES'
-        binding: null
-        reason: 'Retained individual clause: Admitted individual consequence: an enemy must pass a Leadership test before it may charge the bearer. The same charge-test shape exists as mechanic.beauty-of-the-sea for another bearer; this clause has no declared mechanic of its own.'
-      - id: hireling.hired-sword.emissary-of-chaos.rule.patron.patron-slaanesh-melee-penalty.pending
+        binding:
+          kind: mechanic
+          id: mechanic.emissary-nurgle
+    source_refs:
+    - manual: Fanatic Online 94
+      printed_page: 3
+      section: Emissary of Chaos
+      url: https://www.broheim.net/downloads/fo/94NewHiredSwords.pdf
+  - id: hireling.hired-sword.emissary-of-chaos.patron.slaanesh
+    name: Patron Slaanesh
+    name_i18n:
+      es: Patrón Slaanesh
+    effect: All enemies must pass Leadership to charge the Emissary. An enemy engaging him in close
+      combat suffers -1 to hit.
+    effect_i18n:
+      es: All enemies must pass Leadership to charge the Emissary. An enemy engaging him in close combat
+        suffers -1 to hit.
+    kind: warband_skill
+    eligibility:
+    - hireling.hired-sword.emissary-of-chaos
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: selectable
+      effects:
+      - id: mechanic.emissary-slaanesh
         scope: 'YES'
-        binding: null
-        reason: 'Retained individual clause: Admitted individual penalty: an enemy that has charged the bearer suffers -1 to hit in that close combat.'
+        binding:
+          kind: mechanic
+          id: mechanic.emissary-slaanesh
+    source_refs:
+    - manual: Fanatic Online 94
+      printed_page: 3
+      section: Emissary of Chaos
+      url: https://www.broheim.net/downloads/fo/94NewHiredSwords.pdf
+  - id: hireling.hired-sword.emissary-of-chaos.item.chaos-armour.rule.combat
+    name: Chaos Armour
+    name_i18n:
+      es: Armadura del Caos
+    effect: The printed Chaos Armour provides a 4+ armour save.
+    effect_i18n:
+      es: La Armadura del Caos impresa proporciona salvación de armadura de 4+.
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: armour.chaos-armour
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: armour.chaos-armour
   unresolved_references:
   - kind: patron_branch
     source_name: Khorne/Tzeentch/Nurgle/Slaanesh; Tzeentch changes skill access
@@ -524,6 +713,11 @@ profiles:
     printed_page: 0
     section: Hired Swords / Emissary of Chaos
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-2a
+  special_skill_rule_ids:
+  - hireling.hired-sword.emissary-of-chaos.patron.khorne
+  - hireling.hired-sword.emissary-of-chaos.patron.tzeentch
+  - hireling.hired-sword.emissary-of-chaos.patron.nurgle
+  - hireling.hired-sword.emissary-of-chaos.patron.slaanesh
 - id: hireling.hired-sword.estalian-diestro
   kind: hired-sword
   grade: 2a
@@ -567,20 +761,42 @@ profiles:
   rules:
   - id: hireling.hired-sword.estalian-diestro.rule.rapier
     name: Rapier
-    effect: Uses source Rapier rules.
+    effect: 'The rapier parries and has Barrage: a landed hit that fails to wound grants another attack
+      with a cumulative -1 To Hit, capped at needing 6, and each further attack benefits from Barrage.'
     effect_i18n:
       es: >-
         Usa las reglas de Estoque de la fuente.
     name_i18n:
       es: Estoque
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: weapon.rapier
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: weapon.rapier
   - id: hireling.hired-sword.estalian-diestro.rule.main-gauche
     name: Main Gauche
-    effect: Uses source Main Gauche rules.
+    effect: Each turn the Main Gauche either grants an additional dagger attack or parries as a sword,
+      forfeiting its additional attack.
     effect_i18n:
       es: >-
         Usa las reglas de Daga Izquierda de la fuente.
     name_i18n:
       es: Main Gauche
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.main-gauche-modes
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.main-gauche-modes
   source_refs:
   - manual: mordheimer.net
     printed_page: 0
@@ -1348,6 +1564,16 @@ profiles:
         Usa la regla de carismático de la fuente.
     name_i18n:
       es: Carismático
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.opposite-sex-charge-test
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.opposite-sex-charge-test
   source_refs:
   - manual: mordheimer.net
     printed_page: 0

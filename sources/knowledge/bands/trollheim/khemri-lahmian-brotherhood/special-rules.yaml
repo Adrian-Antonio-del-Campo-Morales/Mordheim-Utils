@@ -133,15 +133,15 @@ rules:
     profile_ids:
     - beloved
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.khemri-lahmian-brotherhood.beloved.devoted-to-the-vampire
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.devoted-to-the-vampire
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.devoted-to-the-vampire
 - id: beloved--accustomed-to-fear
   name: Accustomed to Fear
   effect: The Beloved is immune to Fear caused by Vampires, Skeletons and Spirits.
@@ -271,15 +271,15 @@ rules:
     profile_ids:
     - lackeys
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.khemri-lahmian-brotherhood.lackeys.devoted-to-the-vampire
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.devoted-to-the-vampire
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.devoted-to-the-vampire
 - id: lackeys--favoured
   name: Favoured
   effect: >-

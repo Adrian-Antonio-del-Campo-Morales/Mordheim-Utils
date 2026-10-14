@@ -152,15 +152,15 @@ rules:
     profile_ids:
     - desolate-soul
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.chaos-streets-mordheim-inhabitants.desolate-soul.profound-hatred
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology or mounts.
+    - id: mechanic.profound-hatred
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.profound-hatred
 - id: lunatics--frenzy
   runtime:
     scope: 'YES'

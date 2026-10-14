@@ -100,8 +100,17 @@
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The control: the band's ordinary Pit Fighters profile is not the recipient the printed clause names, so
-# the same Dwarf list row is refused there with the shared eligibility message (template
-# "special rule is not available to <band>/<profile>: <rule id>" from _eligibility.js).
+# the same Dwarf list row is refused there.
+# WHICH SENTENCE FIRES (checked statically in the shared construction stage, not by running it): the row
+# band--dwarf-special-skills-thick-skull belongs to another band's package and is joined into the build's
+# candidates only by `selectedRuleCandidates()`'s injection, which runs when the build's automatic
+# compiler contracts carry `compiler.slayer-skill-options` - a binding of this band's own
+# dwarf-troll-slayer--slayer-skill-options row.  The Pit Fighters profile does not carry that contract,
+# so for its build the id resolves to no package row and the sentence raised is
+# `compile_fighter()`'s own band-level resolution refusal
+# ("special rule is not available to {band_id}: {rule_id}"), which is what the tape declares.  The
+# per-recipient sentence ("...to {band_id}/{profile_id}: {rule_id}") is the one the two accepted tapes
+# above rely on being absent, and it can only be reached once the row is resolvable for the build.
 - audit_id: rule/trollheim/chaos-streets-pit-fighters/dwarf-troll-slayer--slayer-skill-options/compiler.slayer-skill-options
   id: an-uncovered-profile-is-refused-the-dwarf-list-row
   covers: [whole]
@@ -114,4 +123,4 @@
     second:
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
-  expect_error: "special rule is not available to chaos-streets-pit-fighters/pit-fighters: band--dwarf-special-skills-thick-skull"
+  expect_error: "special rule is not available to chaos-streets-pit-fighters: band--dwarf-special-skills-thick-skull"

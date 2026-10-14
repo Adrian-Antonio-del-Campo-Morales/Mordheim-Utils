@@ -2,10 +2,13 @@
 # audit_id: rule/mordheim/mazzalupo-web/master-of-finances--corruption/unimplemented.mazzalupo-web.master-of-finances.corruption
 # scaffold_fingerprint: 35adbe0f12b369a27ee3691841b0bbb00d28c9a8db62138f1c64acb57e0b063f
 # authoring_status: PARTIAL
-# authoring_progress: neither admitted clause can be authored.  The recorded relation of both clauses is
-#   unresolved, no consumer is recorded, and the register note reads the printed ability as "out-of-game gold
-#   bribery with the opponent controller; not a duel-runtime effect".  The exact pending datum is named in each
-#   clause marker below.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: the admitted attack-reroll clause now carries a scenario: the printed forced re-take of
+#   the enemy's successful attack is asserted on the enemy attack's own re-roll die - the mirror, with the
+#   other side's prefix, of the hit-re-roll key this corpus already uses - with the second result accepted.
+#   The earlier "neither clause can be authored" reduction was wrong: the unrecorded effect_id and the empty
+#   consumer are missing implementation, and the out-of-game payment is the excluded price clause, not this
+#   consequence.  The psychology-immunity limit stays withheld with its own concrete cause in its marker.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -16,12 +19,17 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: corruption--scope--attack-reroll (scope: YES)
-# PARTIAL[corruption--scope--attack-reroll]: [C] no scenario is authorable while the effect has no route.  The
-#   printed sentence ("pay 5 gc to make a hitting enemy reroll one successful attack") yields the clause the
-#   scope review admits, but its recorded effect_id is not recorded, its relation is unresolved and no
-#   consumer names the operator.  The missing datum is the forced-reroll operator itself (the enemy re-takes
-#   one successful attack and accepts the second result) plus the supplied route that applies it to the bearer
-#   of the corruption; the payment and the opponent-controller agreement stay outside the duel.
+# PARTIAL[corruption--scope--attack-reroll]: [C] the forced re-take is asserted; the case is stated, so what
+#   remains is its implementation.  The scope review admits the consequence ("a hitting enemy rerolls one
+#   successful attack"), and the tape below states it through the corpus's own hit-re-roll route: the enemy's
+#   successful attack is declared and the second result is declared on that same attack's `.hit.reroll` die -
+#   the established key under the enemy side's prefix, which the corpus's key grammar and its participant
+#   transformation already cover - so the tape reads the printed consequence (the attack is lost) and nothing
+#   else.  Pending implementation, not a withheld requirement: this row's effect_id is unrecorded and no
+#   consumer offers a forced re-take, so the declared die is unrequested today - the defect the strict tape is
+#   written to detect.  The supplied-use decision (the bearer spending the corruption on that attack) is part
+#   of that same missing consumer; the gold price and the opponent-controller agreement are the excluded
+#   price clause and stay outside the duel.
 # origin_id:
 #   rule/mordheim/mazzalupo-web/master-of-finances--corruption/unimplemented.mazzalupo-web.master-of-finances.corruption
 # analysis_status:
@@ -50,11 +58,15 @@
 #   Out-of-game gold bribery with the opponent controller; not a duel-runtime effect. Scope review integration: {"clause_id":"corruption","review_clause_id":"attack-reroll","source_state":"unverified","review_status":"reviewed","scope_reason":"Forcing a hitting enemy to reroll one successful attack is an admitted individual attack consequence between the two duellists.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"pay 5 gc to make a hitting enemy reroll one successful attack; Psychology-immune models cannot be corrupted","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 #
 # Clause: corruption--scope--psychology-immunity-limit (scope: YES)
-# PARTIAL[corruption--scope--psychology-immunity-limit]: [C] the printed limit is a property of the corruption
-#   effect, not a duel observable of its own: it can only be evidenced once a corruption outcome is supplied
-#   to a fighter, and that supply route is the same one missing for the attack-reroll clause.  The pending
-#   datum is the supplied corruption state (or the eligibility check that refuses it for a Psychology-immune
-#   model); the immunity operators that exist today belong to other identities and are not this restriction.
+# PARTIAL[corruption--scope--psychology-immunity-limit]: [C] kept withheld, with the exact cause: the printed
+#   limit ("Psychology-immune models cannot be corrupted") is a property of the corruption effect rather than
+#   an observable of its own, so it can only be evidenced once a corruption outcome is supplied to a fighter
+#   and refused for an immune one.  Declaring the enemy on the tape above already states the recipient side
+#   (the enemy whose attack is retaken), but the eligibility half needs the supplied corruption state itself:
+#   no field, condition id or trait carries "corrupted", and the immunity operators the corpus does carry
+#   belong to other identities (the canonical `mechanic.psychology-immunity` consumers), so a refusal tape
+#   would have to invent both the corrupted state and the eligibility branch that reads it.  Named here rather
+#   than asserted, and not counted as covered.
 # origin_id:
 #   rule/mordheim/mazzalupo-web/master-of-finances--corruption/unimplemented.mazzalupo-web.master-of-finances.corruption
 # analysis_status:
@@ -111,4 +123,33 @@
 # Register notes (context only, not behavioral authority):
 #   Out-of-game gold bribery with the opponent controller; not a duel-runtime effect. Scope review integration: {"clause_id":"corruption","review_clause_id":"corruption-cost","source_state":"unverified","review_status":"reviewed","scope_reason":"Paying gold crowns to use the ability is a price, and acquisition costs are excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"pay 5 gc to make a hitting enemy reroll one successful attack; Psychology-immune models cannot be corrupted","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Derived from the printed sentence and this origin's recorded contract; no engine output was consulted.  The
+# corrupting model is the band's own printed Master of Finances profile and the enemy is a hand-built fixture.
+
+- audit_id: rule/mordheim/mazzalupo-web/master-of-finances--corruption/unimplemented.mazzalupo-web.master-of-finances.corruption
+  id: the-successful-enemy-attack-is-taken-again-and-its-second-result-accepted
+  covers: [corruption--scope--attack-reroll]
+  # The admitted consequence: a hitting enemy re-rolls one successful attack.  The enemy's successful attack is
+  # declared (4 hits), the forced second result is declared on that attack's own `.hit.reroll` die (1, a miss),
+  # and the asserted outcome is the printed one - the attack is lost, so the corrupting duelist takes no wound.
+  # The re-roll die belongs to the enemy attack's key under the enemy side's prefix, the mirror of the key the
+  # accepted hit-re-roll tapes of this corpus declare; the tape fails on an unrequested die until the forced
+  # re-take has a consumer, which is the PENDING implementation defect, not a withheld requirement.
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: mazzalupo-web
+      profile_id: master-of-finances
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.hit.reroll, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: False, attacks.0.damage: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

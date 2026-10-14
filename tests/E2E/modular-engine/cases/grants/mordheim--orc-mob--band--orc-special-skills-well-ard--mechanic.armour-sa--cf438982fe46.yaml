@@ -54,6 +54,16 @@
 #   Resolved by an existing adopted ruling, not by the code agreeing with itself: tests/specs/semantic/rules/contextual-bonuses-and-rulings.yaml entry 'well-ard-no-armour-ruling' (question_status resolved) answers 'Does the +1 from Well 'Ard create a 6+ armour save when the warrior has no armour save at all?' with 'Well 'Ard creates a 6+ armour save if the warrior had none.'; its interpretation adds that Well 'Ard turns the absence of armour into a 6+ save and applies as ordinary armour, so it still suffers the relevant penetration modifiers. That decision settles the no-prior-save case for both Well 'Ard printings and is not extended to any other bonus. The compiler implements the decided reading (compile_fighter: armour_base is 7 when no body armour, then max(1, base - bonus), giving 6+) and is recorded as the matching consumer, not as the basis of the interpretation. Selectively verified equivalence: {"review_file":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"plus-one-to-armour-saves","verified_family":"mechanic.armour-save-bonus","verified_peer_keys":[{"origin_id":"rule/mordheim/orc-mob/band--orc-special-skills-well-ard/mechanic.armour-save-bonus","clause_id":"plus-one-to-armour-saves"},{"origin_id":"rule/trollheim/chaos-streets-greenskins/band--orc-special-skills-well-ard/mechanic.armour-save-bonus","clause_id":"plus-one-to-armour-saves"}],"sharing_boundary":"Same bearer armour-save improvement. Preserve the maintained 6+ unarmoured baseline and armour-penetration clauses; the review wording does not replace them.","evidence":"inspection","limit":"Only this closed selection was checked. No acceptance of the entire review, KB activation, implementation closure or execution evidence."}
 
 # --- Authored scenarios ---
+# RECIPIENT BOUNDARY (checked statically in the shared construction stage, not by running it): the
+# bearer is the printed Hero row orc-big-uns, not the Henchman row orc-boyz.
+# `specialRuleRestriction()`'s access stage admits a band warband_skill row with `applies_to.band: true`
+# and no `eligibility` only for a recipient whose own printed `skill_access` carries the `special`
+# category; orc-boyz prints none and would be refused one stage before this clause is reached, which is
+# the table's access requirement, not the armour-save improvement.  The retarget is inert for the tape:
+# both rows print the same orc-equipment-list, orc-big-uns carries no automatic profile rule, and every
+# characteristic the tape reads (WS3 S3 T3 W2 I2 A1) is declared on the fixture itself.
+#   band--orc-special-skills-well-ard  kind warband_skill  applies_to {band: true}  eligibility none
+#   orc-big-uns  type hero  skill_access [combat, shooting, strength, special]
 # Derived from the printed rule, this band's printed binding and the adopted no-armour ruling; no
 # engine output was consulted.  The bearer carries no body armour, so the die it is offered is the
 # improvement the ruling settles.
@@ -67,7 +77,7 @@
     second:
       collection: mordheim
       band_id: orc-mob
-      profile_id: orc-boyz
+      profile_id: orc-big-uns
       special_rule_ids: [band--orc-special-skills-well-ard]
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
@@ -91,7 +101,7 @@
     second:
       collection: mordheim
       band_id: orc-mob
-      profile_id: orc-boyz
+      profile_id: orc-big-uns
       special_rule_ids: [band--orc-special-skills-well-ard]
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}

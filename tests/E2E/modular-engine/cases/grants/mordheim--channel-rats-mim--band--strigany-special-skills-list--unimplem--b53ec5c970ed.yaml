@@ -2,17 +2,17 @@
 # audit_id: rule/mordheim/channel-rats-mim/band--strigany-special-skills-list/unimplemented.channel-rats-mim.band.strigany-special-skills-list
 # scaffold_fingerprint: ab18223fb48b4f119cdbcdcb5e715fb7f9a4a77ef1dad73311cb22d9fa71541d
 # authoring_status: PARTIAL
-# authoring_progress: no scenario is authored for the admitted clause: the printed sentence is a
-# construction access list and the two data it would need - the recipient profiles it binds and the
-# resolved member list it admits - are not recorded for this band, so neither an admission nor a
-# refusal can name a canonical identity.  The exact missing data and the diagnostic route are named
-# in the clause note below.  REVIEWED still requires manual semantic review and execution_status
+# authoring_progress: the admitted clause now carries the closure of the printed access in both
+# directions of the recipient gate (a special skill outside the printed Strigany tables refused for a
+# Strigany hero and for a band henchman); the admission direction stays withheld because this origin
+# publishes no member rows, and that exact cause is named in the clause note below.  REVIEWED still requires manual semantic review and execution_status
 # stays UNEXECUTED.  Source check (verified): the origin row `band--strigany-special-skills-list` in
 # sources/knowledge/bands/mordheim/channel-rats-mim/special-rules.yaml (line 645 onward) records
 # `scope: LATER`, `implemented: 'NO'`, `grant: band`, a null binding and the placeholder
 # `unimplemented.channel-rats-mim.band.strigany-special-skills-list`, so the recipient profiles and
 # the resolved member list this scaffold needs are absent from the source as well - the deferral is
 # recorded there, not inferred here.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
@@ -22,16 +22,31 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: strigany-skills (scope: YES)
-# PARTIAL[strigany-skills]: [C] the clause is legal-construction access (the printed Strigany skill list
-# for these heroes), so its only observable is an admission or a refusal at build time.  The shared
-# construction diagnostic for a skill outside a resolved access is already the family route used by
-# the authored warband skill-access grants (the "skills are not available to <band>/<profile>: [...]"
-# summary), but two data are missing here: (1) the recipient profiles the binding attaches to, and
-# (2) the resolved member list of the printed table, which the band source states as "Knowledge of
-# Myths (exploration), Bull Rush, Songster, etc." - an open list whose concrete member ids are not
-# recorded, so no skill can be named as the admitted one.  Naming either the recipient or a member
-# would be inventing the very data the clause is about; the exploration skill it contains is excluded
-# on its own terms.  REVIEWED still requires manual semantic review.
+# PARTIAL[strigany-skills]: [C] the clause is legal-construction access (the printed Strigany skill
+# list for these heroes), so its observable is an admission or a refusal at build time.  The accepted
+# equivalence for this origin is the shared skill-access decision itself (reviewed row EQ-P-SKILL-ACCESS,
+# relation parameterized_variant, consumer packages/typescript/domain/eligibility/index.ts::entryReachesProfile:
+# "the profile may choose skills from the named skill tables"), so the access requirement is in scope even
+# though the exploration skill the print also names is excluded on its own terms.
+#   RECIPIENT: this band's own profiles.yaml publishes the Strigany heroes (domnu, petru, tinker) whose
+#   skill_access carries the special category, and band henchmen (fugitives) that print none - the earlier
+#   note's claim that the recipients the binding attaches to are absent is WITHDRAWN against that source.
+#   ASSERTED BELOW: the closure of the same sentence in both directions of the recipient gate - a catalogue
+#   special skill outside the printed Strigany tables refused for a Strigany hero, and refused for a band
+#   henchman as well.
+#   STILL WITHHELD, with its exact cause: the admission direction cannot name a member.  The printed list is
+#   stated openly ("Knowledge of Myths (exploration), Bull Rush, Songster, etc.") and this origin publishes
+#   no member rows at all - its special-rules.yaml carries one row for the list itself (scope LATER /
+#   implemented NO / grant band / null binding / the placeholder unimplemented.channel-rats-mim.band.
+#   strigany-special-skills-list), no kind: warband_skill rows for the members, and no skill.* catalogue row
+#   whose source_refs name channel-rats-mim.  The two names it does carry are shared with other origins'
+#   printed clauses (Bull Rush is the Ostlanders' mechanic.bull-charge facet, Songster the
+#   sea-ghosts/hireling mechanic.songster facet) and the equivalence review leaves them to the skills
+#   equivalence review while recording this origin's own parameters as its printed TABLE SET, not as member
+#   ids - so declaring one of those operators here would assert a member identity no artefact carries for
+#   this origin.  The missing projection is the same one the four band skill tables name: this origin's
+#   resolved member set has to be projected into the profile's special skill list, after which the admission
+#   tape is written from it.  REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/mordheim/channel-rats-mim/band--strigany-special-skills-list/unimplemented.channel-rats-mim.band.strigany-special-skills-list
 # analysis_status:
@@ -59,4 +74,43 @@
 # Register notes (context only, not behavioral authority):
 #   Skill selection is advancement-time. Bull Rush and Songster belong to the skills equivalence review; an unselected list origin carries no duel-runtime clause. Scope review integration: {"clause_id":"strigany-skills","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The named skill list is legal-construction access for these heroes; the exploration skill it contains is not claimed here and is excluded on its own terms.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Strigany skill list: Knowledge of Myths (exploration), Bull Rush, Songster, etc.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."} Surface reuse candidate: {"family":"P-SKILL-ACCESS","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Share only the relevant construction/projection operation. Preserve each item/list identity, recipient, quantity, ownership-versus-use distinction and prerequisite. No free dagger does not itself forbid all owned daggers; acquisition, prices and casting stay separate.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+
+# --- Authored scenarios ---
+# Derived from the printed table sentence, the reviewed EQ-P-SKILL-ACCESS row, this band's own profiles.yaml
+# and the established skill-availability family; no engine output was consulted.  Neither tape declares an
+# attack of its own, so the observation is the access decision itself.
+
+- audit_id: rule/mordheim/channel-rats-mim/band--strigany-special-skills-list/unimplemented.channel-rats-mim.band.strigany-special-skills-list
+  id: a-special-skill-outside-the-printed-tables-is-refused-for-a-strigany-hero
+  covers: [strigany-skills]
+  # The closure of the printed access: the Strigany heroes may use the named table *instead of* the standard
+  # tables, so a special skill no printed Strigany table contains is not available to one of them.  The
+  # recipient is this band's own printed Strigany hero (profiles.yaml id domnu, whose skill_access carries
+  # the special category) and the declared identity is a registered catalogue warband skill that is not a
+  # member of any printed Strigany table.  The sentence is the shared skill-availability family; today it is
+  # produced by the absent member projection, which is why it stands beside the henchman control below and
+  # the marker records that limit rather than claiming a printed member boundary.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: domnu
+      skill_ids: [skill.monster-slayer]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to channel-rats-mim/domnu: ['skill.monster-slayer']"
+
+- audit_id: rule/mordheim/channel-rats-mim/band--strigany-special-skills-list/unimplemented.channel-rats-mim.band.strigany-special-skills-list
+  id: the-same-skill-is-refused-for-a-band-henchman
+  covers: [strigany-skills]
+  # The printed permission names the Strigany HEROES; this band's henchmen print no skill access at all
+  # (profiles.yaml, fugitives), so the same special skill is refused for them too.  The pair is the
+  # recipient gate of the same printed sentence.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: channel-rats-mim
+      profile_id: fugitives
+      skill_ids: [skill.monster-slayer]
+      main_weapon_id: weapon.mace
+  expect_error: "skills are not available to channel-rats-mim/fugitives: ['skill.monster-slayer']"
+

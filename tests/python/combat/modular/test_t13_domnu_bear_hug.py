@@ -126,3 +126,14 @@ def test_the_trained_bear_keeps_its_unqualified_attacks_clause():
         "mordheim", band_id="kislevites", profile_id="trained-bear"))
     assert bear.global_effects.bear_hug is True
     assert "rule.bear-hug-unarmed" not in bear.global_effects.tags
+
+
+def test_hug_replaces_two_hits_and_preserves_a_third_independent_attack():
+    result, dice, defender_state = pool(domnu(), 3,
+        (("domnu.attack.0.hit", 5), ("domnu.attack.1.hit", 5), ("domnu.attack.2.hit", 5),
+         ("domnu.bear-hug.attacker", 3), ("domnu.bear-hug.defender", 3),
+         ("domnu.attack.2.wound", 3)),
+        StrictDecisions([{"key": "domnu.bear-hug", "value": True}]))
+    assert len(result[2]) == 2 and [outcome.damage for outcome in result[2]] == [1, 1]
+    assert defender_state.wounds == 1
+    dice.finish()

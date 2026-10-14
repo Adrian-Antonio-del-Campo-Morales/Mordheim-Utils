@@ -179,6 +179,94 @@ mutations:
 # catalogue publishes. The ids the printed rule names but the catalogue does not
 # carry (no published cost in the available sources) are recorded in
 # `unrouted_mutation_names` instead of being invented.
+- id: campaign.mutation.prehensile-tail
+  name: Prehensile Tail
+  name_i18n:
+    es: Prehensile Tail
+  cost_gc: 50
+  effect: Unless it already possesses a tail, gains one tail attack; may equip one single-handed
+    weapon or shield/buckler in that tail. Choosing an equipped prehensile tail excludes every other
+    tail attack for that hand-to-hand phase. Unable-to-use-weapons restriction persists.
+  effect_i18n:
+    es: Unless it already possesses a tail, gains one tail attack; may equip one single-handed weapon
+      or shield/buckler in that tail. Choosing an equipped prehensile tail excludes every other tail
+      attack for that hand-to-hand phase. Unable-to-use-weapons restriction persists.
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 160
+    section: Corrupted Characters / Prehensile Tail
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- id: campaign.mutation.beak
+  name: Beak
+  name_i18n:
+    es: Beak
+  cost_gc: 35
+  effect: Unless it already possesses a bite, gains one additional close-combat bite at own Strength
+    with no unarmed penalty. Always strikes after double-handed weapons, regardless of charge.
+  effect_i18n:
+    es: Unless it already possesses a bite, gains one additional close-combat bite at own Strength
+      with no unarmed penalty. Always strikes after double-handed weapons, regardless of charge.
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 162
+    section: Corrupted Characters / Beak
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- id: campaign.mutation.electrical-touch
+  name: Electrical Touch
+  name_i18n:
+    es: Electrical Touch
+  cost_gc: 45
+  effect: 'May forfeit one close-combat attack to jolt at +1 Initiative: automatic Strength3 hit,
+    ignores all armour; Strength5 against metal armour. Recharge D3 turns after use.'
+  effect_i18n:
+    es: 'May forfeit one close-combat attack to jolt at +1 Initiative: automatic Strength3 hit, ignores
+      all armour; Strength5 against metal armour. Recharge D3 turns after use.'
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 162
+    section: Corrupted Characters / Electrical Touch
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- id: campaign.mutation.mer-creature
+  name: Mer-Creature
+  name_i18n:
+    es: Mer-Creature
+  cost_gc: 25
+  effect: Aquatic terrain and submersion are excluded; when moving on land the Hero has Movement
+    reduced by one.
+  effect_i18n:
+    es: Aquatic terrain and submersion are excluded; when moving on land the Hero has Movement reduced
+      by one.
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 162
+    section: Corrupted Characters / Mer-Creature
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- id: campaign.mutation.suckers
+  name: Suckers
+  name_i18n:
+    es: Suckers
+  cost_gc: 25
+  effect: Automatically passes Initiative tests when climbing. Climbing is outside the duel.
+  effect_i18n:
+    es: Automatically passes Initiative tests when climbing. Climbing is outside the duel.
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 164
+    section: Corrupted Characters / Suckers
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- id: campaign.mutation.eye-stalks
+  name: Eye Stalks
+  name_i18n:
+    es: Eye Stalks
+  cost_gc: 40
+  effect: Crab-like stalked eyes cause Fear (counts as Hideous).
+  effect_i18n:
+    es: Crab-like stalked eyes cause Fear (counts as Hideous).
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Eye Stalks
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
 grant_rules:
 - id: campaign.mutation.grant.aquatic-mutants
   band_id: shallows-beasts-mim
@@ -189,13 +277,13 @@ grant_rules:
   - campaign.mutation.blackblood
   - campaign.mutation.great-claw
   - campaign.mutation.tentacle
-  unrouted_mutation_names:
-  - prehensile tail
-  - beak
-  - electrical touch
-  - mer-creature
-  - suckers
-  - eye stalks
+  - campaign.mutation.prehensile-tail
+  - campaign.mutation.beak
+  - campaign.mutation.electrical-touch
+  - campaign.mutation.mer-creature
+  - campaign.mutation.suckers
+  - campaign.mutation.eye-stalks
+  unrouted_mutation_names: []
   limit_per_warrior: 1
   name: Aquatic Mutants
   name_i18n:
@@ -219,3 +307,376 @@ grant_rules:
 effect_ids:
 - campaign.mutation.apply
 - campaign.mutation.grant-on-advance
+
+random_mutation_chart:
+- roll: 11
+  name: Moronic
+  effect_ids:
+  - mechanic.stupidity
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 12
+  name: Emaciated Appearance
+  stat_ops:
+  - - toughness
+    - halve-ceil
+    - 2
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 13
+  name: Shrink
+  stat_ops:
+  - - movement
+    - add
+    - -1
+  - - initiative
+    - add
+    - -1
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 14
+  name: Warty Skin
+  excluded_facet: post-battle rarity
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 15
+  name: Brightly Patterned Skin
+  excluded_facet: hidden-model spotting
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 16
+  name: Furry
+  excluded_facet: weather and terrain
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 21
+  name: Skull Face
+  effect_ids:
+  - mechanic.causes-fear
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 22
+  name: Eye Stalks
+  effect_ids:
+  - mechanic.causes-fear
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 23
+  name: Hideous
+  effect_ids:
+  - mechanic.causes-fear
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 24
+  name: Bloated Foulness
+  stat_ops:
+  - - wounds
+    - add
+    - 1
+  - - toughness
+    - add
+    - 1
+  - - movement
+    - add
+    - -1
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 25
+  name: Great Claw
+  extra_attack_parameters:
+  - tags:
+    - rule.great-claw
+    strength_bonus: 1
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 26
+  name: Horned One
+  extra_attack_parameters:
+  - tags:
+    - rule.horned-one
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 31
+  name: Daemon Soul
+  excluded_facet: spells and prayers
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 32
+  name: Cloven Hoofs
+  stat_ops:
+  - - movement
+    - add
+    - 1
+  excluded_facet: movement geometry
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 33
+  name: Tentacle
+  effect_parameters:
+    tags:
+    - rule.tentacle-grapple
+    incoming_attacks_modifier: -1
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 34
+  name: Blackblood
+  effect_parameters:
+    tags:
+    - acid_blood
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 35
+  name: Spines
+  effect_parameters:
+    tags:
+    - spines
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 36
+  name: Scorpion Tail
+  extra_attack_parameters:
+  - tags:
+    - rule.scorpion-tail
+    fixed_strength: 5
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 41
+  name: Extra Arm
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 42
+  name: Poisonous Bite
+  extra_attack_parameters:
+  - tags:
+    - rule.poisonous-bite
+    fixed_strength: 5
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 43
+  name: Scaly Skin
+  stat_ops:
+  - - natural_armour_save
+    - set
+    - 5
+  - - natural_armour_worst_save
+    - set
+    - 6
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 44
+  name: Prehensile Tail
+  extra_attack_parameters:
+  - tags:
+    - rule.prehensile-tail
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 45
+  name: Wings
+  excluded_facet: gliding and terrain
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 46
+  name: Regeneration
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 51
+  name: Suckers
+  excluded_facet: climbing
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 52
+  name: Fangs
+  extra_attack_parameters:
+  - tags:
+    - weapon.natural-attacks
+    - rule.strikes-last-bite
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 53
+  name: Cloud of Flies
+  effect_parameters:
+    tags: []
+    incoming_hit_modifier: -1
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 54
+  name: Spiked Tail
+  extra_attack_parameters:
+  - tags:
+    - rule.spiked-tail
+    strength_bonus: 1
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 55
+  name: Beak
+  extra_attack_parameters:
+  - tags:
+    - weapon.natural-attacks
+    - rule.strikes-last-bite
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 56
+  name: Elastic Limbs
+  excluded_facet: attacks outside base contact and directed range
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 61
+  name: Burning Body
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 62
+  name: Plague Carrier
+  stat_ops:
+  - - movement
+    - add
+    - -1
+  - - initiative
+    - add
+    - -1
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 63
+  name: Crystalline Body
+  stat_ops:
+  - - toughness
+    - set
+    - 6
+  - - wounds
+    - set
+    - 1
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 64
+  name: Hulking Brute
+  stat_ops:
+  - - strength
+    - add
+    - 2
+  - - leadership
+    - add
+    - -4
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 65
+  name: Beweaponed Extremities
+  limb_effect_ids:
+  - weapon.sword
+  - weapon.mace
+  - weapon.mace
+  - weapon.axe
+  - weapon.axe
+  - weapon.flail
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf
+- roll: 66
+  name: Atrophy
+  source_refs:
+  - manual: Mutiny in Marienburg
+    printed_page: 159
+    section: Corrupted Characters / Random Mutation Chart
+    url: https://broheim.net/downloads/campaigns/mutinyinmarienburg/Mutiny%20In%20Marienburg.pdf

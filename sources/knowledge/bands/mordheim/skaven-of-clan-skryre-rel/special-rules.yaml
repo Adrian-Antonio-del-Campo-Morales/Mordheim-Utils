@@ -171,13 +171,14 @@ rules:
 - id: overseer--slave-driver
   runtime:
     scope: 'YES'
-    implemented: 'NO'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.skaven-of-clan-skryre-rel.overseer.slave-driver
+    - id: mechanic.slave-driver
       scope: 'YES'
-      binding: null
-      reason: 'Included individual duel effect, not implemented: Supplied qualified provider Leadership within the source-specific 3/6-inch range; canonical provider projection remains pending.'
+      binding:
+        kind: mechanic
+        id: mechanic.slave-driver
   name: Slave Driver
   effect: >-
     A Skaven Overseer strikes fear into his slaves. They may use his leadership if they are within

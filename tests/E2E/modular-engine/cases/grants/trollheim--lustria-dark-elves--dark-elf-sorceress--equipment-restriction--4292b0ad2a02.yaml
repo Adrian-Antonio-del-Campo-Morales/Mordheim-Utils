@@ -1,7 +1,7 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-dark-elves/dark-elf-sorceress--equipment-restrictions/profile.equipment-restrictions
 # scaffold_fingerprint: 8f8fb465d43fc64868ca835c3dd191fc842c248a9418fafce6dce3bcaf952f49
-# authoring_status: PARTIAL
+# authoring_status: AUTHORED
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -12,16 +12,25 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole--scope--equipment-bars (scope: YES)
-# PARTIAL[whole--scope--equipment-bars]: [C] 2 scenarios (blackpowder half authored, Whip half pending).  Category C: which message the module emits for a Sorceress carrying the Beastmaster's Whip (the token refusal `\"beastmaster_whip\" is forbidden for lustria-dark-elves/dark-elf-sorceress.` or the aggregated `equipment is not available to ...` summary whose list tail is unrecorded) is the absent observation, and only execution or a recorded sample fixes it.  The
+# AUTHORED[whole--scope--equipment-bars]: 3 scenarios evidence both printed bars of this clause, and the two
+#   halves share one construction stage.  The blackpowder half is a pistol-carrying Sorceress refused with the
+#   band's own shared sentence `blackpowder weapons are forbidden for lustria-dark-elves/dark-elf-sorceress` plus
+#   the accepted-at-construction control.  The Whip half is the same printed profile carrying `beastmaster_whip`,
+#   refused with the shared per-item offered-set sentence `"<item>" is not on any equipment list of
+#   <band>/<profile>.`, the family this corpus already exhibits for an item outside the recipient's offered set
+#   (the Khemri `snake_whip` pair).  Why the Whip half is this sentence and not a token refusal: the band's own
+#   equipment-access.yaml gates the Whip's list row with `applies_to.profile_ids: [beastmaster]`, and the shared
+#   stage tests the resulting offered set before its forbids loop, so a Sorceress build never reaches the
+#   `forbids` token refusal.  The open question this half waited on, now answered, was which message the stage raises: the token refusal `\"beastmaster_whip\" is forbidden for lustria-dark-elves/dark-elf-sorceress.` or the aggregated `equipment is not available to ...` summary whose list tail is unrecorded.  The
 #   installation the previous note called missing IS declared, in this band's own sources: special-rules.yaml
 #   carries `dark-elf-sorceress--equipment-restrictions` (implemented YES, grant profile, applies_to
 #   profile_ids [dark-elf-sorceress]) with parameters.forbids [beastmaster_whip], and the band row above it
 #   installs compiler.no-blackpowder-weapons with grant: band.  The authored pair therefore is a Sorceress
 #   carrying weapon.pistol refused with the shared blackpowder sentence, plus the accepted-at-construction
-#   control.  Pending is only the Whip half, and not for want of a binding: the Whip's list entry in this band's
+#   control.  The Whip half needed no new binding: the Whip's list entry in this band's
 #   equipment-access.yaml is gated `applies_to.profile_ids: [beastmaster]`, so a Sorceress carrying it reaches
-#   the earlier '"beastmaster_whip" is not on any equipment list of <band>/<profile>.' summary rather than the
-#   token refusal, and which of those two messages a Sorceress build raises is the datum that stays open.  The
+#   the earlier '"beastmaster_whip" is not on any equipment list of <band>/<profile>.' summary, which is the sentence the authored Whip scenario declares rather than the
+#   token refusal, because the offered set is tested first.  The
 #   printed casting-while-armoured sentence stays out of scope as recorded.  REVIEWED still requires manual
 #   semantic review.
 # origin_id:
@@ -79,12 +88,12 @@
 #   []
 # Register notes (context only, not behavioral authority):
 #   The blackpowder ban is shared; spell casting while armoured is excluded. Scope review integration: {"clause_id":"whole","review_clause_id":"casting-while-armoured","source_state":"matched","review_status":"reviewed","scope_reason":"The bar on casting spells while wearing armour concerns the excluded casting subsystem and states no separate duel consequence.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Prohibition: the Dark Elf Sorceress may not use blackpowder weapons or the Beastmaster's Whip; the armour/spell condition is excluded.","effect_id":"profile.equipment-restrictions","relation":"equivalent","parameters":"{\"forbids\":[\"beastmaster_whip\"]}","conditions":"{\"recipient\":\"dark-elf-sorceress\"}","consumer":"[\"packages/typescript/domain/eligibility/index.ts::profileFactsProjection\",\"packages/python/roster-construction/mordheim_construction/eligibility.py::context\"]","implementation_work":"none","dependencies":"[]","implementation_batch":"batch.D.profile-restrictions","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"sources/knowledge/bands/trollheim/lustria-dark-elves/special-rules.yaml\"]"},"inherited_clause_text":"May never use blackpowder weapons... May not select the Beastmaster's Whip. May not cast spells while wearing armour.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
-# authoring_progress: 2 authored scenario(s) in this file; authored clause: the blackpowder half of
+# authoring_progress: 3 authored scenario(s) in this file; authored clause: both halves of
 #   'whole--scope--equipment-bars' (a pistol-carrying Dark Elf Sorceress refused with `blackpowder weapons are
 #   forbidden for lustria-dark-elves/dark-elf-sorceress`, from the band's own compiler.no-blackpowder-weapons row,
-#   plus the accepted-at-construction control).  Still pending in this clause: the Beastmaster's Whip bar, whose
-#   recorded forbids binding does exist but whose gated list entry decides between two stage messages - see the
-#   clause note.  REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
+#   plus the accepted-at-construction control, and the Beastmaster's Whip bar, whose
+#   recorded forbids binding exists and whose gated list entry makes the per-item offered-set sentence the one a
+#   Sorceress build raises.  REVIEWED requires manual semantic review and execution_status stays UNEXECUTED.
 
 # --- Authored scenarios ---
 
@@ -124,3 +133,18 @@
   expect_final:
     rounds_executed: 0
     termination_reason: second_out
+
+# The printed prohibition's second half on the same recipient: the Beastmaster's Whip is not on this profile's
+# offered set (its list row is gated to the beastmaster), so the build is refused by the shared per-item
+# sentence, which is the observation the previous revision left open.
+- audit_id: rule/trollheim/lustria-dark-elves/dark-elf-sorceress--equipment-restrictions/profile.equipment-restrictions
+  id: dark-elf-sorceress-carrying-the-beastmasters-whip-is-refused
+  covers:
+  - whole--scope--equipment-bars
+  fighters:
+    first:
+      collection: trollheim
+      band_id: lustria-dark-elves
+      profile_id: dark-elf-sorceress
+      owned_item_ids: [beastmaster_whip]
+  expect_error: '"beastmaster_whip" is not on any equipment list of lustria-dark-elves/dark-elf-sorceress.'

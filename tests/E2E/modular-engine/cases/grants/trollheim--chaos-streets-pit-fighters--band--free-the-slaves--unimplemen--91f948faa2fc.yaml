@@ -97,6 +97,19 @@
 
 
 # --- Authored scenarios ---
+# CHANNEL (checked statically in the shared construction stage, not by running it): this clause is a
+# band grant, not a selection - band--free-the-slaves carries `runtime.grant: band` and
+# `applies_to.band: true` - and `compile_fighter()` refuses a declared `special_rule_ids` entry whose
+# grant is not `selectable` ("special rule is not selectable: band--free-the-slaves"), so the declared
+# selection channel could never reach this clause and no tape through it would evidence it.  The bearer
+# is therefore a printed band build (chaos-streets-pit-fighters/pit-fighters) that receives the band rule
+# automatically, and the rule's own missing piece is the recorded placeholder binding
+# (`unimplemented.chaos-streets-pit-fighters.band.free-the-slaves`, binding null, implemented NO), which
+# is what these tapes fail on until it exists; no construction refusal stands in front of them.  The
+# bearer's weapon is the printed axe of the pit-fighter-equipment-list (the printed mace is not on that
+# list), one-handed and Strength 3 like the mace it replaces, so the declared wound threshold is
+# unchanged.  The slaver identity of the first scenario stays the Mordheim Slavers module the corpus
+# carries.
 # Derived from the printed rule and the recorded semantic contract; no engine output was consulted.
 # The bearer is a hand-built fixture carrying the printed band rule (this origin's kb binding is the
 # placeholder `unimplemented.chaos-streets-pit-fighters.band.free-the-slaves`, so no profile build
@@ -109,8 +122,10 @@
   covers: [hate-slavers]
   fighters:
     first:
-      special_rule_ids: [band--free-the-slaves]
-      main_weapon_id: weapon.mace
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: pit-fighters
+      main_weapon_id: weapon.axe
       characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 7}
     second:
       collection: mordheim
@@ -132,8 +147,10 @@
   covers: [hate-slavers]
   fighters:
     first:
-      special_rule_ids: [band--free-the-slaves]
-      main_weapon_id: weapon.mace
+      collection: trollheim
+      band_id: chaos-streets-pit-fighters
+      profile_id: pit-fighters
+      main_weapon_id: weapon.axe
       characteristics: {weapon_skill: 4, strength: 3, toughness: 3, wounds: 1, initiative: 3, attacks: 1, leadership: 7}
     second:
       main_weapon_id: weapon.mace

@@ -109,16 +109,19 @@ rules:
     - hatamoto
 - id: vim-to-mage--tenants-of-the-order
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.nipponese-expedition-web.vim-to-mage.tenants-of-the-order
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: equipment restrictions are roster-construction mechanics outside the
-        duel scope.
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          allowed_kinds:
+          - weapon.mace
+          - weapon.dagger
   name: Tenants of the Order
   effect: >-
     The Order of the Vim-To strictly enforces a vow of Poverty, meaning with the exception of a
@@ -257,13 +260,14 @@ rules:
 - id: ashigaru--wall-of-steel
   runtime:
     scope: 'YES'
-    implemented: 'NO'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.nipponese-expedition-web.ashigaru.wall-of-steel
+    - id: mechanic.wall-of-steel
       scope: 'YES'
-      binding: null
-      reason: 'Included individual duel effect, not implemented: Optional two-handed spear Parry contribution; source-specific loadout projection remains pending.'
+      binding:
+        kind: mechanic
+        id: mechanic.wall-of-steel
   name: Wall of Steel
   effect: >-
     Even the most lowly of Ashigaru is a veteran of hours of drill, and because of this if wielding

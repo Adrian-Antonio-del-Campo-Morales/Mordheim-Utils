@@ -2,13 +2,15 @@
 # audit_id: rule/mordheim/ghutani-rel/scholar--field-of-scholarship/unimplemented.ghutani-rel.scholar.field-of-scholarship
 # scaffold_fingerprint: 6d814d7d80b1b6730e02da867077350f755f374b8981266f6523bccaf9e6e5be
 # authoring_status: PARTIAL
-# authoring_progress: no scenario is authorable from this file's recorded evidence.  Both admitted
-# clauses register effect_id (not recorded) with relation "unresolved" and an empty consumer, so neither
-# the printed Physiology reroll of an injury result nor the printed Poetry Leadership is bound to any
-# admitted operator: a search of packages/python/roster-construction and of the combat engine finds no
-# request key, message or branch for this origin, and no accepted case in this revision declares the
-# injury-reroll key or the supplied Poetry condition the tapes would need.  REVIEWED still requires
-# manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: both admitted clauses now carry scenarios, written from the printed sentence and this [Reconciled 2026-10-14: the injury-reroll tape was withdrawn against the register's scope-NO
+#   disposition; only the leader-leadership tapes remain.]
+#   origin's accepted contract, and the sister records (muzil-rel and turjuk-rel scholars) were corrected the
+#   same way.  The earlier claim that no scenario is authorable was wrong: an unrecorded effect_id and a null
+#   binding are missing implementation, not a missing requirement, and the duel does carry the two routes the
+#   tapes use (the injury-result re-roll, whose declared decision is this corpus's own, and the supplied
+#   leader condition, supplied as the design ruling allows).  The clauses stay PARTIAL with the pending
+#   implementation and the printed reward gate named; REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -18,8 +20,14 @@
 # Governing rulings: docs/decisions/design-rulings.md
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: field-of-scholarship--scope--injury-reroll (scope: YES)
-# PARTIAL[field-of-scholarship--scope--injury-reroll]: [C] pending an accepted effect_id and the operator plus request key for rerolling an injury result (the register leaves the effect unrecorded and the relation unresolved), and the printed scope of the Physiology reroll - which injury faces it covers.  With those the tape is an ordinary injury route with one declared reroll against the bearer, held against the same tape without the rule.
+# Clause: field-of-scholarship--scope--injury-reroll (scope: NO)
+# PARTIAL[field-of-scholarship--scope--injury-reroll]: [E] accepted scope disposition, recorded against the canonical register: the row
+#   field-of-scholarship--scope--injury-reroll carries clause_scope NO (the printed producer is the
+#   post-battle Serious Injuries table, campaign scope), so the previous tape
+#   the-scholar-rerolls-an-injury-result-he-suffers (which covered this clause) is withdrawn and no
+#   tape may cover it. The contradiction between that historical scope review's admitted facet and
+#   the canonical register is recorded for the owner as decision MHD-13 in
+#   outputs/human-decisions.md; nothing here re-decides it. Retained previous contract text:
 # origin_id:
 #   rule/mordheim/ghutani-rel/scholar--field-of-scholarship/unimplemented.ghutani-rel.scholar.field-of-scholarship
 # analysis_status:
@@ -48,13 +56,17 @@
 #   Exploration, post-battle Serious Injuries and a campaign-win condition on the Poetry bonus; all campaign scope. Scope review integration: {"clause_id":"field-of-scholarship","review_clause_id":"injury-reroll","source_state":"unverified","review_status":"reviewed","scope_reason":"The Physiology reroll of an injury result is an admitted individual injury consequence of this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Cartography exploration bonus, Physiology injury reroll, Poetry leader Leadership","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 #
 # Clause: field-of-scholarship--scope--leader-leadership (scope: YES)
-# PARTIAL[field-of-scholarship--scope--leader-leadership]: [C] not asserted here.  The clause registers
-#   effect_id (not recorded) with relation unresolved and an empty consumer, and its own register note
-#   keeps the Poetry bonus in campaign scope ("a campaign-win condition on the Poetry bonus"), so nothing in
-#   the shared construction stage or in the duel reads it: no operator, request key or message is bound to
-#   this origin.  The pending datum is the admitted operator that turns the printed supplied-leader
-#   condition into a Leadership value; with it the tape is the ordinary nearby-provider shape the
-#   leader-borrow cases of this corpus already use.  REVIEWED still requires manual semantic review.
+# PARTIAL[field-of-scholarship--scope--leader-leadership]: [C] asserted as the admitted supplied leader
+#   condition, with its unrepresentable gate recorded.  The printed sentence is "your leader adds +1 to his
+#   Leadership for his first leadership test in a scenario", and the register admits the facet as the supplied
+#   leader condition the ruling allows ("an external aura, leader or temporary effect may be supplied as an
+#   explicit current condition/bonus of a duelist").  The tapes below therefore give the band's own printed
+#   Leader (`emir`, the profile its own `emir--leader` rule applies to) as the tested duelist and the band's
+#   own `scholar` as the supplied rule carrier, and the pair reads the printed +1 across the boundary at
+#   Ld 8 / Ld 9.  The printed reward gate ("if your warband won the last battle they fought") is a
+#   previous-battle fact no fixture field or condition identity carries; it is recorded here, not silently
+#   dropped.  Pending implementation: the binding is null, so the Poetry condition is not projected onto the
+#   tested duelist's value today - the defect the strict tape detects.  REVIEWED still requires manual review.
 # origin_id:
 #   rule/mordheim/ghutani-rel/scholar--field-of-scholarship/unimplemented.ghutani-rel.scholar.field-of-scholarship
 # analysis_status:
@@ -111,4 +123,66 @@
 # Register notes (context only, not behavioral authority):
 #   Exploration, post-battle Serious Injuries and a campaign-win condition on the Poetry bonus; all campaign scope. Scope review integration: {"clause_id":"field-of-scholarship","review_clause_id":"exploration","source_state":"unverified","review_status":"reviewed","scope_reason":"A Cartography exploration bonus is campaign exploration content, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"Cartography exploration bonus, Physiology injury reroll, Poetry leader Leadership","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+- audit_id: rule/mordheim/ghutani-rel/scholar--field-of-scholarship/unimplemented.ghutani-rel.scholar.field-of-scholarship
+  id: the-supplied-scholar-raises-the-leaders-first-leadership-test
+  covers: [field-of-scholarship--scope--leader-leadership]
+  # Poetry: "your leader adds +1 to his Leadership for his first leadership test in a scenario", admitted
+  # by this origin's scope review as the supplied leader condition the ruling allows.  The recipient is
+  # the printed leader, so the tested duelist is the band's own `emir` (its printed Leader, Ld 8, the
+  # profile the band's own `emir--leader` rule applies to) and the rule carrier is the band's own
+  # `scholar`, supplied as a nearby participant of the leader's side.  The leader's first Leadership test
+  # is the Fear test of the charge he receives; the declared faces total 9, which passes at the printed
+  # Ld 8 + 1 and fails at the unmodified Ld 8, so this tape and its control below read the +1 and nothing
+  # else.  The rule's binding is null today, so the strict tape fails until the Poetry condition is
+  # projected onto the tested duelist's value - the PENDING implementation defect, not a withheld
+  # requirement.
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: ghutani-rel, profile_id: emir}
+  duel_context:
+    charging: [first]
+    active_participant: first
+    nearby:
+      - participant_id: poet
+        side_id: second
+        condition: standing
+        fighter: {collection: mordheim, band_id: ghutani-rel, profile_id: scholar}
+    distances:
+      - [second, poet, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/ghutani-rel/scholar--field-of-scholarship/unimplemented.ghutani-rel.scholar.field-of-scholarship
+  id: the-same-faces-fail-without-the-supplied-scholar
+  covers: [field-of-scholarship--scope--leader-leadership]
+  # The control of the tape above: the same leader, the same charge and the same faces (4 + 5 = 9), with
+  # no scholar supplied, so the +1 of the printed Poetry clause is absent and the printed Ld 8 fails it.
+  # The pair is what makes the boundary attributable to the clause rather than to the fixture.
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: mordheim, band_id: ghutani-rel, profile_id: emir}
+  duel_context:
+    charging: [first]
+    active_participant: first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 5}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

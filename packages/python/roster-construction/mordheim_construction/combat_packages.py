@@ -37,6 +37,11 @@ def combat_packages(collection, root=None):
                 if source["id"] == "hireling.hired-sword.holy-man" and entry["item_id"] == "staff":
                     entry["mechanic_id"] = "weapon.double-handed-weapon"
             intrinsic = list(source.get("rules") or [])
+            referenced = set((*source.get("rule_ids", ()), *source.get("special_skill_rule_ids", ())))
+            for item in profile["hireling_equipment"].get("unique_equipment", ()):
+                referenced.update(rule_id for rule_id in item.get("rules", ()) if isinstance(rule_id, str))
+            intrinsic.extend(rule for rule in catalogue.rules
+                             if rule["id"] in referenced and not any(row["id"] == rule["id"] for row in intrinsic))
             if source["id"] == "hireling.hired-sword.sister-of-sigmar":
                 sisters = next(pack for pack in bands if pack.band["id"] == "sisters-of-sigmar")
                 for original in sisters.special_rules:
@@ -60,6 +65,8 @@ def combat_packages(collection, root=None):
                 combat["causes_fear"] = True
             if "undead" in facts:
                 combat["creature_kind"] = "undead"
+            if "spellcaster" in facts:
+                combat["spellcaster"] = True
             for species in ("human", "dwarf", "ogre", "orc", "goblin", "skaven", "halfling", "beastman"):
                 if species in facts:
                     combat["species"] = species
@@ -75,6 +82,13 @@ def combat_packages(collection, root=None):
                     chosen_from.extend(option.get("from_item_ids", ()))
             offered = list(dict.fromkeys([*(e["item_id"] for e in entries), *chosen_from,
                 *(item["id"] for item in equipment.get("unique_equipment", ())) ]))
+            if equipment.get("innate_weapon_id"):
+                offered.append(equipment["innate_weapon_id"])
+            for item in equipment.get("unique_equipment", ()):
+                counts_as = item.get("counts_as")
+                equivalent = counts_as if isinstance(counts_as, str) else (counts_as or {}).get("item_id")
+                if equivalent and equivalent not in offered:
+                    offered.append(equivalent)
             if any(e.get("mechanic_id") == "weapon.double-handed-weapon" for e in entries):
                 offered.append("two_handed_weapon")
             if any(e.get("material_id") == "material.gromril" for e in entries):

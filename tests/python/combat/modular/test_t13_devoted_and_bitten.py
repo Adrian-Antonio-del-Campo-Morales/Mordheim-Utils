@@ -230,7 +230,9 @@ def test_the_bitten_reverts_to_human_form_on_a_roll_of_one():
     foe = bare()
     chained = replace(duel(mutant, foe), engaged=False,
         first=replace(FighterState(wounds=1), transformed=True))
-    dice = KeyedDice({"round.0.first.bitten": 1})
+    # Madness applies in the own Recovery phase even without contact.
+    dice = KeyedDice({"round.0.first.bitten": 1,
+                     "round.0.first.stupidity.0": 1, "round.0.first.stupidity.1": 1})
     choices = StrictDecisions([])
     result = resolve_round(mutant, foe, chained, dice, choices)
     dice.finish(); choices.finish()
@@ -339,7 +341,8 @@ def test_transformed_equipment_loss_is_never_recovered_by_the_reversion():
     assert result.state.first.transformed
     # Round 2 is the Bitten's own turn again; out of combat the printed result of
     # 1 reverts it.
-    dice = KeyedDice({"round.2.first.bitten": 1})
+    dice = KeyedDice({"round.2.first.bitten": 1,
+                     "round.2.first.stupidity.0": 1, "round.2.first.stupidity.1": 1})
     choices = StrictDecisions([])
     reverted = resolve_round(mutant, foe,
         replace(result.state, round_index=2, engaged=False), dice, choices)

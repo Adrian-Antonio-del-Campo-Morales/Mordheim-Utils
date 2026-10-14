@@ -47,12 +47,49 @@ profiles:
           id: mechanic.causes-fear
   - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.daemonic-flesh
     name: Daemonic Flesh
-    effect: Has source 5+ daemonic save and magical attacks.
+    effect: A 5+ base armour save is never modified and is entirely negated by magical or blessed weapons
+      and spells. All of the daemon's close combat attacks count as magical.
     effect_i18n:
       es: >-
         Tiene la salvación demoníaca de 5+ de la fuente y ataques mágicos.
     name_i18n:
       es: Carne Demoníaca
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.daemonic-flesh
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.daemonic-flesh
+      - id: trait.natural-armour-save
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.natural-armour-save
+          parameters:
+            value: 5
+      - id: trait.natural-armour-unmodified
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.natural-armour-unmodified
+          parameters:
+            value: true
+      - id: trait.creature-kind
+        scope: 'YES'
+        binding:
+          kind: trait
+          id: trait.creature-kind
+          parameters:
+            value: daemon
+    source_refs:
+    - manual: Chaos Fury
+      printed_page: 1
+      section: Daemonic Flesh
+      url: https://www.broheim.net/downloads/hiredswords/facebook/Chaos%20Fury.pdf
   - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.daemonic-instability
     name: Daemonic Instability
     effect: Can be banished when OOA or if summoner is lost.
@@ -61,6 +98,15 @@ profiles:
         Puede ser desterrado si queda Fuera de combate o si su invocador se pierde.
     name_i18n:
       es: Inestabilidad Demoníaca
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: excluded.scope
+        scope: 'NO'
+        reason: Banishment after Out of Action or loss of an external summoner; no campaign/group producer.
+        binding: null
   - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.coward-king
     name: Coward King
     effect: Not immune to psychology/fear despite causing fear.
@@ -69,6 +115,16 @@ profiles:
         No es inmune a la psicología/miedo a pesar de causar miedo.
     name_i18n:
       es: Rey Cobarde
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.craven
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.craven
   - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.fly
     name: Fly
     effect: Uses source flying movement.
@@ -77,6 +133,15 @@ profiles:
         Usa el movimiento volador de la fuente.
     name_i18n:
       es: Volar
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: excluded.scope
+        scope: 'NO'
+        reason: Flying movement is outside the close combat duel.
+        binding: null
   - id: hireling.dramatis.aksho-akhash-the-vile-dreadwing-lord-of-the-carrion-throne.rule.aethereal-hoarder
     name: Aethereal Hoarder
     effect: After eligible games may reroll exploration, search rare item at +1, or find 2D6 gc.
@@ -86,6 +151,15 @@ profiles:
         2D6 gc.
     name_i18n:
       es: Acumulador Etéreo
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: none
+      effects:
+      - id: excluded.scope
+        scope: 'NO'
+        reason: Exploration, rarity and income after a battle are campaign consequences.
+        binding: null
   unresolved_references:
   - kind: summoning_procedure
     source_name: Chaos spell-caster + Macabre Tome + Leadership test
@@ -94,6 +168,8 @@ profiles:
     printed_page: 0
     section: Dramatis Personae / Aksho'akhash the Vile Dreadwing, Lord of the Carrion Throne
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-2a
+  equipment:
+    innate_weapon_id: weapon.natural-attacks
 - id: hireling.dramatis.busty-gwen
   kind: dramatis-personae
   grade: 2a
@@ -485,6 +561,8 @@ profiles:
       name: Poison Ring
       name_i18n:
         es: Anillo de Veneno
+      rules:
+      - hireling.dramatis.the-foole.rule.poison-ring
   skill_access: []
   starting_skill_ids:
   - skill.acrobat
@@ -516,14 +594,40 @@ profiles:
         No puede trabajar para la misma banda dos veces seguidas.
     name_i18n:
       es: Me Aburro
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: profile
+      effects:
+      - id: hireling.dramatis.the-foole.rule.bored-now.campaign
+        scope: 'NO'
+        binding: null
+        reason: Hiring/participation across battles is excluded.
   - id: hireling.dramatis.the-foole.rule.poison-ring
     name: Poison Ring
-    effect: Once per battle may use source Giggle Juice attack.
+    effect: Once per battle may replace one normal close-combat attack with an automatic Strength2 Giggle
+      Juice hit that adds +1 Injury. The additional Nervous Condition after battle is excluded.
+      Juice hit that adds +1 Injury. The additional Nervous Condition after battle is excluded.
     effect_i18n:
       es: >-
         Una vez por batalla puede usar el ataque de Zumo de Risas de la fuente.
     name_i18n:
       es: Anillo de Veneno
+    source_refs:
+    - manual: Fanatic Online89
+      printed_page: 2
+      section: The Foole / Poison Ring
+      url: https://broheim.net/downloads/fo/89RunnersUp.pdf
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.giggle-juice-spray
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.giggle-juice-spray
   - id: hireling.dramatis.the-foole.rule.sadist
     name: Sadist
     effect: Uses source captured-warrior rule.
@@ -532,6 +636,15 @@ profiles:
         Usa la regla de guerrero capturado de la fuente.
     name_i18n:
       es: Sádico
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: profile
+      effects:
+      - id: hireling.dramatis.the-foole.rule.sadist.campaign
+        scope: 'NO'
+        binding: null
+        reason: Killing a captured prisoner and receiving equipment after battle are excluded.
   - id: hireling.dramatis.the-foole.rule.master-craftsman
     name: Master Craftsman
     effect: May attempt a source random weapon improvement after battle.
@@ -540,6 +653,17 @@ profiles:
         Puede intentar una mejora de arma aleatoria de la fuente después de la batalla.
     name_i18n:
       es: Maestro Artesano
+    runtime:
+      scope: 'NO'
+      implemented: 'NO'
+      grant: profile
+      effects:
+      - id: hireling.dramatis.the-foole.rule.master-craftsman.campaign
+        scope: 'NO'
+        binding: null
+        reason: The post-battle random improvement producer and two-battle accounting are excluded. Supplied
+          current Giggle Juice coating is poison.giggle-juice; the spray remains a separate fixed-Strength
+          attack.
   unresolved_references:
   - kind: item_instance_modifier
     source_name: Master Craftsman weapon modifications
@@ -632,12 +756,28 @@ profiles:
       es: Inmune al Veneno
   - id: hireling.dramatis.sigmund-spindle-the-harvester-of-flesh.rule.no-pain
     name: No Pain
-    effect: Ignores Knocked Down and Stunned until last Wound is lost.
+    effect: Ignores Knocked Down and Stunned Injury results. He must lose his last Wound AND receive
+      an Out of Action Injury result to be removed; losing that Wound alone is not automatic removal.
     effect_i18n:
       es: >-
         Ignora Derribado y Aturdido hasta perder su última Herida.
     name_i18n:
       es: Sin Dolor
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: mechanic.veskit-no-pain
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.veskit-no-pain
+    source_refs:
+    - manual: Sylvania / Sigmund Spindle
+      printed_page: 2
+      section: No Pain
+      url: https://broheim.net/downloads/dramatispersonae/sylvania/Sigmund%20Spindle.pdf
   unresolved_references:
   - kind: alternate_hire_payment
     source_name: one Hero body part / Severe Arm Wound

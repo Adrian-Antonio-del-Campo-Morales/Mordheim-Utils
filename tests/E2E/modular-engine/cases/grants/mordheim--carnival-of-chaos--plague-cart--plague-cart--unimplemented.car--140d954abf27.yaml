@@ -2,10 +2,14 @@
 # audit_id: rule/mordheim/carnival-of-chaos/plague-cart--plague-cart/unimplemented.carnival-of-chaos.plague-cart.plague-cart
 # scaffold_fingerprint: 7fe4e6f07afbc0425e406482081b45f9554b614bee0462e0ec0e6c8647cd646c
 # authoring_status: PARTIAL
-# authoring_progress: no scenario is authored for the admitted clause: the record fixes no effect id
-# and no consumer for either printed half, and the first half is a Warhammer rule with no duel
-# operator.  The exact missing representations are named in the clause note below.  REVIEWED still
-# requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: the admitted clause's second half now carries a control pair: the printed ``+1 to
+#   injuries'' is asserted on the injury chart the catalogue publishes (1-2 knocked down, 3-4 stunned, 5-6 out
+#   of action), so the same declared face of four leaves the victim stunned without the modifier and out of
+#   action with it.  The first half (``re-roll Daemonic Instability Ld tests'') stays withheld because that
+#   test does not exist in this game at all, which is an identity gap rather than a missing branch.  Both
+#   causes are named in the clause note below.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
+# execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
 # Do not derive them from the engine or execute combat during authoring.
@@ -15,17 +19,17 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: plague-cart--scope--individual-effects (scope: YES)
-# PARTIAL[plague-cart--scope--individual-effects]: [C] the printed sentence has two halves and neither
-# is representable from what this origin records.  (1) "re-roll Daemonic Instability Ld tests":
-# Daemonic Instability is a Warhammer rule that does not exist as a test, state or operator in this
-# engine - the duel's Leadership tests are the psychology ones (fear, stupidity, rout) - so there is
-# no die to re-roll and no consumer to point at; the missing representation is a Daemonic Instability
-# test itself, which is out of scope for a Mordheim duel simulator.  (2) "add +1 to injuries": the
-# binding records no effect id, no relation and no consumer, so the missing representation is an
-# accepted injury-roll modifier deliberately bound to this origin's recipients (Plague Bearers and
-# Nurglings); the seam would be the injury resolution the register names (phases.injury_condition),
-# and a scenario written before that binding would only assert a modifier the record does not carry.
-# REVIEWED still requires manual semantic review.
+# PARTIAL[plague-cart--scope--individual-effects]: [C] the second half is asserted; the first half stays
+#   withheld as an identity gap.  (1) "re-roll Daemonic Instability Ld tests": Daemonic Instability is a
+#   Warhammer rule with no test, state or operator in this game - the duel's Leadership tests are the
+#   psychology ones (fear, stupidity, rout) - so there is no die to declare and no consumer to point at, and
+#   a tape would have to invent both the test identity and its key.  Recorded, not asserted.  (2) "add +1 to
+#   injuries": asserted by the pair below.  The print gives the recipients (Plague Bearers and Nurglings),
+#   the catalogue publishes the injury table (1-2 knocked down, 3-4 stunned, 5-6 out of action), and the
+#   consequence is therefore a shifted chart result on the same declared face: four leaves the victim stunned
+#   without the modifier and out of action with it, which is exactly the printed +1.  Pending implementation,
+#   not a withheld requirement: this origin's binding records no effect id and no consumer, so nothing applies
+#   the +1 today and the tape reads the unshifted result - the defect the pair is written to detect.
 # origin_id:
 #   rule/mordheim/carnival-of-chaos/plague-cart--plague-cart/unimplemented.carnival-of-chaos.plague-cart.plague-cart
 # analysis_status:
@@ -82,4 +86,60 @@
 # Register notes (context only, not behavioral authority):
 #   Warband-size and post-battle Injury mechanics; the reroll is an aura over a group supplied by a war machine the duel does not field. Scope review integration: {"clause_id":"plague-cart","review_clause_id":"warband-size","source_state":"unverified","review_status":"reviewed","scope_reason":"Raising the warband size by two is a roster limit, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"warband size +2 and Plague Bearers/Nurglings re-roll Daemonic Instability Ld tests and add +1 to injuries","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Derived from the printed sentence, the catalogue's injury table and the printed recipient profile; no engine
+# output was consulted.  The bearer's physical characteristics are declared fixture facts, so the wound
+# threshold and the declared injury face are the only things that decide the result, and the pair differs only
+# in the printed +1.
+
+- audit_id: rule/mordheim/carnival-of-chaos/plague-cart--plague-cart/unimplemented.carnival-of-chaos.plague-cart.plague-cart
+  id: the-printed-plus-one-turns-a-stunned-result-into-out-of-action
+  covers: [plague-cart--scope--individual-effects]
+  # The printed recipient (a Plague Bearer) inflicts the wound, the declared injury face is four (stunned on
+  # the catalogue's table), and the printed +1 raises it to five, which is out of action.  Today the binding
+  # records no effect id and no consumer, so the tape reads the unshifted result (stunned) - the PENDING
+  # implementation defect this tape is written to detect, not a withheld requirement.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-bearers
+      characteristics: {weapon_skill: 4, strength: 4, toughness: 4, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: OUT}
+  expect_final: {rounds_executed: 1, termination_reason: second_out}
+
+- audit_id: rule/mordheim/carnival-of-chaos/plague-cart--plague-cart/unimplemented.carnival-of-chaos.plague-cart.plague-cart
+  id: the-same-face-leaves-a-stunned-result-without-the-modifier
+  covers: [plague-cart--scope--individual-effects]
+  # The control: the same declared wound and the same declared injury face of four, inflicted by a plain
+  # fighter with the same physical characteristics instead of the printed recipient, so no +1 applies and the
+  # catalogue's table leaves the victim stunned.  The pair is what makes the shifted result attributable to
+  # the printed sentence rather than to the injury table.
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 4, strength: 4, toughness: 4, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.injury.0, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 1, state.second.wounds: 0, state.second.condition: STUNNED}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

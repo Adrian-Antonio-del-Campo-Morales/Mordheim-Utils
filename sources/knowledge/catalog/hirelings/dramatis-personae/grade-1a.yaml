@@ -81,12 +81,39 @@ profiles:
       es: Inmune al Veneno
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.no-pain
     name: No Pain
-    effect: Ignores Knocked Down/Stunned per source.
+    effect: Stunned Injury results become Knocked Down through No Pain; the source expressly combines
+      her Jump Up skill with No Pain so those Knocked Down Injury results do not leave her prone. This
+      exception does not prevent a separate Trip effect.
     effect_i18n:
       es: >-
         Ignora Derribado/Aturdido según la fuente.
     name_i18n:
       es: Sin Dolor
+    runtime:
+      scope: 'YES'
+      implemented: 'YES'
+      grant: profile
+      effects:
+      - id: skill.ignore-pain
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: skill.ignore-pain
+      - id: skill.jump-up
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: skill.jump-up
+      - id: mechanic.marianna-no-pain-jump-up
+        scope: 'YES'
+        binding:
+          kind: mechanic
+          id: mechanic.marianna-no-pain-jump-up
+    source_refs:
+    - manual: Town Cryer 22
+      printed_page: 12
+      section: Revenge is Eternal / Marianna
+      url: https://broheim.net/downloads/fo/62RevengeIsEternal.pdf
   - id: hireling.dramatis.countess-marianna-chevaux-vampire-assassin.rule.causes-fear
     name: Causes Fear
     effect: Causes fear.

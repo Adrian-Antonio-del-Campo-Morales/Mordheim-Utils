@@ -214,6 +214,8 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "slot_fact": { "description": "Supplied fact naming the physical active item positions.", "$ref": "#/$defs/id" },
+            "effect_parameters": { "$ref": "catalog-mechanics-execution.yaml.schema.json#/$defs/mechanic/properties/parameters" },
             "allowed_skill_lists": {
               "description": "Skill tables a granted access extends.",
               "type": "array",
@@ -227,7 +229,11 @@
                 "initiative": { "type": "integer" },
                 "strength": { "type": "integer" },
                 "toughness": { "type": "integer" },
-                "weapon_skill": { "type": "integer" }
+                "weapon_skill": { "type": "integer" },
+                "wounds": { "type": "integer" },
+                "attacks": { "type": "integer" },
+                "movement": { "type": "integer" },
+                "leadership": { "type": "integer" }
               }
             },
             "categories": {
@@ -274,6 +280,13 @@
               "description": "How many missile weapons one member may carry at once; the printed bound the construction contract counts over the whole equipment set.",
               "type": "integer",
               "minimum": 0
+            },
+            "equipment_slots": { "type": "integer", "minimum": 0 },
+            "armour_slots": { "type": "integer", "minimum": 0 },
+            "slot_costs": {
+              "type": "object",
+              "propertyNames": { "$ref": "#/$defs/id" },
+              "additionalProperties": { "type": "integer", "minimum": 0 }
             },
             "max_item_id": {
               "description": "Item whose copies `max_item_copies` bounds, by its item id or by the canonical mechanic id that resolves it ('only the Matriarch and Sister Superiors may carry two Sigmarite warhammers at the same time'). It is a possession bound, not an active-slot one.",
@@ -328,8 +341,8 @@
               "items": { "$ref": "#/$defs/id" }
             },
             "value": {
-              "description": "Magnitude of the binding: a characteristic value or a flag.",
-              "type": ["boolean", "integer"]
+              "description": "Magnitude or canonical identity of a trait binding.",
+              "oneOf": [{ "type": ["boolean", "integer"] }, { "$ref": "#/$defs/id" }]
             }
           }
         }

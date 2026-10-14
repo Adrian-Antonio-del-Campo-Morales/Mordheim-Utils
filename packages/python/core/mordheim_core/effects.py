@@ -21,7 +21,7 @@ def merge_effects(left: EffectSet, right: EffectSet) -> EffectSet:
         a, b = getattr(left, field.name), getattr(right, field.name)
         if field.name == "tags": values[field.name] = tuple(dict.fromkeys((*a,*b)))
         elif isinstance(a, bool): values[field.name] = a or b
-        elif field.name in {"ward_save","regeneration_save","maximum_wound_target","armour_save_floor","ignition_threshold","caught_fire_threshold"}: values[field.name] = min(a, b)
+        elif field.name in {"ward_save","regeneration_save","maximum_wound_target","armour_save_floor","ignition_threshold","caught_fire_threshold","ethereal_hit_save","critical_threshold"}: values[field.name] = min(a, b)
         elif field.name in {"damage","damage_die_sides","out_of_action_threshold"}: values[field.name] = max(a, b)
         elif field.name == "priority":
             # Zero is the neutral value.  A plain material/global effect must
@@ -39,7 +39,7 @@ def merge_best_effects(left: EffectSet, right: EffectSet) -> EffectSet:
         a, b = getattr(left, field.name), getattr(right, field.name)
         if field.name == "tags": values[field.name] = tuple(dict.fromkeys((*a, *b)))
         elif isinstance(a, bool): values[field.name] = a or b
-        elif field.name in {"ward_save", "regeneration_save", "maximum_wound_target", "armour_save_floor", "incoming_strength_modifier", "armour_strength_modifier", "ignition_threshold", "caught_fire_threshold"}:
+        elif field.name in {"ward_save", "regeneration_save", "maximum_wound_target", "armour_save_floor", "incoming_strength_modifier", "armour_strength_modifier", "ignition_threshold", "caught_fire_threshold", "ethereal_hit_save", "critical_threshold"}:
             values[field.name] = min(a, b)
         elif field.name == "priority":
             values[field.name] = b if a == 0 else a if b == 0 else max(a, b)

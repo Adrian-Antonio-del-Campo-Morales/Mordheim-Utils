@@ -60,6 +60,17 @@
 # maximum of one) and the recorded contract, never from engine output; the roll tape is derived
 # statically and stays unexecuted.  The printed rule of this printing has no Dwarf Axe reroll sentence,
 # so no scenario asserts a reroll and every tape holds only successful parry attempts.
+# RECIPIENT BOUNDARY (checked statically in the shared construction stage, not by running it): the
+# bearer is the band Hero apprentice-runesmith, not a Henchman.  `specialRuleRestriction()`'s access
+# stage admits a band warband_skill row with `applies_to.band: true` and no `eligibility` only for a
+# recipient whose own printed `skill_access` carries the `special` category ("special rule is not
+# available to {band}/{profile}: {rid}" otherwise), and this band's printed Henchmen rows carry no
+# such category while its Hero rows do.  A Henchman fixture would be refused one stage before this
+# clause is reached, which is a different requirement, not this one.  The Hero's own automatic
+# profile rule (apprentice-runesmith--extra-set-of-hands) is recorded `implemented: NO`, so the
+# retarget adds no automatic mechanic to the tape:
+#   band--dwarf-special-skills-combat-master  kind warband_skill  applies_to {band: true}  eligibility none
+#   apprentice-runesmith  type hero  skill_access [combat, academic, strength, special]
 
 # The printed equality: a parry die equal to the declared To Hit four blocks the blow.
 - audit_id: rule/mordheim/dwarf-rangers/band--dwarf-special-skills-combat-master/skill.unbeatable-warrior
@@ -72,7 +83,7 @@
     second:
       collection: mordheim
       band_id: dwarf-rangers
-      profile_id: dwarf-clansmen
+      profile_id: apprentice-runesmith
       special_rule_ids: [band--dwarf-special-skills-combat-master]
       main_weapon_id: weapon.sword
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
@@ -98,7 +109,7 @@
     second:
       collection: mordheim
       band_id: dwarf-rangers
-      profile_id: dwarf-clansmen
+      profile_id: apprentice-runesmith
       main_weapon_id: weapon.sword
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   initial_state: {second: {attacks: 0}}
@@ -124,7 +135,7 @@
     second:
       collection: mordheim
       band_id: dwarf-rangers
-      profile_id: dwarf-clansmen
+      profile_id: apprentice-runesmith
       special_rule_ids: [band--dwarf-special-skills-combat-master]
       main_weapon_id: weapon.sword
       off_hand_id: weapon.sword
@@ -153,7 +164,7 @@
     second:
       collection: mordheim
       band_id: dwarf-rangers
-      profile_id: dwarf-clansmen
+      profile_id: apprentice-runesmith
       special_rule_ids: [band--dwarf-special-skills-combat-master]
       main_weapon_id: weapon.sword
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}

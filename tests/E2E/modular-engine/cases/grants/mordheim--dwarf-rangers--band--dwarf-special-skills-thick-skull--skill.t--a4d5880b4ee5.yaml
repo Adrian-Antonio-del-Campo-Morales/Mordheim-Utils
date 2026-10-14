@@ -60,6 +60,20 @@
 # derived statically and stays unexecuted.  The band grants Hard to Kill and Hard Head band-wide,
 # which are different printed rules and different operators; these scenarios select only the Thick
 # Skull row of the audit id and do not reuse those two operators.
+# RECIPIENT BOUNDARY (checked statically in the shared construction stage, not by running it): the
+# bearer is the band Hero apprentice-runesmith, not a Henchman.  `specialRuleRestriction()`'s access
+# stage admits a band warband_skill row with `applies_to.band: true` and no `eligibility` only for a
+# recipient whose own printed `skill_access` carries the `special` category ("special rule is not
+# available to {band}/{profile}: {rid}" otherwise); this band's printed Henchmen rows carry no such
+# category while its Hero rows do, and the rule's printed recipient here is "This warrior" of the
+# band's Hero rows.  A Henchman fixture would be refused one stage before this clause is reached,
+# which is a different requirement, not this one.  The Hero's own automatic profile rule
+# (apprentice-runesmith--extra-set-of-hands) is recorded `implemented: NO`, so the retarget adds no
+# automatic mechanic to the tape:
+#   band--dwarf-special-skills-thick-skull  kind warband_skill  applies_to {band: true}  eligibility none
+#   apprentice-runesmith  type hero  skill_access [combat, academic, strength, special]
+# The helmet face keeps the printed helmet of the shared dwarf-warrior equipment list, which is the
+# same list the Henchman row prints, so the retarget changes no equipment availability.
 
 # The bearer's printed 3+ save is taken on the injury chart's Stunned result and the three is the
 # threshold face itself, so the Stunned outcome is converted to Knocked Down.
@@ -73,7 +87,7 @@
     second:
       collection: mordheim
       band_id: dwarf-rangers
-      profile_id: dwarf-clansmen
+      profile_id: apprentice-runesmith
       special_rule_ids: [band--dwarf-special-skills-thick-skull]
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
@@ -100,7 +114,7 @@
     second:
       collection: mordheim
       band_id: dwarf-rangers
-      profile_id: dwarf-clansmen
+      profile_id: apprentice-runesmith
       special_rule_ids: [band--dwarf-special-skills-thick-skull]
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 2, attacks: 1}
@@ -127,7 +141,7 @@
     second:
       collection: mordheim
       band_id: dwarf-rangers
-      profile_id: dwarf-clansmen
+      profile_id: apprentice-runesmith
       special_rule_ids: [band--dwarf-special-skills-thick-skull]
       main_weapon_id: weapon.mace
       defence_ids: [defence.helmet]
@@ -157,7 +171,7 @@
     second:
       collection: mordheim
       band_id: dwarf-rangers
-      profile_id: dwarf-clansmen
+      profile_id: apprentice-runesmith
       special_rule_ids: [band--dwarf-special-skills-thick-skull]
       main_weapon_id: weapon.mace
       defence_ids: [defence.helmet]

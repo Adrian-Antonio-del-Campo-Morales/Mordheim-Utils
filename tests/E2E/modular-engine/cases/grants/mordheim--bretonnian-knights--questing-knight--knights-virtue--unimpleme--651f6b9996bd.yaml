@@ -2,9 +2,12 @@
 # audit_id: rule/mordheim/bretonnian-knights/questing-knight--knights-virtue/unimplemented.bretonnian-knights.questing-knight.knights-virtue
 # scaffold_fingerprint: 03fccbf5a5adc461e9e40c97b9e14fe9f64462947694e914c8fb903fe6278eed
 # authoring_status: PARTIAL
-# authoring_progress: the admitted no-panic clause has no authored scenario.  The pending requirement
-# is named in the clause note below: an admitted individual consumer for the lasting state.  REVIEWED
-# still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: neither clause of this origin is admitted any more.  The register records both
+#   rows as `clause_scope: NO` (accepted scope disposition, batch
+#   `scope-admitted-contract-reconciliation`), so this file carries no admitted requirement to author and
+#   contributes no test or coverage.  The printed text and the reason are retained in the clause notes
+#   below rather than deleted.  REVIEWED still requires manual semantic review and execution_status stays
+#   UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -14,18 +17,18 @@
 # Governing rulings: docs/decisions/design-rulings.md
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
-# Clause: no-panic-and-all-alone--scope--no-panic (scope: YES)
-# PARTIAL[no-panic-and-all-alone--scope--no-panic]: [C] no scenario is authorable in this revision.  The
-#   recorded consumer list is empty: the Break/Rout and All-Alone tests the sentence removes belong to
-#   the excluded group subsystem, so the duel takes no such test and no observation exists.  The
-#   missing datum is an admitted individual consumer for the lasting state; the printed sentence stays
-#   recorded above rather than dropped.
-#   Source check (verified): the origin row `questing-knight--knights-virtue` in
-#   sources/knowledge/bands/mordheim/bretonnian-knights/special-rules.yaml (line 27 onward) carries
-#   `scope: LATER`, `implemented: 'NO'`, `grant: profile`, a null binding and the placeholder
-#   `unimplemented.bretonnian-knights.questing-knight.knights-virtue`, with the recorded reason
-#   `Deferred subsystem: psychology.`  The absent consumer is therefore declared by the source, and
-#   no tape can evidence the lasting state while that row stays deferred.
+# Clause: no-panic-and-all-alone--scope--no-panic (scope: NO)
+# PARTIAL[no-panic-and-all-alone--scope--no-panic]: [E] accepted scope disposition, not an
+#   authoring gap: the register now records this row as `clause_scope: NO` (batch
+#   `scope-admitted-contract-reconciliation`, `implementation_work: none`), applying the 2026-10-04
+#   boundary ruling - Break/Rout and All Alone belong to the excluded group subsystem and the isolated
+#   1v1 duel never runs such tests, so no consumer is assigned.  The printed lasting state therefore has
+#   no producer this product admits, and the earlier [C] classification here (a missing executor field or
+#   event) is superseded by the disposition.  Nothing is deleted: the printed sentence stays recorded
+#   above and no tape is written from a trigger the duel cannot reach.  Both rows of this origin are now
+#   out of scope, so the identity carries no admitted clause and the generator reports this scaffold as
+#   unexpected until the register admits one again; keeping the file and its record is deliberate.
+#   REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/mordheim/bretonnian-knights/questing-knight--knights-virtue/unimplemented.bretonnian-knights.questing-knight.knights-virtue
 # analysis_status:

@@ -2,11 +2,11 @@
 # audit_id: mechanic/skill.sigmar-s-sign
 # scaffold_fingerprint: 4e4fe3b0d74033f4f4a3492168242453c9c16904f62a5f9aeb970a34668ee95a
 # authoring_status: PARTIAL
-# authoring_progress: the single admitted clause is PARTIAL. Two scenarios evidence the
-#   loss of one attack for an Undead attacker in the first round and the printed exclusion
-#   that keeps a Daemon's attacks. The printed minimum of one attack is not authored (see
-#   the clause note below). REVIEWED still requires manual semantic review and
-#   execution_status stays UNEXECUTED.
+# authoring_progress: the single admitted clause carries two authored scenarios for the
+#   first-round reduction of an Undead attacker's pool and the Daemon exclusion. The
+#   printed minimum of one attack is recorded as a structured dependency in its clause
+#   note (normative text, input, blocked assertion and missing capability), not left as
+#   a bare no-consumer claim. REVIEWED still requires manual semantic review and#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -19,10 +19,20 @@
 # Clause: sigmar-s-sign (scope: YES)
 # PARTIAL[sigmar-s-sign]: 2 scenarios cover the first-round reduction of an Undead
 #   attacker's pool and the Daemon exclusion, which keeps both of its attacks. The
-#   printed floor "to a minimum of 1" has no scenario: for an attacker with a single
-#   attack the reduced and the unreduced pool both leave one attack, so the two cases
-#   are outcome-identical and the runner vocabulary cannot separate them; the missing
-#   datum is an observation of the pre-floor count rather than of the resolved pool.
+#   printed floor ("to a minimum of 1", normative text of the admitted clause) is a
+#   structured dependency, with its concrete datum on record instead of a bare claim.
+#   Input: an Undead attacker whose printed pool is exactly one Attack (the file's own
+#   mace attacker shape) meeting this carrier, so the reduction and the floor both
+#   want to fire on the same pool. Assertion that is blocked: the pre-floor pool size
+#   of round 0 - for a one-attack attacker the reduced and the unreduced pool are both
+#   one attack, so the resolved attacks tape cannot separate them and any scenario
+#   asserting the floor on it would be asserting the reduction twice. Missing
+#   capability: a pre-floor pool-size observation in the round snapshot (for example a
+#   state.<side>.pool_size field or an equivalent assertion key on the attack pool)
+#   while apply_opponent_attack_modifiers keeps its own floor; with that datum the
+#   pair (reduction reaching 0 pre-floor; resolved pool of 1) becomes authorable.
+#   Which of the two shapes the snapshot should carry belongs to the coordinator;
+#   neither is asserted here.
 # origin_id:
 #   mechanic/skill.sigmar-s-sign
 # analysis_status:

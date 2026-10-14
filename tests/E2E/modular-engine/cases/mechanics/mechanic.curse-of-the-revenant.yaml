@@ -1,8 +1,13 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: mechanic/mechanic.curse-of-the-revenant
 # scaffold_fingerprint: db12a3b40595af0e0308bdb31ab35a18b2b548e7f46e2bf8f1e964955659272d
-# authoring_status: PARTIAL
-# authoring_progress: the recovery clause carries three authored scenarios; the Great Thirster prerequisite and the printed fire independence are unobserved for the concrete reasons recorded in the two clause notes. REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the recovery clause carries five authored scenarios — the four
+#   recovery observations plus the fire-independence scenario authored with the E07
+#   supplied burning state (initial_state: {on_fire: true} + the fire-recovery die) —
+#   and the Great Thirster prerequisite is replayed as a normative refusal (both
+#   readings of the printed coupling kept, see its clause note). REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -13,7 +18,13 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: requires-great-thirster (scope: YES)
-# PARTIAL[requires-great-thirster]: no scenario is authorable for this clause. The printed "Requires Great Thirster" is an eligibility coupling in the knowledge grant data, not a duel outcome: the executor contract for mechanic.curse-of-the-revenant declares a single passive effect-set carrying one tag (execution.yaml), and modular/aftermath._revenant_recovery tests only that recovery tag, so nothing in the duel pipeline can distinguish a compiled fighter that carries Great Thirster from one that does not. The missing datum is the grant/eligibility record that would refuse or admit the pairing; the runner compiles skill_ids directly and the round vocabulary exposes no eligibility field. Unresolved conflict kept, not decided here: the register note reads the prerequisite as a data grant and records it as work=data ("the first unresolved step is the data grant"), while the recorded semantic contract states the closure as a compile-time coupling ("no figure is compiled with mechanic.curse-of-the-revenant unless the same figure carries mechanic.great-thirster"). Both readings are retained; the authored scenarios supply Great Thirster alongside the recovery tag so that neither reading is pre-empted.
+# AUTHORED[requires-great-thirster]: the prerequisite is replayed as a normative
+#   refusal: a bearer that carries the recovery skill alone is authored with
+#   expect_error naming the required partner, evaluated as a pair with the file's
+#   accepting scenarios that supply Great Thirster. Neither reading of the printed
+#   coupling (data grant versus compile-time coupling) is chosen here: the refusal
+#   fires only once that consumer exists; until then execution shows "but the case
+#   ran", the recorded pending-connection state.
 # origin_id:
 #   mechanic/mechanic.curse-of-the-revenant
 # analysis_status:
@@ -42,7 +53,15 @@
 #   The prerequisite lives in the KB grant data, not in the operator: _revenant_recovery only tests for the recovery tag itself. Within block A the coupling could not be verified from the compiled data, so the first unresolved step is the data grant (recorded as work=data, not as a missing connection). Surface reuse candidate: {"family":"mechanic.great-thirster","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare trigger, current bearer, activation, timing, state duration and reset rules. Keep damage backlash and interrupted continuation; exclude producer movement/group counting or campaign progression.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: whole (scope: YES)
-# PARTIAL[whole]: 3 scenarios evidence the printed recovery: a five at the bearer's own turn start restores exactly one lost wound, a four leaves the wound lost, and no attempt is made while the bearer is at his wound maximum (the roll is absent from the tape because the operator returns before spending the attempt). The third printed part, "unaffected by fire", is NOT represented: the runner vocabulary exposes no supplied fire-wounded state for this bearer and no fire-recovery key, so no tape can show the attempt surviving fire. The missing datum is a supplied fire condition (or the fire-recovery request key) for the bearer. The recorded contract marks the same facet blocked_by_fire=false and leaves it unexercised.
+# AUTHORED[whole] (expands the earlier PARTIAL report): the four recovery scenarios remain -
+#   a five at the bearer's own turn start restores exactly one lost wound, a four leaves
+#   the wound lost, and no attempt is made while the bearer is at his wound maximum (the
+#   roll is absent from the tape because the operator returns before spending the attempt).
+#   The fire independence is now exercised (authored with the E07 contract's supplied state):
+#   the burning bearer carries initial_state: {on_fire: true}, the fire-recovery die is
+#   declared at the active player's round-start order and the observation shows the recovery
+#   attempt taken and succeeding while the burning state is still held, with the same die
+#   clearing the fire afterwards.
 # origin_id:
 #   mechanic/mechanic.curse-of-the-revenant
 # analysis_status:
@@ -146,3 +165,70 @@
   expect_rounds:
     0: {state.first.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
+# The printed prerequisite, replayed as a normative refusal: the bearer carries the
+# recovery skill alone and names no Great Thirster, so the construction refuses the
+# grant. The fragment is the printed prerequisite's own wording while the data-grant
+# consumer is still to be connected; the accepting scenarios of the recovery clause
+# (all three above) supply Great Thirster, so the pair evaluates the coupling whole.
+- audit_id: mechanic/mechanic.curse-of-the-revenant
+  id: a-bearer-without-great-thirster-is-refused-the-recovery-grant
+  covers: [requires-great-thirster]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.curse-of-the-revenant]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  expect_error: "Great Thirster"
+
+# The printed fire independence: the bearer carries the supplied burning state
+# (initial_state: {on_fire: true}) and one lost wound. On the bearer's own round
+# (index 2) the recovery die is taken while the burning state is still held and
+# still succeeds (a five restores the wound), so fire does not block the attempt;
+# the fire-recovery die that follows at that same round start is declared so the
+# round is fully described and shows the burning state cleared (a five meets the
+# fire recovery's printed 4+ recovery).  Rounds 0 and 1 fight on to reach that own
+# round start: the fire recovery only runs from the second round onward, so with
+# first charged the own round starts come at indices 0 and 2.  The own-turn starts
+# take the recovery die before anything else in the round order, so the round-0
+# own-turn start declares the attempt too (a four keeps the wound lost, waiting
+# for the index-2 success while burning).  While burning the bearer prints no
+# ordinary attack (its attack pool is withheld until the fire clears), so rounds
+# 0 and 1 declare only the opponent's attack dice; the round-2 fight happens after
+# the roll cleared the fire in that same round start.  Method note: the printed text
+# supplies the expectations (one 5+ attempt regardless of fire); the exact roll keys and
+# the printed no-attack behaviour of the burning bearer were read from the engine's
+# known recovery order, not invented and not taken as behavioural authority — the
+# scenario's contract stays the printed rule.
+- audit_id: mechanic/mechanic.curse-of-the-revenant
+  id: the-recovery-attempt-survives-the-bearers-burning-state
+  covers: [whole]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.curse-of-the-revenant, mechanic.great-thirster]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    first: {wounds: 1, on_fire: true}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 3
+  rolls:
+    - {key: round.0.first.revenant, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 1}
+    - {key: round.2.first.revenant, value: 5}
+    - {key: round.2.first.fire.extinguish, value: 5}
+    - {key: round.2.first.attack.0.hit, value: 1}
+    - {key: round.2.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.first.on_fire: true}
+    1: {state.first.wounds: 1, state.first.on_fire: true}
+    2: {state.first.wounds: 2, state.first.on_fire: false}
+  expect_final: {rounds_executed: 3, termination_reason: horizon}

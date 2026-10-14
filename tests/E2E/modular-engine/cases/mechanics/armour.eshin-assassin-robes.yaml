@@ -2,10 +2,12 @@
 # audit_id: mechanic/armour.eshin-assassin-robes
 # scaffold_fingerprint: 7325ed5ad46e1a873675385b3b2fdf741dc710793a55c9c5f7202682dd8159fe
 # authoring_status: AUTHORED
-# authoring_progress: the admitted clause carries two authored boundary
-#   scenarios for the 6+ save; the combining prohibition is an unauthored
-#   loadout restriction recorded under the clause marker. REVIEWED still
-#   requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: the admitted clause carries four authored boundary
+#   scenarios: the 6+ save holding and one face below it, the printed
+#   Assassin's Luck re-roll of a failed save (the second result stands), and
+#   the combining prohibition as an unauthored loadout restriction recorded
+#   under the clause marker. REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -16,8 +18,9 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: light-armour-six-plus-no-combining (scope: YES)
-# AUTHORED[light-armour-six-plus-no-combining]: 3 scenarios cover the 6+ save
-#   holding at the threshold, failing one face below it, and the printed
+# AUTHORED[light-armour-six-plus-no-combining]: 4 scenarios cover the 6+ save
+#   holding at the threshold, failing one face below it, the printed
+#   "La suerte del Asesino" re-roll of that failed save, and the printed
 #   "cannot combine with any other armour except a helmet" prohibition as a
 #   construction refusal naming the shared diagnostic. Pending semantic review.
 # RUNNER-GAP: the declared `expect_error` contract is documented by corpus.py,
@@ -86,8 +89,12 @@
     0: {attacks.0.saved: true, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
-# One face below the printed target: the five is not a 6+, so the wound is
-# taken and the defender drops a wound.  No other armour face is scripted.
+# One face below the printed target: the five is not a 6+, so the wound would be
+# taken, and printed 159's "La suerte del Asesino: los ropajes de asesino eshin
+# permiten repetir las tiradas de salvacion fallidas" asks for the one second
+# armour die.  The re-roll is asked for on a failed save and no limit or cost is
+# printed, so the second five is accepted (a re-roll is never re-rolled) and the
+# defender still drops a wound.
 
 - audit_id: mechanic/armour.eshin-assassin-robes
   id: eshin-assassin-robes-save-fails-on-five
@@ -106,9 +113,37 @@
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 4}
     - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.first.attack.0.armour.reroll, value: 5}
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {attacks.0.saved: false, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same failed five, with the re-roll the printed sentence grants: the second
+# die is a six, so it is the accepted result and the wound is saved.  The bearer
+# spends nothing and the tape ends at that second armour die.
+
+- audit_id: mechanic/armour.eshin-assassin-robes
+  id: eshin-assassin-robes-reroll-holds-the-failed-save
+  covers: [light-armour-six-plus-no-combining]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: *attacker-ws3-s3-t3-w2-i5
+    second:
+      main_weapon_id: weapon.mace
+      armour_id: armour.eshin-assassin-robes
+      characteristics: *defender-ws3-s3-t3-w2-i2
+  duel_context: *charging-first
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.0.armour, value: 5}
+    - {key: round.0.first.attack.0.armour.reroll, value: 6}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.saved: true, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
 
 # The combining half is a loadout prohibition: the robes with a shield must be

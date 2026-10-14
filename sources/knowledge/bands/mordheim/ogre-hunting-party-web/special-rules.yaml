@@ -264,13 +264,21 @@ rules:
 - id: ogre-hunter--dont-fight-with-eating-knives
   runtime:
     scope: 'YES'
-    implemented: 'NO'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.ogre-hunting-party-web.ogre-hunter.dont-fight-with-eating-knives
+    - id: mechanic.ogre-unarmed
       scope: 'YES'
-      binding: null
-      reason: 'Included individual duel effect, not implemented: Source-qualified unarmed profile and prohibition on combining it with another weapon; canonical projection remains pending.'
+      binding:
+        kind: mechanic
+        id: mechanic.ogre-unarmed
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          forbids: weapon.dagger
   name: Don't Fight with Eating Knives
   effect: >-
     Ogres don't use daggers for fighting, just for eating. They don't carry them on the battlefield.
@@ -733,3 +741,61 @@ rules:
   applies_to:
     profile_ids:
     - ogre-hunter
+- id: band--ogre-hunting-skills-crude-belch
+  kind: warband_skill
+  name: Crude Belch
+  name_i18n:
+    es: Crude Belch
+  effect: A Hero may unleash fumes on engaged enemies; failed Leadership causes -1 to hit for the
+    turn. Must wait until a new enemy engages him before using again.
+  effect_i18n:
+    es: A Hero may unleash fumes on engaged enemies; failed Leadership causes -1 to hit for the turn.
+      Must wait until a new enemy engages him before using again.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  applies_to:
+    profile_ids:
+    - ogre-hunter
+    - trappers
+    - sabre-baiter
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: mechanic.crude-belch-ogre
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.crude-belch-ogre
+- id: band--ogre-hunting-skills-bull-charge
+  kind: warband_skill
+  name: Bull Charge
+  name_i18n:
+    es: Bull Charge
+  effect: Ogres only. When charging, may attempt one attack with +1 to hit rather than normal attacks;
+    if it hits the enemy is automatically knocked down.
+  effect_i18n:
+    es: Ogres only. When charging, may attempt one attack with +1 to hit rather than normal attacks;
+      if it hits the enemy is automatically knocked down.
+  source:
+    manual: mordheimer.net
+    printed_page: 0
+    section: Special Skills
+    url: https://mordheimer.net/docs/warbands/grade-2a-warbands/ogre-hunting-party
+  applies_to:
+    profile_ids:
+    - ogre-hunter
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: selectable
+    effects:
+    - id: mechanic.bull-charge
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.bull-charge

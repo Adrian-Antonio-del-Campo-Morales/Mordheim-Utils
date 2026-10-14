@@ -20,14 +20,15 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: automatic-leadership (scope: YES)
-# PARTIAL[automatic-leadership]: [C] CLOSING-REVIEW CLASSIFICATION: input/observation absent from the executor contract.  The operator itself IS implemented (leadership.py::resolve_local_leadership returns a pass on the mechanic.automatic-leadership tag before any die is requested) and the authored scenarios assert the printed consequence through every Leadership request the 1v1 duel routes on this bearer; what does not exist is any non-Psychology Leadership test route, so the clause's wider face cannot be observed separately from mechanic.psychology-immunity.  Missing capability: one admitted non-Psychology Leadership request in the corpus.  [B] where the register note also records no KB binding, that missing step is the binding itself - the printed consequence is already authored, so it is an implementation step, not an authoring gap.  Original note follows: the printed sentence passes every test based on Leadership, and
+# PARTIAL[automatic-leadership]: [C] CLOSING-REVIEW CLASSIFICATION: input/observation absent from the executor contract.  The operator itself IS implemented (leadership.py::resolve_local_leadership returns a pass on the mechanic.automatic-leadership tag before any die is requested) and the authored scenarios assert the printed consequence through every Leadership request the 1v1 duel routes on this bearer; what does not exist is any non-Psychology Leadership test route, so the clause's wider face cannot be observed separately from mechanic.psychology-immunity.  Missing capability: one admitted non-Psychology Leadership request in the corpus.  [B] CLOSED BY THE REGISTER (M4e-psychology-leadership wave, 2026-10-09): the row's own notes now record the accepted connection of mechanic.automatic-leadership to the shared operator for this printed recipient - 'the band rule gains the shared binding and the canonical compiler/catalogue route reaches it', focal evidence tests/python/combat/modular/test_t13_m4e_connections.py - so the missing-KB-binding step is closed; the held face is only the [C] non-Psychology Leadership request above.  Original note follows: the printed sentence passes every test based on Leadership, and
 #   the three scenarios cover the Leadership tests this setup can force on a Prophet: the charged
 #   warrior's Fear test, the charging warrior's Fear test, and the Stupidity test of the declared
 #   Head Injury result 6.
-#   Named gap (recorded connection): the register note records no binding on this band record - the
-#   canonical effect and its consumer exist, so the missing step is the KB connection rather than a
-#   behaviour.  The scenarios assert the printed consequence, and the connection gap is not repaired
-#   or claimed here.
+#   # Recorded connection (register, M4e wave 2026-10-09): the row's own notes now record the
+#   accepted connection of mechanic.automatic-leadership to the shared operator for this printed
+#   recipient, so the KB-connection step this note recorded ('not repaired or claimed here') is
+#   closed.  The scenarios keep asserting the printed consequence, and the [C] representation
+#   face above is the one held cause.
 #   Named gap (representation): a Leadership test that is not a Psychology test cannot be forced on
 #   the bearer with the surrounding vocabulary alone - the duel's own round-0 requests (Fear,
 #   Stupidity) are all routed as Psychology - so the faces above are also satisfied by the ordinary
@@ -121,4 +122,29 @@
     - {key: round.0.first.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.stupidity_failed: false, state.first.wounds: 1, state.first.condition: STANDING, state.second.wounds: 3, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+# Corridor note (entregable 04): the family's named gap was one admitted non-Psychology Leadership
+# request via which the wider face could be observed on this bearer. The corridor found it: the
+# cursed Danse state is now an admitted supplied condition (catalog/rules/conditions.yaml,
+# condition.danse-macabre-controlled, YES/YES) whose recovery re-test is named
+# round.N.<side>.danse-macabre, a Leadership request the duel does NOT route as Psychology. The
+# tape below supplies that state on the bearer itself: the auto-pass answers the request with no
+# die at all (an implementation that asked for one would fail the strict tape) and the state
+# clears - the absence of the die is the assertion, as in the Fear tapes above. No charge is
+# declared, so the round resolves without combat and nothing else is requested.
+- audit_id: rule/trollheim/chaos-streets-mordheim-inhabitants/prophet--fanatic/unimplemented.chaos-streets-mordheim-inhabitants.prophet.fanatic
+  id: the-supplied-danse-state-clears-through-the-non-psychology-route
+  covers: [automatic-leadership]
+  fighters:
+    first:
+      condition_ids: [condition.danse-macabre-controlled]
+      collection: trollheim
+      band_id: chaos-streets-mordheim-inhabitants
+      profile_id: prophet
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_rounds:
+    0: {state.first.danse_macabre_controlled: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

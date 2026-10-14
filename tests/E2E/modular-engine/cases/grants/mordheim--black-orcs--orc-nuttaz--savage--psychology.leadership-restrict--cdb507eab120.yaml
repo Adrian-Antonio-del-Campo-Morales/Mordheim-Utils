@@ -1,11 +1,13 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/black-orcs/orc-nuttaz--savage/psychology.leadership-restrictions
 # scaffold_fingerprint: 38adfa9dd5417a073a78d718da160763948a9b485ef6744ccc01c463e560302f
-# authoring_status: PARTIAL
-# authoring_progress: the admitted loadout-prohibition clause carries two authored scenarios for its
-# armour half (the recipient build carrying armour is refused, and the same recipient without it is
-# accepted at construction).  The ranged-weapons half of the same printed sentence stays pending
-# because the shared token is interpreted as the blackpowder list only; that gap is named below.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted loadout-prohibition clause carries three authored scenarios, one for
+# each printed half of the stanza plus the acceptance control: the armour refusal, the ranged-weapons
+# refusal and the same recipient without either item accepted at construction.  Both refusals come from
+# the profile.equipment-restrictions binding recorded for orc-nuttaz--savage (forbids: armour,
+# ranged-weapons) through the shared eligibility stage, and the sibling origin of this same profile
+# (profile.equipment-restrictions) exhibits exactly the two fragments used here, so neither is invented.
 # REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
@@ -17,15 +19,18 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: whole--scope--loadout-prohibitions (scope: YES)
-# PARTIAL[whole--scope--loadout-prohibitions]: [CLOSING-REVIEW [B]] 2 scenarios cover the printed "can never use any form
-# of armour": the Orc Nuttaz carrying armour.light-armour is refused with "armour is forbidden for
+# AUTHORED[whole--scope--loadout-prohibitions]: 3 scenarios cover both printed halves of "They can
+# never use any form of armour or ranged weapons."  The armour half: the Orc Nuttaz carrying
+# armour.light-armour in the armour slot is refused with "armour is forbidden for
 # black-orcs/orc-nuttaz", and the same recipient without the item is accepted at construction.  The
-# refusal comes from the profile.equipment-restrictions binding recorded for orc-nuttaz--savage
-# (forbids: armour, ranged-weapons) through the shared eligibility stage.  PENDING: the printed "or
-# ranged weapons" half is not asserted - the shared token for ranged weapons is only interpreted as
-# the blackpowder weapon list, and no blackpowder weapon is offered in the executable mechanics
-# scope, so no refusal fragment naming a bow or crossbow can be produced (the bow/crossbow items
-# would fail construction earlier as unknown mechanics, which would not evidence the printed ban).
+# ranged-weapons half: the same recipient carrying weapon.pistol in the active main-hand slot is
+# refused with "missile weapons are forbidden for black-orcs/orc-nuttaz".  Both refusals come from the
+# profile.equipment-restrictions binding recorded for orc-nuttaz--savage (forbids: armour,
+# ranged-weapons) through the shared eligibility stage, and both fragments are already exhibited by the
+# sibling origin of this same profile (rule/mordheim/black-orcs/orc-nuttaz--savage/
+# profile.equipment-restrictions), which is why the earlier note that no refusal naming a ranged item
+# could be produced is withdrawn: the item is declared in the active main-hand slot the sibling uses,
+# not as an owned catalogue identity, so no blackpowder item is needed and no unknown row is involved.
 # The compulsory-movement and rout-Leadership sentences of the same printed stanza are the excluded
 # clauses of this origin and are not test TODOs.  REVIEWED still requires manual semantic review.
 # origin_id:
@@ -128,6 +133,21 @@
       profile_id: orc-nuttaz
       armour_id: armour.light-armour
   expect_error: armour is forbidden for black-orcs/orc-nuttaz
+
+# The other printed half of the same sentence, declared the way the sibling origin of this profile
+# declares it: a ranged weapon in the active main-hand slot is refused by the same binding's
+# ranged-weapons token.
+- audit_id: rule/mordheim/black-orcs/orc-nuttaz--savage/psychology.leadership-restrictions
+  id: orc-nuttaz-with-ranged-weapons-is-refused
+  covers:
+  - whole--scope--loadout-prohibitions
+  fighters:
+    first:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: orc-nuttaz
+      main_weapon_id: weapon.pistol
+  expect_error: missile weapons are forbidden for black-orcs/orc-nuttaz
 
 - audit_id: rule/mordheim/black-orcs/orc-nuttaz--savage/psychology.leadership-restrictions
   id: orc-nuttaz-without-armour-is-accepted-at-construction

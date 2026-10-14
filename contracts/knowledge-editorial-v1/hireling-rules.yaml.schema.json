@@ -22,7 +22,7 @@
   },
   "$defs": {
     "rule": {
-      "description": "One shared hireling rule: source prose plus the stable id profiles reference. The `runtime` classification of band rules does not apply here — a hireling rule is editorial text the campaign reads, not a duel-engine binding.",
+      "description": "One shared hireling rule: source prose plus the stable id profiles reference. Admitted individual duel consequences declare their runtime binding; general hiring rules remain editorial.",
       "type": "object",
       "required": ["id", "name", "name_i18n", "effect", "effect_i18n", "source_refs"],
       "additionalProperties": false,
@@ -35,7 +35,8 @@
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
         "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
-        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
+        "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" },
+        "runtime": { "$ref": "defs.schema.json#/$defs/rule_runtime" }
       }
     }
   }

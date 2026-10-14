@@ -21,6 +21,7 @@ class SuppliedConditions:
     condition_ids: tuple[str, ...]
     trait_values: dict
     mechanic_ids: tuple[str, ...]
+    profile_bindings: tuple[dict, ...] = ()
 
 
 def resolve_supplied_conditions(
@@ -38,6 +39,14 @@ def resolve_supplied_conditions(
     ordered: list[str] = []
     traits: dict = {}
     mechanics: list[str] = []
+    profiles: list[dict] = []
+    # Each supplied result is one source roll or draught, never the whole table.
+    for choices in (
+        {"condition.petru-debilitating", "condition.petru-strength", "condition.petru-resilience", "condition.petru-fortitude"},
+        {"condition.alchemist-resilience", "condition.alchemist-strength", "condition.alchemist-aberrantius-vigortia", "condition.alchemist-backleys-brew"},
+    ):
+        if len(set(condition_ids).intersection(choices)) > 1:
+            raise ValueError("choose only one supplied result of the same potion table")
     for raw_id in condition_ids:
         condition_id = str(raw_id)
         if condition_id in ordered:
@@ -75,8 +84,10 @@ def resolve_supplied_conditions(
                 traits[key] = (binding.get("parameters") or {}).get("value")
             elif kind == "mechanic":
                 mechanics.append(binding_id)
+            elif kind == "profile":
+                profiles.append(binding)
             else:
                 raise ValueError(
                     f"condition {condition_id} has an unsupported binding kind: {kind!r} ({binding_id})")
         ordered.append(condition_id)
-    return SuppliedConditions(tuple(ordered), traits, tuple(mechanics))
+    return SuppliedConditions(tuple(ordered), traits, tuple(mechanics), tuple(profiles))

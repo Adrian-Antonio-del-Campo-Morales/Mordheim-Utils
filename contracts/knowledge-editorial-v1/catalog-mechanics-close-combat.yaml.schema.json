@@ -84,14 +84,16 @@
         "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
         "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "engine_option": { "$ref": "#/$defs/engine_option" },
+        "rules_source_url": { "$ref": "#/$defs/rules_source_url" },
         "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
       }
     },
     "code_mechanic": {
       "description": "Material, preparation or poison mechanic: the engines identify it by its numeric code as well as by its option.",
       "type": "object",
-      "required": ["id", "name", "name_i18n", "effect", "effect_i18n", "engine_option", "engine_code", "source_refs"],
+      "required": ["id", "name", "name_i18n", "effect", "effect_i18n", "engine_option", "source_refs"],
       "additionalProperties": false,
+      "anyOf": [{ "required": ["engine_code"] }, { "required": ["modular_only"] }],
       "properties": {
         "id": { "$ref": "defs.schema.json#/$defs/id" },
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
@@ -100,6 +102,8 @@
         "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "engine_option": { "$ref": "#/$defs/engine_option" },
         "engine_code": { "type": "integer" },
+        "modular_only": { "description": "Explicitly lacks an optimized numeric encoding; use the modular engine.", "const": true },
+        "rules_source_url": { "$ref": "#/$defs/rules_source_url" },
         "source_refs": { "$ref": "defs.schema.json#/$defs/source_refs" }
       }
     },

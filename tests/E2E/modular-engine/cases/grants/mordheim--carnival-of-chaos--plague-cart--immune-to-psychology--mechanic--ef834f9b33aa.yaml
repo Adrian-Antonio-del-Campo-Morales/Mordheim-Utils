@@ -90,3 +90,29 @@
   expect_rounds:
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 4, state.second.condition: STANDING, state.second.fear_hit_sixes: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# Corridor note (entregable 04): the family's named gap was one admitted non-Psychology Leadership
+# request via which the wider face could be observed on this bearer. The corridor found it: the
+# cursed Danse state is now an admitted supplied condition (catalog/rules/conditions.yaml,
+# condition.danse-macabre-controlled, YES/YES), whose recovery re-test round.N.<side>.danse-macabre
+# is a Leadership request the duel does NOT route as Psychology. The tape below supplies that state
+# on the cart itself; the auto-pass answers it with no die at all and the state clears. The cart's
+# non-printed characteristics remain the fixture facts declared above, which is still the PENDING[C]
+# datum named in the clause note - no new reading is claimed here.
+- audit_id: rule/mordheim/carnival-of-chaos/plague-cart--immune-to-psychology/mechanic.automatic-leadership
+  id: the-supplied-danse-state-clears-through-the-non-psychology-route
+  covers: [automatic-leadership]
+  fighters:
+    first:
+      condition_ids: [condition.danse-macabre-controlled]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 8, wounds: 4, initiative: 3, attacks: 1, leadership: 7}
+      collection: mordheim
+      band_id: carnival-of-chaos
+      profile_id: plague-cart
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1, leadership: 7}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_rounds:
+    0: {state.first.danse_macabre_controlled: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

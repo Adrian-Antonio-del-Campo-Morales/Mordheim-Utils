@@ -2,10 +2,17 @@
 # audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious
 # scaffold_fingerprint: cd5ed6d0781b5524764b2cf17f1eaeffcfa188283cc1c33a95c5d741dfc78a88
 # authoring_status: AUTHORED
-# authoring_progress: the two admitted clauses carry 4 authored scenarios derived from the printed rule
+# authoring_progress: the two admitted clauses carry 3 authored scenarios derived from the printed rule
 # and the recorded contract: the reaction after a close-combat injury that takes this hero out of action
 # (the attacker's Toughness test failing on the printed always-fails six, and the same test passing),
-# and the printed Rotten Body prerequisite as the selection refusal plus its accepted pairing.  The
+# and the printed Rotten Body prerequisite as its accepted pairing, because the refusal face had to be
+# withdrawn: the shared stage's own sentence exists (`loadoutRestriction` in `_eligibility.js` returns
+# "Contagious requires Rotten Body" for a build declaring Contagious without Rotten Body), but this
+# origin's own row is deferred (scope LATER / implemented NO / binding null), so a declaration that
+# resolves to it is refused earlier, at the declared-rule block (compiler.py:170, "special rule is
+# outside the executable duel runtime: band--clan-pestilens-special-skills-contagious: Deferred
+# subsystem: psychology or mounts."), while the loadout stage that carries the sentence runs later
+# (compiler.py:317).  The
 # register records that this origin's runtime binding is still missing while the canonical
 # trait.contagious branch lives in the aftermath seam, so the reaction scenarios supply the printed
 # individual state as an explicit fact (the reuse the register instructs) and the tape is the canonical
@@ -54,10 +61,18 @@
 #   The trait.contagious branch already exists in _react_to_wound, with a canonical binding in the Trollheim Clan Pestilens rule and a semantic spec. The Mordheim origin is still null-bound. Connect that origin; do not propose another reactive operator. The spec is inspected, not executed in this correction. Selectively verified equivalence: {"review_file":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"contagious-reaction","verified_family":"trait.contagious","verified_peer_keys":[{"origin_id":"rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious","clause_id":"contagious-reaction"},{"origin_id":"rule/trollheim/lustria-clan-pestilens/band--clan-pestilens-special-skills-contagious/trait.contagious","clause_id":"contagious-reaction"}],"sharing_boundary":"Same reaction after an established close-combat Out result: attacker Toughness test, natural 6 fails, one automatic wound, Undead/Possessed exempt. Preserve aftermath._react_to_wound and any existing connection/prerequisite gap.","evidence":"inspection","limit":"Only this closed selection was checked. No acceptance of the entire review, KB activation, implementation closure or execution evidence."}
 #
 # Clause: contagious-rotten-body-prerequisite (scope: YES)
-# AUTHORED[contagious-rotten-body-prerequisite]: 2 scenarios cover the printed prerequisite as the
-# construction consequence it is recorded as: the Contagious row selected without Rotten Body is refused
-# with the verbatim diagnostic the shared construction module emits, and the same selection carrying both
-# rows is accepted and runs.  REVIEWED still requires manual semantic review.
+# AUTHORED[contagious-rotten-body-prerequisite]: 1 scenario covers the printed prerequisite as the
+# construction consequence it is recorded as: the selection carrying both printed rows is accepted and
+# runs.  The refusal face is recorded as withheld, not asserted: the sentence the shared module emits is
+# "Contagious requires Rotten Body" (`loadoutRestriction` in `_eligibility.js`, reached from
+# compiler.py:317), but this origin's own row is deferred - runtime scope LATER, implemented NO, binding
+# null, reason "Deferred subsystem: psychology or mounts." - so a declaration resolving to this origin's
+# row is refused at compiler.py:170 ("special rule is outside the executable duel runtime: <id>:
+# <reason>") before the prerequisites stage and before any loadout stage, and the withdrawn tape could
+# only have asserted that runtime status instead of the printed prerequisite.  The sentence is still
+# produced today only when the id is resolved through `free_rules`, where the other collection defines
+# the same id with implemented YES: that is another origin's runtime, so it is not evidence for this
+# clause.  REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious
 # analysis_status:
@@ -139,20 +154,11 @@
     0: {state.second.condition: OUT, state.first.wounds: 2, state.first.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: second_out}
 
-- audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious
-  id: contagious-without-rotten-body-is-refused
-  covers: [contagious-rotten-body-prerequisite]
-  fighters:
-    first:
-      main_weapon_id: weapon.mace
-      special_rule_ids: [band--clan-pestilens-special-skills-contagious]
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
-    second:
-      main_weapon_id: weapon.mace
-      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
-  duel_context: {charging: [], active_participant: first}
-  maximum_rounds: 1
-  expect_error: Contagious requires Rotten Body
+# The refusal tape that stood here - `contagious-without-rotten-body-is-refused`, declaring the
+# Contagious row alone and expecting the fragment "Contagious requires Rotten Body" - was WITHDRAWN
+# under the non-reachable-diagnostic rule: this origin's row is deferred, so the declaration is refused
+# at compiler.py:170 before the stage that carries that sentence.  The requirement is recorded in the
+# clause marker above, not asserted here, and the accepted pairing below is unchanged.
 
 - audit_id: rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-contagious/unimplemented.skaven-clan-pestilens.band.clan-pestilens-special-skills-contagious
   id: the-same-selection-with-rotten-body-is-accepted

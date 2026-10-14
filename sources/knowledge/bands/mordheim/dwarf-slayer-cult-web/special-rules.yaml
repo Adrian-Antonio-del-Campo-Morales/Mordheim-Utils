@@ -128,7 +128,18 @@ rules:
     - id: unimplemented.dwarf-slayer-cult-web.band.slayer-campaign
       scope: 'NO'
       binding: null
-      reason: Postgame injury rerolls, exploration, advancement and learning magic are outside the duel; Rememberer is expressly not a Slayer.
+      reason: Postgame injury rerolls, exploration, advancement and learning magic are outside the
+        duel; Rememberer is expressly not a Slayer.
+    - id: mechanic.slayer-identity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.slayer-identity
+        parameters:
+          profile_ids:
+          - giant-slayer
+          - doomseeker
+          - troll-slayers
   name: Slayer
   effect: >-
     Deathwish: Slayers seek an honorable death in combat. Unless stated otherwise, all members of
@@ -221,14 +232,16 @@ rules:
     - rememberer
 - id: rememberer--rememberer
   runtime:
-    scope: 'YES'
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
-    - id: unimplemented.dwarf-slayer-cult-web.rememberer.rememberer
-      scope: 'YES'
+    - id: rememberer--rememberer.provider
+      scope: 'NO'
       binding: null
-      reason: 'Included individual duel effect, not implemented: Supplied qualified Rememberer grants one battle reroll against a Large/T5+ duel opponent; source-specific resource and canonical projection remain pending.'
+      reason: The independent Rememberer provider and radius are excluded. Its qualified Slayer Hero
+        recipient supplies condition.rememberer-web-support; the Large-only and Large-or-T5+ variants
+        remain distinct.
   name: Rememberer
   effect: >-
     The Rememberer's task is to record the doom of each of the slayers. When he is close by, the

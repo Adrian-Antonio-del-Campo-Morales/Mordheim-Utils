@@ -97,6 +97,22 @@ def test_slave_driver_lends_at_three_inches_and_at_six_with_a_scourge():
     foreign = canonical("house-guard-sc", "commander")                     # Ld 8
     assert probe(slave, [LocalParticipant("boss", "first", foreign)],
                  [("first", "boss", 3)], [("probe.0", 3), ("probe.1", 3)]) is False
+    # The printed recipient is a slave, not every warrior in the Overseer's band.
+    verminkin = canonical("skaven-of-clan-skryre-rel", "verminkin")
+    assert probe(verminkin, [LocalParticipant("overseer", "first", overseer)],
+                 [("first", "overseer", 3)], [("probe.0", 3), ("probe.1", 3)]) is False
+
+
+def test_slavers_overseer_lends_to_an_explicitly_supplied_slave():
+    slave = compile_fighter(FighterBuild('mordheim',
+        Characteristics(3, 3, 3, 2, 3, 1, leadership=2), main_weapon_id='weapon.mace',
+        trait_overrides={'slave': True}))
+    overseer = canonical('slavers-rel', 'overseer')
+    assert probe(slave, [LocalParticipant('overseer', 'first', overseer)],
+        [('first', 'overseer', 3)], [('probe.0', 3), ('probe.1', 3)],
+        [('probe.leader.overseer', True)]) is True
+    assert probe(slave, [LocalParticipant('overseer', 'second', overseer)],
+        [('first', 'overseer', 3)], [('probe.0', 3), ('probe.1', 3)]) is False
 
 
 # --- House Guard: Relay Orders (the leader's Leadership through the Adjutant)
@@ -162,6 +178,15 @@ def test_songster_rerolls_a_failed_test_with_one_more_leadership():
     out = LocalParticipant("minstrel", "first", minstrel, "out")
     assert probe(lookout, [out], [("first", "minstrel", 6)],
                  [("probe.0", 6), ("probe.1", 6)]) is False
+
+
+def test_songster_covers_any_friendly_recipient_without_a_same_band_requirement():
+    recipient = bare()
+    minstrel = canonical('sea-ghosts-mim', 'minstrels')
+    assert probe(recipient, [LocalParticipant('minstrel', 'first', minstrel)],
+        [('first', 'minstrel', 6)],
+        [('probe.0', 6), ('probe.1', 6), ('probe.reroll.0', 4), ('probe.reroll.1', 4)],
+        [('probe.reroll', True)]) is True
 
 
 # --- Protectorate of Sigmar: Devoted (re-roll within 12 of the Priest) ------

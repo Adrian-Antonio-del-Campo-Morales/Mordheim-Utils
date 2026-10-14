@@ -2,9 +2,11 @@
 # audit_id: rule/mordheim/ogre-hunting-party-web/trappers--veteran-tracker/unimplemented.ogre-hunting-party-web.trappers.veteran-tracker
 # scaffold_fingerprint: 58dfcf6c45bc6f32f98c534fa925352e11a43afd6c479c4e6af095b0b6d3cd7d
 # authoring_status: PARTIAL
-# authoring_progress: no scenario is derived for the admitted starting-skill-choice clause yet, for the
-# concrete reason recorded in its own note below.  REVIEWED still requires manual semantic review and
-# execution_status stays UNEXECUTED.
+# authoring_progress: no scenario is derivable for the admitted starting-skill-choice clause: three of its
+# four printed choice identities have no catalogue row and no build field declares which single choice a
+# Trapper took, so only a normative decision (canonical choice identities plus the exactly-one guard)
+# unblocks it.  The concrete evidence is in the note below.  REVIEWED still requires manual semantic review
+# and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -15,15 +17,20 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: starting-skill-choice (scope: YES)
-# PARTIAL[starting-skill-choice]: [C] no scenario is authorable for this clause as recorded.  Category C: the four choice identities and the exactly-one guard are genuinely absent from the fixture's construction vocabulary, so neither the admission of a named choice nor the refusal of a second can be declared.  The printed
-# rule is an exactly-one choice among four printed skills at initial construction, and the record states
-# the missing pieces: "Canonical choice facts and a shared exactly-one guard are missing", with the
-# selected skill's own clauses kept as separate obligations and traps, deployment and scent detection
-# explicitly out of scope.  A scenario needs (a) the canonical identity of each of the four choices and
-# (b) the guard that refuses a second one; neither is recorded, so the observable - one of the four
-# admitted and a second refused - cannot be declared without inventing the choice identities.  The
-# scope-NO warband-wide maximum on Infiltration is roster composition and stays out of the duel, as its
-# own note says.
+# PARTIAL[starting-skill-choice]: [D] blocker: a normative identity the sources do not resolve, kept
+# separate from the implementation defect the eventual tapes must detect.  The printed rule is an exactly-one
+# choice among four named skills at initial construction, and the four choice identities are not all in the
+# catalogue: Netter resolves as mechanic.netter (catalog/mechanics/close-combat.yaml, the operator the
+# authored netter tapes declare through special_rule_ids), while Infiltration, Set Traps and Scent Hound have
+# no catalogue row - the only rows naming them are hireling-local rule ids of other bands
+# (hireling.hired-sword.shadow-warrior.rule.infiltration,
+# hireling.hired-sword.big-game-hunter.rule.set-traps), which are not this Trapper's choices.  No build field
+# declares which single choice a given Trapper took, and selecting the whole row through special_rule_ids
+# would assert that the row always grants Netter, over-claiming the printed choice.  The blocked item is
+# therefore the four canonical choice identities together with the exactly-one guard, which is the record's
+# own wording ("Canonical choice facts and a shared exactly-one guard are missing"); the row's own null
+# binding is an implementation defect those tapes must detect, not the blocker.  The scope-NO warband-wide
+# maximum on Infiltration is roster composition and stays out of the duel, as its own note says.
 # origin_id:
 #   rule/mordheim/ogre-hunting-party-web/trappers--veteran-tracker/unimplemented.ogre-hunting-party-web.trappers.veteran-tracker
 # analysis_status:

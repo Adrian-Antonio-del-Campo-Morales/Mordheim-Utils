@@ -2,7 +2,15 @@
 # audit_id: rule/mordheim/dwarf-slayers-kaz/rememberer--rememberer/unimplemented.dwarf-slayers-kaz.rememberer.rememberer
 # scaffold_fingerprint: 808f5c590f6e497b57a793f81c7422a25883828521abff5eb7b0b8560f667a79
 # authoring_status: PARTIAL
-# authoring_progress: no scenario is authorable from this file's recorded evidence.  The clause records effect_id `proposed.band-rememberer-reroll` (proposed, not admitted) with relation "related", so the once-per-game reroll of failed To Hit rolls for a Slayer Hero against a large creature supplied by an allied Rememberer within 6" has no consumer to read; the once-per-game resource key and the accepted large-creature marker are likewise unrecorded.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: the printed supplied re-roll now carries a scenario: this band's Slayer Hero fighting the
+#   printed large-creature identity (the Troll profile the print itself names) with the band's own Rememberer
+#   supplied within the printed six inches, taking a failed To Hit roll again through the corpus's ordinary
+#   hit-re-roll route.  The earlier "no scenario is authorable" reduction was wrong: a proposed effect_id and a
+#   null binding are missing implementation, and the opponent identity is a fixture fact.  The "once only"
+#   limit still waits on the source-specific resource identity the register records as pending data, and the
+#   engine's absent creature-size classification is the projection that would read the declared identity, so
+#   the clause stays PARTIAL with both named.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -13,7 +21,19 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: duelist-reroll (scope: YES)
-# PARTIAL[duelist-reroll]: [C] pending promotion of the proposed operator to an accepted effect_id, the resource key that limits the reroll to one use per game and the accepted marker for the printed "large creature (such as a troll or ogre)" opponent gate.  The supplied Rememberer and its six-inch radius stay supplied facts; the tape would then be a single declared failed To Hit roll taken again, with the gate held constant.
+# PARTIAL[duelist-reroll]: [C] the re-roll is asserted; the once-only limit is what still waits.  The tape
+#   below gives the printed recipient (this band's Slayer Hero), the printed opponent gate stated as the
+#   identity the sentence itself names - the Troll profile - held constant while the re-roll is declared, the
+#   supplied allied Rememberer as a nearby same-side participant inside the printed six inches (a snapshot
+#   fact, never a simulated third combatant), and the failed To Hit roll taken again through the corpus's own
+#   hit-re-roll route (a declared `.hit.reroll` die, the same key the accepted axe-expert and Luck tapes use).
+#   Pending implementation, not a withheld requirement: this row's binding is the unimplemented placeholder
+#   and the printed "Large creature" face has no classification anywhere in the engine, so nothing projects
+#   the granted re-roll onto the recipient today and the declared die is unrequested - exactly the defect the
+#   strict tape is written to detect.  The opponent's own mandatory per-round requests are declared on the
+#   tape so the fixture states the printed fight instead of hiding it.  Still withheld, with its cause: the
+#   printed "once only" limit, because the source-specific resource identity that records the single use is
+#   recorded nowhere and a second-use tape would have to invent that key.
 # origin_id:
 #   rule/mordheim/dwarf-slayers-kaz/rememberer--rememberer/unimplemented.dwarf-slayers-kaz.rememberer.rememberer
 # analysis_status:
@@ -70,4 +90,54 @@
 # Register notes (context only, not behavioral authority):
 #   Recorded explicitly so the excluded producer is visible and the individual reroll is not discarded merely because its producer is external. Scope review integration: {"clause_id":"group-emission","review_clause_id":"group-emission","source_state":"unverified","review_status":"reviewed","scope_reason":"The clause is only the within-six-inches proximity condition of the aura; the permanent ruling keeps commands and auras for their supplied effects on the duel and does not require a group emission, hearing or recipient subsystem.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The 6\" proximity to the Rememberer and the third model it requires are the excluded group / third-combatant arrangement that emits the bonus; no duel producer is modelled and the reroll clause above is supplied out of band instead.","effect_id":"","relation":"independent","parameters":"{\"needs_third_model\": true, \"range\": \"6in\"}","conditions":"{\"subsystem\": \"groups / third combatants\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"A18-excluded-and-later-clauses","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"And within 6\" of the Rememberer","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Derived from the printed sentence, the printed profiles and the recorded contract; no engine output was
+# consulted.  The opponent is the identity the print itself names for the gate ("a large creature (such as a
+# troll or ogre)"), declared as a fixture fact; its mandatory per-round requests are declared with it on the
+# evidence of this corpus's own accepted Troll tape.  The Rememberer is supplied as a nearby same-side
+# participant, which is the form the ruling admits.
+
+- audit_id: rule/mordheim/dwarf-slayers-kaz/rememberer--rememberer/unimplemented.dwarf-slayers-kaz.rememberer.rememberer
+  id: the-supplied-rememberer-rerolls-a-failed-to-hit-roll-against-a-large-creature
+  covers: [duelist-reroll]
+  # The printed benefit: once per game a Slayer Hero fighting a large creature and within six inches of the
+  # allied Rememberer may re-roll any failed To Hit rolls once only.  The declared miss of two is taken again
+  # on a four, which lands the hit; the declared wound face of two does not wound the Troll (Strength 3
+  # against its own Toughness), so the tape reads the re-roll and nothing else and the Troll's Regeneration is
+  # never reached.  The supplied Rememberer is a nearby same-side participant at the printed six inches.  The
+  # `.hit.reroll` die is the corpus's own hit-re-roll route, so the tape fails on an unrequested die until the
+  # row's unimplemented binding projects the granted re-roll - the PENDING implementation defect.  The printed
+  # "once only" limit is recorded in the clause marker above.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: dwarf-slayers-kaz
+      profile_id: troll-slayers
+      main_weapon_id: weapon.mace
+    second:
+      collection: mordheim
+      band_id: black-orcs
+      profile_id: troll
+  duel_context:
+    charging: []
+    active_participant: first
+    nearby:
+      - participant_id: rememberer
+        side_id: first
+        condition: standing
+        fighter: {collection: mordheim, band_id: dwarf-slayers-kaz, profile_id: rememberer}
+    distances:
+      - [first, rememberer, 6]
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.stupidity.0, value: 1}
+    - {key: round.0.second.stupidity.1, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.first.attack.0.hit.reroll, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.2.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: True, attacks.0.wounded: False, attacks.0.damage: 0, state.first.wounds: 1, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

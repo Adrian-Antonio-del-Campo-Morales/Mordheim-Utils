@@ -5,11 +5,18 @@
 # authoring_progress: the admitted whole clause carries three authored scenarios: the won opposed
 #   D6+Strength roll replaces the two qualifying hits with one automatic wound that forbids armour,
 #   a declined replacement resolves the two ordinary attacks instead, and a lost opposed roll deals
-#   no damage at all.  The bearer is a build that declares the canonical rule (trained-bear--bear-hug)
-#   directly, so the tape holds only the hug's own dice; the printed Bear's other stanzas (trained,
-#   fearsome, fiercely loyal, the tamer requirement) are separate clauses with their own files and are
-#   not asserted here.  REVIEWED still requires manual semantic review and execution_status stays
-#   UNEXECUTED.
+#   no damage at all.  The bearer is the printed kislevites trained-bear profile and the hug reaches
+#   the build by that row's own automatic route (trained-bear--bear-hug, applies_to.profile_ids
+#   [trained-bear], grant: profile), so the tape holds the hug's own dice and declares no selection:
+#   the declared-selection channel refuses a profile grant ("special rule is not selectable"), while
+#   the automatic route compiles the hug contract for the profile it names.  The profile's other
+#   implemented automatic rules apply with it and are accounted for in the tapes -- trained-bear--
+#   trained (mechanic.stupidity, mechanic.handler-leadership; no handler is supplied, so the bear
+#   tests on its own Leadership and one stupidity die is declared per tape) and trained-bear--fearsome
+#   (mechanic.causes-fear; nothing charges in these tapes, so no fear test is requested).  The printed
+#   Bear's remaining stanzas (fiercely loyal, the tamer requirement) stay separate clauses with their
+#   own files.  The creature carries no equipment list, so it fights with its natural attacks.
+#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -26,7 +33,10 @@
 #   is the printed opposed D6+Strength (ties to the bear) and its win is one automatic wound with no
 #   armour save, declining leaves the two ordinary attacks to resolve, and losing the opposed roll
 #   deals nothing.  The contract's closure (ties, armour ignored, at most one wound) is the recorded
-#   semantic contract of this origin.
+#   semantic contract of this origin.  No selection is declared: the row is a profile grant of the
+#   bearer's own printed profile, whose automatic route is the one the shared stage compiles, and the
+#   profile's other implemented automatic rules (Trained's stupidity and handler leadership, Fearsome's
+#   causes-fear) are declared in the tapes so no test is left unanswered.
 # origin_id:
 #   rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
 # analysis_status:
@@ -56,17 +66,21 @@
 
 # --- Authored scenarios ---
 # Derived from the printed rule and the recorded contract; no engine output was consulted.  The
-# bearer declares the canonical rule directly so the tape holds exactly the hug's dice: the two
-# qualifying hits, the declared replacement decision, the two opposed dice and - only on a win - the
-# automatic wound, which needs no wound, armour or injury roll.  The opponent's own attack is
-# declared as a miss so the strict tape is complete.
+# bearer is the printed kislevites trained-bear profile, whose own automatic route compiles the hug
+# contract, so the tape holds exactly the hug's dice: the stupidity test its Trained stanza adds, the
+# two qualifying hits, the declared replacement decision, the two opposed dice and - only on a win -
+# the automatic wound, which needs no wound, armour or injury roll.  The opponent's own attack is
+# declared as a miss so the strict tape is complete.  Nothing charges, so Fearsome's causes-fear
+# requests no test.
 - audit_id: rule/mordheim/kislevites/trained-bear--bear-hug/special-rule.trained-bear--bear-hug
   id: a-won-bear-hug-deals-one-unsaveable-wound
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
-      special_rule_ids: [trained-bear--bear-hug]
+      collection: mordheim
+      band_id: kislevites
+      profile_id: trained-bear
+      main_weapon_id: weapon.natural-attacks
       characteristics: {weapon_skill: 3, strength: 5, toughness: 5, wounds: 2, initiative: 5, attacks: 2}
     second:
       main_weapon_id: weapon.mace
@@ -76,6 +90,7 @@
   decisions:
     - {key: round.0.first.bear-hug, value: true}
   rolls:
+    - {key: round.0.first.stupidity, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.1.hit, value: 4}
     - {key: round.0.first.bear-hug.attacker, value: 6}
@@ -91,8 +106,10 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
-      special_rule_ids: [trained-bear--bear-hug]
+      collection: mordheim
+      band_id: kislevites
+      profile_id: trained-bear
+      main_weapon_id: weapon.natural-attacks
       characteristics: {weapon_skill: 3, strength: 5, toughness: 5, wounds: 2, initiative: 5, attacks: 2}
     second:
       main_weapon_id: weapon.mace
@@ -102,6 +119,7 @@
   decisions:
     - {key: round.0.first.bear-hug, value: false}
   rolls:
+    - {key: round.0.first.stupidity, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.1.hit, value: 4}
     - {key: round.0.first.attack.0.wound, value: 3}
@@ -117,8 +135,10 @@
   covers: [whole]
   fighters:
     first:
-      main_weapon_id: weapon.mace
-      special_rule_ids: [trained-bear--bear-hug]
+      collection: mordheim
+      band_id: kislevites
+      profile_id: trained-bear
+      main_weapon_id: weapon.natural-attacks
       characteristics: {weapon_skill: 3, strength: 5, toughness: 5, wounds: 2, initiative: 5, attacks: 2}
     second:
       main_weapon_id: weapon.mace
@@ -128,6 +148,7 @@
   decisions:
     - {key: round.0.first.bear-hug, value: true}
   rolls:
+    - {key: round.0.first.stupidity, value: 4}
     - {key: round.0.first.attack.0.hit, value: 4}
     - {key: round.0.first.attack.1.hit, value: 4}
     - {key: round.0.first.bear-hug.attacker, value: 1}

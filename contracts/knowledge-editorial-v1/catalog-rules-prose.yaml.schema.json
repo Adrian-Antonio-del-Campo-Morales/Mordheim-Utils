@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mordheim-utils.invalid/contracts/knowledge-editorial-v1/catalog-rules-prose.yaml.schema.json",
   "title": "Mordheim KB catalogue — prose rules of catalog/rules",
-  "description": "The two catalogues that hold rule text and no runtime classification: `core-combat.yaml` (canonical combat rules as editorial text) and `special-rules.yaml` (cross-band rule text, kept empty of band-specific rules and promoted here only after an equivalence review). Band rules reuse these texts through `rule_ref` instead of repeating prose.",
+  "description": "The canonical rule-text catalogues: core combat prose and cross-band special rules. Band rules reuse these texts through rule_ref; an admitted shared special rule may also declare its reviewed runtime binding.",
   "type": "object",
   "required": ["schema_version", "ruleset", "rules"],
   "additionalProperties": false,
@@ -36,7 +36,8 @@
         "name": { "$ref": "defs.schema.json#/$defs/display_text" },
         "name_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
         "effect": { "$ref": "defs.schema.json#/$defs/display_text" },
-        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" }
+        "effect_i18n": { "$ref": "defs.schema.json#/$defs/i18n" },
+        "runtime": { "$ref": "defs.schema.json#/$defs/rule_runtime" }
       }
     }
   }

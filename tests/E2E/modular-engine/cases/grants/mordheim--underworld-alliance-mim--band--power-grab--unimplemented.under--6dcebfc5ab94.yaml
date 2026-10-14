@@ -2,15 +2,18 @@
 # audit_id: rule/mordheim/underworld-alliance-mim/band--power-grab/unimplemented.underworld-alliance-mim.band.power-grab
 # scaffold_fingerprint: 9ede96c822fe250ee4b6e87777610585ea64f937512131b915fa605fb4ce0ac5
 # authoring_status: PARTIAL
-# authoring_progress: no scenario is authorable for the admitted supplied-leadership clause.  The recorded
-# mechanism is the generic characteristic adjustment (effect_id profile.characteristics, parameters
-# leadership_by_role {majority 1, minority -1}), but the band's own row for the rule is the deferred null
-# placeholder unimplemented.underworld-alliance-mim.band.power-grab (scope LATER) and the record states that
-# the canonical source-role fact/connection is absent: no build input supplies the match-start majority or
-# minority role, and the composition producer that would decide it is the excluded sibling clause.  A tape
-# could therefore only restate a fixture-supplied Leadership number, which evidences the fixture rather than
-# the printed rule.  The missing representation is the recorded source-role fact and its binding.  REVIEWED
-# still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: the admitted supplied-leadership clause stays PARTIAL, and this revision states exactly
+# what is missing, because the observable is not it.  The compiled Leadership can be read directly
+# (expect_initial) exactly as the sibling tileans and khemri characteristic grants read theirs, and a
+# Leadership-test boundary would discriminate too.  What has no input is the fact the clause adjusts by: the
+# printed +1/-1 turns on which race holds more warriors at match start, and no build field and no canonical
+# condition carries a supplied race role (searched: the band package, the canonical condition catalogue and the
+# build vocabulary of packages/python/core/mordheim_core/models.py::FighterBuild).  A tape would therefore have
+# to hard-code the resulting number as the warrior's own characteristic, which evidences the fixture and not
+# the rule.  The band's own row is a second, separate matter: it is the deferred placeholder
+# unimplemented.underworld-alliance-mim.band.power-grab (scope LATER, binding null), an implementation defect
+# the tapes would detect once the input exists.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -21,10 +24,14 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: supplied-leadership-adjustment (scope: YES)
-# PARTIAL[supplied-leadership-adjustment]: [C] not asserted.  Category C: the listed build vocabulary carries no supplied race-role fact, so neither the adjustment nor its denial has an input to be declared against.  The printed +1/-1 Leadership adjustment has no
-# binding on this record and no supplied race-role fact in the build vocabulary, so neither the adjustment nor
-# its tie case can be evidenced; the composition producer that determines the role is the excluded sibling
-# clause.
+# PARTIAL[supplied-leadership-adjustment]: [C] the necessary input is one the executor does not admit: the printed +1/-1 is a
+#   modifier of a supplied match-start race role, and neither the build vocabulary (FighterBuild carries no
+#   role fact) nor the canonical condition catalogue carries that role, so neither the majority gain, the
+#   minority loss nor the printed tie case can be declared against anything.  The sibling composition producer
+#   that would derive the role is the excluded clause (scope NO, its own note), so the role cannot be derived
+#   either; the register records the adjustment as an admitted individual consequence whose source-role fact is
+#   simply absent, which is the definition of this class.  Separately, and not a reason to withhold a scenario
+#   once the input exists, the band row's binding is null (scope LATER), which any tape here would detect.
 # origin_id:
 #   rule/mordheim/underworld-alliance-mim/band--power-grab/unimplemented.underworld-alliance-mim.band.power-grab
 # analysis_status:
@@ -81,4 +88,5 @@
 # Register notes (context only, not behavioral authority):
 #   The resulting individual Leadership adjustment is a separate supplied fact. Scope review integration: {"clause_id":"composition-producer","review_clause_id":"composition-producer","source_state":"unverified","review_status":"reviewed","scope_reason":"Determining which race has more warriors in the warband is a group composition rule the simulator does not resolve; the supplied adjustment is recorded on its own sibling clause.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
 
-[]  # Empty scenario list: PARTIAL - no source-role fact, binding or consumer for the supplied adjustment.
+[]  # Empty scenario list: PARTIAL - the supplied match-start race role has no declaring input (class C);
+# see the clause marker above, which separates that input gap from the null binding of the band's own row.

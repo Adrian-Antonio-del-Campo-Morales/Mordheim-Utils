@@ -436,13 +436,14 @@ rules:
 - id: andanti--estalian-tecnique
   runtime:
     scope: 'YES'
-    implemented: 'NO'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.andanti.estalian-tecnique
+    - id: mechanic.estalian-technique
       scope: 'YES'
-      binding: null
-      reason: 'Included individual duel effect, not implemented: Personal WS-based Rapier/Main Gauche parry variant; its canonical binding and exact modular resolution remain pending.'
+      binding:
+        kind: mechanic
+        id: mechanic.estalian-technique
   name: Estalian Tecnique
   effect: >-
     The Andanti may parry using his rapier and Main Gauche if he can roll under his weapon skill as
@@ -523,15 +524,15 @@ rules:
     - deaths-heads
 - id: band--special-skill-inspiring-presence
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: selectable
     effects:
-    - id: unimplemented.dreamwalkers-cult-of-morr-fbg.special-skill.inspiring-presence
-      scope: LATER
-      binding: null
-      reason: >-
-        Leadership-range modification: deferred to the psychology engine milestone.
+    - id: mechanic.leader-twelve
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.leader-twelve
   name: Inspiring Presence
   effect: >-
     When a Dreamer proves to be a brave leader and truly chosen of Morr, his followers will follow
@@ -551,7 +552,8 @@ rules:
       representarlo, los Adoradores de Morr pueden usar el Liderazgo del soñador si están a 12" o
       menos en lugar de los 6" habituales (solo para el Soñador).
   applies_to:
-    band: true
+    profile_ids:
+    - dreamer
   kind: warband_skill
 - id: band--special-skill-fanatical
   runtime:

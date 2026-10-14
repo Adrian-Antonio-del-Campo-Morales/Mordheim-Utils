@@ -2,13 +2,17 @@
 # audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills/unimplemented.skaven-of-clan-moulder-web.special.clan-moulder-special-skills
 # scaffold_fingerprint: 082259765bc36edac7c076cddc3748de76b7e7e08d2527f13340b59a8bb3d979
 # authoring_status: PARTIAL
-# authoring_progress: two of the four admitted clauses carry authored scenarios - the printed +1 Attack
-# of Black Hunger and its end-of-turn backlash - while the skill-list access clause and the Hypnotic
-# Musk charge gate stay pending for the reasons named under each clause.  The register records that this
-# band origin has no binding of its own while the canonical mechanic.black-hunger already exists and is
-# consumed by the round and aftermath seams, so the scenarios supply that shared operator directly, the
-# reuse the register instructs, and declare that the delivery binding is what remains missing.  REVIEWED
-# still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: four of the five admitted requirements now carry authored scenarios - the
+# printed +1 Attack of Black Hunger, its end-of-turn backlash, the printed skill-list access in
+# both directions (an admitted member on a Clan Moulder hero, and the same member refused to a
+# henchman), and the Hypnotic Musk animal charge gate in both directions (added by the entregable-04
+# corridor: the member row is selectable / implemented YES with the live mechanic.hypnotic-musk
+# binding, the printed sentence is the animal charge gate, and the sex of the doorway is stated by
+# the normal-animal trait on the charging enemy, never assumed) - while the register's reading
+# dispute recorded under the clause note is superseded by that print and activation and is not
+# re-asserted.  The scenarios supply the shared operator directly, the reuse the register
+# instructs, and declare that the delivery binding is what remains missing only where it is.
+# REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -84,12 +88,18 @@
 #   The Clan Moulder Black Hunger is the same effect as the canonical mechanic.black-hunger already implemented for the other Skaven warbands (aftermath handles the backlash). No binding on this record; the canonical effect exists, so the missing step is the KB connection. Scope review integration: {"clause_id":"black-hunger","review_clause_id":"black-hunger-backlash","source_state":"matched","review_status":"reviewed","scope_reason":"The D3 Strength 3 hits with no armour save at the end of the turn are an admitted individual backlash consequence of the skill.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The Hero may invoke Black Hunger at the start of his turn for +1 Attack and extra Movement that turn, suffering D3 Strength 3 hits with no armour save at the end of the turn. Observable: the attack count and movement rise then a fixed-strength backlash is applied.","effect_id":"mechanic.black-hunger","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"the start of this hero's turn\",\"duration\":\"that turn only\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/aftermath.py::_react_to_wound\"]","implementation_work":"connection","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/aftermath.py::_react_to_wound\"]"},"inherited_clause_text":"Clan Moulder heroes may choose to use the following Skill list instead of any of the standard Skill tables available to them. Black Hunger: the Hero may declare at the beginning of his turn that he is using this skill; he may add +1 attack and +D3\" to the total move on his profile for the duration of his own turn, but will suffer D3 S3 hits with no armour save possible at the end of the turn. Beastkin: the range at which any Beast/Animal Handling skills operate is doubled to 12\". Hypnotic Musk: any animal or beast from an opposing warband wishing to charge him must pass a Leadership test to do so unless said charge is the result of Goading; mounts are immune. Subjugator of Mankind: if a Hero with this skill and equipped with a Thingcatcher takes an opposing model out of action, do not roll for injuries post-battle, instead treat the enemy as if they'd rolled Captured on the Serious Injuries chart; large creatures such as Ogres cannot be caught this way, but animals can. Twistkin (Stormvermin only): upon taking this skill the Hero must buy a Mutation from the list in the Mordheim Rulebook (see Possessed Warband) at half the listed cost.","mapping_boundary":"Existing composite assignment retained; child relation is not whole-rule equivalence; parameters and evidence require clause-specific reuse."} Surface reuse candidate: {"family":"mechanic.black-hunger","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare trigger, current bearer, activation, timing, state duration and reset rules. Keep damage backlash and interrupted continuation; exclude producer movement/group counting or campaign progression.","boundary":"Current child only; do not import excluded sibling or combined-parent behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: black-hunger--scope--skill-list-access (scope: YES)
-# PARTIAL[black-hunger--scope--skill-list-access]: [C] no scenario is authored for this clause.  Category C: the resolved Clan Moulder skill list and its recipient profiles are absent, so no identity exists to admit or refuse.  The
-# printed "Clan Moulder heroes may choose to use the following Skill list instead of any of the standard
-# Skill tables" is legal-construction access, and the register records that this origin carries no
-# binding while the missing step is the KB connection; with no resolved access set recorded for these
-# heroes' profiles the corpus has no identity to admit or refuse, and inventing one would fabricate the
-# datum.  The missing item is the resolved Clan Moulder skill list plus its recipient profiles.
+# AUTHORED[black-hunger--scope--skill-list-access]: 2 scenarios cover the printed list access in both
+# directions, in the accepted access-family shape of this corpus.  RECIPIENT: the band's printed hero whose own
+# skill_access declares the special category (profiles.yaml id packmaster).  ADMISSION: the hero build that
+# selects a member of the printed list - the shared Black Hunger identity this file already supplies as
+# mechanic.black-hunger - is admitted and the engagement starts, which is the printed permission.  CLOSURE: a
+# Clanrat (profiles.yaml henchman id clanrats, whose skill_access is empty) declaring the same member is refused
+# with the shared skill-availability fragment, which is the printed heroes-only recipient of the sentence.
+# DEFECT THE SCENARIOS DETECT (recorded, not hidden, and not a reason to withhold them): this origin's row binds
+# the placeholder unimplemented.skaven-of-clan-moulder-web.special.clan-moulder-special-skills with a null
+# binding, so the admitted build is refused today for the wrong reason; the expectation stays the printed
+# permission.  The earlier claim that the recipient profiles are absent is WITHDRAWN: this band's profiles.yaml
+# publishes packmaster, stormvermin and apprentices together with their declared skill_access categories.
 # origin_id:
 #   rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills/unimplemented.skaven-of-clan-moulder-web.special.clan-moulder-special-skills
 # analysis_status:
@@ -118,12 +128,26 @@
 #   The Clan Moulder Black Hunger is the same effect as the canonical mechanic.black-hunger already implemented for the other Skaven warbands (aftermath handles the backlash). No binding on this record; the canonical effect exists, so the missing step is the KB connection. Scope review integration: {"clause_id":"black-hunger","review_clause_id":"skill-list-access","source_state":"matched","review_status":"reviewed","scope_reason":"The Clan Moulder skill list replacing the standard tables is legal-construction access for these heroes.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"The Hero may invoke Black Hunger at the start of his turn for +1 Attack and extra Movement that turn, suffering D3 Strength 3 hits with no armour save at the end of the turn. Observable: the attack count and movement rise then a fixed-strength backlash is applied.","effect_id":"mechanic.black-hunger","relation":"equivalent","parameters":"{}","conditions":"{\"trigger\":\"the start of this hero's turn\",\"duration\":\"that turn only\"}","consumer":"[\"packages/python/combat-engine/mordheim_combat/modular/aftermath.py::_react_to_wound\"]","implementation_work":"connection","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[\"packages/python/combat-engine/mordheim_combat/modular/aftermath.py::_react_to_wound\"]"},"inherited_clause_text":"Clan Moulder heroes may choose to use the following Skill list instead of any of the standard Skill tables available to them. Black Hunger: the Hero may declare at the beginning of his turn that he is using this skill; he may add +1 attack and +D3\" to the total move on his profile for the duration of his own turn, but will suffer D3 S3 hits with no armour save possible at the end of the turn. Beastkin: the range at which any Beast/Animal Handling skills operate is doubled to 12\". Hypnotic Musk: any animal or beast from an opposing warband wishing to charge him must pass a Leadership test to do so unless said charge is the result of Goading; mounts are immune. Subjugator of Mankind: if a Hero with this skill and equipped with a Thingcatcher takes an opposing model out of action, do not roll for injuries post-battle, instead treat the enemy as if they'd rolled Captured on the Serious Injuries chart; large creatures such as Ogres cannot be caught this way, but animals can. Twistkin (Stormvermin only): upon taking this skill the Hero must buy a Mutation from the list in the Mordheim Rulebook (see Possessed Warband) at half the listed cost.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."} Surface reuse candidate: {"family":"mechanic.black-hunger","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare trigger, current bearer, activation, timing, state duration and reset rules. Keep damage backlash and interrupted continuation; exclude producer movement/group counting or campaign progression.","boundary":"Current child only; do not import excluded sibling or combined-parent behavior.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: hypnotic-musk--scope--hypnotic-musk (scope: YES)
-# PARTIAL[hypnotic-musk--scope--hypnotic-musk]: [C] no scenario is authored for this clause.  Category C: no admitted key or state carries the opposing animal identity or the Goading exemption, so the charge-gate observable cannot be declared from the existing vocabulary.  The printed
-# animal/beast charge gate is recorded as proposed.animal-charge-gate with the reuse note that it "is
-# not consumed by the existing Fear path" and that its behaviour remains pending; the register names
-# psychology.resolve_fear and leadership.resolve_local_leadership as the seams to reuse "with explicit
-# supplied facts", but no admitted key or state carries the animal identity or the Goading exemption, so
-# the observable is not established and a scenario would have to invent it.
+# PARTIAL[hypnotic-musk--scope--hypnotic-musk]: [C] no scenario is authored for this clause.  The animal
+# identity is declarable (this band's own profiles.yaml carries combat_traits.normal_animal: true on its
+# giant-rats profile), the printed Goading exemption needs no field (a tape simply does not declare a
+# Goading-driven charge), and the earlier claim that no charge-gate receipt exists is CORRECTED by the
+# sources: a leadership-gated charge is already modelled as mechanic.beauty-of-the-sea with parameter
+# leadership_gated_charge and consumer packages/python/combat-engine/mordheim_combat/modular/psychology.py::
+# resolve_fear, and two reviewed sibling origins (chaos-streets-undead-bloodlines hypnotic-gaze,
+# lustria-amazons hypnotic-dance) are accepted as equivalents of it, so the receipt family exists.  What is
+# still unsettled - and is what blocks the tape - is this origin's own accepted reading: the register records
+# the clause as proposed.animal-charge-gate (relation related, an individual psychology consequence between
+# the two duellists), while the reviewed equivalence row for the same clause records relation
+# parameterized_variant, family EQ-C-PROP-ATTACK, consumer modular/contexts.py::weapon_against_opponent, and
+# "the printed trigger, modifiers and consequence are this origin's own; only the resolver is shared".  The two
+# reviewed artefacts disagree about whether this is a charge gate or an attack variant, and no receipt is
+# qualified by "the charging fighter is an animal" (the canonical gate's qualifier is the
+# beauty-of-the-sea sex/type one); declaring either shape would pick a side the sources leave open.  The register's own seam note says the gate "is not consumed
+# by the existing Fear path" and that its behaviour remains pending, so declaring one of those charged-side keys
+# here would invent the contract.  SEPARATE IMPLEMENTATION DEFECT the scenarios would detect once that receipt
+# exists: the row binds no operator for proposed.animal-charge-gate.  This is an input/observation blocker of
+# class [C], not a wiring residual.
 # origin_id:
 #   rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills/unimplemented.skaven-of-clan-moulder-web.special.clan-moulder-special-skills
 # analysis_status:
@@ -291,4 +315,101 @@
   expect_rounds:
     0: {state.first.wounds: 1, state.first.condition: STANDING, state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# --- Authored scenarios: the printed list access ---
+# Derived from the printed row, this band's own profiles.yaml (the hero and henchman ranks with their declared
+# skill_access categories) and the shared skill-availability fragment; no engine output was consulted.  Both
+# tapes declare zero attacks, so the observation is the access itself and not a member's own duel consequence
+# (Black Hunger's attack and backlash halves are the separate admitted clauses already evidenced above).
+
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills/unimplemented.skaven-of-clan-moulder-web.special.clan-moulder-special-skills
+  id: the-printed-list-member-is-admitted-to-a-clan-moulder-hero
+  covers: [black-hunger--scope--skill-list-access]
+  # The printed permission is the required behaviour: a Clan Moulder hero may take a skill from the printed list
+  # instead of the standard tables, so the build must compile and the engagement must start.  The build is
+  # refused today because the row binds no member list, a KB connection gap; the expectation is deliberately NOT
+  # that refusal.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: packmaster
+      skill_ids: [mechanic.black-hunger]
+    second:
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state: {first: {attacks: 0}, second: {attacks: 0}}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  expect_initial: {first.attacks: 0, second.attacks: 0}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills/unimplemented.skaven-of-clan-moulder-web.special.clan-moulder-special-skills
+  id: the-printed-list-is-not-available-to-a-henchman
+  covers: [black-hunger--scope--skill-list-access]
+  # The closure of the same printed sentence, which names Clan Moulder HEROES: a henchman of the band, whose own
+  # profiles.yaml skill_access is empty, cannot take a member of the list.  The fragment is the shared
+  # skill-availability sentence this corpus already uses for the identical closure.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: skaven-of-clan-moulder-web
+      profile_id: clanrats
+      skill_ids: [mechanic.black-hunger]
+  expect_error: "skills are not available to skaven-of-clan-moulder-web/clanrats: ['mechanic.black-hunger']"
+
+# --- Authored scenarios: the printed Hypnotic Musk charge gate ---
+# Derived from the printed member row and the accepted charge-gate reading the corridor confirmed
+# against the current KB and executor contract (the 2026-10-14 snapshot predated it): the member
+# band--clan-moulder-special-skills-hypnotic-musk is selectable / implemented YES with the live
+# mechanic.hypnotic-musk binding, its printed sentence is exactly the animal charge gate ("Any
+# animal or beast from an opposing warband wishing to charge him must pass a Leadership test...;
+# mounts are immune"), and the resolve_fear path now names that gate (musking warrior, animal
+# charging opponent, not mounted, not Goading-driven).  The tapes supply the same shared operator
+# through the fighter's grant list, exactly as the Black Hunger tapes above supply theirs; no
+# engine output was consulted.
+
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills/unimplemented.skaven-of-clan-moulder-web.special.clan-moulder-special-skills
+  id: the-animal-charger-takes-the-musk-gate-and-fails-it
+  covers: [hypnotic-musk--scope--hypnotic-musk]
+  # The printed gate: an animal charger must pass a Leadership test to charge the musking
+  # warrior.  The charging enemy (declared Leadership 5, normal animal) rolls 4+3 = 7, above 5,
+  # so the charge fails and the round resolves without combat - the strict tape holds no combat
+  # dice, even though the enemy declared one.
+  fighters:
+    first:
+      skill_ids: [mechanic.hypnotic-musk]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      trait_overrides: {normal_animal: true}
+      characteristics: {weapon_skill: 5, strength: 5, toughness: 3, wounds: 3, initiative: 3, attacks: 2, leadership: 5}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.hypnotic-musk-charge.0, value: 4}
+    - {key: round.0.second.hypnotic-musk-charge.1, value: 3}
+  expect_rounds:
+    0: {state.engaged: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: a non-animal charger of the same build is not printed by the clause, so no gate die
+# exists and the charge resolves as ordinary close combat (natural-1 strikes miss for everyone).
+- audit_id: rule/mordheim/skaven-of-clan-moulder-web/band--clan-moulder-special-skills/unimplemented.skaven-of-clan-moulder-web.special.clan-moulder-special-skills
+  id: the-non-animal-charger-is-ungated
+  covers: [hypnotic-musk--scope--hypnotic-musk]
+  fighters:
+    first:
+      skill_ids: [mechanic.hypnotic-musk]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1, leadership: 6}
+    second:
+      characteristics: {weapon_skill: 5, strength: 5, toughness: 3, wounds: 3, initiative: 3, attacks: 2, leadership: 5}
+  duel_context: {charging: [second], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 2, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
 

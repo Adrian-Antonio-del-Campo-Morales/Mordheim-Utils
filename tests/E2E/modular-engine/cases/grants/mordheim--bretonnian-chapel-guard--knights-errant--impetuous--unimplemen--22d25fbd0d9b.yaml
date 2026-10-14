@@ -2,10 +2,21 @@
 # audit_id: rule/mordheim/bretonnian-chapel-guard/knights-errant--impetuous/unimplemented.bretonnian-chapel-guard.knights-errant.impetuous
 # scaffold_fingerprint: cf428f3e2b1dfac3851104fb297183489321e25eaf70a7e6550f28c2567c2235
 # authoring_status: PARTIAL
-# authoring_progress: none of the three admitted clauses has an authored scenario.  The pending
-# requirement of each is named in its clause note below: two excluded spatial/movement producers and
-# one supplied-fact qualification with no admitted operator.  REVIEWED still requires manual semantic
-# review and execution_status stays UNEXECUTED.
+# authoring_progress: the corridor re-checked all three clause notes against the current KB and
+#   executor contract, because the 2026-10-14 snapshot predated the supplied-charge activation:
+#   the catalog row condition.impetuous-charge (catalog/rules/conditions.yaml, scope YES /
+#   implemented YES, "Supplied compelled charge automatically passes psychology tests that would
+#   prevent that charge") is now the admitted supplied-charge fact, and the band's own row names
+#   it (knights-errant--impetuous.producer: "Supply condition.impetuous-charge").  The
+#   condition_ids build channel supplies it, and the compiler gates it to exactly this profile.
+#   The two authorable clauses are covered below: the psychology exemption (a compelled charge
+#   into a fear-causing warrior owes no fear die, against a control that owes the ordinary
+#   round.0.first.fear.charge test) and the optional avoidance test (the declared decision plus
+#   the 2d6 round.0.first.impetuous-release test against the printed Leadership 7; passing it
+#   releases the compulsion, so the same charge then owes the ordinary fear test).  The
+#   movement clause stays producer-blocked: compulsory spatial selection and retargeting remain
+#   the excluded movement subsystem, exactly as its printed half and the register say.  REVIEWED
+#   still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -88,6 +99,9 @@
 #   manufacture the charge fact: compulsory selection and retargeting need the excluded movement
 #   subsystem.  The missing datum is an admitted supplied-charge fact (the duel's actual charge is
 #   given, not derived), so the printed obligation has no discriminating observation.
+#   CONFIRMED (D11-A, 2026-10-14): the coordinator closes the scope disposition - the forced
+#   impetuous movement stays excluded from the product, not a single movement scenario is owed,
+#   and no part of the impetuous rule is reopened as a duel-observable state or bonus.
 # origin_id:
 #   rule/mordheim/bretonnian-chapel-guard/knights-errant--impetuous/unimplemented.bretonnian-chapel-guard.knights-errant.impetuous
 # analysis_status:
@@ -115,4 +129,113 @@
 # Register notes (context only, not behavioral authority):
 #   Do not build a map or force a target merely to supply the charge fact. Scope review integration: {"clause_id":"impetuous-movement","review_clause_id":"impetuous-movement","source_state":"matched","review_status":"reviewed","scope_reason":"The obligation to charge an in-range standing enemy is an admitted individual charge consequence of this duelist, resolved between the two duellists.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"Compulsory spatial charge selection and retargeting to a standing enemy require range/target movement and are excluded; the duel receives its actual charge facts.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{\"trigger\":\"Movement Phase after charge declarations\"}","consumer":"[]","implementation_work":"none","dependencies":"[]","implementation_batch":"","analysis_status":"reviewed","evidence":"inspection","evidence_refs":"[]"},"inherited_clause_text":"During each Movement Phase, after declaring charges, a Knight Errant that is not in combat and did not charge this turn must charge an opposing standing warrior (not knocked down or stunned) that is within range if they are able. Likewise, a Knight Errant that declared a charge against a knocked down or stunned opponent will be compelled to charge a viable standing opponent instead. If you wish, you may choose to have the Knight take a leadership test (they may use their Leader's Leadership if they are within range); if the test is passed, they may move as normal or charge their original target. When making a compelled charge, the Knight Errant automatically passes all fear tests or any other psychology tests that would prevent them from charging.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Derived from the printed rule and the catalog's own supplied-charge condition; no engine output was
+# consulted.  The Knight Errant is read from its printed profile (Ld 7, A 1, I 3); the enemy is a
+# hand-built fear-causing warrior, so the charge's psychology half is exactly the printed "fear tests
+# ... that would prevent them from charging".  Every strike is declared as a natural 1, so no wound,
+# save or injury die is ever needed.  Leadership tests are 2d6 against Leadership: the release test
+# passes on 3+4 (7, the exact boundary) and fails on 6+6; the fear test passes on 3+2 (5).
+
+# The psychology exemption: the compelled charge carries no fear die at all.  In the control the same
+# charge without the supplied condition owes the ordinary round.0.first.fear.charge test, so the pair
+# separates the exemption (which belongs to the compelled charge) from fear-free charging.
+- audit_id: rule/mordheim/bretonnian-chapel-guard/knights-errant--impetuous/unimplemented.bretonnian-chapel-guard.knights-errant.impetuous
+  id: the-compelled-charge-passes-the-fear-gate-without-a-die
+  covers: [impetuous-charge-psychology]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: knights-errant
+      condition_ids: [condition.impetuous-charge]
+    second:
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.first.condition: STANDING, state.second.wounds: 3, state.second.condition: STANDING, state.first.fear_hit_sixes: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control: the same charge without the supplied compulsion is an ordinary charge into a
+# fear-causing enemy, so the round.0.first.fear.charge test is owed and passes on 3+2 (5 of 7).
+- audit_id: rule/mordheim/bretonnian-chapel-guard/knights-errant--impetuous/unimplemented.bretonnian-chapel-guard.knights-errant.impetuous
+  id: an-ordinary-charge-into-the-same-enemy-still-owes-the-fear-test
+  covers: [impetuous-charge-psychology]
+  fighters:
+    first: {collection: mordheim, band_id: bretonnian-chapel-guard, profile_id: knights-errant}
+    second:
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.fear.charge.0, value: 3}
+    - {key: round.0.first.fear.charge.1, value: 2}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The optional avoidance: the declared decision offers the round.0.first.impetuous-release test.
+# Passing it (3+4 = 7, the printed boundary) releases the compulsion, so the same charge then owes
+# the ordinary fear test - the release is observed through the test being taken, not invented.
+- audit_id: rule/mordheim/bretonnian-chapel-guard/knights-errant--impetuous/unimplemented.bretonnian-chapel-guard.knights-errant.impetuous
+  id: the-passed-avoidance-releases-the-compulsion-and-restores-the-fear-gate
+  covers: [impetuous-avoid-compulsion]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: knights-errant
+      condition_ids: [condition.impetuous-charge]
+    second:
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.impetuous-avoid-compulsion, value: true}
+  rolls:
+    - {key: round.0.first.impetuous-release.0, value: 3}
+    - {key: round.0.first.impetuous-release.1, value: 4}
+    - {key: round.0.first.fear.charge.0, value: 4}
+    - {key: round.0.first.fear.charge.1, value: 3}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The failed avoidance keeps the compulsion: 6+6 fails the release, the print does not force the
+# knight to avoid, and the compelled charge retains its psychology exemption - no fear die - and
+# the round resolves as close combat.
+- audit_id: rule/mordheim/bretonnian-chapel-guard/knights-errant--impetuous/unimplemented.bretonnian-chapel-guard.knights-errant.impetuous
+  id: the-failed-avoidance-keeps-the-compulsion-and-its-exemption
+  covers: [impetuous-avoid-compulsion]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: bretonnian-chapel-guard
+      profile_id: knights-errant
+      condition_ids: [condition.impetuous-charge]
+    second:
+      trait_overrides: {causes_fear: true}
+      characteristics: {weapon_skill: 8, strength: 8, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.impetuous-avoid-compulsion, value: true}
+  rolls:
+    - {key: round.0.first.impetuous-release.0, value: 6}
+    - {key: round.0.first.impetuous-release.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 3}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}

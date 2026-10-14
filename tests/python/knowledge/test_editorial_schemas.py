@@ -37,7 +37,7 @@ DOCUMENTS = editorial_schemas.BAND_DOCUMENTS
 SCHEMA_FILES = editorial_schemas.schema_files()
 
 #: JSON Schema type of each Python type the compiler accepts in TRAIT_TYPES.
-TRAIT_JSON_TYPES = {str: "string", int: "integer", bool: "boolean", (list, tuple): "array"}
+TRAIT_JSON_TYPES = {str: "string", int: "integer", bool: "boolean", list: "array", (list, tuple): "array"}
 
 
 def band_packages() -> list[Path]:

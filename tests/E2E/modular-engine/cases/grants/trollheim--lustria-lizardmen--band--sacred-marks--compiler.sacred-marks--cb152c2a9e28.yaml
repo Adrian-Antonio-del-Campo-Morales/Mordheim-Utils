@@ -17,8 +17,22 @@
 #   Priest) and the acceptance of the same recipient carrying exactly one mark.  The
 #   printed rule is a limit on the recipient, so the refusal is the observable of the
 #   clause; the walk-through control shows the limit is not a blanket rejection of the
-#   mark.  Consumer: the shared eligibility stage
-#   (packages/python/roster-construction/mordheim_construction/_eligibility.js).
+#   mark.  Consumer and exact sentence: the shared construction stage's own profile tail
+#   (packages/python/roster-construction/mordheim_construction/_eligibility.js::profileTail,
+#   mirrored in packages/typescript/domain/eligibility/index.ts) returns
+#   "a Lizardman Hero may have at most one Sacred Mark" when the build's compiled contracts
+#   carry `compiler.sacred-marks` - this origin's own recorded contract id - and more than one
+#   of the build's declared `special_rule_ids` starts with `band--sacred-mark-`.  The guard is
+#   therefore construction-level and runs after the declared-rule block of compile_fighter, so
+#   the two declared ids above are exactly the printed violation and the third scenario is the
+#   printed allowance.  The same build shape is exercised in production by
+#   tests/python/combat/vectorized/test_rule_families_b.py
+#   (test_proven_warrior_renowned_virtue_and_sacred_marks_are_validated), which calls
+#   compile_fighter for collection trollheim / lustria-lizardmen / saurus-totem-warrior with
+#   these two ids and expects this message.  A declared-selection audit that models only the
+#   declared-rule gate order of compile_fighter reads these two tapes as "asserts a refusal
+#   where the build runs"; the reachable sentence here is the profile tail's own, not that
+#   block's.
 # origin_id:
 #   rule/trollheim/lustria-lizardmen/band--sacred-marks/compiler.sacred-marks
 # analysis_status:
@@ -54,8 +68,11 @@
 # the recorded contract (recipient: lizardman heroes, max_marks: 1).  The band rule
 # applies to the whole band, so a canonical printed Hero of the band stands for the
 # printed recipient; two marks is the printed violation and one mark is the printed
-# allowance.  The acceptance control parks the first fighter out of action, so it needs
-# no dice and only certifies that construction accepted the single-mark build.
+# allowance.  The refusal is construction-level rather than a declared-rule gate:
+# _eligibility.js::profileTail returns it when the `compiler.sacred-marks` contract is active
+# and more than one declared rule id starts with `band--sacred-mark-`.  The acceptance control
+# parks the first fighter out of action, so it needs no dice and only certifies that
+# construction accepted the single-mark build.
 
 - audit_id: rule/trollheim/lustria-lizardmen/band--sacred-marks/compiler.sacred-marks
   id: a-saurus-hero-with-two-sacred-marks-is-refused

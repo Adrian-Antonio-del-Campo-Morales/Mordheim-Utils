@@ -50,15 +50,33 @@ def resolve_stupidity(first, second, state, dice, decisions):
     is_first = state.first_player_turn
     fighter = first if is_first else second
     current = state.first if is_first else state.second
-    if not current.active or not (phases.has_tag(fighter.global_effects, "mechanic.stupidity")
+    if not current.active or not (current.lunatic_stupidity or phases.has_tag(fighter.global_effects, "mechanic.stupidity")
                                   or "disability.6" in current.resources_spent):
         return state
     label = "first" if is_first else "second"
-    passed = current.frenzy or phases.has_tag(fighter.global_effects, "condition.stupidity-exempt")
+    passed = (current.frenzy or phases.has_tag(fighter.global_effects, "condition.stupidity-exempt")
+        or state.round_index == 0 and state.initial_charge_flags[int(not is_first)]
+        and phases.has_tag(fighter.global_effects, "condition.impetuous-charge"))
+    if not passed and phases.has_tag(fighter.global_effects, 'mechanic.bear-handler-recipient'):
+        supplied = phases.has_tag(fighter.global_effects, 'condition.bear-handler-nearby')
+        providers = ()
+        if state.context is not None:
+            context = state.context
+            participant = context.facts.first_id if is_first else context.facts.second_id
+            side = context.participant(participant).side_id
+            providers = tuple(provider for provider in context.facts.nearby
+                if phases.has_tag(provider.fighter.global_effects, 'mechanic.bear-handler'))
+            passed = any(provider.side_id == side and provider.condition != 'out'
+                and context.distance(participant, provider.participant_id) <= 6
+                for provider in providers)
+        # The supplied condition is the qualified nearby Tamer fact. Explicit
+        # provider records take precedence when they contradict that fact.
+        passed = passed or supplied and not providers
     if not passed:
         passed, current = resolve_local_leadership(
             fighter, state, dice, decisions, f"round.{state.round_index}.{label}.stupidity",
-            first=is_first, psychology=current.drunken_result != 1, stupidity=True,
+            first=is_first, psychology=current.drunken_result != 1 and not current.lunatic_stupidity,
+            stupidity=True,
             opponent=second if is_first else first, return_state=True)
     failed = not passed
     current = replace(current, stupidity_failed=failed)
@@ -68,7 +86,7 @@ def resolve_stupidity(first, second, state, dice, decisions):
         charges = list(state.initial_charge_flags)
         charges[int(not is_first)] = False
         state = replace(state, first_charged=charges[0], second_charged=charges[1],
-            initial_first_player_turn=is_first, engaged=any(charges),
+            initial_first_player_turn=is_first, engaged=state.engaged and any(charges),
             failed_charges=state.failed_charges | {label})
     return state
 
@@ -77,16 +95,41 @@ def resolve_fear(
     first: CompiledFighter, second: CompiledFighter, state: DuelState,
     dice: DiceSource, decisions: DecisionPolicy,
 ) -> DuelState:
-    if state.round_index != 0:
+    if state.round_index != 0 or not state.engaged:
         return state
     # Calling both verifies required opponent facts before any roll.
     first_fear, second_fear = causes_fear(first, second), causes_fear(second, first)
     charges = list(state.initial_charge_flags)
     states = [state.first, state.second]
     for index, (target, singer) in enumerate(((first, second), (second, first))):
+        gate = None
+        if phases.has_tag(singer.global_effects, "mechanic.slaanesh-charge-test"):
+            gate = "slaanesh-charge"
+        elif (phases.has_tag(singer.global_effects, "mechanic.hypnotic-musk")
+                and not target.mounted
+                and not phases.has_tag(target.global_effects, "condition.goading-charge")
+                and any(phases.has_tag(target.global_effects, tag) for tag in
+                        ("species.animal", "species.normal-animal", "species.beast"))):
+            gate = "hypnotic-musk-charge"
+        elif phases.has_tag(singer.global_effects, "mechanic.opposite-sex-charge-test"):
+            sexes = tuple(next((sex for sex in ("male", "female")
+                if phases.has_tag(f.global_effects, "sex." + sex)), None) for f in (target, singer))
+            if None in sexes:
+                raise ValueError("Charismatic requires both duelists' explicit male/female facts")
+            if sexes[0] != sexes[1]:
+                gate = "charismatic-charge"
+        compelled = phases.has_tag(target.global_effects, "condition.impetuous-charge")
+        if gate is not None and charges[index]:
+            passed, states[index] = resolve_local_leadership(target,
+                replace(state, first=states[0], second=states[1]), dice, decisions,
+                f"round.0.{'first' if index == 0 else 'second'}.{gate}",
+                first=index == 0, opponent=singer, return_state=True, contacting=False)
+            if not passed:
+                charges[index] = False
+                state = replace(state, failed_charges=state.failed_charges | {"first" if index == 0 else "second"})
         if (charges[index] and phases.has_tag(singer.global_effects, "mechanic.beauty-of-the-sea")
                 and phases.has_tag(target.global_effects, "sex.male")
-                and not phases.has_tag(target.global_effects, "species.animal")):
+                and not phases.has_tag(target.global_effects, "species.animal") and not compelled):
             passed, states[index] = resolve_local_leadership(target,
                 replace(state, first=states[0], second=states[1]), dice, decisions,
                 f"round.0.{'first' if index == 0 else 'second'}.beauty-charge",
@@ -114,6 +157,8 @@ def resolve_fear(
     def needs_test(index):
         enemy = fighters[1 - index]
         if (charges[index] and phases.has_tag(fighters[index].global_effects, "mechanic.ere-we-go")):
+            return False
+        if charges[index] and phases.has_tag(fighters[index].global_effects, "condition.impetuous-charge"):
             return False
         if (phases.has_tag(fighters[index].global_effects, "mechanic.accustomed-to-fear")
                 and any(phases.has_tag(enemy.global_effects, tag) for tag in ("identity.zombie", "identity.skeleton", "identity.vampire"))):

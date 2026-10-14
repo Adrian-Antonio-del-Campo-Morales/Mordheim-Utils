@@ -461,6 +461,19 @@ items:
   name: Eshin Assassin Clothes
   name_i18n:
     es: Atuendo de Asesino de Eshin
+  effect: >-
+    15 gc. Availability: Common (Silent Hunter only). These special garments are made of a
+    noise-damping cloth. Save: the Eshin Assassin Clothes act exactly like Light Armour,
+    granting a 6+ save, and cannot be combined with any other armour except a helmet. The
+    Assassin's Luck: the Eshin assassin robes allow failed save rolls to be re-rolled.
+  effect_i18n:
+    es: >-
+      15 coronas de oro. Disponibilidad: Común (Solo Cazador Silencioso). Estos atuendos
+      especiales están hechos con una tela especial que amortigua el ruido. Salvación: los
+      Ropajes de Asesino Eshin actúan exactamente igual que una Armadura Ligera,
+      proporcionando una tirada de salvación de 6+, y no pueden combinarse con ninguna otra
+      armadura excepto el casco. La suerte del Asesino: los ropajes de asesino eshin
+      permiten repetir las tiradas de salvación fallidas.
   source_refs:
   - *id008
   combat_status: implemented
@@ -684,10 +697,23 @@ items:
   name: Mage Robes
   name_i18n:
     es: Túnica de Mago
+  effect: >-
+    The mages, after suffering many wounds in combat, have woven these magic robes for their
+    protection. Save: the robe grants its bearer a 6+ armour save and cannot combine its
+    effects with any other piece of armour. Spellcasting: because they are made with
+    magic, the robes do not prevent the caster from casting spells.
+  effect_i18n:
+    es: >-
+      Los magos, a copia de sufrir múltiples heridas en combate, han tejido estas túnicas
+      mágicas para su protección. Salvación: una túnica de mago otorga al portador una
+      tirada de salvación por armadura de 6+, que no se combinará con ninguna otra pieza de
+      armadura. Lanzamiento de Hechizos: al ser unas túnicas fabricadas con
+      magia, estas no impiden al hechicero ejecutar hechizos como pasa con el resto de
+      armaduras.
   source_refs:
   - *id009
   combat_status: implemented
-  mechanic_id: armour.wizard-s-robe
+  mechanic_id: armour.mage-robes
 - id: mage_staff
   kind: trollheim-equipment
   name: Mage Staff
@@ -1266,10 +1292,23 @@ items:
   name: Wizard Robe
   name_i18n:
     es: Túnica de Mago
+  effect: >-
+    The mages, after suffering many wounds in combat, have woven these magic robes for their
+    protection. Save: the robe acts exactly like Light Armour, granting a 6+ save, but it
+    cannot combine its effects with any other armour. Spellcasting: because they are made
+    with magic, the robes do not prevent the caster from casting spells.
+  effect_i18n:
+    es: >-
+      Los magos, a copia de sufrir múltiples heridas en combate, han tejido estas túnicas
+      mágicas para su protección. Salvación: la Túnica actúa exactamente igual que una
+      Armadura Ligera, proporcionando una tirada de salvación de 6+, aunque no puede
+      combinar sus efectos con ninguna otra armadura. Lanzamiento de
+      Hechizos: debido a su fabricación mágica, las túnicas de mago no impiden el
+      lanzamiento de hechizos por parte del portador.
   source_refs:
   - *id019
   combat_status: implemented
-  mechanic_id: armour.wizard-s-robe
+  mechanic_id: armour.wizard-robe
 - id: wolfsbane
   kind: trollheim-equipment
   name: Wolfsbane

@@ -22,12 +22,23 @@
 # bearer carrying the shield and the shaggy hide saves an unsaved wound on the combined five, and the
 # four is not saved, so the combined save is not better than the recorded five.  Bearer is the
 # printed Beastmen Chieftain selecting the printed Shaggy Hide skill, whose two bindings are the 6+
-# save and this combination flag.  PENDING: the printed "can be combined with other armour as
-# normal" is not asserted for a second armour suit - the register records that the compiler cancels
-# a Toughened Leathers contribution instead of combining it, which the printed sentence does not#   say, so the leather reading is a rules-owner decision (category [D]: the two readings are "the
-#   printed sentence combines the hide with a second armour suit as normal" versus "the compiler's
-#   Toughened Leathers cancellation stands") and no hide-over-leather build is authored until a
-#   rules-owner ruling fixes which one the corpus must assert.
+# save and this combination flag.
+#   PENDING (category [D] - a source-level conflict only the rules owner can settle, and deliberately NOT
+#   the missing consumer, which is what the two scenarios above detect): the printed "can be combined with
+#   other armour as normal" is not asserted against a second armour suit.  Concrete evidence: the two
+#   printed rows disagree - this row says the hide combines with other armour as normal, while
+#   catalog/mechanics/close-combat.yaml armour.toughened-leathers prints "Toughened leathers cannot be
+#   combined with the effects of any other armour except a helmet or buckler (so not a shield)" with
+#   base_save: 6 - and the register row itself is needs_clarification on that composition, with the same
+#   open question as the save half.
+#   WHY NO TAPE IS AUTHORED FOR IT: the pair has no boundary this corpus can declare.  The hide's own save
+#   is the printed 6+ of this row and the leather's is the same 6+ (base_save: 6) with no numeric stacking
+#   between armour rows, so a hide-over-leather build saves on 6+ under either reading and a tape would
+#   assert today's outcome whatever the ruling.  The composition that DOES move the die - the hide plus a
+#   shield, which this clause's recorded contract fixes at 5+ - is already asserted by the two scenarios
+#   above, and the leather's own composition (including its shield exclusion) belongs to
+#   armour.toughened-leathers' own origin, cases/mechanics/armour.toughened-leathers.yaml.  No
+#   hide-over-leather build is authored here, and none is withheld that the corpus could discriminate.
 # REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/mordheim/beastmen-raiders/band--beastmen-special-skills-shaggy-hide/trait.natural-armour-stacks

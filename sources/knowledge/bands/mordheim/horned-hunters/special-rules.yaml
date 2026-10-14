@@ -32,15 +32,15 @@ rules:
     - horned-hunter
 - id: horned-hunter--hang-the-bandit
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.horned-hunters.horned-hunter.hang-the-bandit
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.hang-the-bandit
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hang-the-bandit
   name: Hang the Bandit!
   effect: A Horned Hunter hates all Bandits and Outlaws.
   source:
@@ -139,15 +139,15 @@ rules:
     - initiates
 - id: initiates--hang-the-bandit
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.horned-hunters.initiates.hang-the-bandit
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+    - id: mechanic.hang-the-bandit
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.hang-the-bandit
   name: Hang the Bandit!
   effect: Taal's Initiates hate all Bandits and Outlaws.
   source:

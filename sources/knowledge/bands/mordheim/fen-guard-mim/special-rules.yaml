@@ -98,6 +98,27 @@ rules:
         id: trait.natural-armour-save
         parameters:
           value: 6
+    - id: trait.natural-armour-stacks
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-stacks
+        parameters:
+          value: true
+    - id: trait.natural-armour-worst-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-worst-save
+        parameters:
+          value: 6
+    - id: trait.natural-armour-negated-by-fire
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-negated-by-fire
+        parameters:
+          value: true
   name: Bark Skin
   effect: >-
     Fen Guard have a 6+ armour save which can be stacked with regular armour; it cannot be modified

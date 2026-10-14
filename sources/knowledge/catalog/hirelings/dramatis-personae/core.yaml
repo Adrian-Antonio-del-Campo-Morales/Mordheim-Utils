@@ -160,6 +160,11 @@ profiles:
         context: close_combat
       name_i18n:
         es: Dagas Largas
+    optional_items:
+    - item_id: crimson_shade
+      quantity:
+        kind: fixed
+        value: 1
   starting_skill_ids:
   - skill.dodge
   - skill.scale-sheer-surfaces
@@ -198,11 +203,13 @@ profiles:
     kind: fixed
     value: 70
   equipment:
-    fixed_items:
-    - item_id: fighting_claws
-      quantity:
-        kind: fixed
-        value: 1
+    unique_equipment:
+    - id: hireling.dramatis.veskit.item.integrated-fighting-claws
+      name: Integrated Fighting Claws
+      name_i18n:
+        es: Garras de Combate Integradas
+      rules:
+      - hireling.dramatis.veskit.rule.integrated-warplock-pistols
   starting_skill_ids: []
   rule_ids:
   - hireling.dramatis.veskit.rule.integrated-warplock-pistols
@@ -230,6 +237,16 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   name_i18n:
     es: Espadachín Invencible
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: mechanic.invincible-swordsman
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.invincible-swordsman
 - id: hireling.dramatis.aenur.rule.wanderer
   name: Wanderer
   effect: >-
@@ -246,6 +263,15 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   name_i18n:
     es: Errante
+  runtime:
+    grant: profile
+    scope: 'NO'
+    implemented: 'NO'
+    effects:
+    - id: aenur.wanderer.non-duel
+      scope: 'NO'
+      binding: null
+      reason: Hiring, searching and campaign attendance are excluded; this rule grants no in-duel withdrawal.
 - id: hireling.dramatis.aenur.item.ienh-khain.rule.parry
   name: 'Ienh-Khain: Parry'
   effect: Ienh-Khain can parry.
@@ -259,6 +285,16 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   name_i18n:
     es: 'Ienh-Khain: Parada'
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: weapon.ienh-khain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: weapon.ienh-khain
 - id: hireling.dramatis.aenur.item.ienh-khain.rule.strength
   name: 'Ienh-Khain: Strength'
   effect: Ienh-Khain adds +1 Strength.
@@ -272,6 +308,16 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   name_i18n:
     es: 'Ienh-Khain: Fuerza'
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: weapon.ienh-khain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: weapon.ienh-khain
 - id: hireling.dramatis.aenur.item.ienh-khain.rule.critical
   name: 'Ienh-Khain: Critical'
   effect: Ienh-Khain causes a critical hit on a wound roll of 5-6.
@@ -285,6 +331,16 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   name_i18n:
     es: 'Ienh-Khain: Crítico'
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: weapon.ienh-khain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: weapon.ienh-khain
 - id: hireling.dramatis.bertha-bestraufrung.rule.high-matriarch
   name: High Matriarch
   effect: Bertha automatically becomes the leader of a warband she joins.
@@ -324,6 +380,16 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   name_i18n:
     es: Armas Envenenadas
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: poison.black-lotus
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: poison.black-lotus
 - id: hireling.dramatis.johann-the-knife.rule.crimson-shade
   name: Crimson Shade
   effect: Johann may take Crimson Shade before a battle.
@@ -337,6 +403,16 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   name_i18n:
     es: Sombra Carmesí
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: compiler.johann-crimson-shade
+      scope: 'YES'
+      binding:
+        kind: compiler
+        id: compiler.johann-crimson-shade
 - id: hireling.dramatis.johann-the-knife.rule.knife-fighter-extraordinaire
   name: Knife Fighter Extraordinaire
   effect: Johann may combine Knife-Fighter and Quick Shot when using throwing knives.
@@ -350,12 +426,21 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   name_i18n:
     es: Luchador de Cuchillos Extraordinario
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: profile
+    effects:
+    - id: hireling.dramatis.johann-the-knife.rule.knife-fighter-extraordinaire.shooting
+      scope: 'NO'
+      binding: null
+      reason: Combines two shooting skills only; shooting is excluded.
 - id: hireling.dramatis.veskit.rule.integrated-warplock-pistols
   name: Integrated Warplock Pistols
-  effect: >-
-    Veskit's fighting claws incorporate Warplock Pistols; his listed extra Attack is already
-    included in the profile and his claw attacks use the special Strength/save-modifier rules from
-    his entry.
+  effect: Both Eshin Fighting Claws have integral Warplock Pistols. In close combat Veskit uses fixed
+    Strength 5 with a total -3 armour-save modifier. The extra Attack is already included in his printed
+    A4. The claws retain their parry and failed-parry reroll under the adopted paired-claw convention;
+    shooting is excluded.
   effect_i18n:
     es: >-
       Las garras de combate de Veskit incorporan Pistolas Warplock; su Ataque extra indicado ya está
@@ -368,6 +453,16 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   name_i18n:
     es: Pistolas Warplock Integradas
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: weapon.veskit-claws
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: weapon.veskit-claws
 - id: hireling.dramatis.veskit.rule.unfeeling
   name: Unfeeling
   effect: Veskit is immune to psychology.
@@ -406,6 +501,16 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   name_i18n:
     es: Sin Dolor
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: mechanic.veskit-no-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.veskit-no-pain
 - id: hireling.dramatis.veskit.rule.unblinking-eye
   name: Unblinking Eye
   effect: Veskit detects Hidden enemies within twice his Initiative value in inches.
@@ -419,6 +524,15 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   name_i18n:
     es: Ojo Inmaculado
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: none
+    effects:
+    - id: veskit-spotting
+      scope: 'NO'
+      binding: null
+      reason: Finding Hidden enemies requires visibility and spotting, outside the duel.
 - id: hireling.dramatis.veskit.rule.metallic-body
   name: Metallic Body
   effect: Veskit has a 3+ armour save from his mechanical body.
@@ -432,3 +546,15 @@ rules:
     url: https://mordheimer.net/docs/campaigns/dramatis-personae/grade-1a
   name_i18n:
     es: Cuerpo Metálico
+  runtime:
+    scope: 'YES'
+    implemented: 'YES'
+    grant: profile
+    effects:
+    - id: trait.natural-armour-save
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.natural-armour-save
+        parameters:
+          value: 3

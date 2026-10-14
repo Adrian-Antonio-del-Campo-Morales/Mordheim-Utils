@@ -115,6 +115,30 @@ class EffectSet:
     # ``ignore_armour`` (every armour save denied) and from
     # ``ignore_armour_against_knocked_down`` (condition-scoped).
     ignore_armour_except_shield_and_skills: bool = False
+    critical_threshold: int = 6
+    ethereal_hit_save: int = 4
+    natural_armour_negated_by_fire: bool = False
+
+
+@dataclass(frozen=True, slots=True)
+class CarriedEquipment:
+    """One physical carried item, with its currently occupied position."""
+    item_id: str
+    effect: EffectSet
+    kind: str
+    slot: str | None = None
+    stat_bonuses: tuple[tuple[str, int], ...] = ()
+    effect_without_poison: EffectSet | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class MutationOption:
+    """One source-defined D66 result prepared by construction for the duel."""
+    roll: int
+    effect: EffectSet = EffectSet()
+    stat_ops: tuple[tuple[str, str, int], ...] = ()
+    extra_attacks: tuple[EffectSet, ...] = ()
+    limb_forms: tuple[EffectSet, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -154,6 +178,14 @@ class CompiledFighter:
     stupidity_leadership: int | None = None
     stupidity_leadership_bonus: int = 0
     animal_handler_leadership: int | None = None
+    skill_effects_only: EffectSet = EffectSet()
+    # Retained innate, skill and supplied-condition contributions after the
+    # printed equipment-discarding transformations.
+    global_effects_without_equipment: EffectSet = EffectSet()
+    mutation_options: tuple[MutationOption, ...] = ()
+    mutation_equipment: tuple[CarriedEquipment, ...] = ()
+    natural_armour_stacks: bool = False
+    extra_attacks_without_poison: tuple[tuple[EffectSet, EffectSet], ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -183,7 +215,10 @@ class DuelContext:
     neither fighter charges. Explicit charging also requires its player-turn
     owner. Player-turn ownership is independent of charge.
     Initial charging facts are in-range attempts; a failed Fear test can cancel
-    contact. A later engagement needs a newly supplied local setup.
+    contact. A later engagement needs a newly supplied local setup. A supplied
+    contact between the duelists is the snapshot's established engagement: it is
+    resolved as such, no in-range attempt is attributed to either duelist, and a
+    supplied charge naming one of them is refused as contradictory.
     """
     first_id: str = "first"
     second_id: str = "second"

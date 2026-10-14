@@ -1,13 +1,17 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/chaos-streets-mordheim-inhabitants/desolate-soul--profound-hatred/unimplemented.chaos-streets-mordheim-inhabitants.desolate-soul.profound-hatred
 # scaffold_fingerprint: ef70485c9512011b2126e0f8b68b4d4c47c0c0916070dab77ad3d987da5082e5
-# authoring_status: PARTIAL
-# authoring_progress: the admitted profound-hatred clause carries two authored scenarios derived from the
-# printed sentence, the recorded contract and the delivered runtime the register records (the canonical
-# mechanic.profound-hatred read by the first-round hit-reroll); the qualifying-identity case and its
-# absence control are authored, and the printed Sisters of Sigmar carve-out stays pending for the reason
-# named in the clause note.  REVIEWED still requires manual semantic review and execution_status stays
-# UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted profound-hatred clause carries three authored scenarios derived from
+# the printed sentence, the recorded contract and the delivered runtime the register records (the
+# canonical mechanic.profound-hatred read by the first-round hit-reroll): the qualifying-identity case,
+# its absence control, and the printed Sisters of Sigmar carve-out declared as the printed band build of
+# that warband.  The earlier blocker ("no resolved Sisters of Sigmar profile build is recorded in this
+# scaffold's sources") was false and is withdrawn: the warband is published at
+# sources/knowledge/bands/mordheim/sisters-of-sigmar (band.yaml id sisters-of-sigmar, profiles.yaml
+# sigmarite-sister), which is the canonical identity the register says the delivered branch reads.  No
+# admitted clause of this origin is left pending.  REVIEWED still requires manual semantic review and
+# execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -18,14 +22,15 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: profound-hatred (scope: YES)
-# PARTIAL[profound-hatred]: [C] 2 scenarios cover the delivered first-round Hatred against an opposing
-# warband carrying its own canonical band tag, and the absence control where the same miss stands without
-# the grant.  The printed carve-out (every opposing warband EXCEPT the Sisters of Sigmar) is not asserted:
-# the canonical identity the delivered branch reads is the opposing band's own tag, and no resolved
-# Sisters of Sigmar profile build is recorded in this scaffold's sources, so the negative identification
-# is left pending rather than guessed.  The register note records the same delivery (M4b-enemy-identity:
-# mechanic.profound-hatred consumed by contexts._hit_reroll, focused suite green for several warbands and
-# the Sisters exception); the missing datum here is the resolved Sisters build to declare.
+# AUTHORED[profound-hatred]: 3 scenarios cover the delivered first-round Hatred against an opposing
+# warband carrying its own canonical band tag, the absence control where the same miss stands without the
+# grant, and the printed carve-out (every opposing warband EXCEPT the Sisters of Sigmar), declared as the
+# published build of that warband (sources/knowledge/bands/mordheim/sisters-of-sigmar: band id
+# sisters-of-sigmar, profile sigmarite-sister), which is the canonical identity the register records the
+# delivered branch reading.  The earlier note's claim that no resolved Sisters build was recorded was
+# false; the negative identification is now asserted rather than guessed.  The register note's delivery
+# (M4b-enemy-identity: mechanic.profound-hatred consumed by contexts._hit_reroll, focused suite green for
+# several warbands and the Sisters exception) is what these tapes will re-check.
 # origin_id:
 #   rule/trollheim/chaos-streets-mordheim-inhabitants/desolate-soul--profound-hatred/unimplemented.chaos-streets-mordheim-inhabitants.desolate-soul.profound-hatred
 # analysis_status:
@@ -100,6 +105,32 @@
       collection: trollheim
       band_id: khemri-cursed-of-karak-zorn
       profile_id: clan-warriors
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 2}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.damage: 0, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed carve-out: the same bearer facing the one printed exception - a Sisters of Sigmar band
+# build, the canonical band tag the delivered branch reads - is offered no taken-again die, so the
+# same natural 2 stands although the identity is supplied.
+- audit_id: rule/trollheim/chaos-streets-mordheim-inhabitants/desolate-soul--profound-hatred/unimplemented.chaos-streets-mordheim-inhabitants.desolate-soul.profound-hatred
+  id: the-same-miss-stands-against-the-printed-sisters-of-sigmar-exception
+  covers: [profound-hatred]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [mechanic.profound-hatred]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      collection: mordheim
+      band_id: sisters-of-sigmar
+      profile_id: sigmarite-sister
       main_weapon_id: weapon.mace
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
   duel_context: {charging: [first], active_participant: first}

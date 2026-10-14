@@ -45,6 +45,18 @@ def test_editor_roundtrips_a_supplied_canonical_condition(editor):
     assert editor.build().condition_ids == ()
 
 
+def test_editor_exposes_residual_supplied_facts(editor):
+    facts = {key: True for key in ("slave", "scourge_armed", "spellcaster", "metal_armour", "devoted_vampire_down", "devoted_vampire_killed")}
+    build = FighterBuild('mordheim', Characteristics(3, 3, 3, 2, 3, 1, leadership=7),
+                         main_weapon_id='weapon.mace', trait_overrides=facts)
+    editor.load_build(build)
+    assert all(editor.supplied_flags[key].get() for key in facts)
+    assert all(editor.build().trait_overrides[key] for key in facts)
+    for key in facts:
+        editor.supplied_flags[key].set(False)
+    assert all(not editor.build().trait_overrides.get(key, False) for key in facts)
+
+
 @pytest.fixture(scope="module")
 def root():
     try:
@@ -261,6 +273,44 @@ def test_editor_roundtrips_house_and_qualified_animal_facts(root):
         fighter = compile_fighter(editor.build())
         assert {'fighter-kind.animal', 'fauna-animal.handled'} <= set(fighter.global_effects.tags)
         assert fighter.animal_handler_leadership == 7
+    finally:
+        editor.destroy()
+
+
+def test_editor_roundtrips_condemned_permanent_results(root):
+    editor = FighterEditor(root, 'Condemned', CombatCatalogue())
+    try:
+        build = FighterBuild('mordheim', Characteristics(5, 4, 3, 1, 4, 2),
+            band_id='marauders-of-chaos', profile_id='condemned',
+            trait_overrides={'condemned_fixed_characteristics': ['WS', 'S', 'T', 'A']},
+            main_weapon_id='weapon.sword')
+        editor.load_build(build); root.update_idletasks()
+        restored = editor.build()
+        assert restored.trait_overrides['condemned_fixed_characteristics'] == ['WS', 'S', 'T', 'A']
+        assert not compile_fighter(restored).random_characteristics
+    finally:
+        editor.destroy()
+
+
+def test_editor_roundtrips_supplied_runes_on_selected_equipment(root):
+    editor = FighterEditor(root, 'Inscribed equipment', CombatCatalogue())
+    try:
+        build = FighterBuild('mordheim', Characteristics(3, 3, 3, 2, 3, 1),
+            main_weapon_id='weapon.axe', off_hand_id='defence.shield',
+            armour_id='armour.light-armour',
+            condition_ids=('condition.rune-cleaving', 'condition.rune-stone'),
+            trait_overrides={'rune_cleaving_slots': ['main'], 'rune_stone_slots': ['armour', 'off']})
+        editor.load_build(build); root.update_idletasks()
+        restored = editor.build()
+        assert restored.trait_overrides['rune_cleaving_slots'] == ['main']
+        assert restored.trait_overrides['rune_stone_slots'] == ['armour', 'off']
+        fighter = compile_fighter(restored)
+        assert fighter.main_weapon.strength_bonus == 1
+        assert fighter.armour_save == 3
+        menu = tk.Menu(editor, tearoff=False)
+        editor._rune_menu('stone', menu)
+        assert menu.index('end') == 1  # shield and light armour
+        menu.destroy()
     finally:
         editor.destroy()
 

@@ -5,9 +5,11 @@ from mordheim_combat import phases
 from dataclasses import replace
 from mordheim_combat.phases import _characteristic_test
 from mordheim_combat.modular.attacks import resolve_reference_attack
+from mordheim_combat.modular.contexts import OwnedRollDice
 from mordheim_combat.modular.state import AttackOutcome
 from mordheim_combat.modular.state import FighterState
 from mordheim_combat.modular.state import _parry_capacity
+from mordheim_combat.modular.state import require_characteristics
 from mordheim_combat.phases import Condition
 from mordheim_combat.phases import has_tag
 from mordheim_core.dice import DiceSource
@@ -16,17 +18,30 @@ from mordheim_core.models import CompiledFighter
 from mordheim_core.models import EffectSet
 
 
+def _personal_resources(state: FighterState, dice: OwnedRollDice) -> FighterState:
+    return replace(state, resources_spent=state.resources_spent | dice.state.resources_spent)
+
+
+def _reaction_source(fighter: CompiledFighter) -> CompiledFighter:
+    # Independent fixed-Strength hits retain personal roll choices, while
+    # weapon, skill and condition offensive modifiers belong to ordinary blows.
+    return replace(fighter, global_effects=EffectSet(tags=tuple(
+        tag for tag in fighter.global_effects.tags if tag in {
+            "mechanic.ranalds-luck", "mechanic.oracle", "mechanic.augur-one-roll-reroll"})))
+
+
 
 
 def _react_to_wound(
     attacker: CompiledFighter, defender: CompiledFighter,
     outcome: AttackOutcome, dice: DiceSource, key: str,
+    *, decisions=None,
 ) -> AttackOutcome:
     if outcome.reactions_resolved:
         return outcome
     attacker_state = outcome.attacker
     # Rescue is an immediate response to OOA, before the next prepared hit.
-    defender_state = _force_of_will(defender, outcome.defender, dice, f"{key}.force-of-will")
+    defender_state = _force_of_will(defender, outcome.defender, dice, f"{key}.force-of-will", decisions=decisions)
     reactive_damage = outcome.damage - outcome.damage_already_reacted
     if (reactive_damage > 0 and outcome.melee_attack
             and phases.has_tag(attacker.global_effects, "mechanic.torturer")
@@ -44,19 +59,26 @@ def _react_to_wound(
         )
         for index in range(reactive_damage):
             reaction = resolve_reference_attack(
-                defender, attacker, reaction_source, attacker_state, acid, dice,
-                key=f"{key}.acid-blood.{index}", melee_attack=False,
+                _reaction_source(defender), attacker, reaction_source, attacker_state, acid, dice,
+                key=f"{key}.acid-blood.{index}", melee_attack=False, decisions=decisions,
             )
             attacker_state = reaction.defender
-    if (
+            defender_state = replace(defender_state,
+                resources_spent=defender_state.resources_spent | reaction.attacker.resources_spent)
+            reaction_source = replace(reaction_source, resources_spent=defender_state.resources_spent)
+    contagious = (
         defender_state.condition == Condition.OUT
         and phases.has_tag(defender.global_effects, "contagious")
         and not phases.has_tag(attacker.global_effects, "undead_or_possessed")
-        and not phases._characteristic_test(
-            attacker_state.toughness, dice, f"{key}.contagious", six_fails=True,
+    )
+    if contagious:
+        attacker_state = require_characteristics(attacker, attacker_state, dice,
+                                                key, {'T'}, decisions)
+    own = OwnedRollDice(dice, attacker, attacker_state, decisions)
+    if contagious and not phases._characteristic_test(
+            attacker_state.toughness, own, f"{key}.contagious", six_fails=True,
             reroll=phases.has_tag(attacker.global_effects, "skill.blessed-sight"),
-        )
-    ):
+        ):
         attacker_state = replace(
             attacker_state,
             wounds=attacker_state.wounds - 1,
@@ -65,12 +87,13 @@ def _react_to_wound(
     if (defender_state.condition == Condition.OUT and attacker_state.condition == Condition.STANDING
             and phases.has_tag(attacker.global_effects, "mechanic.great-thirster")):
         attacker_state = replace(attacker_state, frenzy=True)
-    return replace(outcome, attacker=attacker_state, defender=defender_state,
+    return replace(outcome, attacker=_personal_resources(attacker_state, own), defender=defender_state,
         damage_already_reacted=outcome.damage, reactions_resolved=True)
 
 
 def _revenant_recovery(
     fighter: CompiledFighter, current: FighterState, dice: DiceSource, key: str,
+    *, decisions=None,
 ) -> FighterState:
     """Q013: one 5+ attempt at own-turn start, independent of fire saves."""
     maximum = fighter.characteristics.wounds + int(has_tag(fighter.global_effects, "skill.monstrous"))
@@ -79,9 +102,10 @@ def _revenant_recovery(
             or key in current.resources_spent):
         return current
     current = current.spend(key)
-    if dice.roll(RollRequest(key)) >= 5:
+    own = OwnedRollDice(dice, fighter, current, decisions)
+    if own.roll(RollRequest(key)) >= 5:
         current = replace(current, wounds=min(maximum, current.wounds + 1))
-    return current
+    return _personal_resources(current, own)
 
 
 def _start_round_state(fighter: CompiledFighter, state: FighterState, *, recover: bool = True) -> tuple[FighterState, bool]:
@@ -100,38 +124,47 @@ def _start_round_state(fighter: CompiledFighter, state: FighterState, *, recover
 
 def _force_of_will(
     fighter: CompiledFighter, state: FighterState, dice: DiceSource, key: str,
-    *, sustain: bool = False,
+    *, sustain: bool = False, decisions=None,
 ) -> FighterState:
     if not phases.has_tag(fighter.global_effects, "mechanic.force-of-will"):
         return state
+    if ((sustain and state.force_of_will_active and state.condition != Condition.OUT)
+            or (state.condition == Condition.OUT and not state.force_of_will_active
+                and "force-of-will" not in state.resources_spent)):
+        state = require_characteristics(fighter, state, dice, key, {'T'}, decisions)
+    own = OwnedRollDice(dice, fighter, state, decisions)
     if sustain and state.force_of_will_active and state.condition != Condition.OUT:
         penalty = state.force_of_will_penalty + 1
         if not phases._characteristic_test(
-            max(0, state.toughness - penalty), dice, f"{key}.sustain",
+            max(0, state.toughness - penalty), own, f"{key}.sustain",
             reroll=phases.has_tag(fighter.global_effects, "skill.blessed-sight"),
         ):
-            return replace(state, condition=Condition.OUT, force_of_will_active=False, force_of_will_penalty=penalty)
-        return replace(state, force_of_will_penalty=penalty)
+            return _personal_resources(replace(state, condition=Condition.OUT, force_of_will_active=False, force_of_will_penalty=penalty), own)
+        return _personal_resources(replace(state, force_of_will_penalty=penalty), own)
     if state.force_of_will_active:
         return state
     if state.condition == Condition.OUT and "force-of-will" not in state.resources_spent:
         state = state.spend("force-of-will")
         if phases._characteristic_test(
-            state.toughness, dice, f"{key}.rescue",
+            state.toughness, own, f"{key}.rescue",
             reroll=phases.has_tag(fighter.global_effects, "skill.blessed-sight"),
         ):
-            return replace(state, condition=Condition.STANDING, wounds=1, force_of_will_active=True)
-    return state
+            return _personal_resources(replace(state, condition=Condition.STANDING, wounds=1, force_of_will_active=True), own)
+    return _personal_resources(state, own)
 
 
 def _fire_recovery(
     victim: CompiledFighter, opponent: CompiledFighter,
     victim_state: FighterState, opponent_state: FighterState,
     dice: DiceSource, key: str,
+    *, decisions=None,
 ) -> tuple[FighterState, FighterState, tuple[AttackOutcome, ...]]:
     if not victim_state.on_fire or not victim_state.active:
         return victim_state, opponent_state, ()
-    if dice.roll(RollRequest(f"{key}.extinguish")) >= 4:
+    own = OwnedRollDice(dice, victim, victim_state, decisions)
+    extinguished = own.roll(RollRequest(f"{key}.extinguish")) >= 4
+    victim_state = _personal_resources(victim_state, own)
+    if extinguished:
         return replace(victim_state, on_fire=False), opponent_state, ()
     fire = EffectSet(
         tags=("attack.fire", "effect.no-critical"), fixed_strength=4,
@@ -141,10 +174,11 @@ def _fire_recovery(
     fire_source = replace(opponent, global_effects=EffectSet())
     result = resolve_reference_attack(
         fire_source, victim, opponent_state, victim_state, fire, dice,
-        key=f"{key}.hit", melee_attack=False,
+        key=f"{key}.hit", melee_attack=False, decisions=decisions,
     )
     result = replace(result, defender=_force_of_will(
         victim, result.defender, dice, f"{key}.hit.force-of-will",
+        decisions=decisions,
     ))
     return result.defender, result.attacker, (result,)
 
@@ -171,6 +205,7 @@ def _spines(
     owner: CompiledFighter, target: CompiledFighter,
     owner_state: FighterState, target_state: FighterState,
     dice: DiceSource, key: str,
+    *, decisions=None,
 ) -> tuple[FighterState, FighterState, tuple[AttackOutcome, ...]]:
     if not phases.has_tag(owner.global_effects, "spines"):
         return owner_state, target_state, ()
@@ -179,17 +214,21 @@ def _spines(
         automatic_hit=True, cannot_be_parried=True,
     )
     result = resolve_reference_attack(
-        owner, target, owner_state, target_state, effect, dice, key=key, melee_attack=False,
+        _reaction_source(owner), target, owner_state, target_state, effect, dice,
+        key=key, melee_attack=False, decisions=decisions,
     )
     return result.attacker, result.defender, (result,)
 
 
 def _black_hunger(
     fighter: CompiledFighter, state: FighterState, dice: DiceSource, key: str,
+    *, decisions=None,
 ) -> tuple[FighterState, tuple[AttackOutcome, ...]]:
     if not phases.has_tag(fighter.global_effects, "mechanic.black-hunger") or not state.active:
         return state, ()
-    count = dice.roll(RollRequest(f"{key}.hits", 3))
+    own = OwnedRollDice(dice, fighter, state, decisions)
+    count = own.roll(RollRequest(f"{key}.hits", 3))
+    state = _personal_resources(state, own)
     effect = EffectSet(
         tags=("mechanic.black-hunger-backlash", "effect.no-critical"),
         fixed_strength=3, automatic_hit=True, cannot_be_parried=True, ignore_armour=True,
@@ -197,9 +236,11 @@ def _black_hunger(
     outcomes = []
     for index in range(count):
         result = resolve_reference_attack(
-            fighter, fighter, state, state, effect, dice, key=f"{key}.hit.{index}", melee_attack=False,
+            _reaction_source(fighter), fighter, state, state, effect, dice,
+            key=f"{key}.hit.{index}", melee_attack=False, decisions=decisions,
         )
-        state = result.defender
+        state = replace(result.defender,
+            resources_spent=result.attacker.resources_spent | result.defender.resources_spent)
         outcomes.append(replace(result, attacker=state, defender=state))
         if not state.active:
             break

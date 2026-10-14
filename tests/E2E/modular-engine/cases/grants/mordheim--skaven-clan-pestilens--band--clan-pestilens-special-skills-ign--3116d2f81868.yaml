@@ -45,7 +45,17 @@
 #    Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"ignore-pain","audit_group":"EQ-skill.ignore-pain","verified_facet":"skill.ignore-pain","relationship":"shared_facet","boundary":"Share the post-chart Stunned-to-Knocked-Down transformation. Preserve recipients and printed Resilient prerequisites; do not add that prerequisite to innate No Pain. Squishy expressly disables No Pain. A conversion is not a helmet roll or ordinary Knocked Down for Jump Up.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
 #
 # Clause: requires-resilient (scope: YES)
-# PARTIAL[requires-resilient]: the clause is a construction prerequisite ("Requires the Resilient Strength skill"), not a duel observation, and no scenario evidences it: the corpus build vocabulary declares no Resilient-strength prerequisite for a granted skill and the register records no diagnostic for a bearer that lacks it, so a refusal cannot be asserted without inventing one - the register itself defers the prerequisite to the shared eligibility contract's skillIssue path.  Missing datum: the eligibility diagnostic that rejects an ignore-pain bearer without Resilient, or a declarable prerequisite field the fixture could exercise.  The duel-side clause ignore-pain is authored below.
+# PARTIAL[requires-resilient]: [D] the clause is a construction prerequisite ("Requires the Resilient
+#   Strength skill"), and no scenario evidences it.  The input side is not the problem: the fixture can
+#   declare a bearer with the granted skill and without it, and the shared eligibility contract does
+#   carry prerequisite refusals (loadoutRestriction and its skill stage return contract-keyed free-form
+#   sentences such as "Contagious requires Rotten Body").  What no source fixes is the *identity* of
+#   this refusal: there is no contract id for a Resilient prerequisite on this skill and no printed
+#   wording for the message, so any `expect_error` fragment here would be invented rather than derived.
+#   Blocker: that unresolved refusal identity (class D).  Implementation defect the future tape would
+#   detect, recorded separately and not as the blocker: the skillIssue / loadoutRestriction skill stage
+#   performs no Resilient check for an ignore-pain bearer, which is the missing connection the register
+#   names.  The duel-side clause ignore-pain is authored below.
 # origin_id:
 #   rule/mordheim/skaven-clan-pestilens/band--clan-pestilens-special-skills-ignore-pain/skill.ignore-pain
 # analysis_status:

@@ -1,22 +1,18 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/tileans/band--remasen-officer-leadership/unimplemented.tileans.band.remasen-officer-leadership
 # scaffold_fingerprint: 078cd9e93804dddfa30d8ca30ef672fad41db18cb6719fe54263ed0cd9f6a31d
-# authoring_status: PARTIAL
-# authoring_progress: the admitted leadership-characteristic-bonus clause has no authored scenario because the
-#   executor has no datum to observe.  The record carries no effect id ("(not recorded)") and its own note is
-#   explicit that this is a profile-characteristic adjustment rather than a new runtime branch: "the duel must
-#   be given the corrected Leadership value", which means the raised value is an input the builder supplies and
-#   not something the duel resolves.  The band binds the rule as the unexecuted
-#   unimplemented.tileans.band.remasen-officer-leadership, so no compiled-fighter projection raises the printed
-#   Leadership and a tape that hand-supplies nine instead of eight is indistinguishable from one that supplies
-#   the printed value.  Pending: the compiler projection for the three printed recipients (Remas Captain,
-#   Champions and Youngbloods), after which the admission is the compiled Leadership one point above the printed
-#   value with the neighbouring Warriors profile as the control.  Additional evidence for the same gap, re-derived
-#   in the verification pass: the band's variant rule set excludes this row outright -
-#   tests/web/features/campaign/band-variants.test.ts asserts that the tileans variant's rules do not contain
-#   "band--remasen-officer-leadership" - so no recipient profile in that variant carries the identity under test,
-#   independently of the missing bonus projection.  REVIEWED still requires manual semantic
-#   review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted leadership-characteristic-bonus clause carries 5 authored scenarios for the
+#   printed +1 Leadership of the three recipient sets the sentence names.  The corrected value is observed
+#   through the compiled fighter's own Leadership (expect_initial), which is how the authored sibling of this
+#   clause reads it (trollheim/lustria-tileans, same row and same diagnostic family), so no internal modifier is
+#   inspected and no field is invented: each recipient is built from the band package with the printed row
+#   selected through special_rule_ids, and the same build without that selection supplies the printed base
+#   value as the contrast.  The earlier claim that a tape could not discriminate is withdrawn: the value under
+#   test comes from the selected rule row, not from the fixture.  What stays missing is the executable binding
+#   (`unimplemented.tileans.band.remasen-officer-leadership`, binding null) that would raise the compiled
+#   characteristic - the defect these tapes detect.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -27,14 +23,13 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: leadership-characteristic-bonus (scope: YES)
-# PARTIAL[leadership-characteristic-bonus]: [CLOSING-REVIEW [C]] no scenario is authorable against the current executor.  The
-#   missing datum is the binding that raises the recipient's supplied Leadership: the record itself reads the
-#   clause as "a flat +1 Leadership to the affected profile, applied at all times" with "no canonical effect id"
-#   for a bare bonus, and the band's own rule row is the unimplemented identity this file names.  Every
-#   candidate tape therefore fails to discriminate the printed rule from its absence, and a scenario that
-#   cannot fail is not evidence.  The two reuse-guidance boundaries the record keeps (three distinct recipient
-#   sets; not a leader aura and not an ally-supplied bonus) are why the Captain, Champions and Youngbloods rows
-#   must each be admitted separately once the projection exists.
+# AUTHORED[leadership-characteristic-bonus]: 5 scenarios cover the three printed recipient sets (the Captain,
+#   the Champions and the Youngbloods), the same Captain built without the rule as the contrast, and the refusal
+#   of a profile the printed sentence does not name.  Each admission reads the recipient's compiled Leadership as
+#   the duel's own initial characteristic: printed 8 becomes 9, printed 7 becomes 8 and printed 6 becomes 7, so
+#   the raised point is supplied by the selected rule row and not by an unconditional profile value.  The closure
+#   scenario uses the binding's own diagnostic ("special rule is not available to <band>/<profile>"), the same
+#   shape the reviewed Middenheim and Lustria-Tileans grants use.
 # origin_id:
 #   rule/mordheim/tileans/band--remasen-officer-leadership/unimplemented.tileans.band.remasen-officer-leadership
 # analysis_status:
@@ -62,4 +57,102 @@
 # Register notes (context only, not behavioral authority):
 #   A profile-characteristic adjustment, not a new runtime branch; the duel must be given the corrected Leadership value. No canonical effect id exists for a bare bonus. Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"leadership-characteristic-bonus","audit_group":"EQ-mechanic.leadership-bonus","verified_facet":"mechanic.leadership-bonus","relationship":"shared_facet","boundary":"Share the compiled +1 Leadership characteristic, keeping the three distinct recipient sets. Not a leader aura or a bonus supplied by allies.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# The printed sentence is "The Captain, Champions and Youngbloods in a Remasen warband have +1
+# Leadership at all times", and the band attaches the row to its `remasens` variant
+# (band.yaml: variants[remasens].rule_ids).  Each recipient is built from the band package with
+# the printed row selected through special_rule_ids, and the supplied Leadership is read as the
+# duel's own initial characteristic; the same build without the selection supplies the printed
+# base value, which is the contrast.  Both duels are uncharged, so the only thing under test is
+# the compiled characteristic; every declared die is a miss (the Captain has two attacks, so its
+# tapes declare two hit dice).
+- audit_id: rule/mordheim/tileans/band--remasen-officer-leadership/unimplemented.tileans.band.remasen-officer-leadership
+  id: the-remas-captain-is-supplied-leadership-nine
+  covers: [leadership-characteristic-bonus]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: tileans
+      profile_id: captain
+    second:
+      characteristics: &tilean-fixture {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: &tilean-uncharged {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.leadership: 9}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same recipient without the printed rule: the printed Leadership 8 stands, so the ninth point
+# is what the selected row supplies rather than an unconditional profile value.
+- audit_id: rule/mordheim/tileans/band--remasen-officer-leadership/unimplemented.tileans.band.remasen-officer-leadership
+  id: the-unselected-captain-keeps-leadership-eight
+  covers: [leadership-characteristic-bonus]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: tileans
+      profile_id: captain
+    second:
+      characteristics: *tilean-fixture
+  duel_context: *tilean-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.leadership: 8}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Champions are the second printed recipient set (printed Leadership 7).
+- audit_id: rule/mordheim/tileans/band--remasen-officer-leadership/unimplemented.tileans.band.remasen-officer-leadership
+  id: the-champions-are-supplied-leadership-eight
+  covers: [leadership-characteristic-bonus]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: tileans
+      profile_id: champions
+    second:
+      characteristics: *tilean-fixture
+  duel_context: *tilean-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.leadership: 8}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The Youngbloods are the third printed recipient set (printed Leadership 6).
+- audit_id: rule/mordheim/tileans/band--remasen-officer-leadership/unimplemented.tileans.band.remasen-officer-leadership
+  id: the-youngbloods-are-supplied-leadership-seven
+  covers: [leadership-characteristic-bonus]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: tileans
+      profile_id: youngbloods
+    second:
+      characteristics: *tilean-fixture
+  duel_context: *tilean-uncharged
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_initial: {first.leadership: 7}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# A profile the printed sentence does not name keeps no bonus and is refused the rule itself, which
+# is the closure of the recipient set; the diagnostic is the binding's own.
+- audit_id: rule/mordheim/tileans/band--remasen-officer-leadership/unimplemented.tileans.band.remasen-officer-leadership
+  id: a-profile-outside-the-recipient-list-is-refused
+  covers: [leadership-characteristic-bonus]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: tileans
+      profile_id: warriors
+  expect_error: "special rule is not available to tileans/warriors"
+

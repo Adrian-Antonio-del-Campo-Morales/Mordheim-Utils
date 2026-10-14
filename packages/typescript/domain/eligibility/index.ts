@@ -54,6 +54,9 @@ export interface ProfileFacts {
   readonly fixed_equipment: readonly string[];
   readonly equipment_access: readonly { readonly item_id: string; readonly list_id?: string }[] | null;
   readonly equipment_forbids: readonly string[];
+  readonly equipment_permits?: readonly { readonly rule_id: string; readonly permits: readonly string[] }[];
+  readonly equipment_slots?: { readonly rule_id: string; readonly equipment: number; readonly armour: number;
+    readonly costs: Readonly<Record<string, number>> };
   readonly skill_access: readonly string[];
   readonly skill_lists: readonly { readonly rule_id: string; readonly category: string; readonly skills: readonly string[] }[];
   /**
@@ -144,6 +147,14 @@ export const EQUIPMENT_TAG_VOCABULARY: readonly string[] = [
   "animal", "blackpowder", "bow", "crossbow", "poison", "thrown", "constant-save-cloak",
 ];
 const HEAVY_ARMOUR = ["armour.heavy-armour", "armour.gromril-armour", "armour.ithilmar-armour", "armour.plate-armour"];
+/**
+ * Every defence that is another armour piece beside the body slot. The two robe
+ * items whose printed entry forbids combining with any other armour at all name
+ * this whole set; the generic robe profiles keep their printed helmet exception
+ * and are judged separately below.
+ */
+const OTHER_ARMOUR_PIECES = ["defence.helmet", "defence.cooking-pot-helmet",
+  "defence.shield", "defence.buckler", "defence.kite-shield"];
 /** Item kinds that are a weapon a profile may hold and swing. */
 const WEAPON_KINDS = ["close-combat-weapon", "ranged-weapon"];
 const INTERPRETED_TOKENS = ["armour", "armour-suit", "heavy-armour", "ranged-weapons", "weapons",
@@ -226,6 +237,12 @@ export function equipmentIssue(args: {
   const { profile, item_id: itemId, item } = args;
   const subject = [profile.band_id, profile.profile_id, itemId];
   if (NEUTRAL_ITEM_IDS.includes(itemId)) return null;
+  for (const restriction of profile.equipment_permits ?? []) {
+    if (!restriction.permits.some(token => tokenPermits(token, itemId, item))) return {
+      code: "equipment_forbidden", subject_ids: subject, rule_id: restriction.rule_id,
+      message: `${itemId} may not be carried; the printed clause admits only ${restriction.permits.join(", ")}.`,
+    };
+  }
   if (profile.fixed_equipment.includes(itemId)) return null;
   const offers = (profile.equipment_access ?? []).filter((offer) => offer.list_id === undefined
     || !(args.gated_lists ?? []).includes(offer.list_id) || (args.active_lists ?? []).includes(offer.list_id));
@@ -240,7 +257,7 @@ export function equipmentIssue(args: {
     message: `"${token}" is forbidden for ${profile.band_id}/${profile.profile_id}.`,
   };
   const unknown = forbids.find((token) => !INTERPRETED_TOKENS.includes(token) && token !== itemId
-    && !["armour.", "defence.", "weapon."].some((prefix) => token.startsWith(prefix)));
+    && !isEquipmentMechanic(token));
   if (unknown) return {
     code: "construction_clause_unstructured", subject_ids: subject, rule_id: unknown, owner_task: "KB",
     message: `The prohibition token "${unknown}" of ${profile.band_id}/${profile.profile_id} has no construction contract; the choice is reported, not silently allowed.`,
@@ -453,10 +470,19 @@ export interface HirelingKitOption {
   readonly repetition_allowed?: boolean;
 }
 export interface HirelingEquipment {
+  readonly innate_weapon_id?: string;
   readonly fixed_items?: readonly HirelingKitEntry[];
   readonly optional_items?: readonly HirelingKitEntry[];
   readonly choices?: readonly { readonly choose: number; readonly options: readonly HirelingKitOption[] }[];
-  readonly unique_equipment?: readonly { readonly id: string; readonly rules?: readonly string[] }[];
+  readonly unique_equipment?: readonly HirelingUniqueItem[];
+}
+export interface HirelingUniqueItem {
+  readonly id: string;
+  readonly rules?: readonly string[];
+  readonly counts_as?: string | { readonly item_id: string; readonly quantity?: { readonly kind: string; readonly value?: number } };
+  readonly strength_bonus?: number;
+  readonly save?: unknown;
+  readonly movement_modifier?: number;
 }
 export interface EditorialRule {
   readonly id: string;
@@ -528,6 +554,7 @@ export interface Catalogue {
   readonly free_rules?: Readonly<Record<string, EditorialRule>>;
 }
 export interface BuildFacts {
+  readonly trait_overrides?: Readonly<Record<string, unknown>>;
   readonly owned_item_ids?: readonly string[] | null;
   readonly open_flame?: boolean;
   readonly mounted?: boolean;
@@ -555,14 +582,23 @@ export interface BuildFacts {
 export function resolveHirelingKit(equipment: HirelingEquipment, build: BuildFacts, catalogue: Catalogue,
   rules: readonly EditorialRule[] = []): readonly string[] {
   const unique = equipment.unique_equipment ?? [];
+  const uniqueMechanics = new Map<string, string>();
   for (const item of unique) {
-    if (!item.id || !item.rules?.length || !item.rules.every(id => {
+    const rulesResolved = Boolean(item.rules?.length && item.rules.every(id => {
       const matching = rules.filter(rule => rule.id === id);
       return matching.length === 1 && (
         matching[0]!.runtime?.scope === "NO" && matching[0]!.runtime?.implemented === "NO" && !matching[0]!.bindings?.length
         || matching[0]!.runtime?.implemented === "YES" && matching[0]!.bindings?.some(binding =>
           binding.id in catalogue.mechanics));
-    })) throw new Error("hireling unique equipment needs a canonical combat mapping");
+    }));
+    const equivalent = typeof item.counts_as === "string" ? item.counts_as : item.counts_as?.item_id;
+    const ownMapping = catalogue.mappings[item.id];
+    const addsProperty = item.strength_bonus !== undefined || item.save !== undefined || item.movement_modifier !== undefined;
+    if (!item.id || (!rulesResolved && (!equivalent || addsProperty && !ownMapping)))
+      throw new Error(`hireling unique equipment needs a canonical combat mapping: ${item.id}`);
+    if (equivalent && !catalogue.items?.[equivalent] && !catalogue.mappings[equivalent])
+      throw new Error(`hireling unique equipment names no canonical equivalence: ${item.id} -> ${equivalent}`);
+    uniqueMechanics.set(item.id, ownMapping ?? (equivalent ? catalogue.mappings[equivalent] ?? item.id : item.id));
   }
   const expand = (entries: readonly HirelingKitEntry[]): string[] => entries.flatMap(entry => {
     const count = entry.quantity.value;
@@ -577,7 +613,13 @@ export function resolveHirelingKit(equipment: HirelingEquipment, build: BuildFac
       : ids.filter(id => repetition || !prefix.includes(id)).flatMap(id => build([...prefix, id]));
     return build([]);
   };
-  let kits = [[...expand(equipment.fixed_items ?? []), ...unique.map(item => item.id)]];
+  let kits = [[...expand(equipment.fixed_items ?? []), ...unique.flatMap(item => {
+    const quantity = typeof item.counts_as === "object" ? item.counts_as.quantity : undefined;
+    const copies = quantity?.value ?? 1;
+    if (quantity && (quantity.kind !== "fixed" || !Number.isInteger(copies) || copies < 1))
+      throw new Error(`unsupported unique equipment quantity: ${item.id}`);
+    return Array.from({ length: copies }, () => item.id);
+  })]];
   for (const group of equipment.choices ?? []) {
     if (group.choose !== 1 || !group.options.length) throw new Error("unsupported hireling equipment choice");
     kits = kits.flatMap(kit => group.options.flatMap(option =>
@@ -591,6 +633,7 @@ export function resolveHirelingKit(equipment: HirelingEquipment, build: BuildFac
   }
   const signature = (items: readonly string[]) => [...items].sort().join("\u0000");
   const neutral = new Set(["weapon.fist", "armour.no-armour"]);
+  if (equipment.innate_weapon_id) neutral.add(equipment.innate_weapon_id);
   const active = [build.main_weapon_id, build.off_hand_id, build.extra_hand_id, build.armour_id,
     ...build.defence_ids, ...build.preparation_ids, build.main_poison_id, build.off_poison_id]
     .filter((id): id is string => Boolean(id) && !neutral.has(id ?? ""));
@@ -602,7 +645,7 @@ export function resolveHirelingKit(equipment: HirelingEquipment, build: BuildFac
     const chosen = (equipment.choices ?? []).flatMap(group => group.options.flatMap(option =>
       option.items ?? (option.from_item_ids ?? []).map(item_id => ({ item_id, quantity: { kind: "fixed", value: 1 } }))));
     const entries = [...(equipment.fixed_items ?? []), ...(equipment.optional_items ?? []), ...chosen];
-    const mechanic = (id: string) => entries.find(entry => entry.item_id === id)?.mechanic_id ?? catalogue.mappings[id] ?? id;
+    const mechanic = (id: string) => entries.find(entry => entry.item_id === id)?.mechanic_id ?? uniqueMechanics.get(id) ?? catalogue.mappings[id] ?? id;
     for (const [id, material] of [[build.main_weapon_id, build.main_material_id], [build.off_hand_id, build.off_material_id]]) {
       if (!id || neutral.has(id)) {
         if (material !== "material.normal") return false;
@@ -694,7 +737,9 @@ export function catalogueItemFacts(catalogue: Catalogue): Record<string, ItemFac
 }
 
 export function applicableProfileRules(pack: BandPackage, profile: EditorialProfile): readonly EditorialRule[] {
-  return pack.special_rules.filter((rule) => recipientTypeMatches(rule, profile) && ((profile.rule_ids ?? []).includes(rule.id)
+  return pack.special_rules.filter((rule) => !(profile.variants?.includes("deity.solkan")
+    && rule.id === "hireling.hired-sword.priest-of-verena.rule.strictures")
+    && recipientTypeMatches(rule, profile) && ((profile.rule_ids ?? []).includes(rule.id)
     || (rule.runtime?.grant === "profile" && (rule.applies_to?.profile_ids ?? []).includes(profile.id))));
 }
 function recipientTypeMatches(rule: EditorialRule, profile: EditorialProfile): boolean {
@@ -705,7 +750,21 @@ function recipientTypeMatches(rule: EditorialRule, profile: EditorialProfile): b
 export function configuredProfile(profile: EditorialProfile, variants: readonly string[]): EditorialProfile {
   // The selected facts travel with the profile so a printed entry conditional
   // on them is read by the same `entryReachesProfile` the offering layer uses.
-  const configured = variants.length ? { ...profile, variants: [...variants] } : profile;
+  let configured = variants.length ? { ...profile, variants: [...variants] } : profile;
+  if (variants.includes("deity.solkan")) {
+    if (profile.id !== "hireling.hired-sword.priest-of-verena")
+      throw new Error("deity.solkan requires the printed War-Priest of Solkan variant");
+    // Fixed items are filtered only where the kit declares them: a kit that
+    // declares none keeps `fixed_items` absent rather than carrying an explicit
+    // `undefined`, which `exactOptionalPropertyTypes` rejects, and rather than
+    // gaining an invented empty declaration. `rule_ids` keeps the same
+    // absent-vs-explicit distinction for the same reason.
+    const solkanFixedItems = profile.hireling_equipment?.fixed_items;
+    configured = { ...configured, skill_access: ["strength"],
+      hireling_equipment: { ...profile.hireling_equipment,
+        ...(solkanFixedItems ? { fixed_items: solkanFixedItems.filter(item => item.item_id !== "sword") } : {}) },
+      ...(profile.rule_ids ? { rule_ids: profile.rule_ids.filter(id => id !== profile.id + ".rule.strictures") } : {}) };
+  }
   if (!variants.includes("promotion.hero") || profile.type === "hero") return configured;
   if (profile.type !== "henchman") throw new Error("promotion.hero requires a canonical Henchman profile");
   return { ...configured, type: "hero" };
@@ -836,6 +895,14 @@ export function buildRestriction(context: BuildContext, stage: string): string |
   const has = (id: string) => contracts.includes(id);
   const forbiddenSkills = (predicate: (id: string) => boolean) => b.skill_ids.filter(predicate).sort();
   const magic = (id: string) => id.includes("arcane") || id.includes("sorcery");
+  if (stage === "boundEquipment" && b.band_id === "marauders-of-chaos" && b.profile_id === "condemned") {
+    const fixed = b.trait_overrides?.["condemned_fixed_characteristics"];
+    if (!(Array.isArray(fixed) && ["WS", "S", "T", "A"].every(stat => fixed.includes(stat)))
+        && [...selected, ...b.preparation_ids, b.main_poison_id, b.off_poison_id,
+            b.main_material_id, b.off_material_id].some(id => Boolean(id)
+              && !["weapon.fist", "weapon.natural-attacks", "armour.no-armour", "material.normal"].includes(id!)))
+      return "the Condemned may not use equipment while any characteristic remains variable";
+  }
   // The compiler asks this before it compiles a build that chose no weapon at
   // all: the free dagger is then the engine's default, and a profile whose own
   // printed restriction refuses it fights with its natural attacks instead, the
@@ -852,7 +919,7 @@ export function buildRestriction(context: BuildContext, stage: string): string |
       try { resolveHirelingKit(p.hireling_equipment, b, c, pack.special_rules); }
       catch (error) { return error instanceof Error ? error.message : String(error); }
     }
-    const profileFacts = profileFactsProjection({ pack, profile: p, catalogue: c });
+    const profileFacts = profileFactsProjection({ pack, profile: p, catalogue: c, additional_bindings: profile_bindings });
     if (profileFacts.active_weapon_limit || profileFacts.active_weapon_forbids?.length
       || profileFacts.active_weapon_permits?.length) {
       const issues = activeWeaponIssues({ profile: profileFacts, items: catalogueItemFacts(c), skills: {},
@@ -894,6 +961,9 @@ export function buildRestriction(context: BuildContext, stage: string): string |
     return null;
   }
   if (stage === "requiredInitial") {
+    if (b.profile_id === "hireling.hired-sword.emissary-of-chaos"
+      && b.special_rule_ids.filter(id => id.startsWith(b.profile_id + ".patron.")).length !== 1)
+      return "an Emissary of Chaos requires exactly one printed patron";
     if (has("compiler.sister-special-skills")) {
       const selected = b.special_rule_ids.filter(id => id.startsWith("band--special-skills-"));
       if (selected.length !== 2 || new Set(selected).size !== 2)
@@ -903,9 +973,14 @@ export function buildRestriction(context: BuildContext, stage: string): string |
     if (has("compiler.nurgle-s-blessings") && !b.special_rule_ids.some((id) => id.startsWith("band--blessings-of-nurgle-"))) return "Tainted Ones require at least one Blessing of Nurgle";
     return null;
   }
-  if (stage === "mutationLimit") return has("compiler.possessed-optional-zero-to-two-mutations-at-recruitment") && b.special_rule_ids.filter((id) => id.startsWith("band--mutations-")).length > 2 ? `at most two mutations are allowed for ${who}` : null;
+  if (stage === "mutationLimit") {
+    const count = b.special_rule_ids.filter((id) => id.startsWith("band--mutations-")).length;
+    if (has("compiler.aquatic-mutants") && count > 1) return `at most one Aquatic mutation is allowed for ${who}`;
+    return has("compiler.possessed-optional-zero-to-two-mutations-at-recruitment") && count > 2 ? `at most two mutations are allowed for ${who}` : null;
+  }
   if (stage === "initialChoices") {
     const count = b.special_rule_ids.filter((id) => id.startsWith("band--mutations-")).length;
+    if (has("compiler.aquatic-mutants") && count && p.type !== "hero") return `Aquatic mutations require a Hero: ${who}`;
     return has("compiler.mutation-purchase-at-recruitment") && count && !["mutants", "the-possessed"].includes(p.id)
       ? `mutations are available only to Mutants and the Possessed: ${who}` : null;
   }
@@ -1432,6 +1507,23 @@ export function validateConstruction(
     for (let index = 0; index < copies; index += 1) setIds.push(id);
   }
   const setItems = setIds.map((item_id) => ({ item_id, item: itemFactsFor(context, item_id) }));
+  if (context.profile.equipment_slots) {
+    const slots = context.profile.equipment_slots;
+    const normalize = (id: string) => itemFactsFor(context, id)?.mechanic_id ?? id;
+    const slotDeclared = occurrences(declared.filter(id => !NEUTRAL_ITEM_IDS.includes(id)).map(normalize));
+    const slotOwned = occurrences(possession.filter(id => !NEUTRAL_ITEM_IDS.includes(id)).map(normalize));
+    let equipment = 0, armour = 0;
+    for (const id of new Set([...slotDeclared.keys(), ...slotOwned.keys()])) {
+      const copies = Math.max(slotDeclared.get(id) ?? 0, slotOwned.get(id) ?? 0);
+      const item = itemFactsFor(context, id);
+      if (item?.kind === "armour" || id.startsWith("armour.")) armour += copies;
+      else equipment += copies * (slots.costs[id] ?? (item?.hands === 2 || itemIsMissile(item) ? 2 : 1));
+    }
+    if (equipment > slots.equipment || armour > slots.armour) issues.push({
+      code: "equipment_limit_exceeded", subject_ids: [context.profile.profile_id], rule_id: slots.rule_id,
+      message: `Construct equipment requires ${equipment}/${slots.equipment} equipment slots and ${armour}/${slots.armour} armour slots.`,
+    });
+  }
   for (const issue of equipmentSetIssues({ profile: context.profile, limits: context.limits ?? null, items: setItems })) {
     if (options.draft && issue.code === "equipment_required_missing") continue;
     issues.push(issue);
@@ -1486,10 +1578,13 @@ export function profileFactsProjection(args: {
   readonly profile: EditorialProfile;
   readonly band_id?: string;
   readonly catalogue?: Catalogue | null;
+  readonly additional_bindings?: readonly Binding[];
 }): ProfileFacts {
   const { pack, profile } = args;
   const bandId = args.band_id ?? pack.band.id;
   const forbids: string[] = [];
+  const equipmentPermits: NonNullable<ProfileFacts["equipment_permits"]>[number][] = [];
+  let equipmentSlots: ProfileFacts["equipment_slots"];
   const skillLists: { rule_id: string; category: string; skills: readonly string[] }[] = [];
   const promotionSkills: string[] = [];
   let activeWeaponLimit: ProfileFacts["active_weapon_limit"];
@@ -1498,7 +1593,9 @@ export function profileFactsProjection(args: {
   const requiredEquipment: RequiredEquipment[] = [];
   const poisonApplication: PoisonApplication[] = [];
   const missileWeaponLimit: MissileWeaponLimit[] = [];
-  for (const rule of applicableRules(pack, profile)) for (const binding of rule.bindings ?? []) {
+  const projectedRules = [...applicableRules(pack, profile),
+    { id: "supplied-condition", bindings: args.additional_bindings ?? [], runtime: { implemented: "YES", grant: "profile" } }];
+  for (const rule of projectedRules) for (const binding of rule.bindings ?? []) {
     if (binding.id === "compiler.promoted-hero-skill-access" && rule.runtime?.implemented === "YES") {
       for (const category of strings(binding.parameters?.["allowed_skill_lists"])) {
         if (!promotionSkills.includes(category)) promotionSkills.push(category);
@@ -1514,6 +1611,20 @@ export function profileFactsProjection(args: {
       if (permits.length) activeWeaponPermits.push({ rule_id: rule.id, permits });
     }
     if (binding.id === "profile.equipment-restrictions") {
+      const slots = binding.parameters?.["equipment_slots"];
+      if (slots !== undefined) {
+        const armour = binding.parameters?.["armour_slots"];
+        const rawCosts = binding.parameters?.["slot_costs"];
+        if (typeof slots !== "number" || !Number.isInteger(slots) || slots < 0
+            || typeof armour !== "number" || !Number.isInteger(armour) || armour < 0
+            || !rawCosts || typeof rawCosts !== "object" || Array.isArray(rawCosts)) throw new Error("invalid construct slots");
+        const costs = rawCosts as Record<string, unknown>;
+        if (Object.values(costs).some(value => typeof value !== "number" || !Number.isInteger(value) || value < 1))
+          throw new Error("invalid construct slot cost");
+        equipmentSlots = { rule_id: rule.id, equipment: slots, armour, costs: costs as Record<string, number> };
+      }
+      const permits = strings(binding.parameters?.["allowed_kinds"]);
+      if (permits.length) equipmentPermits.push({ rule_id: rule.id, permits });
       const maximum = binding.parameters?.["max_active_one_handed_weapons"];
       if (maximum !== undefined) {
         if (typeof maximum !== "number" || !Number.isInteger(maximum) || maximum < 0) throw new Error("invalid active one-handed weapon limit");
@@ -1566,6 +1677,8 @@ export function profileFactsProjection(args: {
   return {
     band_id: bandId, profile_id: profile.id, fixed_equipment: profile.fixed_equipment ?? [],
     equipment_access: access, equipment_forbids: forbids,
+    ...(equipmentPermits.length ? { equipment_permits: equipmentPermits } : {}),
+    ...(equipmentSlots ? { equipment_slots: equipmentSlots } : {}),
     // The promotion grant enters `skill_access` only for the configured Hero:
     // a canonical Henchman row carries it in `promotion_skill_access` alone, so
     // no early projection can hand the tables to an unpromoted fighter.
@@ -1662,6 +1775,13 @@ export function specialRuleRestriction(args: {
 }): string | null {
   const { build: b, profile: p, rule } = args;
   const unavailable = `special rule is not available to ${b.band_id}/${b.profile_id}: ${rule.id}`;
+  if (rule.id.startsWith("hireling.hired-sword.priest-of-verena.skill.")
+      && !b.variant_ids.includes("deity.solkan"))
+    return "a Mark of Solkan requires the War-Priest of Solkan variant";
+  if ((!args.stage || args.stage === "prerequisites")
+      && rule.id.startsWith("hireling.hired-sword.priest-of-morr-miracle-workers.skill.")
+      && b.special_rule_ids.filter(id => id.startsWith("hireling.hired-sword.priest-of-morr-miracle-workers.skill.")).length > 1)
+    return "a Priest of Morr may choose only one Mark: Augur or Haunted Mien";
   if (!args.stage || args.stage === "recipients") {
     if (p && !recipientTypeMatches(rule, p)) return unavailable;
     if (p && rule.eligibility?.length && !rule.eligibility.includes(p.id)) return unavailable;
@@ -1708,6 +1828,12 @@ export function loadoutRestriction(args: {
   readonly stage?: "hands" | "skills";
 }): string | null {
   const { build: b, main_weapon: main, off_weapon: off, contracts, selected_mechanics: mechanics } = args;
+  if (b.variant_ids.includes("stance.wall-of-steel")) {
+    if (!mechanics.includes("mechanic.wall-of-steel") || b.main_weapon_id !== "weapon.spear")
+      return "Wall of Steel requires the Ashigaru's actual spear";
+    if (b.off_hand_id)
+      return "the Wall of Steel spear occupies both hands";
+  }
   if (args.stage === "skills") return skillLoadoutRestriction(b, contracts, mechanics);
   if (mechanics.includes("mechanic.foul-odour") && (b.open_flame === true || [b.main_weapon_id, b.off_hand_id, b.extra_hand_id].includes("weapon.brazier-iron"))) return "Foul Odour forbids carrying open flames";
   if (mechanics.some(id => ["mechanic.ethereal-hit-save", "mechanic.ghost-pirate-ethereal"].includes(id)) && b.skill_ids.some(id => ["skill.step-aside", "skill.dodge"].includes(id))) return "Ethereal cannot be combined with Dodge or Step Aside";
@@ -1733,6 +1859,15 @@ export function loadoutRestriction(args: {
     if (["armour.toughened-leathers", "armour.ninja-robes"].includes(b.armour_id) && ["defence.shield", "defence.kite-shield"].includes(b.off_hand_id)) return "toughened leathers cannot be combined with a shield";
     if (["armour.wizard-s-robe", "armour.eshin-assassin-robes"].includes(b.armour_id) && ["defence.shield", "defence.buckler", "defence.kite-shield"].includes(b.off_hand_id)) return `${b.armour_id} cannot be combined with other armour except a helmet`;
   }
+  // The two item origins print the stricter rule: 'Tunica de Mago' grants a 6+ save and 'no
+  // combinará se con ninguna otra pieza de armadura' (Khemri printed 61; Chaos in the Streets
+  // printed 68), with no helmet exception. They are origin-specific profiles, so the generic
+  // armour.wizard-s-robe keeps its own printed limit and no bearer is re-judged here.
+  if (["armour.mage-robes", "armour.wizard-robe"].includes(b.armour_id)
+      && (OTHER_ARMOUR_PIECES.some(id => b.defence_ids.includes(id))
+        || OTHER_ARMOUR_PIECES.includes(b.off_hand_id ?? "")
+        || OTHER_ARMOUR_PIECES.includes(b.extra_hand_id ?? "")))
+    return `${b.armour_id} cannot be combined with any other armour`;
   return args.stage === "hands" ? null : skillLoadoutRestriction(b, contracts, mechanics);
 }
 
@@ -1753,7 +1888,7 @@ function cloakArmourRestriction(b: BuildFacts): string | null {
 export function additionalEquipmentRestriction(b: BuildFacts): string | null {
   if (b.special_rule_ids.includes("band--shield-bash") && !["defence.shield", "defence.kite-shield"].includes(b.off_hand_id ?? "")) return "Shield Bash requires a shield or kite shield";
   if (b.extra_hand_id) {
-    if (!b.special_rule_ids.some((id) => ["band--mutations-extra-arm", "band--skaven-special-skills-tail-fighting"].includes(id))) return "an extra hand requires Extra Arm or Tail Fighting";
+    if (!b.special_rule_ids.some((id) => ["band--mutations-extra-arm", "band--skaven-special-skills-tail-fighting", "band--mutations-prehensile-tail"].includes(id))) return "an extra hand requires Extra Arm, Tail Fighting, or Prehensile Tail";
     if (b.extra_hand_id === "defence.kite-shield") return "the extra hand may not carry a kite shield";
     if (!b.extra_hand_id.startsWith("weapon.") && !["defence.shield", "defence.buckler"].includes(b.extra_hand_id)) return "the extra hand must hold a one-handed weapon, shield, or buckler";
   }

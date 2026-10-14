@@ -1,10 +1,10 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills-noblesse-obliges/unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-noblesse-obliges
 # scaffold_fingerprint: fc03c393b1b3f3bed1b5880edbfec6cbd27cb15eca5ae6fa68ea40e3874ca641
-# authoring_status: PARTIAL
-# authoring_progress: the admitted noblesse-fear-immunity clause carries 2 authored scenario(s) derived
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry authored scenarios (noblesse-fear-immunity 2, noblesse-stomp 2), derived
 # from the printed rule, the recorded semantic contract and the printed profile; any remaining
-# face of the file stays recorded as pending below.  REVIEWED still requires manual semantic
+# No admitted clause of this origin is left pending.  REVIEWED still requires manual semantic
 # review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
@@ -48,10 +48,21 @@
 #   The fear-immunity half of Noblesse Obliges. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Surface reuse candidate: {"family":"mechanic.fear-immunity","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare enemy/bearer identity, charge direction, individual test, failed-charge versus hit penalty, and immunity/reroll exceptions. Ordinary Fear has both charging and charged consequences; narrow immunity or charging-only Fear must not become unconditional.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: noblesse-stomp (scope: YES)
-# PARTIAL[noblesse-stomp]: CLOSING-REVIEW [C]: no scenario is authorable in this revision. The printed extra attack against an
-#   already Knocked Down opponent needs a knocked-down defender state whose attack-pool separation
-#   from the ordinary attack is not established by this corpus yet (the same file’s immunity clause
-#   carries its own authored scenarios).
+# AUTHORED[noblesse-stomp]: 2 scenarios evidence the printed stomp at the wound boundary, from the printed
+#   benefit text and the printed aristocrat profile; no engine output was consulted.  The recipient is the same
+#   declared bearer the immunity clause uses - the printed aristocrat carrying the band rule - and the opposing
+#   fixture is hand-built, so the clause's own condition is a supplied fact rather than a profile inference.
+#   The knocked-down defender is declared through `initial_state.second.condition: KNOCKED_DOWN`, a state field of
+#   the runner's own fixture vocabulary (phases.Condition), and its own attack dice are suppressed with
+#   `attacks: 0`, which the corpus already does for a hand-built opponent.  The stomp is then the SECOND attack
+#   die of the same round: the identical hit and wound faces (4 and 4 against Weapon Skill 3 and Toughness 3)
+#   land twice on the knocked-down defender and once on the standing control, so the extra attack is observed as
+#   `attacks.1.hit`/`attacks.1.damage` plus the defender's wound count (three wounds minus two against the
+#   stomp, three minus one without it).  The printed "at their own Strength" term is read by giving the ordinary
+#   and the stomp attack the same declared wound face against the same Toughness.  The record's effect id is the
+#   register's proposal and the duel pool has no branch granting this attack yet, which is the defect these two
+#   tapes detect; the earlier reading that the defender state was undeclarable is withdrawn (superseded note: the
+#   attack-pool separation it asked for is simply the pool size, and the state is declarable).
 
 # origin_id:
 #   rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills-noblesse-obliges/unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-noblesse-obliges
@@ -118,4 +129,48 @@
     - {key: round.0.second.attack.0.hit, value: 1}
   expect_rounds:
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed stomp: against a defender already Knocked Down the warrior's allocation carries one extra attack at
+# its own Strength, so the same declared faces take a second wound from the three-wound fixture.
+- audit_id: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills-noblesse-obliges/unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-noblesse-obliges
+  id: the-stomp-adds-one-attack-against-a-knocked-down-opponent
+  covers: [noblesse-stomp]
+  fighters:
+    first: {collection: mordheim, band_id: cursed-cavalcade, profile_id: aristocrat, special_rule_ids: [band--cursed-cavalcade-special-skills-noblesse-obliges]}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state:
+    second: {condition: KNOCKED_DOWN, attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.first.attack.1.hit, value: 4}
+    - {key: round.0.first.attack.1.wound, value: 4}
+  expect_rounds:
+    0: {attacks.1.hit: true, attacks.1.damage: 1, state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control for the same fixture with a standing opponent: only the ordinary attack die is allocated, so the
+# identical hit and wound faces leave the fixture one wound higher.  The two tapes differ only in the stomp.
+- audit_id: rule/mordheim/cursed-cavalcade/band--cursed-cavalcade-special-skills-noblesse-obliges/unimplemented.cursed-cavalcade.band.cursed-cavalcade-special-skills-noblesse-obliges
+  id: without-a-knocked-down-opponent-there-is-no-stomp
+  covers: [noblesse-stomp]
+  fighters:
+    first: {collection: mordheim, band_id: cursed-cavalcade, profile_id: aristocrat, special_rule_ids: [band--cursed-cavalcade-special-skills-noblesse-obliges]}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.second.wounds: 2}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

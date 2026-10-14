@@ -189,13 +189,14 @@ rules:
 - id: overseer--slave-driver
   runtime:
     scope: 'YES'
-    implemented: 'NO'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.slavers-rel.overseer.slave-driver
+    - id: mechanic.slave-driver
       scope: 'YES'
-      binding: null
-      reason: 'Included individual duel effect, not implemented: Supplied qualified provider Leadership within the source-specific 3/6-inch range; canonical provider projection remains pending.'
+      binding:
+        kind: mechanic
+        id: mechanic.slave-driver
   name: Slave Driver
   effect: >-
     An Overseer strikes fear into his slaves. Any slave within 3" may use his leadership. If he is
@@ -216,16 +217,15 @@ rules:
     - overseer
 - id: eunuchs--broken-spirit
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.slavers-rel.eunuchs.broken-spirit
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+    - id: mechanic.broken-spirit
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.broken-spirit
   name: Broken Spirit
   effect: >-
     A Eunuch will automatically pass any Leadership test he is required to make, as long as the

@@ -277,6 +277,7 @@ class HitContext:
     reroll: bool = False
     key: str = "hit"
     needs_sixes: bool = False
+    fixed_target: int | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -292,7 +293,8 @@ def resolve_hit(context: HitContext, dice: DiceSource) -> HitResult:
         # An automatic hit has no natural die face for poison/other triggers.
         return HitResult(0, 0, True)
     target = (6 if context.needs_sixes else
-              max(2, min(6, to_hit_target(context.attacker_ws, context.defender_ws) - context.modifier)))
+              max(2, min(6, (context.fixed_target if context.fixed_target is not None
+                            else to_hit_target(context.attacker_ws, context.defender_ws)) - context.modifier)))
     if context.automatic and not context.needs_sixes:
         return HitResult(target, 0, True)
     roll = dice.roll(RollRequest(context.key))
@@ -317,6 +319,9 @@ class ParryContext:
     reroll: bool = False
     key: str = "parry"
     can_parry_six: bool = False
+    roll_under: int | None = None
+    maximum_roll: int | None = None
+    natural_hit_six: bool | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -331,13 +336,18 @@ def resolve_parry(context: ParryContext, dice: DiceSource) -> ParryResult:
     eligible = (
         context.available
         and not context.cannot_be_parried
-        and (context.hit_roll != 6 or context.can_parry_six)
+        and (not (context.hit_roll == 6 if context.natural_hit_six is None
+                  else context.natural_hit_six) or context.can_parry_six)
         and context.attacker_strength < 2 * context.defender_strength
     )
     if not eligible:
         return ParryResult(False, False)
 
     def succeeds(value: int) -> bool:
+        if context.maximum_roll is not None and value > context.maximum_roll:
+            return False
+        if context.roll_under is not None:
+            return value < context.roll_under
         if context.fixed_target is not None:
             return value >= context.fixed_target
         return value >= context.hit_roll if context.match_allowed else value > context.hit_roll
@@ -365,6 +375,7 @@ class WoundContext:
     key: str = "wound"
     critical_on_reroll: bool = True
     failure_still_wounds: bool = False
+    critical_when_needing_six: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -389,7 +400,8 @@ def resolve_wound(context: WoundContext, dice: DiceSource) -> WoundResult:
         rerolled = True
     rolled_success = success
     success = success or context.failure_still_wounds
-    critical = (rolled_success and context.critical_available and target < 6
+    critical = (rolled_success and context.critical_available
+                and (target < 6 or context.critical_when_needing_six)
                 and roll >= context.critical_threshold
                 and (not rerolled or context.critical_on_reroll))
     return WoundResult(target, roll, success, critical, rerolled)
@@ -410,6 +422,9 @@ class ArmourContext:
     magical_attack: bool = False
     natural_armour_negated_by_magic: bool = False
     key: str = "armour"
+    flaming_attack: bool = False
+    natural_armour_negated_by_fire: bool = False
+    incoming_save_modifier: int = 0
 
 
 @dataclass(frozen=True, slots=True)
@@ -436,18 +451,20 @@ class ArmourResult:
 
 def armour_target(context: ArmourContext) -> int:
     modifier = max(0, context.strength - 3) + context.armour_penetration - context.target_armour_bonus
-    armour = context.armour_save + modifier
+    armour = context.armour_save + modifier + context.incoming_save_modifier
     natural = context.natural_armour_save
     if not context.natural_armour_unmodified:
-        natural += modifier
-    natural = min(natural, context.natural_armour_worst_save)
-    if context.natural_armour_negated_by_magic and context.magical_attack:
+        natural = min(natural + max(0, context.strength - 3) - context.target_armour_bonus,
+                      context.natural_armour_worst_save) + context.armour_penetration + context.incoming_save_modifier
+    if ((context.natural_armour_negated_by_magic and context.magical_attack)
+            or (context.natural_armour_negated_by_fire and context.flaming_attack)):
         natural = 7
     target = min(armour, natural)
     if context.ignore_armour:
-        target = context.armour_save_floor if context.armour_cannot_be_ignored and not context.magical_attack else 7
-    if context.armour_save_floor <= 6 and not (context.ignore_armour and context.magical_attack):
-        target = min(target, context.armour_save_floor)
+        target = (context.armour_save_floor + context.incoming_save_modifier
+                  if context.armour_cannot_be_ignored and not context.magical_attack else 7)
+    if context.armour_save_floor <= 6 and not context.ignore_armour:
+        target = min(target, context.armour_save_floor + context.incoming_save_modifier)
     return target
 
 
@@ -747,8 +764,8 @@ def _characteristic_test(
     reroll: bool = False,
 ) -> bool:
     roll = dice.roll(RollRequest(key))
-    passed = roll <= value and not (six_fails and roll == 6)
+    passed = roll <= value and not (six_fails and getattr(dice, "original_roll", roll) == 6)
     if not passed and reroll:
         roll = dice.roll(RollRequest(f"{key}.reroll"))
-        passed = roll <= value and not (six_fails and roll == 6)
+        passed = roll <= value and not (six_fails and getattr(dice, "original_roll", roll) == 6)
     return passed

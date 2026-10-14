@@ -13,7 +13,16 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: first-turn-scope (scope: YES)
-# PARTIAL[first-turn-scope]: no scenario is authored. The clause records an unresolved source-vs-contract conflict: the printed item entry scopes Strike First to the first turn of a close combat while the contract declares every-round scope, and the engine clears the pike priority after the first round (source-faithful). Which reading governs is a coordinator decision, not an execution result.
+# PARTIAL[first-turn-scope]: the printed scope (strike first in the first turn of a
+#   hand-to-hand combat) is resolved for the engine ([M2-offensive 2026-10-08]:
+#   resolve_priority drops the pike's strike-first layer once the first round is
+#   over, as it does for the spear and the long-boat-hook) and is now authored as the
+#   differential variant below: the same two fighters across two rounds, where round
+#   0 the low-Initiative bearer strikes first through the pike's priority and round 1
+#   the faster defender strikes first again because the layer has lapsed. The
+#   editorial residual is kept, not decided: the mechanic record's prose is
+#   unqualified while the item prose prints 'first turn', so the mechanic record
+#   still needs its text aligned with the entry it answers.
 # origin_id:
 #   mechanic/weapon.pike
 # analysis_status:
@@ -158,3 +167,33 @@
   maximum_rounds: 1
   expect_error: "main weapon occupies both hands"
 
+
+# The printed first-turn scope as a differential: round 0 the Initiative 3 bearer
+#   strikes first through the pike's priority (wounding the Initiative 5 defender),
+#   and round 1 the same build orders the Initiative 5 defender first because the
+#   pike's first-turn layer has lapsed - the faster fighter is back in charge.
+- audit_id: mechanic/weapon.pike
+  id: the-pikes-strike-first-lapse-hands-the-first-rounds-order-back
+  covers: [first-turn-scope]
+  fighters:
+    first:
+      main_weapon_id: weapon.pike
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 3, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 2
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.1.second.attack.0.hit, value: 4}
+    - {key: round.1.second.attack.0.wound, value: 4}
+    - {key: round.1.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.damage: 1,
+        state.second.wounds: 1}
+    1: {attacks.0.hit: true, attacks.0.wounded: true, attacks.0.damage: 1,
+        state.first.wounds: 1}
+  expect_final: {rounds_executed: 2, termination_reason: horizon}

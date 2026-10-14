@@ -2,9 +2,13 @@
 # audit_id: rule/mordheim/clockworkers-sc/band--constructs/unimplemented.clockworkers-sc.band.constructs
 # scaffold_fingerprint: 6dc34a8d6ab806217ac175d1c64668a9789426aa016bf59001e7cc70e8bfc8f5
 # authoring_status: PARTIAL
-# authoring_progress: the admitted constructs-poison-immunity clause carries two authored scenarios derived
-# from the printed rule and the printed profile.
-# The other admitted clauses of this ID remain TODO, so the file stays PARTIAL.
+# authoring_progress: the admitted clauses constructs-poison-immunity (2), constructs-ignore-pain (2) and
+# constructs-psychology-immunity (1) carry authored scenarios derived from the printed rules and the printed
+# profiles.  The other admitted clause keeps its concrete reason below and the file stays PARTIAL:
+# constructs-never-leaves-combat is an accepted scope disposition - the register records it as
+# `clause_scope: NO` (batch `scope-admitted-contract-reconciliation`) - and in-built-equipment separates
+# into an accepted campaign-removal disposition plus the slot-capacity face that the two child construct
+# clauses carry.  The file stays PARTIAL.
 # REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED;
 # no behavioral result is claimed.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
@@ -54,9 +58,25 @@
 # Register notes (context only, not behavioral authority):
 #   The same effect as the shared Undead No Pain rule (skill.ignore-pain): a stunned result is downgraded to knocked down. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Scope review integration: {"clause_id":"constructs-ignore-pain","review_clause_id":"constructs-ignore-pain","source_state":"unverified","review_status":"reviewed","scope_reason":"The immunity to psychology, the refusal to leave combat, treating Stunned as Knocked Down and the immunity to poison are admitted lasting individual states of this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Verified reuse guidance: {"review":"historical-equivalence-review-sha256:32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29","review_clause_id":"constructs-ignore-pain","audit_group":"EQ-skill.ignore-pain","verified_facet":"skill.ignore-pain","relationship":"shared_facet","boundary":"Share the post-chart Stunned-to-Knocked-Down transformation. Preserve recipients and printed Resilient prerequisites; do not add that prerequisite to innate No Pain. Squishy expressly disables No Pain. A conversion is not a helmet roll or ordinary Knocked Down for Jump Up.","evidence":"inspection","limit":"Clause-specific reuse guidance only; preserves active scope, effect, consumer, work and execution evidence. No audit-wide acceptance or implementation certification."}
 #
-# Clause: constructs-never-leaves-combat (scope: YES)
-# PARTIAL[constructs-never-leaves-combat]: CLOSING-REVIEW [C], 2026-10-10: no scenario is authorable in this revision
-#   with the current executor contract; the original TODO note below the header is superseded.
+# Clause: constructs-never-leaves-combat (scope: NO)
+# PARTIAL[constructs-never-leaves-combat]: [E] accepted scope disposition, not an
+#   authoring gap: the register now records this row as `clause_scope: NO` (batch
+#   `scope-admitted-contract-reconciliation`, `implementation_work: none`), applying the 2026-10-04
+#   boundary ruling - Break/Rout, All Alone and group psychology tests are outside the 1v1 duel simulator,
+#   with individual consequences split from excluded group clauses and the complete KB rule text preserved.
+#   The printed trigger ("this warrior would be forced to leave hand-to-hand combat") is produced only by
+#   that excluded procedure, which the isolated 1v1 duel does not run: no declared roll or decision key in
+#   the documented executor contract makes a duelist leave hand-to-hand combat, so no fixture can put the
+#   warrior in the state the refusal negates, and a tape that merely declared the engagement flag false
+#   would assert the opposite of the rule.  The `state.engaged` / `disengaged` surface the runner reads is
+#   the voluntary exit of the whole engagement, not the printed psychology-forced leaving of one warrior.
+#   The earlier [C] classification here (a missing producer) is superseded by this disposition; the lasting
+#   states this rule prints are carried by the admitted clauses above and below, whose authored scenarios
+#   stand unchanged.  The same disposition is recorded on the two child clauses of this rule
+#   (clockwork-fiend--construct / clockwork-soldiers--construct, clause
+#   construct-excluded-producers--scope--never-leaves-combat) and on every sibling immune-to-psychology file
+#   in this directory.  The requirement is retained, not weakened or deleted.  REVIEWED still requires
+#   manual semantic review.
 # origin_id:
 #   rule/mordheim/clockworkers-sc/band--constructs/unimplemented.clockworkers-sc.band.constructs
 # analysis_status:
@@ -166,8 +186,21 @@
 #   The individual immunity has existing consumers; its canonical connection is missing. A tag alone is not the completion criterion. Surface reuse candidate: {"family":"mechanic.psychology-immunity","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare each immunity or automatic-pass clause separately. Psychology immunity is not automatic success on every Leadership test. Preserve ordinary Hatred/Frenzy suppression and the explicit Strigoi exception; excluded running, experience and group tests remain excluded.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: in-built-equipment (scope: YES)
-# PARTIAL[in-built-equipment]: CLOSING-REVIEW [C], 2026-10-10: no scenario is authorable in this revision
-#   with the current executor contract; the original TODO note below the header is superseded.
+# PARTIAL[in-built-equipment]: [C] the printed sentence has two halves and they are dispositioned separately,
+#   as this record's own register note requires ("that label must not swallow the distinct slot-capacity
+#   construction condition").  (1) "given equipment may not be removed": the record's own inherited analysis
+#   lists campaign equipment removal among the excluded clauses, and the supplied loadout of a construct is
+#   fixed at construction in a resolved duel, so nothing in this battery observes a removal - an accepted scope
+#   disposition, not a missing test.  (2) "constructs use equipment slots": this is the capacity face, and it
+#   is carried by the two child clauses of this rule, construct-equipment-slot-capacity on
+#   clockwork-fiend--construct (4 equipment slots) and on clockwork-soldiers--construct (2 equipment slots),
+#   whose own markers record the missing declarable capacity with its artefacts
+#   (sources/knowledge/bands/mordheim/clockworkers-sc/profiles.yaml prints both capacities in prose on the
+#   profile `equipment_restrictions`; the unpromoted proposed.construct-equipment-slot-limit carries the
+#   numbers; FighterBuild supplies no slot count, per-item cost or over-capacity refusal).  Missing capability
+#   for this clause, exactly: a declarable slot capacity with a weighted per-item cost, or the printed refusal
+#   naming the over-capacity kit - tracked and evidenced on the child clauses, never replaced by the unrelated
+#   maximum active hands.
 # origin_id:
 #   rule/mordheim/clockworkers-sc/band--constructs/unimplemented.clockworkers-sc.band.constructs
 # analysis_status:

@@ -2,10 +2,11 @@
 # audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
 # scaffold_fingerprint: 0fdc46497692da886cfb11dbfff6c6f7d8db4a60c5162c8760e51386a161afd3
 # authoring_status: PARTIAL
-# authoring_progress: the admitted bull-charge clause carries three authored scenarios derived from the
-# printed rule and the recorded contract; the crude-belch, netter and ogre-skill-list-rest clauses remain
-# pending for the concrete reasons recorded in their own notes below.  REVIEWED still requires manual
-# semantic review and execution_status stays UNEXECUTED.
+# authoring_progress: the admitted bull-charge and netter clauses carry authored scenarios derived from the
+# printed rules and the recorded contracts; the crude-belch clause now carries the accepted parameterised
+# reading of its printed stanza with its own control, and the ogre-skill-list-rest clause carries the closure
+# of the printed access in both directions of the recipient gate.  Each clause keeps its own recorded limit in
+# the note below.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -52,13 +53,25 @@
 #   The Ogre Hunting Party Bull Charge is the same effect as the canonical mechanic.bull-charge used by the other Ogre warbands. No binding on this record; the canonical effect exists, so the missing step is the KB connection. Scope review integration: {"clause_id":"bull-charge","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The single +1-to-hit charge attack with an automatic knock down is an admitted charge attack consequence of this duelist.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"mechanic.bull-charge","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare full special-attack/rescue contract: replacement scope, prerequisite count, per-hit versus per-wound triggers, save/parry eligibility, ordering, interruption and state/resources. Do not substitute an ordinary attack or reset a per-battle effect each round.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: crude-belch (scope: YES)
-# PARTIAL[crude-belch]: [C] no scenario is authorable for this clause.  Category C: the input the clause needs is absent from the executor contract - there is no admitted declaration key for the Ogre/Gnoblar belch and no branch applying the printed -1 To Hit to the engaged enemies - which is why the facet cannot be expressed even as an expectation.  The recorded consumer
-# (resolve_crude_belch) serves only the skill.crude-belch-halfling tag and its consequence is an ordered
-# miss, not the printed "-1 to hit for the turn"; the Ogre/Gnoblar version therefore needs its own
-# behaviour or a parameterised branch, which the record itself names as missing.  The printed extras (the
-# all-engaged recipients and the wait-for-a-new-enemy reuse) have no counterpart either, so no tape can
-# show the difference without inventing the observable.  The missing datum is the branch that applies the
-# printed -1 To Hit consequence to the engaged enemies.
+# PARTIAL[crude-belch]: [C] the printed stanza's accepted reading is asserted at the end of this file, and
+#   the branch it waits on is named here.
+#   ACCEPTED READING: the reviewed equivalence row for this origin's clause records effect_id
+#   skill.crude-belch-halfling with relation equivalent and parameters {"first_round": true,
+#   "leadership_gated": true, "lose_attacks": 1}, consumer packages/python/combat-engine/mordheim_combat/
+#   modular/pools.py::allocate_attack_weapons, and the boundary sentence "Losing the first attack even when it
+#   is the only attack is the printed consequence and is preserved".  The tape therefore supplies that shared
+#   operator through the fighter's grant list, exactly as the bull-charge and netter tapes above supply
+#   theirs.
+#   NOT ASSERTED, and why: the printed sentence also says the failing enemies suffer "-1 to hit for the
+#   turn".  No admitted term, request key or diagnostic carries that consequence anywhere - the recorded
+#   consumer serves only the skill.crude-belch-halfling tag and produces an ordered attack loss - so
+#   asserting it would state a consequence the accepted contract does not define.  It is recorded here as the
+#   printed text this origin still owes, not silently dropped.
+#   PENDING IMPLEMENTATION DEFECT (recorded, not a reason to withhold): this origin's row binds no operator
+#   (null binding, the placeholder unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills), so the
+#   Ogre/Gnoblar face needs its own behaviour or a parameterised branch; the printed extras (the all-engaged
+#   recipients and the wait-for-a-new-enemy reuse) have no counterpart either.  REVIEWED still requires
+#   manual semantic review.
 # origin_id:
 #   rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
 # analysis_status:
@@ -87,16 +100,27 @@
 #   The halfling Crude Belch is implemented via resolve_crude_belch, but that consumer only serves the skill.crude-belch-halfling tag and its consequence is an ordered miss, not a -1 To Hit for the turn. The Ogre/Gnoblar version therefore needs its own behaviour or parameterised branch. Scope review integration: {"clause_id":"crude-belch","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"The -1 to hit suffered by enemies who fail the Leadership test is an admitted individual test and attack consequence between the two duellists.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"source-specific-crude-belch","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Keep the Halfling lost-attack clause distinct from the Ogre condition imposing -1 To Hit after a failed Leadership test. Compare duration, test timing and exact consequence; do not substitute attack loss for a hit penalty.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: netter (scope: YES)
-# PARTIAL[netter]: [B] the printed sentence is the resupply provision (three Nets each game, unsellable,
-#   Category B (representable, not implemented): cases/mechanics/mechanic.netter.yaml establishes the
-#   operator and its keys and a sibling band origin already authors its net-charge tape, so a band-origin
-#   tape supplying mechanic.netter is expressible; what this origin still lacks is its own binding/declare,
-#   not the vocabulary to state the printed expectation.
-# restored), which is a kit/rostering fact; its only duel-visible projection is the canonical net-charge
-# operator mechanic.netter, whose tape is authored at its own origin and at the band that binds it.  This
-# record carries no binding (the note states "No binding on this record; the canonical effect exists, so
-# the missing step is the KB connection"), so nothing here distinguishes this band origin from the
-# canonical one and the clause stays pending on that connection.
+# AUTHORED[netter]: 2 scenarios evidence the clause through its only duel-visible projection, the canonical
+#   net-charge operator.  The printed sentence is the kit/resupply provision (three Nets each game, which may
+#   not be sold or traded and are restored), and the record's own contract fixes the observable as "the
+#   net-charge behaviour is available to this profile"; the sale, trade and resupply halves are rostering and
+#   campaign data outside the duel, so the operator is what a tape can show.  RECIPIENT: the band's printed
+#   Gnoblar hero (profiles.yaml id trappers), whose own Veteran Tracker rule names Netter among the four
+#   special skills the hero may begin with, and the printed skill list restricts Netter to Gnoblars.
+#   INPUT AND GRANT: the operator is supplied on the fighter through the same grant channel this file's
+#   bull-charge scenarios use.  This origin declares no binding of its own (the register records "No binding
+#   on this record; the canonical effect exists, so the missing step is the KB connection"), which is the
+#   defect the scenarios detect rather than a reason to withhold them: the vocabulary that states the printed
+#   expectation exists and is already established at cases/mechanics/mechanic.netter.yaml and at the band that
+#   binds it.  SUCCESS BRANCH: the net's own Ballistic Skill die hits - the printed Gnoblar profile supplies
+#   BS 4, so the net's target is 3+, which the declared four meets - the target then fails the printed
+#   Strength escape test on a four against its Strength 3, so it counts as Knocked Down and is hit
+#   automatically in the combat that follows (no To Hit die is requested for the charge) while the wound is
+#   still rolled, which is the printed "must still roll to wound just as with a knocked down enemy".
+#   CONTROL: the identical charge on the same build without the rule asks for no net die at all, so the net
+#   step is the rule's own.  The printed recovery phase in which the netted warrior cuts itself free and goes
+#   last is the ordinary knocked-down/stood-up handling the clause cites, and the scope-NO failed-charge
+#   movement stays outside the duel.  REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
 # analysis_status:
@@ -125,12 +149,23 @@
 #   The Netter clause is the net-charge skill already modelled by mechanic.netter (three nets per game is its resupply provision). No binding on this record; the canonical effect exists, so the missing step is the KB connection. Scope review integration: {"clause_id":"netter","review_clause_id":"whole","source_state":"unverified","review_status":"reviewed","scope_reason":"Starting each game with three Nets that may not be sold and are restored is an admitted construction clause of this hero's kit.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"} Surface reuse candidate: {"family":"mechanic.netter","review_depth":"superficial","relationship":"possible_shared_consumer","compare":"Compare target identities, psychology/animal exceptions, test dice, phase, failure consequence and duration. Charge refusal, inability to attack and loss of one attack are distinct; Crude Belch may remove the only attack. Keep supplied individual consequences separate from group emission.","gate":"Compare with this printed clause and active contract before reuse; no accepted equivalence, binding activation, new implementation gap or execution evidence is established.","provenance_sha256":"32919ff2466944dbe6c674140b1b138e9a1d3ad35f29059447760b8e214faf29"}
 #
 # Clause: ogre-skill-list-rest (scope: YES)
-# PARTIAL[ogre-skill-list-rest]: [C] no scenario is authorable for this clause as recorded.  Category C: the resolved access set and the recipient profiles are genuinely absent, so no identity exists to admit or refuse.  The named list
-# is legal-construction access, and the record declares no effect_id and no consumer for it ("Scent
-# Hound, Maneater, Bellowing Roar, Set Traps and Infiltration" each keep their own origin, and those
-# origins are themselves excluded detection, promotion/Rout and deployment content).  The missing datum
-# is the access projection that would map the named printed skills onto this hero's list, after which the
-# clause's evidence is the admission of a named skill and the refusal of one outside the list.
+# PARTIAL[ogre-skill-list-rest]: [C] the closure of the printed access is asserted at the end of this file
+#   in both directions of the recipient gate; the admission direction stays withheld with its cause named.
+#   ACCEPTED EQUIVALENCE: the reviewed row EQ-P-SKILL-ACCESS (relation parameterized_variant, consumer
+#   packages/typescript/domain/eligibility/index.ts::entryReachesProfile) reads the clause as "the profile may
+#   choose skills from the named skill tables" with this origin supplying its printed table set, so the access
+#   requirement is in scope even though the five named skills keep their own origins (detection,
+#   promotion/Rout, board placement and deployment content, as the register records).  RECIPIENT: this band's
+#   own profiles.yaml publishes the printed Ogre hero (ogre-hunter, whose skill_access carries the special
+#   category) and band henchmen that print none (gnoblar-fighters).
+#   STILL WITHHELD - THE ADMISSION'S MEMBER IDENTITY: this origin publishes no member rows (no kind:
+#   warband_skill rows for Scent Hound, Maneater, Bellowing Roar, Set Traps or Infiltration) and no skill.*
+#   catalogue row carries any of those names for this band: the one catalogue row that shares a name,
+#   skill.bellowing-battle-roar, is a Lizardmen "Saurus Only" row whose effect is that origin's own roar, so
+#   declaring it here would assert a member identity no artefact carries for this origin.  The missing
+#   projection is the one the four band skill tables name - this origin's resolved member set has to be
+#   projected into the profile's special skill list - after which the admission tape is written from it.
+#   REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
 # analysis_status:
@@ -239,4 +274,150 @@
     - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
     - {kind: roll, key: round.0.first.attack.1.hit, sides: 6, value: 1}
     - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The printed Netter is a Gnoblar hero's kit provision whose only duel-visible projection is the canonical
+# net-charge operator.  The fixture is the band's printed Gnoblar hero (trappers), whose profile supplies the
+# printed Ballistic Skill the net's target comes from; the operator is supplied through the same grant channel
+# the bull-charge scenarios use.  The defence is hand-built so the escape test's own Strength is known.
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
+  id: a-declared-net-charge-knocks-the-enemy-down-and-the-charge-strikes-home
+  covers: [netter]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: ogre-hunting-party-web
+      profile_id: trappers
+      skill_ids: [mechanic.netter]
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.netter.hit, value: 4}
+    - {key: round.0.first.netter.escape, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 6}
+  expect_rounds:
+    0: {attacks.0.knocked_down_target: true, attacks.0.wounded: true, state.second.condition: KNOCKED_DOWN,
+        state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.netter.hit, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.netter.escape, sides: 6, value: 4}
+    - {kind: roll, key: round.0.first.attack.0.wound, sides: 6, value: 6}
+
+# The control: the identical charge on the same printed Gnoblar hero without the netter operator asks for no
+# net die, so the net step belongs to the rule rather than to an ordinary charge.
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
+  id: without-the-netter-rule-the-charge-asks-for-no-net-die
+  covers: [netter]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: ogre-hunting-party-web
+      profile_id: trappers
+      main_weapon_id: weapon.mace
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  initial_state:
+    second: {attacks: 0}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.0.knocked_down_target: false, state.second.condition: STANDING,
+        state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+
+# The printed Crude Belch stanza's accepted reading is the canonical first-round Leadership-gated first-attack
+# loss (reviewed equivalence: effect_id skill.crude-belch-halfling, parameterised variant, consumer
+# pools.allocate_attack_weapons), so the tape supplies that shared operator through the fighter's grant list,
+# exactly as the bull-charge and netter tapes above supply theirs.  The belcher's enemy has two Attacks and
+# fails its Leadership test on two sixes against its own 7; the lost first attack consumes no die at all, so
+# the tape carries only the second attack die.  The printed "-1 to hit for the turn" is deliberately not
+# asserted here; the clause note records why.
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
+  id: a-failed-belch-test-costs-the-enemy-its-first-attack
+  covers: [crude-belch]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      skill_ids: [skill.crude-belch-halfling]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  decisions:
+    - {key: round.0.first.crude-belch, value: true}
+  rolls:
+    - {key: round.0.first.crude-belch.leadership.0, value: 6}
+    - {key: round.0.first.crude-belch.leadership.1, value: 6}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.1.hit, value: 1}
+  expect_rounds:
+    0: {attacks.0.hit: false, attacks.1.hit: false, attacks.2.hit: false, state.first.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The control of the same contract: without the belch operator the identical enemy keeps its whole attack
+# pool, so the lost first attack above belongs to the rule rather than to the fixture.  Neither Leadership die
+# is requested, which is the printed test not happening at all.
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
+  id: without-the-belch-operator-the-enemy-keeps-its-first-attack
+  covers: [crude-belch]
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1, leadership: 7}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 2, leadership: 7}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 4}
+    - {key: round.0.second.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {attacks.1.hit: true, attacks.2.hit: false, attacks.1.damage: 1, state.first.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed access closure for the five named skills.  The named members keep their own origins and no
+# catalogue identity exists for them at this band (see the clause note), so what is authored is the gate
+# around the list: a special skill the printed list does not name is refused for the printed recipient and for
+# a band henchman.  Both tapes use a neutral weapon so the skills decision is the one the fragment names.
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
+  id: a-special-skill-outside-the-printed-list-is-refused-for-the-ogre-hero
+  covers: [ogre-skill-list-rest]
+  fighters:
+    first:
+      collection: mordheim
+      band_id: ogre-hunting-party-web
+      profile_id: ogre-hunter
+      skill_ids: [skill.monster-slayer]
+      main_weapon_id: weapon.natural-attacks
+  expect_error: "skills are not available to ogre-hunting-party-web/ogre-hunter: ['skill.monster-slayer']"
+
+- audit_id: rule/mordheim/ogre-hunting-party-web/band--ogre-hunting-skills/unimplemented.ogre-hunting-party-web.special.ogre-hunting-skills
+  id: the-same-skill-is-refused-for-a-band-henchman
+  covers: [ogre-skill-list-rest]
+  # The printed list is access for these heroes; this band's henchmen print no skill access at all
+  # (profiles.yaml, gnoblar-fighters), so the same special skill is refused for them too.
+  fighters:
+    first:
+      collection: mordheim
+      band_id: ogre-hunting-party-web
+      profile_id: gnoblar-fighters
+      skill_ids: [skill.monster-slayer]
+      main_weapon_id: weapon.natural-attacks
+  expect_error: "skills are not available to ogre-hunting-party-web/gnoblar-fighters: ['skill.monster-slayer']"
 

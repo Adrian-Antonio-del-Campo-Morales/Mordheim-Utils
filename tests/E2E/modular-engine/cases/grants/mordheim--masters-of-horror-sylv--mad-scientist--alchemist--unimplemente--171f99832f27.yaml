@@ -1,21 +1,21 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist
 # scaffold_fingerprint: 4f82eddd7136307ffccfcbfad761e34217c9b810b5d465bf8388b0968adca829
-# authoring_status: PARTIAL
-# authoring_progress: no scenario is authorable for either admitted clause, and the blocker is the same
-#   for both and is recorded rather than guessed.  The KB record of this clause is the unimplemented
-#   placeholder `unimplemented.masters-of-horror-sylv.special.alchemist` (effects: binding null), the
-#   register records no effect_id, relation: unresolved, consumer: [] and implementation_work:
-#   `product`, and the printed Mad Scientist profile (profiles.yaml, rule_ids mad-scientist--leader and
-#   mad-scientist--immune-to-psychology) carries no alchemist row at all.  A search of packages/python
-#   for `alchemist` and for a potion-table operator returns nothing: there is no consumer of a
-#   game-start D6 potion table, no `FighterState` field for the addiction the printed sentence
-#   produces, and no decision seam for standing-and-brewing.  The characteristic bonuses could only be
-#   supplied through `initial_state`, which would evidence the fixture's own override rather than the
-#   printed table, so no tape can separate the rule from its absence.  What is missing is a product
-#   decision (whether a random pre-battle potion table belongs in a duel projection) plus its operator;
-#   the printed table entries themselves are complete in the source, so this is not source_blocked.
-#   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: both admitted clauses carry scenarios, and the earlier "no operator" blocker is
+#   corrected rather than kept.  catalog/rules/conditions.yaml carries one canonical condition per printed
+#   potion result (condition.alchemist-resilience, -strength, -aberrantius-vigortia, -backleys-brew) plus
+#   condition.alchemist-addicted, every one of them runtime scope YES / implemented YES with its own
+#   mechanic binding, and compiler.resolve_supplied_conditions resolves them as the supplied result of
+#   this table, refusing two results of the same table in one build.  The supplied result is declared
+#   through FighterBuild.condition_ids - the channel the sibling shaman--fungus-brew and band--brewers
+#   files use for their own supplied drink outcomes - so the drinker state is supplied rather than guessed:
+#   four tapes read the printed characteristic grants, one control reads the base values, the one-result
+#   restriction is asserted as this table's own refusal, and a pair asserts the printed cannot-act state.
+#   What stays outside the duel is recorded in the two clause markers: the game-start D6 draw, the +1
+#   Movement entry (the duel has no movement), Backley's Brew's printed Toughness-test expiry (the source
+#   gives no test timing) and the brewing clock.  REVIEWED still requires manual semantic review and
+#   execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -26,13 +26,17 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: start-of-game-potion--scope--addiction-state (scope: YES)
-# PARTIAL[start-of-game-potion--scope--addiction-state]: [D] no scenario is authorable.  The admitted
-#   condition limits whether one of the two duelists acts (he stands and brews until a 6 is rolled),
-#   but the record's effect_id is not recorded, its relation is unresolved and its consumer is empty,
-#   and no engine surface carries it: FighterState has no brewing or addicted field and resolve_round
-#   has no branch that could refuse an activation for it, so no observation can stand for the state.
-#   The creature_kind and spellcaster style projection this file's profile does use is present, so the
-#   missing datum is precisely the effect identity and its consumer, not a source or a fixture fact.
+# AUTHORED[start-of-game-potion--scope--addiction-state]: the previous note called the consumer empty
+#   and was wrong.  The catalogue's condition.alchemist-addicted is runtime scope YES / implemented YES
+#   with a mechanic binding whose recorded consumer is the supplied Scientist cannot-fight state, and
+#   compiler.resolve_supplied_conditions admits it as a drawn result of this table, so the admitted "will
+#   not engage in any other activity during a game ... will stand and brew potions" is declarable through
+#   FighterBuild.condition_ids.  The pair of scenarios below asserts the printed state: supplied, the
+#   affected duelist resolves no attack of its own - no attack die is declared for it, so a consumer that
+#   asks for one fails the strict tape - while the opponent's declared blow still lands; without the
+#   supplied condition the identical duelist strikes and consumes its own declared die.  Still outside the
+#   duel, recorded rather than asserted: the post-battle D6 that creates the addiction, and the brewing
+#   clock ("until a 6 is rolled"), which the catalogue itself marks as having no source timing.
 # origin_id:
 #   rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist
 # analysis_status:
@@ -61,14 +65,18 @@
 #   A random pre-battle potion with after-battle addiction bookkeeping; the KB record is an unimplemented placeholder, and the choice of whether a random table belongs in a duel projection is a product decision. Scope review integration: {"clause_id":"start-of-game-potion","review_clause_id":"addiction-state","source_state":"matched","review_status":"reviewed","scope_reason":"Once addicted, the scientist will not engage in any other activity during a game and stands brewing until a 6 is rolled; that is a current state limiting whether one of the two duelists acts, admitted as a supplied condition.","notes":"The after-battle D6 that creates the addiction is campaign bookkeeping, but the state it produces acts inside the duel.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"At game start a D6 grants one of six potion effects for the game, and addiction rolls follow after the battle; observable: the granted characteristic for the duel.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B16-preparations","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"The Mad Scientist fancies himself an alchemist and brews all sorts of concoctions and potions to guzzle down prior to battle. Roll a D6 at game-start and consult the following table. 1: Potion of Resilience — Add +1 to Toughness for duration of game. 2: Brew of Strength — Add +1 to Strength for duration of game. 3-4: Quicksilver — Add +1 to Movement for duration of game. 5: Backley's Brew — Remove -1 from both Strength and Initiative until a Toughness test is passed. 6: Aberrantius Vigortia — Adds +1 to both Strength and Toughness. Highly addictive. Roll D6 after battle. On 5+, Scientist becomes addicted and will not engage in any other activity during a game until he has had his Aberrantius Vigortia potion. He will stand and brew potions until a 6 is rolled.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 #
 # Clause: start-of-game-potion--scope--potion-characteristic-bonuses (scope: YES)
-# PARTIAL[start-of-game-potion--scope--potion-characteristic-bonuses]: [CLOSING-REVIEW [C]] no scenario is authorable.
-#   The six printed table entries are complete (+1 Toughness, +1 Strength, +1 Movement, -1 Strength and
-#   Initiative until a Toughness test is passed, +1 to both), but their consumer is empty and there is
-#   no preparation or potion operator in packages/python to resolve the game-start D6 - a search for
-#   `alchemist` and for the table's own words returns no operator.  Declaring the bonus in
-#   `initial_state` would show the fixture override, not the printed table, and would leave the table
-#   itself unevidenced; the +1 Movement entry also has no duel counterpart at all.  The missing datum
-#   is one operator plus its acceptance decision, which the register itself marks as product work.
+# AUTHORED[start-of-game-potion--scope--potion-characteristic-bonuses]: the earlier closing review called
+#   the operator missing and was wrong.  The catalogue supplies one canonical condition per printed entry
+#   - condition.alchemist-resilience (+1 Toughness), condition.alchemist-strength (+1 Strength),
+#   condition.alchemist-aberrantius-vigortia (+1 Strength and +1 Toughness) and
+#   condition.alchemist-backleys-brew (-1 Strength and -1 Initiative) - each runtime scope YES /
+#   implemented YES, and resolve_supplied_conditions admits one of them as this table's drawn result.  The
+#   four tapes below read the printed grants on the affected duelist against a control that reads the same
+#   base values, and the printed one-potion restriction is asserted as this table's own refusal of two
+#   supplied results.  The 3-4 Quicksilver entry is not asserted: +1 Movement has no duel application,
+#   which the register itself records as the reason that entry is not admitted as a movement rule, and
+#   Backley's Brew is asserted for its printed -1 Strength and -1 Initiative only, because the printed
+#   expiry (a Toughness test whose timing the source does not give) is a separate unresolved step.
 # origin_id:
 #   rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist
 # analysis_status:
@@ -96,4 +104,167 @@
 # Register notes (context only, not behavioral authority):
 #   A random pre-battle potion with after-battle addiction bookkeeping; the KB record is an unimplemented placeholder, and the choice of whether a random table belongs in a duel projection is a product decision. Scope review integration: {"clause_id":"start-of-game-potion","review_clause_id":"potion-characteristic-bonuses","source_state":"matched","review_status":"reviewed","scope_reason":"The D6 table grants the duelist current characteristic modifiers for the duration of the game (+1 Toughness, +1 Strength, -1 Strength and Initiative until a Toughness test is passed, +1 to both); those are admitted supplied bonuses and penalties of one fighter.","notes":"The result 3-4 (+1 Movement) has no duel application because the duel has no movement; the printed table entry is not admitted as a movement rule.","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877","inherited_analysis":{"semantic_contract":"At game start a D6 grants one of six potion effects for the game, and addiction rolls follow after the battle; observable: the granted characteristic for the duel.","effect_id":"","relation":"independent","parameters":"{}","conditions":"{}","consumer":"[]","implementation_work":"product","dependencies":"[]","implementation_batch":"B16-preparations","analysis_status":"reviewed","evidence":"none","evidence_refs":"[]"},"inherited_clause_text":"The Mad Scientist fancies himself an alchemist and brews all sorts of concoctions and potions to guzzle down prior to battle. Roll a D6 at game-start and consult the following table. 1: Potion of Resilience — Add +1 to Toughness for duration of game. 2: Brew of Strength — Add +1 to Strength for duration of game. 3-4: Quicksilver — Add +1 to Movement for duration of game. 5: Backley's Brew — Remove -1 from both Strength and Initiative until a Toughness test is passed. 6: Aberrantius Vigortia — Adds +1 to both Strength and Toughness. Highly addictive. Roll D6 after battle. On 5+, Scientist becomes addicted and will not engage in any other activity during a game until he has had his Aberrantius Vigortia potion. He will stand and brew potions until a 6 is rolled.","mapping_boundary":"Scope disposition only. Inherited mapping is reference material, not an active assignment for this child."}
 
-[]  # Empty scenario list: this file contributes no test or coverage.
+# --- Authored scenarios ---
+# Derived from the printed potion table and the catalogue's own canonical conditions; no engine output was
+# consulted.  Each tape supplies exactly one drawn result through FighterBuild.condition_ids - the channel
+# compiler.resolve_supplied_conditions reads - and reads the printed consequence on the affected duelist,
+# who is supplied as the printed drinker of the table (the duel's own duelist standing for him) because the
+# condition is a globally supplied fact, exactly as the sibling shaman--fungus-brew file supplies its brew
+# results.  Where the consequence is a characteristic, the opposing duelist is already out so no combat die
+# is consumed and the grant itself is the observation.
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist
+  id: the-potion-of-resilience-raises-the-drinkers-toughness-by-one
+  covers: [start-of-game-potion--scope--potion-characteristic-bonuses]
+  # "1: Potion of Resilience - Add +1 to Toughness for duration of game."
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-resilience]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.toughness: 4}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist
+  id: the-brew-of-strength-raises-the-drinkers-strength-by-one
+  covers: [start-of-game-potion--scope--potion-characteristic-bonuses]
+  # "2: Brew of Strength - Add +1 to Strength for duration of game."
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-strength]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.strength: 4}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist
+  id: aberrantius-vigortia-raises-both-strength-and-toughness
+  covers: [start-of-game-potion--scope--potion-characteristic-bonuses]
+  # "6: Aberrantius Vigortia - Adds +1 to both Strength and Toughness."  Both printed halves are read on
+  # the one supplied result, which is what tells this entry apart from entries 1 and 2.
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-aberrantius-vigortia]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.strength: 4, first.toughness: 4}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist
+  id: backleys-brew-lowers-strength-and-initiative-by-one
+  covers: [start-of-game-potion--scope--potion-characteristic-bonuses]
+  # "5: Backley's Brew - Remove -1 from both Strength and Initiative until a Toughness test is passed."
+  # The printed penalty is read on both characteristics; the printed expiry is not asserted because the
+  # source gives no test timing (recorded in the clause marker).
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-backleys-brew]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.strength: 2, first.initiative: 3}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist
+  id: without-a-supplied-potion-the-same-duelist-keeps-its-base-characteristics
+  covers: [start-of-game-potion--scope--potion-characteristic-bonuses]
+  # The control for the four grants: the identical duelist with no supplied result reads its base
+  # characteristics, so the grants above are attributable to the drawn potion and not to the build shape.
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 1, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  initial_state: {second: {condition: OUT}}
+  maximum_rounds: 1
+  expect_initial: {first.strength: 3, first.toughness: 3, first.wounds: 2, first.initiative: 4}
+  expect_final: {rounds_executed: 0, termination_reason: second_out}
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist
+  id: two-potions-of-the-same-table-in-one-build-are-refused
+  covers: [start-of-game-potion--scope--potion-characteristic-bonuses]
+  # The printed table is a game-start D6 the Scientist consults once, so only one result is drawn.  The
+  # supplied-result resolver raises its own sentence when two results of this table are declared in one
+  # build; that sentence is the resolver's, not an invented diagnostic.
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-resilience, condition.alchemist-strength]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 4, attacks: 1}
+  expect_error: "choose only one supplied result of the same potion table"
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist
+  id: the-supplied-addicted-scientist-takes-no-action-of-its-own
+  covers: [start-of-game-potion--scope--addiction-state]
+  # "[he] will not engage in any other activity during a game until he has had his Aberrantius Vigortia
+  # potion.  He will stand and brew potions until a 6 is rolled."  The catalogue's
+  # condition.alchemist-addicted supplies the admitted cannot-act state, so the affected duelist resolves
+  # no attack of its own: no attack die is declared for it, which the strict tape enforces, while the
+  # opponent's declared blow still lands.
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      condition_ids: [condition.alchemist-addicted]
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+  expect_rounds:
+    0: {state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+- audit_id: rule/mordheim/masters-of-horror-sylv/mad-scientist--alchemist/unimplemented.masters-of-horror-sylv.special.alchemist
+  id: without-the-supplied-addiction-the-same-duelist-strikes-back
+  covers: [start-of-game-potion--scope--addiction-state]
+  # The control: the identical duelist without the supplied condition takes its own attack, so its declared
+  # miss is consumed.  A consumer that barred this duelist wrongly leaves that declared die unconsumed and
+  # the strict tape fails, which is what makes the pair discriminate.
+  fighters:
+    first:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 2, attacks: 1}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 4}
+    - {key: round.0.first.attack.0.wound, value: 4}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.second.wounds: 1}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+

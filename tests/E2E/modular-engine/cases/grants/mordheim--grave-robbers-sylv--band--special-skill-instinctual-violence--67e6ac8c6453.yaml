@@ -1,11 +1,11 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/unimplemented.grave-robbers-sylv.special-skill.instinctual-violence
 # scaffold_fingerprint: 9bf26649c93af126fb61ffd252b3b1d1df45f181f4cbb05c861518995f041ed9
-# authoring_status: PARTIAL
-# authoring_progress: the admitted fear-immunity clause carries 2 authored scenario(s) derived
-# from the printed rule, the recorded semantic contract and the printed profile; any remaining
-# face of the file stays recorded as pending below.  REVIEWED still requires manual semantic
-# review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted fear-immunity clause carries 4 authored scenario(s) derived
+# from both printed sentences of the rule (the Undead-charge Fear immunity and the Strike First
+# nomination), the recorded semantic contract and the printed graver profile (Ld 8, W1, A1); the
+# resolved order of the declared attack rolls is the second boundary.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -16,16 +16,16 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: fear-immunity (scope: YES)
-# PARTIAL[fear-immunity]: the printed immunity is declarable on its printed recipient and the two
-#   scenarios below evidence it: `the-fear-immune-warrior-is-not-tested` carries
-#   `special_rule_ids: [band--special-skill-instinctual-violence]` on the graver, so the delivered
-#   immunity is what removes the charged warrior's Fear test, and
-#   `a-band-mate-without-the-immunity-is-tested` shows the same setup requesting the two Leadership
-#   dice for the band-mate that lacks it.  The earlier closing note claiming that no legal recipient
-#   build can declare the clause is superseded by those two authored scenarios.  What remains
-#   unauthored is the second printed sentence, the once-per-round Strike First nomination: no request
-#   key or observation for nominating one attack to strike first is established by this corpus, so
-#   that face is recorded rather than asserted.
+# AUTHORED[fear-immunity]: four scenarios cover both printed sentences on their printed recipient,
+#   the band's graver profile carrying special_rule_ids: [band--special-skill-instinctual-violence].
+#   The immunity half: the delivered immunity is what removes the charged warrior's Fear test, and
+#   the band's other hero grave-robbers shows the same setup requesting the two Leadership dice.
+#   The Strike First half: the nominated attack resolves before an opponent that is otherwise
+#   faster (Initiative 5 against the Graver's printed 4), and the same fixture without the printed
+#   grant resolves in the opposite order, so the priority tier is the boundary and expect_events
+#   shows it.  The graver's printed Attacks value is 1, so the printed nomination has exactly one
+#   candidate and needs no declarable choice; the corpus's canonical skill.always-strikes-first tier
+#   (priority 1, close combat) is the priority the print feeds, which the semantic review confirms.
 # origin_id:
 #   rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/unimplemented.grave-robbers-sylv.special-skill.instinctual-violence
 # analysis_status:
@@ -83,6 +83,12 @@
 #   All-Alone tests are the excluded group subsystem and the source-specific reroll needs the producer supplied; recorded so the compound sentence is fully covered, no duel-runtime consumer assigned. Scope review integration: {"clause_id":"all-alone-and-reroll","review_clause_id":"all-alone-and-reroll","source_state":"unverified","review_status":"reviewed","scope_reason":"The All Alone test and reroll clauses carried by these sentences belong to the group enemy-counting and rout procedures, excluded from the duel.","notes":"","review_file":"historical-scope-review-sha256:d4e4f4a0a60fabfb620636a053da58a97882ff0085563cf5ec0f96753beca877"}
 
 # --- Authored scenarios ---
+# WHAT THESE TAPES FAIL ON (checked statically in the shared construction stage, not by running it): this
+# row is recorded `implemented: NO`, so `compile_fighter()` refuses the declared selection with
+# "special rule is outside the executable duel runtime: band--special-skill-instinctual-violence:
+# Psychology (fear) and strike-first binding: deferred to the close-combat milestone." before any duel
+# runs.  The scenarios keep the printed fear immunity and the nominated strike-first order because that
+# is the requirement; they are expected to fail on it until the recorded binding exists.
 
 - audit_id: rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/unimplemented.grave-robbers-sylv.special-skill.instinctual-violence
   id: the-fear-immune-warrior-is-not-tested
@@ -121,3 +127,50 @@
   expect_rounds:
     0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The printed second sentence, first face: the warrior may nominate one of his attacks to Strike
+# First, so his strike resolves before an opponent that is otherwise faster (Initiative 5 against
+# the Graver's printed 4).  Both strikes are declared as natural 1s, so the round reports no wound
+# and the resolved order of the two attack rolls is what the tape asserts.
+- audit_id: rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/unimplemented.grave-robbers-sylv.special-skill.instinctual-violence
+  id: the-nominated-attack-resolves-before-a-faster-opponent
+  covers: [fear-immunity]
+  fighters:
+    first: {collection: mordheim, band_id: grave-robbers-sylv, profile_id: graver, main_weapon_id: weapon.mace, special_rule_ids: [band--special-skill-instinctual-violence]}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+
+# The contrast for the identical fixture without the printed grant: the ordinary Initiative
+# comparison puts the faster opponent first, so the same declared dice resolve reversed.
+- audit_id: rule/mordheim/grave-robbers-sylv/band--special-skill-instinctual-violence/unimplemented.grave-robbers-sylv.special-skill.instinctual-violence
+  id: without-the-grant-the-faster-opponent-resolves-first
+  covers: [fear-immunity]
+  fighters:
+    first: {collection: mordheim, band_id: grave-robbers-sylv, profile_id: graver, main_weapon_id: weapon.mace}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
+  duel_context: {charging: [], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.wounds: 1, state.second.wounds: 2}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+  expect_events:
+    - {kind: roll, key: round.0.second.attack.0.hit, sides: 6, value: 1}
+    - {kind: roll, key: round.0.first.attack.0.hit, sides: 6, value: 1}
+

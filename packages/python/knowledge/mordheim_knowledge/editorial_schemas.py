@@ -181,8 +181,11 @@ def _read(path: Path) -> dict:
 
 
 def _rewrite_references(node: Any) -> Any:
-    """Turn ``defs.schema.json#/$defs/x`` references into local ``#/$defs/x``."""
+    """Inline shared definitions and the canonical execution parameter vocabulary."""
     if isinstance(node, dict):
+        if node == {"$ref": "catalog-mechanics-execution.yaml.schema.json#/$defs/mechanic/properties/parameters"}:
+            execution = _read(contract_directory() / "catalog-mechanics-execution.yaml.schema.json")
+            return _rewrite_references(execution["$defs"]["mechanic"]["properties"]["parameters"])
         return {
             key: (
                 f"#/$defs/{value[len(_DEFINITIONS_PREFIX):]}"

@@ -3,6 +3,7 @@ from __future__ import annotations
 from mordheim_combat import phases
 
 from dataclasses import replace
+from types import SimpleNamespace
 from mordheim_combat.phases import _characteristic_test
 from mordheim_combat.modular.aftermath import _react_to_wound
 from mordheim_combat.modular.contexts import _attack_strength
@@ -15,8 +16,11 @@ from mordheim_combat.modular.contexts import prepare_hit_context
 from mordheim_combat.modular.contexts import prepare_special_save_context
 from mordheim_combat.modular.contexts import prepare_wound_context
 from mordheim_combat.modular.contexts import weapon_against_opponent
+from mordheim_combat.modular.contexts import OwnedRollDice, _estalian_parry
+from mordheim_combat.modular.contexts import reject_curse_unmodifiable_save
 from mordheim_combat.modular.state import AttackOutcome
 from mordheim_combat.modular.state import FighterState
+from mordheim_combat.modular.state import require_characteristics
 from mordheim_combat.phases import BearHugContext
 from mordheim_combat.phases import Condition
 from mordheim_combat.phases import Phase
@@ -38,6 +42,12 @@ from mordheim_core.models import EffectSet
 
 from .attacks import resolve_reference_attack
 from .equipment import whipcrack_weapon
+
+
+def electrical_touch_weapon(defender: CompiledFighter) -> EffectSet:
+    return EffectSet(tags=("mechanic.electrical-touch-attack",), automatic_hit=True,
+        fixed_strength=5 if has_tag(defender.global_effects, "condition.metal-armour") else 3,
+        ignore_armour=True)
 
 def _weapon_for_attack(fighter: CompiledFighter, index: int, count: int, first_round: bool) -> EffectSet:
     if not fighter.off_hand_attacks or fighter.off_hand is None:
@@ -107,6 +117,7 @@ def _resolve_prepared_defences(
     first_round: bool,
     charging: bool,
     helpless: bool,
+    decisions: DecisionPolicy | None = None,
 ) -> tuple[FighterState, FighterState, dict[int, AttackOutcome]]:
     """Resolve per-hit defences after every hit roll is known.
 
@@ -124,9 +135,27 @@ def _resolve_prepared_defences(
     if has_tag(defender.global_effects, "mechanic.ethereal-hit-save"):
         for index in successful:
             weapon, prepared = prepared_attacks[index]
-            if (not has_tag(_combined_effect(attacker, weapon), "attack.magical")
-                    and dice.roll(RollRequest(f"{keys[index]}.ethereal")) >= 4):
-                resolved[index] = replace(prepared, saved=True)
+            own = OwnedRollDice(dice, defender, defender_state, decisions, modifiable=False)
+            incoming = _combined_effect(attacker, weapon)
+            if not has_tag(incoming, "attack.magical"):
+                reject_curse_unmodifiable_save(defender, incoming, "Ethereal")
+            if (not has_tag(incoming, "attack.magical")
+                    and own.roll(RollRequest(f"{keys[index]}.ethereal")) >= defender.global_effects.ethereal_hit_save):
+                resolved[index] = replace(prepared, saved=True, defender=replace(defender_state,
+                    resources_spent=defender_state.resources_spent | own.state.resources_spent))
+            defender_state = replace(defender_state,
+                resources_spent=defender_state.resources_spent | own.state.resources_spent)
+    successful = [index for index in successful if index not in resolved]
+    if has_tag(defender.global_effects, "mechanic.marks-of-ranald"):
+        for index in successful:
+            reject_curse_unmodifiable_save(defender,
+                _combined_effect(attacker, prepared_attacks[index][0]), "Marks of Ranald")
+            own = OwnedRollDice(dice, defender, defender_state, decisions, modifiable=False)
+            if own.roll(RollRequest(f"{keys[index]}.marks-of-ranald")) >= 6:
+                resolved[index] = replace(prepared_attacks[index][1], saved=True, defender=replace(defender_state,
+                    resources_spent=defender_state.resources_spent | own.state.resources_spent))
+            defender_state = replace(defender_state,
+                resources_spent=defender_state.resources_spent | own.state.resources_spent)
     successful = [index for index in successful if index not in resolved]
     if defender_state.lucky_charm and successful:
         index = successful[0]
@@ -137,6 +166,7 @@ def _resolve_prepared_defences(
             helpless_at_start=helpless or prepared.knocked_down_target, stunned_at_start=False, prepared_hit=_prepared_hit(prepared),
             natural_hit_six=prepared.natural_hit_six,
             defences_only=True, parry_allowed=False, ethereal_resolved=True,
+            marks_resolved=True, decisions=decisions,
         )
         attacker_state, defender_state = outcome.attacker, outcome.defender
         if outcome.saved:
@@ -154,8 +184,9 @@ def _resolve_prepared_defences(
         if defender_state.parries_remaining <= 0 or not attacker_state.active:
             break
         weapon, prepared = prepared_attacks[index]
-        if (prepared.hit_roll == 6 and not phases.has_tag(
-                defender.global_effects, "rule.blood-dragon-sword-master")):
+        if (prepared.natural_hit_six and not phases.has_tag(
+                defender.global_effects, "rule.blood-dragon-sword-master")
+                and not _estalian_parry(defender)):
             # A natural six cannot be parried. With one available
             # attempt it also closes the normal parry window (M03).
             # Exceptional two-parry capacity may still defend a lower hit.
@@ -168,7 +199,8 @@ def _resolve_prepared_defences(
             key=keys[index], first_round=first_round, charging=charging,
             helpless_at_start=helpless or prepared.knocked_down_target, stunned_at_start=False, prepared_hit=_prepared_hit(prepared),
             natural_hit_six=prepared.natural_hit_six,
-            defences_only=True, ethereal_resolved=True,
+            defences_only=True, ethereal_resolved=True, marks_resolved=True,
+            decisions=decisions,
         )
         attacker_state, defender_state = outcome.attacker, outcome.defender
         if outcome.parried:
@@ -201,7 +233,14 @@ def _declared_unpredictable_attack(
     return None
 
 
-def _resolve_attack_pool(
+def _resolve_attack_pool(attacker, defender, attacker_state, defender_state, count, dice, **options):
+    first, second, outcomes = _resolve_attack_pool_body(
+        attacker, defender, attacker_state, defender_state, count, dice, **options)
+    marker = f"rememberer-active.{options['key']}"
+    return replace(first, resources_spent=first.resources_spent - {marker}), second, outcomes
+
+
+def _resolve_attack_pool_body(
     attacker: CompiledFighter, defender: CompiledFighter,
     attacker_state: FighterState, defender_state: FighterState,
     count: int, dice: DiceSource, *, key: str, first_round: bool, charging: bool,
@@ -210,16 +249,60 @@ def _resolve_attack_pool(
     minimum_attacks: int = 1,
     single_bonus: bool = False,
     miss_first_attack: bool = False,
+    forfeit_index: int | None = None,
+    forfeit_indices: tuple[int, ...] = (),
+    grapple_declared: bool | None = None,
 ) -> tuple[FighterState, FighterState, tuple[AttackOutcome, ...]]:
     outcomes: list[AttackOutcome] = []
     if (count <= 0 or attacker_state.animosity_failed or attacker_state.charm_attack_blocked or attacker_state.entranced
+            or attacker_state.grappled or attacker_state.grappling
             or attacker_state.condition != Condition.STANDING or not defender_state.active):
         return attacker_state, defender_state, ()
     if (has_tag(attacker.global_effects, "mechanic.honorable")
             and defender_state.condition in (Condition.KNOCKED_DOWN, Condition.STUNNED)):
         return attacker_state, defender_state, ()
     initial_condition = defender_state.condition if defender_condition_at_start is None else defender_condition_at_start
-    if initial_condition == Condition.STUNNED:
+    forfeits = set(forfeit_indices)
+    if forfeit_index is not None:
+        forfeits.add(forfeit_index)
+    explicit_hit = has_tag(attacker.main_weapon, "mechanic.electrical-touch-attack")
+    grapple_immune = any(has_tag(defender.global_effects, tag) for tag in (
+        "nature.undead", "nature.daemon", "nature.dead", "mechanic.pain-immunity", "size.large"))
+    if (not single_bonus and has_tag(attacker.global_effects, "mechanic.gaoler-grapple")
+            and not grapple_immune and (grapple_declared if grapple_declared is not None
+                else decisions.choose(f"{key}.torturer-grapple", attacker))):
+        weapon = EffectSet(tags=("weapon.natural-attacks",))
+        attack_key = f"{key}.grapple"
+        if miss_first_attack:
+            return attacker_state, defender_state, (AttackOutcome(attacker_state, defender_state, trace=(Phase.HIT,)),)
+        result = resolve_reference_attack(attacker, defender, attacker_state, defender_state,
+            weapon, dice, key=attack_key, first_round=first_round, charging=charging,
+            helpless_at_start=initial_condition == Condition.KNOCKED_DOWN,
+            stunned_at_start=False, hit_only=True, decisions=decisions)
+        if result.hit:
+            result = resolve_reference_attack(attacker, defender, result.attacker, result.defender,
+                weapon, dice, key=attack_key, first_round=first_round, charging=charging,
+                prepared_hit=_prepared_hit(result), natural_hit_six=result.natural_hit_six,
+                defences_only=True, decisions=decisions)
+        if result.hit and not result.parried and not result.saved:
+            target_state = require_characteristics(defender, result.defender, dice,
+                f"{attack_key}.defender", {"S"}, decisions)
+            owned = OwnedRollDice(dice, defender, target_state, decisions)
+            escaped = _characteristic_test(target_state.strength - 2, owned,
+                f"{attack_key}.strength", six_fails=False,
+                reroll=has_tag(defender.global_effects, "skill.blessed-sight"))
+            target_state = replace(target_state, resources_spent=(
+                target_state.resources_spent | owned.state.resources_spent), grappled=not escaped)
+            result = replace(result, attacker=replace(result.attacker, grappling=not escaped),
+                defender=target_state)
+        return result.attacker, result.defender, (result,)
+    if initial_condition == Condition.STUNNED and not explicit_hit:
+        extra_count = sum(not any(has_tag(weapon, tag) for tag in
+            ("rule.strikes-last-bite", "rule.eagle-friend"))
+            and (charging or not has_tag(weapon, "rule.horned-one"))
+            for weapon in attacker.extra_attacks) if not single_bonus else 0
+        if count + extra_count - sum(0 <= index < count + extra_count for index in forfeits) <= 0:
+            return attacker_state, defender_state, ()
         if miss_first_attack:
             outcomes.append(AttackOutcome(attacker_state, defender_state, trace=(Phase.HIT,)))
             available_extra = not single_bonus and any(
@@ -230,9 +313,9 @@ def _resolve_attack_pool(
                 return attacker_state, defender_state, tuple(outcomes)
         result = resolve_reference_attack(attacker, defender, attacker_state, defender_state,
             attacker.main_weapon, dice, key=f"{key}.finish", stunned_at_start=True)
-        result = _react_to_wound(attacker, defender, result, dice, f"{key}.finish")
+        result = _react_to_wound(attacker, defender, result, dice, f"{key}.finish", decisions=decisions)
         return result.attacker, result.defender, (*outcomes, result)
-    helpless = initial_condition == Condition.KNOCKED_DOWN
+    helpless = initial_condition == Condition.KNOCKED_DOWN and not explicit_hit
     vomit = any(phases.has_tag(attacker.main_weapon, tag) for tag in
         ("weapon.vomit-attack", "effect.wraith-touch"))
     use_bull_charge = (
@@ -251,8 +334,9 @@ def _resolve_attack_pool(
         )
         if (result.hit and not result.parried and not result.saved
                 and result.defender.condition == Condition.STANDING):
-            result = replace(result, defender=replace(result.defender, condition=Condition.KNOCKED_DOWN))
-        result = _react_to_wound(attacker, defender, result, dice, f"{key}.bull-charge")
+            result = replace(result, defender=replace(result.defender, condition=Condition.KNOCKED_DOWN,
+                frenzy=result.defender.frenzy and has_tag(defender.global_effects, "mechanic.persistent-frenzy")))
+        result = _react_to_wound(attacker, defender, result, dice, f"{key}.bull-charge", decisions=decisions)
         return result.attacker, result.defender, (result,)
 
     use_body_slam = (
@@ -274,6 +358,9 @@ def _resolve_attack_pool(
         weapons += tuple(weapon for weapon in attacker.extra_attacks
                          if not any(has_tag(weapon, tag) for tag in ("rule.strikes-last-bite", "rule.eagle-friend"))
                          and (charging or not phases.has_tag(weapon, "rule.horned-one")))
+    # Filter the original allocation together, so two forfeits never shift a
+    # later nominated hand/natural attack onto a different slot.
+    weapons = tuple(weapon for index, weapon in enumerate(weapons) if index not in forfeits)
     if (defender.global_effects.incoming_attacks_modifier < 0
             and phases.has_tag(defender.global_effects, "rule.tentacle-grapple")
             and "tentacle-grapple" not in defender_state.resources_spent):
@@ -299,6 +386,15 @@ def _resolve_attack_pool(
             hampered_hands=tuple(pending_hands))
         weapons = tuple(remaining)
     weapons = tuple(weapon_against_opponent(attacker, defender, weapon) for weapon in weapons)
+    if (not single_bonus and "giggle-juice" not in attacker_state.resources_spent
+            and has_tag(attacker.global_effects, "mechanic.giggle-juice-spray")):
+        selected = next((index for index in range(len(weapons))
+            if decisions.choose(f"{key}.giggle-juice-attack.{index}", attacker)), None)
+        if selected is not None:
+            attacker_state = attacker_state.spend("giggle-juice")
+            spray = EffectSet(tags=("mechanic.giggle-juice-spray-attack",),
+                automatic_hit=True, fixed_strength=2, injury_modifier=1)
+            weapons = (*weapons[:selected], spray, *weapons[selected + 1:])
     if weapons and phases.has_tag(attacker.global_effects, "mechanic.unpredictable-attack"):
         declared = _declared_unpredictable_attack(weapons, decisions, key, attacker)
         if declared is not None:
@@ -323,6 +419,7 @@ def _resolve_attack_pool(
                 key=attack_keys[index], first_round=first_round,
                 charging=charging, helpless_at_start=helpless, stunned_at_start=False, hit_only=True,
                 decisions=decisions,
+                rememberer_pool_key=key,
             )
         attacker_state, defender_state = prepared.attacker, prepared.defender
         prepared_attacks.append((weapon, prepared))
@@ -335,21 +432,37 @@ def _resolve_attack_pool(
         attacker, defender, attacker_state, defender_state, prepared_tuple, dice,
         keys=attack_keys, first_round=first_round, charging=charging,
         helpless=helpless,
+        decisions=decisions,
     )
 
     # Bear Hug replaces two successful, undefended hits before wound
     # resolution. Its opposed roll is independently exhaustive; this branch
     # verifies only the state-transfer sequence in the scalar orchestrator.
-    if attacker.global_effects.bear_hug and len(weapons) >= 2:
+    if (attacker.global_effects.bear_hug and len(weapons) >= 2
+            and (not has_tag(attacker.global_effects, "rule.bear-hug-unarmed")
+                 or all(has_tag(weapon, "weapon.fist") for weapon in weapons[:2]))):
         surviving = [
             prepared.hit and index not in defended
             for index, (_, prepared) in enumerate(prepared_tuple[:2])
         ]
+        if sum(surviving) >= 2:
+            attacker_state = require_characteristics(attacker, attacker_state, dice,
+                f"{key}.attacker", {"S"}, decisions)
+            defender_state = require_characteristics(defender, defender_state, dice,
+                f"{key}.defender", {"S"}, decisions)
+        hug_dice = {
+            f"{key}.bear-hug.attacker": OwnedRollDice(dice, attacker, attacker_state, decisions),
+            f"{key}.bear-hug.defender": OwnedRollDice(dice, defender, defender_state, decisions),
+        }
         hug = phases.resolve_bear_hug(BearHugContext(
             sum(surviving),
             attacker_state.strength, defender_state.strength,
             key=f"{key}.bear-hug",
-        ), dice, decisions)
+        ), SimpleNamespace(roll=lambda request: hug_dice[request.key].roll(request)), decisions)
+        attacker_state = replace(attacker_state, resources_spent=attacker_state.resources_spent
+            | hug_dice[f"{key}.bear-hug.attacker"].state.resources_spent)
+        defender_state = replace(defender_state, resources_spent=defender_state.resources_spent
+            | hug_dice[f"{key}.bear-hug.defender"].state.resources_spent)
         if hug.chosen:
             if hug.wounded:
                 automatic = EffectSet(
@@ -360,9 +473,9 @@ def _resolve_attack_pool(
                     attacker, defender, attacker_state, defender_state, automatic, dice,
                     key=f"{key}.bear-hug.result", first_round=first_round,
                     charging=charging, helpless_at_start=helpless, stunned_at_start=False,
-                    decisions=decisions,
+                    decisions=decisions, single_wound=True,
                 )
-                result = _react_to_wound(attacker, defender, result, dice, f"{key}.bear-hug.result")
+                result = _react_to_wound(attacker, defender, result, dice, f"{key}.bear-hug.result", decisions=decisions)
                 attacker_state, defender_state = result.attacker, result.defender
                 outcomes.append(result)
         else:
@@ -384,6 +497,7 @@ def _resolve_attack_pool(
                 result = _react_to_wound(
                     attacker, defender, result, dice,
                     f"{key}.bear-hug.normal.{index}",
+                    decisions=decisions,
                 )
                 attacker_state, defender_state = result.attacker, result.defender
                 outcomes.append(result)
@@ -404,7 +518,8 @@ def _resolve_attack_pool(
                 result, hit_roll=prepared.hit_roll, hit_target=prepared.hit_target
             )
             result = _react_to_wound(
-                attacker, defender, result, dice, f"{key}.attack.{index}"
+                attacker, defender, result, dice, f"{key}.attack.{index}",
+                decisions=decisions,
             )
             attacker_state, defender_state = result.attacker, result.defender
             outcomes.append(result)
@@ -430,14 +545,17 @@ def _resolve_attack_pool(
         result = replace(
             result, hit_roll=prepared.hit_roll, hit_target=prepared.hit_target
         )
-        result = _react_to_wound(attacker, defender, result, dice, f"{key}.attack.{index}")
+        result = _react_to_wound(attacker, defender, result, dice, f"{key}.attack.{index}", decisions=decisions)
         attacker_state, defender_state = result.attacker, result.defender
         outcomes.append(result)
         # Anvil Head replaces charge attacks only: the D3 wound expansion is
         # inert outside a charge (Khemri, Necromantic Modification / Anvil Head).
         if (not single_bonus and not vomit and result.hit and not result.parried and first_round and charging
                 and phases.has_tag(_combined_effect(attacker, weapon), "mechanic.anvil-head")):
-            repeats = dice.roll(RollRequest(f"{key}.attack.{index}.anvil-hits", 3)) - 1
+            own = OwnedRollDice(dice, attacker, attacker_state, decisions)
+            repeats = own.roll(RollRequest(f"{key}.attack.{index}.anvil-hits", 3)) - 1
+            attacker_state = replace(attacker_state,
+                resources_spent=attacker_state.resources_spent | own.state.resources_spent)
             repeated = merge_effects(weapon, EffectSet(automatic_hit=True, cannot_be_parried=True))
             for repeat_index in range(repeats):
                 extra = resolve_reference_attack(
@@ -449,6 +567,7 @@ def _resolve_attack_pool(
                 extra = _react_to_wound(
                     attacker, defender, extra, dice,
                     f"{key}.attack.{index}.anvil.{repeat_index}",
+                    decisions=decisions,
                 )
                 attacker_state, defender_state = extra.attacker, extra.defender
                 outcomes.append(extra)

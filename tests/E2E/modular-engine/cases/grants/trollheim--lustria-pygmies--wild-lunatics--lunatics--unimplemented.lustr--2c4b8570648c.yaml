@@ -1,15 +1,17 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/lustria-pygmies/wild-lunatics--lunatics/unimplemented.lustria-pygmies.wild-lunatics.lunatics
 # scaffold_fingerprint: a7e26255fe3504fc03363b61f508f94fa561e71c840bd9acdb97c7fdb6861096
-# authoring_status: PARTIAL
-# authoring_progress: the admitted frenzy clause carries 2 authored scenarios that declare the supplied
-#   Frenzy state the printed 1-3 result produces and assert its two duel consequences (the doubled
-#   attack count and the skipped Fear test of a received charge).  PENDING GAPS: the printed start-of-
-#   turn 1D6 that chooses Frenzy on 1-3 and Stupidity on 4-6 is a per-turn random psychology roll the
-#   duel vocabulary does not express, and the accepted semantic contract flattens it to a duel-start
-#   flag, so the Stupidity face and the roll itself are recorded rather than asserted; this band record
-#   is also not yet connected to the canonical trait.frenzy effect.  REVIEWED still requires manual
-#   semantic review and execution_status stays UNEXECUTED; no behavioral result is claimed.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted frenzy clause carries 3 authored scenarios: the doubled attack count
+#   and the skipped Fear test of a received charge, both on the supplied Frenzy state the printed 1-3
+#   result produces, plus the skipped Stupidity test a frenzied bearer of the printed Head Injury result
+#   owes and does not take.  PENDING GAPS: this band record is not yet connected to the canonical
+#   trait.frenzy effect, which is the wiring these tapes detect, and the printed start-of-turn 1D6 that
+#   chooses Frenzy on 1-3 and Stupidity on 4-6 is a per-turn random psychology roll the duel vocabulary
+#   does not express (the accepted semantic contract flattens it to a duel-start supplied state), so the
+#   chooser itself is recorded rather than asserted and the face its 4-6 result produces stays with its
+#   own mechanic.stupidity rows.  REVIEWED still requires manual semantic review and execution_status
+#   stays UNEXECUTED; no behavioral result is claimed.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -20,10 +22,15 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: frenzy (scope: YES)
-# PARTIAL[frenzy]: PENDING[B,C] this band record is not yet connected to the canonical trait.frenzy, and the printed per-turn 1D6 that chooses Frenzy (1-3) or Stupidity (4-6) has no supplied-state representation; 2 scenario(s) cover the consequences of the supplied Frenzy state.  The named gaps
-#   are the per-turn 1D6 that chooses Frenzy (1-3) or Stupidity (4-6) - not expressible with the run's
-#   supplied-state vocabulary, and flattened by the recorded contract - and the unrecorded KB
-#   connection of this band record to trait.frenzy.
+# AUTHORED[frenzy]: 3 scenarios cover the admitted consequence of the Frenzy state - the doubled attack
+#   count while frenzied, the skipped Fear test of a charge the bearer receives, and the skipped Stupidity
+#   test a printed Head Injury would otherwise force - derived from the printed rule and the recorded
+#   contract, not from engine output.  PENDING[B]: this band record is not yet connected to the canonical
+#   trait.frenzy, which is the defect these tapes detect.  The printed per-turn 1D6 that chooses Frenzy
+#   (1-3) or Stupidity (4-6) is not a duel-time observation: no run key declares such a chooser, the
+#   accepted contract flattens its trigger to `duel start` with parameters {"value": true}, and the face its
+#   4-6 result produces is the Stupidity effect, whose own rows carry it; inventing a chooser key to assert
+#   it is not permitted, so the chooser is recorded rather than exercised.
 # origin_id:
 #   rule/trollheim/lustria-pygmies/wild-lunatics--lunatics/unimplemented.lustria-pygmies.wild-lunatics.lunatics
 # analysis_status:
@@ -93,4 +100,28 @@
     - {key: round.0.second.attack.1.hit, value: 1}
   expect_rounds:
     0: {state.second.frenzy: true, state.second.fear_hit_sixes: false, attacks.2.wounded: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The same frenzy waiver reaches the other ordinary test the contract names: a printed Head Injury forces a
+# Stupidity test, and a frenzied bearer auto-passes it, so no stupidity die is consumed and the flag stays
+# false while the doubled attack count still resolves.  Here the Frenzy is not supplied by the fixture: the
+# printed rule grants it at duel start, which is the band-record connection these tapes detect.
+- audit_id: rule/trollheim/lustria-pygmies/wild-lunatics--lunatics/unimplemented.lustria-pygmies.wild-lunatics.lunatics
+  id: the-frenzied-wild-lunatic-auto-passes-the-stupidity-test-a-head-injury-forces
+  covers: [frenzy]
+  fighters:
+    first: {collection: trollheim, band_id: lustria-pygmies, profile_id: wild-lunatics, main_weapon_id: weapon.mace}
+    second:
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 1, attacks: 1, leadership: 7}
+  initial_state:
+    first: {attacks: 1, resources_spent: [disability.6]}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.first.attack.1.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  expect_rounds:
+    0: {state.first.frenzy: true, state.first.stupidity_failed: false, attacks.2.wounded: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}

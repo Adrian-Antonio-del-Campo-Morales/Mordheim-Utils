@@ -195,15 +195,15 @@ rules:
     - knights-errant
 - id: knights-errant--impetuous
   runtime:
-    scope: LATER
+    scope: 'NO'
     implemented: 'NO'
     grant: profile
     effects:
-    - id: unimplemented.bretonnian-chapel-guard.knights-errant.impetuous
-      scope: LATER
+    - id: knights-errant--impetuous.producer
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: psychology.
+      reason: Movement, compelled target selection and range are excluded. Supply condition.impetuous-charge
+        for its individual charge psychology consequence.
   name: Impetuous
   effect: >-
     During each Movement Phase, after declaring charges, a Knight Errant that is not in combat and

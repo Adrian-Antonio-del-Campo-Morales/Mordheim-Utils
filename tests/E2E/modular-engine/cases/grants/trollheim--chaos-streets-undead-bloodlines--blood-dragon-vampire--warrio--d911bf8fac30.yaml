@@ -8,9 +8,21 @@
 #   _eligibility.js branches on the build's compiler.warrior-s-code contract and refuses the printed magic
 #   identities supplied as skill ids (`magic is forbidden by the Warrior's Code: <python-style list>`, its
 #   predicate matching any id containing "arcane" or "sorcery"), so skill.sorcery and skill.arcane-lore are
-#   the discriminating inputs the note said were missing (the catalogue carries both; sibling authored files
-#   in this directory already assert refusals over them).  The rule is activated on the build through this
-#   origin's own row, the same route the accepted twin families use.  Spell resolution and magic items stay
+#   the discriminating inputs the note said were missing (the catalogue carries both; a sibling authored file
+#   in this directory already asserts a refusal over one of them, and the accepted spec
+#   tests/specs/semantic/grants/remaining-construction-choices.yaml#blood-dragon-warriors-code asserts this
+#   sentence verbatim together with the presence of the tag on this profile).  The rule is activated the way a
+#   profile grant can only be activated: every scenario builds its bearer from the printed
+#   chaos-streets-undead-bloodlines blood-dragon-vampire profile, so the row reaches it by the automatic route
+#   (blood-dragon-vampire--warriors-code, applies_to.profile_ids [blood-dragon-vampire], grant: profile) and the
+#   tag compiler.warrior-s-code arrives with it.  No `special_rule_ids` entry is declared anywhere in this file:
+#   the declared-selection channel refuses a profile grant with "special rule is not selectable"
+#   (packages/python/roster-construction/mordheim_construction/compiler.py, the runtime.grant check before any
+#   effect), so a declared id could evidence neither the prohibition nor the admission.  The three declarations
+#   this file previously carried were removed for that reason.  The profile's other implemented automatic rules
+#   are inert in these tapes: leader-six consumes a supplied leader and none is supplied, causes-fear requests
+#   no test because nothing charges, and the psychology/poison/no-pain rows are lasting traits.
+#   Spell resolution and magic items stay
 #   excluded as the register note says: the admitted half is the construction prohibition, and the magic-item
 #   face is recorded rather than asserted because no catalogue item is marked magic at this origin.
 #   REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
@@ -29,7 +41,10 @@
 #   supplies skill.sorcery and scenario 2 supplies skill.arcane-lore, each refused with the branch's verbatim
 #   diagnostic naming the offending skill ids, and scenario 3 is the admission control - the identical build
 #   with no magic skill constructs and resolves its round, so the prohibitions above are attributable to the
-#   rule rather than to the build shape.  The magic-item face is recorded, not asserted: no catalogue item
+#   rule rather than to the build shape.  The contract arrives by the recipient's own automatic profile route:
+#   each scenario builds its bearer from the printed blood-dragon-vampire profile, which is what puts the tag
+#   compiler.warrior-s-code on the build (the accepted spec asserts that presence), and no `special_rule_ids`
+#   declaration is used anywhere in the file because that channel refuses a profile grant.  The magic-item face is recorded, not asserted: no catalogue item
 #   carries a magic marker at this origin, and the branch reads skill ids only.  REVIEWED still requires
 #   manual semantic review.
 # origin_id:
@@ -60,16 +75,19 @@
 #   Spell resolution is excluded; the prohibition on magic skills/items is the admitted construction fact.
 
 # --- Authored scenarios ---
-# The printed magic-skill bar: a sorcery skill supplied on the build carrying the Warrior's Code row is
-# refused with the branch's own verbatim diagnostic (the skill ids are listed python-style by the stage).
+# The printed magic-skill bar: a sorcery skill supplied on the blood-dragon-vampire profile, which carries the
+# Warrior's Code row by its own automatic route, is refused with the branch's own verbatim diagnostic (the skill
+# ids are listed python-style by the stage).
 - audit_id: rule/trollheim/chaos-streets-undead-bloodlines/blood-dragon-vampire--warriors-code/compiler.warrior-s-code
   id: a-sorcery-skill-is-refused-by-the-warriors-code
   covers: [whole]
   fighters:
     first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
       main_weapon_id: weapon.mace
       skill_ids: [skill.sorcery]
-      special_rule_ids: [blood-dragon-vampire--warriors-code]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -85,9 +103,11 @@
   covers: [whole]
   fighters:
     first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
       main_weapon_id: weapon.mace
       skill_ids: [skill.arcane-lore]
-      special_rule_ids: [blood-dragon-vampire--warriors-code]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace
@@ -103,8 +123,10 @@
   covers: [whole]
   fighters:
     first:
+      collection: trollheim
+      band_id: chaos-streets-undead-bloodlines
+      profile_id: blood-dragon-vampire
       main_weapon_id: weapon.mace
-      special_rule_ids: [blood-dragon-vampire--warriors-code]
       characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 2, initiative: 5, attacks: 1}
     second:
       main_weapon_id: weapon.mace

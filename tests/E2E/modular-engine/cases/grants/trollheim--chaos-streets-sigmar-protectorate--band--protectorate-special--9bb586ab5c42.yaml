@@ -1,11 +1,11 @@
 # E2E authoring scaffold; generated comments, manually authored scenarios.
 # audit_id: rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-absolute-faith/unimplemented.chaos-streets-sigmar-protectorate.band.protectorate-special-skills-absolute-faith
 # scaffold_fingerprint: ffd915dd666c540646fe181ebc7f1621e1ffa9cfe55361225298f098cccaa4c8
-# authoring_status: PARTIAL
-# authoring_progress: the admitted fear-immunity clause carries 1 authored scenario(s) derived
-# from the printed rule, the recorded semantic contract and the printed profile; any remaining
-# face of the file stays recorded as pending below.  REVIEWED still requires manual semantic
-# review and execution_status stays UNEXECUTED.
+# authoring_status: AUTHORED
+# authoring_progress: the admitted fear-immunity clause carries 3 authored scenario(s) derived
+# from the printed rule ("The Hero may re-roll failed Fear tests"), the recorded semantic contract
+# and the printed templar profile of this band (Ld 7, W1, A1); the boundary is the bearer's own
+# Leadership: a declared 4 + 4 = 8 exceeds 7 and 3 + 3 = 6 does not.  REVIEWED still requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -16,11 +16,11 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: fear-immunity (scope: YES)
-# PARTIAL[fear-immunity]: [CLOSING-REVIEW [E]] the bearer templar is the declared recipient, built from its printed profile (W1 A1); the opponent is a hand-built fixture that declares its own facts.
-#   1 scenario(s) cover the clause: the printed clause grants a re-roll of a failed Fear test, so the scenario declares the failed first test, the bearer's own decision to re-roll and the passed re-roll.
-#   Every strike is declared as a natural 1, so each round reports the Fear or Stupidity request under test and nothing else.
-#   PARTIAL: the file is recorded under the fear-immunity effect, but the printed clause is a re-roll of failed Fear tests rather than an immunity, so the immunity the effect label asserts is not demonstrated by this scenario.
-#   REVIEWED still requires manual semantic review.
+# AUTHORED[fear-immunity]: 3 scenarios cover the printed clause on its printed recipient, the band's own templar profile carrying the band rule band--protectorate-special-skills-absolute-faith (profiles.yaml: Ld 7, W1, A1).
+#   The first tape declares the failed charged Fear test (4 + 4 = 8 against the printed Leadership 7), the bearer's decision to take the offered re-roll and the passed re-roll (3 + 3 = 6), so the received charge leaves the bearer's attacks unclamped.
+#   The second declines the offer and the failure stands, which the printed sixes-to-hit consequence shows as attacks.1.hit_target 6; the third takes the offer and fails again (4 + 4), so the failure stands exactly as if the offer had not been taken.
+#   Recorded residual, not a blocker: the register files this printed sentence under the canonical mechanic.fear-immunity effect while the sentence itself grants a re-roll of failed Fear tests rather than an immunity, so the effect label is broader than the print; the re-roll is what the tapes assert and no scenario is withheld for the label.
+#   Every strike is declared as a natural 1, so each round reports the Fear request under test and nothing else.  REVIEWED still requires manual semantic review.
 # origin_id:
 #   rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-absolute-faith/unimplemented.chaos-streets-sigmar-protectorate.band.protectorate-special-skills-absolute-faith
 # analysis_status:
@@ -91,8 +91,8 @@
   duel_context: {charging: [first], active_participant: first}
   maximum_rounds: 1
   rolls:
-    - {key: round.0.second.fear.charged.0, value: 1}
-    - {key: round.0.second.fear.charged.1, value: 1}
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
     - {key: round.0.second.fear.charged.reroll.0, value: 3}
     - {key: round.0.second.fear.charged.reroll.1, value: 3}
     - {key: round.0.first.attack.0.hit, value: 1}
@@ -100,5 +100,56 @@
   decisions:
     - {key: round.0.second.fear.charged.reroll, value: true}
   expect_rounds:
-    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING}
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: false}
   expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# The offer is optional: declining it consumes no die, the first failure stands and the
+# received charge clamps the bearer's hits to sixes for that combat round.
+- audit_id: rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-absolute-faith/unimplemented.chaos-streets-sigmar-protectorate.band.protectorate-special-skills-absolute-faith
+  id: declining-the-offer-keeps-the-failed-test
+  covers: [fear-immunity]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: chaos-streets-sigmar-protectorate, profile_id: templar, special_rule_ids: [band--protectorate-special-skills-absolute-faith]}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: false}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: true, attacks.1.hit_target: 6, attacks.1.hit: false}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+
+# One re-roll only: the offered re-roll is taken and fails again (4 + 4 = 8), so the failure
+# stands exactly as if the offer had not been taken.
+- audit_id: rule/trollheim/chaos-streets-sigmar-protectorate/band--protectorate-special-skills-absolute-faith/unimplemented.chaos-streets-sigmar-protectorate.band.protectorate-special-skills-absolute-faith
+  id: a-failed-reroll-leaves-the-failure-standing
+  covers: [fear-immunity]
+  fighters:
+    first:
+      trait_overrides: {causes_fear: true}
+      main_weapon_id: weapon.mace
+      characteristics: {weapon_skill: 3, strength: 3, toughness: 3, wounds: 3, initiative: 10, attacks: 1, leadership: 7}
+    second: {collection: trollheim, band_id: chaos-streets-sigmar-protectorate, profile_id: templar, special_rule_ids: [band--protectorate-special-skills-absolute-faith]}
+  duel_context: {charging: [first], active_participant: first}
+  maximum_rounds: 1
+  rolls:
+    - {key: round.0.second.fear.charged.0, value: 4}
+    - {key: round.0.second.fear.charged.1, value: 4}
+    - {key: round.0.second.fear.charged.reroll.0, value: 4}
+    - {key: round.0.second.fear.charged.reroll.1, value: 4}
+    - {key: round.0.first.attack.0.hit, value: 1}
+    - {key: round.0.second.attack.0.hit, value: 1}
+  decisions:
+    - {key: round.0.second.fear.charged.reroll, value: true}
+  expect_rounds:
+    0: {state.first.wounds: 3, state.first.condition: STANDING, state.second.wounds: 1, state.second.condition: STANDING, state.second.fear_hit_sixes: true}
+  expect_final: {rounds_executed: 1, termination_reason: horizon}
+

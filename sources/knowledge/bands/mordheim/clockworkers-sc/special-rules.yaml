@@ -333,16 +333,54 @@ rules:
     - handymen
 - id: clockwork-soldiers--construct
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.clockworkers-sc.clockwork-soldiers.construct
-      scope: LATER
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+    - id: mechanic.drug-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.drug-immunity
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+    - id: construct.non-duel
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: Need Orders outside combat, running, experience and permanent equipment changes are excluded
+        map/campaign clauses; slots retain their independent construction requirement.
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          equipment_slots: 2
+          armour_slots: 1
+          slot_costs:
+            weapon.mace: 1
+            weapon.axe: 1
+            weapon.sword: 1
+            clockwork_pistol: 1
+            defence.shield: 1
+            clockwork_rifle: 2
+            weapon.double-handed-weapon: 2
+            weapon.halberd: 2
   name: Construct
   effect: Clockwork soldiers are constructs as described in the band special rules.
   source:
@@ -387,16 +425,54 @@ rules:
     - clockwork-soldiers
 - id: clockwork-fiend--construct
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.clockworkers-sc.clockwork-fiend.construct
-      scope: LATER
+    - id: mechanic.psychology-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.psychology-immunity
+    - id: skill.ignore-pain
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: skill.ignore-pain
+    - id: mechanic.drug-immunity
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.drug-immunity
+    - id: trait.poison-immune
+      scope: 'YES'
+      binding:
+        kind: trait
+        id: trait.poison-immune
+        parameters:
+          value: true
+    - id: construct.non-duel
+      scope: 'NO'
       binding: null
-      reason: >-
-        Deferred subsystem: not covered by the current engine scope; to be revisited with the
-        corresponding engine milestone.
+      reason: Need Orders outside combat, running, experience and permanent equipment changes are excluded
+        map/campaign clauses; slots retain their independent construction requirement.
+    - id: profile.equipment-restrictions
+      scope: 'YES'
+      binding:
+        kind: profile
+        id: profile.equipment-restrictions
+        parameters:
+          equipment_slots: 4
+          armour_slots: 1
+          slot_costs:
+            weapon.mace: 1
+            weapon.axe: 1
+            weapon.sword: 1
+            clockwork_pistol: 1
+            defence.shield: 1
+            clockwork_rifle: 2
+            weapon.double-handed-weapon: 2
+            weapon.halberd: 2
   name: Construct
   effect: Clockwork fiends are constructs as described in the band special rules.
   source:

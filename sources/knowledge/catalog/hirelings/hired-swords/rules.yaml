@@ -135,6 +135,15 @@ rules:
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
   name_i18n:
     es: Elegibilidad de Contratación Dinámica — Contratistas Élficos
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: none
+    effects:
+    - id: hireling.hired-sword.dwarf-troll-slayer.rule.campaign-eligibility.excluded
+      scope: 'NO'
+      binding: null
+      reason: Hiring and upkeep based on roster composition are campaign consequences.
 - id: hireling.hired-sword.elf-ranger.rule.campaign-eligibility
   name: Dynamic Hiring Eligibility — Dwarven Employers
   effect: >-
@@ -149,3 +158,12 @@ rules:
     url: https://mordheimer.net/docs/campaigns/hired-swords/grade-1a
   name_i18n:
     es: Elegibilidad de Contratación Dinámica — Contratistas Enanos
+  runtime:
+    scope: 'NO'
+    implemented: 'NO'
+    grant: none
+    effects:
+    - id: hireling.hired-sword.elf-ranger.rule.campaign-eligibility.excluded
+      scope: 'NO'
+      binding: null
+      reason: Hiring and upkeep based on roster composition are campaign consequences.

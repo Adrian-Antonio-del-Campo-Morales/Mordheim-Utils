@@ -332,16 +332,15 @@ rules:
     - wandering-knight
 - id: master-of-finances--corruption
   runtime:
-    scope: LATER
-    implemented: 'NO'
+    scope: 'YES'
+    implemented: 'YES'
     grant: profile
     effects:
-    - id: unimplemented.mazzalupo-web.master-of-finances.corruption
-      scope: LATER
-      binding: null
-      reason: >-
-        Deferred subsystem: out-of-game bribery to reroll enemy attack rolls is a
-        meta/combat-bargaining mechanic outside the current engine scope.
+    - id: mechanic.corruption
+      scope: 'YES'
+      binding:
+        kind: mechanic
+        id: mechanic.corruption
   name: Corruption
   effect: >-
     Masters of finances are not good fighters but they are certainly skilled at convincing the enemy

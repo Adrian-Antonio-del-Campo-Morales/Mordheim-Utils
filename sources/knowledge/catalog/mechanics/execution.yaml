@@ -721,7 +721,6 @@ mechanics:
     tags:
     - weapon.cathayan-longsword
     parry: true
-    armour_penetration: 1
     initiative_bonus: 1
     weapon_skill_bonus: 1
   trigger: attack
@@ -856,6 +855,22 @@ mechanics:
   parameters:
     tags:
     - armour.eshin-assassin-robes
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: armour.mage-robes
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.mage-robes
+  trigger: passive
+  application: fighter
+  stacking: stack
+- id: armour.wizard-robe
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.wizard-robe
   trigger: passive
   application: fighter
   stacking: stack
@@ -1671,7 +1686,6 @@ mechanics:
 - id: mechanic.black-hunger
   handler: effect-set
   parameters:
-    attacks_bonus: 1
     tags:
     - mechanic.black-hunger
   trigger: passive
@@ -1771,8 +1785,7 @@ mechanics:
 - id: mechanic.netter
   handler: effect-set
   parameters:
-    tags:
-    - mechanic.netter
+    tags: []
   trigger: passive
   application: fighter
   stacking: once
@@ -2929,6 +2942,913 @@ mechanics:
   parameters:
     tags:
     - mechanic.lahmian-hypnotize
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.feral-instinct
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.feral-instinct
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.slave-driver
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.slave-driver
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.opposite-sex-charge-test
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.opposite-sex-charge-test
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.relay-orders
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.relay-orders
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.songster
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.songster
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.devoted
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.devoted
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.broken-spirit
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.broken-spirit
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.invincible-swordsman
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.invincible-swordsman
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.djinns-curse
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.djinns-curse
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.greenskin-traitor
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.greenskin-traitor
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.cannot-charge
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.cannot-charge
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.sea-shanty
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.sea-shanty
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.sea-shanty-psychology
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.sea-shanty-psychology
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.crude-belch-ogre
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.crude-belch-ogre
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.noblesse-stomp
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.noblesse-stomp
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.ranalds-luck
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.ranalds-luck
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.oracle
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.oracle
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.augur-one-roll-reroll
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.augur-one-roll-reroll
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.slaanesh-charge-test
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.slaanesh-charge-test
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.drug-immunity
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.drug-immunity
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: skill.chosen-of-the-white-tower
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.chosen-of-the-white-tower
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: skill.instinctive-warrior
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.instinctive-warrior
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.marks-of-ranald
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.marks-of-ranald
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.haunted-mien
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.haunted-mien
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.bear-hug
+  handler: effect-set
+  parameters:
+    bear_hug: true
+    tags:
+    - mechanic.bear-hug
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: rule.bear-hug-unarmed
+  handler: effect-set
+  parameters:
+    tags:
+    - rule.bear-hug-unarmed
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.devoted-to-the-vampire
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.devoted-to-the-vampire
+    - mechanic.devoted-killer-hatred
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.bitten-transform
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.bitten-transform
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.ethereal-hit-save-improved
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.ethereal-hit-save
+    ethereal_hit_save: 3
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: weapon.ienh-khain
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.ienh-khain
+    - weapon.sword
+    parry: true
+    strength_bonus: 1
+    critical_threshold: 5
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: armour.attlas-plate-mail
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.attlas-plate-mail
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.hang-the-bandit
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.hang-the-bandit
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.profound-hatred
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.profound-hatred
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: weapon.main-gauche
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.main-gauche
+    parry: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: mechanic.main-gauche-modes
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.main-gauche-modes
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.inconsistency
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.inconsistency
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: armour.chaos-armour
+  handler: effect-set
+  parameters:
+    tags:
+    - armour.chaos-armour
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: weapon.broadsword-of-damnation
+  handler: effect-set
+  parameters:
+    tags:
+    - weapon.broadsword-of-damnation
+    - weapon.double-handed-weapon
+    - weapon.indestructible
+    strength_bonus: 2
+    priority: -1
+    two_handed: true
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: mechanic.own-leadership
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.own-leadership
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.estalian-technique
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.estalian-technique
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.corruption
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.corruption
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.achilles-heel
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.achilles-heel
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.herb-lore
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.herb-lore
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.petru-debilitating
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.petru-debilitating
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.petru-strength
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.petru-strength
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.petru-resilience
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.petru-resilience
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.petru-fortitude
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.petru-fortitude
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.alchemist-resilience
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.alchemist-resilience
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.alchemist-strength
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.alchemist-strength
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.alchemist-aberrantius-vigortia
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.alchemist-aberrantius-vigortia
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.alchemist-backleys-brew
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.alchemist-backleys-brew
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.alchemist-addicted
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.alchemist-addicted
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.danse-macabre-controlled
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.danse-macabre-controlled
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.leader-twelve
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.leader-twelve
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.lunatics
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.lunatics
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.fungus-brew-rowdy
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.fungus-rowdy
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.fungus-brew-dizzy
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.fungus-brew-dizzy
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.fungus-brew-fearless
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.fear-immunity
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.fungus-brew-numbed
+  handler: effect-set
+  parameters:
+    tags: []
+    armour_save_bonus: 1
+    armour_save_floor: 6
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.fungus-brew-belligerent
+  handler: effect-set
+  parameters:
+    tags:
+    - skill.hatred
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.fungus-brew-loony
+  handler: effect-set
+  parameters:
+    frenzy: true
+    tags:
+    - mechanic.stupidity
+    - mechanic.mad-cap-masters
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.impetuous-charge
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.impetuous-charge
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.executioners-hood
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.persistent-frenzy
+    frenzy: true
+    strength_bonus: 1
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.hypnotic-musk
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.hypnotic-musk
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.rememberer-kaz-support
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.rememberer-support
+    - mechanic.rememberer-large-only
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.rememberer-web-support
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.rememberer-support
+    - mechanic.rememberer-large-or-tough
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.slayer-identity
+  handler: effect-set
+  parameters:
+    tags:
+    - identity.slayer
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.prehensile-tail
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.prehensile-tail
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.beak
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.beak
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.electrical-touch
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.electrical-touch
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.mer-creature
+  handler: effect-set
+  parameters:
+    tags:
+    - species.aquatic
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.suckers
+  handler: effect-set
+  parameters:
+    tags: []
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.eye-stalks
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.causes-fear
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.ogre-unarmed
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.ogre-unarmed
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.gaoler-grapple
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.gaoler-grapple
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.inured-to-pain
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.inured-to-pain
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.gaoler-hatred
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.gaoler-hatred
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.giggle-juice-spray
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.giggle-juice-spray
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: poison.giggle-juice
+  handler: effect-set
+  parameters:
+    tags:
+    - poison.giggle-juice
+    strength_bonus: 1
+    injury_modifier: 1
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: mechanic.centaur-trample
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.centaur-trample
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.djinn-ethereal
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.djinn-ethereal
+    ward_save: 5
+    ward_save_mundane_only: true
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.daemonic-flesh
+  handler: effect-set
+  parameters:
+    natural_armour_negated_by_magic: true
+    tags:
+    - mechanic.daemonic-flesh
+    - attack.magical
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.excellent-reflexes
+  handler: effect-set
+  parameters:
+    ward_save: 5
+    tags:
+    - mechanic.excellent-reflexes
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.tomb-robber-dodge-known
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.tomb-robber-dodge-known
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.solkan-inquisitor
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.solkan-inquisitor
+    - mechanic.psychology-immunity
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.solkan-witch-finder
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.solkan-witch-finder
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.witch-finder-charge
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.witch-finder-charge
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.emissary-khorne
+  handler: effect-set
+  parameters:
+    frenzy: true
+    attacks_bonus: 1
+    tags:
+    - identity.chaos-follower
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.emissary-tzeentch
+  handler: effect-set
+  parameters:
+    tags:
+    - identity.chaos-follower
+    - identity.spellcaster
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.emissary-nurgle
+  handler: effect-set
+  parameters:
+    tags:
+    - poison.black-lotus
+    - mechanic.causes-fear
+    - identity.chaos-follower
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.emissary-slaanesh
+  handler: effect-set
+  parameters:
+    incoming_hit_modifier: -1
+    tags:
+    - mechanic.slaanesh-charge-test
+    - identity.chaos-follower
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: weapon.gromril-hammer
+  handler: effect-set
+  parameters:
+    concussion: true
+    armour_penetration: 1
+    tags:
+    - weapon.mace
+    - material.gromril
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: mechanic.bear-handler
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.bear-handler
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.bear-handler-recipient
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.bear-handler-recipient
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.bear-handler-nearby
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.bear-handler-nearby
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.dim-witted-leader
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.dim-witted-leader
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.adventurer-barbarian-leader
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.leader-six
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.poetry-victorious-leader
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.poetry-victorious-leader
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.poetry-inspired
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.poetry-inspired
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.command.raise-our-insignia
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.command.raise-our-insignia
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.netted
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.netted
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.nuttaz-charge
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.nuttaz-charge
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: condition.goading-charge
+  handler: effect-set
+  parameters:
+    tags:
+    - condition.goading-charge
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.herb-lore-outside-combat
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.herb-lore-outside-combat
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: defence.magic-acorn
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.magic-acorn
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: weapon.veskit-claws
+  handler: effect-set
+  parameters:
+    fixed_strength: 5
+    armour_penetration: 1
+    parry: true
+    paired: false
+    two_handed: true
+    tags:
+    - weapon.fighting-claws
+  trigger: attack
+  application: attack
+  stacking: stack
+- id: mechanic.veskit-no-pain
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.veskit-no-pain
+    - mechanic.pain-immunity
+  trigger: passive
+  application: fighter
+  stacking: once
+- id: mechanic.wall-of-steel
+  handler: effect-set
+  parameters:
+    tags:
+    - mechanic.wall-of-steel
   trigger: passive
   application: fighter
   stacking: once

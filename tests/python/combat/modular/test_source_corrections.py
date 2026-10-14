@@ -109,6 +109,41 @@ def test_natural_six_fails_characteristic_tests(value):
     assert phases._characteristic_test(value, ScriptedDice({'test': 6, 'test.reroll': 5}), 'test', reroll=True)
 
 
+def test_ranald_cannot_turn_a_natural_six_into_a_passed_characteristic_test():
+    from mordheim_core.models import EffectSet
+    from mordheim_combat.modular.contexts import OwnedRollDice
+    from mordheim_combat_lab.verification.dice import StrictDice, StrictDecisions
+    owner = replace(fighter(), global_effects=EffectSet(tags=('mechanic.ranalds-luck',)))
+    dice = StrictDice([{'key': 'test', 'value': 6}])
+    choices = StrictDecisions([{'key': 'test.ranalds-luck.plus', 'value': False},
+                               {'key': 'test.ranalds-luck.minus', 'value': True}])
+    owned = OwnedRollDice(dice, owner, state(owner), choices)
+    assert not phases._characteristic_test(6, owned, 'test')
+    assert 'ranalds-luck' in owned.state.resources_spent
+    dice.finish(); choices.finish()
+
+
+@pytest.mark.parametrize('armour,remaining', [('armour.no-armour', 0), ('armour.attlas-plate-mail', 1)])
+def test_attlas_fortitude_delays_the_actual_injury_after_an_unsaved_wound(armour, remaining):
+    from mordheim_combat.modular.state import initialize_duel
+    from mordheim_combat_lab.verification.dice import StrictDice, StrictDecisions
+    from mordheim_core.models import DuelContext
+    wearer = fighter(wounds=1, armour_id=armour)
+    opponent = fighter(initiative=2)
+    state = initialize_duel(wearer, opponent, StrictDice([]),
+        context=DuelContext(charging=('second',), active_participant='second'))
+    rolls = [('round.0.second.attack.0.hit', 4), ('round.0.second.attack.0.wound', 4)]
+    if remaining:
+        rolls.extend([('round.0.second.attack.0.armour', 1), ('round.0.first.attack.0.hit', 1)])
+    else:
+        rolls.append(('round.0.second.attack.0.injury.0', 6))
+    dice = StrictDice([{'key': key, 'value': value} for key, value in rolls])
+    result = resolve_round(wearer, opponent, state, dice, StrictDecisions([]))
+    dice.finish()
+    assert result.state.first.wounds == remaining
+    assert result.state.first.condition == (phases.Condition.STANDING if remaining else phases.Condition.OUT)
+
+
 def test_ws_zero_is_automatic_without_a_hit_die():
     result = phases.resolve_hit(phases.HitContext(3, 0), ScriptedDice({}))
     assert result.success and result.roll == 0
@@ -229,8 +264,9 @@ def test_only_active_player_recovers_before_combat():
 def test_m07_four_player_turns_preserve_recovery_fire_and_paralysis_ownership(paralyzed):
     from mordheim_core.models import EffectSet
     from mordheim_combat_lab.verification.dice import StrictDice
-    # Suppress ordinary attacks so this sequence isolates recovery ownership.
-    effects = EffectSet(tags=('animal_friendship', 'species.animal'))
+    # Animal Friendship excludes ordinary animals. Supply that qualification
+    # so the unchanged four-turn tape isolates recovery ownership.
+    effects = EffectSet(tags=('animal_friendship', 'species.animal', 'species.normal-animal'))
     a = replace(fighter(initiative=1), global_effects=effects)
     b = replace(fighter(initiative=6), global_effects=effects)
     first_condition = phases.Condition.PARALYZED if paralyzed else phases.Condition.KNOCKED_DOWN

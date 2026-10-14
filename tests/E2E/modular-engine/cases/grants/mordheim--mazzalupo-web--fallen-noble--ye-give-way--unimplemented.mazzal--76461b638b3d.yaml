@@ -2,11 +2,10 @@
 # audit_id: rule/mordheim/mazzalupo-web/fallen-noble--ye-give-way/unimplemented.mazzalupo-web.fallen-noble.ye-give-way
 # scaffold_fingerprint: 79a2a4fb4c02722bdb239a9b3c6c185642fc67b099d5ae8e2475e5af36ac9d6c
 # authoring_status: PARTIAL
-# authoring_progress: the admitted individual-modifiers clause cannot be authored: the challenge leaves two
-#   individual modifiers on the fighters, but the recorded note states that no identity carries them today,
-#   and the producer of the whole printed rule (the pre-combat challenge) is outside the duelling model.  The
-#   exact pending datum is named in the clause marker below.  REVIEWED still requires manual semantic review
-#   and execution_status stays UNEXECUTED.
+# authoring_progress: the admitted individual-modifiers clause stays without scenarios, and the blocker is
+#   the missing canonical condition identity named in the clause marker below, not the executor: the marker
+#   records the declarable condition channel and the catalogue row the sources do not carry.  REVIEWED still
+#   requires manual semantic review and execution_status stays UNEXECUTED.
 # execution_status: UNEXECUTED (this scaffold has no behavioral result)
 #
 # Derive inputs and expectations from rule text and accepted rulings.
@@ -17,15 +16,19 @@
 # Generated from: docs/knowledge/2a2b/tasks/T13-semantic-analysis.csv
 #
 # Clause: individual-modifiers (scope: YES)
-# PARTIAL[individual-modifiers]: [C] no scenario is authorable without inventing the operator.  The recorded
-#   contract carries effect_id proposed.condition.challenge-modifiers and the note states that "the two
-#   modifiers are individual consequences that the engine could carry as pre-set conditions ... but no
-#   identity carries them today: the first unresolved step is the wiring of such conditions, which the
-#   challenge subsystem that produces them cannot itself be modelled in a duel".  The missing datum is
-#   therefore two supplied conditions - one adding -1 to hit on the warrior who refused, non-cumulative,
-#   and one adding +1 to hit and +1 Strength on the Fallen Noble, non-cumulative - and a way to set them
-#   before the duel; with neither a condition identity nor a build field, no tape can show either modifier
-#   while keeping the scenarios honest.
+# PARTIAL[individual-modifiers]: [D] the blocker is a source identity, not the executor.  The declaring
+#   channel exists and is in use elsewhere: FighterBuild.condition_ids takes canonical condition ids and
+#   catalog/rules/conditions.yaml resolves each to its operator at compile time - the same channel
+#   condition.unseen-charge and condition.large-target use for supplied individual facts - and the register
+#   note records that the hit context already sums supplied condition modifiers while the Strength term is
+#   additive, so a condition carrying the printed -1 to hit or +1 to hit and +1 Strength would reach both
+#   terms.  What the sources do not carry is an identity for either modifier: the catalogue has no condition
+#   row whose effect is the refusal penalty or the challenge-victory bonus, and effect_id
+#   proposed.condition.challenge-modifiers is a proposal rather than a row.  Declaring one from a tape would
+#   invent both the identity and the ruling that a pre-combat challenge leaves a canonical condition at all;
+#   the producer of the printed rule (the challenge subsystem) is an accepted scope exclusion, so that row
+#   and that ruling belong to the knowledge owner.  Once the row exists the tape is the declared
+#   condition_ids entry plus the hit and wound boundary the two modifiers change.
 # origin_id:
 #   rule/mordheim/mazzalupo-web/fallen-noble--ye-give-way/unimplemented.mazzalupo-web.fallen-noble.ye-give-way
 # analysis_status:
