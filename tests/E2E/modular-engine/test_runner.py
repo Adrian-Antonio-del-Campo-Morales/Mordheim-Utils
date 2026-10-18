@@ -9,6 +9,7 @@ import pytest
 
 from mordheim_core.dice import RollRequest
 from mordheim_knowledge.loader import knowledge_root
+from mordheim_modular_e2e.corpus import CorpusError, lookup_observation
 from mordheim_modular_e2e.dice import EvidenceMismatch, StrictDecisions, StrictDice, enumerate_exact
 from mordheim_modular_e2e.runner import _build, _lookup, _plain, _state, check_case
 
@@ -75,10 +76,20 @@ def test_copied_helpers_build_initialize_and_observe_without_mutating_inputs():
 
 
 def test_copied_lookup_does_not_ignore_invalid_expectation_paths():
-    with pytest.raises(KeyError):
+    """The harness name is the shared pure lookup, and invalid paths still fail.
+
+    The failure is the documented corpus mismatch, which keeps the original
+    ``KeyError``/``IndexError`` as its cause rather than swallowing it, so an
+    unknown segment or an index outside the observed list is never read as an
+    absent-but-acceptable observation.
+    """
+    with pytest.raises(CorpusError, match="observation does not exist") as missing:
         _lookup({"state": {"wounds": 1}}, "state.wondss")
-    with pytest.raises(IndexError):
+    assert isinstance(missing.value.__cause__, KeyError)
+    with pytest.raises(CorpusError, match="observation does not exist") as out_of_face:
         _lookup({"rounds": []}, "rounds.0")
+    assert isinstance(out_of_face.value.__cause__, IndexError)
+    assert _lookup is lookup_observation
 
 
 def _duel_case():

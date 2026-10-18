@@ -1,5 +1,11 @@
 # Modular engine E2E tests
 
+Problems encountered during implementation that agents cannot resolve are recorded in
+[Remaining modular engine problems](../../../docs/knowledge/2a2b/REMAINING_MODULAR_ENGINE_PROBLEMS.md);
+unresolved authority choices in
+[Remaining human decisions](../../../docs/knowledge/2a2b/REMAINING_HUMAN_DECISIONS.md).
+This document retains the authoring/execution procedure, not another issue queue.
+
 The independent test battery lives under the [implementation plan](plan.md).
 The reusable support, modular combat loop, declarative corpus loading and
 pytest collection, inventory reconciliation and a CI execution step exist.

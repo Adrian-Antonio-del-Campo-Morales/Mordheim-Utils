@@ -1,5 +1,11 @@
 # Modular engine E2E test implementation plan
 
+Problems encountered during implementation that agents cannot resolve are recorded in
+[Remaining modular engine problems](../../../docs/knowledge/2a2b/REMAINING_MODULAR_ENGINE_PROBLEMS.md);
+unresolved authority choices in
+[Remaining human decisions](../../../docs/knowledge/2a2b/REMAINING_HUMAN_DECISIONS.md).
+This document retains the authoring/execution procedure, not another issue queue.
+
 Status: the file structure, reusable support copies, the full combat loop,
 declarative YAML loader, pytest collection, inventory reconciliation, declaration
 report and a CI execution step already exist. The pilot is a starting point for

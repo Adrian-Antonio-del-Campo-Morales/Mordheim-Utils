@@ -12,8 +12,12 @@ from mordheim_construction.compiler import compile_fighter
 from mordheim_core.dice import DecisionPolicy, DiceSource
 from mordheim_core.models import Characteristics, DuelContext, FighterBuild, LocalParticipant
 
-from .corpus import CorpusError, assert_observations
+from .corpus import CorpusError, assert_observations, lookup_observation
 from .dice import EvidenceMismatch, StrictDecisions, StrictDice
+
+#: The harness vocabulary keeps the copied-support name; the implementation is the
+#: pure corpus lookup itself, so there is no second dotted-path reader to drift.
+_lookup = lookup_observation
 
 #: Fields ``execute_case`` accepts: the runner vocabulary plus the corpus metadata
 #: (``audit_id``, ``covers``) and the refusal contract (``expect_error``), which is
